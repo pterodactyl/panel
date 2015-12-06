@@ -1,0 +1,75 @@
+@import url(//fonts.googleapis.com/css?family=Droid+Sans+Mono);
+body{font-size:13px}
+.navbar{margin-top:30px}
+@media (min-width:768px){.container{width:750px}}
+@media (min-width:992px){.container{width:970px}}
+@media (min-width:1200px){.container{width:970px}}
+.form-control{padding:4px 8px;font-size:13px;line-height:1.4}
+.footer{margin-top:15px;font-size:10px;color:#999}
+.nopad{margin-top:0!important}
+.alert-success{
+	background-image: url('../images/check-square.png') !important;
+	background-size: 13px;
+	background-repeat: no-repeat;
+	background-position: 15px 17px;
+	background-color:#f3f8f3;
+	color:#474a54;
+	border-left: 4px solid #50af51 !important;
+	border:0;
+	padding-left:40px;
+}
+.alert-success hr{border-top-color:rgba(0,0,0,0)}
+.alert-success .alert-link{color:#e6e6e6}
+.alert-info{
+	background-image: url('../images/info-circle.png') !important;
+	background-size: 13px;
+	background-repeat: no-repeat;
+	background-position: 15px 17px;
+	background-color:#f4f8fa;
+	color:#474a54;
+	border-left: 4px solid #5bc0de !important;
+	border:0;
+	padding-left:40px;
+}
+.alert-info hr{border-top-color:rgba(0,0,0,0)}
+.alert-info .alert-link{color:#e6e6e6}
+.alert-warning{
+	background-image: url('../images/exclamation-circle.png') !important;
+	background-size: 13px;
+	background-repeat: no-repeat;
+	background-position: 15px 17px;
+	background-color:#fcf8f2;
+	color:#474a54;
+	border-left: 4px solid #f0ad4e !important;
+	border:0;
+	padding-left:40px;
+}
+.alert-warning hr{border-top-color:rgba(0,0,0,0)}
+.alert-warning .alert-link{color:#e6e6e6}
+.alert-danger{
+	background-image: url('../images/exclamation-triangle.png') !important;
+	background-size: 13px;
+	background-repeat: no-repeat;
+    background-position: 15px 17px;
+	background-color:#fdf7f7;
+	color:#474a54;
+	border-left: 4px solid #d9534f !important;
+	border:0;
+	padding-left:40px;
+}
+.alert-danger hr{border-top-color:rgba(0,0,0,0)}
+.alert-danger .alert-link{color:#d9534f}
+.graph-yaxis{text-align:center;position:absolute;margin-top:-45px;margin-left:30px;-ms-transform:rotate(270deg);-moz-transform:rotate(270deg);-webkit-transform:rotate(270deg);transform:rotate(270deg);-ms-transform-origin:left top 0;-moz-transform-origin:left top 0;-webkit-transform-origin:left top 0;transform-origin:left top 0}
+.centered{text-align:center}
+.console{font:85% 'Droid Sans Mono',monospace;color:#333;height:300px!important;text-wrap:normal;overflow-y:scroll;overflow-x:hidden;border:0;resize:none}
+.console[readonly=readonly]{background:#fefefe;cursor:default}
+.files_loading_box{position:absolute;background:rgba(255,255,255,.8);width:100%;z-index:9999;display:none}
+.files_loading_box i{font-size:30px;color:rgba(0,0,0,.6);position:absolute}
+.btn-xxs{padding:2px 6px;font-size:10px;-webkit-border-radius:1px;-moz-border-radius:1px;border-radius:2px}
+.form-control{height:36px}
+.input-group-addon{font-size:12px;}
+pre{display:block;padding:12px 12px;margin:0;font-size:12px;color:#c7254e;background-color:#f9f2f4;border:1px solid #c7254e;border-radius:0;white-space:pre}
+.badge.label-danger {background: #d9534f !important;}
+.close {color:#000;opacity:0.2;font-size:1.6em;}
+.close:hover {color:#000;opacity:0.5;}
+.filename {outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;font-size: 19px;color: #aaa}

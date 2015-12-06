@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Pterodactyl
+        psr4_prefix: Pterodactyl
+        src_path: app
