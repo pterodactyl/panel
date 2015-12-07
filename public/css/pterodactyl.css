@@ -63,8 +63,8 @@ body{font-size:13px}
 .centered{text-align:center}
 .console{font:85% 'Droid Sans Mono',monospace;color:#333;height:300px!important;text-wrap:normal;overflow-y:scroll;overflow-x:hidden;border:0;resize:none}
 .console[readonly=readonly]{background:#fefefe;cursor:default}
-.files_loading_box{position:absolute;background:rgba(255,255,255,.8);width:100%;z-index:9999;display:none}
-.files_loading_box i{font-size:30px;color:rgba(0,0,0,.6);position:absolute}
+.ajax_loading_box{position:absolute;background:rgba(255,255,255,.8);width:100%;z-index:9999;display:none}
+.ajax_loading_box i{font-size:30px;color:rgba(0,0,0,.6);position:absolute}
 .btn-xxs{padding:2px 6px;font-size:10px;-webkit-border-radius:1px;-moz-border-radius:1px;border-radius:2px}
 .form-control{height:36px}
 .input-group-addon{font-size:12px;}

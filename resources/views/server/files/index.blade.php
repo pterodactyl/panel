@@ -23,7 +23,7 @@
                     </div>
                 @endforeach
             @endforeach
-            <div class="files_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
+            <div class="ajax_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
         </div>
     </div>
     <div class="row">
@@ -56,7 +56,7 @@
             // Show Animation
             if (show === true){
                 var height = $('#load_files').height();
-                var width = $('.files_loading_box').width();
+                var width = $('.ajax_loading_box').width();
                 var center_height = (height / 2) - 30;
                 var center_width = (width / 2) - 30;
                 $('#position_me').css({
@@ -64,9 +64,9 @@
                     'left': center_width,
                     'font-size': '60px'
                 });
-                $(".files_loading_box").css('height', (height + 5)).fadeIn();
+                $(".ajax_loading_box").css('height', (height + 5)).fadeIn();
             } else {
-                $('.files_loading_box').fadeOut(100);
+                $('.ajax_loading_box').fadeOut(100);
             }
 
         }

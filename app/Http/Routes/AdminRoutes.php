@@ -24,6 +24,12 @@ class AdminRoutes {
                 $router->get('/view/{id}', [ 'as' => 'admin.servers.view', 'uses' => 'Admin\ServersController@getView' ]);
             });
 
+            // AJAX Routes
+            $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
+                $router->post('/new/server/get-nodes', [ 'uses' => 'Admin\AjaxController@postNewServerGetNodes' ]);
+                $router->post('/new/server/get-ips', [ 'uses' => 'Admin\AjaxController@postNewServerGetIps' ]);
+            });
+
         });
     }
 
