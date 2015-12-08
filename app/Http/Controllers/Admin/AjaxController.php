@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Debugbar;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\ServiceOptions;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -24,6 +25,12 @@ class AjaxController extends Controller
 
     }
 
+    /**
+     * Returns a JSON tree of all avaliable nodes in a given location.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function postNewServerGetNodes(Request $request)
     {
 
@@ -33,10 +40,16 @@ class AjaxController extends Controller
             ], 500);
         }
 
-        return response(Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get()->toJson());
+        return response()->json(Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
 
     }
 
+    /**
+     * Returns a JSON tree of all avaliable IPs and Ports on a given node.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
     public function postNewServerGetIps(Request $request)
     {
 
@@ -57,6 +70,25 @@ class AjaxController extends Controller
             }
         }
         return response()->json($listing);
+
+    }
+
+    /**
+     * Returns a JSON tree of all avaliable options for a given service.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function postNewServerServiceOptions(Request $request)
+    {
+
+        if(!$request->input('service')) {
+            return response()->json([
+                'error' => 'Missing service in request.'
+            ], 500);
+        }
+
+        return response()->json(ServiceOptions::select('id', 'name')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
 
     }
 

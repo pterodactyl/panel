@@ -4,8 +4,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Debugbar;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Service;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -38,7 +38,8 @@ class ServersController extends Controller
     public function getNew(Request $request)
     {
         return view('admin.servers.new', [
-            'locations' => Location::all()
+            'locations' => Location::all(),
+            'services' => Service::all()
         ]);
     }
 

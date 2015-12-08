@@ -28,6 +28,7 @@ class AdminRoutes {
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 $router->post('/new/server/get-nodes', [ 'uses' => 'Admin\AjaxController@postNewServerGetNodes' ]);
                 $router->post('/new/server/get-ips', [ 'uses' => 'Admin\AjaxController@postNewServerGetIps' ]);
+                $router->post('/new/server/service-options', [ 'uses' => 'Admin\AjaxController@postNewServerServiceOptions' ]);
             });
 
         });
