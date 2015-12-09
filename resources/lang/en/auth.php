@@ -17,6 +17,9 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'errorencountered' => 'There was an error encountered while attempting to process this request.',
     'resetpassword' => 'Reset Password',
+    'confirmpassword' => 'Confirm Password',
+    'sendlink' => 'Send Password Reset Link',
+    'emailsent' => 'Your password reset email is on its way.',
     'remeberme' => 'Remeber Me',
 
 ];
