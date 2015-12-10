@@ -2,7 +2,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Base Pterodactyl Language
+    | Base Pterodactyl Language.
     |--------------------------------------------------------------------------
     |
     | These base strings are used throughout the front-end of Pterodactyl but
