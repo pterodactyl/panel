@@ -11,8 +11,16 @@
         <li><a href="/admin/servers">Servers</a></li>
         <li class="active">Create New Server</li>
     </ul>
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ $message }}
+            </div>
+        @endforeach
+    @endforeach
     <h3>Create New Server</h3><hr />
-    <form action="#" method="POST">
+    <form action="/admin/servers/new" method="POST">
         <div class="well">
             <div class="row">
                 <div class="form-group col-md-6">
@@ -47,7 +55,7 @@
                         </div>
                     </div>
                     <div class="form-group col-md-6 hidden">
-                        <label for="location" class="control-label">Server Node</label>
+                        <label for="node" class="control-label">Server Node</label>
                         <div>
                             <select name="node" id="getNode" class="form-control">
                                 <option></option>
@@ -58,18 +66,18 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6 hidden">
-                        <label for="location" class="control-label">Server IP</label>
+                        <label for="ip" class="control-label">Server IP</label>
                         <div>
-                            <select name="node" id="getIP" class="form-control">
+                            <select name="ip" id="getIP" class="form-control">
                                 <option></option>
                             </select>
                             <p class="text-muted"><small>Select the main IP that this server will be listening on. You can assign additional open IPs and ports below.</small></p>
                         </div>
                     </div>
                     <div class="form-group col-md-6 hidden">
-                        <label for="location" class="control-label">Server Port</label>
+                        <label for="port" class="control-label">Server Port</label>
                         <div>
-                            <select name="node" id="getPort" class="form-control"></select>
+                            <select name="port" id="getPort" class="form-control"></select>
                             <p class="text-muted"><small>Select the main port that this server will be listening on.</small></p>
                         </div>
                     </div>
@@ -159,10 +167,30 @@
                 </div>
             </div>
         </div>
+        <div class="well">
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="nopad">Service Environment Variables</h3>
+                    <hr />
+                    <div class="alert alert-info">Some service options have additional environment variables that you can define for a given instance. They will show up below when you select a service option. If none show up, chances are that none were defined, and there is nothing to worry about.</div>
+                    <span id="serverVariables"></span>
+                </div>
+            </div>
+        </div>
+        <div class="well">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    {!! csrf_field() !!}
+                    <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Create New Server" />
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 <script>
 $(document).ready(function () {
+
+    $('#sidebar_links').find("a[href='/admin/servers/new']").addClass('active');
 
     $('input[name="use_custom_image"]').change(function () {
         $('input[name="custom_image_name"]').val('').prop('disabled', !($(this).is(':checked')));
@@ -190,7 +218,7 @@ $(document).ready(function () {
 
         $.ajax({
             method: 'POST',
-            url: '/admin/ajax/new/server/get-nodes',
+            url: '/admin/servers/new/get-nodes',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
@@ -207,7 +235,7 @@ $(document).ready(function () {
         }).fail(function (jqXHR) {
             alert('An error occured while attempting to load a list of nodes in this location.');
             currentLocation = null;
-            console.log(jqXHR);
+            console.error(jqXHR);
         }).always(function () {
             handleLoader('#load_settings');
         })
@@ -228,7 +256,7 @@ $(document).ready(function () {
 
         $.ajax({
             method: 'POST',
-            url: '/admin/ajax/new/server/get-ips',
+            url: '/admin/servers/new/get-ips',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
@@ -244,7 +272,7 @@ $(document).ready(function () {
         }).fail(function (jqXHR) {
             alert('An error occured while attempting to get IPs and Ports avaliable on this node.');
             currentNode = null;
-            console.log(jqXHR);
+            console.error(jqXHR);
         }).always(function () {
             handleLoader('#load_settings');
         });
@@ -278,7 +306,7 @@ $(document).ready(function () {
 
         $.ajax({
             method: 'POST',
-            url: '/admin/ajax/new/server/service-options',
+            url: '/admin/servers/new/service-options',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
@@ -287,13 +315,51 @@ $(document).ready(function () {
             }
         }).done(function (data) {
             $.each(data, function (i, option) {
-                $('#getOption').append('<option value="' + option.id + '">' + option.name + '</option>');
+                $('#getOption').append('<option value="' + option.id + '" data-image="' + option.docker_image + '">' + option.name + '</option>');
             });
             $('#getOption').parent().parent().removeClass('hidden');
         }).fail(function (jqXHR) {
             alert('An error occured while attempting to list options for this service.');
             currentService = null;
-            console.log(jqXHR);
+            console.error(jqXHR);
+        }).always(function () {
+            handleLoader('#load_services');
+        });
+
+    });
+
+    $('#getOption').on('change', function (event) {
+
+        handleLoader('#load_services', true);
+        $('#serverVariables').html('');
+        $('input[name="custom_image_name"]').val($(this).find(':selected').data('image'));
+
+        $.ajax({
+            method: 'POST',
+            url: '/admin/servers/new/service-variables',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: {
+                option: $('#getOption').val()
+            }
+        }).done(function (data) {
+            $.each(data, function (i, item) {
+                var isRequired = (item.required === 1) ? '<code>Required</code>' : '';
+                var dataAppend = ' \
+                    <div class="form-group col-md-6">\
+                        <label for="var_ref_' + item.id + '" class="control-label">' + item.name + '</label> ' + isRequired + '\
+                        <div>\
+                            <input type="text" autocomplete="off" name="var_ref_' + item.id + '" class="form-control" value="' + item.default_value + '" />\
+                            <p class="text-muted"><small>' + item.description + '</small></p>\
+                            <p class="text-muted"><small>Regex Requirements for Input: <code>' + item.regex + '</code></small></p>\
+                        </div>\
+                    </div>\
+                ';
+                $('#serverVariables').append(dataAppend);
+            });
+        }).fail(function (jqXHR) {
+            console.error(jqXHR);
         }).always(function () {
             handleLoader('#load_services');
         });

@@ -19,16 +19,17 @@ class AdminRoutes {
 
             // Server Routes
             $router->group(['prefix' => 'servers'], function ($server) use ($router) {
+
                 $router->get('/', [ 'as' => 'admin.servers', 'uses' => 'Admin\ServersController@getIndex' ]);
                 $router->get('/new', [ 'as' => 'admin.servers.new', 'uses' => 'Admin\ServersController@getNew' ]);
                 $router->get('/view/{id}', [ 'as' => 'admin.servers.view', 'uses' => 'Admin\ServersController@getView' ]);
-            });
 
-            // AJAX Routes
-            $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
-                $router->post('/new/server/get-nodes', [ 'uses' => 'Admin\AjaxController@postNewServerGetNodes' ]);
-                $router->post('/new/server/get-ips', [ 'uses' => 'Admin\AjaxController@postNewServerGetIps' ]);
-                $router->post('/new/server/service-options', [ 'uses' => 'Admin\AjaxController@postNewServerServiceOptions' ]);
+                $router->post('/new', [ 'uses' => 'Admin\ServersController@postNewServer']);
+                $router->post('/new/get-nodes', [ 'uses' => 'Admin\ServersController@postNewServerGetNodes' ]);
+                $router->post('/new/get-ips', [ 'uses' => 'Admin\ServersController@postNewServerGetIps' ]);
+                $router->post('/new/service-options', [ 'uses' => 'Admin\ServersController@postNewServerServiceOptions' ]);
+                $router->post('/new/service-variables', [ 'uses' => 'Admin\ServersController@postNewServerServiceVariables' ]);
+
             });
 
         });
