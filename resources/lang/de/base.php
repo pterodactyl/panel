@@ -34,3 +34,6 @@ return [
         'update_pass' => 'Passwort aktualisieren'
     ]
 ];
+/*
+German Translation by Jboy
+*/
