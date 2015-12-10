@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
 @section('title')
-    Account List
+    Pterodactyl Account List
 @endsection
 
 @section('content')
 <div class="col-md-9">
     <ul class="breadcrumb">
-		<li><a href="/admin">Admin Control</a></li>
+		<li><a href="/admin">Pterodactyl Admin Control</a></li>
 		<li class="active">Accounts</li>
 	</ul>
-    <h3>All Registered Users</h3><hr />
+    <h3>All Pterodactyl Users</h3><hr />
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
