@@ -6,26 +6,26 @@ return [
     |--------------------------------------------------------------------------
     */
     'ajax' => [
-        'socket_error' => 'We were unable to connect to the main Socket.IO server, there may be network issues currently. <br /><br />If this is your first time seeing this message it may be because you need to accept this server\'s SSL certificate. Please click this notification and accept the certificate.',
-        'socket_status' => 'This server\'s power status has changed to',
-        'socket_status_crashed' => 'This server has been detected as CRASHED.',
+        'socket_error' => 'Wir waren nicht in der Lage, um zum Haupt Socket.IO Server verbinden <br /><br />Wenn dies Ihr erstes Mal sehen diese Meldung kann es sein, dass Sie brauchen, um diesen Server\'s SSL-Zertifikat zu akzeptieren. Bitte klicken Sie auf diese Meldung und das Zertifikat zu akzeptieren.',
+        'socket_status' => 'Dieser Server\'s Power-Status hat sich geändert',
+        'socket_status_crashed' => 'Der Server ist abgestürzt.',
     ],
     'index' => [
-        'memory_use' => 'Memory Usage',
-        'cpu_use' => 'CPU Usage',
-        'xaxis' => 'Time (2s Increments)',
-        'server_info' => 'Server Information',
-        'connection' => 'Default Connection',
-        'mem_limit' => 'Memory Limit',
-        'disk_space' => 'Disk Space',
-        'control' => 'Control Server',
-        'info_use' => 'Information & Usage',
-        'command' => 'Enter Console Command',
+        'memory_use' => 'RAM Verwendung',
+        'cpu_use' => 'CPU Verwendung',
+        'xaxis' => 'Zeit (2s Schritten)',
+        'server_info' => 'Server Informationen',
+        'connection' => 'Standardverbindung',
+        'mem_limit' => 'RAM-Grenze',
+        'disk_space' => 'Festplattenspeicher',
+        'control' => 'Steuern Server',
+        'info_use' => 'Informationen & Verwendung',
+        'command' => 'Geben Sie Console Command',
     ],
     'files' => [
-            'loading' => 'Loading file listing, this might take a few seconds...',
-            'yaml_notice' => 'You are currently editing a YAML file. These files do not accept tabs, they must use spaces. We\'ve gone ahead and made it so that hitting tab will insert :dropdown spaces.',
-            'back' => 'Back to File Manager',
-            'saved' => 'File has successfully been saved.',
+            'loading' => 'Laden...',
+            'yaml_notice' => 'You are currently editing a YAML file. These files do not accept tabs, they must use spaces. We\'ve gone ahead and made it so that hitting tab will insert :dropdown spaces.', /* TODO */
+            'back' => 'Zurück zu Dateimanager',
+            'saved' => 'Datei gespeichert',
     ],
 ];
