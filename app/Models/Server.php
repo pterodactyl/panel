@@ -3,6 +3,12 @@
 namespace Pterodactyl\Models;
 
 use Auth;
+use Validator;
+use Debugbar;
+
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\AccountNotFoundException;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
@@ -135,6 +141,40 @@ class Server extends Model
         }
 
         return [];
+
+    }
+
+    /**
+     * Adds a new server to the system.
+     * @param array  $data  An array of data descriptors for creating the server. These should align to the columns in the database.
+     */
+    public static function addServer(array $data)
+    {
+
+        // Validate Fields
+        $validator = Validator::make($data, [
+            'owner' => 'required|email|exists:users,email',
+            'node' => 'required|numeric|min:1',
+            'name' => 'required|regex:([\w -]{4,35})',
+            'memory' => 'required|numeric|min:1',
+            'disk' => 'required|numeric|min:1',
+            'cpu' => 'required|numeric|min:0',
+            'io' => 'required|numeric|min:10|max:1000',
+            'ip' => 'required|ip',
+            'port' => 'required|numeric|min:1|max:65535',
+            'service' => 'required|numeric|min:1|exists:services,id',
+            'option' => 'required|numeric|min:1|exists:service_options,id',
+            'custom_image_name' => 'required_if:use_custom_image,on',
+        ]);
+
+        // @TODO: Have this return a JSON response.
+        if ($validator->fails()) {
+            foreach($validator->errors()->all() as $error) {
+                Debugbar::info($error);
+            }
+        }
+
+        return;
 
     }
 

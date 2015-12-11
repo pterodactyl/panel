@@ -24,16 +24,16 @@
         <div class="well">
             <div class="row">
                 <div class="form-group col-md-6">
-                    <label for="server_name" class="control-label">Server Name</label>
+                    <label for="name" class="control-label">Server Name</label>
                     <div>
-                        <input type="text" autocomplete="off" name="server_name" class="form-control" />
+                        <input type="text" autocomplete="off" name="name" class="form-control" />
                         <p class="text-muted"><small><em>Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (max 35 characters)</em></small></p>
                     </div>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="server_name" class="control-label">Owner Email</label>
+                    <label for="owner" class="control-label">Owner Email</label>
                     <div>
-                        <input type="text" autocomplete="off" name="owner_email" class="form-control" />
+                        <input type="text" autocomplete="off" name="owner" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -129,7 +129,7 @@
                         <div class="form-group col-md-12">
                             <label for="service" class="control-label">Service Type</label>
                             <div>
-                                <select name="node" id="getService" class="form-control">
+                                <select name="service" id="getService" class="form-control">
                                     <option></option>
                                     @foreach($services as $service)
                                         <option value="{{ $service->id }}">{{ $service->name }}</option>
@@ -139,9 +139,9 @@
                             </div>
                         </div>
                         <div class="form-group col-md-12 hidden">
-                            <label for="service_option" class="control-label">Service Option</label>
+                            <label for="option" class="control-label">Service Option</label>
                             <div>
-                                <select name="node" id="getOption" class="form-control">
+                                <select name="option" id="getOption" class="form-control">
                                     <option></option>
                                 </select>
                                 <p class="text-muted"><small>Select the type of service that this server will be running.</small></p>
@@ -181,7 +181,7 @@
             <div class="row">
                 <div class="col-md-12 text-center">
                     {!! csrf_field() !!}
-                    <input type="submit" name="submit" class="btn btn-primary btn-sm" value="Create New Server" />
+                    <input type="submit" class="btn btn-primary btn-sm" value="Create New Server" />
                 </div>
             </div>
         </div>
@@ -350,7 +350,7 @@ $(document).ready(function () {
                     <div class="form-group col-md-6">\
                         <label for="var_ref_' + item.id + '" class="control-label">' + item.name + '</label> ' + isRequired + '\
                         <div>\
-                            <input type="text" autocomplete="off" name="var_ref_' + item.id + '" class="form-control" value="' + item.default_value + '" />\
+                            <input type="text" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" />\
                             <p class="text-muted"><small>' + item.description + '</small></p>\
                             <p class="text-muted"><small>Regex Requirements for Input: <code>' + item.regex + '</code></small></p>\
                         </div>\
