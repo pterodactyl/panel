@@ -3,12 +3,15 @@
 namespace Pterodactyl\Http\Routes;
 
 use Illuminate\Routing\Router;
+use Request;
+use Pterodactyl\Models\User as User;
 
 class AuthRoutes {
 
     public function map(Router $router) {
         $router->group(['prefix' => 'auth'], function () use ($router) {
             $router->get('login', [ 'as' => 'auth.login', 'uses' => 'Auth\AuthController@getLogin' ]);
+            $router->post('login/totp', [ 'as' => 'auth.login.totp', 'uses' => 'Auth\AuthController@checkTotp' ]);
             $router->post('login', [ 'as' => 'auth.login.submit', 'uses' => 'Auth\AuthController@postLogin' ]);
 
             $router->get('password', [ 'as' => 'auth.password', 'uses' => 'Auth\PasswordController@getEmail' ]);
