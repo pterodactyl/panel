@@ -24,6 +24,14 @@
                     </ul>
                 </div>
             @endif
+            @foreach (Alert::getMessages() as $type => $messages)
+                @foreach ($messages as $message)
+                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{ $message }}
+                    </div>
+                @endforeach
+            @endforeach
             <div class="form-group">
                 <label for="email" class="control-label">{{ trans('strings.email') }}</label>
                 <div>
@@ -76,33 +84,35 @@
 <div class="col-md-3"></div>
 <script type="text/javascript">
 $(document).ready(function() {
-	$("#login-form").one("submit", function(event) {
+    $('#login-form').submit(function (event) {
         event.preventDefault();
-		var check_email = $("#email").val();
-		$.ajax({
-			type: 'POST',
-			url: '/auth/login/totp',
-			data: {
-				email: check_email,
-				_token: '{!! csrf_token() !!}'
-			}
-		}).done(function(data) {
-			if (typeof data.id !== 'undefined') {
-				$("#openTOTP").modal('show');
-				$('#openTOTP').on('shown.bs.modal', function() {
-					$("#totp_token").focus();
-				});
-			} else {
-                $("#login-form").submit();
-			}
-		}).fail(function(jqXHR) {
-			alert("{{ trans('strings.failed') }}");
-		});
-	});
-	$("#totp-form").submit(function() {
-		$('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
-		return true;
-	});
+        var check_email = $('#email').val();
+        $.ajax({
+            type: 'POST',
+            url: '/auth/login/totp',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: {
+                email: check_email
+            }
+        }).done(function (data) {
+            if (typeof data.id !== 'undefined') {
+                $('#openTOTP').modal('show');
+                $('#openTOTP').on('shown.bs.modal', function() {
+                    $('#totp_token').focus();
+                });
+            } else {
+                $('#login-form').submit();
+            }
+        }).fail(function (jqXHR) {
+            alert('Unable to validate potential TOTP need.');
+            console.error(jqXHR);
+        });
+    });
+    $('#totp-form').submit(function () {
+        return $('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
+    });
 });
 </script>
 @endsection

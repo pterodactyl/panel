@@ -12,7 +12,6 @@ return [
     'password' => 'Password',
     'email' => 'Email',
     'whoops' => 'Whoops',
-    'failed' => 'Your request could not be processed. Please try again later.',
     'success' => 'Success',
     'location' => 'Location',
     'node' => 'Node',

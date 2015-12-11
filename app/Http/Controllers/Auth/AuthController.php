@@ -4,8 +4,9 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Pterodactyl\Models\User;
 
-use Validator;
 use Auth;
+use Alert;
+use Validator;
 
 use Pterodactyl\Http\Controllers\Controller;
 use PragmaRX\Google2FA\Google2FA;
@@ -27,73 +28,6 @@ class AuthController extends Controller
     */
 
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
-
-    /**
-     * Handle a login request to the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function postLogin(Request $request)
-    {
-    	$this->validate($request, [
-    		$this->loginUsername() => 'required', 'password' => 'required',
-    	]);
-
-    	$throttles = $this->isUsingThrottlesLoginsTrait();
-
-    	if ($throttles && $this->hasTooManyLoginAttempts($request)) {
-    		return $this->sendLockoutResponse($request);
-    	}
-
-    	$credentials = $this->getCredentials($request);
-
-    	if (Auth::attempt($credentials, $request->has('remember'))) {
-    		if(User::select('id')->where('email', $request->input('email'))->where('use_totp', 1)->exists()) {
-                $validator = Validator::make($request->all(), [
-                    'totp_token' => 'required|numeric'
-                ]);
-
-                if($validator->fails()) {
-                    Auth::logout();
-                    return redirect('auth/login')->withErrors($validator)->withInput();
-                }
-
-                $google2fa = new Google2FA();
-
-    			if($google2fa->verifyKey(User::where('email', $request->input('email'))->first()->totp_secret, $request->input('totp_token'))) {
-    				return $this->handleUserWasAuthenticated($request, $throttles);
-    			} else {
-    				Auth::logout();
-                    $validator->errors()->add('field', trans('validation.welcome'));
-                    return redirect('auth/login')->withErrors($validator)->withInput();
-    			}
-    		} else {
-                return $this->handleUserWasAuthenticated($request, $throttles);
-    		}
-    	}
-
-    	if ($throttles) {
-    		$this->incrementLoginAttempts($request);
-    	}
-
-    	return redirect($this->loginPath())
-    		->withInput($request->only($this->loginUsername(), 'remember'))
-    		->withErrors([
-    			$this->loginUsername() => $this->getFailedLoginMessage(),
-    		]);
-    }
-
-    /**
-     * Check if the provided user has TOTP enabled.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function checkTotp(Request $request)
-    {
-        return response()->json(User::select('id')->where('email', $request->input('email'))->where('use_totp', 1)->first());
-    }
 
     /**
      * Post-Authentication redirect location.
@@ -121,7 +55,7 @@ class AuthController extends Controller
      *
      * @var integer
      */
-    protected $maxLoginAttempts = 5;
+    protected $maxLoginAttempts = 3;
 
     /**
      * Create a new authentication controller instance.
@@ -160,6 +94,72 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => password_hash($data['password']),
         ]);
+    }
+
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function postLogin(Request $request)
+    {
+
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $throttled = $this->isUsingThrottlesLoginsTrait();
+        if ($throttled && $this->hasTooManyLoginAttempts($request)) {
+            return $this->sendLockoutResponse($request);
+        }
+
+        $G2FA = new Google2FA();
+        $user = User::select('use_totp', 'totp_secret')->where('email', $request->input($this->loginUsername()))->first();
+
+        // Verify TOTP Token was Valid
+        if($user->use_totp === 1) {
+            if(!$G2FA->verifyKey($user->totp_secret, $request->input('totp_token'))) {
+
+                if ($throttled) {
+                    $this->incrementLoginAttempts($request);
+                }
+
+                Alert::danger(trans('auth.totp_failed'))->flash();
+                return redirect()->route('auth.login')->withInput($request->only('email', 'remember'));
+
+            }
+        }
+
+        // Attempt to Login
+        if (Auth::attempt([
+            'email' => $request->input('email'),
+            'password' => $request->input('password')
+        ], $request->has('remember'))) {
+            return $this->handleUserWasAuthenticated($request, $throttled);
+        }
+
+        if ($throttled) {
+            $this->incrementLoginAttempts($request);
+        }
+
+        return redirect()->route('auth.login')
+                ->withInput($request->only('email', 'remember'))
+                ->withErrors([
+                    'email' => $this->getFailedLoginMessage(),
+                ]);
+    }
+
+    /**
+     * Check if the provided user has TOTP enabled.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function checkTotp(Request $request)
+    {
+        return response()->json(User::select('id')->where('email', $request->input('email'))->where('use_totp', 1)->first());
     }
 
 }
