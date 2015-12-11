@@ -75,31 +75,34 @@
 </div>
 <div class="col-md-3"></div>
 <script type="text/javascript">
-$(document).ready(function(){
-    // $("#login-form").submit(function(event){
-    //  var check_email = $("#email").val();
-    //  $.ajax({
-    //      type: "POST",
-    //      url: "/auth/login/totp",
-    //      async: false,
-    //      data: { check: check_email },
-    //      success: function(data){
-    //          if(data == 'true'){
-    //              $("#openTOTP").modal('show');
-    //              $('#openTOTP').on('shown.bs.modal', function(){
-    //                  $("#totp_token").focus();
-    //              })
-    //                 event.preventDefault();
-    //          }else{
-    //              $(this).submit();
-    //          }
-    //      }
-    //  });
-    // });
-    // $("#totp-form").submit(function(){
-    //  $('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
-    //  return true;
-    // });
+$(document).ready(function() {
+	$("#login-form").one("submit", function(event) {
+        event.preventDefault();
+		var check_email = $("#email").val();
+		$.ajax({
+			type: 'POST',
+			url: '/auth/login/totp',
+			data: {
+				email: check_email,
+				_token: '{!! csrf_token() !!}'
+			}
+		}).done(function(data) {
+			if (typeof data.id !== 'undefined') {
+				$("#openTOTP").modal('show');
+				$('#openTOTP').on('shown.bs.modal', function() {
+					$("#totp_token").focus();
+				});
+			} else {
+                $("#login-form").submit();
+			}
+		}).fail(function(jqXHR) {
+			alert("{{ trans('strings.failed') }}");
+		});
+	});
+	$("#totp-form").submit(function() {
+		$('#login-form :input').not(':submit').clone().hide().appendTo('#totp-form');
+		return true;
+	});
 });
 </script>
 @endsection
