@@ -5,23 +5,26 @@ return [
     | Standalone Pterodactyl Language Strings
     |--------------------------------------------------------------------------
     */
-    'login' => 'Login',
-    'password' => 'Password',
+    'login' => 'Anmeldung',
+    'password' => 'Passwort',
     'email' => 'Email',
-    'whoops' => 'Whoops',
-    'success' => 'Success',
-    'location' => 'Location',
+    'whoops' => ' Hoppla',
+    'success' => 'Erfolg',
+    'location' => 'Ort',
     'node' => 'Node',
-    'connection' => 'Connection',
-    'language' => 'Language',
-    'close' => 'Close',
-    'start' => 'Start',
-    'stop' => 'Stop',
-    'restart' => 'Restart',
-    'save' => 'Save',
-    'enabled' => 'Enabled',
-    'disabled' => 'Disabled',
-    'submit' => 'Submit',
-    'current_password' => 'Current Password',
-    'again' => 'Again',
+    'connection' => 'Verbindung',
+    'language' => 'Sprache',
+    'close' => 'Schließen',
+    'start' => 'Anfang',
+    'stop' => 'Stopp',
+    'restart' => 'Wiederbeginn',
+    'save' => 'Sparen',
+    'enabled' => 'Aktiviert',
+    'disabled' => 'Behindert',
+    'submit' => 'Einreichen',
+    'current_password' => 'Aktuelles Passwort',
+    'again' => 'Wieder',
 ];
+/*
+German Translation by Jboy
+*/
