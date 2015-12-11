@@ -29,3 +29,6 @@ return [
             'saved' => 'Datei gespeichert',
     ],
 ];
+/*
+German Translation by Jboy
+*/
