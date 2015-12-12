@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
 
 ### Additional License Information
-Some Javascript and CSS used within the panel is licensed under a `MIT`, `Apache 2.0`, or `GPL` license. Please check their respective header files for more information information.
+Some Javascript and CSS used within the panel is licensed under a `MIT`, `Apache 2.0`, or `GPL` license. Please check their respective header files for more information.
 
 Some images used within Pterodactyl are Copyright (c) their respective owners.
 
