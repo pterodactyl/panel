@@ -54,8 +54,16 @@ class ServersController extends Controller
 
     public function postNewServer(Request $request)
     {
-        Server::addServer($request->all());
+
+        try {
+            $resp = Server::addServer($request->all());
+            echo $resp . '<br />';
+        } catch (\Exception $e) {
+            Debugbar::addException($e);
+        }
+
         return json_encode($request->all());
+
     }
 
     /**
