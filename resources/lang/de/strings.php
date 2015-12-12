@@ -24,6 +24,7 @@ return [
     'submit' => 'Einreichen',
     'current_password' => 'Aktuelles Passwort',
     'again' => 'Wieder',
+    'active_players' => 'Aktive Benutzer',
 ];
 /*
 German Translation by Jboy

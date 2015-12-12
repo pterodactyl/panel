@@ -48,12 +48,12 @@
             </div>
             <div class="row">
                 <div class="col-md-12" id="stats_players">
-                    <h3 class="nopad">Active Players</h3><hr />
+                    <h3 class="nopad">{{ trans('strings.active_players') }}</h3><hr />
                     <div id="players_notice" class="alert alert-info">
-                        <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
+                        <i class="fa fa-spinner fa-spin"></i> {{ trans('server.index.response_wait') }}
                     </div>
                     <span id="toggle_players" style="display:none;">
-                        <p class="text-muted">No players are online.</p>
+                        <p class="text-muted">{{ trans('server.index.players_null') }}</p>
                     </span>
                 </div>
                 <div class="col-md-12">
@@ -102,9 +102,9 @@
                 </div>
                 <div class="col-md-6" style="text-align:center;">
                     <hr />
-                    <button class="btn btn-success btn-sm start disabled" id="server_start">Start</button>
-                    <button class="btn btn-primary btn-sm restart disabled" id="server_restart">Restart</button>
-                    <button class="btn btn-danger btn-sm stop disabled" id="server_stop">Stop</button>
+                    <button class="btn btn-success btn-sm start disabled" id="server_start">{{ trans('strings.start') }}</button>
+                    <button class="btn btn-primary btn-sm restart disabled" id="server_restart">{{ trans('strings.restart') }}</button>
+                    <button class="btn btn-danger btn-sm stop disabled" id="server_stop">{{ trans('strings.stop') }}</button>
                     <button class="btn btn-danger btn-sm stop disabled" id="kill_proc"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
                     <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
