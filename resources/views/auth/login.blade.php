@@ -84,7 +84,7 @@
 <div class="col-md-3"></div>
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#login-form').submit(function (event) {
+    $('#login-form').one('submit', function (event) {
         event.preventDefault();
         var check_email = $('#email').val();
         $.ajax({
