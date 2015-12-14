@@ -84,7 +84,7 @@ $(document).ready(function(){
 	});
 });
 $(document).ready(function () {
-	$('#sidebar_links').find("a[href='/admin/accounts']").addClass('active');
+	$('#sidebar_links').find("a[href='/admin/accounts/new']").addClass('active');
 });
 </script>
 @endsection
