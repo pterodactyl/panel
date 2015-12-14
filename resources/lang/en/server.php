@@ -24,8 +24,8 @@ return [
         'control' => 'Control Server',
         'info_use' => 'Information & Usage',
         'command' => 'Enter Console Command',
-		'response_wait' => 'Waiting for response from server...',
-		'players_null' => 'No players are online.',
+        'response_wait' => 'Waiting for response from server...',
+        'players_null' => 'No players are online.',
     ],
     'files' => [
             'loading' => 'Loading file listing, this might take a few seconds...',

@@ -21,8 +21,8 @@ return [
         'control' => 'Steuern Server',
         'info_use' => 'Informationen & Verwendung',
         'command' => 'Geben Sie Console Command',
-		'response_wait' => 'Warten auf ein Antwort vom Server ...',
-		'players_null' => 'Keine Spieler.',
+        'response_wait' => 'Warten auf ein Antwort vom Server ...',
+        'players_null' => 'Keine Spieler.',
     ],
     'files' => [
             'loading' => 'Laden...',

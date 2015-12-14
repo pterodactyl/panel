@@ -27,6 +27,6 @@ return [
     'submit' => 'Submit',
     'current_password' => 'Current Password',
     'again' => 'Again',
-	'active_players' => 'Active Players',
+    'active_players' => 'Active Players',
 
 ];
