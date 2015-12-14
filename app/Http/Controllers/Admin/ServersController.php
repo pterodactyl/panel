@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Debugbar;
+use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Location;
@@ -56,7 +57,8 @@ class ServersController extends Controller
     {
 
         try {
-            $resp = Server::addServer($request->all());
+            $server = new ServerRepository;
+            $resp = $server->create($request->all());
             echo $resp . '<br />';
         } catch (\Exception $e) {
             Debugbar::addException($e);

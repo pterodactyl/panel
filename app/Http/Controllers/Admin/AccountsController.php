@@ -3,11 +3,9 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
-use Debugbar;
-use Hash;
-use Uuid;
-
 use Pterodactyl\Models\User;
+use Pterodactyl\Repositories\UserRepository;
+
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -52,18 +50,19 @@ class AccountsController extends Controller
             'password_confirmation' => 'required'
         ]);
 
-        //@TODO: re-generate UUID if conflict
-        $user = new User;
-        $user->uuid = Uuid::generate(4);
+        try {
 
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
+            $user = new UserRepository;
+            $userid = $user->create($request->input('username'), $request->input('email'), $request->input('password'));
 
-        $user->save();
+            Alert::success('Account has been successfully created.')->flash();
+            return redirect()->route('admin.accounts.view', ['id' => $userid]);
 
-        Alert::success('Account has been successfully created.')->flash();
-        return redirect()->route('admin.accounts.view', ['id' => $user->id]);
+        } catch (\Exception $e) {
+            Alert::danger('An error occured while attempting to add a new user. Please check the logs or try again.')->flash();
+            return redirect()->route('admin.accounts.new');
+        }
+
     }
 
 }
