@@ -1,13 +1,10 @@
 <?php
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Standalone Pterodactyl Language Strings
     |--------------------------------------------------------------------------
     */
-
     'login' => 'Login',
     'password' => 'Password',
     'email' => 'Email',
@@ -27,5 +24,5 @@ return [
     'submit' => 'Submit',
     'current_password' => 'Current Password',
     'again' => 'Again',
-
+    'active_players' => 'Active Players',
 ];
