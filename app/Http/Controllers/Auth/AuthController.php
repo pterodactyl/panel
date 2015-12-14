@@ -115,12 +115,30 @@ class AuthController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
+        // Is the email & password valid?
+        if (!Auth::attempt([
+            'email' => $request->input('email'),
+            'password' => $request->input('password')
+        ], $request->has('remember'))) {
+
+            if ($throttled) {
+                $this->incrementLoginAttempts($request);
+            }
+
+            return redirect()->route('auth.login')->withInput($request->only('email', 'remember'))->withErrors([
+                'email' => $this->getFailedLoginMessage(),
+            ]);
+
+        }
+
         $G2FA = new Google2FA();
-        $user = User::select('use_totp', 'totp_secret')->where('email', $request->input($this->loginUsername()))->first();
+        $user = User::select('use_totp', 'totp_secret')->where('email', $request->input('email'))->first();
 
         // Verify TOTP Token was Valid
         if($user->use_totp === 1) {
             if(!$G2FA->verifyKey($user->totp_secret, $request->input('totp_token'))) {
+
+                Auth::logout();
 
                 if ($throttled) {
                     $this->incrementLoginAttempts($request);
@@ -132,23 +150,8 @@ class AuthController extends Controller
             }
         }
 
-        // Attempt to Login
-        if (Auth::attempt([
-            'email' => $request->input('email'),
-            'password' => $request->input('password')
-        ], $request->has('remember'))) {
-            return $this->handleUserWasAuthenticated($request, $throttled);
-        }
+        return $this->handleUserWasAuthenticated($request, $throttled);
 
-        if ($throttled) {
-            $this->incrementLoginAttempts($request);
-        }
-
-        return redirect()->route('auth.login')
-                ->withInput($request->only('email', 'remember'))
-                ->withErrors([
-                    'email' => $this->getFailedLoginMessage(),
-                ]);
     }
 
     /**
