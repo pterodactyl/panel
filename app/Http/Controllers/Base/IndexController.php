@@ -42,6 +42,18 @@ class IndexController extends Controller
     }
 
     /**
+     * Generate a random string.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return string
+     */
+    public function getPassword(Request $request, $length = 16)
+    {
+        $length = ($length < 8) ? 8 : $length;
+        return str_random($length);
+    }
+
+    /**
      * Returns TOTP Management Page.
      *
      * @param  \Illuminate\Http\Request $request

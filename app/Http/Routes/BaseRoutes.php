@@ -14,6 +14,9 @@ class BaseRoutes {
             return redirect()->route('index');
         });
 
+        // Password Generation
+        $router->get('/password-gen/{length}', [ 'as' => 'password-gen', 'uses' => 'Base\IndexController@getPassword' ]);
+
         // Account Routes
         $router->get('/account', [ 'as' => 'account', 'uses' => 'Base\IndexController@getAccount' ]);
         $router->post('/account/password', [ 'uses' => 'Base\IndexController@postAccountPassword' ]);
