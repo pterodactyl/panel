@@ -3,6 +3,7 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
+use Debugbar;
 use Validator;
 
 use Pterodactyl\Models;
@@ -64,7 +65,7 @@ class ServerRepository
         // Run validator, throw catchable and displayable exception if it fails.
         // Exception includes a JSON result of failed validation rules.
         if ($validator->fails()) {
-            throw new DisplayValidationException(json_encode($validator->errors()->all()));
+            throw new DisplayValidationException($validator->errors());
         }
 
         // Get the User ID; user exists since we passed the 'exists:users,email' part of the validation
@@ -91,6 +92,7 @@ class ServerRepository
 
         // Check those Variables
         $variables = Models\ServiceVariables::where('option_id', $data['option'])->get();
+        $variableList = [];
         if ($variables) {
             foreach($variables as $variable) {
 
@@ -100,7 +102,11 @@ class ServerRepository
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
 
-                    $data['env_' . $variable->env_variable] = $variable->default_value;
+                    $variableList = array_merge($variableList, [[
+                        'var_id' => $variable->id,
+                        'var_val' => $variable->default_value
+                    ]]);
+
                     continue;
                 }
 
@@ -109,13 +115,91 @@ class ServerRepository
                     throw new DisplayException('Failed to validate service option variable field (env_' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
                 }
 
-                continue;
+                $variableList = array_merge($variableList, [[
+                    'var_id' => $variable->id,
+                    'var_val' => $data['env_' . $variable->env_variable]
+                ]]);
 
+                continue;
             }
         }
 
-        return (new UuidService)->generateShort();
-        //return $this->generateSFTPUsername($data['name']);
+        // Check Overallocation
+        if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
+
+            $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
+
+            // Check memory limits
+            if (is_numeric($node->memory_overallocate)) {
+                $newMemory = $totals->memory + $data['memory'];
+                $memoryLimit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
+                if($newMemory > $memoryLimit) {
+                    throw new DisplayException('The amount of memory allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->memory_overallocate + 100) . '% of its assigned ' . $node->memory . 'Mb of memory (' . $memoryLimit . 'Mb) of which ' . (($totals->memory / $node->memory) * 100) . '% (' . $totals->memory . 'Mb) is in use already. By allocating this server the node would be at ' . (($newMemory / $node->memory) * 100) . '% (' . $newMemory . 'Mb) usage.');
+                }
+            }
+
+            // Check Disk Limits
+            if (is_numeric($node->disk_overallocate)) {
+                $newDisk = $totals->disk + $data['disk'];
+                $diskLimit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
+                if($newDisk > $diskLimit) {
+                    throw new DisplayException('The amount of disk allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->disk_overallocate + 100) . '% of its assigned ' . $node->disk . 'Mb of disk (' . $diskLimit . 'Mb) of which ' . (($totals->disk / $node->disk) * 100) . '% (' . $totals->disk . 'Mb) is in use already. By allocating this server the node would be at ' . (($newDisk / $node->disk) * 100) . '% (' . $newDisk . 'Mb) usage.');
+                }
+            }
+
+        }
+
+        DB::beginTransaction();
+
+        $uuid = new UuidService;
+
+        // Add Server to the Database
+        $server = new Models\Server;
+        $server->fill([
+            'uuid' => $uuid->generate('servers', 'uuid'),
+            'uuidShort' => $uuid->generateShort(),
+            'node' => $data['node'],
+            'name' => $data['name'],
+            'active' => 1,
+            'owner' => $user->id,
+            'memory' => $data['memory'],
+            'disk' => $data['disk'],
+            'io' => $data['io'],
+            'cpu' => $data['cpu'],
+            'ip' => $data['ip'],
+            'port' => $data['port'],
+            'service' => $data['service'],
+            'option' => $data['option'],
+            'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
+            'username' => $this->generateSFTPUsername($data['name'])
+        ]);
+        $server->save();
+
+        // Mark Allocation in Use
+        $allocation->assigned_to = $server->id;
+        $allocation->save();
+
+        // Add Variables
+        foreach($variableList as $item) {
+            Models\ServerVariables::create([
+                'server_id' => $server->id,
+                'variable_id' => $item['var_id'],
+                'variable_value' => $item['var_val']
+            ]);
+        }
+
+        try {
+
+            // Add logic for communicating with Wings to make the server in here.
+            // We should add the server regardless of the Wings response, but
+            // handle the error and then allow the server to be re-deployed.
+
+            DB::commit();
+            return $server->id;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
     }
 

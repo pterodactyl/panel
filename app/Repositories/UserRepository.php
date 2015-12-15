@@ -17,7 +17,7 @@ class UserRepository
 
     /**
      * Creates a user on the panel. Returns the created user's ID.
-     * 
+     *
      * @param  string $username
      * @param  string $email
      * @param  string $password An unhashed version of the user's password.
@@ -29,7 +29,7 @@ class UserRepository
         $user = new User;
         $uuid = new UuidService;
 
-        $user->uuid = $uuid->table('users')->generate();
+        $user->uuid = $uuid->generate('users', 'uuid');
 
         $user->username = $username;
         $user->email = $email;

@@ -11,11 +11,21 @@
         <li><a href="/admin/servers">Servers</a></li>
         <li class="active">Create New Server</li>
     </ul>
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('base.validation_error') }}<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     @foreach (Alert::getMessages() as $type => $messages)
         @foreach ($messages as $message)
             <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                {{ $message }}
+                {!! $message !!}
             </div>
         @endforeach
     @endforeach
@@ -26,14 +36,14 @@
                 <div class="form-group col-md-6">
                     <label for="name" class="control-label">Server Name</label>
                     <div>
-                        <input type="text" autocomplete="off" name="name" class="form-control" />
+                        <input type="text" autocomplete="off" name="name" class="form-control" value="{{ old('name') }}" />
                         <p class="text-muted"><small><em>Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (max 35 characters)</em></small></p>
                     </div>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="owner" class="control-label">Owner Email</label>
                     <div>
-                        <input type="text" autocomplete="off" name="owner" class="form-control" />
+                        <input type="text" autocomplete="off" name="owner" class="form-control" value="{{ old('owner') }}" />
                     </div>
                 </div>
             </div>
@@ -46,7 +56,7 @@
                         <label for="location" class="control-label">Server Location</label>
                         <div>
                             <select name="location" id="getLocation" class="form-control">
-                                <option></option>
+                                <option disabled selected> -- Select a Location</option>
                                 @foreach($locations as $location)
                                     <option value="{{ $location->id }}">{{ $location->long }} ({{ $location->short }})</option>
                                 @endforeach
@@ -58,7 +68,7 @@
                         <label for="node" class="control-label">Server Node</label>
                         <div>
                             <select name="node" id="getNode" class="form-control">
-                                <option></option>
+                                <option disabled selected> -- Select a Node</option>
                             </select>
                             <p class="text-muted"><small>The node which this server will be deployed to.</small></p>
                         </div>
@@ -69,7 +79,7 @@
                         <label for="ip" class="control-label">Server IP</label>
                         <div>
                             <select name="ip" id="getIP" class="form-control">
-                                <option></option>
+                                <option disabled selected> -- Select an IP</option>
                             </select>
                             <p class="text-muted"><small>Select the main IP that this server will be listening on. You can assign additional open IPs and ports below.</small></p>
                         </div>
@@ -89,28 +99,28 @@
                 <div class="form-group col-md-3 col-xs-6">
                     <label for="memory" class="control-label">Memory</label>
                     <div class="input-group">
-                        <input type="text" name="memory" class="form-control" />
+                        <input type="text" name="memory" class="form-control" value="{{ old('memory') }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>
                 <div class="form-group col-md-3 col-xs-6">
                     <label for="disk" class="control-label">Disk Space</label>
                     <div class="input-group">
-                        <input type="text" name="disk" class="form-control" />
+                        <input type="text" name="disk" class="form-control" value="{{ old('disk') }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>
                 <div class="form-group col-md-3 col-xs-6">
                     <label for="cpu" class="control-label">CPU Limit</label>
                     <div class="input-group">
-                        <input type="text" name="cpu" value="0" class="form-control" />
+                        <input type="text" name="cpu" value="0" class="form-control" value="{{ old('cpu') }}"/>
                         <span class="input-group-addon">%</span>
                     </div>
                 </div>
                 <div class="form-group col-md-3 col-xs-6">
                     <label for="io" class="control-label">Block I/O</label>
                     <div class="input-group">
-                        <input type="text" name="io" value="500" class="form-control" />
+                        <input type="text" name="io" value="500" class="form-control" value="{{ old('io') }}"/>
                         <span class="input-group-addon">I/O</span>
                     </div>
                 </div>
@@ -130,7 +140,7 @@
                             <label for="service" class="control-label">Service Type</label>
                             <div>
                                 <select name="service" id="getService" class="form-control">
-                                    <option></option>
+                                    <option disabled selected> -- Select a Service</option>
                                     @foreach($services as $service)
                                         <option value="{{ $service->id }}">{{ $service->name }}</option>
                                     @endforeach
@@ -142,7 +152,7 @@
                             <label for="option" class="control-label">Service Option</label>
                             <div>
                                 <select name="option" id="getOption" class="form-control">
-                                    <option></option>
+                                    <option disabled selected> -- Select a Service Option</option>
                                 </select>
                                 <p class="text-muted"><small>Select the type of service that this server will be running.</small></p>
                             </div>
@@ -157,9 +167,9 @@
                             <label for="use_custom_image" class="control-label">Use Custom Docker Image</label>
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <input type="checkbox" name="use_custom_image" />
+                                    <input @if(old('name') === 'use_custom_image')checked="checked"@endif type="checkbox" name="use_custom_image"/>
                                 </span>
-                                <input type="text" class="form-control" name="custom_image_name" disabled />
+                                <input type="text" class="form-control" name="custom_image_name" value="{{ old('custom_image_name') }}" disabled />
                             </div>
                             <p class="text-muted"><small>If you would like to use a custom docker image for this server please enter it here. Most users can ignore this option.</small></p>
                         </div>
@@ -210,8 +220,8 @@ $(document).ready(function () {
         currentNode = null;
 
         // Hide Existing, and Reset contents
-        $('#getNode').html('<option></option>').parent().parent().addClass('hidden');
-        $('#getIP').html('<option></option>').parent().parent().addClass('hidden');
+        $('#getNode').html('<option disabled selected> -- Select a Node</option>').parent().parent().addClass('hidden');
+        $('#getIP').html('<option disabled selected> -- Select an IP</option>').parent().parent().addClass('hidden');
         $('#getPort').html('').parent().parent().addClass('hidden');
 
         handleLoader('#load_settings', true);
@@ -249,7 +259,7 @@ $(document).ready(function () {
         currentNode = $('#getNode').val();
 
         // Hide Existing, and Reset contents
-        $('#getIP').html('<option></option>').parent().parent().addClass('hidden');
+        $('#getIP').html('<option disabled selected> -- Select an IP</option>').parent().parent().addClass('hidden');
         $('#getPort').html('').parent().parent().addClass('hidden');
 
         handleLoader('#load_settings', true);

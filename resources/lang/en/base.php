@@ -12,6 +12,8 @@ return [
     |
     */
 
+    'validation_error' => 'An error occured while validating the data you submitted:',
+
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'view_as_admin' => 'You are viewing this server listing as an admin. As such, all servers installed on the system are displayed. Any servers that you are set as the owner of are marked with a blue dot to the left of their name.',

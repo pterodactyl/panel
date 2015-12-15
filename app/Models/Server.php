@@ -25,6 +25,13 @@ class Server extends Model
     protected $hidden = ['daemonSecret'];
 
     /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'installed', 'created_at', 'updated_at'];
+
+    /**
      * @var array
      */
     protected static $serverUUIDInstance = [];

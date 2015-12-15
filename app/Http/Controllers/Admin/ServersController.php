@@ -2,15 +2,14 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Alert;
 use Debugbar;
+
+use Pterodactyl\Models;
 use Pterodactyl\Repositories\ServerRepository;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOptions;
-use Pterodactyl\Models\ServiceVariables;
+
+use Pterodactly\Exceptions\DisplayException;
+use Pterodactly\Exceptions\DisplayValidationException;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -33,7 +32,7 @@ class ServersController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.servers.index', [
-            'servers' => Server::select('servers.*', 'nodes.name as a_nodeName', 'users.email as a_ownerEmail')
+            'servers' => Models\Server::select('servers.*', 'nodes.name as a_nodeName', 'users.email as a_ownerEmail')
                 ->join('nodes', 'servers.node', '=', 'nodes.id')
                 ->join('users', 'servers.owner', '=', 'users.id')
                 ->paginate(20),
@@ -43,8 +42,8 @@ class ServersController extends Controller
     public function getNew(Request $request)
     {
         return view('admin.servers.new', [
-            'locations' => Location::all(),
-            'services' => Service::all()
+            'locations' => Models\Location::all(),
+            'services' => Models\Service::all()
         ]);
     }
 
@@ -57,14 +56,26 @@ class ServersController extends Controller
     {
 
         try {
-            $server = new ServerRepository;
-            $resp = $server->create($request->all());
-            echo $resp . '<br />';
-        } catch (\Exception $e) {
-            Debugbar::addException($e);
-        }
 
-        return json_encode($request->all());
+            $server = new ServerRepository;
+            $response = $server->create($request->all());
+
+            return redirect()->route('admin.servers.view', [ 'id' => $response ]);
+
+        } catch (\Exception $e) {
+
+            if ($e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
+                return redirect()->route('admin.servers.new')->withErrors(json_decode($e->getMessage()))->withInput();
+            } else if ($e instanceof \Pterodactyl\Exceptions\DisplayException) {
+                Alert::danger($e->getMessage())->flash();
+            } else {
+                Debugbar::addException($e);
+                Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            }
+
+            return redirect()->route('admin.servers.new')->withInput();
+
+        }
 
     }
 
@@ -83,7 +94,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
+        return response()->json(Models\Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
 
     }
 
@@ -102,7 +113,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        $ips = Allocation::where('node', $request->input('node'))->whereNull('assigned_to')->get();
+        $ips = Models\Allocation::where('node', $request->input('node'))->whereNull('assigned_to')->get();
         $listing = [];
 
         foreach($ips as &$ip) {
@@ -131,7 +142,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
+        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
 
     }
 
@@ -150,7 +161,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(ServiceVariables::where('option_id', $request->input('option'))->get());
+        return response()->json(Models\ServiceVariables::where('option_id', $request->input('option'))->get());
 
     }
 

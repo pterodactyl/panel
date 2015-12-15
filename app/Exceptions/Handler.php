@@ -4,7 +4,9 @@ namespace Pterodactyl\Exceptions;
 
 use Exception;
 use DisplayException;
-use Debugbar;
+use DisplayValidationException;
+use AccountNotFoundException;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

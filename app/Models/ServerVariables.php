@@ -14,4 +14,11 @@ class ServerVariables extends Model
      */
     protected $table = 'server_variables';
 
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
 }
