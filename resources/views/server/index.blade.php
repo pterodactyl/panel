@@ -48,12 +48,12 @@
             </div>
             <div class="row">
                 <div class="col-md-12" id="stats_players">
-                    <h3 class="nopad">Active Players</h3><hr />
+                    <h3 class="nopad">{{ trans('strings.active_players') }}</h3><hr />
                     <div id="players_notice" class="alert alert-info">
-                        <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
+                        <i class="fa fa-spinner fa-spin"></i> {{ trans('server.index.response_wait') }}
                     </div>
                     <span id="toggle_players" style="display:none;">
-                        <p class="text-muted">No players are online.</p>
+                        <p class="text-muted">{{ trans('server.index.players_null') }}</p>
                     </span>
                 </div>
                 <div class="col-md-12">
@@ -102,9 +102,9 @@
                 </div>
                 <div class="col-md-6" style="text-align:center;">
                     <hr />
-                    <button class="btn btn-success btn-sm start disabled" id="server_start">Start</button>
-                    <button class="btn btn-primary btn-sm restart disabled" id="server_restart">Restart</button>
-                    <button class="btn btn-danger btn-sm stop disabled" id="server_stop">Stop</button>
+                    <button class="btn btn-success btn-sm start disabled" id="server_start">{{ trans('strings.start') }}</button>
+                    <button class="btn btn-primary btn-sm restart disabled" id="server_restart">{{ trans('strings.restart') }}</button>
+                    <button class="btn btn-danger btn-sm stop disabled" id="server_stop">{{ trans('strings.stop') }}</button>
                     <button class="btn btn-danger btn-sm stop disabled" id="kill_proc"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
                     <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
@@ -136,7 +136,6 @@
 <script>
 $(window).load(function () {
     $('[data-toggle="tooltip"]').tooltip();
-
     // Socket Recieves New Server Stats
     socket.on('stats', function (data) {
         var currentTime = new Date();
@@ -145,7 +144,6 @@ $(window).load(function () {
         if({{ $server->cpu }} > 0) { cpuChart.addData([(data.data.cpu / {{ $server->cpu }}) * 100], ''); }else{ cpuChart.addData([data.data.cpu], ''); }
         cpuChart.removeData();
     });
-
     // Socket Recieves New Query
     socket.on('query', function (data){
         if($('#players_notice').is(':visible')){
@@ -161,13 +159,11 @@ $(window).load(function () {
             $('#toggle_players').html('<p class=\'text-muted\'>No players are currently online.</p>');
         }
     });
-
     // New Console Data Recieved
     socket.on('console', function (data) {
         $('#live_console').val($('#live_console').val() + data.line);
         $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
     });
-
     // Update Listings on Initial Status
     socket.on('initial_status', function (data) {
         if (data.status !== 0) {
@@ -191,13 +187,11 @@ $(window).load(function () {
         updateServerPowerControls(data.status);
         updatePlayerListVisibility(data.status);
     });
-
     // Update Listings on Status
     socket.on('status', function (data) {
         updateServerPowerControls(data.status);
         updatePlayerListVisibility(data.status);
     });
-
     // Scroll to the top of the Console when switching to that tab.
     $('#triggerConsoleView').click(function () {
         $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
@@ -208,12 +202,10 @@ $(window).load(function () {
     $('a[data-toggle=\'tab\']').on('shown.bs.tab', function (e) {
         $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
     });
-
     // Load Paused Console with Live Console Data
     $('#pause_console').click(function(){
         $('#paused_console').val($('#live_console').val());
     });
-
     // -----------------+
     // Charting Methods |
     // -----------------+
@@ -234,13 +226,11 @@ $(window).load(function () {
     @can('command', $server)
         // Send Command to Server
         $('#console_command').submit(function (event) {
-
             event.preventDefault();
             var ccmd = $('#ccmd').val();
             if (ccmd == '') {
                 return;
             }
-
             $('#sending_command').html('<i class=\'fa fa-refresh fa-spin\'></i>').addClass('disabled');
             $.ajax({
                 type: 'POST',
@@ -262,7 +252,6 @@ $(window).load(function () {
     @can('power', $server)
         var can_run = true;
         function updateServerPowerControls (data) {
-
             // Server is On or Starting
             if(data == 1 || data == 3) {
                 $('#server_start').addClass('disabled');
@@ -271,21 +260,16 @@ $(window).load(function () {
                 $('#server_start').removeClass('disabled');
                 $('#server_stop, #server_restart').addClass('disabled');
             }
-
             if(data !== 0) {
                 $('#kill_proc').removeClass('disabled');
             } else {
                 $('#kill_proc').addClass('disabled');
             }
-
         }
-
         // Kill Server Process Button
         $('#kill_proc').click(function (e){
-
             e.preventDefault();
             var killConfirm = confirm('WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.');
-
             if(killConfirm) {
                 $.ajax({
                     type: 'GET',
@@ -301,9 +285,7 @@ $(window).load(function () {
                     $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
                 });
             }
-
         });
-
         $('#server_stop').click(function (e){
             e.preventDefault();
             if(can_run) {
@@ -329,7 +311,6 @@ $(window).load(function () {
                 });
             }
         });
-
         $('#server_restart').click(function(e){
             e.preventDefault();
             if(can_run) {
@@ -387,7 +368,6 @@ $(window).load(function () {
         }
     @endcan
 });
-
 $(document).ready(function () {
     $('.server-index').addClass('active');
 });
