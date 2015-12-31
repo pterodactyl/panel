@@ -102,10 +102,10 @@
                 </div>
                 <div class="col-md-6" style="text-align:center;">
                     <hr />
-                    <button class="btn btn-success btn-sm start disabled" id="server_start">Start</button>
-                    <button class="btn btn-primary btn-sm restart disabled" id="server_restart">Restart</button>
-                    <button class="btn btn-danger btn-sm stop disabled" id="server_stop">Stop</button>
-                    <button class="btn btn-danger btn-sm stop disabled" id="kill_proc"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
+                    <button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>
+                    <button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>
+                    <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>
+                    <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
                     <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
                     <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
                 </div>
@@ -164,6 +164,7 @@ $(window).load(function () {
 
     // New Console Data Recieved
     socket.on('console', function (data) {
+        console.log(JSON.stringify(data));
         $('#live_console').val($('#live_console').val() + data.line);
         $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
     });
@@ -177,16 +178,16 @@ $(window).load(function () {
                     'X-Access-Token': '{{ $server->daemonSecret }}',
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
-                url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/log/750',
+                url: 'http{{ $node->https ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/log',
                 timeout: 10000
             }).done(function(data) {
                 $('#live_console').val(data);
                 $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to load initial server log.').fadeIn().delay(5000).fadeOut();
+                alert('Unable to load initial server log, try reloading the page.');
             });
         } else {
-            $('#live_console').val('');
+            $('#live_console').val('Server is currently off.');
         }
         updateServerPowerControls(data.status);
         updatePlayerListVisibility(data.status);
@@ -225,7 +226,7 @@ $(window).load(function () {
     var cpuChart = new Chart(cty).Bar(cpuChartData,{animation:!1,showScale:!0,barShowStroke:!1,scaleOverride:!1,tooltipTemplate:"<%= value %> %",barValueSpacing:1,barStrokeWidth:1,scaleShowGridLines:!1});
     function updatePlayerListVisibility(data) {
         // Server is On or Starting
-        if(data == 1 || data == 3) {
+        if(data !== 0) {
             $('#stats_players').show();
         } else {
             $('#stats_players').hide();
@@ -248,9 +249,10 @@ $(window).load(function () {
                     'X-Access-Token': '{{ $server->daemonSecret }}',
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
-                url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/console',
+                contentType: 'application/json; charset=utf-8',
+                url: 'http{{ $node->https ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/command',
                 timeout: 10000,
-                data: { command: ccmd }
+                data: JSON.stringify({ command: ccmd })
             }).fail(function (jqXHR) {
                 $('#sc_resp').html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
             }).always(function () {
@@ -265,126 +267,57 @@ $(window).load(function () {
 
             // Server is On or Starting
             if(data == 1 || data == 3) {
-                $('#server_start').addClass('disabled');
-                $('#server_stop, #server_restart').removeClass('disabled');
+                $('[data-attr="power"][data-action="start"]').addClass('disabled');
+                $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
             } else {
-                $('#server_start').removeClass('disabled');
-                $('#server_stop, #server_restart').addClass('disabled');
+                $('[data-attr="power"][data-action="start"]').removeClass('disabled');
+                $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
             }
 
             if(data !== 0) {
-                $('#kill_proc').removeClass('disabled');
+                $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
             } else {
-                $('#kill_proc').addClass('disabled');
+                $('[data-attr="power"][data-action="kill"]').addClass('disabled');
             }
 
         }
 
-        // Kill Server Process Button
-        $('#kill_proc').click(function (e){
-
-            e.preventDefault();
-            var killConfirm = confirm('WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to stops.');
+        $('[data-attr="power"]').click(function (event) {
+            event.preventDefault();
+            var action = $(this).data('action');
+            if (action === 'kill') {
+                var killConfirm = confirm('WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to normal stop commands.');
+            } else { var killConfirm = true; }
 
             if(killConfirm) {
+                if (action === 'start') {
+                    $("#live_console").val('');
+                }
                 $.ajax({
-                    type: 'GET',
+                    type: 'PUT',
                     headers: {
                         'X-Access-Token': '{{ $server->daemonSecret }}',
                         'X-Access-Server': '{{ $server->uuid }}'
                     },
-                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/kill',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify({
+                        action: action
+                    }),
+                    url: 'http{{ $node->https ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
                     timeout: 10000
                 }).done(function(data) {
-                    $('#pw_resp').attr('class', 'alert alert-success').html('Server has been killed successfully.').fadeIn().delay(5000).fadeOut();
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
+                    $('#pw_resp').attr('class', 'alert alert-success').html('Server has been ' + action + 'ed successfully.').fadeIn().delay(5000).fadeOut();
+                }).fail(function(jqXHR) {
+                    var error = 'An unknown error occured processing this request.';
+                    if (typeof jqXHR.responseJSON.error !== 'undefined') {
+                        error = jqXHR.responseJSON.error;
+                    }
+                    $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + error + ')').fadeIn().delay(5000).fadeOut();
                 });
             }
 
         });
 
-        $('#server_stop').click(function (e){
-            e.preventDefault();
-            if(can_run) {
-                can_run = false;
-                $(this).append(' <i class=\'fa fa-refresh fa-spin\'></i>').toggleClass('disabled');
-                $.ajax({
-                    type: 'GET',
-                    headers: {
-                        'X-Access-Token': '{{ $server->daemonSecret }}',
-                        'X-Access-Server': '{{ $server->uuid }}'
-                    },
-                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/off',
-                    timeout: 10000
-                }).done(function(data) {
-                    $('#pw_resp').attr('class', 'alert alert-success').html('Server is now stopping...').fadeIn().delay(5000).fadeOut();
-                    $('#server_stop').removeClass('disabled').html('Stop');
-                    can_run = true;
-                    return false;
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                        $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-                        $('#server_stop').removeClass('disabled').html('Stop');
-                        can_run = true;
-                });
-            }
-        });
-
-        $('#server_restart').click(function(e){
-            e.preventDefault();
-            if(can_run) {
-                can_run = false;
-                $(this).append(' <i class=\'fa fa-refresh fa-spin\'></i>').toggleClass('disabled');
-                $.ajax({
-                    type: 'GET',
-                    headers: {
-                        'X-Access-Token': '{{ $server->daemonSecret }}',
-                        'X-Access-Server': '{{ $server->uuid }}'
-                    },
-                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/restart',
-                    timeout: 10000
-                }).done(function(data) {
-                    $('#pw_resp').attr('class', 'alert alert-success').html('Server is now restarting...').fadeIn().delay(5000).fadeOut();
-                    $('#server_restart').removeClass('disabled').html('Restart');
-                    can_run = true;
-                    return false;
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                        $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-                        $('#server_restart').removeClass('disabled').html('Restart');
-                        can_run = true;
-                });
-            }
-        });
-        $('#server_start').click(function(e){
-            e.preventDefault();
-            start_server();
-        });
-        function start_server() {
-            if(can_run === true){
-                can_run = false;
-                $('#server_start').append(' <i class=\'fa fa-refresh fa-spin\'></i>').toggleClass('disabled');
-                $.ajax({
-                    type: 'GET',
-                    headers: {
-                        'X-Access-Token': '{{ $server->daemonSecret }}',
-                        'X-Access-Server': '{{ $server->uuid }}'
-                    },
-                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power/on',
-                    timeout: 10000
-                }).done(function(data) {
-                    $('#live_console').val('Server is starting...\n');
-                    $('#pw_resp').attr('class', 'alert alert-success').html('Server is now starting...').fadeIn().delay(5000).fadeOut();
-                    $('#server_start').toggleClass('disabled');
-                    $('#server_start').html('Start');
-                    can_run = true;
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. ('+ errorThrown +')').fadeIn().delay(5000).fadeOut();
-                    $('#server_start').removeClass('disabled');
-                    $('#server_start').html('Start');
-                    can_run = true;
-                });
-            }
-        }
     @endcan
 });
 

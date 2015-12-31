@@ -40,7 +40,7 @@
                     $(window).load(function () {
 
                         // Main Socket Object
-                        socket = io('https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/{{ $server->uuid }}', {
+                        socket = io('http{{ ($node->https === true) ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/ws/{{ $server->uuid }}', {
                             'query': 'token={{ $server->daemonSecret }}'
                         });
 
@@ -67,9 +67,12 @@
                             }
                         });
 
+                        socket.on('error', function (err) {
+                            alert('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
+                        });
+
                         // Socket Sends Server Status on Connect
                         socket.on('initial_status', function (data) {
-
                             var color = '#E33200';
                             var selector = 'fa-times-circle';
 
@@ -79,12 +82,10 @@
                             }
 
                             $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
-
                         });
 
                         // Socket Recieves New Status from Scales
                         socket.on('status', function(data) {
-
                             if(data.status !== 'crashed') {
 
                                 var newStatus, selector = 'fa-times-circle';
@@ -100,10 +101,10 @@
                                         selector = "fa-check-circle";
                                         break;
                                     case 2:
-                                        newStatus = 'STOPPING';
+                                        newStatus = 'STARTING';
                                         break;
                                     case 3:
-                                        newStatus = 'STARTING';
+                                        newStatus = 'STOPPING';
                                         break;
                                 }
 
