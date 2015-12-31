@@ -88,7 +88,7 @@
                 </div>
                 <div class="col-md-6">
                     <hr />
-                    <form action="#" method="post" id="console_command">
+                    <form action="#" method="post" id="console_command" style="display:none;">
                         <fieldset>
                             <div class="input-group">
                                 <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
@@ -265,11 +265,18 @@ $(window).load(function () {
         var can_run = true;
         function updateServerPowerControls (data) {
 
+            // Reset Console Data
+            if (data === 2) {
+                $("#live_console").val('');
+            }
+
             // Server is On or Starting
-            if(data == 1 || data == 3) {
+            if(data == 1 || data == 2) {
+                $("#console_command").slideDown();
                 $('[data-attr="power"][data-action="start"]').addClass('disabled');
                 $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
             } else {
+                $("#console_command").slideUp();
                 $('[data-attr="power"][data-action="start"]').removeClass('disabled');
                 $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
             }
@@ -290,9 +297,6 @@ $(window).load(function () {
             } else { var killConfirm = true; }
 
             if(killConfirm) {
-                if (action === 'start') {
-                    $("#live_console").val('');
-                }
                 $.ajax({
                     type: 'PUT',
                     headers: {
