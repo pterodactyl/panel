@@ -6,8 +6,8 @@
 
 @section('content')
 <div class="col-md-9">
-    <div class="row" id="internal_alert">
-        <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12" id="internal_alert">
             <div class="alert alert-info">
                 <i class="fa fa-spinner fa-spin"></i> {{ trans('server.files.loading') }}
             </div>
@@ -98,7 +98,7 @@
 
                 $.ajax({
                     type: 'DELETE',
-                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/' + deleteItemPath,
+                    url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/' + deleteItemPath,
                     headers: {
                         'X-Access-Token': '{{ $server->daemonSecret }}',
                         'X-Access-Server': '{{ $server->uuid }}'

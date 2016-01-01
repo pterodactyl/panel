@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http;
+namespace Pterodactyl\Repositories;
 
-class Helpers {
+class HelperRepository {
 
     /**
      * Listing of editable files in the control panel.

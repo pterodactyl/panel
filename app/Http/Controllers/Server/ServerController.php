@@ -11,7 +11,7 @@ use Uuid;
 use Alert;
 
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Scales\FileController;
+use Pterodactyl\Repositories;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -102,7 +102,7 @@ class ServerController extends Controller
         $this->authorize('edit-files', $server);
 
         $fileInfo = (object) pathinfo($file);
-        $controller = new FileController($uuid);
+        $controller = new Repositories\Daemon\FileRepository($uuid);
 
         try {
             $fileContent = $controller->returnFileContents($file);
@@ -124,7 +124,7 @@ class ServerController extends Controller
             'server' => $server,
             'node' => Node::find($server->node),
             'file' => $file,
-            'contents' => $fileContent->contents,
+            'contents' => $fileContent->content,
             'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/',
             'extension' => $fileInfo->extension
         ]);
@@ -155,7 +155,7 @@ class ServerController extends Controller
 
         $download->save();
 
-        return redirect('https://' . $node->fqdn . ':' . $node->daemonListen . '/server/download/' . $download->token);
+        return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/download/' . $download->token);
 
     }
 

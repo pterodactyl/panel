@@ -6,10 +6,9 @@ use Log;
 use Debugbar;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Http\Helpers;
 
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Scales\FileController;
+use Pterodactyl\Repositories;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -119,7 +118,7 @@ class AjaxController extends Controller
             $prevDir['link_show'] = trim($prevDir['link'], '/');
         }
 
-        $controller = new FileController($uuid);
+        $controller = new Repositories\Daemon\FileRepository($uuid);
 
         try {
             $directoryContents = $controller->returnDirectoryListing($this->directory);
@@ -140,7 +139,7 @@ class AjaxController extends Controller
             'server' => $server,
             'files' => $directoryContents->files,
             'folders' => $directoryContents->folders,
-            'extensions' => Helpers::editableFiles(),
+            'extensions' => Repositories\HelperRepository::editableFiles(),
             'directory' => $prevDir
         ]);
 
@@ -159,7 +158,7 @@ class AjaxController extends Controller
         $server = Server::getByUUID($uuid);
         $this->authorize('save-files', $server);
 
-        $controller = new FileController($uuid);
+        $controller = new Repositories\Daemon\FileRepository($uuid);
 
         try {
             $controller->saveFileContents($request->input('file'), $request->input('contents'));

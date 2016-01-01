@@ -1,21 +1,19 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Daemon;
+namespace Pterodactyl\Repositories\Daemon;
 
 use \Exception;
 use Log;
-use Debugbar;
+
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Node;
-
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\HelperRepository;
-use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\DisplayException;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-class FileController extends Controller
+class FileRepository
 {
 
     /**
@@ -87,7 +85,7 @@ class FileController extends Controller
         ]);
 
         $json = json_decode($res->getBody());
-        if($res->getStatusCode() !== 200 || !isset($json->contents)) {
+        if($res->getStatusCode() !== 200 || !isset($json->content)) {
             throw new DisplayException('Scales provided a non-200 error code: HTTP\\' . $res->getStatusCode());
         }
 
@@ -117,15 +115,15 @@ class FileController extends Controller
 
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('PUT', '/server/file/' . rawurlencode($file->dirname.$file->basename), [
+        $res = $this->client->request('POST', '/server/file/' . rawurlencode($file->dirname.$file->basename), [
             'headers' => $this->headers,
-            'form_params' => [
-                'contents' => $content
+            'json' => [
+                'content' => $content
             ]
         ]);
 
         if ($res->getStatusCode() !== 204) {
-            throw new DisplayException('An error occured while attempting to save this file. Scales said: ' . $res->getBody());
+            throw new DisplayException('An error occured while attempting to save this file. ' . $res->getBody());
         }
 
         return true;
@@ -151,7 +149,7 @@ class FileController extends Controller
 
         $json = json_decode($res->getBody());
         if($res->getStatusCode() !== 200) {
-            throw new DisplayException('An error occured while attempting to save this file. Scales said: ' . $res->getBody());
+            throw new DisplayException('An error occured while attempting to save this file. ' . $res->getBody());
         }
 
         // Iterate through results
@@ -159,7 +157,7 @@ class FileController extends Controller
         $folders = [];
         foreach($json as &$value) {
 
-            if ($value->file !== true) {
+            if ($value->directory === true) {
 
                 // @TODO Handle Symlinks
                 $folders = array_merge($folders, [[
@@ -169,7 +167,7 @@ class FileController extends Controller
                     'date' => strtotime($value->modified)
                 ]]);
 
-            } else {
+            } else if ($value->file === true) {
 
                 $files = array_merge($files, [[
                     'entry' => $value->name,

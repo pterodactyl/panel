@@ -178,7 +178,7 @@ $(window).load(function () {
                     'X-Access-Token': '{{ $server->daemonSecret }}',
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
-                url: 'http{{ $node->https ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/log',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/log',
                 timeout: 10000
             }).done(function(data) {
                 $('#live_console').val(data);
@@ -250,7 +250,7 @@ $(window).load(function () {
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: 'http{{ $node->https ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/command',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/command',
                 timeout: 10000,
                 data: JSON.stringify({ command: ccmd })
             }).fail(function (jqXHR) {
@@ -307,7 +307,7 @@ $(window).load(function () {
                     data: JSON.stringify({
                         action: action
                     }),
-                    url: 'http{{ $node->https ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
+                    url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
                     timeout: 10000
                 }).done(function(data) {
                     $('#pw_resp').attr('class', 'alert alert-success').html('Server has been ' + action + 'ed successfully.').fadeIn().delay(5000).fadeOut();
