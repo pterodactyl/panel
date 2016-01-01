@@ -68,7 +68,7 @@
                         });
 
                         socket.on('error', function (err) {
-                            alert('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
+                            console.error('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
                         });
 
                         // Socket Sends Server Status on Connect
