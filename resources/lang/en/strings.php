@@ -27,5 +27,9 @@ return [
     'submit' => 'Submit',
     'current_password' => 'Current Password',
     'again' => 'Again',
+    'registered' => 'Registered',
+    'root_administrator' => 'Root Administrator',
+    'yes' => 'Yes',
+    'no' => 'No'
 
 ];

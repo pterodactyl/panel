@@ -12,11 +12,15 @@ class AdminRoutes {
 
             // Account Routes
             $router->group(['prefix' => 'accounts'], function ($server) use ($router) {
-                $router->get('/', [ 'as' => 'admin.accounts', 'uses' => 'Admin\AccountsController@getIndex' ]);
-                $router->get('/view/{id}', [ 'as' => 'admin.accounts.view', 'uses' => 'Admin\AccountsController@getView' ]);
 
                 $router->get('/new', [ 'as' => 'admin.accounts.new', 'uses' => 'Admin\AccountsController@getNew' ]);
                 $router->post('/new', [ 'as' => 'admin.accounts.new', 'uses' => 'Admin\AccountsController@postNew' ]);
+
+                $router->get('/', [ 'as' => 'admin.accounts', 'uses' => 'Admin\AccountsController@getIndex' ]);
+                $router->get('/view/{id}', [ 'as' => 'admin.accounts.view', 'uses' => 'Admin\AccountsController@getView' ]);
+
+                $router->post('/update', [ 'as' => 'admin.accounts.update', 'uses' => 'Admin\AccountsController@postUpdate' ]);
+                $router->get('/delete/{id}', [ 'as' => 'admin.accounts.delete', 'uses' => 'Admin\AccountsController@getDelete' ]);
             });
 
             // Server Routes

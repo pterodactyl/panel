@@ -14,6 +14,7 @@ return [
         'socket_status_crashed' => 'This server has been detected as CRASHED.',
     ],
     'index' => [
+        'add_new' => 'Add New Server',
         'memory_use' => 'Memory Usage',
         'cpu_use' => 'CPU Usage',
         'xaxis' => 'Time (2s Increments)',
