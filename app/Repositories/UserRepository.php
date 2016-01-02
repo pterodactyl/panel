@@ -41,4 +41,36 @@ class UserRepository
 
     }
 
+    /**
+     * Updates a user on the panel. Returns true if the update was successful.
+     *
+     * @param  string $username
+     * @param  string $email
+     * @param  string $password An unhashed version of the user's password.
+     * @return boolean
+     */
+    public function update($id, $user)
+    {
+        if(array_key_exists('password', $user)) {
+           $user['password'] = Hash::make($user['password']);
+       }
+
+        User::where('id', $id)->update($user);
+        return true;
+    }
+
+    /**
+     * Deletes a user on the panel. Returns true if the deletion was successful.
+     *
+     * @param  string $username
+     * @param  string $email
+     * @param  string $password An unhashed version of the user's password.
+     * @return boolean
+     */
+    public function delete($id)
+    {
+        User::destroy($id);
+        return true;
+    }
+
 }
