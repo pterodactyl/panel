@@ -14,8 +14,7 @@
 	<table class="table table-striped table-bordered table-hover">
 		<thead>
 			<tr>
-				<th>Username</th>
-				<th>Email</th>
+ 				<th>Email</th>
                 <th>Account Created</th>
                 <th>Account Updated</th>
 			</tr>
@@ -23,8 +22,7 @@
 		<tbody>
 			@foreach ($users as $user)
 				<tr>
-					<td><a href="/admin/accounts/view/{{ $user->id }}">@if($user->username !== null){{ $user->username }}@else[unregistered subuser]@endif</a> @if($user->root_admin === 1)<span class="badge">Administrator</span>@endif</td>
-					<td><code>{{ $user->email }}</code></td>
+					<td><a href="/admin/accounts/view/{{ $user->id }}"><code>{{ $user->email }}</code></a> @if($user->root_admin === 1)<span class="badge">Administrator</span>@endif</td>
                     <td>{{ $user->created_at }}</td>
                     <td>{{ $user->updated_at }}</td>
 				</tr>
