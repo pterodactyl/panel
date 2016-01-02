@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
 use Debugbar;
+use Log;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\ServerRepository;
@@ -49,7 +50,21 @@ class ServersController extends Controller
 
     public function getView(Request $request, $id)
     {
-        //
+        return view('admin.servers.view', [
+            'server' => Models\Server::select(
+                    'servers.*',
+                    'nodes.name as a_nodeName',
+                    'users.email as a_ownerEmail',
+                    'locations.long as a_locationName',
+                    'services.name as a_serviceName',
+                    'service_options.name as a_servceOptionName'
+                )->join('nodes', 'servers.node', '=', 'nodes.id')
+                ->join('users', 'servers.owner', '=', 'users.id')
+                ->join('locations', 'nodes.location', '=', 'locations.id')
+                ->join('services', 'servers.service', '=', 'services.id')
+                ->join('service_options', 'servers.option', '=', 'service_options.id')
+                ->first()
+        ]);
     }
 
     public function postNewServer(Request $request)
@@ -168,6 +183,46 @@ class ServersController extends Controller
 
         return response()->json(Models\ServiceVariables::where('option_id', $request->input('option'))->get());
 
+    }
+
+    public function postUpdateServerDetails(Request $request, $id)
+    {
+
+        try {
+
+            $server = new ServerRepository;
+            $server->updateDetails($id, [
+                'owner' => $request->input('owner'),
+                'name' => $request->input('name'),
+                'reset_token' => ($request->input('reset_token', false) === 'on') ? true : false
+            ]);
+
+            Alert::success('Server details were successfully updated.')->flash();
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_details'
+            ]);
+
+        } catch (\Exception $e) {
+
+            if ($e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
+                return redirect()->route('admin.servers.view', [
+                    'id' => $id,
+                    'tab' => 'tab_details'
+                ])->withErrors(json_decode($e->getMessage()))->withInput();
+            } else if ($e instanceof \Pterodactyl\Exceptions\DisplayException) {
+                Alert::danger($e->getMessage())->flash();
+            } else {
+                Log::error($e);
+                Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            }
+
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_details'
+            ])->withInput();
+
+        }
     }
 
 }

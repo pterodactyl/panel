@@ -5,6 +5,7 @@ namespace Pterodactyl\Repositories;
 use DB;
 use Debugbar;
 use Validator;
+use Log;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -41,7 +42,8 @@ class ServerRepository
 
     /**
      * Adds a new server to the system.
-     * @param array  $data  An array of data descriptors for creating the server. These should align to the columns in the database.
+     * @param   array  $data  An array of data descriptors for creating the server. These should align to the columns in the database.
+     * @return  integer
      */
     public function create(array $data)
     {
@@ -205,6 +207,106 @@ class ServerRepository
         } catch (\Exception $e) {
             DB::rollBack();
             throw $e;
+        }
+
+    }
+
+    /**
+     * [updateDetails description]
+     * @param  integer  $id
+     * @param  array    $data
+     * @return boolean
+     */
+    public function updateDetails($id, array $data)
+    {
+
+        $uuid = new UuidService;
+        $resetDaemonKey = false;
+
+        // Validate Fields
+        $validator = Validator::make($data, [
+            'owner' => 'email|exists:users,email',
+            'name' => 'regex:([\w -]{4,35})'
+        ]);
+
+        // Run validator, throw catchable and displayable exception if it fails.
+        // Exception includes a JSON result of failed validation rules.
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        DB::beginTransaction();
+        $server = Models\Server::findOrFail($id);
+        $owner = Models\User::findOrFail($server->owner);
+
+        // Update daemon secret if it was passed.
+        if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $owner->email)) {
+            $oldDaemonKey = $server->daemonSecret;
+            $server->daemonSecret = $uuid->generate('servers', 'daemonSecret');
+            $resetDaemonKey = true;
+        }
+
+        // Update Server Owner if it was passed.
+        if (isset($data['owner']) && $data['owner'] !== $owner->email) {
+            $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
+            $server->owner = $newOwner->id;
+        }
+
+        // Update Server Name if it was passed.
+        if (isset($data['name'])) {
+            $server->name = $data['name'];
+        }
+
+        // Save our changes
+        $server->save();
+
+        // Do we need to update? If not, return successful.
+        if (!$resetDaemonKey) {
+            DB::commit();
+            return true;
+        }
+
+        // If we need to update do it here.
+        try {
+
+            $node = Models\Node::getByID($server->node);
+            $client = Models\Node::guzzleRequest($server->node);
+
+            $res = $client->request('PATCH', '/server', [
+                'headers' => [
+                    'X-Access-Server' => $server->uuid,
+                    'X-Access-Token' => $node->daemonSecret
+                ],
+                'exceptions' => false,
+                'json' => [
+                    'keys' => [
+                        (string) $oldDaemonKey => [],
+                        (string) $server->daemonSecret => [
+                            's:get',
+                            's:power',
+                            's:console',
+                            's:command',
+                            's:files:get',
+                            's:files:read',
+                            's:files:post',
+                            's:files:delete',
+                            's:files:upload',
+                            's:set-password'
+                        ]
+                    ]
+                ]
+            ]);
+
+            if ($res->getStatusCode() === 204) {
+                DB::commit();
+                return true;
+            } else {
+                throw new DisplayException('Daemon returned a a non HTTP/204 error code. HTTP/' + $res->getStatusCode());
+            }
+        } catch (\Exception $ex) {
+            DB::rollback();
+            Log::error($ex);
+            throw new DisplayException('An error occured while attempting to update this server\'s information.');
         }
 
     }

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Server List
+    Create New Server
 @endsection
 
 @section('content')
@@ -43,7 +43,7 @@
                 <div class="form-group col-md-6">
                     <label for="owner" class="control-label">Owner Email</label>
                     <div>
-                        <input type="text" autocomplete="off" name="owner" class="form-control" value="{{ old('owner') }}" />
+                        <input type="text" autocomplete="off" name="owner" class="form-control" value="{{ old('owner', Input::get('email')) }}" />
                     </div>
                 </div>
             </div>

@@ -30,6 +30,8 @@ class AdminRoutes {
                 $router->get('/new', [ 'as' => 'admin.servers.new', 'uses' => 'Admin\ServersController@getNew' ]);
                 $router->get('/view/{id}', [ 'as' => 'admin.servers.view', 'uses' => 'Admin\ServersController@getView' ]);
 
+                $router->post('/view/{id}/details', [ 'uses' => 'Admin\ServersController@postUpdateServerDetails' ]);
+
                 $router->post('/new', [ 'uses' => 'Admin\ServersController@postNewServer']);
                 $router->post('/new/get-nodes', [ 'uses' => 'Admin\ServersController@postNewServerGetNodes' ]);
                 $router->post('/new/get-ips', [ 'uses' => 'Admin\ServersController@postNewServerGetIps' ]);
