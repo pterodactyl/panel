@@ -18,59 +18,47 @@ class UserRepository
     /**
      * Creates a user on the panel. Returns the created user's ID.
      *
-     * @param  string $username
      * @param  string $email
      * @param  string $password An unhashed version of the user's password.
-     * @return integer
+     * @return bool|integer
      */
-    public function create($username, $email, $password)
+    public function create($email, $password)
     {
-
         $user = new User;
         $uuid = new UuidService;
 
         $user->uuid = $uuid->generate('users', 'uuid');
-
-        $user->username = $username;
         $user->email = $email;
         $user->password = Hash::make($password);
 
-        $user->save();
-
-        return $user->id;
-
+        return ($user->save()) ? $user->id : false;
     }
 
     /**
-     * Updates a user on the panel. Returns true if the update was successful.
+     * Updates a user on the panel.
      *
-     * @param  string $username
-     * @param  string $email
-     * @param  string $password An unhashed version of the user's password.
+     * @param  integer $id
+     * @param  array $user An array of columns and their associated values to update for the user.
      * @return boolean
      */
-    public function update($id, $user)
+    public function update($id, array $user)
     {
         if(array_key_exists('password', $user)) {
-           $user['password'] = Hash::make($user['password']);
-       }
+            $user['password'] = Hash::make($user['password']);
+        }
 
-        User::where('id', $id)->update($user);
-        return true;
+        return User::find($id)->update($user);
     }
 
     /**
-     * Deletes a user on the panel. Returns true if the deletion was successful.
+     * Deletes a user on the panel, returns the number of records deleted.
      *
-     * @param  string $username
-     * @param  string $email
-     * @param  string $password An unhashed version of the user's password.
-     * @return boolean
+     * @param  integer $id
+     * @return integer
      */
     public function delete($id)
     {
-        User::destroy($id);
-        return true;
+        return User::destroy($id);
     }
 
 }

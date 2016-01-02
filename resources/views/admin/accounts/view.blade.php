@@ -9,7 +9,7 @@
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Controls</a></li>
         <li><a href="/admin/accounts">Accounts</a></li>
-        <li class="active">{{ $user->id }}</li>
+        <li class="active">{{ $user->email }}</li>
     </ul>
     @if (count($errors) > 0)
         <div class="alert alert-danger">
@@ -109,10 +109,10 @@
                         <tbody>
                                 @foreach($servers as $server)
                                     <tr>
-                                        <td><a href="/server/{{ $server->uuidShort }}"><i class="fa fa-tachometer"></i></a></td>
-                                        <td><a href="/admin/server/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                        <td>{{ $server->node_name }}</td>
-                                        <td>{{ $server->server_ip }}:{{ $server->server_port }}</td>
+                                        <td><a href="/server/{{ $server->uuidShort }}/"><i class="fa fa-tachometer"></i></a></td>
+                                        <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
+                                        <td>{{ $server->nodeName }}</td>
+                                        <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                                         <td>@if($server->active)<span class="label label-success">Enabled</span>@else<span class="label label-danger">Disabled</span>@endif</td>
                                     </td>
                                 @endforeach

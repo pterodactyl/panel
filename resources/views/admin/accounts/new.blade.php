@@ -25,12 +25,6 @@
     <form action="new" method="post">
 		<fieldset>
 			<div class="form-group">
-				<label for="username" class="control-label">Username</label>
-				<div>
-					<input type="text" autocomplete="off" name="username" class="form-control" />
-				</div>
-			</div>
-			<div class="form-group">
 				<label for="email" class="control-label">Email</label>
 				<div>
 					<input type="text" autocomplete="off" name="email" class="form-control" />
