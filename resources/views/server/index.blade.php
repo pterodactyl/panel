@@ -6,7 +6,7 @@
 
 @section('scripts')
     @parent
-    <script src="{{ asset('js/chartjs/chart.core.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
     <script src="{{ asset('js/chartjs/chart.bar.js') }}"></script>
 @endsection
 
@@ -27,24 +27,8 @@
     <div class="tab-content">
         <div class="tab-pane active" id="stats">
             <div class="row">
-                <div class="col-md-6">
-                    <h3 class="nopad">{{ trans('server.index.memory_use') }}</h3><hr />
-                    <div class="row centered">
-                        <canvas id="memoryChart" width="280" height="150" style="margin-left:20px;"></canvas>
-                        <p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
-                        <p class="graph-yaxis hidden-xs hidden-sm text-muted" style="margin-top:-50px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
-                        <p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.memory_use') }} (Mb)</small></p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="nopad">{{ trans('server.index.cpu_use') }}</h3><hr />
-                    <div class="row centered">
-                        <canvas id="cpuChart" width="280" height="150" style="margin-left:20px;"></canvas>
-                        <p style="text-align:center;margin-top:-15px;" class="text-muted"><small>{{ trans('server.index.xaxis') }}</small></p>
-                        <p class="graph-yaxis hidden-sm hidden-xs text-muted" style="margin-top:-65px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
-                        <p class="graph-yaxis hidden-lg hidden-md text-muted" style="margin-top:-65px !important;margin-left: 100px !important;"><small>{{ trans('server.index.cpu_use') }} (%)</small></p>
-                    </div>
-                </div>
+                <div class="col-md-12" id="chart_memory" style="height:250px;"></div>
+                <div class="col-md-12" id="chart_cpu" style="height:250px;"></div>
             </div>
             <div class="row">
                 <div class="col-md-12" id="stats_players">
@@ -137,13 +121,171 @@
 $(window).load(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
+    // -----------------+
+    // Charting Methods |
+    // -----------------+
+    $('#chart_memory').highcharts({
+        chart: {
+            type: 'area',
+            animation: Highcharts.svg,
+            marginRight: 10,
+        },
+        colors: [
+            '#113F8C',
+            '#00A1CB',
+            '#01A4A4',
+            '#61AE24',
+            '#D0D102',
+            '#D70060',
+            '#E54028',
+            '#F18D05',
+            '#616161',
+            '#32742C',
+        ],
+        credits: {
+            enabled: false,
+        },
+        title: {
+            text: 'Live Memory Usage',
+        },
+        tooltip: {
+            shared: true,
+            crosshairs: true,
+            formatter: function () {
+                var s = '<b>Memory Usage</b>';
+
+                $.each(this.points, function () {
+                    s += '<br/>' + this.series.name + ': ' +
+                        this.y + 'MB';
+                });
+
+                return s;
+            },
+        },
+        xAxis: {
+            visible: false,
+        },
+        yAxis: {
+            title: {
+                text: 'Memory Usage (MB)',
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+            }],
+        },
+        plotOptions: {
+            area: {
+                fillOpacity: 0.10,
+                marker: {
+                    enabled: false,
+                },
+            },
+        },
+        legend: {
+            enabled: false
+        },
+        series: [{
+            name: 'Total Memory',
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }]
+    });
+
+    $('#chart_cpu').highcharts({
+        chart: {
+            type: 'area',
+            animation: Highcharts.svg,
+            marginRight: 10,
+        },
+        colors: [
+            '#113F8C',
+            '#00A1CB',
+            '#01A4A4',
+            '#61AE24',
+            '#D0D102',
+            '#D70060',
+            '#E54028',
+            '#F18D05',
+            '#616161',
+            '#32742C',
+        ],
+        credits: {
+            enabled: false,
+        },
+        title: {
+            text: 'Live CPU Usage',
+        },
+        tooltip: {
+            shared: true,
+            crosshairs: true,
+            formatter: function () {
+                var s = '<b>CPU Usage</b>';
+
+                $.each(this.points, function () {
+                    s += '<br/>' + this.series.name + ': ' +
+                        this.y + '%';
+                });
+
+                return s;
+            },
+        },
+        xAxis: {
+            visible: false,
+        },
+        yAxis: {
+            title: {
+                text: 'CPU Usage (%)',
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+            }],
+        },
+        plotOptions: {
+            area: {
+                fillOpacity: 0.10,
+                stacking: 'normal',
+                lineWidth: 1,
+                marker: {
+                    enabled: false,
+                },
+            },
+        },
+        legend: {
+            enabled: true
+        },
+        series: [{
+            name: 'Total CPU',
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        }]
+    });
+
     // Socket Recieves New Server Stats
-    socket.on('stats', function (data) {
-        var currentTime = new Date();
-        memoryChart.addData([parseInt(data.data.memory / (1024 * 1024))], '');
-        memoryChart.removeData();
-        if({{ $server->cpu }} > 0) { cpuChart.addData([(data.data.cpu / {{ $server->cpu }}) * 100], ''); }else{ cpuChart.addData([data.data.cpu], ''); }
-        cpuChart.removeData();
+    socket.on('proc', function (proc) {
+        var MemoryChart = $('#chart_memory').highcharts();
+        MemoryChart.series[0].addPoint(parseInt(proc.data.memory.total / (1024 * 1024)), true, true);
+
+        var CPUChart = $('#chart_cpu').highcharts();
+
+        if({{ $server->cpu }} > 0) {
+            CPUChart.series[0].addPoint(parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
+        } else {
+            CPUChart.series[0].addPoint(proc.data.cpu.total, true, true);
+        }
+        for (i = 0, length = proc.data.cpu.cores.length; i < length; i++) {
+            if (typeof CPUChart.series[ i + 1 ] === 'undefined') {
+                CPUChart.addSeries({
+                    name: 'Core ' + i,
+                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                });
+            }
+            if({{ $server->cpu }} > 0) {
+                CPUChart.series[ i + 1 ].addPoint(parseFloat(((proc.data.cpu.cores[i] / {{ $server->cpu }}) * 100).toFixed(3).toString())
+, true, true);
+            } else {
+                CPUChart.series[ i + 1 ].addPoint(proc.data.cpu.cores[i], true, true);
+            }
+        }
     });
 
     // Socket Recieves New Query
@@ -215,15 +357,6 @@ $(window).load(function () {
         $('#paused_console').val($('#live_console').val());
     });
 
-    // -----------------+
-    // Charting Methods |
-    // -----------------+
-    var ctx = $('#memoryChart').get(0).getContext('2d');
-    var cty = $('#cpuChart').get(0).getContext('2d');
-    var memoryChartData = {labels:["","","","","","","","","","","","","","","","","","","",""],datasets:[{fillColor:"#ccc",strokeColor:"rgba(0,0,0,0)",highlightFill:"#666",data:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]};
-    var cpuChartData = {labels:["","","","","","","","","","","","","","","","","","","",""],datasets:[{fillColor:"#ccc",strokeColor:"rgba(0,0,0,0)",highlightFill:"#666",data:[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}]};
-    var memoryChart= new Chart(ctx).Bar(memoryChartData,{animation:!1,showScale:!0,barShowStroke:!1,scaleOverride:!1,tooltipTemplate:"<%= value %> Mb",barValueSpacing:1,barStrokeWidth:1,scaleShowGridLines:!1});
-    var cpuChart = new Chart(cty).Bar(cpuChartData,{animation:!1,showScale:!0,barShowStroke:!1,scaleOverride:!1,tooltipTemplate:"<%= value %> %",barValueSpacing:1,barStrokeWidth:1,scaleShowGridLines:!1});
     function updatePlayerListVisibility(data) {
         // Server is On or Starting
         if(data !== 0) {
