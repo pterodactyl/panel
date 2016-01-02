@@ -142,7 +142,12 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
+        $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
+        return response()->json([
+            'exec' => $service->executable,
+            'startup' => $service->startup,
+            'options' => Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get()
+        ]);
 
     }
 

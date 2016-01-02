@@ -96,31 +96,56 @@
         </div>
         <div class="well">
             <div class="row">
-                <div class="form-group col-md-3 col-xs-6">
+                <div class="form-group col-md-4 col-xs-4">
                     <label for="memory" class="control-label">Memory</label>
                     <div class="input-group">
                         <input type="text" name="memory" class="form-control" value="{{ old('memory') }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>
-                <div class="form-group col-md-3 col-xs-6">
+                <div class="form-group col-md-4 col-xs-4">
+                    <label for="memory" class="control-label">Swap</label>
+                    <div class="input-group">
+                        <input type="text" name="swap" class="form-control" value="{{ old('swap', 0) }}"/>
+                        <span class="input-group-addon">MB</span>
+                    </div>
+                </div>
+                <div class="form-group col-md-4 col-xs-4">
+                    <label for="memory" class="control-label">OOM Killer</label>
+                    <div>
+                        <span class="input-group-addon" style="height:36px;">
+                            <input type="checkbox" name="oom_disabled"/>
+                        </span>
+                        <span class="input-group-addon" style="height:36px;">
+                            Disable OOM Killer
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-muted"><small>If you do not want to assign swap space to a server simply put <code>0</code> for the value. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.</small><p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4 col-xs-4">
                     <label for="disk" class="control-label">Disk Space</label>
                     <div class="input-group">
                         <input type="text" name="disk" class="form-control" value="{{ old('disk') }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>
-                <div class="form-group col-md-3 col-xs-6">
+                <div class="form-group col-md-4 col-xs-4">
                     <label for="cpu" class="control-label">CPU Limit</label>
                     <div class="input-group">
-                        <input type="text" name="cpu" value="0" class="form-control" value="{{ old('cpu') }}"/>
+                        <input type="text" name="cpu" class="form-control" value="{{ old('cpu', 0) }}"/>
                         <span class="input-group-addon">%</span>
                     </div>
                 </div>
-                <div class="form-group col-md-3 col-xs-6">
+                <div class="form-group col-md-4 col-xs-4">
                     <label for="io" class="control-label">Block I/O</label>
                     <div class="input-group">
-                        <input type="text" name="io" value="500" class="form-control" value="{{ old('io') }}"/>
+                        <input type="text" name="io" class="form-control" value="{{ old('io', 500) }}"/>
                         <span class="input-group-addon">I/O</span>
                     </div>
                 </div>
@@ -167,7 +192,7 @@
                             <label for="use_custom_image" class="control-label">Use Custom Docker Image</label>
                             <div class="input-group">
                                 <span class="input-group-addon">
-                                    <input @if(old('name') === 'use_custom_image')checked="checked"@endif type="checkbox" name="use_custom_image"/>
+                                    <input @if(old('use_custom_image') === 'use_custom_image')checked="checked"@endif type="checkbox" name="use_custom_image"/>
                                 </span>
                                 <input type="text" class="form-control" name="custom_image_name" value="{{ old('custom_image_name') }}" disabled />
                             </div>
@@ -177,11 +202,20 @@
                 </div>
             </div>
         </div>
-        <div class="well">
+        <div class="well" id="serviceOptions" style="display:none;">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <h3 class="nopad">Service Setup &amp; Options</h3>
+                    <hr />
+                    <label for="startup" class="control-label">Startup Command</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="startupExec"></span>
+                        <input type="text" class="form-control" name="startup" value="{{ old('startup') }}" />
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="nopad">Service Environment Variables</h3>
-                    <hr />
                     <div class="alert alert-info">Some service options have additional environment variables that you can define for a given instance. They will show up below when you select a service option. If none show up, chances are that none were defined, and there is nothing to worry about.</div>
                     <span id="serverVariables"></span>
                 </div>
@@ -313,6 +347,8 @@ $(document).ready(function () {
 
         currentService = $('#getService').val();
         handleLoader('#load_services', true);
+        $('#serviceOptions').slideUp();
+        $('#getOption').html('<option disabled selected> -- Select a Service Option</option>');
 
         $.ajax({
             method: 'POST',
@@ -324,7 +360,9 @@ $(document).ready(function () {
                 service: $('#getService').val()
             }
         }).done(function (data) {
-            $.each(data, function (i, option) {
+            $('#startupExec').html(data.exec);
+            $('input[name="startup"]').val(data.startup);
+            $.each(data.options, function (i, option) {
                 $('#getOption').append('<option value="' + option.id + '" data-image="' + option.docker_image + '">' + option.name + '</option>');
             });
             $('#getOption').parent().parent().removeClass('hidden');
@@ -341,6 +379,7 @@ $(document).ready(function () {
     $('#getOption').on('change', function (event) {
 
         handleLoader('#load_services', true);
+        handleLoader('#serviceOptions', true);
         $('#serverVariables').html('');
         $('input[name="custom_image_name"]').val($(this).find(':selected').data('image'));
 
@@ -363,15 +402,18 @@ $(document).ready(function () {
                             <input type="text" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" />\
                             <p class="text-muted"><small>' + item.description + '</small></p>\
                             <p class="text-muted"><small>Regex Requirements for Input: <code>' + item.regex + '</code></small></p>\
+                            <p class="text-muted"><small>Access in Startup: <code>${' + item.env_variable + '}</code></small></p>\
                         </div>\
                     </div>\
                 ';
                 $('#serverVariables').append(dataAppend);
             });
+            $('#serviceOptions').slideDown();
         }).fail(function (jqXHR) {
             console.error(jqXHR);
         }).always(function () {
             handleLoader('#load_services');
+            handleLoader('#serviceOptions');
         });
 
     });

@@ -52,6 +52,7 @@ class ServerRepository
             'node' => 'required|numeric|min:1|exists:nodes,id',
             'name' => 'required|regex:([\w -]{4,35})',
             'memory' => 'required|numeric|min:1',
+            'swap' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:1',
             'cpu' => 'required|numeric|min:0',
             'io' => 'required|numeric|min:10|max:1000',
@@ -59,6 +60,7 @@ class ServerRepository
             'port' => 'required|numeric|min:1|max:65535',
             'service' => 'required|numeric|min:1|exists:services,id',
             'option' => 'required|numeric|min:1|exists:service_options,id',
+            'startup' => 'required',
             'custom_image_name' => 'required_if:use_custom_image,on',
         ]);
 
@@ -155,21 +157,25 @@ class ServerRepository
 
         // Add Server to the Database
         $server = new Models\Server;
+        $generatedUuid = $uuid->generate('servers', 'uuid');
         $server->fill([
-            'uuid' => $uuid->generate('servers', 'uuid'),
-            'uuidShort' => $uuid->generateShort(),
+            'uuid' => $generatedUuid,
+            'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
             'node' => $data['node'],
             'name' => $data['name'],
             'active' => 1,
             'owner' => $user->id,
             'memory' => $data['memory'],
+            'swap' => $data['swap'],
             'disk' => $data['disk'],
             'io' => $data['io'],
             'cpu' => $data['cpu'],
+            'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
             'ip' => $data['ip'],
             'port' => $data['port'],
             'service' => $data['service'],
             'option' => $data['option'],
+            'startup' => $data['startup'],
             'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
             'username' => $this->generateSFTPUsername($data['name'])
         ]);
