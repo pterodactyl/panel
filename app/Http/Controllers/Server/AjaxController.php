@@ -178,4 +178,38 @@ class AjaxController extends Controller
 
     }
 
+    /**
+     * [postSetConnection description]
+     * @param  Request $request
+     * @param  string  $uuid
+     * @return \Illuminate\Http\Response
+     */
+    public function postSetConnection(Request $request, $uuid)
+    {
+
+        $server = Server::getByUUID($uuid);
+        $this->authorize('set-connection', $server);
+
+        try {
+
+            $repo = new Repositories\ServerRepository;
+            $repo->changeBuild($server->id, [
+                'default' => $request->input('connection'),
+            ]);
+            return response('The default connection for this server has been updated. Please be aware that you will need to restart your server for this change to go into effect.');
+
+        } catch (\Exception $e) {
+            if ($e instanceof \Pterodactyl\Exceptions\DisplayException || $e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                ], 503);
+            } else {
+                Log::error($e);
+                return response()->json([
+                    'error' => 'An unhandled exception occured while attemping to modify the default connection for this server.'
+                ], 503);
+            }
+        }
+    }
+
 }

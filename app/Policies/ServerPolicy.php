@@ -175,4 +175,20 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('download-files')->exists();
     }
 
+    /**
+     * Check if user has permission to change the default connection information.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function setConnection(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('set-connection')->exists();
+    }
+
 }

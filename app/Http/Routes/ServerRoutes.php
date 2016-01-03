@@ -18,6 +18,7 @@ class ServerRoutes {
             // Ajax Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 $router->get('status', [ 'uses' => 'Server\AjaxController@getStatus' ]);
+                $router->post('set-connection', [ 'uses' => 'Server\AjaxController@postSetConnection' ]);
                 $router->post('files/directory-list', [ 'uses' => 'Server\AjaxController@postDirectoryList' ]);
                 $router->post('files/save', [ 'uses' => 'Server\AjaxController@postSaveFile' ]);
             });

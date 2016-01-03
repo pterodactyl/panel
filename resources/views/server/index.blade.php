@@ -88,7 +88,7 @@
                 <div class="panel-heading"></div>
                 <div class="panel-body">
                     <div class="alert alert-info">Below is a listing of all avaliable IPs and Ports for your service. To change the default connection address for your server, simply click on the one you would like to make default below.</div>
-                    <ul class="nav nav-pills nav-stacked">
+                    <ul class="nav nav-pills nav-stacked" id="conn_options">
                         @foreach ($allocations as $allocation)
                             <li role="presentation" @if($allocation->ip === $server->ip && $allocation->port === $server->port) class="active" @endif><a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip }} <span class="badge">{{ $allocation->port }}</span></a></li>
                         @endforeach
@@ -292,8 +292,7 @@ $(window).load(function () {
                 });
             }
             if({{ $server->cpu }} > 0) {
-                CPUChart.series[ i + 1 ].addPoint(parseFloat(((proc.data.cpu.cores[i] / {{ $server->cpu }}) * 100).toFixed(3).toString())
-, true, true);
+                CPUChart.series[ i + 1 ].addPoint(parseFloat(((proc.data.cpu.cores[i] / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
             } else {
                 CPUChart.series[ i + 1 ].addPoint(proc.data.cpu.cores[i], true, true);
             }
@@ -377,6 +376,39 @@ $(window).load(function () {
             $('#stats_players').hide();
         }
     }
+
+    @can('set-connection', $server)
+        // Send Request
+        $('[data-action="set-connection"]').click(function (event) {
+            event.preventDefault();
+            var element = $(this);
+            if (element.hasClass('active')) {
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: '/server/{{ $server->uuidShort }}/ajax/set-connection',
+                data: {
+                    connection: element.data('connection')
+                },
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function (data) {
+                $('#conn_options').find('li.active').removeClass('active');
+                element.parent().addClass('active');
+                alert(data);
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                if (typeof jqXHR.responseJSON.error === 'undefined' || jqXHR.responseJSON.error === '') {
+                    return alert('An error occured while attempting to perform this action.');
+                } else {
+                    return alert(jqXHR.responseJSON.error);
+                }
+            });
+        });
+    @endcan
 
     @can('command', $server)
         // Send Command to Server
