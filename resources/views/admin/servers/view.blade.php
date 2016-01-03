@@ -265,8 +265,8 @@
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/servers']").addClass('active');
     $('input[name="default"]').on('change', function (event) {
-        $('select[name="remove_additional"]').find('option:disabled').prop('disabled', false);
-        $('select[name="remove_additional"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
+        $('select[name="remove_additional[]"]').find('option:disabled').prop('disabled', false);
+        $('select[name="remove_additional[]"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
     });
 });
 </script>
