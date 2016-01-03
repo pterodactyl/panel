@@ -77,7 +77,7 @@ class ServerRepository
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
-        $node = Models\Node::find($data['node']);
+        $node = Models\Node::getByID($data['node']);
         $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
@@ -94,6 +94,9 @@ class ServerRepository
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
 
+        // Load up the Service Information
+        $service = Models\Service::find($option->parent_service);
+
         // Check those Variables
         $variables = Models\ServiceVariables::where('option_id', $data['option'])->get();
         $variableList = [];
@@ -105,12 +108,11 @@ class ServerRepository
                     if ($variable->required === 1) {
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
-
                     $variableList = array_merge($variableList, [[
-                        'var_id' => $variable->id,
-                        'var_val' => $variable->default_value
+                        'id' => $variable->id,
+                        'env' => $variable->env_variable,
+                        'val' => $variable->default_value
                     ]]);
-
                     continue;
                 }
 
@@ -120,10 +122,10 @@ class ServerRepository
                 }
 
                 $variableList = array_merge($variableList, [[
-                    'var_id' => $variable->id,
-                    'var_val' => $data['env_' . $variable->env_variable]
+                    'id' => $variable->id,
+                    'env' => $variable->env_variable,
+                    'val' => $data['env_' . $variable->env_variable]
                 ]]);
-
                 continue;
             }
         }
@@ -188,25 +190,78 @@ class ServerRepository
         $allocation->save();
 
         // Add Variables
+        $environmentVariables = [];
+        $environmentVariables = array_merge($environmentVariables, [
+            'STARTUP' => $data['startup']
+        ]);
         foreach($variableList as $item) {
+            $environmentVariables = array_merge($environmentVariables, [
+                $item['env'] => $item['val']
+            ]);
             Models\ServerVariables::create([
                 'server_id' => $server->id,
-                'variable_id' => $item['var_id'],
-                'variable_value' => $item['var_val']
+                'variable_id' => $item['id'],
+                'variable_value' => $item['val']
             ]);
         }
 
         try {
 
-            // Add logic for communicating with Wings to make the server in here.
-            // We should add the server regardless of the Wings response, but
-            // handle the error and then allow the server to be re-deployed.
+            $client = Models\Node::guzzleRequest($node->id);
+            $client->request('POST', '/servers', [
+                'headers' => [
+                    'X-Access-Token' => $node->daemonSecret
+                ],
+                'json' => [
+                    'uuid' => (string) $server->uuid,
+                    'user' => $server->username,
+                    'build' => [
+                        'default' => [
+                            'ip' => $server->ip,
+                            'port' => (int) $server->port
+                        ],
+                        'ports' => [
+                            (string) $server->ip => [ (int) $server->port ]
+                        ],
+                        'env' => $environmentVariables,
+                        'memory' => (int) $server->memory,
+                        'swap' => (int) $server->swap,
+                        'io' => (int) $server->io,
+                        'cpu' => (int) $server->cpu,
+                        'disk' => (int) $server->disk,
+                        'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image
+                    ],
+                    'service' => [
+                        'type' => $service->file,
+                        'option' => $option->tag
+                    ],
+                    'keys' => [
+                        (string) $server->daemonSecret => [
+                            's:get',
+                            's:power',
+                            's:console',
+                            's:command',
+                            's:files:get',
+                            's:files:read',
+                            's:files:post',
+                            's:files:delete',
+                            's:files:upload',
+                            's:set-password'
+                        ]
+                    ],
+                    'rebuild' => false
+                ]
+            ]);
 
             DB::commit();
             return $server->id;
-        } catch (\Exception $e) {
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw $e;
+            throw new DisplayException('An error occured while attempting to update the configuration: ' . $ex->getMessage());
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            Log:error($ex);
+            throw $ex;
         }
 
     }

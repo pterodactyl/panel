@@ -62,6 +62,7 @@ class ServersController extends Controller
         ->join('locations', 'nodes.location', '=', 'locations.id')
         ->join('services', 'servers.service', '=', 'services.id')
         ->join('service_options', 'servers.option', '=', 'service_options.id')
+        ->where('servers.id', $id)
         ->first();
 
         return view('admin.servers.view', [

@@ -212,14 +212,15 @@
                         <span class="input-group-addon" id="startupExec"></span>
                         <input type="text" class="form-control" name="startup" value="{{ old('startup') }}" />
                     </div>
+                    <p class="text-muted"><small>The following data replacers are avaliable for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server ip, and server port respectively.</small></p>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="alert alert-info">Some service options have additional environment variables that you can define for a given instance. They will show up below when you select a service option. If none show up, chances are that none were defined, and there is nothing to worry about.</div>
-                    <span id="serverVariables"></span>
                 </div>
             </div>
+            <div class="row" id="serverVariables"></div>
         </div>
         <div class="well">
             <div class="row">
@@ -402,7 +403,7 @@ $(document).ready(function () {
                             <input type="text" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" />\
                             <p class="text-muted"><small>' + item.description + '</small></p>\
                             <p class="text-muted"><small>Regex Requirements for Input: <code>' + item.regex + '</code></small></p>\
-                            <p class="text-muted"><small>Access in Startup: <code>${' + item.env_variable + '}</code></small></p>\
+                            <p class="text-muted"><small>Access in Startup: <code>@{{' + item.env_variable + '}}</code></small></p>\
                         </div>\
                     </div>\
                 ';
