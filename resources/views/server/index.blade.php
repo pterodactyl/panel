@@ -20,81 +20,85 @@
             </div>
         @endforeach
     @endforeach
-    <ul class="nav nav-tabs" id="config_tabs">
-        <li class="active"><a href="#stats" data-toggle="tab">{{ trans('server.index.info_use') }}</a></li>
-        <li id="triggerConsoleView"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
-    </ul><br />
+    <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
+        <li id="triggerConsoleView" class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
+        <li><a href="#stats" data-toggle="tab">{{ trans('server.index.usage') }}</a></li>
+        <li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>
+    </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="stats">
-            <div class="row">
-                <div class="col-md-12" id="chart_memory" style="height:250px;"></div>
-                <div class="col-md-12" id="chart_cpu" style="height:250px;"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-12" id="stats_players">
-                    <h3 class="nopad">Active Players</h3><hr />
-                    <div id="players_notice" class="alert alert-info">
-                        <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
+        <div class="tab-pane active" id="console">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <textarea id="live_console" class="form-control console" readonly="readonly">Loading Previous Content...</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <hr />
+                            <form action="#" method="post" id="console_command" style="display:none;">
+                                <fieldset>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
+                                        <span class="input-group-btn">
+                                            <button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
+                                        </span>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+                        </div>
+                        <div class="col-md-6" style="text-align:center;">
+                            <hr />
+                            <button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>
+                            <button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>
+                            <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>
+                            <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
+                            <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                        </div>
                     </div>
-                    <span id="toggle_players" style="display:none;">
-                        <p class="text-muted">No players are online.</p>
-                    </span>
-                </div>
-                <div class="col-md-12">
-                    <h3>{{ trans('server.index.server_info') }}</h3><hr />
-                    <table class="table table-striped table-bordered table-hover">
-                        <tbody>
-                            <tr>
-                                <td><strong>{{ trans('server.index.connection') }}</strong></td>
-                                <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
-                            </tr>
-                            <tr>
-                                <td><strong>{{ trans('strings.node') }}</strong></td>
-                                <td>{{ $node->name }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>{{ trans('server.index.mem_limit') }}</strong></td>
-                                <td>{{ $server->memory }} MB</td>
-                            </tr>
-                            <tr>
-                                <td><strong>{{ trans('server.index.disk_space') }}</strong></td>
-                                <td>{{ $server->disk }} MB</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane" id="console">
-            <div class="row">
-                <div class="col-md-12">
-                    <textarea id="live_console" class="form-control console" readonly="readonly">Loading Previous Content...</textarea>
-                </div>
-                <div class="col-md-6">
-                    <hr />
-                    <form action="#" method="post" id="console_command" style="display:none;">
-                        <fieldset>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
-                                <span class="input-group-btn">
-                                    <button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
-                                </span>
+                    <div class="row">
+                        <div class="col-md-12" id="stats_players">
+                            <h3>Active Players</h3><hr />
+                            <div id="players_notice" class="alert alert-info">
+                                <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
                             </div>
-                        </fieldset>
-                    </form>
-                    <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
-                </div>
-                <div class="col-md-6" style="text-align:center;">
-                    <hr />
-                    <button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>
-                    <button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>
-                    <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>
-                    <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
-                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
-                    <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                            <span id="toggle_players" style="display:none;">
+                                <p class="text-muted">No players are online.</p>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="tab-pane" id="stats">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-11 text-center" id="chart_memory" style="height:250px;"></div>
+                        <div class="col-xs-11 text-center" id="chart_cpu" style="height:250px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="allocation">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="alert alert-info">Below is a listing of all avaliable IPs and Ports for your service. To change the default connection address for your server, simply click on the one you would like to make default below.</div>
+                    <ul class="nav nav-pills nav-stacked">
+                        @foreach ($allocations as $allocation)
+                            <li role="presentation" @if($allocation->ip === $server->ip && $allocation->port === $server->port) class="active" @endif><a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip }} <span class="badge">{{ $allocation->port }}</span></a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-11" id="col11_setter"></div>
     </div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
@@ -124,11 +128,17 @@ $(window).load(function () {
     // -----------------+
     // Charting Methods |
     // -----------------+
+    $(window).resize(function() {
+        $('#chart_memory').highcharts().setSize($('#col11_setter').width(), 250);
+        $('#chart_cpu').highcharts().setSize($('#col11_setter').width(), 250);
+    });
     $('#chart_memory').highcharts({
         chart: {
             type: 'area',
             animation: Highcharts.svg,
             marginRight: 10,
+            renderTo: 'container',
+            width: $('#col11_setter').width()
         },
         colors: [
             '#113F8C',
@@ -196,6 +206,8 @@ $(window).load(function () {
             type: 'area',
             animation: Highcharts.svg,
             marginRight: 10,
+            renderTo: 'container',
+            width: $('#col11_setter').width()
         },
         colors: [
             '#113F8C',
@@ -365,6 +377,7 @@ $(window).load(function () {
             $('#stats_players').hide();
         }
     }
+
     @can('command', $server)
         // Send Command to Server
         $('#console_command').submit(function (event) {
@@ -442,8 +455,6 @@ $(window).load(function () {
                     }),
                     url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
                     timeout: 10000
-                }).done(function(data) {
-                    $('#pw_resp').attr('class', 'alert alert-success').html('Server has been ' + action + 'ed successfully.').fadeIn().delay(5000).fadeOut();
                 }).fail(function(jqXHR) {
                     var error = 'An unknown error occured processing this request.';
                     if (typeof jqXHR.responseJSON.error !== 'undefined') {

@@ -23,7 +23,8 @@ return [
         'mem_limit' => 'Memory Limit',
         'disk_space' => 'Disk Space',
         'control' => 'Control Server',
-        'info_use' => 'Information & Usage',
+        'usage' => 'Usage',
+        'allocation' => 'Allocation',
         'command' => 'Enter Console Command',
     ],
     'files' => [

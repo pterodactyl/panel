@@ -140,6 +140,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                After editing any of the options below you will need to restart the server for changes to take effect. If the server is currently off, you just need to start it and the container will be rebuilt with the new settings.
+                            </div>
+                        </div>
+                    </div>
                     <form action="/admin/servers/view/{{ $server->id }}/build" method="POST">
                         <div class="row">
                             <div class="col-md-6 form-group {{ $errors->has('memory') ? 'has-error' : '' }}">
@@ -244,18 +251,55 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <div class="col-md-12">
-                        <div class="col-md-4 text-center">
-                            <form action="/admin/servers/view/{{ $server->id }}/rebuild" method="POST">
-                                {!! csrf_field() !!}
-                                <button type="submit" class="btn btn-sm btn-primary">Rebuild Server Container</button>
-                            </form>
-                        </div>
-                        <div class="col-md-8">
-                            <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly. Please be aware: if you manually updated the server's configuration file, you will need to restart the daemon before doing this, or it will be overwritten.</p>
-                            <div class="alert alert-info">A rebuild will automatically occur whenever you edit build configuration settings for the server.</div>
-                        </div>
-                    </div>
+                    <table class="table table-striped" style="margin-bottom: 0;">
+                        <tbody>
+                            <tr>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <a href="/server/{{ $server->uuidShort }}/">
+                                        <button type="submit" class="btn btn-sm btn-primary">Manage Server</button>
+                                    </a>
+                                </td>
+                                <td>
+                                    <p>This will take you to the server management page that users normally see and allow you to manage server files as well as check the console and data usage.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <form action="/admin/servers/view/{{ $server->id }}/installed" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-sm btn-primary">Toggle Install Status</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <p>This will toggle the install status for the server.</p>
+                                    <div class="alert alert-warning">If you have just created this server it is ill advised to perform this action as the daemon will contact the panel when finished which could cause the install status to be wrongly set.</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <form action="/admin/servers/view/{{ $server->id }}/rebuild" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-sm btn-primary">Rebuild Server Container</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly. Please be aware: if you manually updated the server's configuration file, you will need to restart the daemon before doing this, or it will be overwritten.</p>
+                                    <div class="alert alert-info">A rebuild will automatically occur whenever you edit build configuration settings for the server.</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center" style="vertical-align:middle;">
+                                    <form action="/admin/servers/view/{{ $server->id }}/delete" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete Server</button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <div class="alert alert-danger" style="margin-top:21px;">Deleting a server is an irreversible action. <strong>All data will be immediately removed relating to this server.</strong></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

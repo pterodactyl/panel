@@ -6,6 +6,7 @@ use Auth;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Download;
+use Pterodactyl\Models\Allocation;
 use Debugbar;
 use Uuid;
 use Alert;
@@ -46,6 +47,7 @@ class ServerController extends Controller
         $server = Server::getByUUID($request->route()->server);
         return view('server.index', [
             'server' => $server,
+            'allocations' => Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
             'node' => Node::find($server->node)
         ]);
     }
