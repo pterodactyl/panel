@@ -33,6 +33,7 @@
         <li class="active"><a href="#tab_about" data-toggle="tab">About</a></li>
         <li><a href="#tab_details" data-toggle="tab">Details</a></li>
         <li><a href="#tab_build" data-toggle="tab">Build Configuration</a></li>
+        <li><a href="#tab_startup" data-toggle="tab">Startup Settings</a></li>
         <li><a href="#tab_manage" data-toggle="tab">Manage</a></li>
     </ul>
     <div class="tab-content">
@@ -139,7 +140,103 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    Build
+                    <form action="/admin/servers/view/{{ $server->id }}/build" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 form-group {{ $errors->has('memory') ? 'has-error' : '' }}">
+                                <label for="memory" class="control-label">Allocated Memory</label>
+                                <div class="input-group">
+                                    <input type="text" name="memory" class="form-control" value="{{ old('memory', $server->memory) }}"/>
+                                    <span class="input-group-addon">MB</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group {{ $errors->has('swap') ? 'has-error' : '' }}">
+                                <label for="swap" class="control-label">Allocated Swap</label>
+                                <div class="input-group">
+                                    <input type="text" name="swap" class="form-control" value="{{ old('swap', $server->swap) }}"/>
+                                    <span class="input-group-addon">MB</span>
+                                </div>
+                                <p class="text-muted"><small>Setting this to <code>0</code> will disable swap space on this server.</small></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 form-group {{ $errors->has('cpu') ? 'has-error' : '' }}">
+                                <label for="cpu" class="control-label">CPU Limit</label>
+                                <div class="input-group">
+                                    <input type="text" name="cpu" class="form-control" value="{{ old('cpu', $server->cpu) }}"/>
+                                    <span class="input-group-addon">%</span>
+                                </div>
+                                <p class="text-muted"><small>Each <em>physical</em> core on the system is considered to be <code>100%</code>. Setting this value to <code>0</code> will allow a server to use CPU time without restrictions.</small></p>
+                            </div>
+                            <div class="col-md-6 form-group {{ $errors->has('io') ? 'has-error' : '' }}">
+                                <label for="io" class="control-label">Block IO Proportion</label>
+                                <div>
+                                    <input type="text" name="io" class="form-control" value="{{ old('io', $server->io) }}"/>
+                                </div>
+                                <p class="text-muted"><small>Changing this value can have negative effects on all containers on the system. We strongly recommend leaving this value as <code>500</code>.</small></p>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    Additional IPs and Ports can be assigned to this server for use by plugins or other software. The game port is what will show up for the user to use to connect to thier server, and what their configuration files will be forced to use for binding.
+                                </div>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <label for="default" class="control-label">Game Port</label>
+                                @foreach ($assigned as $assignment)
+                                    <div class="input-group" style="margin:5px auto;">
+                                        <span class="input-group-addon">
+                                            <input type="radio" @if($assignment->ip == $server->ip && $assignment->port == $server->port) checked="checked" @endif name="default" value="{{ $assignment->ip }}:{{ $assignment->port }}"/>
+                                        </span>
+                                        <input type="text" class="form-control" value="{{ $assignment->ip }}:{{ $assignment->port }}" readonly />
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <label for="add_additional" class="control-label">Assign Additional Ports</label>
+                                        <div>
+                                            <select name="add_additional[]" class="form-control" multiple>
+                                                @foreach ($unassigned as $assignment)
+                                                    <option value="{{ $assignment->ip }}:{{ $assignment->port }}">{{ $assignment->ip }}:{{ $assignment->port }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <p class="text-muted"><small>Please note that due to software limitations you cannot assign identical ports on different IPs to the same server. For example, you <strong>cannot</strong> assign both <code>192.168.0.5:25565</code> and <code>192.168.10.5:25565</code> to the same server.</small></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <label for="remove_additional" class="control-label">Remove Additional Ports</label>
+                                        <div>
+                                            <select name="remove_additional[]" class="form-control" multiple>
+                                                @foreach ($assigned as $assignment)
+                                                    <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($assignment->ip == $server->ip && $assignment->port == $server->port) disabled @endif>{{ $assignment->ip }}:{{ $assignment->port }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <p class="text-muted"><small>Simply select which ports you would like to remove from the list above. If you want to assign a port on a different IP that is already in use you can select it above and delete it down here.</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {!! csrf_field() !!}
+                                <input type="submit" class="btn btn-sm btn-primary" value="Update Build Configuration" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_startup">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    Startup
                 </div>
             </div>
         </div>
@@ -147,7 +244,18 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    Manage
+                    <div class="col-md-12">
+                        <div class="col-md-4 text-center">
+                            <form action="/admin/servers/view/{{ $server->id }}/rebuild" method="POST">
+                                {!! csrf_field() !!}
+                                <button type="submit" class="btn btn-sm btn-primary">Rebuild Server Container</button>
+                            </form>
+                        </div>
+                        <div class="col-md-8">
+                            <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly. Please be aware: if you manually updated the server's configuration file, you will need to restart the daemon before doing this, or it will be overwritten.</p>
+                            <div class="alert alert-info">A rebuild will automatically occur whenever you edit build configuration settings for the server.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,6 +264,10 @@
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/servers']").addClass('active');
+    $('input[name="default"]').on('change', function (event) {
+        $('select[name="remove_additional"]').find('option:disabled').prop('disabled', false);
+        $('select[name="remove_additional"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
+    });
 });
 </script>
 @endsection

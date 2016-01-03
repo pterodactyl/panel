@@ -50,20 +50,24 @@ class ServersController extends Controller
 
     public function getView(Request $request, $id)
     {
+        $server = Models\Server::select(
+            'servers.*',
+            'nodes.name as a_nodeName',
+            'users.email as a_ownerEmail',
+            'locations.long as a_locationName',
+            'services.name as a_serviceName',
+            'service_options.name as a_servceOptionName'
+        )->join('nodes', 'servers.node', '=', 'nodes.id')
+        ->join('users', 'servers.owner', '=', 'users.id')
+        ->join('locations', 'nodes.location', '=', 'locations.id')
+        ->join('services', 'servers.service', '=', 'services.id')
+        ->join('service_options', 'servers.option', '=', 'service_options.id')
+        ->first();
+
         return view('admin.servers.view', [
-            'server' => Models\Server::select(
-                    'servers.*',
-                    'nodes.name as a_nodeName',
-                    'users.email as a_ownerEmail',
-                    'locations.long as a_locationName',
-                    'services.name as a_serviceName',
-                    'service_options.name as a_servceOptionName'
-                )->join('nodes', 'servers.node', '=', 'nodes.id')
-                ->join('users', 'servers.owner', '=', 'users.id')
-                ->join('locations', 'nodes.location', '=', 'locations.id')
-                ->join('services', 'servers.service', '=', 'services.id')
-                ->join('service_options', 'servers.option', '=', 'service_options.id')
-                ->first()
+            'server' => $server,
+            'assigned' => Models\Allocation::select('id', 'ip', 'port')->where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'unassigned' => Models\Allocation::select('id', 'ip', 'port')->where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get()
         ]);
     }
 
@@ -223,6 +227,65 @@ class ServersController extends Controller
             ])->withInput();
 
         }
+    }
+
+    public function postUpdateServerToggleBuild(Request $request, $id) {
+        $server = Models\Server::findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+        $client = Models\Node::guzzleRequest($server->node);
+
+        try {
+            $res = $client->request('POST', '/server/rebuild', [
+                'headers' => [
+                    'X-Access-Server' => $server->uuid,
+                    'X-Access-Token' => $node->daemonSecret
+                ]
+            ]);
+            Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('An error occured while attempting to toggle a rebuild: ' . $ex->getMessage())->flash();
+        }
+
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_manage'
+        ]);
+    }
+
+    public function postUpdateServerUpdateBuild(Request $request, $id)
+    {
+        try {
+
+            $server = new ServerRepository;
+            $server->changeBuild($id, [
+                'default' => $request->input('default'),
+                'add_additional' => $request->input('add_additional'),
+                'remove_additional' => $request->input('remove_additional'),
+                'memory' => $request->input('memory'),
+                'swap' => $request->input('swap'),
+                'io' => $request->input('io'),
+                'cpu' => $request->input('cpu'),
+            ]);
+            Alert::success('Server details were successfully updated.')->flash();
+        } catch (\Exception $e) {
+
+            if ($e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
+                return redirect()->route('admin.servers.view', [
+                    'id' => $id,
+                    'tab' => 'tab_build'
+                ])->withErrors(json_decode($e->getMessage()))->withInput();
+            } else if ($e instanceof \Pterodactyl\Exceptions\DisplayException) {
+                Alert::danger($e->getMessage())->flash();
+            } else {
+                Log::error($e);
+                Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            }
+        }
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_build'
+        ]);
     }
 
 }

@@ -226,7 +226,7 @@ class ServerRepository
         // Validate Fields
         $validator = Validator::make($data, [
             'owner' => 'email|exists:users,email',
-            'name' => 'regex:([\w -]{4,35})'
+            'name' => 'regex:^([\w -]{4,35})$'
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -304,9 +304,167 @@ class ServerRepository
                 throw new DisplayException('Daemon returned a a non HTTP/204 error code. HTTP/' + $res->getStatusCode());
             }
         } catch (\Exception $ex) {
-            DB::rollback();
+            DB::rollBack();
             Log::error($ex);
             throw new DisplayException('An error occured while attempting to update this server\'s information.');
+        }
+
+    }
+
+    /**
+     * [changeBuild description]
+     * @param  integer  $id
+     * @param  array    $data
+     * @return boolean
+     */
+    public function changeBuild($id, array $data)
+    {
+
+        $validator = Validator::make($data, [
+            'default' => [
+                'string',
+                'regex:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5])):(\d{1,5})$/'
+            ],
+            'add_additional' => 'array',
+            'remove_additional' => 'array',
+            'memory' => 'integer|min:0',
+            'swap' => 'integer|min:0',
+            'io' => 'integer|min:10|max:1000',
+            'cpu' => 'integer|min:0',
+            'disk' => 'integer|min:0'
+        ]);
+
+        // Run validator, throw catchable and displayable exception if it fails.
+        // Exception includes a JSON result of failed validation rules.
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        DB::beginTransaction();
+        $server = Models\Server::findOrFail($id);
+
+        if (isset($data['default'])) {
+            list($ip, $port) = explode(':', $data['default']);
+            if ($ip === $server->ip && $port === $server->port) {
+                continue;
+            }
+
+            $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->get();
+            if (!$allocation) {
+                throw new DisplayException('The assigned default connection (' . $ip . ':' . $prot . ') is not allocated to this server.');
+            }
+
+            $server->ip = $ip;
+            $server->port = $port;
+        }
+
+        // Remove Assignments
+        if (isset($data['remove_additional'])) {
+            foreach ($data['remove_additional'] as $id => $combo) {
+                list($ip, $port) = explode(':', $combo);
+                // Invalid, not worth killing the whole thing, we'll just skip over it.
+                if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
+                    continue;
+                }
+
+                // Can't remove the assigned IP/Port combo
+                if ($ip === $server->ip && $port === $server->port) {
+                    continue;
+                }
+
+                Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
+                    'assigned_to' => null
+                ]);
+            }
+        }
+
+        // Add Assignments
+        if (isset($data['add_additional'])) {
+            foreach ($data['add_additional'] as $id => $combo) {
+                list($ip, $port) = explode(':', $combo);
+                // Invalid, not worth killing the whole thing, we'll just skip over it.
+                if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
+                    continue;
+                }
+
+                // Don't allow double port assignments
+                if (Models\Allocation::where('port', $port)->where('assigned_to', $server->id)->count() !== 0) {
+                    continue;
+                }
+
+                Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
+                    'assigned_to' => $server->id
+                ]);
+            }
+        }
+
+        // Loop All Assignments
+        $additionalAssignments = [];
+        $assignments = Models\Allocation::where('assigned_to', $server->id)->get();
+        foreach ($assignments as &$assignment) {
+            if (array_key_exists((string) $assignment->ip, $additionalAssignments)) {
+                array_push($additionalAssignments[ (string) $assignment->ip ], (int) $assignment->port);
+            } else {
+                $additionalAssignments[ (string) $assignment->ip ] = [ (int) $assignment->port ];
+            }
+        }
+
+        // @TODO: verify that server can be set to this much memory without
+        // going over node limits.
+        if (isset($data['memory'])) {
+            $server->memory = $data['memory'];
+        }
+
+        if (isset($data['swap'])) {
+            $server->swap = $data['swap'];
+        }
+
+        // @TODO: verify that server can be set to this much disk without
+        // going over node limits.
+        if (isset($data['disk'])) {
+            $server->disk = $data['disk'];
+        }
+
+        if (isset($data['cpu'])) {
+            $server->cpu = $data['cpu'];
+        }
+
+        if (isset($data['io'])) {
+            $server->io = $data['io'];
+        }
+
+        try {
+
+            $node = Models\Node::getByID($server->node);
+            $client = Models\Node::guzzleRequest($server->node);
+
+            $client->request('PATCH', '/server', [
+                'headers' => [
+                    'X-Access-Server' => $server->uuid,
+                    'X-Access-Token' => $node->daemonSecret
+                ],
+                'json' => [
+                    'build' => [
+                        'default' => [
+                            'ip' => $server->ip,
+                            'port' => (int) $server->port
+                        ],
+                        'ports|overwrite' => $additionalAssignments,
+                        'memory' => (int) $server->memory,
+                        'swap' => (int) $server->swap,
+                        'io' => (int) $server->io,
+                        'cpu' => (int) $server->cpu,
+                        'disk' => (int) $server->disk
+                    ]
+                ]
+            ]);
+
+            $server->save();
+            DB::commit();
+            return true;
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            DB::rollBack();
+            throw new DisplayException('An error occured while attempting to update the configuration: ' . $ex->getMessage());
         }
 
     }

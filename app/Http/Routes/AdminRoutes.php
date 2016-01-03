@@ -31,6 +31,8 @@ class AdminRoutes {
                 $router->get('/view/{id}', [ 'as' => 'admin.servers.view', 'uses' => 'Admin\ServersController@getView' ]);
 
                 $router->post('/view/{id}/details', [ 'uses' => 'Admin\ServersController@postUpdateServerDetails' ]);
+                $router->post('/view/{id}/rebuild', [ 'uses' => 'Admin\ServersController@postUpdateServerToggleBuild' ]);
+                $router->post('/view/{id}/build', [ 'uses' => 'Admin\ServersController@postUpdateServerUpdateBuild' ]);
 
                 $router->post('/new', [ 'uses' => 'Admin\ServersController@postNewServer']);
                 $router->post('/new/get-nodes', [ 'uses' => 'Admin\ServersController@postNewServerGetNodes' ]);
