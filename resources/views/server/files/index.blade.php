@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     <div class="row">
         <div class="col-md-12" id="internal_alert">
             <div class="alert alert-info">
@@ -15,14 +15,6 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            @foreach (Alert::getMessages() as $type => $messages)
-                @foreach ($messages as $message)
-                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        {{ $message }}
-                    </div>
-                @endforeach
-            @endforeach
             <div class="ajax_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
         </div>
     </div>

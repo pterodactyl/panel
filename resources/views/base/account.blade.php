@@ -6,26 +6,7 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
-    @if (count($errors) > 0)
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ trans('base.form_error') }}
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @foreach (Alert::getMessages() as $type => $messages)
-        @foreach ($messages as $message)
-            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                {{ $message }}
-            </div>
-        @endforeach
-    @endforeach
+<div class="col-md-12">
 	<div class="row">
 		<div class="col-md-6">
 			<h3 class="nopad">{{ trans('base.account.update_pass') }}</h3><hr />

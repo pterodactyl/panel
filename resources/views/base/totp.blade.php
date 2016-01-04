@@ -6,7 +6,7 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     @foreach (Alert::getMessages() as $type => $messages)
         @foreach ($messages as $message)
             <div class="alert alert-{{ $type }} alert-dismissable" role="alert">

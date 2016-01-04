@@ -14,16 +14,6 @@
     <form action="/auth/password/verify" method="POST">
         <legend>{{ trans('auth.resetpassword') }}</legend>
         <fieldset>
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
 			<input type="hidden" name="token" value="{{ $token }}">
             <div class="form-group">
                 <label for="email" class="control-label">{{ trans('strings.email') }}</label>

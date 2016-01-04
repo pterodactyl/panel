@@ -3,7 +3,7 @@
 @section('title', '403: Forbidden')
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     <div class="panel panel-danger">
         <div class="panel-heading">
             <h3 class="panel-title">HTTP 403: Access Denied</h3>

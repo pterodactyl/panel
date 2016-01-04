@@ -77,14 +77,41 @@
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
-                        <a href="/admin/node" class="list-group-item">List Nodes</a>
-                        <a href="/admin/node/new" class="list-group-item">Add Node</a>
-                        <a href="/admin/node/locations" class="list-group-item">Manage Locations</a>
-                        <a href="/admin/node/plugins" class="list-group-item">Manage Plugins</a>
+                        <a href="/admin/nodes" class="list-group-item">List Nodes</a>
+                        <a href="/admin/nodes/new" class="list-group-item">Add Node</a>
+                        <a href="/admin/locations" class="list-group-item">Manage Locations</a>
+                        <a href="/admin/services" class="list-group-item">Manage Services</a>
                     </div>
                 @show
             </div>
-            @yield('content')
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-12" id="tpl_messages">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @foreach (Alert::getMessages() as $type => $messages)
+                            @foreach ($messages as $message)
+                                <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    {{ $message }}
+                                </div>
+                            @endforeach
+                        @endforeach
+                    </div>
+                </div>
+                <div class="row">
+                    @yield('content')
+                </div>
+            </div>
         </div>
         <div class="footer">
             <div class="row">
@@ -100,6 +127,15 @@
         // Remeber Active Tab and Navigate to it on Reload
         for(var queryParameters={},queryString=location.search.substring(1),re=/([^&=]+)=([^&]*)/g,m;m=re.exec(queryString);)queryParameters[decodeURIComponent(m[1])]=decodeURIComponent(m[2]);$("a[data-toggle='tab']").click(function(){queryParameters.tab=$(this).attr("href").substring(1),window.history.pushState(null,null,location.pathname+"?"+$.param(queryParameters))});
         if($.urlParam('tab') != null){$('.nav.nav-tabs a[href="#' + $.urlParam('tab') + '"]').tab('show');}
+
+        @if (count($errors) > 0)
+            @foreach ($errors->all() as $error)
+                <?php preg_match('/^The\s(.*?)\s/', $error, $matches) ?>
+                @if (isset($matches[1]))
+                    $('[name="{{ $matches[1] }}"]').parent().parent().addClass('has-error');
+                @endif
+            @endforeach
+        @endif
     });
     </script>
 </body>

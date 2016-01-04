@@ -6,15 +6,7 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
-    @foreach (Alert::getMessages() as $type => $messages)
-        @foreach ($messages as $message)
-            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                {{ $message }}
-            </div>
-        @endforeach
-    @endforeach
+<div class="col-md-12">
     @if (Auth::user()->root_admin == 1)
         <div class="alert alert-info">{{ trans('base.view_as_admin') }}</div>
     @endif

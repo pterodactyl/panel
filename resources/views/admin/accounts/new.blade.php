@@ -5,22 +5,12 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Controls</a></li>
         <li><a href="/admin/accounts">Accounts</a></li>
         <li class="active">Add New Account</li>
 	</ul>
-    @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
     <h3>Create New Account</h3><hr />
     <form action="new" method="post">
 		<fieldset>

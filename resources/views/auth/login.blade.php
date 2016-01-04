@@ -14,24 +14,6 @@
     <form action="/auth/login" method="POST" id="login-form">
         <legend>{{ trans('strings.login') }}</legend>
         <fieldset>
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            @foreach (Alert::getMessages() as $type => $messages)
-                @foreach ($messages as $message)
-                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        {{ $message }}
-                    </div>
-                @endforeach
-            @endforeach
             <div class="form-group">
                 <label for="email" class="control-label">{{ trans('strings.email') }}</label>
                 <div>

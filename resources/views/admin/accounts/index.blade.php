@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     <ul class="breadcrumb">
 		<li><a href="/admin">Admin Control</a></li>
 		<li class="active">Accounts</li>

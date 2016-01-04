@@ -14,16 +14,6 @@
     <form action="/auth/password" method="POST">
         <legend>{{ trans('auth.resetpassword') }}</legend>
         <fieldset>
-            @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
             @if (session('status'))
                 <div class="alert alert-success">
                     <strong>{{ trans('strings.success') }}!</strong> {{ trans('auth.emailsent') }}

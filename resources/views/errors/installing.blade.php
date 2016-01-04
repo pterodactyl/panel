@@ -3,7 +3,7 @@
 @section('title', '503: Server Temporarily Unavaliable')
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     <div class="panel panel-danger">
         <div class="panel-heading">
             <h3 class="panel-title">HTTP 503: Temporarily Unavaliable</h3>

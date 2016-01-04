@@ -5,16 +5,7 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
-    <span id="save_status" style="display:none;width: 100%;"></span>
-    @foreach (Alert::getMessages() as $type => $messages)
-        @foreach ($messages as $message)
-            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                {{ $message }}
-            </div>
-        @endforeach
-    @endforeach
+<div class="col-md-12">
     <h3 class="nopad"><small>Editing File: /home/container/{{ $file }}</small></h3>
     <form method="post" id="editing_file">
         <div class="form-group">
@@ -85,9 +76,9 @@ $(document).ready(function () {
                     contents: fileContents
                 }
             }).done(function (data) {
-                $('#save_status').html('<div class="alert alert-success">{{ trans('server.files.saved') }}</div>').slideDown();
+                $('#tpl_messages').html('<div class="alert alert-success">{{ trans('server.files.saved') }}</div>');
             }).fail(function (jqXHR) {
-                $('#save_status').html('<div class="alert alert-danger">' + jqXHR.responseText + '</div>').slideDown();
+                $('#tpl_messages').html('<div class="alert alert-danger">' + jqXHR.responseText + '</div>');
             }).always(function () {
                 $('#save_file').html('{{ trans('strings.save') }}').removeClass('disabled');
             });

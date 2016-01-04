@@ -5,30 +5,12 @@
 @endsection
 
 @section('content')
-<div class="col-md-9">
+<div class="col-md-12">
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/servers">Servers</a></li>
         <li class="active">Create New Server</li>
     </ul>
-    @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('base.validation_error') }}<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    @foreach (Alert::getMessages() as $type => $messages)
-        @foreach ($messages as $message)
-            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                {!! $message !!}
-            </div>
-        @endforeach
-    @endforeach
     <h3>Create New Server</h3><hr />
     <form action="/admin/servers/new" method="POST">
         <div class="well">
