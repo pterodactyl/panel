@@ -281,7 +281,7 @@ class ServerRepository
         // Validate Fields
         $validator = Validator::make($data, [
             'owner' => 'email|exists:users,email',
-            'name' => 'regex:^([\w -]{4,35})$'
+            'name' => 'regex:([\w -]{4,35})'
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
