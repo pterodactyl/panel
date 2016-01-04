@@ -47,13 +47,17 @@ class AccountsController extends Controller
         ]);
     }
 
-    public function getDelete(Request $request, $id)
+    public function deleteView(Request $request, $id)
     {
-        $user = new UserRepository;
-        $user->delete($id);
-
-        Alert::success('An account has been successfully deleted.')->flash();
-        return redirect()->route('admin.accounts');
+        try {
+            User::findOrFail($id)->delete();
+            return response(null, 204);
+        } catch(\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => 'An error occured while attempting to delete this user.'
+            ], 500);
+        }
     }
 
     public function postNew(Request $request)

@@ -61,8 +61,8 @@
                             <input type="hidden" name="user" value="{{ $user->id }}">
                             {!! csrf_field() !!}
                             <input type="submit" value="{{ trans('base.account.update_user') }}" class="btn btn-primary btn-sm">
-                            <a href="/admin/accounts/delete/{{ $user->id }}">
-                                <button id="delete" type="button" class="btn btn-sm btn-danger" value="{{ trans('base.account.delete_user') }}">{{ trans('base.account.delete_user') }}</button>
+                            <a href="#">
+                                <button type="button" class="btn btn-sm btn-danger" data-action="deleteUser" value="{{ trans('base.account.delete_user') }}">{{ trans('base.account.delete_user') }}</button>
                             </a>
                         </div>
                     </fieldset>
@@ -150,6 +150,22 @@ $(document).ready(function(){
         });
         return false;
     });
+    $('button[data-action="deleteUser"]').click(function (event) {
+        event.preventDefault();
+        $.ajax({
+            method: 'DELETE',
+            url: '/admin/accounts/view/{{ $user->id }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }).done(function (data) {
+            alert('Account was successfully deleted from the system.');
+            window.location = '/admin/accounts';
+        }).fail(function (jqXHR) {
+            console.error(jqXHR);
+            alert('An error occured: ' + jqXHR.JSONResponse.error);
+        })
+    })
 });
 </script>
 @endsection

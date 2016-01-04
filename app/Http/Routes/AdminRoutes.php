@@ -55,8 +55,8 @@ class AdminRoutes {
             ]);
 
             // Delete an Account Matching an ID
-            $router->get('/delete/{id}', [
-                'uses' => 'Admin\AccountsController@getDelete'
+            $router->delete('/view/{id}', [
+                'uses' => 'Admin\AccountsController@deleteView'
             ]);
 
         });
