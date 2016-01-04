@@ -33,8 +33,9 @@
         <li class="active"><a href="#tab_about" data-toggle="tab">About</a></li>
         <li><a href="#tab_details" data-toggle="tab">Details</a></li>
         <li><a href="#tab_build" data-toggle="tab">Build Configuration</a></li>
-        <li><a href="#tab_startup" data-toggle="tab">Startup Settings</a></li>
+        <li><a href="#tab_startup" data-toggle="tab">Startup</a></li>
         <li><a href="#tab_manage" data-toggle="tab">Manage</a></li>
+        <li><a href="#tab_delete" data-toggle="tab">Delete</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_about">
@@ -251,55 +252,80 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <table class="table table-striped" style="margin-bottom: 0;">
-                        <tbody>
-                            <tr>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <a href="/server/{{ $server->uuidShort }}/">
-                                        <button type="submit" class="btn btn-sm btn-primary">Manage Server</button>
-                                    </a>
-                                </td>
-                                <td>
-                                    <p>This will take you to the server management page that users normally see and allow you to manage server files as well as check the console and data usage.</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <form action="/admin/servers/view/{{ $server->id }}/installed" method="POST">
-                                        {!! csrf_field() !!}
-                                        <button type="submit" class="btn btn-sm btn-primary">Toggle Install Status</button>
-                                    </form>
-                                </td>
-                                <td>
-                                    <p>This will toggle the install status for the server.</p>
-                                    <div class="alert alert-warning">If you have just created this server it is ill advised to perform this action as the daemon will contact the panel when finished which could cause the install status to be wrongly set.</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <form action="/admin/servers/view/{{ $server->id }}/rebuild" method="POST">
-                                        {!! csrf_field() !!}
-                                        <button type="submit" class="btn btn-sm btn-primary">Rebuild Server Container</button>
-                                    </form>
-                                </td>
-                                <td>
-                                    <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly. Please be aware: if you manually updated the server's configuration file, you will need to restart the daemon before doing this, or it will be overwritten.</p>
-                                    <div class="alert alert-info">A rebuild will automatically occur whenever you edit build configuration settings for the server.</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center" style="vertical-align:middle;">
-                                    <form action="/admin/servers/view/{{ $server->id }}/delete" method="POST">
-                                        {!! csrf_field() !!}
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete Server</button>
-                                    </form>
-                                </td>
-                                <td>
-                                    <div class="alert alert-danger" style="margin-top:21px;">Deleting a server is an irreversible action. <strong>All data will be immediately removed relating to this server.</strong></div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <a href="/server/{{ $server->uuidShort }}/" target="_blank">
+                                <button type="submit" class="btn btn-sm btn-primary">Manage Server</button>
+                            </a>
+                        </div>
+                        <div class="col-md-8">
+                            <p>This will take you to the server management page that users normally see and allow you to manage server files as well as check the console and data usage.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <form action="/admin/servers/view/{{ $server->id }}/installed" method="POST">
+                                {!! csrf_field() !!}
+                                <button type="submit" class="btn btn-sm btn-primary">Toggle Install Status</button>
+                            </form>
+                        </div>
+                        <div class="col-md-8">
+                            <p>This will toggle the install status for the server.</p>
+                            <div class="alert alert-warning">If you have just created this server it is ill advised to perform this action as the daemon will contact the panel when finished which could cause the install status to be wrongly set.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <form action="/admin/servers/view/{{ $server->id }}/rebuild" method="POST">
+                                {!! csrf_field() !!}
+                                <button type="submit" class="btn btn-sm btn-primary">Rebuild Server Container</button>
+                            </form>
+                        </div>
+                        <div class="col-md-8">
+                            <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly. Please be aware: if you manually updated the server's configuration file, you will need to restart the daemon before doing this, or it will be overwritten.</p>
+                            <div class="alert alert-info">A rebuild will automatically occur whenever you edit build configuration settings for the server.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab_delete">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <form action="/admin/servers/view/{{ $server->id }}" method="POST" data-attr="deleteServer">
+                                {!! csrf_field() !!}
+                                {!! method_field('DELETE') !!}
+                                <button type="submit" class="btn btn-sm btn-danger">Delete Server</button>
+                            </form>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="alert alert-danger">Deleting a server is an irreversible action. <strong>All data will be immediately removed relating to this server.</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <form action="/admin/servers/view/{{ $server->id }}/force" method="POST" data-attr="deleteServer">
+                                {!! csrf_field() !!}
+                                {!! method_field('DELETE') !!}
+                                <button type="submit" class="btn btn-sm btn-danger">Force Delete Server</button>
+                            </form>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="alert alert-danger">This is the same as deleting a server, however, if an error is returned by the daemon it is ignored and the server is still removed from the panel.</strong></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -311,6 +337,11 @@ $(document).ready(function () {
     $('input[name="default"]').on('change', function (event) {
         $('select[name="remove_additional[]"]').find('option:disabled').prop('disabled', false);
         $('select[name="remove_additional[]"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
+    });
+    $('form[data-attr="deleteServer"]').submit(function (event) {
+        if (confirm('Are you sure that you want to delete this server? There is no going back, all data will immediately be removed.')) {
+            event.submit();
+        }
     });
 });
 </script>

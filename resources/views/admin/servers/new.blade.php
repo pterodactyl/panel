@@ -397,7 +397,7 @@ $(document).ready(function () {
             $.each(data, function (i, item) {
                 var isRequired = (item.required === 1) ? '<code>Required</code>' : '';
                 var dataAppend = ' \
-                    <div class="form-group col-md-6">\
+                    <div class="form-group col-md-12">\
                         <label for="var_ref_' + item.id + '" class="control-label">' + item.name + '</label> ' + isRequired + '\
                         <div>\
                             <input type="text" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" />\

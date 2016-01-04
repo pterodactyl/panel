@@ -10,6 +10,14 @@
 		<li><a href="/admin">Admin Control</a></li>
 		<li class="active">Servers</li>
 	</ul>
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {!! $message !!}
+            </div>
+        @endforeach
+    @endforeach
     <h3>All Servers</h3><hr />
 	<table class="table table-bordered table-hover">
 		<thead>

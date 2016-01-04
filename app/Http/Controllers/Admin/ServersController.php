@@ -65,6 +65,10 @@ class ServersController extends Controller
         ->where('servers.id', $id)
         ->first();
 
+        if (!$server) {
+            return abort(404);
+        }
+
         return view('admin.servers.view', [
             'server' => $server,
             'assigned' => Models\Allocation::select('id', 'ip', 'port')->where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
@@ -286,6 +290,25 @@ class ServersController extends Controller
         return redirect()->route('admin.servers.view', [
             'id' => $id,
             'tab' => 'tab_build'
+        ]);
+    }
+
+    public function deleteServer(Request $request, $id, $force = null)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->deleteServer($id, $force);
+            Alert::success('Server was successfully deleted from the panel and the daemon.')->flash();
+            return redirect()->route('admin.servers');
+        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch(\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+        }
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_delete'
         ]);
     }
 

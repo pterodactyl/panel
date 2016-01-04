@@ -33,6 +33,7 @@ class AdminRoutes {
                 $router->post('/view/{id}/details', [ 'uses' => 'Admin\ServersController@postUpdateServerDetails' ]);
                 $router->post('/view/{id}/rebuild', [ 'uses' => 'Admin\ServersController@postUpdateServerToggleBuild' ]);
                 $router->post('/view/{id}/build', [ 'uses' => 'Admin\ServersController@postUpdateServerUpdateBuild' ]);
+                $router->delete('/view/{id}/{force?}', [ 'uses' => 'Admin\ServersController@deleteServer' ]);
 
                 $router->post('/new', [ 'uses' => 'Admin\ServersController@postNewServer']);
                 $router->post('/new/get-nodes', [ 'uses' => 'Admin\ServersController@postNewServerGetNodes' ]);

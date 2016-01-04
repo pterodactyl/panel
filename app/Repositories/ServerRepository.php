@@ -524,4 +524,55 @@ class ServerRepository
 
     }
 
+    public function deleteServer($id, $force)
+    {
+        $server = Models\Server::findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+        DB::beginTransaction();
+
+        // Delete Allocations
+        Models\Allocation::where('assigned_to', $server->id)->update([
+            'assigned_to' => null
+        ]);
+
+        // Remove Variables
+        Models\ServerVariables::where('server_id', $server->id)->delete();
+
+        // Remove SubUsers
+        Models\Subuser::where('server_id', $server->id)->delete();
+
+        // Remove Permissions
+        Models\Permission::where('server_id', $server->id)->delete();
+
+        // Remove Downloads
+        Models\Download::where('server', $server->uuid)->delete();
+
+        try {
+            $client = Models\Node::guzzleRequest($server->node);
+            $client->request('DELETE', '/servers', [
+                'headers' => [
+                    'X-Access-Token' => $node->daemonSecret,
+                    'X-Access-Server' => $server->uuid
+                ]
+            ]);
+
+            $server->delete();
+            DB::commit();
+            return true;
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            if ($force === 'force') {
+                $server->delete();
+                DB::commit();
+                return true;
+            } else {
+                DB::rollBack();
+                Log::error($ex);
+                throw new DisplayException('An error occured while attempting to delete the server on the daemon: ' . $ex->getMessage());
+            }
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+    }
+
 }

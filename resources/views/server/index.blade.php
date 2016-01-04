@@ -317,7 +317,6 @@ $(window).load(function () {
 
     // New Console Data Recieved
     socket.on('console', function (data) {
-        console.log(JSON.stringify(data));
         $('#live_console').val($('#live_console').val() + data.line);
         $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
     });
@@ -445,7 +444,8 @@ $(window).load(function () {
 
             // Reset Console Data
             if (data === 2) {
-                $("#live_console").val('');
+                $('#live_console').val($('#live_console').val() + '\n --+ Server Detected as Booting + --\n');
+                $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
             }
 
             // Server is On or Starting
