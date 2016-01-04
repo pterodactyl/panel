@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('api');
+        //
     }
 
     public function getAllUsers(Request $request)

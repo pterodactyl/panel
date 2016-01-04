@@ -23,8 +23,13 @@ class CheckServer
             return redirect()->guest('auth/login');
         }
 
-        if (!Server::getByUUID($request->route()->server)) {
-            return redirect('/');
+        $server = Server::getByUUID($request->route()->server);
+        if (!$server) {
+            return redirect()->route('index');
+        }
+
+        if ($server->installed !== 1) {
+            return response()->view('errors.installing', [], 503);
         }
 
         return $next($request);
