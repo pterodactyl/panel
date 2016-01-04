@@ -42,6 +42,10 @@ class AdminRoutes {
                 $router->post('/new/service-variables', [ 'uses' => 'Admin\ServersController@postNewServerServiceVariables' ]);
 
             });
+            // Change Install Status
+            $router->post('/view/{id}/installed', [
+                'uses' => 'Admin\ServersController@postToggleInstall'
+            ]);
 
         });
     }

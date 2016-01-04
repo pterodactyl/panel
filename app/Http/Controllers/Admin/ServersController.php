@@ -312,4 +312,21 @@ class ServersController extends Controller
         ]);
     }
 
+    public function postToggleInstall(Request $request, $id)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->toggleInstall($id);
+            Alert::success('Server status was successfully toggled.')->flash();
+        } catch(\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attemping to toggle this servers status.')->flash();
+        } finally {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_manage'
+            ]);
+        }
+    }
+
 }

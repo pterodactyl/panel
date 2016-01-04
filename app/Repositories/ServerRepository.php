@@ -575,4 +575,11 @@ class ServerRepository
         }
     }
 
+    public function toggleInstall($id)
+    {
+        $server = Models\Server::findOrFail($id);
+        $server->installed = ($server->installed === 1) ? 0 : 1;
+        return $server->save();
+    }
+
 }
