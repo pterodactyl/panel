@@ -23,6 +23,13 @@ class Node extends Model
     protected $hidden = ['daemonSecret'];
 
     /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    /**
      * @var array
      */
     protected static $guzzle = [];

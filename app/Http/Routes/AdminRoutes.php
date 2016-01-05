@@ -137,6 +137,39 @@ class AdminRoutes {
 
         });
 
+        // Node Routes
+        $router->group([
+            'prefix' => 'admin/nodes',
+            'middleware' => [
+                'auth',
+                'admin'
+            ]
+        ], function () use ($router) {
+
+            // View All Nodes
+            $router->get('/', [
+                'as' => 'admin.nodes',
+                'uses' => 'Admin\NodesController@getIndex'
+            ]);
+
+            // Add New Node
+            $router->get('/new', [
+                'as' => 'admin.nodes.new',
+                'uses' => 'Admin\NodesController@getNew'
+            ]);
+
+            $router->post('/new', [
+                'uses' => 'Admin\NodesController@postNew'
+            ]);
+
+            // View Node
+            $router->get('/view/{id}', [
+                'as' => 'admin.nodes.view',
+                'uses' => 'Admin\NodesController@getView'
+            ]);
+
+        });
+
     }
 
 }
