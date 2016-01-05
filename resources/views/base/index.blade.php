@@ -96,8 +96,6 @@ $(window).load(function () {
                 }
             }).fail(function (jqXHR) {
                 console.error(jqXHR);
-                updateElement.removeClass('fa-circle-o-notch fa-spinner fa-spin');
-                updateElement.addClass('fa-question-circle').css({ color: 'rgb(227, 50, 0)' });
             });
 
         });
