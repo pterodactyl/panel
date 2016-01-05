@@ -38,7 +38,7 @@
                     $(window).load(function () {
 
                         // Main Socket Object
-                        socket = io('http{{ ($node->https === true) ? 's' : '' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/ws/{{ $server->uuid }}', {
+                        socket = io('{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/ws/{{ $server->uuid }}', {
                             'query': 'token={{ $server->daemonSecret }}'
                         });
 
