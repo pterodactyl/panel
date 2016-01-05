@@ -7,7 +7,6 @@
 @section('scripts')
     @parent
     <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
-    <script src="{{ asset('js/chartjs/chart.bar.js') }}"></script>
 @endsection
 
 @section('content')
