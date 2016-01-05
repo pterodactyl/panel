@@ -49,9 +49,7 @@
                             $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin').addClass('fa-question-circle').css({ color: '#FF9900' });
                             if(typeof notifySocketError !== 'object') {
                                 notifySocketError = $.notify({
-                                    message: '{!! trans('server.ajax.socket_error') !!}',
-                                    url: 'https://{{ $node->fqdn }}:{{ $node->daemonListen }}',
-                                    target: '_blank'
+                                    message: '{!! trans('server.ajax.socket_error') !!}'
                                 }, {
                                     type: 'danger',
                                     delay: 0

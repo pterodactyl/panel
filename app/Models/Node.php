@@ -79,7 +79,6 @@ class Node extends Model
             'base_uri' => sprintf('%s://%s:%s/', $nodeData->scheme, $nodeData->fqdn, $nodeData->daemonListen),
             'timeout' => 10.0,
             'connect_timeout' => 5.0,
-            'verify' => false,
         ]);
 
         return self::$guzzle[$node];
