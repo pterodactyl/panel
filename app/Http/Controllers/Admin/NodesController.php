@@ -68,7 +68,11 @@ class NodesController extends Controller
     {
         $node = Models\Node::findOrFail($id);
         return view('admin.nodes.view', [
-            'node' => $node
+            'node' => $node,
+            'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
+                ->join('users', 'users.id', '=', 'servers.owner')
+                ->join('services', 'services.id', '=', 'servers.service')
+                ->where('node', $id)->paginate(10)
         ]);
     }
 
