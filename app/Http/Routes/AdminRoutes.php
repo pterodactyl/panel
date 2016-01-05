@@ -168,6 +168,10 @@ class AdminRoutes {
                 'uses' => 'Admin\NodesController@getView'
             ]);
 
+            $router->post('/view/{id}', [
+                'uses' => 'Admin\NodesController@postView'
+            ]);
+
         });
 
     }

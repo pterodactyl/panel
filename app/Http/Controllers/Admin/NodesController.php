@@ -72,8 +72,36 @@ class NodesController extends Controller
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
                 ->join('users', 'users.id', '=', 'servers.owner')
                 ->join('services', 'services.id', '=', 'servers.service')
-                ->where('node', $id)->paginate(10)
+                ->where('node', $id)->paginate(10),
+            'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
+            'locations' => Models\Location::all(),
         ]);
+    }
+
+    public function postView(Request $request, $id)
+    {
+        try {
+            $node = new NodeRepository;
+            $node->update($id, $request->except([
+                '_token'
+            ]));
+            Alert::success('Successfully update this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
+            return redirect()->route('admin.nodes.view', [
+                'id' => $id,
+                'tab' => 'tab_settings'
+            ]);
+        } catch (\Pterodactyl\Exceptions\DisplayValidationException $e) {
+            return redirect()->route('admin.nodes.view', $id)->withErrors(json_decode($e->getMessage()))->withInput();
+        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch (\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attempting to edit this node. Please try again.')->flash();
+        }
+        return redirect()->route('admin.nodes.view', [
+            'id' => $id,
+            'tab' => 'tab_settings'
+        ])->withInput();
     }
 
 }

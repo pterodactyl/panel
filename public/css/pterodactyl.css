@@ -77,3 +77,5 @@ form .text-muted {margin: 0 0 -5.5px}
 .tab-pane.active .panel.panel-default {border-top:0 !important}
 .tabs_with_panel > li.active > a {background-color: #f5f5f5 !important}
 .tabs_with_panel > li > a {background: transparent;}
+.label{border-radius: .25em;padding: .2em .6em .3em;}
+kbd{border-radius: .25em}

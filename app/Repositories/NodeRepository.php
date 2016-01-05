@@ -32,7 +32,7 @@ class NodeRepository {
             'disk_overallocate' => 'required|numeric|min:-1',
             'daemonBase' => 'required|regex:/^([\/][\d\w.\-\/]+)$/',
             'daemonSFTP' => 'required|numeric|between:1,65535',
-            'daemonListen' => 'required|numeric|between:1,65535'
+            'daemonListen' => 'required|numeric|between:1,65535',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -42,6 +42,9 @@ class NodeRepository {
         }
 
         // Verify the FQDN
+        if (filter_var($data['fqdn'], FILTER_VALIDATE_IP)) {
+            throw new DisplayException('The FQDN provided was an IP address. You must use a FQDN.');
+        }
         if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
             throw new DisplayException('The FQDN provided does not resolve to a valid IP address.');
         }
@@ -60,6 +63,63 @@ class NodeRepository {
         $node->save();
 
         return $node->id;
+
+    }
+
+    public function update($id, array $data)
+    {
+        // Validate Fields
+        $validator = $validator = Validator::make($data, [
+            'name' => 'regex:/^([\w .-]{1,100})$/',
+            'location' => 'numeric|min:1|exists:locations,id',
+            'public' => 'numeric|between:0,1',
+            'fqdn' => 'string|unique:nodes,fqdn,' . $id,
+            'scheme' => 'regex:/^(http(s)?)$/',
+            'memory' => 'numeric|min:1',
+            'memory_overallocate' => 'numeric|min:-1',
+            'disk' => 'numeric|min:1',
+            'disk_overallocate' => 'numeric|min:-1',
+            'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
+            'daemonSFTP' => 'numeric|between:1,65535',
+            'daemonListen' => 'numeric|between:1,65535',
+            'reset_secret' => 'sometimes|accepted',
+        ]);
+
+        // Run validator, throw catchable and displayable exception if it fails.
+        // Exception includes a JSON result of failed validation rules.
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        // Verify the FQDN
+        if (isset($data['fqdn'])) {
+            if (filter_var($data['fqdn'], FILTER_VALIDATE_IP)) {
+                throw new DisplayException('The FQDN provided was an IP address. You must use a FQDN.');
+            }
+            if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
+                throw new DisplayException('The FQDN provided does not resolve to a valid IP address.');
+            }
+        }
+
+        // Should we be nulling the overallocations?
+        if (isset($data['memory_overallocate'])) {
+            $data['memory_overallocate'] = ($data['memory_overallocate'] < 0) ? null : $data['memory_overallocate'];
+        }
+
+        if (isset($data['disk_overallocate'])) {
+            $data['disk_overallocate'] = ($data['disk_overallocate'] < 0) ? null : $data['disk_overallocate'];
+        }
+
+        // Set the Secret
+        if (isset($data['reset_secret'])) {
+            $uuid = new UuidService;
+            $data['daemonSecret'] = (string) $uuid->generate('nodes', 'daemonSecret');
+            unset($data['reset_secret']);
+        }
+
+        // Store the Data
+        $node = Models\Node::findOrFail($id);
+        return $node->update($data);
 
     }
 
