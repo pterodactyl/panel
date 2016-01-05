@@ -33,7 +33,7 @@ class IndexController extends Controller
     public function getIndex(Request $request)
     {
         return view('base.index', [
-            'servers' => Server::getUserServers(),
+            'servers' => Server::getUserServers(10),
         ]);
     }
 

@@ -79,16 +79,20 @@ class Server extends Model
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getUserServers()
+    public static function getUserServers($paginate = null)
     {
 
-        $query = self::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
+        $query = self::select('servers.*', 'nodes.name as nodeName', 'locations.short as a_locationShort')
                     ->join('nodes', 'servers.node', '=', 'nodes.id')
                     ->join('locations', 'nodes.location', '=', 'locations.id')
                     ->where('active', 1);
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
+        }
+
+        if (is_numeric($paginate)) {
+            return $query->paginate($paginate);
         }
 
         return $query->get();

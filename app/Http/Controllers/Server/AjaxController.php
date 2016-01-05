@@ -52,6 +52,11 @@ class AjaxController extends Controller
     {
 
         $server = Server::getByUUID($uuid);
+
+        if (!$server) {
+            return response()->json([], 404);
+        }
+
         $client = Node::guzzleRequest($server->node);
 
         try {
@@ -61,24 +66,19 @@ class AjaxController extends Controller
             ]);
 
             if($res->getStatusCode() === 200) {
-
-                $json = json_decode($res->getBody());
-
-                if (isset($json->status) && $json->status === 1) {
-                    return 'true';
-                }
-
+                return response()->json(json_decode($res->getBody()));
+            } else {
+                return response()->json([]);
             }
 
         } catch (RequestException $e) {
-            Debugbar::error($e->getMessage());
-            Log::notice('An exception was raised while attempting to contact a Scales instance to get server status information.', [
+            Log::notice('An exception was raised while attempting to contact a daemon instance to get server status information.', [
                 'exception' => $e->getMessage(),
                 'path' => $request->path()
             ]);
         }
 
-        return 'false';
+        return response()->json([]);
     }
 
     /**

@@ -30,6 +30,10 @@ return [
     'registered' => 'Registered',
     'root_administrator' => 'Root Administrator',
     'yes' => 'Yes',
-    'no' => 'No'
+    'no' => 'No',
+    'memory' => 'Memory',
+    'cpu' => 'CPU',
+    'status' => 'Status',
+    'players' => 'Players',
 
 ];

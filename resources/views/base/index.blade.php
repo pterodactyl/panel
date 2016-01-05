@@ -18,15 +18,17 @@
                         <th></th>
                     @endif
                     <th>{{ trans('base.server_name') }}</th>
-                    <th>{{ trans('strings.location') }}</th>
                     <th>{{ trans('strings.node') }}</th>
                     <th>{{ trans('strings.connection') }}</th>
-                    <th></th>
+                    <th class="text-center">{{ trans('strings.players') }}</th>
+                    <th class="text-center">{{ trans('strings.memory') }}</th>
+                    <th class="text-center">{{ trans('strings.cpu') }}</th>
+                    <th class="text-center">{{ trans('strings.status') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($servers as $server)
-                    <tr class="dynUpdate" id="{{ $server->uuidShort }}">
+                    <tr class="dynUpdate" data-server="{{ $server->uuidShort }}">
                         @if (Auth::user()->root_admin == 1)
                             <td style="width:26px;">
                                 @if ($server->owner === Auth::user()->id)
@@ -37,14 +39,19 @@
                             </td>
                         @endif
                         <td><a href="/server/{{ $server->uuidShort }}">{{ $server->name }}</a></td>
-                        <td>{{ $server->location }}</td>
-                        <td>{{ $server->nodeName }}</td>
+                        <td>{{ $server->nodeName }} ({{ $server->a_locationShort }})</td>
                         <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
-                        <td style="width:26px;"><i class="fa fa-circle-o-notch fa-spinner fa-spin applyUpdate"></i></td>
+                        <td class="text-center" data-action="players">--</td>
+                        <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory }} MB</td>
+                        <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
+                        <td class="text-center" data-action="status">--</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
+        <div class="row">
+            <div class="col-md-12 text-center">{!! $servers->render() !!}</div>
+        </div>
     @else
         <div class="alert alert-info">{{ trans('base.no_servers') }}</div>
     @endif
@@ -53,38 +60,50 @@
 $(window).load(function () {
     $('#sidebar_links').find('a[href=\'/\']').addClass('active');
     function updateServerStatus () {
+        var Status = {
+            0: 'Off',
+            1: 'On',
+            2: 'Starting',
+            3: 'Stopping'
+        };
         $('.dynUpdate').each(function (index, data) {
-
             var element = $(this);
-            var serverShortUUID = $(this).attr('id');
-            var updateElement = $(this).find('.applyUpdate');
-
-            updateElement.removeClass('fa-check-circle fa-times-circle').css({ color: '#000' });
-            updateElement.addClass('fa-circle-o-notch fa-spinner fa-spin');
-
+            var serverShortUUID = $(this).data('server');
             $.ajax({
                 type: 'GET',
                 url: '/server/' + serverShortUUID + '/ajax/status',
-                timeout: 10000
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
             }).done(function (data) {
-
-                var selector = (data == 'true') ? 'fa-check-circle' : 'fa-times-circle';
-                var selectorColor = (data == 'true') ? 'rgb(83, 179, 12)' : 'rgb(227, 50, 0)';
-
-                updateElement.removeClass('fa-circle-o-notch fa-spinner fa-spin');
-                updateElement.addClass(selector).css({ color: selectorColor });
-
+                if (typeof data.status === 'undefined') {
+                    return;
+                }
+                element.find('[data-action="status"]').html(Status[data.status]);
+                if (data.status !== 0) {
+                    var cpuMax = element.find('[data-action="cpu"]').data('cpumax');
+                    var currentCpu = data.proc.cpu.total;
+                    if (cpuMax !== 0) {
+                        currentCpu = parseFloat(((data.proc.cpu.total / cpuMax) * 100).toFixed(2).toString());
+                    }
+                    element.find('[data-action="memory"]').html(parseInt(data.proc.memory.total / (1024 * 1024)));
+                    element.find('[data-action="cpu"]').html(currentCpu);
+                    element.find('[data-action="players"]').html(data.query.players.length);
+                } else {
+                    element.find('[data-action="memory"]').html('--');
+                    element.find('[data-action="cpu"]').html('--');
+                    element.find('[data-action="players"]').html('--');
+                }
             }).fail(function (jqXHR) {
-
+                console.error(jqXHR);
                 updateElement.removeClass('fa-circle-o-notch fa-spinner fa-spin');
                 updateElement.addClass('fa-question-circle').css({ color: 'rgb(227, 50, 0)' });
-
             });
 
         });
     }
     updateServerStatus();
-    setInterval(updateServerStatus, 30000);
+    setInterval(updateServerStatus, 10000);
 });
 </script>
 @endsection
