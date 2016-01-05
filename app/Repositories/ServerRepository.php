@@ -52,7 +52,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'owner' => 'required|email|exists:users,email',
             'node' => 'required|numeric|min:1|exists:nodes,id',
-            'name' => 'required|regex:([\w -]{4,35})',
+            'name' => 'required|regex:/^([\w -]{4,35})$/',
             'memory' => 'required|numeric|min:1',
             'swap' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:1',
