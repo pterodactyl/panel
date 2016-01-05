@@ -25,7 +25,7 @@
 			@foreach ($servers as $server)
 				<tr class="dynUpdate @if($server->active !== 1)active @endif" id="{{ $server->uuidShort }}">
 					<td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</td>
-                    <td><a href="/admin/users/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
+                    <td><a href="/admin/accounts/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
                     <td><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
                     <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                     <td><code>{{ $server->username }}</code></td>
