@@ -29,8 +29,8 @@ class Kernel extends HttpKernel
         'auth' => \Pterodactyl\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
-        'server' => \Pterodactyl\Http\MiddleWare\CheckServer::class,
-        'api' => \Pterodactyl\Http\MiddleWare\APIAuthenticate::class,
+        'server' => \Pterodactyl\Http\Middleware\CheckServer::class,
+        'api' => \Pterodactyl\Http\Middleware\APIAuthenticate::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
     ];
 }
