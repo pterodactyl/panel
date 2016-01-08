@@ -79,3 +79,4 @@ form .text-muted {margin: 0 0 -5.5px}
 .tabs_with_panel > li > a {background: transparent;}
 .label{border-radius: .25em;padding: .2em .6em .3em;}
 kbd{border-radius: .25em}
+.modal-open .modal {padding-left: 0px !important;padding-right: 0px !important;overflow-y: scroll;}

@@ -9,8 +9,10 @@
         <link rel="stylesheet" href="{{ asset('css/pterodactyl.css') }}">
         <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
         <script src="{{ asset('js/admin.min.js') }}"></script>
     @show
     <title>Pterodactyl - @yield('title')</title>
