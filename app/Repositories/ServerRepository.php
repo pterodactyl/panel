@@ -400,17 +400,15 @@ class ServerRepository
 
         if (isset($data['default'])) {
             list($ip, $port) = explode(':', $data['default']);
-            if ($ip === $server->ip && $port === $server->port) {
-                continue;
-            }
+            if ($ip !== $server->ip || $port !== $server->port) {
+                $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->get();
+                if (!$allocation) {
+                    throw new DisplayException('The assigned default connection (' . $ip . ':' . $prot . ') is not allocated to this server.');
+                }
 
-            $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->get();
-            if (!$allocation) {
-                throw new DisplayException('The assigned default connection (' . $ip . ':' . $prot . ') is not allocated to this server.');
+                $server->ip = $ip;
+                $server->port = $port;
             }
-
-            $server->ip = $ip;
-            $server->port = $port;
         }
 
         // Remove Assignments
