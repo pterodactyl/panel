@@ -201,7 +201,6 @@ $(window).load(function () {
             width: $('#col11_setter').width()
         },
         colors: [
-            '#113F8C',
             '#00A1CB',
             '#01A4A4',
             '#61AE24',
@@ -223,13 +222,22 @@ $(window).load(function () {
             crosshairs: true,
             formatter: function () {
                 var s = '<b>CPU Usage</b>';
-
+                var i = 0;
+                var t = 0;
                 $.each(this.points, function () {
+                    t = t + this.y;
+                    i++;
                     s += '<br/>' + this.series.name + ': ' +
                         this.y + '%';
                 });
 
-                return s;
+                t = parseFloat(t).toFixed(3).toString();
+
+                if (i > 1) {
+                    return s + '<br />Combined: ' + t;
+                } else {
+                    return s;
+                }
             },
         },
         xAxis: {
@@ -258,7 +266,7 @@ $(window).load(function () {
             enabled: true
         },
         series: [{
-            name: 'Total CPU',
+            name: 'Core 0',
             data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         }]
     });
@@ -270,22 +278,22 @@ $(window).load(function () {
 
         var CPUChart = $('#chart_cpu').highcharts();
 
-        if({{ $server->cpu }} > 0) {
-            CPUChart.series[0].addPoint(parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
-        } else {
-            CPUChart.series[0].addPoint(proc.data.cpu.total, true, true);
-        }
+        // if({{ $server->cpu }} > 0) {
+        //     CPUChart.series[0].addPoint(parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
+        // } else {
+        //     CPUChart.series[0].addPoint(proc.data.cpu.total, true, true);
+        // }
         for (i = 0, length = proc.data.cpu.cores.length; i < length; i++) {
-            if (typeof CPUChart.series[ i + 1 ] === 'undefined') {
+            if (typeof CPUChart.series[i] === 'undefined') {
                 CPUChart.addSeries({
                     name: 'Core ' + i,
                     data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                 });
             }
             if({{ $server->cpu }} > 0) {
-                CPUChart.series[ i + 1 ].addPoint(parseFloat(((proc.data.cpu.cores[i] / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
+                CPUChart.series[i].addPoint(parseFloat(((proc.data.cpu.cores[i] / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
             } else {
-                CPUChart.series[ i + 1 ].addPoint(proc.data.cpu.cores[i], true, true);
+                CPUChart.series[i].addPoint(proc.data.cpu.cores[i], true, true);
             }
         }
     });
