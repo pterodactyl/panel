@@ -122,12 +122,20 @@ class Server extends Model
 
         $result = $query->first();
 
-        // @TODO: saving after calling this could end up resetting the daemon secret.
-        // We probably need to just allow access to self::getUserDaemonSecret() to
-        // get this result.
         if(!is_null($result)) {
             $result->daemonSecret = self::getUserDaemonSecret($result);
         }
+
+        // Prevent saving of model called in this manner.
+        // Prevents accidental overwrite of main daemon secret.
+        $result::saving(function () {
+            return false;
+        });
+
+        // Prevent deleting this model call.
+        $result::deleting(function () {
+            return false;
+        });
 
         self::$serverUUIDInstance[$uuid] = $result;
         return self::$serverUUIDInstance[$uuid];
