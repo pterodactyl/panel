@@ -384,7 +384,7 @@ $(window).load(function () {
         }
     }
 
-    @can('view-allocation', $server)
+    @can('set-allocation', $server)
         // Send Request
         $('[data-action="set-connection"]').click(function (event) {
             event.preventDefault();
@@ -403,16 +403,26 @@ $(window).load(function () {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).done(function (data) {
+                swal({
+                    type: 'success',
+                    title: '',
+                    text: data
+                });
                 $('#conn_options').find('li.active').removeClass('active');
                 element.parent().addClass('active');
-                alert(data);
             }).fail(function (jqXHR) {
                 console.error(jqXHR);
+                var respError;
                 if (typeof jqXHR.responseJSON.error === 'undefined' || jqXHR.responseJSON.error === '') {
-                    return alert('An error occured while attempting to perform this action.');
+                    respError = 'An error occured while attempting to perform this action.';
                 } else {
-                    return alert(jqXHR.responseJSON.error);
+                    respError = jqXHR.responseJSON.error;
                 }
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: respError
+                });
             });
         });
     @endcan

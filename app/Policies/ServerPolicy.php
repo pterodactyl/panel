@@ -221,6 +221,13 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('view-manage')->exists();
     }
 
+    /**
+     * Check if user has permission to view allocations for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
     public function viewAllocation(User $user, Server $server)
     {
         if ($this->isOwner($user, $server)) {
@@ -228,6 +235,22 @@ class ServerPolicy
         }
 
         return $user->permissions()->server($server)->permission('view-allocation')->exists();
+    }
+
+    /**
+     * Check if user has permission to set the default connection for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function setAllocation(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('set-allocation')->exists();
     }
 
 }
