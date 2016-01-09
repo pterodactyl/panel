@@ -449,10 +449,16 @@ $(window).load(function () {
                 timeout: 10000,
                 data: JSON.stringify({ command: ccmd })
             }).fail(function (jqXHR) {
-                $('#sc_resp').html('Unable to process your request. Please try again.').fadeIn().delay(5000).fadeOut();
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: 'There was an error while attempting to process your request. Please try again.'
+                });
+            }).done(function () {
+                $('#ccmd').val('');
             }).always(function () {
                 $('#sending_command').html('&rarr;').removeClass('disabled');
-                $('#ccmd').val('');
             });
         });
     @endcan
@@ -488,33 +494,53 @@ $(window).load(function () {
         $('[data-attr="power"]').click(function (event) {
             event.preventDefault();
             var action = $(this).data('action');
+            var killConfirm = false;
             if (action === 'kill') {
-                var killConfirm = confirm('WARNING: This operation will not save your server data gracefully. You should only use this if your server is failing to respond to normal stop commands.');
-            } else { var killConfirm = true; }
-
-            if(killConfirm) {
-                $.ajax({
-                    type: 'PUT',
-                    headers: {
-                        'X-Access-Token': '{{ $server->daemonSecret }}',
-                        'X-Access-Server': '{{ $server->uuid }}'
-                    },
-                    contentType: 'application/json; charset=utf-8',
-                    data: JSON.stringify({
-                        action: action
-                    }),
-                    url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
-                    timeout: 10000
-                }).fail(function(jqXHR) {
-                    var error = 'An unknown error occured processing this request.';
-                    if (typeof jqXHR.responseJSON.error !== 'undefined') {
-                        error = jqXHR.responseJSON.error;
-                    }
-                    $('#pw_resp').attr('class', 'alert alert-danger').html('Unable to process your request. Please try again. (' + error + ')').fadeIn().delay(5000).fadeOut();
+                swal({
+                    type: 'warning',
+                    title: '',
+                    text: 'This operation will not save your server data gracefully. You should only use this if your server is failing to respond to normal stop commands.',
+                    showCancelButton: true,
+                    allowOutsideClick: true,
+                    closeOnConfirm: true,
+                    confirmButtonText: 'Kill Server',
+                    confirmButtonColor: '#d9534f'
+                }, function () {
+                    setTimeout(function() {
+                        powerToggleServer('kill');
+                    }, 100);
                 });
+            } else {
+                powerToggleServer(action);
             }
 
         });
+
+        function powerToggleServer(action) {
+            $.ajax({
+                type: 'PUT',
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                },
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    action: action
+                }),
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
+                timeout: 10000
+            }).fail(function(jqXHR) {
+                var error = 'An error occured while trying to process this request.';
+                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                    error = jqXHR.responseJSON.error;
+                }
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: error
+                });
+            });
+        }
 
     @endcan
 });
