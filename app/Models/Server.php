@@ -113,7 +113,7 @@ class Server extends Model
         }
 
         $query = self::select('servers.*', 'services.file as a_serviceFile')
-            ->join('services', 'services.id', '=', 'servers.id')
+            ->join('services', 'services.id', '=', 'servers.service')
             ->where('uuidShort', $uuid)->where('active', 1);
 
         if (self::$user->root_admin !== 1) {

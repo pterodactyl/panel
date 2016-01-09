@@ -25,7 +25,7 @@ class CheckServer
 
         $server = Server::getByUUID($request->route()->server);
         if (!$server) {
-            return redirect()->route('index');
+            return response()->view('errors.403', [], 403);
         }
 
         if ($server->installed !== 1) {
