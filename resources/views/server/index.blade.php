@@ -14,7 +14,7 @@
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         <li id="triggerConsoleView" class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
         <li><a href="#stats" data-toggle="tab">{{ trans('server.index.usage') }}</a></li>
-        @can('allocation', $server)<li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>@endcan
+        @can('view-allocation', $server)<li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>@endcan
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="console">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-        @can('allocation', $server)
+        @can('view-allocation', $server)
             <div class="tab-pane" id="allocation">
                 <div class="panel panel-default">
                     <div class="panel-heading"></div>
@@ -384,7 +384,7 @@ $(window).load(function () {
         }
     }
 
-    @can('set-connection', $server)
+    @can('view-allocation', $server)
         // Send Request
         $('[data-action="set-connection"]').click(function (event) {
             event.preventDefault();

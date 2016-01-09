@@ -221,4 +221,13 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('view-manage')->exists();
     }
 
+    public function viewAllocation(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-allocation')->exists();
+    }
+
 }
