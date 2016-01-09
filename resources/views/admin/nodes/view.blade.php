@@ -285,7 +285,42 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    Allocations
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <td>IP Address</td>
+                            <td>Ports</td>
+                            <td></td>
+                        </thead>
+                        <tbody>
+                            @foreach($allocations as $ip => $ports)
+                                <tr>
+                                    <td>{{ $ip }}</td>
+                                    <td>
+                                        @foreach($ports as $id => $allocation)
+                                            @if (($id % 2) === 0)
+                                                @if($allocation->assigned_to === null)
+                                                    <span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-port="{{ $allocation->port }}"><i class="fa fa-fw fa-square-o"></i> {{ $allocation->port }} <br /></span>
+                                                @else
+                                                    <i class="fa fa-fw fa-check-square-o"></i> {{ $allocation->port }} <br />
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($ports as $id => $allocation)
+                                            @if (($id % 2) === 1)
+                                                @if($allocation->assigned_to === null)
+                                                    <span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-port="{{ $allocation->port }}"><i class="fa fa-fw fa-square-o"></i> {{ $allocation->port }} <br /></span>
+                                                @else
+                                                    <i class="fa fa-fw fa-check-square-o"></i> {{ $allocation->port }} <br />
+                                                @endif
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -597,6 +632,50 @@ $(document).ready(function () {
                 element.find('[data-action="memory"]').html('--');
                 element.find('[data-action="cpu"]').html('--');
             }
+        });
+    });
+
+    $('span[data-action="delete"]').hover(function() {
+        $(this).find('i').css('color', '#d9534f').removeClass('fa-square-o').addClass('fa-minus-square');
+    }, function () {
+        $(this).find('i').css('color', 'inherit').addClass('fa-square-o').removeClass('fa-minus-square');
+    });
+
+    $('span[data-action="delete"]').click(function (event) {
+        event.preventDefault();
+        var element = $(this);
+        var deleteIp = $(this).data('ip');
+        var deletePort = $(this).data('port');
+        swal({
+            title: '',
+            text: 'Are you sure you want to delete this port?',
+            type: 'warning',
+            showCancelButton: true,
+            allowOutsideClick: true,
+            closeOnConfirm: false,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+            showLoaderOnConfirm: true
+        }, function () {
+            $.ajax({
+                method: 'DELETE',
+                url: '{{ route('admin.nodes.view', $node->id) }}/allocation/' + deleteIp + '/' + deletePort,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function (data) {
+                swal({
+                    type: 'success',
+                    title: 'Port Deleted!',
+                });
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                swal({
+                    title: 'Whoops!',
+                    text: jqXHR.responseJSON.error,
+                    type: 'error'
+                });
+            });
         });
     });
 

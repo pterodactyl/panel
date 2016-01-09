@@ -172,6 +172,10 @@ class AdminRoutes {
                 'uses' => 'Admin\NodesController@postView'
             ]);
 
+            $router->delete('/view/{id}/allocation/{ip}/{port}', [
+                'uses' => 'Admin\NodesController@deletePortAllocation'
+            ]);
+
         });
 
     }

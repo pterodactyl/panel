@@ -67,6 +67,23 @@ class NodesController extends Controller
     public function getView(Request $request, $id)
     {
         $node = Models\Node::findOrFail($id);
+        $allocations = [];
+        $alloc = Models\Allocation::select('ip', 'port', 'assigned_to')->where('node', $node->id)->get();
+        if ($alloc) {
+            foreach($alloc as &$alloc) {
+                if (!array_key_exists($alloc->ip, $allocations)) {
+                    $allocations[$alloc->ip] = [[
+                        'port' => $alloc->port,
+                        'assigned_to' => $alloc->assigned_to
+                    ]];
+                } else {
+                    array_push($allocations[$alloc->ip], [
+                        'port' => $alloc->port,
+                        'assigned_to' => $alloc->assigned_to
+                    ]);
+                }
+            }
+        }
         return view('admin.nodes.view', [
             'node' => $node,
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
@@ -75,6 +92,7 @@ class NodesController extends Controller
                 ->where('node', $id)->paginate(10),
             'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
             'locations' => Models\Location::all(),
+            'allocations' => json_decode(json_encode($allocations), false),
         ]);
     }
 
@@ -102,6 +120,18 @@ class NodesController extends Controller
             'id' => $id,
             'tab' => 'tab_settings'
         ])->withInput();
+    }
+
+    public function deletePortAllocation(Request $request, $id, $ip, $port)
+    {
+        $allocation = Models\Allocation::where('node', $id)->whereNull('assigned_to')->where('ip', $ip)->where('port', $port)->first();
+        if (!$allocation) {
+            return response()->json([
+                'error' => 'Unable to find an allocation matching those details to delete.'
+            ], 400);
+        }
+        $allocation->delete();
+        return response('', 204);
     }
 
 }
