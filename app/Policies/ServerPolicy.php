@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Policies;
 
-use Log;
-use Debugbar;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 
@@ -189,6 +187,38 @@ class ServerPolicy
         }
 
         return $user->permissions()->server($server)->permission('set-connection')->exists();
+    }
+
+    /**
+     * Check if user has permission to view subusers for the server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewSubusers(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-subusers')->exists();
+    }
+
+    /**
+     * Check if user has permission to view the server management page.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewManage(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-manage')->exists();
     }
 
 }

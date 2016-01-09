@@ -2,9 +2,6 @@
 
 namespace Pterodactyl\Providers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Policies\ServerPolicy;
-
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -16,8 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Pterodactyl\Model' => 'Pterodactyl\Policies\ModelPolicy',
-        Server::class => ServerPolicy::class,
+        'Pterodactyl\Models\Server' => 'Pterodactyl\Policies\ServerPolicy'
     ];
 
     /**

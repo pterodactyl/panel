@@ -14,7 +14,7 @@
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         <li id="triggerConsoleView" class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
         <li><a href="#stats" data-toggle="tab">{{ trans('server.index.usage') }}</a></li>
-        <li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>
+        @can('allocation', $server)<li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>@endcan
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="console">
@@ -27,26 +27,30 @@
                         </div>
                         <div class="col-md-6">
                             <hr />
-                            <form action="#" method="post" id="console_command" style="display:none;">
-                                <fieldset>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
-                                        <span class="input-group-btn">
-                                            <button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
-                                        </span>
-                                    </div>
-                                </fieldset>
-                            </form>
-                            <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+                            @can('command', $server)
+                                <form action="#" method="post" id="console_command" style="display:none;">
+                                    <fieldset>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
+                                            <span class="input-group-btn">
+                                                <button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
+                                            </span>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                                <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
+                            @endcan
                         </div>
                         <div class="col-md-6" style="text-align:center;">
                             <hr />
-                            <button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>
-                            <button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>
-                            <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>
-                            <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
-                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
-                            <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                            @can('power', $server)
+                                <button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>
+                                <button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>
+                                <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>
+                                <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
+                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
+                                <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                            @endcan
                         </div>
                     </div>
                     <div class="row">
@@ -74,19 +78,21 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="allocation">
-            <div class="panel panel-default">
-                <div class="panel-heading"></div>
-                <div class="panel-body">
-                    <div class="alert alert-info">Below is a listing of all avaliable IPs and Ports for your service. To change the default connection address for your server, simply click on the one you would like to make default below.</div>
-                    <ul class="nav nav-pills nav-stacked" id="conn_options">
-                        @foreach ($allocations as $allocation)
-                            <li role="presentation" @if($allocation->ip === $server->ip && $allocation->port === $server->port) class="active" @endif><a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip }} <span class="badge">{{ $allocation->port }}</span></a></li>
-                        @endforeach
-                    </ul>
+        @can('allocation', $server)
+            <div class="tab-pane" id="allocation">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div class="alert alert-info">Below is a listing of all avaliable IPs and Ports for your service. To change the default connection address for your server, simply click on the one you would like to make default below.</div>
+                        <ul class="nav nav-pills nav-stacked" id="conn_options">
+                            @foreach ($allocations as $allocation)
+                                <li role="presentation" @if($allocation->ip === $server->ip && $allocation->port === $server->port) class="active" @endif><a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip }} <span class="badge">{{ $allocation->port }}</span></a></li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endcan
     </div>
     <div class="row">
         <div class="col-xs-11" id="col11_setter"></div>
