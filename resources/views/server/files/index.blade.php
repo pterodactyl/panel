@@ -114,7 +114,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/server/{{ $server->uuidShort }}/ajax/files/directory-list',
+                url: '{{ route('server.files.directory-list', $server->uuidShort) }}',
                 headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
                 data: { directory: urlDirectory }
             }).done(function (data) {

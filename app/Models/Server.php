@@ -112,7 +112,9 @@ class Server extends Model
             return self::$serverUUIDInstance[$uuid];
         }
 
-        $query = self::where('uuidShort', $uuid)->where('active', 1);
+        $query = self::select('servers.*', 'services.file as a_serviceFile')
+            ->join('services', 'services.id', '=', 'servers.id')
+            ->where('uuidShort', $uuid)->where('active', 1);
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
@@ -120,6 +122,9 @@ class Server extends Model
 
         $result = $query->first();
 
+        // @TODO: saving after calling this could end up resetting the daemon secret.
+        // We probably need to just allow access to self::getUserDaemonSecret() to
+        // get this result.
         if(!is_null($result)) {
             $result->daemonSecret = self::getUserDaemonSecret($result);
         }

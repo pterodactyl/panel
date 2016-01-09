@@ -41,6 +41,16 @@ class ServerRoutes {
                 'uses' => 'Server\ServerController@getAddFile'
             ]);
 
+            $router->post('files/directory-list', [
+                'as' => 'server.files.directory-list',
+                'uses' => 'Server\AjaxController@postDirectoryList'
+            ]);
+
+            $router->post('files/save', [
+                'as' => 'server.files.save',
+                'uses' => 'Server\AjaxController@postSaveFile'
+            ]);
+
             // Assorted AJAX Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status
@@ -52,15 +62,16 @@ class ServerRoutes {
                 $router->post('set-connection', [
                     'uses' => 'Server\AjaxController@postSetConnection'
                 ]);
+            });
 
-                // Assorted File Manager URLs
-                $router->post('files/directory-list', [
-                    'uses' => 'Server\AjaxController@postDirectoryList'
-                ]);
+            // Assorted AJAX Routes
+            $router->group(['prefix' => 'js'], function ($server) use ($router) {
+                // Returns Server Status
+                $router->get('{file}', [
+                    'as' => 'server.js',
+                    'uses' => 'Server\ServerController@getJavascript'
+                ])->where('file', '.*');
 
-                $router->post('files/save', [
-                    'uses' => 'Server\AjaxController@postSaveFile'
-                ]);
             });
         });
     }

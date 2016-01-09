@@ -29,6 +29,15 @@ class ServerController extends Controller
         //
     }
 
+    public function getJavascript(Request $request, $uuid, $file)
+    {
+        $server = Server::getByUUID($uuid);
+        return response()->view('server.js.' . $server->a_serviceFile . '.' . basename($file, '.js'), [
+            'server' => $server,
+            'node' => Node::find($server->node)
+        ])->header('Content-Type', 'application/javascript');
+    }
+
     /**
      * Renders server index page for specified server.
      *
