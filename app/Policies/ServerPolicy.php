@@ -174,6 +174,22 @@ class ServerPolicy
     }
 
     /**
+     * Check if user has permission to delete files from a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function deleteFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('delete-files')->exists();
+    }
+
+    /**
      * Check if user has permission to change the default connection information.
      *
      * @param  Pterodactyl\Models\User   $user

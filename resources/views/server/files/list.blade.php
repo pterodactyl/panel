@@ -40,7 +40,7 @@
                         <div class="col-md-3 hidden-xs hidden-sm">
                         </div>
                         <div class="col-md-3">
-                            @can('delete-file', $server)
+                            @can('delete-files', $server)
                                 <a href="@if($folder['directory'] !== ''){{ $folder['directory'] }}/@endif{{ $folder['entry'] }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                             @endcan
                         </div>
@@ -53,7 +53,7 @@
                 <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
                 <td>
                     @if(in_array($file['extension'], $extensions))
-                        @can('edit-file', $server)
+                        @can('edit-files', $server)
                             <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}" class="edit_file">{{ $file['entry'] }}</a>
                         @else
                             {{ $file['entry'] }}
@@ -69,12 +69,12 @@
                         <div class="col-md-3 hidden-xs hidden-sm">
                         </div>
                         <div class="col-md-3 hidden-xs hidden-sm">
-                            @can('download-file', $server)
+                            @can('download-files', $server)
                                 <a href="/server/{{ $server->uuidShort }}/files/download/@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}"><span class="badge"><i class="fa fa-download"></i></span></a>
                             @endcan
                         </div>
                         <div class="col-md-3">
-                            @can('delete-file', $server)
+                            @can('delete-files', $server)
                                 <a href="@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span>
                             @endcan
                         </div>
