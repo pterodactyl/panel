@@ -84,22 +84,36 @@
                 var clicked = $(this);
                 var deleteItemPath = $(this).attr('href');
 
-                if (!confirm('Are you sure you want to delete /home/container/' + deleteItemPath + '? There is no reversing this action.')) {
-                    return;
-                }
-
-                $.ajax({
-                    type: 'DELETE',
-                    url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/' + deleteItemPath,
-                    headers: {
-                        'X-Access-Token': '{{ $server->daemonSecret }}',
-                        'X-Access-Server': '{{ $server->uuid }}'
-                    }
-                }).done(function (data) {
-                    clicked.parent().parent().parent().parent().fadeOut();
-                }).fail(function (jqXHR) {
-                    $("#internal_alert").html('<div class="alert alert-danger">An error occured while attempting to delete <code>/home/container/' + deleteItemPath + '</code>. Please try again.</div>').show();
-                    console.log(jqXHR);
+                swal({
+                    type: 'warning',
+                    title: 'Really Delete this File?',
+                    showCancelButton: true,
+                    showConfirmButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true
+                }, function () {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/' + deleteItemPath,
+                        headers: {
+                            'X-Access-Token': '{{ $server->daemonSecret }}',
+                            'X-Access-Server': '{{ $server->uuid }}'
+                        }
+                    }).done(function (data) {
+                        clicked.parent().parent().parent().parent().fadeOut();
+                        swal({
+                            type: 'success',
+                            title: 'File Deleted'
+                        });
+                    }).fail(function (jqXHR) {
+                        console.error(jqXHR);
+                        swal({
+                            type: 'error',
+                            title: 'Whoops!',
+                            html: true,
+                            text: 'An error occured while attempting to delete this file. Please try again.',
+                        });
+                    });
                 });
 
             });
