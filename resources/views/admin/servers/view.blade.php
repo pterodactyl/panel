@@ -321,9 +321,20 @@ $(document).ready(function () {
         $('select[name="remove_additional[]"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
     });
     $('form[data-attr="deleteServer"]').submit(function (event) {
-        if (confirm('Are you sure that you want to delete this server? There is no going back, all data will immediately be removed.')) {
-            event.submit();
-        }
+        event.preventDefault();
+        swal({
+            title: '',
+            type: 'warning',
+            text: 'Are you sure that you want to delete this server? There is no going back, all data will immediately be removed.',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+            closeOnConfirm: false
+        }, function (confirmed) {
+            if (confirmed) {
+                event.submit();
+            }
+        });
     });
 });
 </script>
