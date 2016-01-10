@@ -52,6 +52,7 @@ class ServersController extends Controller
             'users.email as a_ownerEmail',
             'locations.long as a_locationName',
             'services.name as a_serviceName',
+            'services.executable as a_serviceExecutable',
             'service_options.name as a_servceOptionName'
         )->join('nodes', 'servers.node', '=', 'nodes.id')
         ->join('users', 'servers.owner', '=', 'users.id')
@@ -68,7 +69,12 @@ class ServersController extends Controller
         return view('admin.servers.view', [
             'server' => $server,
             'assigned' => Models\Allocation::select('id', 'ip', 'port')->where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'unassigned' => Models\Allocation::select('id', 'ip', 'port')->where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get()
+            'unassigned' => Models\Allocation::select('id', 'ip', 'port')->where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'startup' => Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
+                ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
+                ->where('service_variables.option_id', $server->option)
+                ->where('server_variables.server_id', $server->id)
+                ->get()
         ]);
     }
 
@@ -322,6 +328,27 @@ class ServersController extends Controller
                 'id' => $id,
                 'tab' => 'tab_manage'
             ]);
+        }
+    }
+
+    public function postUpdateServerStartup(Request $request, $id)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->updateStartup($id, $request->except([
+                '_token'
+            ]));
+            Alert::success('Server startup variables were successfully updated.')->flash();
+        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch(\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
+        } finally {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_startup'
+            ])->withInput();
         }
     }
 

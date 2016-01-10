@@ -115,6 +115,12 @@ class AdminRoutes {
                 'uses' => 'Admin\ServersController@postUpdateServerDetails'
             ]);
 
+            // Change Server Details
+            $router->post('/view/{id}/startup', [
+                'as' => 'admin.servers.post.startup',
+                'uses' => 'Admin\ServersController@postUpdateServerStartup'
+            ]);
+
             // Rebuild Server
             $router->post('/view/{id}/rebuild', [
                 'uses' => 'Admin\ServersController@postUpdateServerToggleBuild'

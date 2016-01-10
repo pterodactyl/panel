@@ -223,12 +223,52 @@
             </div>
         </div>
         <div class="tab-pane" id="tab_startup">
-            <div class="panel panel-default">
-                <div class="panel-heading"></div>
-                <div class="panel-body">
-                    Startup
+            <form action="{{ route('admin.servers.post.startup', $server->id) }}" method="POST">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">Changing any of the values below will require a restart for them to take effect.</div>
+                                <label class="control-label">Server Startup Command</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">{{ $server->a_serviceExecutable }}</span>
+                                    <input type="text" class="form-control" name="startup" value="{{ old('startup', $server->startup) }}" />
+                                </div>
+                                <p class="text-muted"><small>The following data replacers are avaliable for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server ip, and server port respectively.</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            @foreach($startup as $item)
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">
+                                        @if($item->required === 1)<span class="label label-primary">Required</span> @endif
+                                        @if($item->user_viewable === 0)<span data-toggle="tooltip" data-placement="top" title="Not Visible to Users" class="label label-danger"><i class="fa fa-eye-slash"></i></span> @endif
+                                        @if($item->user_editable === 0)<span data-toggle="tooltip" data-placement="top" title="Not Editable by Users" class="label label-danger"><i class="fa fa-edit"></i></span> @endif
+                                        {{ $item->name }}
+                                    </label>
+                                    <div>
+                                        <input type="text" name="{{ $item->env_variable }}" class="form-control" value="{{ old($item->env_variable, $item->a_serverValue) }}" data-action="matchRegex" data-regex="{{ $item->regex }}" />
+                                    </div>
+                                    <p class="text-muted"><small>{{ $item->description }}<br />Regex: <code>{{ $item->regex }}</code><br />Access as: <code>&#123;&#123;{{$item->env_variable}}&#125;&#125;</code></small></p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {!! csrf_field() !!}
+                                <input type="submit" class="btn btn-primary btn-sm" value="Update Startup Arguments" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
         <div class="tab-pane" id="tab_manage">
             <div class="panel panel-default">
@@ -315,10 +355,22 @@
 </div>
 <script>
 $(document).ready(function () {
+    $('[data-toggle="tooltip"]').tooltip();
     $('#sidebar_links').find("a[href='/admin/servers']").addClass('active');
     $('input[name="default"]').on('change', function (event) {
         $('select[name="remove_additional[]"]').find('option:disabled').prop('disabled', false);
         $('select[name="remove_additional[]"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
+    });
+    $('[data-action="matchRegex"]').keyup(function (event) {
+        if (!$(this).data('regex')) return;
+        var input = $(this).val();
+        var regex = new RegExp(escapeRegExp($(this).data('regex')));
+        console.log(regex);
+        if (!regex.test(input)) {
+            $(this).parent().parent().removeClass('has-success').addClass('has-error');
+        } else {
+            $(this).parent().parent().removeClass('has-error').addClass('has-success');
+        }
     });
     $('form[data-attr="deleteServer"]').submit(function (event) {
         event.preventDefault();
