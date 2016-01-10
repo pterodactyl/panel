@@ -15,11 +15,11 @@
 		<thead>
 			<tr>
 				<th>Name</th>
-                <th>Location</th>
+                <th class="visible-lg">Location</th>
 				<th>FQDN</th>
-                <th>Memory</th>
-                <th>Disk</th>
-                <th class="text-center">Servers</th>
+                <th class="hidden-xs">Memory</th>
+                <th class="hidden-xs">Disk</th>
+                <th class="text-center hidden-xs">Servers</th>
                 <th class="text-center">HTTPS</th>
                 <th class="text-center">Public</th>
 			</tr>
@@ -28,11 +28,11 @@
 			@foreach ($nodes as $node)
 				<tr>
 					<td><a href="/admin/nodes/view/{{ $node->id }}">{{ $node->name }}</td>
-                    <td>{{ $node->a_locationName }}</td>
+                    <td class="visible-lg">{{ $node->a_locationName }}</td>
                     <td><code>{{ $node->fqdn }}</code></td>
-                    <td>{{ $node->memory }} MB</td>
-                    <td>{{ $node->disk }} MB</td>
-                    <td class="text-center">{{ $node->a_serverCount }}</td>
+                    <td class="hidden-xs">{{ $node->memory }} MB</td>
+                    <td class="hidden-xs">{{ $node->disk }} MB</td>
+                    <td class="text-center hidden-xs">{{ $node->a_serverCount }}</td>
                     <td class="text-center" style="color:{{ ($node->scheme === 'https') ? '#50af51' : '#d9534f' }}"><i class="fa fa-{{ ($node->scheme === 'https') ? 'lock' : 'unlock' }}"></i></td>
                     <td class="text-center"><i class="fa fa-{{ ($node->public === 1) ? 'check' : 'times' }}"></i></td>
 				</tr>

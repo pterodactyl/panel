@@ -16,9 +16,9 @@
 			<tr>
 				<th>Server Name</th>
                 <th>Owner</th>
-				<th>Node</th>
+				<th class="hidden-xs">Node</th>
                 <th>Default Connection</th>
-                <th>SFTP Username</th>
+                <th class="hidden-xs">SFTP Username</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -26,9 +26,9 @@
 				<tr class="dynUpdate @if($server->active !== 1)active @endif" id="{{ $server->uuidShort }}">
 					<td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</td>
                     <td><a href="/admin/accounts/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
-                    <td><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
+                    <td class="hidden-xs"><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
                     <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
-                    <td><code>{{ $server->username }}</code></td>
+                    <td class="hidden-xs"><code>{{ $server->username }}</code></td>
 				</tr>
 			@endforeach
 		</tbody>
