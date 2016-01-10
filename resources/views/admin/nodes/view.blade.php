@@ -754,6 +754,8 @@ $(document).ready(function () {
                         $('li[data-action="alloc_dropdown_val"][data-value="' + deleteIp + '"]').remove();
                         element.parent().parent().slideUp().remove();
                     }
+                } else {
+                    element.fadeOut();
                 }
                 swal({
                     type: 'success',
