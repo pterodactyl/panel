@@ -42,7 +42,7 @@
         <li><a href="#tab_configuration" data-toggle="tab">Configuration</a></li>
         <li><a href="#tab_allocation" data-toggle="tab">Allocation</a></li>
         <li><a href="#tab_servers" data-toggle="tab">Servers</a></li>
-        <li><a href="#tab_delete" data-toggle="tab">Delete</a></li>
+        @if(count($servers) === 0)<li><a href="#tab_delete" data-toggle="tab">Delete</a></li>@endif
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_about">
@@ -410,14 +410,27 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="tab_delete">
-            <div class="panel panel-default">
-                <div class="panel-heading"></div>
-                <div class="panel-body">
-                    Delete
+        @if(count($servers) === 0)
+            <div class="tab-pane" id="tab_delete">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-4 text-center">
+                                <form action="{{ route('admin.nodes.delete', $node->id) }}" method="POST" id="deleteNodeForm">
+                                    {!! method_field('DELETE') !!}
+                                    {!! csrf_field() !!}
+                                    <input type="submit" name="doSomethingForFucksSake" value="Delete Node" class="btn btn-sm btn-danger" />
+                                </form>
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="alert alert-danger" style="margin-bottom:0;">Deleting this node is a permanent action, it cannot be undone.</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
     <div class="row">
         <div class="col-xs-11" id="col11_setter"></div>
@@ -429,6 +442,21 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover({
         placement: 'auto'
+    });
+
+    $('#deleteNodeForm').submit(function (event) {
+        event.preventDefault();
+        swal({
+            type: 'warning',
+            title: 'Are You Sure?',
+            text: 'This will immediately delete this node, there is no undo.',
+            showCancelButton: true,
+            allowOutsideClick: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+        }, function () {
+            event.target.submit();
+        });
     });
 
     $('.cloneElement').on('click', function (event) {

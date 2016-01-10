@@ -186,4 +186,22 @@ class NodesController extends Controller
         }
     }
 
+    public function deleteNode(Request $request, $id)
+    {
+        $node = Models\Node::findOrFail($id);
+        $servers = Models\Server::where('node', $id)->count();
+        if ($servers > 0) {
+            Alert::danger('You cannot delete a node with servers currently attached to it.')->flash();
+            return redirect()->route('admin.nodes.view', [
+                'id' => $id,
+                'tab' => 'tab_delete'
+            ]);
+        }
+
+        $node->delete();
+        Alert::success('Node successfully deleted.')->flash();
+        return redirect()->route('admin.nodes');
+
+    }
+
 }

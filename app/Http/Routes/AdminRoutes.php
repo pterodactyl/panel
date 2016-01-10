@@ -186,6 +186,11 @@ class AdminRoutes {
                 'uses' => 'Admin\NodesController@postAllocations'
             ]);
 
+            $router->delete('/view/{id}', [
+                'as' => 'admin.nodes.delete',
+                'uses' => 'Admin\NodesController@deleteNode'
+            ]);
+
         });
 
     }
