@@ -80,3 +80,46 @@ form .text-muted {margin: 0 0 -5.5px}
 .label{border-radius: .25em;padding: .2em .6em .3em;}
 kbd{border-radius: .25em}
 .modal-open .modal {padding-left: 0px !important;padding-right: 0px !important;overflow-y: scroll;}
+
+/**
+ * Pillboxes
+ */
+.fuelux .pillbox {
+	border-radius: 0 !important;
+}
+
+li.btn.btn-default.pill {
+	padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+	color:#fff;
+	background-color:#008cba;
+	border-color:#0079a1;
+}
+
+li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.pill:hover {
+	background-color:#006687;
+	border-color:#004b63
+}
+
+
+.fuelux .pillbox>.pill-group .form-control {
+	height: 26px !important;
+}
+
+.fuelux .pillbox .pillbox-input-wrap {
+	margin: 0 !important;
+}
+
+.btn-allocate-delete {
+	height:34px;
+	width:34px;
+	padding:0;
+}
+
+@media (max-width:992px){
+	.btn-allocate-delete {
+		margin-top:22px;
+	}
+}

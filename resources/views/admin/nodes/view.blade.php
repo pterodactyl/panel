@@ -6,8 +6,10 @@
 
 @section('scripts')
     @parent
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/css/fuelux.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/js/fuelux.min.js"></script>
     <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
     <script>
         $(document).ready(function () {
@@ -285,7 +287,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover">
+                    <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
                         <thead>
                             <td>IP Address</td>
                             <td>Ports</td>
@@ -294,7 +296,7 @@
                         <tbody>
                             @foreach($allocations as $ip => $ports)
                                 <tr>
-                                    <td>{{ $ip }}</td>
+                                    <td><span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-total="{{ count($ports) }}" class="is-ipblock"><i class="fa fa-fw fa-square-o"></i></span> {{ $ip }}</td>
                                     <td>
                                         @foreach($ports as $id => $allocation)
                                             @if (($id % 2) === 0)
@@ -321,6 +323,51 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                <div class="panel-body">
+                    <h4 style="margin-top:0;">Allocate Additional Ports</h4>
+                    <form action="{{ route('admin.nodes.post.allocations', $node->id) }}" method="POST">
+                        <div class="row" id="duplicate">
+                            <div class="col-md-4 fuelux">
+                                <label for="" class="control-label">IP Address</label>
+                                <div class="input-group input-append dropdown combobox allocationComboBox" data-initialize="combobox">
+                                    <input type="text" name="allocate_ip[]" class="form-control pillbox_ip" style="border-right:0;">
+                                    <div class="input-group-btn">
+                                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            @foreach($allocations as $ip => $ports)
+                                                <li data-action="alloc_dropdown_val" data-value="{{ $ip }}"><a href="#">{{ $ip }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-7 col-xs-10 fuelux">
+                                <label for="" class="control-label">Ports</label>
+                                <div class="pillbox allocationPillbox" data-initialize="pillbox">
+                                    <ul class="clearfix pill-group">
+                                        <li class="pillbox-input-wrap btn-group">
+                                            <input type="text" class="form-control dropdown-toggle pillbox-add-item" placeholder="add port">
+                                        </li>
+                                    </ul>
+                                </div>
+                                <input name="allocate_port[]" type="hidden" class="pillboxMain"/>
+                            </div>
+                            <div class="form-group col-md-1 col-xs-2" style="margin-left: -10px;">
+                                <label for="" class="control-label">&nbsp;</label>
+                                <button class="btn btn-danger btn-allocate-delete removeClone disabled"><i class="fa fa-close"></i></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr />
+                                {!! csrf_field() !!}
+                                <input type="submit" class="btn btn-sm btn-primary" value="Add Ports" />
+                                <button class="btn btn-success btn-sm cloneElement">Add More Rows</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -382,6 +429,36 @@ $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('[data-toggle="popover"]').popover({
         placement: 'auto'
+    });
+
+    $('.cloneElement').on('click', function (event) {
+        event.preventDefault();
+        var cloned = $('#duplicate').clone();
+        var rnd = randomKey(10);
+        cloned.find('.allocationPillbox').removeClass('allocationPillbox').addClass('allocationPillbox_' + rnd);
+        cloned.find('.pillboxMain').removeClass('pillboxMain').addClass('pillbox_' + rnd);
+        cloned.find('.removeClone').removeClass('disabled');
+        cloned.find('.pillbox_ip').removeClass('pillbox_ip').addClass('pillbox_ip_' + rnd);
+        cloned.insertAfter('#duplicate');
+        $('.allocationPillbox_' + rnd).pillbox();
+        $('.allocationPillbox_' + rnd).on('added.fu.pillbox edited.fu.pillbox removed.fu.pillbox', function pillboxChanged() {
+            $('.pillbox_' + rnd).val(JSON.stringify($('.allocationPillbox_' + rnd).pillbox('items')));
+        });
+        $('.removeClone').on('click', function (event) {
+            event.preventDefault();
+            var element = $(this);
+            element.parent().parent().slideUp(function () {
+                element.remove();
+                $('.pillbox_' + rnd).remove();
+                $('.pillbox_ip_' + rnd).remove();
+            });
+        });
+    })
+
+    $('.allocationPillbox').pillbox();
+    $('.allocationComboBox').combobox();
+    $('.allocationPillbox').on('added.fu.pillbox edited.fu.pillbox removed.fu.pillbox', function pillboxChanged() {
+        $('.pillboxMain').val(JSON.stringify($('.allocationPillbox').pillbox('items')));
     });
 
     var notifySocketError = false;
@@ -664,6 +741,20 @@ $(document).ready(function () {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).done(function (data) {
+                if (element.hasClass('is-ipblock')) {
+                    var tMatched = 0;
+                    element.parent().parent().find('*').each(function () {
+                        if ($(this).attr('data-port') && $(this).attr('data-ip')) {
+                            $(this).fadeOut();
+                            tMatched++;
+                        }
+                    });
+                    if (tMatched === element.data('total')) {
+                        element.fadeOut();
+                        $('li[data-action="alloc_dropdown_val"][data-value="' + deleteIp + '"]').remove();
+                        element.parent().parent().slideUp().remove();
+                    }
+                }
                 swal({
                     type: 'success',
                     title: 'Port Deleted!',

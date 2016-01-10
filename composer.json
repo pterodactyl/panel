@@ -13,7 +13,8 @@
         "kris/laravel-form-builder": "^1.6",
         "pragmarx/google2fa": "^0.7.1",
         "webpatser/laravel-uuid": "^2.0",
-        "prologue/alerts": "^0.4.0"
+        "prologue/alerts": "^0.4.0",
+        "s1lentium/iptools": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -68,7 +68,7 @@ class NodesController extends Controller
     {
         $node = Models\Node::findOrFail($id);
         $allocations = [];
-        $alloc = Models\Allocation::select('ip', 'port', 'assigned_to')->where('node', $node->id)->get();
+        $alloc = Models\Allocation::select('ip', 'port', 'assigned_to')->where('node', $node->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get();
         if ($alloc) {
             foreach($alloc as &$alloc) {
                 if (!array_key_exists($alloc->ip, $allocations)) {
@@ -122,9 +122,15 @@ class NodesController extends Controller
         ])->withInput();
     }
 
-    public function deletePortAllocation(Request $request, $id, $ip, $port)
+    public function deleteAllocation(Request $request, $id, $ip, $port = null)
     {
-        $allocation = Models\Allocation::where('node', $id)->whereNull('assigned_to')->where('ip', $ip)->where('port', $port)->first();
+        $query = Models\Allocation::where('node', $id)->whereNull('assigned_to')->where('ip', $ip);
+        if (is_null($port) || $port === 'undefined') {
+            $allocation = $query;
+        } else {
+            $allocation = $query->where('port', $port)->first();
+        }
+
         if (!$allocation) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.'
@@ -132,6 +138,52 @@ class NodesController extends Controller
         }
         $allocation->delete();
         return response('', 204);
+    }
+
+    public function getAllocationsJson(Request $request, $id)
+    {
+        $allocations = Models\Allocation::select('ip')->where('node', $id)->groupBy('ip')->get();
+        return response()->json($allocations);
+    }
+
+    public function postAllocations(Request $request, $id)
+    {
+        $processedData = [];
+        foreach($request->input('allocate_ip') as $ip) {
+            if (!array_key_exists($ip, $processedData)) {
+                $processedData[$ip] = [];
+            }
+        }
+
+        foreach($request->input('allocate_port') as $portid => $ports) {
+            if (array_key_exists($portid, $request->input('allocate_ip'))) {
+                $json = json_decode($ports);
+                if (json_last_error() === 0 && !empty($json)) {
+                    foreach($json as &$parsed) {
+                        array_push($processedData[$request->input('allocate_ip')[$portid]], $parsed->value);
+                    }
+                }
+            }
+        }
+
+        try {
+            if(empty($processedData)) {
+                throw new \Pterodactyl\Exceptions\DisplayException('It seems that no data was passed to this function.');
+            }
+            $node = new NodeRepository;
+            $node->addAllocations($id, $processedData);
+            Alert::success('Successfully added new allocations to this node.')->flash();
+        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch (\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attempting to add allocations this node. Please try again.')->flash();
+        } finally {
+            return redirect()->route('admin.nodes.view', [
+                'id' => $id,
+                'tab' => 'tab_allocation'
+            ]);
+        }
     }
 
 }

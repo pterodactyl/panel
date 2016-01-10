@@ -2,11 +2,13 @@
 
 namespace Pterodactyl\Repositories;
 
+use DB;
 use Validator;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 
+use IPTools\Network;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
@@ -121,6 +123,64 @@ class NodeRepository {
         $node = Models\Node::findOrFail($id);
         return $node->update($data);
 
+    }
+
+    public function addAllocations($id, array $allocations)
+    {
+        $node = Models\Node::findOrFail($id);
+
+        DB::beginTransaction();
+        foreach($allocations as $rawIP => $ports) {
+            $parsedIP = Network::parse($rawIP);
+            foreach($parsedIP as $ip) {
+                foreach($ports as $port) {
+                    if (!is_int($port) && !preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
+                        throw new DisplayException('The mapping for ' . $port . ' is invalid and cannot be processed.');
+                    }
+                    if (preg_match('/^(\d{1,5})-(\d{1,5})$/', $port, $matches)) {
+                        foreach(range($matches[1], $matches[2]) as $assignPort) {
+                            $alloc = Models\Allocation::firstOrNew([
+                                'node' => $node->id,
+                                'ip' => $ip,
+                                'port' => $assignPort
+                            ]);
+                            if (!$alloc->exists) {
+                                $alloc->fill([
+                                    'node' => $node->id,
+                                    'ip' => $ip,
+                                    'port' => $assignPort,
+                                    'assigned_to' => null
+                                ]);
+                                $alloc->save();
+                            }
+                        }
+                    } else {
+                        $alloc = Models\Allocation::firstOrNew([
+                            'node' => $node->id,
+                            'ip' => $ip,
+                            'port' => $port
+                        ]);
+                        if (!$alloc->exists) {
+                            $alloc->fill([
+                                'node' => $node->id,
+                                'ip' => $ip,
+                                'port' => $port,
+                                'assigned_to' => null
+                            ]);
+                            $alloc->save();
+                        }
+                    }
+                }
+            }
+        }
+
+        try {
+            DB::commit();
+            return true;
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
     }
 
 }
