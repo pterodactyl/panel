@@ -330,10 +330,8 @@ $(document).ready(function () {
             confirmButtonText: 'Delete',
             confirmButtonColor: '#d9534f',
             closeOnConfirm: false
-        }, function (confirmed) {
-            if (confirmed) {
-                event.submit();
-            }
+        }, function () {
+            event.target.submit();
         });
     });
 });
