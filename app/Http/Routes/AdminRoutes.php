@@ -199,6 +199,20 @@ class AdminRoutes {
 
         });
 
+        // Server Routes
+        $router->group([
+            'prefix' => 'admin/locations',
+            'middleware' => [
+                'auth',
+                'admin'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.locations',
+                'uses' => 'Admin\LocationsController@getIndex'
+            ]);
+        });
+
     }
 
 }
