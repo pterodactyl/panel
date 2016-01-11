@@ -58,14 +58,9 @@
             <div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
                 @section('sidebar')
                     <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-heading"><strong>Management</strong></a>
                         <a href="/admin" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
-                    </div>
-                    <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-heading"><strong>Settings</strong></a>
-                        <a href="/admin/settings/global" class="list-group-item">Global Settings</a>
-                        <a href="/admin/settings/urls" class="list-group-item">URL Settings</a>
-                        <a href="/admin/settings/email" class="list-group-item">Email Settings</a>
-                        <a href="/admin/settings/captcha" class="list-group-item">Captcha Settings</a>
+                        <a href="/admin/settings" class="list-group-item">General Settings</a>
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
@@ -80,9 +75,13 @@
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Node Management</strong></a>
                         <a href="/admin/nodes" class="list-group-item">List Nodes</a>
-                        <a href="/admin/nodes/new" class="list-group-item">Add Node</a>
                         <a href="/admin/locations" class="list-group-item">Manage Locations</a>
-                        <a href="/admin/services" class="list-group-item">Manage Services</a>
+                        <a href="/admin/nodes/new" class="list-group-item">Add Node</a>
+                    </div>
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-heading"><strong>Service Management</strong></a>
+                        <a href="/admin/services" class="list-group-item">List Services</a>
+                        <a href="/admin/services/new" class="list-group-item">Add Service</a>
                     </div>
                 @show
             </div>
