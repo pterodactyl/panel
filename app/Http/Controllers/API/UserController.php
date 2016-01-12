@@ -2,82 +2,32 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
-use Gate;
-use Log;
-use Debugbar;
-use Pterodactyl\Models\API;
-use Pterodactyl\Models\User;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+use Pterodactyl\Transformers\UserTransformer;
+use Pterodactyl\Models;
+
+/**
+ * @Resource("Users", uri="/users")
+ */
+class UserController extends BaseController
 {
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function getAllUsers(Request $request)
-    {
-
-        // Policies don't work if the user isn't logged in for whatever reason in Laravel...
-        if(!API::checkPermission($request->header('X-Authorization'), 'get-users')) {
-            return API::noPermissionError();
-        }
-
-        return response()->json([
-            'users' => User::all()
-        ]);
-    }
-
-    /**
-     * Returns JSON response about a user given their ID.
-     * If fields are provided only those fields are returned.
+     * List All Users
      *
-     * Does not return protected fields (i.e. password & totp_secret)
+     * Lists all users currently on the system.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @param  string  $fields
-     * @return Response
+     * @Get("/{?page}")
+     * @Versions({"v1"})
+     * @Parameters({
+     * 		@Parameter("page", type="integer", description="The page of results to view.", default=1)
+     * })
+     * @Response(200)
      */
-    public function getUser(Request $request, $id, $fields = null)
-    {
-
-        // Policies don't work if the user isn't logged in for whatever reason in Laravel...
-        if(!API::checkPermission($request->header('X-Authorization'), 'get-users')) {
-            return API::noPermissionError();
-        }
-
-        if (is_null($fields)) {
-            return response()->json(User::find($id));
-        }
-
-        $query = User::where('id', $id);
-        $explode = explode(',', $fields);
-
-        foreach($explode as &$exploded) {
-            if(!empty($exploded)) {
-                $query->addSelect($exploded);
-            }
-        }
-
-        try {
-            return response()->json($query->get());
-        } catch (\Exception $e) {
-            if ($e instanceof \Illuminate\Database\QueryException) {
-                return response()->json([
-                    'error' => 'One of the fields provided in your argument list is invalid.'
-                ], 500);
-            }
-            throw $e;
-        }
-
+    public function getUsers(Request $request) {
+        $users = Models\User::paginate(15);
+        return $this->response->paginator($users, new UserTransformer);
     }
 
 }
