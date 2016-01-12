@@ -22,7 +22,8 @@
         "phpunit/phpunit": "~4.0",
         "phpspec/phpspec": "~2.1",
         "symfony/css-selector": "~3.0",
-        "symfony/dom-crawler": "~3.0"
+        "symfony/dom-crawler": "~3.0",
+        "laravel/homestead": "^3.0"
     },
     "autoload": {
         "classmap": [
