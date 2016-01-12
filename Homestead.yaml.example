@@ -12,7 +12,7 @@ keys:
     - ~/.ssh/id_rsa
 
 folders:
-    - map: "/path/to/local/files"
+    - map: "/path/to/local/folder"
       to: "/home/vagrant/panel"
       type: nfs
 
