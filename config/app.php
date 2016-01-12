@@ -149,7 +149,6 @@ return [
          * Additional Dependencies
          */
         Barryvdh\Debugbar\ServiceProvider::class,
-        Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
         PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
 
@@ -183,7 +182,6 @@ return [
         'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
         'Event'     => Illuminate\Support\Facades\Event::class,
         'File'      => Illuminate\Support\Facades\File::class,
-        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
         'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash'      => Illuminate\Support\Facades\Hash::class,
