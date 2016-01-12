@@ -257,7 +257,7 @@ class ServerRepository
             return $server->id;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to update the configuration: ' . $ex->getMessage());
+            throw new DisplayException('An error occured while attempting to create the server: ' . $ex->getMessage());
         } catch (\Exception $ex) {
             DB::rollBack();
             Log:error($ex);
