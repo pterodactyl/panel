@@ -10,7 +10,6 @@
         "barryvdh/laravel-debugbar": "^2.0",
         "doctrine/dbal": "^2.5",
         "guzzlehttp/guzzle": "^6.1",
-        "kris/laravel-form-builder": "^1.6",
         "pragmarx/google2fa": "^0.7.1",
         "webpatser/laravel-uuid": "^2.0",
         "prologue/alerts": "^0.4.0",
