@@ -37,13 +37,6 @@ class AuthController extends Controller
     protected $redirectPath = '/';
 
     /**
-     * Failed post-authentication redirect location.
-     *
-     * @var string
-     */
-    protected $loginPath = '/auth/login';
-
-    /**
      * Lockout time for failed login requests.
      *
      * @var integer
