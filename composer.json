@@ -6,7 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=5.5.9",
-        "laravel/framework": "5.1.*",
+        "laravel/framework": "5.2.*",
         "barryvdh/laravel-debugbar": "^2.0",
         "doctrine/dbal": "^2.5",
         "guzzlehttp/guzzle": "^6.1",
@@ -20,7 +20,9 @@
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
-        "phpspec/phpspec": "~2.1"
+        "phpspec/phpspec": "~2.1",
+        "symfony/css-selector": "~3.0",
+        "symfony/dom-crawler": "~3.0"
     },
     "autoload": {
         "classmap": [
@@ -40,8 +42,9 @@
             "php artisan clear-compiled",
             "php artisan optimize"
         ],
-        "pre-update-cmd": [
-            "php artisan clear-compiled"
+        "post-autoload-dump": [
+            "php artisan clear-compiled",
+            "php artisan optimize"
         ],
         "post-update-cmd": [
             "php artisan optimize"
