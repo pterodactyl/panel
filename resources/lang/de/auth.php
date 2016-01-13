@@ -18,7 +18,7 @@ return [
     'sendlink' => 'Senden Sie Passwort-Reset Link.', /* Send password reset link */
     'emailsent' => 'E-Mail gesendet.', /* Email Sent */
     'remeberme' => 'Login merken.', /* Remember my Login*/
-	'totp_failed' => 'Die TOTP Token vorgesehen war ist ungültig.' /* The TOTP token was provided is not valid. */
+    'totp_failed' => 'Die TOTP Token vorgesehen war ist ungültig.' /* The TOTP token was provided is not valid. */
 ];
 
 /*

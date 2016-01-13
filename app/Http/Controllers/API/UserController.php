@@ -24,7 +24,7 @@ class UserController extends BaseController
      * @Get("/{?page}")
      * @Versions({"v1"})
      * @Parameters({
-     *		@Parameter("page", type="integer", description="The page of results to view.", default=1)
+     *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
      * })
      * @Response(200)
      */
@@ -42,8 +42,8 @@ class UserController extends BaseController
      * @Get("/{id}/{fields}")
      * @Versions({"v1"})
      * @Parameters({
-     *		@Parameter("id", type="integer", required=true, description="The ID of the user to get information on."),
-     *  	@Parameter("fields", type="string", required=false, description="A comma delimidated list of fields to include.")
+     *      @Parameter("id", type="integer", required=true, description="The ID of the user to get information on."),
+     *      @Parameter("fields", type="string", required=false, description="A comma delimidated list of fields to include.")
      * })
      * @Response(200)
      */
@@ -68,18 +68,18 @@ class UserController extends BaseController
      * @Post("/")
      * @Versions({"v1"})
      * @Transaction({
-     * 		@Request({
-     *   		"email": "foo@example.com",
-     *     		"password": "foopassword",
-     *       	"admin": false
+     *      @Request({
+     *          "email": "foo@example.com",
+     *          "password": "foopassword",
+     *          "admin": false
      *       }, headers={"Authorization": "Bearer <jwt-token>"}),
      *       @Response(200, body={"id": 1}),
      *       @Response(422, body{
-     *       	"message": "A validation error occured.",
-     *        	"errors": {
-     *         		"email": ["The email field is required."],
-     *           	"password": ["The password field is required."],
-     *            	"admin": ["The admin field is required."]
+     *          "message": "A validation error occured.",
+     *          "errors": {
+     *              "email": ["The email field is required."],
+     *              "password": ["The password field is required."],
+     *              "admin": ["The admin field is required."]
      *          },
      *          "status_code": 422
      *       })
@@ -106,9 +106,9 @@ class UserController extends BaseController
      * @Patch("/{id}")
      * @Versions({"v1"})
      * @Transaction({
-     * 		@Request({
-     *   		"email": "new@email.com"
-     *     	}, headers={"Authorization": "Bearer <jwt-token>"}),
+     *      @Request({
+     *          "email": "new@email.com"
+     *      }, headers={"Authorization": "Bearer <jwt-token>"}),
      *      @Response(200, body={"email": "new@email.com"}),
      *      @Response(422)
      * })
@@ -127,12 +127,12 @@ class UserController extends BaseController
      * @Delete("/{id}")
      * @Versions({"v1"})
      * @Transaction({
-     * 		@Request(headers={"Authorization": "Bearer <jwt-token>"}),
-     *   	@Response(204),
-     *    	@Response(422)
+     *      @Request(headers={"Authorization": "Bearer <jwt-token>"}),
+     *      @Response(204),
+     *      @Response(422)
      * })
      * @Parameters({
-     * 		@Parameter("id", type="integer", required=true, description="The ID of the user to delete.")
+     *      @Parameter("id", type="integer", required=true, description="The ID of the user to delete.")
      * })
      */
     public function deleteUser(Request $request, $id)

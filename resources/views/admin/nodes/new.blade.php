@@ -7,10 +7,10 @@
 @section('content')
 <div class="col-md-12">
     <ul class="breadcrumb">
-		<li><a href="/admin">Admin Control</a></li>
+        <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/nodes">Nodes</a></li>
-		<li class="active">Create New Node</li>
-	</ul>
+        <li class="active">Create New Node</li>
+    </ul>
     <h3>Create New Node</h3><hr />
     <form action="/admin/nodes/new" method="POST">
         <div class="well">
@@ -158,7 +158,7 @@
 </div>
 <script>
 $(document).ready(function () {
-	$('#sidebar_links').find("a[href='/admin/nodes/new']").addClass('active');
+    $('#sidebar_links').find("a[href='/admin/nodes/new']").addClass('active');
     $('[data-toggle="popover"]').popover({
         placement: 'auto'
     });

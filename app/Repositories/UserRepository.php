@@ -84,6 +84,8 @@ class UserRepository
      */
     public function delete($id)
     {
+        // @TODO cannot delete user with associated servers!
+        // clean up subusers!
         return User::destroy($id);
     }
 
