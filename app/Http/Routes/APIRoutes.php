@@ -36,11 +36,15 @@ class APIRoutes
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUsers'
             ]);
 
+            $api->post('users', [
+                'as' => 'api.users.post',
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@postUsers'
+            ]);
+
             $api->get('users/{id}/{fields?}', [
                 'as' => 'api.users.view',
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUserByID'
             ]);
-
 
         });
     }

@@ -115,7 +115,7 @@ class AuthController extends BaseController
      * @Post("/validate")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer <jwt-token>"})
-     * @Response(204);
+     * @Response(204)
      */
     public function postValidate(Request $request) {
         return $this->response->noContent();

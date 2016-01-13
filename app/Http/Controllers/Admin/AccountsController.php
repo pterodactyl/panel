@@ -62,27 +62,18 @@ class AccountsController extends Controller
 
     public function postNew(Request $request)
     {
-        $this->validate($request, [
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})'
-        ]);
-
         try {
             $user = new UserRepository;
             $userid = $user->create($request->input('username'), $request->input('email'), $request->input('password'));
-
-            if (!$userid) {
-                throw new \Exception('Unable to create user, response was not an integer.');
-            }
-
             Alert::success('Account has been successfully created.')->flash();
             return redirect()->route('admin.accounts.view', ['id' => $userid]);
-        } catch (\Exception $e) {
-            Log::error($e);
+        } catch (\Pterodactyl\Exceptions\DisplayValidationException $ex) {
+            return redirect()->route('admin.nodes.view', $id)->withErrors(json_decode($e->getMessage()))->withInput();
+        } catch (\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An error occured while attempting to add a new user. ' . $e->getMessage())->flash();
             return redirect()->route('admin.accounts.new');
         }
-
     }
 
     public function postUpdate(Request $request)

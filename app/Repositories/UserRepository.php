@@ -2,10 +2,13 @@
 
 namespace Pterodactyl\Repositories;
 
+use Validator;
 use Hash;
 
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\UuidService;
+
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserRepository
 {
@@ -22,16 +25,39 @@ class UserRepository
      * @param  string $password An unhashed version of the user's password.
      * @return bool|integer
      */
-    public function create($email, $password)
+    public function create($email, $password, $admin = false)
     {
+
+        $validator = Validator::make([
+            'email' => $email,
+            'password' => $password,
+            'admin' => $admin
+        ], [
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'admin' => 'required|boolean'
+        ]);
+
+        // Run validator, throw catchable and displayable exception if it fails.
+        // Exception includes a JSON result of failed validation rules.
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
         $user = new User;
         $uuid = new UuidService;
 
         $user->uuid = $uuid->generate('users', 'uuid');
         $user->email = $email;
         $user->password = Hash::make($password);
+        $user->root_admin = ($admin) ? 1 : 0;
 
-        return ($user->save()) ? $user->id : false;
+        try {
+            $user->save();
+            return $user->id;
+        } catch (\Exception $ex) {
+            throw $e;
+        }
     }
 
     /**
