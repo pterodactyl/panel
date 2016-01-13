@@ -32,13 +32,14 @@ class APIRoutes
         $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
             $api->get('users', [
-                'as' => 'api.auth.validate',
+                'as' => 'api.users',
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUsers'
             ]);
 
-            $api->get('users/{id}', function($id) {
-                return Models\User::findOrFail($id);
-            });
+            $api->get('users/{id}/{fields?}', [
+                'as' => 'api.users.view',
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUserByID'
+            ]);
 
 
         });
