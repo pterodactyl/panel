@@ -13,7 +13,8 @@ class AdminRoutes {
             'as' => 'admin.index',
             'middleware' => [
                 'auth',
-                'admin'
+                'admin',
+                'csrf'
             ],
             'uses' => 'Admin\BaseController@getIndex'
         ]);
@@ -22,7 +23,8 @@ class AdminRoutes {
             'prefix' => 'admin/accounts',
             'middleware' => [
                 'auth',
-                'admin'
+                'admin',
+                'csrf'
             ]
         ], function () use ($router) {
 
@@ -66,7 +68,8 @@ class AdminRoutes {
             'prefix' => 'admin/servers',
             'middleware' => [
                 'auth',
-                'admin'
+                'admin',
+                'csrf'
             ]
         ], function () use ($router) {
 
@@ -148,7 +151,8 @@ class AdminRoutes {
             'prefix' => 'admin/nodes',
             'middleware' => [
                 'auth',
-                'admin'
+                'admin',
+                'csrf'
             ]
         ], function () use ($router) {
 
@@ -204,7 +208,8 @@ class AdminRoutes {
             'prefix' => 'admin/locations',
             'middleware' => [
                 'auth',
-                'admin'
+                'admin',
+                'csrf'
             ]
         ], function () use ($router) {
             $router->get('/', [

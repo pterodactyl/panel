@@ -31,7 +31,8 @@ class BaseRoutes {
         $router->group([
             'profix' => 'account',
             'middleware' => [
-                'auth'
+                'auth',
+                'csrf'
             ]
         ], function () use ($router) {
             $router->get('account', [
@@ -50,7 +51,8 @@ class BaseRoutes {
         $router->group([
             'prefix' => 'account/totp',
             'middleware' => [
-                'auth'
+                'auth',
+                'csrf'
             ]
         ], function () use ($router) {
             $router->get('/', [
