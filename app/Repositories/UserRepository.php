@@ -2,13 +2,15 @@
 
 namespace Pterodactyl\Repositories;
 
-use Validator;
+use DB;
 use Hash;
+use Validator;
 
-use Pterodactyl\Models\User;
+use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Exceptions\DisplayException;
 
 class UserRepository
 {
@@ -27,15 +29,14 @@ class UserRepository
      */
     public function create($email, $password, $admin = false)
     {
-
         $validator = Validator::make([
             'email' => $email,
             'password' => $password,
-            'admin' => $admin
+            'root_admin' => $admin
         ], [
             'email' => 'required|email|unique:users,email',
             'password' => 'required|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
-            'admin' => 'required|boolean'
+            'root_admin' => 'required|boolean'
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -44,7 +45,7 @@ class UserRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $user = new User;
+        $user = new Models\User;
         $uuid = new UuidService;
 
         $user->uuid = $uuid->generate('users', 'uuid');
@@ -64,16 +65,25 @@ class UserRepository
      * Updates a user on the panel.
      *
      * @param  integer $id
-     * @param  array $user An array of columns and their associated values to update for the user.
+     * @param  array $data An array of columns and their associated values to update for the user.
      * @return boolean
      */
-    public function update($id, array $user)
+    public function update($id, array $data)
     {
-        if(array_key_exists('password', $user)) {
-            $user['password'] = Hash::make($user['password']);
+        $validator = Validator::make($data, [
+            'email' => 'email|unique:users,email,' . $id,
+            'password' => 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'root_admin' => 'boolean',
+            'language' => 'string|min:1|max:5',
+            'use_totp' => 'boolean',
+            'totp_secret' => 'size:16'
+        ]);
+
+        if(array_key_exists('password', $data)) {
+            $user['password'] = Hash::make($data['password']);
         }
 
-        return User::find($id)->update($user);
+        return Models\User::find($id)->update($data);
     }
 
     /**
@@ -84,9 +94,22 @@ class UserRepository
      */
     public function delete($id)
     {
-        // @TODO cannot delete user with associated servers!
-        // clean up subusers!
-        return User::destroy($id);
+        if(Models\Server::where('owner', $id)->count() > 0) {
+            throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
+        }
+
+        DB::beginTransaction();
+
+        Models\Permission::where('user_id', $id)->delete();
+        Models\Subuser::where('user_id', $id)->delete();
+        Models\User::destroy($id);
+
+        try {
+            DB::commit();
+            return true;
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 
 }

@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 
 use Dingo\Api\Exception\StoreResourceFailedException;
 
-use Pterodactyl\Transformers\UserTransformer;
 use Pterodactyl\Models;
+use Pterodactyl\Transformers\UserTransformer;
 use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Exceptions\DisplayException;
 
 /**
- * @Resource("Users", uri="/users")
+ * @Resource("Users")
  */
 class UserController extends BaseController
 {
@@ -21,7 +23,7 @@ class UserController extends BaseController
      *
      * Lists all users currently on the system.
      *
-     * @Get("/{?page}")
+     * @Get("/users/{?page}")
      * @Versions({"v1"})
      * @Parameters({
      *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
@@ -39,7 +41,7 @@ class UserController extends BaseController
      *
      * Lists specific fields about a user or all fields pertaining to that user.
      *
-     * @Get("/{id}/{fields}")
+     * @Get("/users/{id}/{fields}")
      * @Versions({"v1"})
      * @Parameters({
      *      @Parameter("id", type="integer", required=true, description="The ID of the user to get information on."),
@@ -47,7 +49,7 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function getUserByID(Request $request, $id, $fields = null)
+    public function getUser(Request $request, $id, $fields = null)
     {
         $query = Models\User::where('id', $id);
 
@@ -65,7 +67,7 @@ class UserController extends BaseController
     /**
      * Create a New User
      *
-     * @Post("/")
+     * @Post("/users")
      * @Versions({"v1"})
      * @Transaction({
      *      @Request({
@@ -73,26 +75,30 @@ class UserController extends BaseController
      *          "password": "foopassword",
      *          "admin": false
      *       }, headers={"Authorization": "Bearer <jwt-token>"}),
-     *       @Response(200, body={"id": 1}),
-     *       @Response(422, body{
+     *       @Response(201),
+     *       @Response(422, body={
      *          "message": "A validation error occured.",
      *          "errors": {
-     *              "email": ["The email field is required."],
-     *              "password": ["The password field is required."],
-     *              "admin": ["The admin field is required."]
+     *              "email": {"The email field is required."},
+     *              "password": {"The password field is required."},
+     *              "admin": {"The admin field is required."}
      *          },
      *          "status_code": 422
      *       })
      * })
      */
-    public function postUsers(Request $request)
+    public function postUser(Request $request)
     {
         try {
             $user = new UserRepository;
             $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'));
-            return [ 'id' => $create ];
-        } catch (\Pterodactyl\Exceptions\DisplayValidationException $ex) {
+            return $this->response->created(route('api.users.view', [
+                'id' => $create
+            ]));
+        } catch (DisplayValidationException $ex) {
             throw new StoreResourceFailedException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new StoreResourceFailedException($ex->getMessage());
         } catch (\Exception $ex) {
             throw new StoreResourceFailedException('Unable to create a user on the system due to an error.');
         }
@@ -103,7 +109,7 @@ class UserController extends BaseController
      *
      * The data sent in the request will be used to update the existing user on the system.
      *
-     * @Patch("/{id}")
+     * @Patch("/users/{id}")
      * @Versions({"v1"})
      * @Transaction({
      *      @Request({
@@ -118,13 +124,23 @@ class UserController extends BaseController
      */
     public function patchUser(Request $request, $id)
     {
-        //
+        try {
+            $user = new UserRepository;
+            $user->update($id, $request->all());
+            return Models\User::findOrFail($id);
+        } catch (DisplayValidationException $ex) {
+            throw new StoreResourceFailedException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new StoreResourceFailedException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new StoreResourceFailedException('Unable to create a user on the system due to an error.');
+        }
     }
 
     /**
      * Delete a User
      *
-     * @Delete("/{id}")
+     * @Delete("/users/{id}")
      * @Versions({"v1"})
      * @Transaction({
      *      @Request(headers={"Authorization": "Bearer <jwt-token>"}),
@@ -137,7 +153,15 @@ class UserController extends BaseController
      */
     public function deleteUser(Request $request, $id)
     {
-        //
+        try {
+            $user = new UserRepository;
+            $user->delete($id);
+            return $this->response->noContent();
+        } catch (DisplayException $ex) {
+            throw new StoreResourceFailedException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new StoreResourceFailedException('Unable to delete this user due to an error.');
+        }
     }
 
 }

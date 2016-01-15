@@ -21,7 +21,7 @@ use Pterodactyl\Transformers\UserTransformer;
 use Pterodactyl\Models;
 
 /**
- * @Resource("Auth", uri="/auth")
+ * @Resource("Auth")
  */
 class AuthController extends BaseController
 {
@@ -57,7 +57,7 @@ class AuthController extends BaseController
      *
      * Authenticate with the API to recieved a JSON Web Token
      *
-     * @Post("/login")
+     * @Post("/auth/login")
      * @Versions({"v1"})
      * @Request({"email": "e@mail.com", "password": "soopersecret"})
      * @Response(200, body={"token": "<jwt-token>"})
@@ -112,7 +112,7 @@ class AuthController extends BaseController
     /**
      * Check if Authenticated
      *
-     * @Post("/validate")
+     * @Post("/auth/validate")
      * @Versions({"v1"})
      * @Request(headers={"Authorization": "Bearer <jwt-token>"})
      * @Response(204)

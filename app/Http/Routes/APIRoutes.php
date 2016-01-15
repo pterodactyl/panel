@@ -30,7 +30,6 @@ class APIRoutes
         });
 
         $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
-
             $api->get('users', [
                 'as' => 'api.users',
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUsers'
@@ -38,14 +37,23 @@ class APIRoutes
 
             $api->post('users', [
                 'as' => 'api.users.post',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@postUsers'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@postUser'
             ]);
 
             $api->get('users/{id}/{fields?}', [
                 'as' => 'api.users.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUserByID'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUser'
             ]);
 
+            $api->patch('users/{id}/', [
+                'as' => 'api.users.patch',
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@patchUser'
+            ]);
+
+            $api->delete('users/{id}/', [
+                'as' => 'api.users.delete',
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@deleteUser'
+            ]);
         });
     }
 
