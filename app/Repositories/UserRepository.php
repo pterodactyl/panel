@@ -51,6 +51,7 @@ class UserRepository
         $user->uuid = $uuid->generate('users', 'uuid');
         $user->email = $email;
         $user->password = Hash::make($password);
+        $user->language = 'en';
         $user->root_admin = ($admin) ? 1 : 0;
 
         try {
