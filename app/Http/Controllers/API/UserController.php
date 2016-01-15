@@ -9,8 +9,11 @@ use Dingo\Api\Exception\StoreResourceFailedException;
 use Pterodactyl\Models;
 use Pterodactyl\Transformers\UserTransformer;
 use Pterodactyl\Repositories\UserRepository;
+
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * @Resource("Users")
@@ -61,7 +64,17 @@ class UserController extends BaseController
             }
         }
 
-        return $query->first();
+        try {
+            if (!$query->first()) {
+                throw new NotFoundHttpException('No user by that ID was found.');
+            }
+            return $query->first();
+        } catch (NotFoundHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
+        }
+
     }
 
     /**

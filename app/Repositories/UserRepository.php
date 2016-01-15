@@ -80,11 +80,17 @@ class UserRepository
             'totp_secret' => 'size:16'
         ]);
 
+        // Run validator, throw catchable and displayable exception if it fails.
+        // Exception includes a JSON result of failed validation rules.
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
         if(array_key_exists('password', $data)) {
             $user['password'] = Hash::make($data['password']);
         }
 
-        return Models\User::find($id)->update($data);
+        return Models\User::findOrFail($id)->update($data);
     }
 
     /**
