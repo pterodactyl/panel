@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 
-use Dingo\Api\Exception\StoreResourceFailedException;
+use Dingo\Api\Exception\ResourceException;
 
 use Pterodactyl\Models;
 use Pterodactyl\Transformers\UserTransformer;
@@ -14,6 +14,7 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
  * @Resource("Users")
@@ -109,11 +110,11 @@ class UserController extends BaseController
                 'id' => $create
             ]));
         } catch (DisplayValidationException $ex) {
-            throw new StoreResourceFailedException('A validation error occured.', json_decode($ex->getMessage(), true));
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
-            throw new StoreResourceFailedException($ex->getMessage());
+            throw new ResourceException($ex->getMessage());
         } catch (\Exception $ex) {
-            throw new StoreResourceFailedException('Unable to create a user on the system due to an error.');
+            throw new ServiceUnavailableHttpException('Unable to create a user on the system due to an error.');
         }
     }
 
@@ -142,11 +143,11 @@ class UserController extends BaseController
             $user->update($id, $request->all());
             return Models\User::findOrFail($id);
         } catch (DisplayValidationException $ex) {
-            throw new StoreResourceFailedException('A validation error occured.', json_decode($ex->getMessage(), true));
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
-            throw new StoreResourceFailedException($ex->getMessage());
+            throw new ResourceException($ex->getMessage());
         } catch (\Exception $ex) {
-            throw new StoreResourceFailedException('Unable to create a user on the system due to an error.');
+            throw new ServiceUnavailableHttpException('Unable to update a user on the system due to an error.');
         }
     }
 
@@ -171,9 +172,9 @@ class UserController extends BaseController
             $user->delete($id);
             return $this->response->noContent();
         } catch (DisplayException $ex) {
-            throw new StoreResourceFailedException($ex->getMessage());
+            throw new ResourceException($ex->getMessage());
         } catch (\Exception $ex) {
-            throw new StoreResourceFailedException('Unable to delete this user due to an error.');
+            throw new ServiceUnavailableHttpException('Unable to delete this user due to an error.');
         }
     }
 
