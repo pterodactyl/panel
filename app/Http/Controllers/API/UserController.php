@@ -53,12 +53,12 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function getUser(Request $request, $id, $fields = null)
+    public function getUser(Request $request, $id)
     {
         $query = Models\User::where('id', $id);
 
-        if (!is_null($fields)) {
-            foreach(explode(',', $fields) as $field) {
+        if (!is_null($request->input('fields'))) {
+            foreach(explode(',', $request->input('fields')) as $field) {
                 if (!empty($field)) {
                     $query->addSelect($field);
                 }
