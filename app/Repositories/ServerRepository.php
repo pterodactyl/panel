@@ -685,4 +685,28 @@ class ServerRepository
         return $server->save();
     }
 
+    /**
+     * Suspends a server instance making it unable to be booted or used by a user.
+     * @param  integer $id
+     * @return boolean
+     */
+    public function suspend($id)
+    {
+        // @TODO: Implement logic; not doing it now since that is outside of the
+        // scope of this API brance.
+        return true;
+    }
+
+    /**
+     * Unsuspends a server instance.
+     * @param  integer $id
+     * @return boolean
+     */
+    public function unsuspend($id)
+    {
+        // @TODO: Implement logic; not doing it now since that is outside of the
+        // scope of this API brance.
+        return true;
+    }
+
 }

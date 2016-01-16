@@ -12,7 +12,8 @@ class AuthRoutes {
         $router->group([
             'prefix' => 'auth',
             'middleware' => [
-                'guest'
+                'guest',
+                'csrf'
             ]
         ], function () use ($router) {
 

@@ -11,7 +11,8 @@ class ServerRoutes {
             'prefix' => 'server/{server}',
             'middleware' => [
                 'auth',
-                'server'
+                'server',
+                'csrf'
             ]
         ], function ($server) use ($router) {
             // Index View for Server
