@@ -98,7 +98,7 @@ class APIRoutes
             ]);
 
             $api->delete('nodes/{id}', [
-                'as' => 'api.nodes.view',
+                'as' => 'api.nodes.delete',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@deleteNode'
             ]);
 
