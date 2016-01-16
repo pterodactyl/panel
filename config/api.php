@@ -155,7 +155,7 @@ return [
     */
 
     'auth' => [
-        'jwt' => 'Dingo\Api\Auth\Provider\JWT'
+        'custom' => 'Pterodactyl\Http\Middleware\APISecretToken'
     ],
 
     /*
