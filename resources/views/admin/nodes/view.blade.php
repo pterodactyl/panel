@@ -6,10 +6,8 @@
 
 @section('scripts')
     @parent
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/css/fuelux.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/js/fuelux.min.js"></script>
     <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
     <script>
         $(document).ready(function () {
