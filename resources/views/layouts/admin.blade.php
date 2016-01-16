@@ -61,6 +61,7 @@
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Management</strong></a>
                         <a href="/admin" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
                         <a href="/admin/settings" class="list-group-item">General Settings</a>
+                        <a href="/admin/api" class="list-group-item">API Management</a>
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>

@@ -14,4 +14,18 @@ class APIKey extends Model
      */
     protected $table = 'api_keys';
 
+    /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['secret'];
+
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
 }

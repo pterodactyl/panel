@@ -203,7 +203,7 @@ class AdminRoutes {
 
         });
 
-        // Server Routes
+        // Location Routes
         $router->group([
             'prefix' => 'admin/locations',
             'middleware' => [
@@ -215,6 +215,29 @@ class AdminRoutes {
             $router->get('/', [
                 'as' => 'admin.locations',
                 'uses' => 'Admin\LocationsController@getIndex'
+            ]);
+        });
+
+        // API Routes
+        $router->group([
+            'prefix' => 'admin/api',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.api',
+                'uses' => 'Admin\APIController@getIndex'
+            ]);
+            $router->get('/new', [
+                'as' => 'admin.api.new',
+                'uses' => 'Admin\APIController@getNew'
+            ]);
+            $router->delete('/revoke/{key?}', [
+                'as' => 'admin.api.revoke',
+                'uses' => 'Admin\APIController@deleteKey'
             ]);
         });
 

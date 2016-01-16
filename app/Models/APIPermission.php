@@ -14,4 +14,12 @@ class APIPermission extends Model
      */
     protected $table = 'api_permissions';
 
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
+
 }
