@@ -183,4 +183,10 @@ class NodeRepository {
         }
     }
 
+    public function delete($id)
+    {
+        // @TODO: add logic;
+        return true;
+    }
+
 }

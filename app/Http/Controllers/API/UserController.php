@@ -2,82 +2,180 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
-use Gate;
-use Log;
-use Debugbar;
-use Pterodactyl\Models\API;
-use Pterodactyl\Models\User;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+use Dingo\Api\Exception\ResourceException;
+
+use Pterodactyl\Models;
+use Pterodactyl\Transformers\UserTransformer;
+use Pterodactyl\Repositories\UserRepository;
+
+use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Exceptions\DisplayException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
+
+/**
+ * @Resource("Users")
+ */
+class UserController extends BaseController
 {
 
     /**
-     * Constructor
+     * List All Users
+     *
+     * Lists all users currently on the system.
+     *
+     * @Get("/users/{?page}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
+     * })
+     * @Response(200)
      */
-    public function __construct()
+    public function getUsers(Request $request)
     {
-        //
-    }
-
-    public function getAllUsers(Request $request)
-    {
-
-        // Policies don't work if the user isn't logged in for whatever reason in Laravel...
-        if(!API::checkPermission($request->header('X-Authorization'), 'get-users')) {
-            return API::noPermissionError();
-        }
-
-        return response()->json([
-            'users' => User::all()
-        ]);
+        $users = Models\User::paginate(50);
+        return $this->response->paginator($users, new UserTransformer);
     }
 
     /**
-     * Returns JSON response about a user given their ID.
-     * If fields are provided only those fields are returned.
+     * List Specific User
      *
-     * Does not return protected fields (i.e. password & totp_secret)
+     * Lists specific fields about a user or all fields pertaining to that user.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @param  string  $fields
-     * @return Response
+     * @Get("/users/{id}/{fields}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the user to get information on."),
+     *      @Parameter("fields", type="string", required=false, description="A comma delimidated list of fields to include.")
+     * })
+     * @Response(200)
      */
-    public function getUser(Request $request, $id, $fields = null)
+    public function getUser(Request $request, $id)
     {
+        $query = Models\User::where('id', $id);
 
-        // Policies don't work if the user isn't logged in for whatever reason in Laravel...
-        if(!API::checkPermission($request->header('X-Authorization'), 'get-users')) {
-            return API::noPermissionError();
-        }
-
-        if (is_null($fields)) {
-            return response()->json(User::find($id));
-        }
-
-        $query = User::where('id', $id);
-        $explode = explode(',', $fields);
-
-        foreach($explode as &$exploded) {
-            if(!empty($exploded)) {
-                $query->addSelect($exploded);
+        if (!is_null($request->input('fields'))) {
+            foreach(explode(',', $request->input('fields')) as $field) {
+                if (!empty($field)) {
+                    $query->addSelect($field);
+                }
             }
         }
 
         try {
-            return response()->json($query->get());
-        } catch (\Exception $e) {
-            if ($e instanceof \Illuminate\Database\QueryException) {
-                return response()->json([
-                    'error' => 'One of the fields provided in your argument list is invalid.'
-                ], 500);
+            if (!$query->first()) {
+                throw new NotFoundHttpException('No user by that ID was found.');
             }
-            throw $e;
+            return $query->first();
+        } catch (NotFoundHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
         }
 
+    }
+
+    /**
+     * Create a New User
+     *
+     * @Post("/users")
+     * @Versions({"v1"})
+     * @Transaction({
+     *      @Request({
+     *          "email": "foo@example.com",
+     *          "password": "foopassword",
+     *          "admin": false
+     *       }, headers={"Authorization": "Bearer <jwt-token>"}),
+     *       @Response(201),
+     *       @Response(422, body={
+     *          "message": "A validation error occured.",
+     *          "errors": {
+     *              "email": {"The email field is required."},
+     *              "password": {"The password field is required."},
+     *              "admin": {"The admin field is required."}
+     *          },
+     *          "status_code": 422
+     *       })
+     * })
+     */
+    public function postUser(Request $request)
+    {
+        try {
+            $user = new UserRepository;
+            $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'));
+            return $this->response->created(route('api.users.view', [
+                'id' => $create
+            ]));
+        } catch (DisplayValidationException $ex) {
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('Unable to create a user on the system due to an error.');
+        }
+    }
+
+    /**
+     * Update an Existing User
+     *
+     * The data sent in the request will be used to update the existing user on the system.
+     *
+     * @Patch("/users/{id}")
+     * @Versions({"v1"})
+     * @Transaction({
+     *      @Request({
+     *          "email": "new@email.com"
+     *      }, headers={"Authorization": "Bearer <jwt-token>"}),
+     *      @Response(200, body={"email": "new@email.com"}),
+     *      @Response(422)
+     * })
+     * @Parameters({
+     *         @Parameter("id", type="integer", required=true, description="The ID of the user to modify.")
+     * })
+     */
+    public function patchUser(Request $request, $id)
+    {
+        try {
+            $user = new UserRepository;
+            $user->update($id, $request->all());
+            return Models\User::findOrFail($id);
+        } catch (DisplayValidationException $ex) {
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('Unable to update a user on the system due to an error.');
+        }
+    }
+
+    /**
+     * Delete a User
+     *
+     * @Delete("/users/{id}")
+     * @Versions({"v1"})
+     * @Transaction({
+     *      @Request(headers={"Authorization": "Bearer <jwt-token>"}),
+     *      @Response(204),
+     *      @Response(422)
+     * })
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the user to delete.")
+     * })
+     */
+    public function deleteUser(Request $request, $id)
+    {
+        try {
+            $user = new UserRepository;
+            $user->delete($id);
+            return $this->response->noContent();
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('Unable to delete this user due to an error.');
+        }
     }
 
 }

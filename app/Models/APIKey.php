@@ -4,7 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class APIPermission extends Model
+class APIKey extends Model
 {
 
     /**
@@ -12,6 +12,6 @@ class APIPermission extends Model
      *
      * @var string
      */
-    protected $table = 'api_permissions';
+    protected $table = 'api_keys';
 
 }

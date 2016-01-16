@@ -34,7 +34,7 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'use_totp', 'totp_secret', 'language'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -70,10 +70,10 @@ class User extends Model implements AuthenticatableContract,
 
     /**
      * Set a user password to a new value assuming it meets the following requirements:
-     * 		- 8 or more characters in length
-     * 		- at least one uppercase character
-     * 		- at least one lowercase character
-     * 		- at least one number
+     *      - 8 or more characters in length
+     *      - at least one uppercase character
+     *      - at least one lowercase character
+     *      - at least one number
      *
      * @param string $password The raw password to set the account password to.
      * @param string $regex The regex to use when validating the password. Defaults to '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})'.

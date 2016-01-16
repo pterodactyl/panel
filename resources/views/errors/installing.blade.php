@@ -10,10 +10,10 @@
         </div>
         <div class="panel-body">
             <p style="margin-bottom:0;">The requested server is still completing the install process. Please check back in a few minutes, you should recieve an email as soon as this process is completed.</p>
-			<br /><br />
-			<div class="progress progress-striped active">
-				<div class="progress-bar progress-bar-danger" style="width: 75%"></div>
-			</div>
+            <br /><br />
+            <div class="progress progress-striped active">
+                <div class="progress-bar progress-bar-danger" style="width: 75%"></div>
+            </div>
         </div>
     </div>
     <p style="text-align:center;"><a href="{{ URL::previous() }}">Take me back</a> or <a href="/">go home</a>.</p>
