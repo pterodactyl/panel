@@ -49,9 +49,29 @@ class APIRoutes
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@getServers'
             ]);
 
+            $api->post('servers', [
+                'as' => 'api.servers.post',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@postServer'
+            ]);
+
             $api->get('servers/{id}', [
                 'as' => 'api.servers.view',
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@getServer'
+            ]);
+
+            $api->post('servers/{id}/suspend', [
+                'as' => 'api.servers.suspend',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@postServerSuspend'
+            ]);
+
+            $api->post('servers/{id}/unsuspend', [
+                'as' => 'api.servers.unsuspend',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@postServerUnsuspend'
+            ]);
+
+            $api->delete('servers/{id}/{force?}', [
+                'as' => 'api.servers.delete',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@deleteServer'
             ]);
 
             /**
@@ -73,8 +93,13 @@ class APIRoutes
             ]);
 
             $api->get('nodes/{id}/allocations', [
-                'as' => 'api.nodes.view',
+                'as' => 'api.nodes.view_allocations',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getNodeAllocations'
+            ]);
+
+            $api->delete('nodes/{id}', [
+                'as' => 'api.nodes.view',
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@deleteNode'
             ]);
 
             /**
@@ -83,6 +108,19 @@ class APIRoutes
             $api->get('locations', [
                 'as' => 'api.locations',
                 'uses' => 'Pterodactyl\Http\Controllers\API\LocationController@getLocations'
+            ]);
+
+            /**
+             * Service Routes
+             */
+            $api->get('services', [
+                'as' => 'api.services',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@getServices'
+            ]);
+
+            $api->get('services/{id}', [
+                'as' => 'api.services.view',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@getService'
             ]);
 
         });

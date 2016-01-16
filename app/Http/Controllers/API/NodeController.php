@@ -40,7 +40,7 @@ class NodeController extends BaseController
      */
     public function getNodes(Request $request)
     {
-        $nodes = Models\Node::paginate(15);
+        $nodes = Models\Node::paginate(50);
         return $this->response->paginator($nodes, new NodeTransformer);
     }
 
@@ -149,6 +149,29 @@ class NodeController extends BaseController
             throw new NotFoundHttpException('No allocations where found for the requested node.');
         }
         return $allocations;
+    }
+
+    /**
+     * Delete Node
+     *
+     * @Delete("/nodes/{id}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the node."),
+     * })
+     * @Response(204)
+     */
+    public function deleteNode(Request $request, $id)
+    {
+        try {
+            $node = new NodeRepository;
+            $node->delete($id);
+            return $this->response->noContent();
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch(\Exception $e) {
+            throw new ServiceUnavailableHttpException('An error occured while attempting to delete this node.');
+        }
     }
 
 }

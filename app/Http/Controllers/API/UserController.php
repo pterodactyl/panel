@@ -36,7 +36,7 @@ class UserController extends BaseController
      */
     public function getUsers(Request $request)
     {
-        $users = Models\User::paginate(15);
+        $users = Models\User::paginate(50);
         return $this->response->paginator($users, new UserTransformer);
     }
 

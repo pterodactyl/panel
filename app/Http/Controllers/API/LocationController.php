@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
+use DB;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Location;
 
@@ -27,7 +28,16 @@ class LocationController extends BaseController
      */
     public function getLocations(Request $request)
     {
-        return Location::all();
+        $locations = Location::select('locations.*', DB::raw('GROUP_CONCAT(nodes.id) as nodes'))
+            ->join('nodes', 'locations.id', '=', 'nodes.location')
+            ->groupBy('locations.id')
+            ->get();
+
+        foreach($locations as &$location) {
+            $location->nodes = explode(',', $location->nodes);
+        }
+
+        return $locations;
     }
 
 }

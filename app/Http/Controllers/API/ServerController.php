@@ -40,8 +40,35 @@ class ServerController extends BaseController
      */
     public function getServers(Request $request)
     {
-        $servers = Models\Server::paginate(15);
+        $servers = Models\Server::paginate(50);
         return $this->response->paginator($servers, new ServerTransformer);
+    }
+
+    /**
+    * Create Server
+    *
+    * @Post("/servers")
+    * @Versions({"v1"})
+    * @Parameters({
+    *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
+    * })
+    * @Response(201)
+     */
+    public function postServer(Request $request)
+    {
+        try {
+            $server = new ServerRepository;
+            $new = $server->create($request->all());
+            return $this->response->created(route('api.servers.view', [
+                'id' => $new
+            ]));
+        } catch (DisplayValidationException $ex) {
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException('There was an error while attempting to add this server to the system.');
+        }
     }
 
     /**
@@ -49,7 +76,7 @@ class ServerController extends BaseController
      *
      * Lists specific fields about a server or all fields pertaining to that server.
      *
-     * @Get("/servers/{id}/{fields}")
+     * @Get("/servers/{id}{?fields}")
      * @Versions({"v1"})
      * @Parameters({
      *      @Parameter("id", type="integer", required=true, description="The ID of the server to get information on."),
@@ -78,6 +105,74 @@ class ServerController extends BaseController
             throw $ex;
         } catch (\Exception $ex) {
             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
+        }
+    }
+
+    /**
+     * Suspend Server
+     *
+     * @Post("/servers/{id}/suspend")
+     * @Versions({"v1"})
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the server."),
+     * })
+     * @Response(204)
+     */
+    public function postServerSuspend(Request $request, $id)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->suspend($id);
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('An error occured while attempting to suspend this server instance.');
+        }
+    }
+
+    /**
+     * Unsuspend Server
+     *
+     * @Post("/servers/{id}/unsuspend")
+     * @Versions({"v1"})
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the server."),
+     * })
+     * @Response(204)
+     */
+    public function postServerUnsuspend(Request $request, $id)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->unsuspend($id);
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('An error occured while attempting to unsuspend this server instance.');
+        }
+    }
+
+    /**
+     * Delete Server
+     *
+     * @Delete("/servers/{id}/{force}")
+     * @Versions({"v1"})
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the server."),
+     *      @Parameter("force", type="string", required=false, description="Use 'force' if the server should be removed regardless of daemon response."),
+     * })
+     * @Response(204)
+     */
+    public function deleteServer(Request $request, $id, $force = null)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->deleteServer($id, $force);
+            return $this->response->noContent();
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch(\Exception $e) {
+            throw new ServiceUnavailableHttpException('An error occured while attempting to delete this server.');
         }
     }
 
