@@ -32,15 +32,15 @@
                             </tr>
                             <tr>
                                 <td>Owner</td>
-                                <td>{{ $server->a_ownerEmail }}</td>
+                                <td><a href="{{ route('admin.accounts.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
                             </tr>
                             <tr>
                                 <td>Location</td>
-                                <td>{{ $server->a_locationName }}</td>
+                                <td><a href="{{ route('admin.locations') }}">{{ $server->a_locationName }}</a></td>
                             </tr>
                             <tr>
                                 <td>Node</td>
-                                <td>{{ $server->a_nodeName }}</td>
+                                <td><a href="{{ route('admin.nodes.view', $server->node) }}">{{ $server->a_nodeName }}</a></td>
                             </tr>
                             <tr>
                                 <td>Service</td>
