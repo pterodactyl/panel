@@ -10,8 +10,8 @@
 @endsection
 
 @section('content')
-<div class="col-md-6">
-    <form action="/auth/password/verify" method="POST">
+<div class="col-md-8">
+    <form action="/auth/password/reset" method="POST">
         <legend>{{ trans('auth.resetpassword') }}</legend>
         <fieldset>
             <input type="hidden" name="token" value="{{ $token }}">
