@@ -3,12 +3,14 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use DB;
+use Alert;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\LocationRepository;
 use Pterodactyl\Http\Controllers\Controller;
 
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Exceptions\DisplayException;
 
 use Illuminate\Http\Request;
 
@@ -73,7 +75,22 @@ class LocationsController extends Controller
 
     public function postLocation(Request $request)
     {
-        //
+        try {
+            $location = new LocationRepository;
+            $id = $location->create($request->except([
+                '_token'
+            ]));
+            Alert::success('New location successfully added.')->flash();
+            return redirect()->route('admin.locations');
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.locations')->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attempting to add this location. Please try again.')->flash();
+        }
+        return redirect()->route('admin.locations')->withInput();
     }
 
 }

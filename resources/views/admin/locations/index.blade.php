@@ -41,7 +41,7 @@
     <div class="well">
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-sm btn-success" id="addNewLocation">Add New Location</button>
+                <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#addModal">Add New Location</button>
             </div>
         </div>
     </div>
@@ -51,23 +51,58 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">Editing Location</h4>
+                <h4 class="modal-title">Editing Location</h4>
             </div>
             <form action="{{ route('admin.locations') }}" method="POST" id="editLocationForm">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="location-short" class="control-label">Location Code:</label>
                         <input type="text" class="form-control" id="location-short">
+                        <p class="text-muted"><small>This should be a short identifier for this location (e.g. <code>ny1</code>). This field is limited to a maximum of 10 characters from the following list: <code>a-zA-Z0-9_-.</code></small></p>
                     </div>
                     <div class="form-group">
                         <label for="location-long" class="control-label">Description:</label>
                         <input type="text" class="form-control" id="location-long">
+                        <p class="text-muted"><small>This should be a longer description of the location for internal reference.</small></p>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" id="location-id">
                     <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-sm btn-primary">Edit Location</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Location</h4>
+            </div>
+            <form action="{{ route('admin.locations') }}" method="POST" id="addLocationForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="short" class="control-label">Location Code:</label>
+                        <div>
+                            <input type="text" class="form-control" name="short" value="{{ old('short') }}">
+                            <p class="text-muted"><small>This should be a short identifier for this location (e.g. <code>ny1</code>). This field is limited to a maximum of 10 characters from the following list: <code>a-zA-Z0-9_-.</code></small></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="long" class="control-label">Description:</label>
+                        <div>
+                            <input type="text" class="form-control" name="long" value="{{ old('long') }}">
+                            <p class="text-muted"><small>This should be a longer description of the location for internal reference.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {!! csrf_field() !!}
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-sm btn-primary">Add Location</button>
                 </div>
             </form>
         </div>
