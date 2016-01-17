@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Http\Middleware;
 
+use Crypt;
+
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
 
@@ -12,6 +14,7 @@ use Dingo\Api\Auth\Provider\Authorization;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException; // 400
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException; // 401
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException; // 403
+use Symfony\Component\HttpKernel\Exception\HttpException; //500
 
 class APISecretToken extends Authorization
 {
@@ -63,7 +66,13 @@ class APISecretToken extends Authorization
             }
         }
 
-        if($this->_generateHMAC($request->fullUrl(), $request->getContent(), $key->secret) !== base64_decode($hashed)) {
+        try {
+            $decrypted = Crypt::decrypt($key->secret);
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $ex) {
+            throw new HttpException('There was an error while attempting to check your secret key.');
+        }
+
+        if($this->_generateHMAC($request->fullUrl(), $request->getContent(), $decrypted) !== base64_decode($hashed)) {
             throw new BadRequestHttpException('The hashed body was not valid. Potential modification of contents in route.');
         }
 

@@ -3,6 +3,7 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
+use Crypt;
 use Validator;
 use IPTools\Network;
 
@@ -100,10 +101,11 @@ class APIRepository
 
         DB::beginTransaction();
 
+        $secretKey = str_random(16) . '.' . str_random(15);
         $key = new Models\APIKey;
         $key->fill([
             'public' => str_random(16),
-            'secret' => str_random(16) . '.' . str_random(15),
+            'secret' => Crypt::encrypt($secretKey),
             'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed)
         ]);
         $key->save();
@@ -121,7 +123,7 @@ class APIRepository
 
         try {
             DB::commit();
-            return $key->secret;
+            return $secretKey;
         } catch (\Exception $ex) {
             throw $ex;
         }
