@@ -3,6 +3,8 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Crypt;
+use IPTools\IP;
+use IPTools\Range;
 
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
@@ -49,8 +51,15 @@ class APISecretToken extends Authorization
         // Check for Resource Permissions
         if (!empty($request->route()->getName())) {
             if(!is_null($key->allowed_ips)) {
-                if (!in_array($request->ip(), json_decode($key->allowed_ips))) {
-                    throw new AccessDeniedHttpException('This IP address does not have permission to use this API key.');
+                $inRange = false;
+                foreach(json_decode($key->allowed_ips) as $ip) {
+                    if (Range::parse($ip)->contains(new IP($request->ip()))) {
+                        $inRange = true;
+                        break;
+                    }
+                }
+                if (!$inRange) {
+                    throw new AccessDeniedHttpException('This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                 }
             }
 
