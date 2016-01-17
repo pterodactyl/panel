@@ -216,6 +216,9 @@ class AdminRoutes {
                 'as' => 'admin.locations',
                 'uses' => 'Admin\LocationsController@getIndex'
             ]);
+            $router->delete('/{id}', [
+                'uses' => 'Admin\LocationsController@deleteLocation'
+            ]);
         });
 
         // API Routes
