@@ -61,7 +61,7 @@ class AuthRoutes {
         });
 
         // Not included above because we don't want the guest middleware
-        $router->get('logout', [
+        $router->get('auth/logout', [
             'as' => 'auth.logout',
             'middleware' => 'auth',
             'uses' => 'Auth\AuthController@getLogout'
