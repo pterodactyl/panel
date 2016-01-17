@@ -219,6 +219,12 @@ class AdminRoutes {
             $router->delete('/{id}', [
                 'uses' => 'Admin\LocationsController@deleteLocation'
             ]);
+            $router->patch('/{id}', [
+                'uses' => 'Admin\LocationsController@patchLocation'
+            ]);
+            $router->post('/', [
+                'uses' => 'Admin\LocationsController@postLocation'
+            ]);
         });
 
         // API Routes

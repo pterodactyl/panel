@@ -5,7 +5,11 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use DB;
 
 use Pterodactyl\Models;
+use Pterodactyl\Repositories\LocationRepository;
 use Pterodactyl\Http\Controllers\Controller;
+
+use Pterodactyl\Exceptions\DisplayValidationException;
+
 use Illuminate\Http\Request;
 
 class LocationsController extends Controller
@@ -49,6 +53,27 @@ class LocationsController extends Controller
 
         $model->delete();
         return response('', 204);
+    }
+
+    public function patchLocation(Request $request, $id)
+    {
+        try {
+            $location = new LocationRepository;
+            $location->edit($id, $request->all());
+            return response('', 204);
+        } catch (DisplayValidationException $ex) {
+            return response()->json([
+                'error' => 'There was a validation error while processing this request. Location descriptions must be between 1 and 255 characters, and the location code must be between 1 and 10 characters with no spaces or special characters.'
+            ], 422);
+        } catch (\Exception $ex) {
+            // This gets caught and processed into JSON anyways.
+            throw $ex;
+        }
+    }
+
+    public function postLocation(Request $request)
+    {
+        //
     }
 
 }
