@@ -235,9 +235,12 @@ class AdminRoutes {
                 'as' => 'admin.api.new',
                 'uses' => 'Admin\APIController@getNew'
             ]);
+            $router->post('/new', [
+                'uses' => 'Admin\APIController@postNew'
+            ]);
             $router->delete('/revoke/{key?}', [
                 'as' => 'admin.api.revoke',
-                'uses' => 'Admin\APIController@deleteKey'
+                'uses' => 'Admin\APIController@deleteRevokeKey'
             ]);
         });
 

@@ -61,8 +61,10 @@ $(document).ready(function () {
             text: 'Once this API key is revoked any applications currently using it will stop working.',
             showCancelButton: true,
             allowOutsideClick: true,
+            closeOnConfirm: false,
             confirmButtonText: 'Revoke',
             confirmButtonColor: '#d9534f',
+            showLoaderOnConfirm: true
         }, function () {
             $.ajax({
                 method: 'DELETE',
@@ -73,6 +75,8 @@ $(document).ready(function () {
             }).done(function (data) {
                 swal({
                     type: 'success',
+                    title: '',
+                    text: 'API Key has been revoked.'
                 });
                 self.parent().parent().slideUp();
             }).fail(function (jqXHR) {

@@ -21,5 +21,11 @@ class APIPermission extends Model
      */
     protected $guarded = ['id'];
 
+    /**
+     * Disable timestamps for this table.
+     *
+     * @var boolean
+     */
+    public $timestamps = false;
 
 }

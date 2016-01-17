@@ -112,6 +112,10 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     margin: 0 !important;
 }
 
+.fuelux .checkbox.highlight.checked label, .fuelux .checkbox.highlight label {
+    width: 100%;
+}
+
 .btn-allocate-delete {
     height:34px;
     width:34px;
