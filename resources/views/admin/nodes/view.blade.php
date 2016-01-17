@@ -55,7 +55,7 @@
                             </tr>
                             <tr>
                                 <td>Memory Allocated</td>
-                                <td><strong class="{{ ($stats->memory < ($node->memory * .8)) ? 'text-success' : 'text-danger' }}">{{ $stats->memory }} MB</strong> of
+                                <td><strong class="{{ ($stats->memory < ($node->memory * .8)) ? 'text-success' : 'text-danger' }}">{{ is_numeric($stats->memory) ? $stats->memory : 0 }} MB</strong> of
                                     @if(!is_null($node->memory_overallocate))
                                         <abbr data-toggle="tooltip" data-placement="top" title="Allows up to {{ ($node->memory * (1 + ($node->memory_overallocate / 100)) - $node->memory) }} MB over">{{ $node->memory }}</abbr>
                                     @else
@@ -66,7 +66,7 @@
                             </tr>
                             <tr>
                                 <td>Disk Allocated</td>
-                                <td><strong class="{{ ($stats->disk < ($node->disk * .8)) ? 'text-success' : 'text-danger' }}">{{ $stats->disk }} MB</strong> of
+                                <td><strong class="{{ ($stats->disk < ($node->disk * .8)) ? 'text-success' : 'text-danger' }}">{{ is_numeric($stats->disk) ? $stats->disk : 0 }} MB</strong> of
                                     @if(!is_null($node->disk_overallocate))
                                         <abbr data-toggle="tooltip" data-placement="top" title="Allows up to {{ ($node->disk * (1 + ($node->disk_overallocate / 100)) - $node->disk) }} MB over">{{ $node->disk }}</abbr>
                                     @else
