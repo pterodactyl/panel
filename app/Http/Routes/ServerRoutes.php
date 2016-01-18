@@ -52,6 +52,21 @@ class ServerRoutes {
                 'uses' => 'Server\AjaxController@postSaveFile'
             ]);
 
+            // Sub-User Routes
+            $router->get('users', [
+                'as' => 'server.subusers',
+                'uses' => 'Server\SubuserController@getIndex'
+            ]);
+
+            $router->get('users/view/{id}', [
+                'as' => 'server.subusers.view',
+                'uses' => 'Server\SubuserController@getView'
+            ]);
+
+            $router->post('users/view/{id}', [
+                'uses' => 'Server\SubuserController@postView'
+            ]);
+
             // Assorted AJAX Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status

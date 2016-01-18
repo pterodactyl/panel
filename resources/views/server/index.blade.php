@@ -448,10 +448,14 @@ $(window).load(function () {
                 data: JSON.stringify({ command: ccmd })
             }).fail(function (jqXHR) {
                 console.error(jqXHR);
+                var error = 'An error occured while trying to process this request.';
+                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                    error = jqXHR.responseJSON.error;
+                }
                 swal({
                     type: 'error',
                     title: 'Whoops!',
-                    text: 'There was an error while attempting to process your request. Please try again.'
+                    text: error
                 });
             }).done(function () {
                 $('#ccmd').val('');
