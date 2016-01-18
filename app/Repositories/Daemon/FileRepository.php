@@ -143,7 +143,7 @@ class FileRepository
             throw new Exception('A valid directory must be specified in order to list its contents.');
         }
 
-        $res = $this->client->request('GET', '/server/directory/' . $directory, [
+        $res = $this->client->request('GET', '/server/directory/' . rawurlencode($directory), [
             'headers' => $this->headers
         ]);
 

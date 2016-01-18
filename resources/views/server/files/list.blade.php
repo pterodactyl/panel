@@ -22,7 +22,7 @@
         @if (isset($directory['show']) && $directory['show'] === true)
             <tr>
                 <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files?dir={{ $directory['link'] }}" class="load_new">&larr; {{ $directory['link_show'] }}</a></a></td>
+                <td><a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory['link']) }}" class="load_new">&larr; {{ $directory['link_show'] }}</a></a></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -31,7 +31,7 @@
         @foreach ($folders as $folder)
             <tr>
                 <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files?dir=/@if($folder['directory'] !== ''){{ $folder['directory'] }}/@endif{{ $folder['entry'] }}" class="load_new">{{ $folder['entry'] }}</a></td>
+                <td><a href="/server/{{ $server->uuidShort }}/files?dir=/@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" class="load_new">{{ $folder['entry'] }}</a></td>
                 <td>{{ $folder['size'] }}</td>
                 <td>{{ date('m/d/y H:i:s', $folder['date']) }}</td>
                 <td style="text-align:center;">
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-md-3">
                             @can('delete-files', $server)
-                                <a href="@if($folder['directory'] !== ''){{ $folder['directory'] }}/@endif{{ $folder['entry'] }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                                <a href="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                             @endcan
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                 <td>
                     @if(in_array($file['extension'], $extensions))
                         @can('edit-files', $server)
-                            <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}" class="edit_file">{{ $file['entry'] }}</a>
+                            <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" class="edit_file">{{ $file['entry'] }}</a>
                         @else
                             {{ $file['entry'] }}
                         @endcan
@@ -70,12 +70,12 @@
                         </div>
                         <div class="col-md-3 hidden-xs hidden-sm">
                             @can('download-files', $server)
-                                <a href="/server/{{ $server->uuidShort }}/files/download/@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}"><span class="badge"><i class="fa fa-download"></i></span></a>
+                                <a href="/server/{{ $server->uuidShort }}/files/download/@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}"><span class="badge"><i class="fa fa-download"></i></span></a>
                             @endcan
                         </div>
                         <div class="col-md-3">
                             @can('delete-files', $server)
-                                <a href="@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span>
+                                <a href="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span>
                             @endcan
                         </div>
                     </div>

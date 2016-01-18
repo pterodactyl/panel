@@ -29,8 +29,8 @@
                 <div>
                     <input type="hidden" name="file" value="{{ $file }}" />
                     {!! csrf_field() !!}
-                    <button class="btn btn-primary btn-sm" id="save_file">{{ trans('strings.save') }}</button>
-                    <button class="btn btn-default btn-sm" onclick="window.location='/server/{{ $server->uuidShort }}/files?dir={{ urlencode($directory) }}';return false;">{{ trans('server.files.back') }}</button>
+                    <button class="btn btn-primary btn-sm" id="save_file" type="submit">{{ trans('strings.save') }}</button>
+                    <a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory) }}"><button class="btn btn-default btn-sm">{{ trans('server.files.back') }}</button></a>
                 </div>
             </div>
         @endcan
