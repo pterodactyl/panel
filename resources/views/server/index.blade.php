@@ -43,14 +43,12 @@
                         </div>
                         <div class="col-md-6" style="text-align:center;">
                             <hr />
-                            @can('power', $server)
-                                <button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>
-                                <button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>
-                                <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>
-                                <button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>
-                                <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
-                                <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
-                            @endcan
+                            @can('power-start', $server)<button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>@endcan
+                            @can('power-restart', $server)<button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>@endcan
+                            @can('power-stop', $server)<button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="stop">Stop</button>@endcan
+                            @can('power-kill', $server)<button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>@endcan
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
+                            <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
                         </div>
                     </div>
                     <div class="row">
@@ -462,87 +460,84 @@ $(window).load(function () {
             });
         });
     @endcan
-    @can('power', $server)
-        var can_run = true;
-        function updateServerPowerControls (data) {
+    var can_run = true;
+    function updateServerPowerControls (data) {
 
-            // Reset Console Data
-            if (data === 2) {
-                $('#live_console').val($('#live_console').val() + '\n --+ Server Detected as Booting + --\n');
-                $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
-            }
-
-            // Server is On or Starting
-            if(data == 1 || data == 2) {
-                $("#console_command").slideDown();
-                $('[data-attr="power"][data-action="start"]').addClass('disabled');
-                $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
-            } else {
-                $("#console_command").slideUp();
-                $('[data-attr="power"][data-action="start"]').removeClass('disabled');
-                $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
-            }
-
-            if(data !== 0) {
-                $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
-            } else {
-                $('[data-attr="power"][data-action="kill"]').addClass('disabled');
-            }
-
+        // Reset Console Data
+        if (data === 2) {
+            $('#live_console').val($('#live_console').val() + '\n --+ Server Detected as Booting + --\n');
+            $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
         }
 
-        $('[data-attr="power"]').click(function (event) {
-            event.preventDefault();
-            var action = $(this).data('action');
-            var killConfirm = false;
-            if (action === 'kill') {
-                swal({
-                    type: 'warning',
-                    title: '',
-                    text: 'This operation will not save your server data gracefully. You should only use this if your server is failing to respond to normal stop commands.',
-                    showCancelButton: true,
-                    allowOutsideClick: true,
-                    closeOnConfirm: true,
-                    confirmButtonText: 'Kill Server',
-                    confirmButtonColor: '#d9534f'
-                }, function () {
-                    setTimeout(function() {
-                        powerToggleServer('kill');
-                    }, 100);
-                });
-            } else {
-                powerToggleServer(action);
-            }
+        // Server is On or Starting
+        if(data == 1 || data == 2) {
+            $("#console_command").slideDown();
+            $('[data-attr="power"][data-action="start"]').addClass('disabled');
+            $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
+        } else {
+            $("#console_command").slideUp();
+            $('[data-attr="power"][data-action="start"]').removeClass('disabled');
+            $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
+        }
 
-        });
+        if(data !== 0) {
+            $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
+        } else {
+            $('[data-attr="power"][data-action="kill"]').addClass('disabled');
+        }
 
-        function powerToggleServer(action) {
-            $.ajax({
-                type: 'PUT',
-                headers: {
-                    'X-Access-Token': '{{ $server->daemonSecret }}',
-                    'X-Access-Server': '{{ $server->uuid }}'
-                },
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({
-                    action: action
-                }),
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
-                timeout: 10000
-            }).fail(function(jqXHR) {
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: error
-                });
+    }
+
+    $('[data-attr="power"]').click(function (event) {
+        event.preventDefault();
+        var action = $(this).data('action');
+        var killConfirm = false;
+        if (action === 'kill') {
+            swal({
+                type: 'warning',
+                title: '',
+                text: 'This operation will not save your server data gracefully. You should only use this if your server is failing to respond to normal stop commands.',
+                showCancelButton: true,
+                allowOutsideClick: true,
+                closeOnConfirm: true,
+                confirmButtonText: 'Kill Server',
+                confirmButtonColor: '#d9534f'
+            }, function () {
+                setTimeout(function() {
+                    powerToggleServer('kill');
+                }, 100);
             });
+        } else {
+            powerToggleServer(action);
         }
 
-    @endcan
+    });
+
+    function powerToggleServer(action) {
+        $.ajax({
+            type: 'PUT',
+            headers: {
+                'X-Access-Token': '{{ $server->daemonSecret }}',
+                'X-Access-Server': '{{ $server->uuid }}'
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                action: action
+            }),
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/power',
+            timeout: 10000
+        }).fail(function(jqXHR) {
+            var error = 'An error occured while trying to process this request.';
+            if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                error = jqXHR.responseJSON.error;
+            }
+            swal({
+                type: 'error',
+                title: 'Whoops!',
+                text: error
+            });
+        });
+    }
 });
 
 $(document).ready(function () {

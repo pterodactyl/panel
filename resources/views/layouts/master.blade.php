@@ -194,7 +194,7 @@
                                 <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.server_controls') }}</strong></a>
                                 <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">{{ trans('pagination.sidebar.overview') }}</a>
                                 @can('list-files', $server)<a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">{{ trans('pagination.sidebar.files') }}</a>@endcan
-                                @can('view-subusers', $server)<a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">{{ trans('pagination.sidebar.subusers') }}</a>@endcan
+                                @can('list-subusers', $server)<a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">{{ trans('pagination.sidebar.subusers') }}</a>@endcan
                                 @can('view-manage', $server)<a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>@endcan
                             </div>
                         @endif

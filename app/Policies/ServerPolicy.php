@@ -61,19 +61,83 @@ class ServerPolicy
     }
 
     /**
+     * Check if user has permission to start a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function powerStart(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('power-start')->exists();
+    }
+
+    /**
+     * Check if user has permission to stop a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function powerStop(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('power-stop')->exists();
+    }
+
+    /**
+     * Check if user has permission to restart a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function powerRestart(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('power-restart')->exists();
+    }
+
+    /**
+     * Check if user has permission to kill a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function powerKill(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('power-kill')->exists();
+    }
+
+    /**
      * Check if user has permission to run a command on a server.
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
      * @return boolean
      */
-    public function command(User $user, Server $server)
+    public function sendCommand(User $user, Server $server)
     {
         if ($this->isOwner($user, $server)) {
             return true;
         }
 
-        return $user->permissions()->server($server)->permission('command')->exists();
+        return $user->permissions()->server($server)->permission('send-command')->exists();
     }
 
     /**
@@ -212,13 +276,77 @@ class ServerPolicy
      * @param  Pterodactyl\Models\Server $server
      * @return boolean
      */
-    public function viewSubusers(User $user, Server $server)
+    public function listSubusers(User $user, Server $server)
     {
         if ($this->isOwner($user, $server)) {
             return true;
         }
 
-        return $user->permissions()->server($server)->permission('view-subusers')->exists();
+        return $user->permissions()->server($server)->permission('list-subusers')->exists();
+    }
+
+    /**
+     * Check if user has permission to view specific subuser permissions.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewSubuser(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-subuser')->exists();
+    }
+
+    /**
+     * Check if user has permission to edit a subuser.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function editSubuser(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('edit-subuser')->exists();
+    }
+
+    /**
+     * Check if user has permission to delete a subuser.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function deleteSubuser(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('delete-subuser')->exists();
+    }
+
+    /**
+     * Check if user has permission to edit a subuser.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function createSubuser(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('create-subuser')->exists();
     }
 
     /**
