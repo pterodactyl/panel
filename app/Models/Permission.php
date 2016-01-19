@@ -14,6 +14,13 @@ class Permission extends Model
      */
     protected $table = 'permissions';
 
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
     public function scopePermission($query, $permission)
     {
         return $query->where('permission', $permission);

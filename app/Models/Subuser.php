@@ -16,6 +16,20 @@ class Subuser extends Model
     protected $table = 'subusers';
 
     /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = ['daemonSecret'];
+
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    /**
      * @var mixed
      */
     protected static $user;

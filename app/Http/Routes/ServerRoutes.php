@@ -58,6 +58,15 @@ class ServerRoutes {
                 'uses' => 'Server\SubuserController@getIndex'
             ]);
 
+            $router->get('users/new', [
+                'as' => 'server.subusers.new',
+                'uses' => 'Server\SubuserController@getNew'
+            ]);
+
+            $router->post('users/new', [
+                'uses' => 'Server\SubuserController@postNew'
+            ]);
+
             $router->get('users/view/{id}', [
                 'as' => 'server.subusers.view',
                 'uses' => 'Server\SubuserController@getView'
@@ -65,6 +74,10 @@ class ServerRoutes {
 
             $router->post('users/view/{id}', [
                 'uses' => 'Server\SubuserController@postView'
+            ]);
+
+            $router->delete('users/delete/{id}', [
+                'uses' => 'Server\SubuserController@deleteSubuser'
             ]);
 
             // Assorted AJAX Routes

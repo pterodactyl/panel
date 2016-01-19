@@ -35,6 +35,7 @@ class AuthRoutes {
 
             // Show Password Reset Form
             $router->get('password', [
+                'as' => 'auth.password',
                 'uses' => 'Auth\PasswordController@getEmail'
             ]);
 
@@ -45,6 +46,7 @@ class AuthRoutes {
 
             // Show Verification Checkpoint
             $router->get('password/reset/{token}', [
+                'as' => 'auth.reset',
                 'uses' => 'Auth\PasswordController@getReset'
             ]);
 

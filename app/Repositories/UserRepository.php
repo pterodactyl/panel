@@ -5,6 +5,7 @@ namespace Pterodactyl\Repositories;
 use DB;
 use Hash;
 use Validator;
+use Mail;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -48,16 +49,28 @@ class UserRepository
         $user = new Models\User;
         $uuid = new UuidService;
 
+        DB::beginTransaction();
+
         $user->uuid = $uuid->generate('users', 'uuid');
         $user->email = $email;
         $user->password = Hash::make($password);
         $user->language = 'en';
         $user->root_admin = ($admin) ? 1 : 0;
+        $user->save();
 
         try {
-            $user->save();
+            Mail::queue('emails.new-account', [
+                'email' => $user->email,
+                'forgot' => route('auth.password'),
+                'login' => route('auth.login')
+            ], function ($message) use ($email) {
+                $message->to($email);
+                $message->subject('Pterodactyl - New Account');
+            });
+            DB::commit();
             return $user->id;
         } catch (\Exception $ex) {
+            DB::rollBack();
             throw $e;
         }
     }

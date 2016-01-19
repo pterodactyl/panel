@@ -3,8 +3,15 @@
 namespace Pterodactyl\Http\Controllers\Server;
 
 use DB;
+use Auth;
 use Alert;
+use Log;
+
 use Pterodactyl\Models;
+use Pterodactyl\Repositories\SubuserRepository;
+
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Controller;
@@ -71,7 +78,106 @@ class SubuserController extends Controller
 
     public function postView(Request $request, $uuid, $id)
     {
-        //
+
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('edit-subuser', $server);
+
+        $subuser = Models\Subuser::where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
+
+        try {
+
+            if (!$subuser) {
+                throw new DisplayException('Unable to locate a subuser by that ID.');
+            } else if ($subuser->user_id === Auth::user()->id) {
+                throw new DisplayException('You are not authorized to edit you own account.');
+            }
+
+            $repo = new SubuserRepository;
+            $repo->update($subuser->id, [
+                'permissions' => $request->input('permissions'),
+                'server' => $server->id,
+                'user' => $subuser->user_id
+            ]);
+
+            Alert::success('Subuser permissions have successfully been updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('server.subusers.view', [
+                'uuid' => $uuid,
+                'id' => $id
+            ])->withErrors(json_decode($ex->getMessage()));
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unknown error occured while attempting to update this subuser.')->flash();
+        }
+        return redirect()->route('server.subusers.view', [
+            'uuid' => $uuid,
+            'id' => $id
+        ]);
+    }
+
+    public function getNew(Request $request, $uuid)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('create-subuser', $server);
+
+        return view('server.users.new', [
+            'server' => $server,
+            'node' => Models\Node::find($server->node)
+        ]);
+    }
+
+    public function postNew(Request $request, $uuid)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('create-subuser', $server);
+
+        try {
+            $repo = new SubuserRepository;
+            $id = $repo->create($server->id, $request->except([
+                '_token'
+            ]));
+            Alert::success('Successfully created new subuser.')->flash();
+            return redirect()->route('server.subusers.view', [
+                'uuid' => $uuid,
+                'id' => md5($id)
+            ]);
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('server.subusers.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unknown error occured while attempting to add a new subuser.')->flash();
+        }
+        return redirect()->route('server.subusers.new', $uuid)->withInput();
+    }
+
+    public function deleteSubuser(Request $request, $uuid, $id)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('delete-subuser', $server);
+
+        try {
+            $subuser = Models\Subuser::select('id')->where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
+            if (!$subuser) {
+                throw new DisplayException('No subuser by that ID was found on the system.');
+            }
+
+            $repo = new SubuserRepository;
+            $repo->delete($subuser->id);
+            return response('', 204);
+        } catch (DisplayException $ex) {
+            response()->json([
+                'error' => $ex->getMessage()
+            ], 422);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            response()->json([
+                'error' => 'An unknown error occured while attempting to delete this subuser.'
+            ], 503);
+        }
     }
 
 }
