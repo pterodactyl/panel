@@ -17,6 +17,22 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class ServerRepository
 {
 
+    protected $daemonPermissions = [
+        's:get',
+        's:power:start',
+        's:power:stop',
+        's:power:restart',
+        's:power:kill',
+        's:console',
+        's:command',
+        's:files:get',
+        's:files:read',
+        's:files:post',
+        's:files:delete',
+        's:files:upload',
+        's:set-password'
+    ];
+
     public function __construct()
     {
         //
@@ -236,18 +252,7 @@ class ServerRepository
                         'option' => $option->tag
                     ],
                     'keys' => [
-                        (string) $server->daemonSecret => [
-                            's:get',
-                            's:power',
-                            's:console',
-                            's:command',
-                            's:files:get',
-                            's:files:read',
-                            's:files:post',
-                            's:files:delete',
-                            's:files:upload',
-                            's:set-password'
-                        ]
+                        (string) $server->daemonSecret => $this->daemonPermissions
                     ],
                     'rebuild' => false
                 ]
@@ -336,18 +341,7 @@ class ServerRepository
                 'json' => [
                     'keys' => [
                         (string) $oldDaemonKey => [],
-                        (string) $server->daemonSecret => [
-                            's:get',
-                            's:power',
-                            's:console',
-                            's:command',
-                            's:files:get',
-                            's:files:read',
-                            's:files:post',
-                            's:files:delete',
-                            's:files:upload',
-                            's:set-password'
-                        ]
+                        (string) $server->daemonSecret => $this->daemonPermissions
                     ]
                 ]
             ]);

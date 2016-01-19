@@ -248,8 +248,8 @@
         "listen": {{ $node->daemonListen }},
         "ssl": {
             "enabled": {{ $node->sceheme === 'https' ? 'true' : 'false' }},
-            "certificate": "~/.ssl/ssl.cert",
-            "key": "~/.ssl/ssl.key"
+            "certificate": "/etc/letsencrypt/live/{{ $node->fqdn }}/fullchain.pem",
+            "key": "/etc/letsencrypt/live/{{ $node->fqdn }}/privkey.pem"
         }
     },
     "docker": {
