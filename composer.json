@@ -1,8 +1,20 @@
 {
     "name": "Pterodactyl Panel",
     "description": "The free, open-source game management panel. Supporting Minecraft, Spigot, BungeeCord, and SRCDS servers.",
-    "license": "GPL-3.0",
-    "author": "Dane Everitt <dane@daneeveritt.com>",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dane Everitt",
+            "email": "dane@daneeveritt.com",
+            "homepage": "https://github.com/DaneEveritt",
+            "role": "Lead Developer"
+        },
+        {
+            "name": "Dylan Seidt",
+            "email": "dylan.seidt@gmail.com",
+            "role": "Developer"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
