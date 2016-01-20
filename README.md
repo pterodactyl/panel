@@ -1,8 +1,6 @@
 ## Pterodactyl Panel
 Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.2)`.
 
-Pterodactyl is forked from PufferPanel and is developed by the core developer that brought you PufferPanel. The features are similar, but the code is new.
-
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [community forums](https://community.pterodactyl.io) or on our [Discord chat](https://discord.gg/0gYt8oU8QOkDhKLS).
 
