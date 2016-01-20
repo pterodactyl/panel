@@ -1,5 +1,6 @@
 <?php
 /**
+ * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
  * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
  *
