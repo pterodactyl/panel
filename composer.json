@@ -1,9 +1,8 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
-    "type": "project",
+    "name": "Pterodactyl Panel",
+    "description": "The free, open-source game management panel. Supporting Minecraft, Spigot, BungeeCord, and SRCDS servers.",
+    "license": "GPL-3.0",
+    "author": "Dane Everitt <dane@daneeveritt.com>",
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
