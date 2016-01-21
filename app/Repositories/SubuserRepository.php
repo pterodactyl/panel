@@ -24,6 +24,7 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
+use Settings;
 use Validator;
 use Mail;
 
@@ -179,7 +180,8 @@ class SubuserRepository
                 'url' => route('server.index', $server->uuidShort),
             ], function ($message) use ($email) {
                 $message->to($email);
-                $message->subject('Pterodactyl - Added to Server');
+                $message->from(Settings::get('email_from', env('MAIL_FROM')), Settings::get('email_sender_name', env('MAIL_FROM_NAME', 'Pterodactyl Panel')));
+                $message->subject(Settings::get('company') . ' - Added to Server');
             });
             DB::commit();
             return $subuser->id;

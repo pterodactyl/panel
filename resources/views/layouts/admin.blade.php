@@ -38,7 +38,7 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/js/fuelux.min.js"></script>
         <script src="{{ asset('js/admin.min.js') }}"></script>
     @show
-    <title>Pterodactyl - @yield('title')</title>
+    <title>{{ Settings::get('company') }} - @yield('title')</title>
 </head>
 <body>
     <div class="container">
@@ -49,7 +49,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Pterodactyl - Laravel</a>
+                <a class="navbar-brand" href="/">{{ Settings::get('company') }}</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 @section('right-nav')
@@ -141,8 +141,8 @@
         <div class="footer">
             <div class="row">
                 <div class="col-md-12">
-                    Copyright &copy; 2012 - {{ date('Y') }} <a href="https://github.com/Pterodactyl-IO/Panel" target="_blank">Pterodactyl Software &amp; Design</a>.<br />
-                    Pterodactyl is licensed under a <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GPLv3</a> license. <!-- Please do not remove this license notice. -->
+                    Copyright &copy; 2015 - {{ date('Y') }} <a href="https://github.com/Pterodactyl/Panel" target="_blank">Pterodactyl Software &amp; Design</a>.<br />
+                    Pterodactyl is licensed under a <a href="https://opensource.org/licenses/MIT" target="_blank">MIT</a> license. <!-- Please do not remove this license notice. We can't stop you though... :) -->
                 </div>
             </div>
         </div>

@@ -23,7 +23,9 @@
  */
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Debugbar;
+use Alert;
+use Settings;
+use Validator;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -42,6 +44,34 @@ class BaseController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.index');
+    }
+
+    public function getSettings(Request $request)
+    {
+        return view('admin.settings');
+    }
+
+    public function postSettings(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'company' => 'required|between:1,256',
+            'default_language' => 'required|alpha_dash|min:2|max:5',
+            'email_from' => 'required|email',
+            'email_sender_name' => 'required|between:1,256'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.settings')->withErrors($validator->errors())->withInput();
+        }
+
+        Settings::set('company', $request->input('company'));
+        Settings::set('default_language', $request->input('default_language'));
+        Settings::set('email_from', $request->input('email_from'));
+        Settings::set('email_sender_name', $request->input('email_sender_name'));
+
+        Alert::success('Settings have been successfully updated.')->flash();
+        return redirect()->route('admin.settings');
+
     }
 
 }

@@ -25,6 +25,7 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
+use Settings;
 use Mail;
 use Log;
 use Pterodactyl\Models\User;
@@ -124,8 +125,9 @@ class AccountsController extends Controller
             }
 
             if($request->input('email_user')) {
-                Mail::send('emails.new_password', ['user' => User::findOrFail($request->input('user')), 'password' => $request->input('password')], function($message) use ($request) {
-                    $message->to($request->input('email'))->subject('Pterodactyl - Admin Reset Password');
+                Mail::queue('emails.new_password', ['user' => User::findOrFail($request->input('user')), 'password' => $request->input('password')], function($message) use ($request) {
+                    $message->to($request->input('email'))->subject(Settings::get('company') . ' - Admin Reset Password');
+                    $message->from(Settings::get('email_from', env('MAIL_FROM')), Settings::get('email_sender_name', env('MAIL_FROM_NAME', 'Pterodactyl Panel')));
                 });
             }
 

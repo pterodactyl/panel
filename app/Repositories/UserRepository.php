@@ -25,6 +25,7 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
+use Settings;
 use Hash;
 use Validator;
 use Mail;
@@ -87,7 +88,8 @@ class UserRepository
                 'login' => route('auth.login')
             ], function ($message) use ($email) {
                 $message->to($email);
-                $message->subject('Pterodactyl - New Account');
+                $message->from(Settings::get('email_from', env('MAIL_FROM')), Settings::get('email_sender_name', env('MAIL_FROM_NAME', 'Pterodactyl Panel')));
+                $message->subject(Settings::get('company') . ' - New Account');
             });
             DB::commit();
             return $user->id;

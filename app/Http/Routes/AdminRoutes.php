@@ -42,6 +42,23 @@ class AdminRoutes {
         ]);
 
         $router->group([
+            'prefix' => 'admin/settings',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.settings',
+                'uses' => 'Admin\BaseController@getSettings'
+            ]);
+            $router->post('/', [
+                'uses' => 'Admin\BaseController@postSettings'
+            ]);
+        });
+
+        $router->group([
             'prefix' => 'admin/accounts',
             'middleware' => [
                 'auth',
