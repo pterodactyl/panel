@@ -7,6 +7,8 @@ Dane Everitt [@DaneEveritt](https://github.com/Pterodactyl/Panel/commits?author=
 
 Dylan Seidt [@DDynamic](https://github.com/Pterodactyl/Panel/commits?author=DDynamic)
 
+[@nikkiii](https://github.com/Pterodactyl/Panel/commits?author=nikkiii)
+
 # Get Involved
 See our `CONTRIBUTING.md` document for information on how to get started. Once you've submitted some code feel free to 
 modify this file and add your name to the list. Please follow the format above for your name and linking to your contributions.
