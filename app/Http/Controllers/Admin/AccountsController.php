@@ -86,14 +86,14 @@ class AccountsController extends Controller
     {
         try {
             $user = new UserRepository;
-            $userid = $user->create($request->input('username'), $request->input('email'), $request->input('password'));
+            $userid = $user->create($request->input('email'), $request->input('password'));
             Alert::success('Account has been successfully created.')->flash();
             return redirect()->route('admin.accounts.view', ['id' => $userid]);
         } catch (\Pterodactyl\Exceptions\DisplayValidationException $ex) {
-            return redirect()->route('admin.nodes.view', $id)->withErrors(json_decode($e->getMessage()))->withInput();
+            return redirect()->route('admin.accounts.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new user. ' . $e->getMessage())->flash();
+            Alert::danger('An error occured while attempting to add a new user. ' . $ex->getMessage())->flash();
             return redirect()->route('admin.accounts.new');
         }
     }
