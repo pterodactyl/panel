@@ -275,22 +275,6 @@ class ServerPolicy
     }
 
     /**
-     * Check if user has permission to change the default connection information.
-     *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
-     * @return boolean
-     */
-    public function setConnection(User $user, Server $server)
-    {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('set-connection')->exists();
-    }
-
-    /**
      * Check if user has permission to view subusers for the server.
      *
      * @param  Pterodactyl\Models\User   $user
@@ -371,51 +355,83 @@ class ServerPolicy
     }
 
     /**
-     * Check if user has permission to view the server management page.
-     *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
-     * @return boolean
-     */
-    public function viewManage(User $user, Server $server)
-    {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-manage')->exists();
-    }
-
-    /**
-     * Check if user has permission to view allocations for a server.
-     *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
-     * @return boolean
-     */
-    public function viewAllocation(User $user, Server $server)
-    {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-allocation')->exists();
-    }
-
-    /**
      * Check if user has permission to set the default connection for a server.
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
      * @return boolean
      */
-    public function setAllocation(User $user, Server $server)
+    public function setConnection(User $user, Server $server)
     {
         if ($this->isOwner($user, $server)) {
             return true;
         }
 
-        return $user->permissions()->server($server)->permission('set-allocation')->exists();
+        return $user->permissions()->server($server)->permission('set-connection')->exists();
+    }
+
+    /**
+     * Check if user has permission to view the startup command used for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewStartup(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-startup')->exists();
+    }
+
+    /**
+     * Check if user has permission to edit the startup command used for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function editStartup(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('edit-startup')->exists();
+    }
+
+    /**
+     * Check if user has permission to view the SFTP information for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewSftp(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-sftp')->exists();
+    }
+
+    /**
+     * Check if user has permission to reset the SFTP password for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function resetSftp(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('reset-sftp')->exists();
     }
 
 }
