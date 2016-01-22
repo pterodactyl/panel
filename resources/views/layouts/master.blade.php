@@ -218,7 +218,13 @@
                                 <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">{{ trans('pagination.sidebar.overview') }}</a>
                                 @can('list-files', $server)<a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">{{ trans('pagination.sidebar.files') }}</a>@endcan
                                 @can('list-subusers', $server)<a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">{{ trans('pagination.sidebar.subusers') }}</a>@endcan
-                                @can('view-manage', $server)<a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>@endcan
+                                @can('view-sftp', $server)
+                                    <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>
+                                @else
+                                    @can('view-startup', $server)
+                                        <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>
+                                    @endcan
+                                @endcan
                             </div>
                         @endif
                     @show

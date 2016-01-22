@@ -98,8 +98,8 @@ class Node extends Model
         // @TODO: Better solution to disabling verification. Security risk.
         self::$guzzle[$node] = new Client([
             'base_uri' => sprintf('%s://%s:%s/', $nodeData->scheme, $nodeData->fqdn, $nodeData->daemonListen),
-            'timeout' => 10.0,
-            'connect_timeout' => 5.0,
+            'timeout' => 5.0,
+            'connect_timeout' => 3.0,
         ]);
 
         return self::$guzzle[$node];

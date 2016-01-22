@@ -24,16 +24,21 @@
 namespace Pterodactyl\Http\Controllers\Server;
 
 use Auth;
+use Debugbar;
+use Uuid;
+use Alert;
+use Log;
+
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Download;
 use Pterodactyl\Models\Allocation;
-use Debugbar;
-use Uuid;
-use Alert;
 
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories;
+use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Repositories\Daemon\FileRepository;
+use Pterodactyl\Repositories\ServerRepository;
+
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -127,7 +132,7 @@ class ServerController extends Controller
         $this->authorize('edit-files', $server);
 
         $fileInfo = (object) pathinfo($file);
-        $controller = new Repositories\Daemon\FileRepository($uuid);
+        $controller = new FileRepository($uuid);
 
         try {
             $fileContent = $controller->returnFileContents($file);
@@ -182,6 +187,41 @@ class ServerController extends Controller
 
         return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/download/' . $download->token);
 
+    }
+
+    /**
+     * Renders server settings page.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function getSettings(Request $request, $uuid)
+    {
+        $server = Server::getByUUID($uuid);
+        return view('server.settings', [
+            'server' => $server,
+            'node' => Node::find($server->node)
+        ]);
+    }
+
+    public function postSettingsSFTP(Request $request, $uuid)
+    {
+        $server = Server::getByUUID($uuid);
+        $this->authorize('reset-sftp', $server);
+
+        try {
+            $repo = new ServerRepository;
+            $repo->updateSFTPPassword($server->id, $request->input('sftp_pass'));
+            Alert::success('Successfully updated this servers SFTP password.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('server.settings', $uuid)->withErrors(json_decode($ex->getMessage()));
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unknown error occured while attempting to update this server\'s SFTP settings.')->flash();
+        }
+        return redirect()->route('server.settings', $uuid);
     }
 
 }

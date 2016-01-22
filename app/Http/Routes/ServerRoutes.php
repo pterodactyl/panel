@@ -42,6 +42,17 @@ class ServerRoutes {
                 'uses' => 'Server\ServerController@getIndex'
             ]);
 
+            // Settings
+            $router->get('/settings', [
+                'as' => 'server.settings',
+                'uses' => 'Server\ServerController@getSettings'
+            ]);
+
+            $router->post('/settings/sftp', [
+                'as' => 'server.settings.sftp',
+                'uses' => 'Server\ServerController@postSettingsSFTP'
+            ]);
+
             // File Manager Routes
             $router->get('/files', [
                 'as' => 'files.index',

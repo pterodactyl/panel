@@ -724,4 +724,39 @@ class ServerRepository
         return true;
     }
 
+    public function updateSFTPPassword($id, $password)
+    {
+        $server = Models\Server::findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+
+        $validator = Validator::make([
+            'password' => $password,
+        ], [
+            'password' => 'required|regex:/^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})$/'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException(json_encode($validator->errors()));
+        }
+
+        try {
+            $client = Models\Node::guzzleRequest($server->node);
+            $client->request('POST', '/server/password', [
+                'headers' => [
+                    'X-Access-Token' => $node->daemonSecret,
+                    'X-Access-Server' => $server->uuid
+                ],
+                'json' => [
+                    'password' => $password,
+                ],
+            ]);
+            return true;
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            throw new DisplayException('There was an error while attmping to contact the remote service to change the password.');
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+
+    }
+
 }
