@@ -51,7 +51,7 @@
                     <input type="hidden" name="file" value="{{ $file }}" />
                     {!! csrf_field() !!}
                     <button class="btn btn-primary btn-sm" id="save_file" type="submit">{{ trans('strings.save') }}</button>
-                    <a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory) }}"><button class="btn btn-default btn-sm">{{ trans('server.files.back') }}</button></a>
+                    <a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory) }}" class="text-muted pull-right"><small>{{ trans('server.files.back') }}</small></a>
                 </div>
             </div>
         @endcan
@@ -97,7 +97,7 @@ $(document).ready(function () {
                     contents: fileContents
                 }
             }).done(function (data) {
-                $('#tpl_messages').html('<div class="alert alert-success">{{ trans('server.files.saved') }}</div>');
+                $('#tpl_messages').html('<div class="alert alert-success">{{ trans('server.files.saved') }}</div>').show().delay(3000).slideUp();
             }).fail(function (jqXHR) {
                 $('#tpl_messages').html('<div class="alert alert-danger">' + jqXHR.responseText + '</div>');
             }).always(function () {
