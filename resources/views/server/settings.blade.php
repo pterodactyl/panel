@@ -78,12 +78,56 @@
         @endcan
         @can('view-startup', $server)
             <div class="tab-pane" id="tab_startup">
-                <div class="panel panel-default">
-                    <div class="panel-heading"></div>
-                    <div class="panel-body">
-                        Startup
+                <form action="{{ route('server.settings.startup', $server->uuidShort) }}" method="POST">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"></div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label class="control-label">Startup Command:</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">{{ $service->executable }}</span>
+                                        <input type="text" class="form-control" readonly="readonly" value="{{ $processedStartup }}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @can('edit-startup', $server)
+                            <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    @foreach($variables as $item)
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label">
+                                                @if($item->required === 1)<span class="label label-primary">Required</span> @endif
+                                                {{ $item->name }}
+                                            </label>
+                                            <div>
+                                                <input type="text"
+                                                    @if($item->user_editable === 1)
+                                                        name="{{ $item->env_variable }}"
+                                                    @else
+                                                        readonly="readonly"
+                                                    @endif
+                                                class="form-control" value="{{ old($item->env_variable, $item->a_serverValue) }}" data-action="matchRegex" data-regex="{{ $item->regex }}" />
+                                            </div>
+                                            <p class="text-muted"><small>{{ $item->description }}<br />Regex: <code>{{ $item->regex }}</code><br />Access as: <code>&#123;&#123;{{$item->env_variable}}&#125;&#125;</code></small></p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {!! csrf_field() !!}
+                                        <input type="submit" class="btn btn-primary btn-sm" value="Update Startup Arguments" />
+                                    </div>
+                                </div>
+                            </div>
+                        @endcan
                     </div>
-                </div>
+                </form>
             </div>
         @endcan
     </div>
@@ -91,6 +135,18 @@
 <script>
 $(document).ready(function () {
     $('.server-settings').addClass('active');
+    $('[data-action="matchRegex"]').keyup(function (event) {
+        if (!$(this).data('regex')) return;
+        var input = $(this).val();
+        console.log(escapeRegExp($(this).data('regex')));
+        var regex = new RegExp(escapeRegExp($(this).data('regex')));
+        console.log(regex);
+        if (!regex.test(input)) {
+            $(this).parent().parent().removeClass('has-success').addClass('has-error');
+        } else {
+            $(this).parent().parent().removeClass('has-error').addClass('has-success');
+        }
+    });
 });
 </script>
 @endsection

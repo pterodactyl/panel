@@ -29,11 +29,7 @@ use Uuid;
 use Alert;
 use Log;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Download;
-use Pterodactyl\Models\Allocation;
-
+use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Repositories\Daemon\FileRepository;
@@ -57,10 +53,10 @@ class ServerController extends Controller
 
     public function getJavascript(Request $request, $uuid, $file)
     {
-        $server = Server::getByUUID($uuid);
+        $server = Models\Server::getByUUID($uuid);
         return response()->view('server.js.' . $server->a_serviceFile . '.' . basename($file, '.js'), [
             'server' => $server,
-            'node' => Node::find($server->node)
+            'node' => Models\Node::find($server->node)
         ])->header('Content-Type', 'application/javascript');
     }
 
@@ -72,11 +68,11 @@ class ServerController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $server = Server::getByUUID($request->route()->server);
+        $server = Models\Server::getByUUID($request->route()->server);
         return view('server.index', [
             'server' => $server,
-            'allocations' => Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'node' => Node::find($server->node)
+            'allocations' => Models\Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'node' => Models\Node::find($server->node)
         ]);
     }
 
@@ -89,12 +85,12 @@ class ServerController extends Controller
     public function getFiles(Request $request)
     {
 
-        $server = Server::getByUUID($request->route()->server);
+        $server = Models\Server::getByUUID($request->route()->server);
         $this->authorize('list-files', $server);
 
         return view('server.files.index', [
             'server' => $server,
-            'node' => Node::find($server->node)
+            'node' => Models\Node::find($server->node)
         ]);
     }
 
@@ -107,12 +103,12 @@ class ServerController extends Controller
     public function getAddFile(Request $request)
     {
 
-        $server = Server::getByUUID($request->route()->server);
+        $server = Models\Server::getByUUID($request->route()->server);
         $this->authorize('add-files', $server);
 
         return view('server.files.add', [
             'server' => $server,
-            'node' => Node::find($server->node),
+            'node' => Models\Node::find($server->node),
             'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/'
         ]);
     }
@@ -128,7 +124,7 @@ class ServerController extends Controller
     public function getEditFile(Request $request, $uuid, $file)
     {
 
-        $server = Server::getByUUID($uuid);
+        $server = Models\Server::getByUUID($uuid);
         $this->authorize('edit-files', $server);
 
         $fileInfo = (object) pathinfo($file);
@@ -152,7 +148,7 @@ class ServerController extends Controller
 
         return view('server.files.edit', [
             'server' => $server,
-            'node' => Node::find($server->node),
+            'node' => Models\Node::find($server->node),
             'file' => $file,
             'contents' => $fileContent->content,
             'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/',
@@ -172,8 +168,8 @@ class ServerController extends Controller
     public function getDownloadFile(Request $request, $uuid, $file)
     {
 
-        $server = Server::getByUUID($uuid);
-        $node = Node::find($server->node);
+        $server = Models\Server::getByUUID($uuid);
+        $node = Models\Node::find($server->node);
 
         $this->authorize('download-files', $server);
 
@@ -197,16 +193,38 @@ class ServerController extends Controller
      */
     public function getSettings(Request $request, $uuid)
     {
-        $server = Server::getByUUID($uuid);
+        $server = Models\Server::getByUUID($uuid);
+        $variables = Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
+            ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
+            ->where('service_variables.option_id', $server->option)
+            ->where('server_variables.server_id', $server->id)
+            ->get();
+        $service = Models\Service::findOrFail($server->service);
+
+        $serverVariables = [
+            '{{SERVER_MEMORY}}' => $server->memory,
+            '{{SERVER_IP}}' => $server->ip,
+            '{{SERVER_PORT}}' => $server->port,
+        ];
+
+        $processed = str_replace(array_keys($serverVariables), array_values($serverVariables), $server->startup);
+        foreach($variables as &$variable) {
+            $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '**';
+            $processed = str_replace('{{' . $variable->env_variable . '}}', $replace, $processed);
+        }
+
         return view('server.settings', [
             'server' => $server,
-            'node' => Node::find($server->node)
+            'node' => Models\Node::find($server->node),
+            'variables' => $variables,
+            'service' => $service,
+            'processedStartup' => $processed,
         ]);
     }
 
     public function postSettingsSFTP(Request $request, $uuid)
     {
-        $server = Server::getByUUID($uuid);
+        $server = Models\Server::getByUUID($uuid);
         $this->authorize('reset-sftp', $server);
 
         try {
@@ -222,6 +240,30 @@ class ServerController extends Controller
             Alert::danger('An unknown error occured while attempting to update this server\'s SFTP settings.')->flash();
         }
         return redirect()->route('server.settings', $uuid);
+    }
+
+    public function postSettingsStartup(Request $request, $uuid)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('edit-startup', $server);
+
+        try {
+            $repo = new ServerRepository;
+            $repo->updateStartup($server->id, $request->except([
+                '_token'
+            ]));
+            Alert::success('Server startup variables were successfully updated.')->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch(\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
+        } finally {
+            return redirect()->route('server.settings', [
+                'uuid' => $uuid,
+                'tab' => 'tab_startup'
+            ])->withInput();
+        }
     }
 
 }

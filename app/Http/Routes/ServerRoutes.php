@@ -53,6 +53,11 @@ class ServerRoutes {
                 'uses' => 'Server\ServerController@postSettingsSFTP'
             ]);
 
+            $router->post('/settings/startup', [
+                'as' => 'server.settings.startup',
+                'uses' => 'Server\ServerController@postSettingsStartup'
+            ]);
+
             // File Manager Routes
             $router->get('/files', [
                 'as' => 'files.index',
