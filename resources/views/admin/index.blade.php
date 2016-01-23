@@ -32,6 +32,7 @@
     </ul>
     <h3 class="nopad">Pterodactyl Admin Control Panel</h3><hr />
     <p>Welcome to the most advanced, lightweight, and user-friendly open source game server control panel.</p>
+    <p>You are running version <code>{{ env('APP_VERSION', 'unknown') }}</code>.</p>
 </div>
 <script>
 $(document).ready(function () {

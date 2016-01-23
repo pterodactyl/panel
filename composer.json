@@ -67,12 +67,17 @@
         "post-update-cmd": [
             "php artisan optimize"
         ],
-        "setup": [
+        "setup-dev": [
             "composer install",
             "php -r \"copy('.env.example', '.env');\"",
             "php vendor/bin/homestead make --ip=192.168.10.32",
             "sed -i.bak 's/homestead.app/pterodactyl.local/g' Homestead.yaml",
             "rm Homestead.yaml.bak",
+            "php artisan key:generate"
+        ],
+        "setup": [
+            "composer install",
+            "php -r \"copy('.env.example', '.env');\"",
             "php artisan key:generate"
         ]
     },
