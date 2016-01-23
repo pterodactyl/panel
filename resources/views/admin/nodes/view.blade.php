@@ -289,7 +289,8 @@
         "count": 3
     },
     "remote": {
-        "download": "{{ url('/remote/download') }}"
+        "download": "{{ route('remote.download') }}",
+        "installed": "{{ route('remote.install') }}"
     },
     "uploads": {
         "maximumSize": 1000000

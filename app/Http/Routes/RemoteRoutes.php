@@ -35,6 +35,11 @@ class RemoteRoutes {
                 'as' => 'remote.download',
                 'uses' => 'Remote\RemoteController@postDownload'
             ]);
+
+            $router->post('install', [
+                'as' => 'remote.install',
+                'uses' => 'Remote\RemoteController@postInstall'
+            ]);
         });
     }
 

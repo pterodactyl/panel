@@ -32,6 +32,15 @@
         <li><a href="/admin/servers">Servers</a></li>
         <li class="active">{{ $server->name }} ({{ $server->uuidShort}})</li>
     </ul>
+    @if($server->installed === 0)
+        <div class="alert alert-warning">
+            This server is still running through the install process and is not avaliable for use just yet. This message will disappear once this process is completed.
+        </div>
+    @elseif($server->installed === 2)
+        <div class="alert alert-danger">
+            This server <strong>failed</strong> to install properly. You should delete it and try to create it again or check the daemon logs.
+        </div>
+    @endif
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         <li class="active"><a href="#tab_about" data-toggle="tab">About</a></li>
         <li><a href="#tab_details" data-toggle="tab">Details</a></li>

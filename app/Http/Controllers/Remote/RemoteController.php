@@ -23,7 +23,7 @@
  */
 namespace Pterodactyl\Http\Controllers\Remote;
 
-use Pterodactyl\Models\Download;
+use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 
 use Pterodactyl\Http\Controllers\Controller;
@@ -41,7 +41,7 @@ class RemoteController extends Controller
     }
 
     public function postDownload(Request $request) {
-        $download = Download::where('token', $request->input('token', '00'))->first();
+        $download = Models\Download::where('token', $request->input('token', '00'))->first();
         if (!$download) {
             return response()->json([
                 'error' => 'An invalid request token was recieved with this request.'
@@ -53,6 +53,33 @@ class RemoteController extends Controller
             'path' => $download->path,
             'server' => $download->server
         ]);
+    }
+
+    public function postInstall(Request $request)
+    {
+        $server = Models\Server::where('uuid', $request->input('server'))->first();
+        if (!$server) {
+            return response()->json([
+                'error' => 'No server by that ID was found on the system.'
+            ], 422);
+        }
+
+        $node = Models\Node::findOrFail($server->node);
+        $hmac = $request->input('signed');
+        $status = $request->input('installed');
+
+        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {
+            return response()->json([
+                'error' => 'Signed HMAC was invalid.'
+            ], 403);
+        }
+
+        $server->installed = ($status === 'installed') ? 1 : 2;
+        $server->save();
+
+        return response()->json([
+            'message' => 'Recieved!'
+        ], 200);
     }
 
 }
