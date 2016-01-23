@@ -121,7 +121,9 @@ class Server extends Model
     }
 
     /**
-     * Returns a single server specified by UUID
+     * Returns a single server specified by UUID.
+     * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
+     * YOU WILL OVERWRITE THE SECRET KEY AND BREAK THINGS.
      *
      * @param  string $uuid The Short-UUID of the server to return an object about.
      * @return \Illuminate\Database\Eloquent\Collection
@@ -146,17 +148,6 @@ class Server extends Model
         if(!is_null($result)) {
             $result->daemonSecret = self::getUserDaemonSecret($result);
         }
-
-        // Prevent saving of model called in this manner.
-        // Prevents accidental overwrite of main daemon secret.
-        $result::saving(function () {
-            return false;
-        });
-
-        // Prevent deleting this model call.
-        $result::deleting(function () {
-            return false;
-        });
 
         self::$serverUUIDInstance[$uuid] = $result;
         return self::$serverUUIDInstance[$uuid];
