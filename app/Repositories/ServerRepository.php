@@ -696,6 +696,9 @@ class ServerRepository
     public function toggleInstall($id)
     {
         $server = Models\Server::findOrFail($id);
+        if ($server->installed === 2) {
+            throw new DisplayException('This server was marked as having a failed install, you cannot override this.');
+        }
         $server->installed = ($server->installed === 1) ? 0 : 1;
         return $server->save();
     }

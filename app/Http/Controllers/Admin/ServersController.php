@@ -341,8 +341,10 @@ class ServersController extends Controller
             $server = new ServerRepository;
             $server->toggleInstall($id);
             Alert::success('Server status was successfully toggled.')->flash();
-        } catch(\Exception $e) {
-            Log::error($e);
+        } catch (\Pterodactyl\Exceptions\DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch(\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to toggle this servers status.')->flash();
         } finally {
             return redirect()->route('admin.servers.view', [
