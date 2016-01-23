@@ -118,7 +118,7 @@ class APISecretToken extends Authorization
 
     protected function _generateHMAC($body, $key)
     {
-        $data = $this->method . '.' . $this->url . '.' . $body;
+        $data = $this->method . $this->url . $body;
         return hash_hmac($this->algo, $data, $key, true);
     }
 
