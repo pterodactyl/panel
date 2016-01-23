@@ -42,6 +42,9 @@
 </head>
 <body>
     <div class="container">
+        <div class="alert alert-danger" style="margin:10px auto -20px;">
+            <strong>Warning:</strong> You are running a developmental build of Pterodactyl Panel. Do not under any circumstances run this on a live environment. We cannot be held liable for any damages caused to your system by this panel.
+        </div>
         <div class="navbar navbar-default">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
