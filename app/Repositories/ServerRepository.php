@@ -416,9 +416,9 @@ class ServerRepository
         if (isset($data['default'])) {
             list($ip, $port) = explode(':', $data['default']);
             if ($ip !== $server->ip || $port !== $server->port) {
-                $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->get();
+                $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
                 if (!$allocation) {
-                    throw new DisplayException('The assigned default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
+                    throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                 }
 
                 $server->ip = $ip;
@@ -532,6 +532,10 @@ class ServerRepository
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to update the configuration: ' . $ex->getMessage());
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            Log::error($ex);
+            throw $ex;
         }
 
     }
