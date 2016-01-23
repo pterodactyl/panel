@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ModifyServicesImages extends Migration
+class AddLocations extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,11 @@ class ModifyServicesImages extends Migration
      */
     public function up()
     {
-        Schema::table('services', function (Blueprint $table) {
-            $table->dropColumn('docker_image');
+        Schema::create('locations', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('short')->unique();
+            $table->string('long');
+            $table->timestamps();
         });
     }
 
@@ -24,8 +27,6 @@ class ModifyServicesImages extends Migration
      */
     public function down()
     {
-        Schema::table('services', function (Blueprint $table) {
-            $table->string('docker_image')->after('description');
-        });
+        Schema::dropIfExists('locations');
     }
 }

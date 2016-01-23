@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableApiKeys extends Migration
+class AddAllocationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,12 @@ class CreateTableApiKeys extends Migration
      */
     public function up()
     {
-        Schema::create('api_keys', function (Blueprint $table) {
+        Schema::create('allocations', function (Blueprint $table) {
             $table->increments('id');
-            $table->char('public', 16);
-            $table->char('secret', 32);
-            $table->json('allowed_ips')->nullable();
+            $table->mediumInteger('node')->unsigned();
+            $table->string('ip');
+            $table->mediumInteger('port')->unsigned();
+            $table->mediumInteger('assigned_to')->unsigned()->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateTableApiKeys extends Migration
      */
     public function down()
     {
-        Schema::drop('api_keys');
+        Schema::dropIfExsits('allocations');
     }
 }

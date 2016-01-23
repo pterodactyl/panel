@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimestampsServerVariables extends Migration
+class AddSubusers extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,11 @@ class AddTimestampsServerVariables extends Migration
      */
     public function up()
     {
-        Schema::table('server_variables', function (Blueprint $table) {
+        Schema::create('subusers', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('server_id')->unsigned();
+            $table->char('daemonSecret', 36)->unique();
             $table->timestamps();
         });
     }
@@ -24,9 +28,6 @@ class AddTimestampsServerVariables extends Migration
      */
     public function down()
     {
-        Schema::table('server_variables', function (Blueprint $table) {
-            $table->dropColumn('created_at');
-            $table->dropColumn('updated_at');
-        });
+        Schema::dropIfExists('subusers');
     }
 }

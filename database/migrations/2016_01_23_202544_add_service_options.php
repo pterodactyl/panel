@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddServiceOptionsTable extends Migration
+class AddServiceOptions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class AddServiceOptionsTable extends Migration
     public function up()
     {
         Schema::create('service_options', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->increments('id');
             $table->mediumInteger('parent_service')->unsigned();
             $table->string('name');
             $table->text('description');
-            $table->string('config_file');
-            $table->binary('config_blob')->nullable();
-            $table->string('docker_tag');
+            $table->string('tag');
+            $table->text('docker_image');
+            $table->timestamps();
         });
     }
 
@@ -30,6 +30,6 @@ class AddServiceOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('service_options');
+        Schema::dropIfExsits('service_options');
     }
 }

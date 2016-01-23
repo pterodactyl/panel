@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimestampsServiceOptions extends Migration
+class AddDownloads extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,11 @@ class AddTimestampsServiceOptions extends Migration
      */
     public function up()
     {
-        Schema::table('service_options', function (Blueprint $table) {
+        Schema::create('downloads', function (Blueprint $table) {
+            $table->increments('id');
+            $table->char('token', 36)->unique();
+            $table->char('server', 36);
+            $table->text('path');
             $table->timestamps();
         });
     }
@@ -24,9 +28,6 @@ class AddTimestampsServiceOptions extends Migration
      */
     public function down()
     {
-        Schema::table('service_options', function (Blueprint $table) {
-            $table->dropColumn('created_at');
-            $table->dropColumn('updated_at');
-        });
+        Schema::dropIfExists('downloads');
     }
 }

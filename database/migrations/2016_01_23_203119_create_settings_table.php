@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class RemoveDaemonStartup extends Migration
+class CreateSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,9 @@ class RemoveDaemonStartup extends Migration
      */
     public function up()
     {
-        Schema::table('servers', function (Blueprint $table) {
-            $table->dropColumn('daemonStartup');
+        Schema::create('settings', function (Blueprint $table) {
+            $table->string('key')->unique();
+            $table->text('value');
         });
     }
 
@@ -24,8 +25,6 @@ class RemoveDaemonStartup extends Migration
      */
     public function down()
     {
-        Schema::table('servers', function (Blueprint $table) {
-            $table->text('daemonStartup')->after('port')->nullable();
-        });
+        Schema::dropIfExists('settings');
     }
 }

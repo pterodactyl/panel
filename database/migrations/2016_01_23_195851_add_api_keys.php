@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateApiTable extends Migration
+class AddApiKeys extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class CreateApiTable extends Migration
      */
     public function up()
     {
-        Schema::create('api', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('user_id')->nullable()->unsigned();
-            $table->char('key', 36)->unique();
+        Schema::create('api_keys', function (Blueprint $table) {
+            $table->increments('id');
+            $table->char('public', 16);
+            $table->text('secret');
             $table->json('allowed_ips')->nullable();
-            $table->index('key');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ class CreateApiTable extends Migration
      */
     public function down()
     {
-        Schema::drop('api');
+        Schema::dropIfExists('api_keys');
     }
 }

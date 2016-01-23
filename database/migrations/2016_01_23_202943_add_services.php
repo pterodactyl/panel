@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableApiPermissions extends Migration
+class AddServices extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,14 @@ class CreateTableApiPermissions extends Migration
      */
     public function up()
     {
-        Schema::create('api_permissions', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('key_id')->unsigned();
-            $table->string('permission');
+            $table->string('name');
+            $table->text('description');
+            $table->string('file');
+            $table->string('executable');
+            $table->text('startup');
+            $table->timestamps();
         });
     }
 
@@ -26,6 +30,6 @@ class CreateTableApiPermissions extends Migration
      */
     public function down()
     {
-        Schema::drop('api_permissions');
+        Schema::dropIfExists('services');
     }
 }

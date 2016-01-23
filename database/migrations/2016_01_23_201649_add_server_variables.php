@@ -13,10 +13,11 @@ class AddServerVariables extends Migration
     public function up()
     {
         Schema::create('server_variables', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->increments('id');
             $table->mediumInteger('server_id')->unsigned();
             $table->mediumInteger('variable_id')->unsigned();
             $table->string('variable_value');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,8 @@ class AddServerVariables extends Migration
      */
     public function down()
     {
-        Schema::drop('server_variables');
+        Schema::table('server_variables', function (Blueprint $table) {
+            //
+        });
     }
 }

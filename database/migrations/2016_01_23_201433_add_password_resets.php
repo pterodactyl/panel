@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DownloadsServerIntToString extends Migration
+class AddPasswordResets extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,11 @@ class DownloadsServerIntToString extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE `downloads` MODIFY `server` CHAR(36) NOT NULL');
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->index();
+            $table->string('token')->index();
+            $table->timestamp('created_at');
+        });
     }
 
     /**
@@ -22,6 +26,6 @@ class DownloadsServerIntToString extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE `downloads` MODIFY `server` MEDIUMINT(9) NOT NULL');
+        Schema::dropIfExists('password_resets');
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class MakeSubusersTable extends Migration
+class AddPermissions extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,12 @@ class MakeSubusersTable extends Migration
      */
     public function up()
     {
-        Schema::create('subusers', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('server_id')->unsigned();
-            $table->char('daemonSecret', 36);
+            $table->string('permissions');
+            $table->timestamps();
         });
     }
 
@@ -27,6 +28,6 @@ class MakeSubusersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('subusers');
+        Schema::dropIfExists('permissions');
     }
 }

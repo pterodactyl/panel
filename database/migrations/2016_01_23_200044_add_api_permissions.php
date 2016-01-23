@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddShortcodeUuid extends Migration
+class AddApiPermissions extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,10 @@ class AddShortcodeUuid extends Migration
      */
     public function up()
     {
-        Schema::table('servers', function (Blueprint $table) {
-            $table->char('uuidShort', 8)->after('uuid')->unique();
+        Schema::create('api_permissions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->mediumInteger('key_id')->unsigned();
+            $table->string('permission');
         });
     }
 
@@ -24,8 +26,6 @@ class AddShortcodeUuid extends Migration
      */
     public function down()
     {
-        Schema::table('servers', function (Blueprint $table) {
-            $table->dropColumn('uuidShort');
-        });
+        Schema::dropIfExists('api_permissions');
     }
 }

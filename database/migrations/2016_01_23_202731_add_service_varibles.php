@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddServiceOptionVariables extends Migration
+class AddServiceVaribles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class AddServiceOptionVariables extends Migration
     public function up()
     {
         Schema::create('service_variables', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+            $table->increments('id');
             $table->mediumInteger('option_id')->unsigned();
             $table->string('name');
             $table->text('description');
             $table->string('env_variable');
             $table->string('default_value');
-            $table->boolean('user_viewable');
-            $table->boolean('user_editable');
-            $table->boolean('required');
-            $table->string('regex');
+            $table->tinyInteger('user_viewable')->unsigned();
+            $table->tinyInteger('user_editable')->unsigned();
+            $table->tinyInteger('required')->unsigned();
+            $table->string('regex')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -33,6 +34,6 @@ class AddServiceOptionVariables extends Migration
      */
     public function down()
     {
-        Schema::drop('service_variables');
+        Schema::dropIfExists('service_variables');
     }
 }
