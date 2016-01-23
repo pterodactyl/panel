@@ -418,7 +418,7 @@ class ServerRepository
             if ($ip !== $server->ip || $port !== $server->port) {
                 $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->get();
                 if (!$allocation) {
-                    throw new DisplayException('The assigned default connection (' . $ip . ':' . $prot . ') is not allocated to this server.');
+                    throw new DisplayException('The assigned default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                 }
 
                 $server->ip = $ip;
@@ -526,7 +526,6 @@ class ServerRepository
                     ]
                 ]
             ]);
-
             $server->save();
             DB::commit();
             return true;
