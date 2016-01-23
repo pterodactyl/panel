@@ -46,6 +46,10 @@ class APISecretToken extends Authorization
 
     protected $permissionAllowed = false;
 
+    protected $method = '';
+
+    protected $url = '';
+
     public function __construct()
     {
         //
@@ -102,7 +106,9 @@ class APISecretToken extends Authorization
             throw new HttpException('There was an error while attempting to check your secret key.');
         }
 
-        if($this->_generateHMAC($request->fullUrl(), $request->getContent(), $decrypted) !== base64_decode($hashed)) {
+        $this->method = strtoupper($request->method());
+        $this->url = urldecode($request->fullUrl());
+        if($this->_generateHMAC($request->getContent(), $decrypted) !== base64_decode($hashed)) {
             throw new BadRequestHttpException('The hashed body was not valid. Potential modification of contents in route.');
         }
 
@@ -110,9 +116,9 @@ class APISecretToken extends Authorization
 
     }
 
-    protected function _generateHMAC($url, $body, $key)
+    protected function _generateHMAC($body, $key)
     {
-        $data = urldecode($url) . '.' . $body;
+        $data = $this->method . '.' . $this->url . '.' . $body;
         return hash_hmac($this->algo, $data, $key, true);
     }
 
