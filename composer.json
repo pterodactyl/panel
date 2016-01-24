@@ -76,7 +76,7 @@
             "php artisan key:generate"
         ],
         "setup": [
-            "composer install",
+            "composer install --ansi --no-dev",
             "php -r \"copy('.env.example', '.env');\"",
             "php artisan key:generate"
         ]
