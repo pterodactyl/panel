@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \Pterodactyl\Console\Commands\Inspire::class,
         \Pterodactyl\Console\Commands\MakeUser::class,
+        \Pterodactyl\Console\Commands\ShowVersion::class,
     ];
 
     /**

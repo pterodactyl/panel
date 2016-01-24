@@ -4,6 +4,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'version' => env('APP_VERSION', 'v0.1.1-beta'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
