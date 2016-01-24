@@ -298,18 +298,37 @@ $(window).load(function () {
     });
 
     // Socket Recieves New Server Stats
+    var activeChartArrays = [];
     socket.on('proc', function (proc) {
         var MemoryChart = $('#chart_memory').highcharts();
         MemoryChart.series[0].addPoint(parseInt(proc.data.memory.total / (1024 * 1024)), true, true);
 
         var CPUChart = $('#chart_cpu').highcharts();
 
-        // if({{ $server->cpu }} > 0) {
-        //     CPUChart.series[0].addPoint(parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
-        // } else {
-        //     CPUChart.series[0].addPoint(proc.data.cpu.total, true, true);
-        // }
+        // Remove blank values from listing
+        var activeCores = [];
         for (i = 0, length = proc.data.cpu.cores.length; i < length; i++) {
+            if (proc.data.cpu.cores[i] > 0) {
+                activeCores.push(proc.data.cpu.cores[i]);
+            }
+        }
+
+        var modifedActiveCores = { '0': 0 };
+        for (i = 0, length = activeCores.length; i < length; i++) {
+            if (i > 7) {
+                modifedActiveCores['0'] = modifedActiveCores['0'] + activeCores[i];
+            } else {
+                if (activeChartArrays.indexOf(i) < 0) {
+                    activeChartArrays.push(i);
+                }
+                modifedActiveCores[i] = activeCores[i];
+            }
+        }
+
+        console.log(activeChartArrays);
+        console.log(modifedActiveCores);
+
+        for (i = 0, length = activeChartArrays.length; i < length; i++) {
             if (typeof CPUChart.series[i] === 'undefined') {
                 CPUChart.addSeries({
                     name: 'Core ' + i,
@@ -317,9 +336,9 @@ $(window).load(function () {
                 });
             }
             if({{ $server->cpu }} > 0) {
-                CPUChart.series[i].addPoint(parseFloat(((proc.data.cpu.cores[i] / {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
+                CPUChart.series[i].addPoint(parseFloat((((modifedActiveCores[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
             } else {
-                CPUChart.series[i].addPoint(proc.data.cpu.cores[i], true, true);
+                CPUChart.series[i].addPoint(modifedActiveCores[i] || 0, true, true);
             }
         }
     });
