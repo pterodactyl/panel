@@ -16,7 +16,7 @@ class AddApiKeys extends Migration
             $table->increments('id');
             $table->char('public', 16);
             $table->text('secret');
-            $table->json('allowed_ips')->nullable();
+            $table->text('allowed_ips')->nullable();
             $table->timestamps();
         });
     }
