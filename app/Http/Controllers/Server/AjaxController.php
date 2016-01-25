@@ -81,24 +81,15 @@ class AjaxController extends Controller
         $client = Node::guzzleRequest($server->node);
 
         try {
-
             $res = $client->request('GET', '/server', [
                 'headers' => Server::getGuzzleHeaders($uuid)
             ]);
-
             if($res->getStatusCode() === 200) {
                 return response()->json(json_decode($res->getBody()));
-            } else {
-                return response()->json([]);
             }
-
         } catch (RequestException $e) {
-            Log::notice('An exception was raised while attempting to contact a daemon instance to get server status information.', [
-                'exception' => $e->getMessage(),
-                'path' => $request->path()
-            ]);
+            //
         }
-
         return response()->json([]);
     }
 
