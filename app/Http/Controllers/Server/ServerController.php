@@ -173,7 +173,7 @@ class ServerController extends Controller
 
         $this->authorize('download-files', $server);
 
-        $download = new Download;
+        $download = new Models\Download;
 
         $download->token = Uuid::generate(4);
         $download->server = $server->uuid;
