@@ -109,7 +109,7 @@ class SubuserRepository
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException(json_encode($validator->all()));
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         DB::beginTransaction();
