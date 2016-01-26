@@ -84,9 +84,12 @@ class UpdateEnvironment extends Command
 
         $this->line('Writing new environment configuration to file.');
         foreach ($variables as $key => $value) {
-            $regex = '/^' . $key . '=(.*)$/m';
-            $replace = $key . '=' . $value;
-            $envContents = preg_replace($regex, $replace, $envContents);
+            $newValue = $key . '=' . $value;
+            if (preg_match_all('/^' . $key . '=(.*)$/m', $envContents) < 1) {
+                $envContents = $envContents . "\n" . $newValue;
+            } else {
+                $envContents = preg_replace('/^' . $key . '=(.*)$/m', $newValue, $envContents);
+            }
             $bar->advance();
         }
 

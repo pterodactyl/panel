@@ -74,13 +74,17 @@
             "sed -i.bak 's/homestead.app/pterodactyl.local/g' Homestead.yaml",
             "rm Homestead.yaml.bak",
             "php artisan key:generate",
-            "php artisan pterodactyl:env"
+            "php artisan pterodactyl:env",
+            "php artisan migrate",
+            "php artisan pterodactyl:user"
         ],
         "setup": [
             "composer install --ansi --no-dev",
             "php -r \"copy('.env.example', '.env');\"",
             "php artisan key:generate",
-            "php artisan pterodactyl:env"
+            "php artisan pterodactyl:env",
+            "php artisan migrate",
+            "php artisan pterodactyl:user"
         ]
     },
     "config": {
