@@ -65,6 +65,7 @@ class AccountsController extends Controller
             'servers' => Server::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
                             ->join('nodes', 'servers.node', '=', 'nodes.id')
                             ->join('locations', 'nodes.location', '=', 'locations.id')
+                            ->where('owner', $id)
                             ->where('active', 1)
                             ->get(),
         ]);
