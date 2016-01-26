@@ -53,6 +53,47 @@
                 <a class="navbar-brand" href="/">{{ Settings::get('company') }}</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
+                @section('navbar-links')
+                    <ul class="nav navbar-nav hidden-md hidden-lg">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Management <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/admin">Admin Index</a></li>
+                                <li><a href="/admin/settings">General Settings</a></li>
+                                <li><a href="/admin/api">API Management</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Accounts <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/admin/accounts">Find Account</a></li>
+                                <li><a href="/admin/accounts/new">New Account</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Servers <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/admin/servers">Find Server</a></li>
+                                <li><a href="/admin/servers/new">New Server</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Nodes <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/admin/nodes">List Nodes</a></li>
+                                <li><a href="/admin/locations">Manage Locations</a></li>
+                                <li><a href="/admin/nodes/new">New Node</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Services <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/admin/services">List Services</a></li>
+                                <li><a href="/admin/services/new">Add Service</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                @show
                 @section('right-nav')
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
@@ -71,8 +112,9 @@
                             </ul>
                         </li>
                         <li class="hidden-xs"><a href="/"><i class="fa fa-server"></i></a></li>
+                        <li class="visible-xs"><a href="/"><i class="fa fa-server"></i> Server View</a></li>
                         <li class="hidden-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
-
+                        <li class="visible-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i> Logout</a></li>
                     </ul>
                 @show
             </div>

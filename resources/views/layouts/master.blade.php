@@ -176,6 +176,35 @@
                         </ul>
                     @endif
                 @show
+                @section('navbar-links')
+                    <ul class="nav navbar-nav hidden-md hidden-lg">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ trans('pagination.sidebar.account_controls') }} <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/account">{{ trans('pagination.sidebar.account_settings') }}</a></li>
+                                <li><a href="/account/totp">{{ trans('pagination.sidebar.account_security') }}</a></li>
+                                <li><a href="/index">{{ trans('pagination.sidebar.servers') }}</a></li>
+                            </ul>
+                        </li>
+                        @if (isset($server->name) && isset($node->name))
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ trans('pagination.sidebar.server_controls') }} <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li class="server-index"><a href="/server/{{ $server->uuidShort }}">{{ trans('pagination.sidebar.overview') }}</a></li>
+                                @can('list-files', $server)<li class="server-files"><a href="/server/{{ $server->uuidShort }}/files">{{ trans('pagination.sidebar.files') }}</a></li>@endcan
+                                @can('list-subusers', $server)<li class="server-users"><a href="/server/{{ $server->uuidShort }}/users">{{ trans('pagination.sidebar.subusers') }}</a></li>@endcan
+                                @can('view-sftp', $server)
+                                    <li class="server-settings"><a href="/server/{{ $server->uuidShort }}/settings">{{ trans('pagination.sidebar.manage') }}</a></li>
+                                @else
+                                    @can('view-startup', $server)
+                                        <li class="server-settings"><a href="/server/{{ $server->uuidShort }}/settings">{{ trans('pagination.sidebar.manage') }}</a></li>
+                                    @endcan
+                                @endcan
+                            </ul>
+                        </li>
+                        @endif
+                    </ul>
+                @show
                 @section('right-nav')
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
@@ -195,9 +224,10 @@
                         </li>
                         @if (null !== Auth::user() && Auth::user()->root_admin == 1)
                             <li class="hidden-xs"><a href="/admin/"><i class="fa fa-cogs"></i></a></li>
+                            <li class="visible-xs"><a href="/admin/"><i class="fa fa-cogs"></i> Admin Control Panel</a></li>
                         @endif
                         <li class="hidden-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i></a></li>
-
+                        <li class="visible-xs"><a href="/auth/logout"><i class="fa fa-power-off"></i> Logout</a></li>
                     </ul>
                 @show
             </div>
