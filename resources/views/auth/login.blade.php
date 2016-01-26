@@ -29,8 +29,33 @@
 @section('sidebar')
 @endsection
 
+@section('resp-alerts')
+@endsection
+
+@section('resp-errors')
+@endsection
+
 @section('content')
 <div class="col-md-8">
+    @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    @foreach (Alert::getMessages() as $type => $messages)
+        @foreach ($messages as $message)
+            <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {!! $message !!}
+            </div>
+        @endforeach
+    @endforeach
     <form action="/auth/login" method="POST" id="login-form">
         <legend>{{ trans('strings.login') }}</legend>
         <fieldset>
