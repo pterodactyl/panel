@@ -291,7 +291,7 @@
         "installed": "{{ route('remote.install') }}"
     },
     "uploads": {
-        "maximumSize": 1000000
+        "maximumSize": 100000000
     },
     "keys": [
         "{{ $node->daemonSecret }}"
