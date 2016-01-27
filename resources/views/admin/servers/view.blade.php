@@ -346,7 +346,7 @@
                                     </form>
                                 </div>
                                 <div class="col-md-8">
-                                    <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly. Please be aware: if you manually updated the server's configuration file, you will need to restart the daemon before doing this, or it will be overwritten.</p>
+                                    <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly.</p>
                                     <div class="alert alert-info">A rebuild will automatically occur whenever you edit build configuration settings for the server.</div>
                                 </div>
                             </div>
