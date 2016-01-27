@@ -42,6 +42,16 @@ class Permission extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'user_id' => 'integer',
+         'server_id' => 'integer',
+     ];
+
     public function scopePermission($query, $permission)
     {
         return $query->where('permission', $permission);

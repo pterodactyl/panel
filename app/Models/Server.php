@@ -53,6 +53,27 @@ class Server extends Model
     protected $guarded = ['id', 'installed', 'created_at', 'updated_at'];
 
     /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'node' => 'integer',
+         'active' => 'integer',
+         'owner' => 'integer',
+         'memory' => 'integer',
+         'swap' => 'integer',
+         'disk' => 'integer',
+         'io' => 'integer',
+         'cpu' => 'integer',
+         'oom_disabled' => 'integer',
+         'port' => 'integer',
+         'service' => 'integer',
+         'option' => 'integer',
+         'installed' => 'integer',
+     ];
+
+    /**
      * @var array
      */
     protected static $serverUUIDInstance = [];

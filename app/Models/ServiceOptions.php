@@ -35,4 +35,13 @@ class ServiceOptions extends Model
      */
     protected $table = 'service_options';
 
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'parent_service' => 'integer',
+     ];
+
 }

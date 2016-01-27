@@ -42,4 +42,14 @@ class ServerVariables extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'server_id' => 'integer',
+         'variable_id' => 'integer',
+     ];
+
 }

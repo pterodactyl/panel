@@ -35,4 +35,16 @@ class ServiceVariables extends Model
      */
     protected $table = 'service_variables';
 
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'option_id' => 'integer',
+         'user_viewable' => 'integer',
+         'user_editable' => 'integer',
+         'required' => 'integer',
+     ];
+
 }

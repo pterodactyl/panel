@@ -58,6 +58,16 @@ class User extends Model implements AuthenticatableContract,
     protected $guarded = ['id', 'remeber_token', 'created_at', 'updated_at'];
 
     /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'root_admin' => 'integer',
+         'use_totp' => 'integer',
+     ];
+
+    /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array

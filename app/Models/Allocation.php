@@ -42,4 +42,15 @@ class Allocation extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+     protected $casts = [
+         'node' => 'integer',
+         'port' => 'integer',
+         'assigned_to' => 'integer',
+     ];
+
 }
