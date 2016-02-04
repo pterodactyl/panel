@@ -124,7 +124,7 @@ class UserRepository
         }
 
         if(array_key_exists('password', $data)) {
-            $user['password'] = Hash::make($data['password']);
+            $data['password'] = Hash::make($data['password']);
         }
 
         return Models\User::findOrFail($id)->update($data);
