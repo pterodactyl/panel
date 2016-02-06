@@ -438,7 +438,7 @@
                                 <form action="{{ route('admin.nodes.delete', $node->id) }}" method="POST" id="deleteNodeForm">
                                     {!! method_field('DELETE') !!}
                                     {!! csrf_field() !!}
-                                    <input type="submit" name="doSomethingForFucksSake" value="Delete Node" class="btn btn-sm btn-danger" />
+                                    <input type="submit" value="Delete Node" class="btn btn-sm btn-danger" />
                                 </form>
                             </div>
                             <div class="col-xs-8">
