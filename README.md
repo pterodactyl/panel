@@ -36,11 +36,15 @@ Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [
 
 BootStrap Notify - [license](https://github.com/mouse0270/bootstrap-notify/blob/master/LICENSE) - [homepage](http://bootstrap-notify.remabledesigns.com)
 
+D3.js - [license](https://github.com/mbostock/d3/blob/master/LICENSE) - [homepage](https://d3js.org/)
+
 FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://fontawesome.io)
 
 FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - [homepage](http://getfuelux.com)
 
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)
+
+MetricsGraphics.js - [license](https://github.com/mozilla/metrics-graphics/blob/master/LICENSE) - [homepage](http://metricsgraphicsjs.org/)
 
 Socket.io - [license](https://github.com/socketio/socket.io/blob/master/LICENSE) - [homepage](http://socket.io)
 

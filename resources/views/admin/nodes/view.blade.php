@@ -25,7 +25,9 @@
 
 @section('scripts')
     @parent
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
+    {!! Theme::css('css/metricsgraphics.css') !!}
+    {!! Theme::js('js/d3.min.js') !!}
+    {!! Theme::js('js/metricsgraphics.min.js') !!}
     {!! Theme::js('js/socket.io.min.js') !!}
     {!! Theme::js('js/bootstrap-notify.min.js') !!}
     <script>
@@ -518,189 +520,51 @@ $(document).ready(function () {
     // -----------------+
     // Charting Methods |
     // -----------------+
-    $(window).resize(function() {
-        $('#chart_memory').highcharts().setSize($('#col11_setter').width(), 250);
-        $('#chart_cpu').highcharts().setSize($('#col11_setter').width(), 250);
-        $('#chart_players').highcharts().setSize($('#col11_setter').width(), 250);
-    });
-    $('#chart_memory').highcharts({
-        chart: {
-            type: 'area',
-            animation: Highcharts.svg,
-            marginRight: 10,
-            renderTo: 'container',
-            width: $('#col11_setter').width()
-        },
-        colors: [
-            '#113F8C'
-        ],
-        credits: {
-            enabled: false,
-        },
-        title: {
-            text: 'Memory Usage of All Servers',
-        },
-        tooltip: {
-            shared: true,
-            crosshairs: true,
-            formatter: function () {
-                var s = '<b>Memory Usage</b>';
+    var memoryGraphSettings = {
+        title: 'Memory Usage',
+        data: [{
+            'date': new Date(),
+            'memory': -1
+        }],
+        full_width: true,
+        full_height: true,
+        target: document.getElementById('chart_memory'),
+        x_accessor: 'date',
+        y_accessor: 'memory',
+        area: false,
+    };
 
-                $.each(this.points, function () {
-                    s += '<br/>' + this.series.name + ': ' +
-                        this.y + 'MB';
-                });
+    var cpuGraphSettings = {
+        title: 'CPU Usage',
+        data: [{
+            'date': new Date(),
+            'cpu': -1
+        }],
+        full_width: true,
+        full_height: true,
+        target: document.getElementById('chart_cpu'),
+        x_accessor: 'date',
+        y_accessor: 'cpu',
+        area: false,
+    };
 
-                return s;
-            },
-        },
-        xAxis: {
-            visible: false,
-        },
-        yAxis: {
-            title: {
-                text: 'Memory Usage (MB)',
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-            }],
-        },
-        plotOptions: {
-            area: {
-                fillOpacity: 0.10,
-                marker: {
-                    enabled: false,
-                },
-            },
-        },
-        legend: {
-            enabled: false
-        },
-        series: [{
-            name: 'Total Memory',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }]
-    });
+    var playersGraphSettings = {
+        title: 'Players Online',
+        data: [{
+            'date': new Date(),
+            'players': -1
+        }],
+        full_width: true,
+        full_height: true,
+        target: document.getElementById('chart_players'),
+        x_accessor: 'date',
+        y_accessor: 'players',
+        area: false,
+    };
 
-    $('#chart_cpu').highcharts({
-        chart: {
-            type: 'area',
-            animation: Highcharts.svg,
-            marginRight: 10,
-            renderTo: 'container',
-            width: $('#col11_setter').width()
-        },
-        colors: [
-            '#00A1CB',
-        ],
-        credits: {
-            enabled: false,
-        },
-        title: {
-            text: 'CPU Usage of all Servers',
-        },
-        tooltip: {
-            shared: true,
-            crosshairs: true,
-            formatter: function () {
-                var s = '<b>CPU Usage</b>';
-
-                $.each(this.points, function () {
-                    s += '<br/>' + this.series.name + ': ' +
-                        this.y + '%';
-                });
-
-                return s;
-            },
-        },
-        xAxis: {
-            visible: false,
-        },
-        yAxis: {
-            title: {
-                text: 'CPU Usage (%)',
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-            }],
-        },
-        plotOptions: {
-            area: {
-                fillOpacity: 0.10,
-                marker: {
-                    enabled: false,
-                },
-            },
-        },
-        legend: {
-            enabled: true
-        },
-        series: [{
-            name: 'Total CPU',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }]
-    });
-
-    $('#chart_players').highcharts({
-        chart: {
-            type: 'area',
-            animation: Highcharts.svg,
-            marginRight: 10,
-            renderTo: 'container',
-            width: $('#col11_setter').width()
-        },
-        colors: [
-            '#01A4A4',
-        ],
-        credits: {
-            enabled: false,
-        },
-        title: {
-            text: 'Total Players on All Servers',
-        },
-        tooltip: {
-            shared: true,
-            crosshairs: true,
-            formatter: function () {
-                var s = '<b>Total Players</b>';
-
-                $.each(this.points, function () {
-                    s += '<br/>' + this.series.name + ': ' + this.y;
-                });
-
-                return s;
-            },
-        },
-        xAxis: {
-            visible: false,
-        },
-        yAxis: {
-            title: {
-                text: 'Total Players',
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-            }],
-        },
-        plotOptions: {
-            area: {
-                fillOpacity: 0.10,
-                marker: {
-                    enabled: false,
-                },
-            },
-        },
-        legend: {
-            enabled: true
-        },
-        series: [{
-            name: 'Total Players',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }]
-    });
+    MG.data_graphic(memoryGraphSettings);
+    MG.data_graphic(cpuGraphSettings);
+    MG.data_graphic(playersGraphSettings);
 
     // Main Socket Object
     var socket = io('{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/stats/', {
@@ -732,13 +596,35 @@ $(document).ready(function () {
     });
 
     socket.on('live-stats', function (data) {
-        var CPUChart = $('#chart_cpu').highcharts();
-        var MemoryChart = $('#chart_memory').highcharts();
-        var PlayerChart = $('#chart_players').highcharts();
 
-        CPUChart.series[0].addPoint(data.stats.cpu, true, true);
-        MemoryChart.series[0].addPoint(parseInt(data.stats.memory / (1024 * 1024)), true, true);
-        PlayerChart.series[0].addPoint(data.stats.players, true, true);
+        if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
+            memoryGraphSettings.data[0].shift();
+        }
+        if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
+            cpuGraphSettings.data[0].shift();
+        }
+        if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
+            playersGraphSettings.data[0].shift();
+        }
+
+        memoryGraphSettings.data[0].push({
+            'date': new Date(),
+            'memory': parseInt(data.stats.memory / (1024 * 1024))
+        });
+
+        cpuGraphSettings.data[0].push({
+            'date': new Date(),
+            'cpu': data.stats.cpu
+        });
+
+        playersGraphSettings.data[0].push({
+            'date': new Date(),
+            'players': data.stats.players
+        });
+
+        MG.data_graphic(memoryGraphSettings);
+        MG.data_graphic(cpuGraphSettings);
+        MG.data_graphic(playersGraphSettings);
 
         $.each(data.servers, function (uuid, info) {
             var element = $('tr[data-server="' + uuid + '"]');
