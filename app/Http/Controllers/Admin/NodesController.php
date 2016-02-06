@@ -45,6 +45,11 @@ class NodesController extends Controller
         //
     }
 
+    public function getScript(Request $request, $id)
+    {
+        return response()->view('admin.nodes.remote.deploy', [ 'node' => Models\Node::findOrFail($id) ])->header('Content-Type', 'text/plain');
+    }
+
     public function getIndex(Request $request)
     {
         return view('admin.nodes.index', [

@@ -277,7 +277,7 @@
     "sftp": {
         "path": "{{ $node->daemonBase }}",
         "port": {{ $node->daemonSFTP }},
-        "container": "container_id"
+        "container": "ptdl-sftp"
     },
     "logger": {
         "path": "logs/",

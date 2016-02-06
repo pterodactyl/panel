@@ -235,6 +235,12 @@ class AdminRoutes {
                 'uses' => 'Admin\NodesController@postAllocations'
             ]);
 
+            // View Deploy
+            $router->get('/view/{id}/deploy', [
+                'as' => 'admin.nodes.deply',
+                'uses' => 'Admin\NodesController@getScript'
+            ]);
+
             $router->delete('/view/{id}', [
                 'as' => 'admin.nodes.delete',
                 'uses' => 'Admin\NodesController@deleteNode'
