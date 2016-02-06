@@ -521,7 +521,7 @@ $(document).ready(function () {
     // Charting Methods |
     // -----------------+
     var memoryGraphSettings = {
-        title: 'Memory Usage',
+        title: 'Memory Usage (MB)',
         data: [{
             'date': new Date(),
             'memory': -1
@@ -531,11 +531,12 @@ $(document).ready(function () {
         target: document.getElementById('chart_memory'),
         x_accessor: 'date',
         y_accessor: 'memory',
+        y_rug: true,
         area: false,
     };
 
     var cpuGraphSettings = {
-        title: 'CPU Usage',
+        title: 'CPU Usage (%)',
         data: [{
             'date': new Date(),
             'cpu': -1
@@ -545,6 +546,7 @@ $(document).ready(function () {
         target: document.getElementById('chart_cpu'),
         x_accessor: 'date',
         y_accessor: 'cpu',
+        y_rug: true,
         area: false,
     };
 
@@ -559,6 +561,7 @@ $(document).ready(function () {
         target: document.getElementById('chart_players'),
         x_accessor: 'date',
         y_accessor: 'players',
+        y_rug: true,
         area: false,
     };
 
