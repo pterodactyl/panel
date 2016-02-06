@@ -26,8 +26,8 @@
 @section('scripts')
     @parent
     <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-    <script src="{{ asset('js/bootstrap-notify.min.js') }}"></script>
+    {!! Theme::js('js/socket.io.min.js') !!}
+    {!! Theme::js('js/bootstrap-notify.min.js') !!}
     <script>
         $(document).ready(function () {
             $.notifyDefaults({

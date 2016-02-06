@@ -31,7 +31,7 @@
             <p style="margin-bottom:0;">You do not have permission to access that function. Please contact your server administrator to request permission.</p>
         </div>
     </div>
-    <p style="text-align:center;"><img src="{{ asset('images/403.jpg') }}" /></p>
+    <p style="text-align:center;"><img src="{{ Theme::url('images/403.jpg') }}" /></p>
     <p style="text-align:center;"><a href="{{ URL::previous() }}">Take me back</a> or <a href="/">go home</a>.</p>
 </div>
 @endsection

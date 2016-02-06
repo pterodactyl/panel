@@ -24,17 +24,17 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/pterodactyl.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/css/fuelux.min.css" />
-        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/fuelux/3.13.0/js/fuelux.min.js"></script>
-        <script src="{{ asset('js/admin.min.js') }}"></script>
+        {!! Theme::css('css/bootstrap.css') !!}
+        {!! Theme::css('css/pterodactyl.css') !!}
+        {!! Theme::css('css/animate.css') !!}
+        {!! Theme::css('css/fontawesome/font-awesome.min.css') !!}
+        {!! Theme::css('css/sweetalert.min.css') !!}
+        {!! Theme::css('css/fuelux.min.css') !!}
+        {!! Theme::js('js/jquery.min.js') !!}
+        {!! Theme::js('js/bootstrap.min.js') !!}
+        {!! Theme::js('js/sweetalert.min.js') !!}
+        {!! Theme::js('js/fuelux.min.js') !!}
+        {!! Theme::js('js/admin.min.js') !!}
     @show
     <title>{{ Settings::get('company') }} - @yield('title')</title>
 </head>
