@@ -25,14 +25,15 @@
 
 @section('scripts')
     @parent
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highcharts/4.2.1/highcharts.js"></script>
+    {!! Theme::css('css/metricsgraphics.css') !!}
+    {!! Theme::js('js/d3.min.js') !!}
+    {!! Theme::js('js/metricsgraphics.min.js') !!}
 @endsection
 
 @section('content')
 <div class="col-md-12">
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         <li id="triggerConsoleView" class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
-        <li><a href="#stats" data-toggle="tab">{{ trans('server.index.usage') }}</a></li>
         @can('view-allocation', $server)<li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>@endcan
     </ul>
     <div class="tab-content">
@@ -84,17 +85,6 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="stats">
-            <div class="panel panel-default">
-                <div class="panel-heading"></div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-11 text-center" id="chart_memory" style="height:250px;"></div>
-                        <div class="col-xs-11 text-center" id="chart_cpu" style="height:250px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
         @can('view-allocation', $server)
             <div class="tab-pane" id="allocation">
                 <div class="panel panel-default">
@@ -111,8 +101,22 @@
             </div>
         @endcan
     </div>
-    <div class="row">
-        <div class="col-xs-11" id="col11_setter"></div>
+    <div class="panel panel-default" style="margin-top:-22px;">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <h4 class="text-center">Memory Usage (MB)</h4>
+                    <div class="col-md-12" id="chart_memory" style="height:250px;"></div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:15px;">
+                <div class="col-md-12">
+                    <h4 class="text-center">CPU Usage (% Total) <small><a href="#" data-action="show-all-cores">toggle cores</a></small></h4>
+                    <div class="col-md-12" id="chart_cpu" style="height:250px;"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
@@ -142,21 +146,40 @@
 $(window).load(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
+    var showOnlyTotal = true;
+    $('[data-action="show-all-cores"]').click(function (event) {
+        event.preventDefault();
+        showOnlyTotal = !showOnlyTotal;
+        $('#chart_cpu').empty();
+    });
+
     // -----------------+
     // Charting Methods |
     // -----------------+
-    $(window).resize(function() {
-        $('#chart_memory').highcharts().setSize($('#col11_setter').width(), 250);
-        $('#chart_cpu').highcharts().setSize($('#col11_setter').width(), 250);
-    });
-    $('#chart_memory').highcharts({
-        chart: {
-            type: 'area',
-            animation: Highcharts.svg,
-            marginRight: 10,
-            renderTo: 'container',
-            width: $('#col11_setter').width()
-        },
+    var memoryGraphSettings = {
+        data: [{
+            'date': new Date(),
+            'memory': -1
+        }],
+        full_width: true,
+        full_height: true,
+        right: 40,
+        target: document.getElementById('chart_memory'),
+        x_accessor: 'date',
+        y_accessor: 'memory',
+        y_rug: true,
+        area: false,
+    };
+
+    var cpuGraphData = [
+        [{
+            'date': new Date(),
+            'cpu': -1
+        }]
+    ];
+    var cpuGraphSettings = {
+        data: cpuGraphData,
+        legend: ['Total', 'C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7'],
         colors: [
             '#113F8C',
             '#00A1CB',
@@ -169,141 +192,42 @@ $(window).load(function () {
             '#616161',
             '#32742C',
         ],
-        credits: {
-            enabled: false,
-        },
-        title: {
-            text: 'Live Memory Usage',
-        },
-        tooltip: {
-            shared: true,
-            crosshairs: true,
-            formatter: function () {
-                var s = '<b>Memory Usage</b>';
+        right: 40,
+        full_width: true,
+        full_height: true,
+        target: document.getElementById('chart_cpu'),
+        x_accessor: 'date',
+        y_accessor: 'cpu',
+        aggregate_rollover: true,
+        missing_is_hidden: true,
+        area: false,
+    };
 
-                $.each(this.points, function () {
-                    s += '<br/>' + this.series.name + ': ' +
-                        this.y + 'MB';
-                });
-
-                return s;
-            },
-        },
-        xAxis: {
-            visible: false,
-        },
-        yAxis: {
-            title: {
-                text: 'Memory Usage (MB)',
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-            }],
-        },
-        plotOptions: {
-            area: {
-                fillOpacity: 0.10,
-                marker: {
-                    enabled: false,
-                },
-            },
-        },
-        legend: {
-            enabled: false
-        },
-        series: [{
-            name: 'Total Memory',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }]
-    });
-
-    $('#chart_cpu').highcharts({
-        chart: {
-            type: 'area',
-            animation: Highcharts.svg,
-            marginRight: 10,
-            renderTo: 'container',
-            width: $('#col11_setter').width()
-        },
-        colors: [
-            '#00A1CB',
-            '#01A4A4',
-            '#61AE24',
-            '#D0D102',
-            '#D70060',
-            '#E54028',
-            '#F18D05',
-            '#616161',
-            '#32742C',
-        ],
-        credits: {
-            enabled: false,
-        },
-        title: {
-            text: 'Live CPU Usage',
-        },
-        tooltip: {
-            shared: true,
-            crosshairs: true,
-            formatter: function () {
-                var s = '<b>CPU Usage</b>';
-                var i = 0;
-                var t = 0;
-                $.each(this.points, function () {
-                    t = t + this.y;
-                    i++;
-                    s += '<br/>' + this.series.name + ': ' +
-                        this.y + '%';
-                });
-
-                t = parseFloat(t).toFixed(3).toString();
-
-                if (i > 1) {
-                    return s + '<br />Combined: ' + t;
-                } else {
-                    return s;
-                }
-            },
-        },
-        xAxis: {
-            visible: false,
-        },
-        yAxis: {
-            title: {
-                text: 'CPU Usage (%)',
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-            }],
-        },
-        plotOptions: {
-            area: {
-                fillOpacity: 0.10,
-                stacking: 'normal',
-                lineWidth: 1,
-                marker: {
-                    enabled: false,
-                },
-            },
-        },
-        legend: {
-            enabled: true
-        },
-        series: [{
-            name: 'Core 0',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        }]
-    });
+    MG.data_graphic(memoryGraphSettings);
+    MG.data_graphic(cpuGraphSettings);
 
     // Socket Recieves New Server Stats
     var activeChartArrays = [];
     socket.on('proc', function (proc) {
-        var MemoryChart = $('#chart_memory').highcharts();
-        MemoryChart.series[0].addPoint(parseInt(proc.data.memory.total / (1024 * 1024)), true, true);
 
-        var CPUChart = $('#chart_cpu').highcharts();
+        var curDate = new Date();
+        if (typeof memoryGraphSettings.data[0][20] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
+            memoryGraphSettings.data[0].shift();
+        }
+
+        if (typeof cpuGraphData[0][20] !== 'undefined' || cpuGraphData[0][0].cpu === -1) {
+            cpuGraphData[0].shift();
+        }
+
+        memoryGraphSettings.data[0].push({
+            'date': curDate,
+            'memory': parseInt(proc.data.memory.total / (1024 * 1024))
+        });
+
+        cpuGraphData[0].push({
+            'date': curDate,
+            'cpu': ({{ $server->cpu }} > 0) ? parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()) : proc.data.cpu.total
+        });
 
         // Remove blank values from listing
         var activeCores = [];
@@ -325,22 +249,26 @@ $(window).load(function () {
             }
         }
 
-        console.log(activeChartArrays);
-        console.log(modifedActiveCores);
-
         for (i = 0, length = activeChartArrays.length; i < length; i++) {
-            if (typeof CPUChart.series[i] === 'undefined') {
-                CPUChart.addSeries({
-                    name: 'Core ' + i,
-                    data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            if (typeof cpuGraphData[(i + 1)] === 'undefined') {
+                cpuGraphData[(i + 1)] = [{
+                    'date': curDate,
+                    'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modifedActiveCores[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modifedActiveCores[i] || null
+                }];
+            } else {
+                if (typeof cpuGraphData[(i + 1)][20] !== 'undefined') {
+                    cpuGraphData[(i + 1)].shift();
+                }
+                cpuGraphData[(i + 1)].push({
+                    'date': curDate,
+                    'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modifedActiveCores[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modifedActiveCores[i] || null
                 });
             }
-            if({{ $server->cpu }} > 0) {
-                CPUChart.series[i].addPoint(parseFloat((((modifedActiveCores[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()), true, true);
-            } else {
-                CPUChart.series[i].addPoint(modifedActiveCores[i] || 0, true, true);
-            }
         }
+
+        cpuGraphSettings.data = (showOnlyTotal === true) ? cpuGraphData[0] : cpuGraphData;
+        MG.data_graphic(memoryGraphSettings);
+        MG.data_graphic(cpuGraphSettings);
     });
 
     // Socket Recieves New Query
