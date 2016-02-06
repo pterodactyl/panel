@@ -28,16 +28,22 @@ SOFTWARE.
 ```
 
 ### Credits
-A listing of projects used with this panel.
-
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
+
 BinaryJS - [license](https://github.com/binaryjs/binaryjs/blob/master/LICENSE) - [homepage](http://binaryjs.com)
+
 Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [homepage](http://getbootstrap.com)
+
 BootStrap Notify - [license](https://github.com/mouse0270/bootstrap-notify/blob/master/LICENSE) - [homepage](http://bootstrap-notify.remabledesigns.com)
+
 FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://fontawesome.io)
+
 FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - [homepage](http://getfuelux.com)
+
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)
+
 Socket.io - [license](https://github.com/socketio/socket.io/blob/master/LICENSE) - [homepage](http://socket.io)
+
 SweetAlert - [license](https://github.com/t4t5/sweetalert/blob/master/LICENSE) - [homepage](http://t4t5.github.io/sweetalert/)
 
 ### Additional License Information
