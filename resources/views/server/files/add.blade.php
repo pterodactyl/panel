@@ -75,7 +75,7 @@ $(window).load(function () {
     var newFileContents;
 
     @can('upload-files', $server)
-        var client = new BinaryClient('{{ $node->scheme === 'https' ? 'wss' : 'ws' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/upload/{{ $server->uuid }}', {
+        var client = new BinaryClient('{{ $node->scheme === 'https' ? 'wss' : 'ws' }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/upload/', {
             chunkSize: 40960
         });
         // Wait for connection to BinaryJS server
