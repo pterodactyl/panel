@@ -12,5 +12,10 @@ return [
             'views-path'    => 'default',
             'asset-path'    => 'themes/default',
         ],
+        'semantic' => [
+            'extends'       => null,
+            'views-path'    => 'semantic',
+            'asset-path'    => 'themes/semantic',
+        ],
     ],
 ];
