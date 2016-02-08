@@ -152,6 +152,16 @@ class AdminRoutes {
                 'uses' => 'Admin\ServersController@getView'
             ]);
 
+            // Database Stuffs
+            $router->post('/view/{id}/database', [
+                'as' => 'admin.servers.database',
+                'uses' => 'Admin\ServersController@postDatabase'
+            ]);
+
+            $router->delete('/view/{id}/database/{database}', [
+                'uses' => 'Admin\ServersController@deleteDatabase'
+            ]);
+
             // Change Server Details
             $router->post('/view/{id}/details', [
                 'uses' => 'Admin\ServersController@postUpdateServerDetails'

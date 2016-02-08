@@ -45,6 +45,7 @@
             <li><a href="#tab_details" data-toggle="tab">Details</a></li>
             <li><a href="#tab_build" data-toggle="tab">Build Configuration</a></li>
             <li><a href="#tab_startup" data-toggle="tab">Startup</a></li>
+            <li><a href="#tab_database" data-toggle="tab">Database</a></li>
         @endif
         @if($server->installed !== 2)
             <li><a href="#tab_manage" data-toggle="tab">Manage</a></li>
@@ -303,6 +304,76 @@
                     </div>
                 </form>
             </div>
+            <div class="tab-pane" id="tab_database">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <h4 class="nopad">Add New Database</h4>
+                        <form action="{{ route('admin.servers.database', $server->id) }}" method="post">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Database Name:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">{{ $server->uuidShort }}_</div>
+                                        <input type="text" name="database" value="{{ old('database') }}" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="control-label">Connections From:</label>
+                                    <div>
+                                        <input type="text" name="remote" value="{{ old('remote', '%') }}" class="form-control">
+                                    </div>
+                                    <p class="text-muted"><small>Which IP to allow connections from. Standard MySQL wildcard notation allowed (e.g. <code>192.168.%.%</code>).</small></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <label class="control-label">Database Server:</label>
+                                    <select name="db_server" class="form-control">
+                                        @foreach($db_servers as $dbs)
+                                            <option value="{{ $dbs->id }}" @if($dbs->linked_node === $server->node)selected="selected"@endif>{{ $dbs->name }} ({{ $dbs->host }}:{{ $dbs->port }})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-xs-6">
+                                    <label class="control-label">&nbsp;</label>
+                                    <div>
+                                        {!! csrf_field() !!}
+                                        <input type="submit" value="Create New Database &rarr;" class="btn btn-sm btn-primary pull-right">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    @if(count($databases) > 0)
+                        <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                        <div class="panel-body">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Database</th>
+                                        <th>User (Connections From)</th>
+                                        <th>Password</th>
+                                        <th>DB Server</th>
+                                        <th></th>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    @foreach($databases as $database)
+                                        <tr>
+                                            <td>{{ $database->database }}</td>
+                                            <td>{{ $database->username }} ({{ $database->remote }})</td>
+                                            <td><code>{{ Crypt::decrypt($database->password) }}</code></td>
+                                            <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
+                                            <td class="text-center"><a href="#delete" data-action="delete_database" data-database="{{ $database->id }}" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
         @endif
         @if($server->installed !== 2)
             <div class="tab-pane" id="tab_manage">
@@ -422,6 +493,41 @@ $(document).ready(function () {
             closeOnConfirm: false
         }, function () {
             event.target.submit();
+        });
+    });
+    $('[data-action="delete_database"]').click(function (event) {
+        event.preventDefault();
+        var self = $(this);
+        swal({
+            title: '',
+            type: 'warning',
+            text: 'Are you sure that you want to delete this database? There is no going back, all data will immediately be removed.',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                method: 'DELETE',
+                url: '{{ route('admin.servers.database', $server->id) }}/' + self.data('database'),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function () {
+                self.parent().parent().slideUp();
+                swal({
+                    title: '',
+                    type: 'success',
+                    text: 'Successfully deleted this database.'
+                });
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occured while processing this request.'
+                });
+            });
         });
     });
 });

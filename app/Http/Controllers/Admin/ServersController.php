@@ -29,6 +29,7 @@ use Log;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\ServerRepository;
+use Pterodactyl\Repositories\DatabaseRepository;
 
 use Pterodactly\Exceptions\DisplayException;
 use Pterodactly\Exceptions\DisplayValidationException;
@@ -95,7 +96,12 @@ class ServersController extends Controller
                 ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
                 ->where('service_variables.option_id', $server->option)
                 ->where('server_variables.server_id', $server->id)
-                ->get()
+                ->get(),
+            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
+                ->where('server', $server->id)
+                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
+                ->get(),
+            'db_servers' => Models\DatabaseServer::all()
         ]);
     }
 
@@ -372,6 +378,44 @@ class ServersController extends Controller
                 'id' => $id,
                 'tab' => 'tab_startup'
             ])->withInput();
+        }
+    }
+
+    public function postDatabase(Request $request, $id)
+    {
+        try {
+            $repo = new DatabaseRepository;
+            $repo->create($id, $request->except([
+                '_token'
+            ]));
+            Alert::success('Added new database to this server.')->flash();
+        } catch (\Pterodactyl\Exceptions\DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_database'
+            ])->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An exception occured while attempting to add a new database for this server.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_database'
+        ])->withInput();
+    }
+
+    public function deleteDatabase(Request $request, $id, $database)
+    {
+        try {
+            $repo = new DatabaseRepository;
+            $repo->drop($database);
+            return response('', 204);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => 'An exception occured while attempting to delete this database.'
+            ], 500);
         }
     }
 
