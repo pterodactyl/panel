@@ -72,10 +72,11 @@ class Handler extends ExceptionHandler
 
             // If we are debugging, return the exception in it's full manner.
             return response()->json([
-                'error' => $e->getMessage(),
+                'error' => (empty($e->getMessage())) ? $exception : $e->getMessage(),
                 'code' => $e->getCode(),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace(),
             ], 500);
 
         }
