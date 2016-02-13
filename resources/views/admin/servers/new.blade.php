@@ -125,7 +125,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <p class="text-muted"><small>If you do not want to assign swap space to a server simply put <code>0</code> for the value. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.</small><p>
+                    <p class="text-muted"><small>If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.</small><p>
                 </div>
             </div>
             <div class="row">

@@ -398,7 +398,7 @@ class ServerRepository
             'add_additional' => 'array',
             'remove_additional' => 'array',
             'memory' => 'integer|min:0',
-            'swap' => 'integer|min:0',
+            'swap' => 'integer|min:-1',
             'io' => 'integer|min:10|max:1000',
             'cpu' => 'integer|min:0',
             'disk' => 'integer|min:0'
