@@ -540,7 +540,7 @@ class ServerRepository
 
     }
 
-    public function updateStartup($id, array $data)
+    public function updateStartup($id, array $data, $admin = false)
     {
 
         $server = Models\Server::findOrFail($id);
@@ -595,7 +595,7 @@ class ServerRepository
                     }
 
                     // Variable hidden and/or not user editable
-                    if ($variable->user_viewable === 0 || $variable->user_editable === 0) {
+                    if (($variable->user_viewable === 0 || $variable->user_editable === 0) && !$admin) {
                         throw new DisplayException('A service option variable field (' . $variable->env_variable . ') does not exist or you do not have permission to edit it.');
                     }
 

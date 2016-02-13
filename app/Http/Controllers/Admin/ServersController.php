@@ -374,7 +374,7 @@ class ServersController extends Controller
             $server = new ServerRepository;
             $server->updateStartup($id, $request->except([
                 '_token'
-            ]));
+            ]), true);
             Alert::success('Server startup variables were successfully updated.')->flash();
         } catch (\Pterodactyl\Exceptions\DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
