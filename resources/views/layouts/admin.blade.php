@@ -61,6 +61,7 @@
                                 <li><a href="/admin">Admin Index</a></li>
                                 <li><a href="/admin/settings">General Settings</a></li>
                                 <li><a href="/admin/api">API Management</a></li>
+                                <li><a href="/admin/databases">Database Management</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -128,6 +129,7 @@
                         <a href="/admin" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
                         <a href="/admin/settings" class="list-group-item">General Settings</a>
                         <a href="/admin/api" class="list-group-item">API Management</a>
+                        <a href="/admin/databases" class="list-group-item">Database Management</a>
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>

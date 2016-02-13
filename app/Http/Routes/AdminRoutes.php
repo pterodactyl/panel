@@ -308,6 +308,28 @@ class AdminRoutes {
             ]);
         });
 
+        // Database Routes
+        $router->group([
+            'prefix' => 'admin/databases',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.databases',
+                'uses' => 'Admin\DatabaseController@getIndex'
+            ]);
+            $router->get('/new', [
+                'as' => 'admin.databases.new',
+                'uses' => 'Admin\DatabaseController@getNew'
+            ]);
+            $router->post('/new', [
+                'uses' => 'Admin\DatabaseController@postNew'
+            ]);
+        });
+
     }
 
 }
