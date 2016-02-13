@@ -25,6 +25,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
 use Debugbar;
+use DB;
 use Log;
 
 use Pterodactyl\Models;
@@ -196,11 +197,7 @@ class ServersController extends Controller
         }
 
         $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
-        return response()->json([
-            'exec' => $service->executable,
-            'startup' => $service->startup,
-            'options' => Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get()
-        ]);
+        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
 
     }
 
@@ -219,7 +216,18 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(Models\ServiceVariables::where('option_id', $request->input('option'))->get());
+        $option = Models\ServiceOptions::select(
+                DB::raw('COALESCE(service_options.executable, services.executable) as executable'),
+                DB::raw('COALESCE(service_options.startup, services.startup) as startup')
+            )->leftJoin('services', 'services.id', '=', 'service_options.parent_service')
+            ->where('service_options.id', $request->input('option'))
+            ->first();
+
+        return response()->json([
+            'variables' => Models\ServiceVariables::where('option_id', $request->input('option'))->get(),
+            'exec' => $option->executable,
+            'startup' => $option->startup
+        ]);
 
     }
 

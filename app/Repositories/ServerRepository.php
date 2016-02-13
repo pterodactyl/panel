@@ -554,69 +554,82 @@ class ServerRepository
         }
 
         // Check those Variables
-        $variables = Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_currentValue')
-            ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('option_id', $server->option)->get();
-
-        $variableList = [];
-        if ($variables) {
-            foreach($variables as &$variable) {
-                // Move on if the new data wasn't even sent
-                if (!isset($data[$variable->env_variable])) {
-                    $variableList = array_merge($variableList, [[
-                        'id' => $variable->id,
-                        'env' => $variable->env_variable,
-                        'val' => $variable->a_currentValue
-                    ]]);
-                    continue;
-                }
-
-                // Update Empty but skip validation
-                if (empty($data[$variable->env_variable])) {
-                    $variableList = array_merge($variableList, [[
-                        'id' => $variable->id,
-                        'env' => $variable->env_variable,
-                        'val' => null
-                    ]]);
-                    continue;
-                }
-
-                // Is the variable required?
-                // @TODO: is this even logical to perform this check?
-                if (isset($data[$variable->env_variable]) && empty($data[$variable->env_variable])) {
-                    if ($variable->required === 1) {
-                        throw new DisplayException('A required service option variable field (' . $variable->env_variable . ') was included in this request but was left blank.');
-                    }
-                }
-
-                // Check aganist Regex Pattern
-                if (!is_null($variable->regex) && !preg_match($variable->regex, $data[$variable->env_variable])) {
-                    throw new DisplayException('Failed to validate service option variable field (' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
-                }
-
-                $variableList = array_merge($variableList, [[
-                    'id' => $variable->id,
-                    'env' => $variable->env_variable,
-                    'val' => $data[$variable->env_variable]
-                ]]);
-            }
-        }
-
-        // Add Variables
-        $environmentVariables = [];
-        $environmentVariables = array_merge($environmentVariables, [
-            'STARTUP' => $server->startup
-        ]);
-        foreach($variableList as $item) {
-            $environmentVariables = array_merge($environmentVariables, [
-                $item['env'] => $item['val']
-            ]);
-            $var = Models\ServerVariables::where('server_id', $server->id)->where('variable_id', $item['id'])->update([
-                'variable_value' => $item['val']
-            ]);
-        }
+        $variables = Models\ServiceVariables::select(
+                'service_variables.*',
+                DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_currentValue')
+            )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
+            ->where('option_id', $server->option)
+            ->get();
 
         try {
+
+            $variableList = [];
+            if ($variables) {
+                foreach($variables as &$variable) {
+                    // Move on if the new data wasn't even sent
+                    if (!isset($data[$variable->env_variable])) {
+                        $variableList = array_merge($variableList, [[
+                            'id' => $variable->id,
+                            'env' => $variable->env_variable,
+                            'val' => $variable->a_currentValue
+                        ]]);
+                        continue;
+                    }
+
+                    // Update Empty but skip validation
+                    if (empty($data[$variable->env_variable])) {
+                        $variableList = array_merge($variableList, [[
+                            'id' => $variable->id,
+                            'env' => $variable->env_variable,
+                            'val' => null
+                        ]]);
+                        continue;
+                    }
+
+                    // Is the variable required?
+                    // @TODO: is this even logical to perform this check?
+                    if (isset($data[$variable->env_variable]) && empty($data[$variable->env_variable])) {
+                        if ($variable->required === 1) {
+                            throw new DisplayException('A required service option variable field (' . $variable->env_variable . ') was included in this request but was left blank.');
+                        }
+                    }
+
+                    // Variable hidden and/or not user editable
+                    if ($variable->user_viewable === 0 || $variable->user_editable === 0) {
+                        throw new DisplayException('A service option variable field (' . $variable->env_variable . ') does not exist or you do not have permission to edit it.');
+                    }
+
+                    // Check aganist Regex Pattern
+                    if (!is_null($variable->regex) && !preg_match($variable->regex, $data[$variable->env_variable])) {
+                        throw new DisplayException('Failed to validate service option variable field (' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
+                    }
+
+                    $variableList = array_merge($variableList, [[
+                        'id' => $variable->id,
+                        'env' => $variable->env_variable,
+                        'val' => $data[$variable->env_variable]
+                    ]]);
+                }
+            }
+
+            // Add Variables
+            $environmentVariables = [];
+            $environmentVariables = array_merge($environmentVariables, [
+                'STARTUP' => $server->startup
+            ]);
+            foreach($variableList as $item) {
+                $environmentVariables = array_merge($environmentVariables, [
+                    $item['env'] => $item['val']
+                ]);
+
+                // Update model or make a new record if it doesn't exist.
+                $model = Models\ServerVariables::firstOrNew([
+                    'variable_id' => $item['id'],
+                    'server_id' => $server->id
+                ]);
+                $model->variable_value = $item['val'];
+                $model->save();
+            }
 
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
@@ -638,9 +651,9 @@ class ServerRepository
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to update the server configuration: ' . $ex->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             DB::rollBack();
-            throw $e;
+            throw $ex;
         }
 
     }

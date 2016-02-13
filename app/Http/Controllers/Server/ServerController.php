@@ -24,6 +24,7 @@
 namespace Pterodactyl\Http\Controllers\Server;
 
 use Auth;
+use DB;
 use Debugbar;
 use Uuid;
 use Alert;
@@ -194,12 +195,24 @@ class ServerController extends Controller
     public function getSettings(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
-        $variables = Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
-            ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('service_variables.option_id', $server->option)
-            ->where('server_variables.server_id', $server->id)
+        // $variables = Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
+        //     ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
+        //     ->where('service_variables.option_id', $server->option)
+        //     ->where('server_variables.server_id', $server->id)
+        //     ->get();
+        $variables = Models\ServiceVariables::select(
+                'service_variables.*',
+                DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
+            )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
+            ->where('option_id', $server->option)
             ->get();
-        $service = Models\Service::findOrFail($server->service);
+
+        $service = Models\Service::select(
+                DB::raw('COALESCE(service_options.executable, services.executable) as executable'),
+                DB::raw('COALESCE(service_options.startup, services.startup) as startup')
+            )->leftJoin('service_options', 'service_options.parent_service', '=', 'services.id')
+            ->where('services.id', $server->service)
+            ->first();
 
         $serverVariables = [
             '{{SERVER_MEMORY}}' => $server->memory,
@@ -216,7 +229,7 @@ class ServerController extends Controller
         return view('server.settings', [
             'server' => $server,
             'node' => Models\Node::find($server->node),
-            'variables' => $variables,
+            'variables' => $variables->where('user_viewable', 1),
             'service' => $service,
             'processedStartup' => $processed,
         ]);
@@ -258,12 +271,11 @@ class ServerController extends Controller
         } catch(\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
-        } finally {
-            return redirect()->route('server.settings', [
-                'uuid' => $uuid,
-                'tab' => 'tab_startup'
-            ])->withInput();
         }
+        return redirect()->route('server.settings', [
+            'uuid' => $uuid,
+            'tab' => 'tab_startup'
+        ]);
     }
 
 }

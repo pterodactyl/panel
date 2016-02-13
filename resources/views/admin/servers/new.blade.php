@@ -362,9 +362,7 @@ $(document).ready(function () {
                 service: $('#getService').val()
             }
         }).done(function (data) {
-            $('#startupExec').html(data.exec);
-            $('input[name="startup"]').val(data.startup);
-            $.each(data.options, function (i, option) {
+            $.each(data, function (i, option) {
                 $('#getOption').append('<option value="' + option.id + '" data-image="' + option.docker_image + '">' + option.name + '</option>');
             });
             $('#getOption').parent().parent().removeClass('hidden');
@@ -395,7 +393,9 @@ $(document).ready(function () {
                 option: $('#getOption').val()
             }
         }).done(function (data) {
-            $.each(data, function (i, item) {
+            $('#startupExec').html(data.exec);
+            $('input[name="startup"]').val(data.startup);
+            $.each(data.variables, function (i, item) {
                 var isRequired = (item.required === 1) ? '<span class="label label-primary">Required</span> ' : '';
                 var dataAppend = ' \
                     <div class="form-group col-md-12">\
