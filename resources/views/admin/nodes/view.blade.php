@@ -372,6 +372,7 @@
                                         </li>
                                     </ul>
                                 </div>
+                                <p class="text-muted"><small>Please enter a comma (<code>,</code>) after each port or port range.</small></p>
                                 <input name="allocate_port[]" type="hidden" class="pillboxMain"/>
                             </div>
                             <div class="form-group col-md-1 col-xs-2" style="margin-left: -10px;">
@@ -416,7 +417,7 @@
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
                                     <td><a href="/admin/users/view/{{ $server->owner }}"><code>{{ $server->a_ownerEmail }}</a></a></td>
                                     <td>{{ $server->a_serviceName }}</td>
-                                    <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory }} MB</td>
+                                    <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                                     <td class="text-center">{{ $server->disk }} MB</td>
                                     <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
                                     <td class="text-center" data-action="status">--</td>
