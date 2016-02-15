@@ -158,10 +158,6 @@ class AdminRoutes {
                 'uses' => 'Admin\ServersController@postDatabase'
             ]);
 
-            $router->delete('/view/{id}/database/{database}', [
-                'uses' => 'Admin\ServersController@deleteDatabase'
-            ]);
-
             // Change Server Details
             $router->post('/view/{id}/details', [
                 'uses' => 'Admin\ServersController@postUpdateServerDetails'
@@ -327,6 +323,14 @@ class AdminRoutes {
             ]);
             $router->post('/new', [
                 'uses' => 'Admin\DatabaseController@postNew'
+            ]);
+            $router->delete('/delete/{id}', [
+                'as' => 'admin.databases.delete',
+                'uses' => 'Admin\DatabaseController@deleteDatabase'
+            ]);
+            $router->delete('/delete-server/{id}', [
+                'as' => 'admin.databases.delete-server',
+                'uses' => 'Admin\DatabaseController@deleteServer'
             ]);
         });
 

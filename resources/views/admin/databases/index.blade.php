@@ -20,7 +20,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Server List
+    Database Management
 @endsection
 
 @section('content')
@@ -32,7 +32,8 @@
     <h3>Manage Databases</h3><hr />
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         <li class="active"><a href="#tab_databases" data-toggle="tab">Databases</a></li>
-        <li><a href="#tb_dbservers" data-toggle="tab">Database Servers</a></li>
+        <li><a href="#tab_dbservers" data-toggle="tab">Database Servers</a></li>
+        <li><a href="{{ route('admin.databases.new') }}"><i class="fa fa-plus"></i></a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_databases">
@@ -47,6 +48,7 @@
                                 <th>Username</th>
                                 <th>Connection</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,6 +59,7 @@
                                     <td>{{ $db->username }} ({{ $db->remote }})</td>
                                     <td><code>{{ $db->a_host }}:{{ $db->a_port }}</code></td>
                                     <td class="text-center"><a href="/admin/servers/view/{{ $db->a_serverId }}?tab=tab_database"><i class="fa fa-search"></i></a></td>
+                                    <td class="text-center"><a href="#" data-action="delete" data-type="delete" data-attr="{{ $db->id }}" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -67,7 +70,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="tb_dbservers">
+        <div class="tab-pane" id="tab_dbservers">
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
@@ -90,7 +93,7 @@
                                     <td>{{ $db->username }}</td>
                                     <td class="text-center">{{ $db->c_databases }}</td>
                                     <td>@if(is_null($db->a_linkedNode))<em>unlinked</em>@else{{ $db->a_linkedNode }}@endif</td>
-                                    <td class="text-center"><a href="#" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
+                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-dbserver" data-attr="{{ $db->id }}"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -106,6 +109,41 @@
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/databases']").addClass('active');
+    $('[data-action="delete"]').click(function (event) {
+        event.preventDefault();
+        var self = $(this);
+        swal({
+            title: '',
+            type: 'warning',
+            text: 'Are you sure that you want to remove this database from the system?',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+            closeOnConfirm: false
+        }, function () {
+            $.ajax({
+                method: 'DELETE',
+                url: '{{ route('admin.databases') }}/' + self.data('type') + '/' + self.data('attr'),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function () {
+                self.parent().parent().slideUp();
+                swal({
+                    title: '',
+                    type: 'success',
+                    text: ''
+                });
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occured while processing this request.'
+                });
+            });
+        });
+    });
 });
 </script>
 @endsection

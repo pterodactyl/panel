@@ -413,18 +413,4 @@ class ServersController extends Controller
         ])->withInput();
     }
 
-    public function deleteDatabase(Request $request, $id, $database)
-    {
-        try {
-            $repo = new DatabaseRepository;
-            $repo->drop($database);
-            return response('', 204);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            return response()->json([
-                'error' => 'An exception occured while attempting to delete this database.'
-            ], 500);
-        }
-    }
-
 }

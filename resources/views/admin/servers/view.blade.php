@@ -509,7 +509,7 @@ $(document).ready(function () {
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: '{{ route('admin.servers.database', $server->id) }}/' + self.data('database'),
+                url: '{{ route('admin.databases') }}/delete/' + self.data('database'),
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }

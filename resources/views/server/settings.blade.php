@@ -29,6 +29,7 @@
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         @can('view-sftp', $server)<li class="active"><a href="#tab_sftp" data-toggle="tab">SFTP Settings</a></li>@endcan
         @can('view-startup', $server)<li><a href="#tab_startup" data-toggle="tab">Startup Configuration</a></li>@endcan
+        @can('view-databases', $server)<li><a href="#tab_databases" data-toggle="tab">Databases</a></li>@endcan
     </ul>
     <div class="tab-content">
         @can('view-sftp', $server)
@@ -126,6 +127,47 @@
                         @endcan
                     </div>
                 </form>
+            </div>
+        @endcan
+        @can('view-databases', $server)
+            <div class="tab-pane active" id="tab_databases">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        @if(count($databases) > 0)
+                            <table class="table table-bordered table-hover" style="margin-bottom:0;">
+                                <thead>
+                                    <tr>
+                                        <th>Database</th>
+                                        <th>User (Connections From)</th>
+                                        <th>Password</th>
+                                        <th>DB Server</th>
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    @foreach($databases as $database)
+                                        <tr>
+                                            <td>{{ $database->database }}</td>
+                                            <td>{{ $database->username }} ({{ $database->remote }})</td>
+                                            <td><code>{{ Crypt::decrypt($database->password) }}</code></td>
+                                            <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <div class="alert alert-info" style="margin-bottom:0;">
+                                There are no databases configured for this server.
+                                @if(Auth::user()->root_admin === 1)
+                                    <a href="{{ route('admin.servers.view', [
+                                        'id' => $server->id,
+                                        'tab' => 'tab_database'
+                                    ]) }}" target="_blank">Add a new database.</a>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         @endcan
     </div>

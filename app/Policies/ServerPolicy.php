@@ -434,4 +434,20 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('reset-sftp')->exists();
     }
 
+    /**
+     * Check if user has permission to view databases for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewDatabases(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-databases')->exists();
+    }
+
 }

@@ -23,9 +23,14 @@
  */
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Alert;
 use DB;
+use Log;
 
 use Pterodactyl\Models;
+use Pterodactyl\Repositories\DatabaseRepository;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -60,6 +65,66 @@ class DatabaseController extends Controller
                 )->join('nodes', 'nodes.id', '=', 'database_servers.linked_node')
                 ->paginate(20)
         ]);
+    }
+
+    public function getNew(Request $request)
+    {
+        return view('admin.databases.new', [
+            'nodes' => Models\Node::select('nodes.id', 'nodes.name', 'locations.long as a_location')
+                ->join('locations', 'locations.id', '=', 'nodes.location')
+                ->get()
+        ]);
+    }
+
+    public function postNew(Request $request)
+    {
+        try {
+            $repo = new DatabaseRepository;
+            $repo->add($request->except([
+                '_token'
+            ]));
+
+            Alert::success('Successfully added a new database server to the system.')->flash();
+            return redirect()->route('admin.databases', [
+                'tab' => 'tab_dbservers'
+            ]);
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.databases.new')->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (\Exception $ex) {
+            if ($ex instanceof DisplayException || $ex instanceof \PDOException) {
+                Alert::danger($ex->getMessage())->flash();
+            } else {
+                Log::error($ex);
+                Alert::danger('An error occurred while attempting to delete this database server from the system.')->flash();
+            }
+            return redirect()->route('admin.databases.new')->withInput();
+        }
+    }
+
+    public function deleteDatabase(Request $request, $id)
+    {
+        try {
+            $repo = new DatabaseRepository;
+            $repo->drop($id);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database from the system.'
+            ], 500);
+        }
+    }
+
+    public function deleteServer(Request $request, $id)
+    {
+        try {
+            $repo = new DatabaseRepository;
+            $repo->delete($id);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database server from the system.'
+            ], 500);
+        }
     }
 
 }

@@ -24,6 +24,7 @@
 namespace Pterodactyl\Repositories;
 
 use Crypt;
+use Log;
 use DB;
 use Validator;
 
@@ -56,21 +57,20 @@ class DatabaseRepository {
 
         DB::beginTransaction();
 
-        $db = new Models\Database;
-        $db->fill([
-            'server' => $server->id,
-            'db_server' => $options['db_server'],
-            'database' => $server->uuidShort . '_' . $options['database'],
-            'username' => $server->uuidShort . '_' . str_random(7),
-            'remote' => $options['remote'],
-            'password' => Crypt::encrypt(str_random(20))
-        ]);
-        $db->save();
-
-        // Contact Remote
-        $dbr = Models\DatabaseServer::findOrFail($options['db_server']);
-
         try {
+            $db = new Models\Database;
+            $db->fill([
+                'server' => $server->id,
+                'db_server' => $options['db_server'],
+                'database' => $server->uuidShort . '_' . $options['database'],
+                'username' => $server->uuidShort . '_' . str_random(7),
+                'remote' => $options['remote'],
+                'password' => Crypt::encrypt(str_random(20))
+            ]);
+            $db->save();
+
+            // Contact Remote
+            $dbr = Models\DatabaseServer::findOrFail($options['db_server']);
 
             $capsule = new Capsule;
             $capsule->addConnection([
@@ -82,7 +82,10 @@ class DatabaseRepository {
                 'password' => Crypt::decrypt($dbr->password),
                 'charset' => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix' => ''
+                'prefix' => '',
+                'options' => [
+                    \PDO::ATTR_TIMEOUT => 3,
+                ]
             ]);
 
             $capsule->setAsGlobal();
@@ -110,10 +113,9 @@ class DatabaseRepository {
         $db = Models\Database::findOrFail($database);
         $dbr = Models\DatabaseServer::findOrFail($db->db_server);
 
+        DB::beginTransaction();
+
         try {
-
-            DB::beginTransaction();
-
             $capsule = new Capsule;
             $capsule->addConnection([
                 'driver' => 'mysql',
@@ -124,7 +126,10 @@ class DatabaseRepository {
                 'password' => Crypt::decrypt($dbr->password),
                 'charset' => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix' => ''
+                'prefix' => '',
+                'options' => [
+                    \PDO::ATTR_TIMEOUT => 3,
+                ]
             ]);
 
             $capsule->setAsGlobal();
@@ -141,6 +146,85 @@ class DatabaseRepository {
             throw $ex;
         }
 
+    }
+
+    /**
+     * Deletes a database server from the system if it is empty.
+     * @param  int $server The ID of the Database Server.
+     * @return
+     */
+    public function delete($server)
+    {
+        $dbh = Models\DatabaseServer::findOrFail($server);
+        $databases = Models\Database::where('db_server', $dbh->id)->count();
+
+        if ($databases > 0) {
+            throw new DisplayException('You cannot delete a database server that has active databases attached to it.');
+        }
+
+        return $dbh->delete();
+    }
+
+    /**
+     * Adds a new Database Server to the system.
+     * @param array $data
+     */
+    public function add(array $data)
+    {
+        $validator = Validator::make($data, [
+            'name' => 'required|string|max:255',
+            'host' => 'required|ip|unique:database_servers,host',
+            'port' => 'required|numeric|between:1,65535',
+            'username' => 'required|string|max:32',
+            'password' => 'required|string',
+            'linked_node' => 'sometimes',
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $capsule = new Capsule;
+            $capsule->addConnection([
+                'driver' => 'mysql',
+                'host' => $data['host'],
+                'port' => $data['port'],
+                'database' => 'mysql',
+                'username' => $data['username'],
+                'password' => $data['password'],
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'options' => [
+                    \PDO::ATTR_TIMEOUT => 3,
+                ]
+            ]);
+
+            $capsule->setAsGlobal();
+
+            // Allows us to check that we can connect to things.
+            Capsule::select('SELECT 1 FROM dual');
+
+            $dbh = new Models\DatabaseServer;
+            $dbh->fill([
+                'name' => $data['name'],
+                'host' => $data['host'],
+                'port' => $data['port'],
+                'username' => $data['username'],
+                'password' => Crypt::encrypt($data['password']),
+                'max_databases' => NULL,
+                'linked_node' => (!empty($data['linked_node']) && $data['linked_node'] > 0) ? $data['linked_node'] : NULL
+            ]);
+            $dbh->save();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
     }
 
 }

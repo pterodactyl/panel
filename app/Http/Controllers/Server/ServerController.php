@@ -228,6 +228,10 @@ class ServerController extends Controller
 
         return view('server.settings', [
             'server' => $server,
+            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
+                ->where('server', $server->id)
+                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
+                ->get(),
             'node' => Models\Node::find($server->node),
             'variables' => $variables->where('user_viewable', 1),
             'service' => $service,
