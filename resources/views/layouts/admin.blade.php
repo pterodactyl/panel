@@ -184,7 +184,7 @@
             </div>
         </div>
         <div class="footer">
-            <div class="row">
+            <div class="row" style="margin-bottom:15px;">
                 <div class="col-md-12">
                     Copyright &copy; 2015 - {{ date('Y') }} <a href="https://github.com/Pterodactyl/Panel" target="_blank">Pterodactyl Software &amp; Design</a>.<br />
                     Pterodactyl is licensed under a <a href="https://opensource.org/licenses/MIT" target="_blank">MIT</a> license. <!-- Please do not remove this license notice. We can't stop you though... :) -->
