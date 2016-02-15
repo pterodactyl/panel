@@ -114,50 +114,50 @@ class SubuserRepository
 
         DB::beginTransaction();
 
-        // Determine if this user exists or if we need to make them an account.
-        $user = Models\User::where('email', $data['email'])->first();
-        if (!$user) {
-            $password = str_random(16);
-            try {
-                $repo = new UserRepository;
-                $uid = $repo->create($data['email'], $password);
-                $user = Models\User::findOrFail($uid);
-            } catch (\Exception $ex) {
-                throw $ex;
-            }
-        }
-
-        $uuid = new UuidService;
-
-        $subuser = new Models\Subuser;
-        $subuser->fill([
-            'user_id' => $user->id,
-            'server_id' => $server->id,
-            'daemonSecret' => (string) $uuid->generate('servers', 'uuid')
-        ]);
-        $subuser->save();
-
-        $daemonPermissions = $this->coreDaemonPermissions;
-        foreach($data['permissions'] as $permission) {
-            if (array_key_exists($permission, $this->permissions)) {
-                // Build the daemon permissions array for sending.
-                if (!is_null($this->permissions[$permission])) {
-                    array_push($daemonPermissions, $this->permissions[$permission]);
-                }
-                $model = new Models\Permission;
-                $model->fill([
-                    'user_id' => $user->id,
-                    'server_id' => $server->id,
-                    'permission' => $permission
-                ]);
-                $model->save();
-            }
-        }
-
-        // Contact Daemon
-        // We contact even if they don't have any daemon permissions to overwrite
-        // if they did have them previously.
         try {
+            // Determine if this user exists or if we need to make them an account.
+            $user = Models\User::where('email', $data['email'])->first();
+            if (!$user) {
+                $password = str_random(16);
+                try {
+                    $repo = new UserRepository;
+                    $uid = $repo->create($data['email'], $password);
+                    $user = Models\User::findOrFail($uid);
+                } catch (\Exception $ex) {
+                    throw $ex;
+                }
+            }
+
+            $uuid = new UuidService;
+
+            $subuser = new Models\Subuser;
+            $subuser->fill([
+                'user_id' => $user->id,
+                'server_id' => $server->id,
+                'daemonSecret' => (string) $uuid->generate('servers', 'uuid')
+            ]);
+            $subuser->save();
+
+            $daemonPermissions = $this->coreDaemonPermissions;
+            foreach($data['permissions'] as $permission) {
+                if (array_key_exists($permission, $this->permissions)) {
+                    // Build the daemon permissions array for sending.
+                    if (!is_null($this->permissions[$permission])) {
+                        array_push($daemonPermissions, $this->permissions[$permission]);
+                    }
+                    $model = new Models\Permission;
+                    $model->fill([
+                        'user_id' => $user->id,
+                        'server_id' => $server->id,
+                        'permission' => $permission
+                    ]);
+                    $model->save();
+                }
+            }
+
+            // Contact Daemon
+            // We contact even if they don't have any daemon permissions to overwrite
+            // if they did have them previously.
 
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
@@ -210,9 +210,9 @@ class SubuserRepository
 
         DB::beginTransaction();
 
-        Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
-
         try {
+            Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
+
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
 
@@ -265,29 +265,30 @@ class SubuserRepository
         $server = Models\Server::findOrFail($data['server']);
 
         DB::beginTransaction();
-        Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
 
-        $daemonPermissions = $this->coreDaemonPermissions;
-        foreach($data['permissions'] as $permission) {
-            if (array_key_exists($permission, $this->permissions)) {
-                // Build the daemon permissions array for sending.
-                if (!is_null($this->permissions[$permission])) {
-                    array_push($daemonPermissions, $this->permissions[$permission]);
-                }
-                $model = new Models\Permission;
-                $model->fill([
-                    'user_id' => $data['user'],
-                    'server_id' => $data['server'],
-                    'permission' => $permission
-                ]);
-                $model->save();
-            }
-        }
-
-        // Contact Daemon
-        // We contact even if they don't have any daemon permissions to overwrite
-        // if they did have them previously.
         try {
+            Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
+
+            $daemonPermissions = $this->coreDaemonPermissions;
+            foreach($data['permissions'] as $permission) {
+                if (array_key_exists($permission, $this->permissions)) {
+                    // Build the daemon permissions array for sending.
+                    if (!is_null($this->permissions[$permission])) {
+                        array_push($daemonPermissions, $this->permissions[$permission]);
+                    }
+                    $model = new Models\Permission;
+                    $model->fill([
+                        'user_id' => $data['user'],
+                        'server_id' => $data['server'],
+                        'permission' => $permission
+                    ]);
+                    $model->save();
+                }
+            }
+
+            // Contact Daemon
+            // We contact even if they don't have any daemon permissions to overwrite
+            // if they did have them previously.
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
 
