@@ -21,34 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Repositories\ServiceRepository;
 
-use Illuminate\Database\Eloquent\Model;
+use DB;
+use Validator;
 
-class ServiceOptions extends Model
+use Pterodactyl\Models;
+use Pterodactyl\Services\UuidService;
+
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
+
+class Service
 {
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'service_options';
+    public function __construct()
+    {
+        //
+    }
 
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    public function update($id, array $data)
+    {
+        $service = Models\Service::findOrFail($id);
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-     protected $casts = [
-         'parent_service' => 'integer',
-     ];
+        $validator = Validator::make($data, [
+            'name' => 'sometimes|required|string|min:1|max:255',
+            'description' => 'sometimes|required|string',
+            'file' => 'sometimes|required|regex:/^[\w.-]{1,50}$/',
+            'executable' => 'sometimes|required|max:255|regex:/^(.*)$/',
+            'startup' => 'sometimes|required|string'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        $service->fill($data);
+        $service->save();
+    }
 
 }

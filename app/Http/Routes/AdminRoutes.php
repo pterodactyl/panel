@@ -334,6 +334,44 @@ class AdminRoutes {
             ]);
         });
 
+        // Service Routes
+        $router->group([
+            'prefix' => 'admin/services',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.services',
+                'uses' => 'Admin\ServiceController@getIndex'
+            ]);
+
+            $router->get('/service/{id}', [
+                'as' => 'admin.services.service',
+                'uses' => 'Admin\ServiceController@getService'
+            ]);
+
+            $router->post('/service/{id}', [
+                'uses' => 'Admin\ServiceController@postService'
+            ]);
+
+            $router->get('/option/{id}', [
+                'as' => 'admin.services.option',
+                'uses' => 'Admin\ServiceController@getOption'
+            ]);
+
+            $router->post('/option/{id}', [
+                'uses' => 'Admin\ServiceController@postOption'
+            ]);
+
+            $router->post('/option/{option}/{variable}', [
+                'as' => 'admin.services.option.variable',
+                'uses' => 'Admin\ServiceController@postOptionVariable'
+            ]);
+        });
+
     }
 
 }
