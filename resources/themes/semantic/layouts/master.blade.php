@@ -62,6 +62,30 @@
                 </div>
                 <div class="twelve wide column">
                     <div class="ui fluid container">
+                        @section('resp-errors')
+                            @if (count($errors) > 0)
+                                <div class="ui warning message">
+                                    <i class="close icon"></i>
+                                    <div class="header">{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}</div>
+                                    <ul class="list">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        @show
+                        @section('resp-alerts')
+                            @foreach (Alert::getMessages() as $type => $messages)
+                                @foreach ($messages as $message)
+                                    <div class="ui {{ $type }} message">
+                                        <i class="close icon"></i>
+                                        <div class="header">{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}</div>
+                                        {!! $message !!}
+                                    </div>
+                                @endforeach
+                            @endforeach
+                        @show
                         @yield('content')
                     </div>
                 </div>
@@ -74,12 +98,10 @@
         </div>
     </div>
     <script>
+        $('.message .close').on('click', function() {
+            $(this).closest('.message').transition('fade');
+          });
         $('#sidebar a[href$="' + window.location.pathname +'"').addClass('active');
-        /*
-            $(document).ready(function () {
-                $('#sidebar a[href$="' + window.location.pathname +'"').addClass('active');
-            });
-        */
     </script>
 </body>
 </html>
