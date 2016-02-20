@@ -47,7 +47,10 @@ class ServiceController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.services.index', [
-            'services' => Models\Service::all()
+            'services' => Models\Service::select(
+                    'services.*',
+                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.service = services.id) as c_servers')
+                )->get()
         ]);
     }
 
@@ -183,6 +186,31 @@ class ServiceController extends Controller
             }
             return redirect()->route('admin.services.option', $option)->withInput();
         }
+    }
+
+    public function newOption(Request $request, $service)
+    {
+        return view('admin.services.options.new', [
+            'service' => Models\Service::findOrFail($service),
+        ]);
+    }
+
+    public function postNewOption(Request $request, $service)
+    {
+        try {
+            $repo = new ServiceRepository\Option;
+            $id = $repo->create($service, $request->except([
+                '_token'
+            ]));
+            Alert::success('Successfully created new service option.')->flash();
+            return redirect()->route('admin.services.option', $id);
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.option.new', $service)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to add this service option.')->flash();
+        }
+        return redirect()->route('admin.services.option.new', $service)->withInput();
     }
 
 }

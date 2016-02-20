@@ -20,7 +20,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Manage Services
+    Manage Service Option {{ $option->name }}
 @endsection
 
 @section('content')

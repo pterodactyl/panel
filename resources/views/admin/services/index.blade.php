@@ -35,6 +35,7 @@
             <tr>
                 <th>Service Type</th>
                 <th>Description</th>
+                <th class="text-center">Servers</th>
             </tr>
         </thead>
         <tbody>
@@ -42,8 +43,14 @@
                 <tr>
                     <td><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></td>
                     <td>{!! $service->description !!}</td>
+                    <td class="text-center">{{ $service->c_servers }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-center"><a href="{{ route('admin.services.new') }}"><i class="fa fa-plus"></i></a></td>
+            </tr>
         </tbody>
     </table>
 </div>

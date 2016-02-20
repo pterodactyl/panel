@@ -40,6 +40,39 @@ class Option
         //
     }
 
+    public function create($service, array $data)
+    {
+        $service = Models\Service::findOrFail($service);
+
+        $validator = Validator::make($data, [
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|min:1',
+            'tag' => 'required|string|max:255',
+            'executable' => 'sometimes|string|max:255',
+            'docker_image' => 'required|string|max:255',
+            'startup' => 'sometimes|string'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        if (isset($data['executable']) && empty($data['executable'])) {
+            $data['executable'] = null;
+        }
+
+        if (isset($data['startup']) && empty($data['startup'])) {
+            $data['startup'] = null;
+        }
+
+        $option = new Models\ServiceOptions;
+        $option->parent_service = $service->id;
+        $option->fill($data);
+        $option->save();
+
+        return $option->id;
+    }
+
     public function update($id, array $data)
     {
         $option = Models\ServiceOptions::findOrFail($id);

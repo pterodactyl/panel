@@ -20,7 +20,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Manage Services
+    New Service
 @endsection
 
 @section('content')

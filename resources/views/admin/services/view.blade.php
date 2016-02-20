@@ -20,7 +20,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Manage Services
+    Manage Service
 @endsection
 
 @section('content')
@@ -51,6 +51,13 @@
                     <td class="text-center">{{ $option->c_servers }}</td>
                 </tr>
             @endforeach
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-center"><a href="{{ route('admin.services.option.new', $service->id) }}"><i class="fa fa-plus"></i></a></td>
+            </tr>
         </tbody>
     </table>
     <div class="well">
