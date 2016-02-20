@@ -185,6 +185,18 @@
             @endforeach
         </tbody>
     </table>
+    <form action="{{ route('admin.services.option', $option->id) }}" method="POST">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Deleting an option is an irreversible action. An option can <em>only</em> be deleted if no servers are associated with it.
+                </div>
+                {!! csrf_field() !!}
+                {!! method_field('DELETE') !!}
+                <input type="submit" class="btn btn-sm btn-danger pull-right" value="Delete Option" />
+            </div>
+        </div>
+    </form>
 </div>
 <script>
 $(document).ready(function () {

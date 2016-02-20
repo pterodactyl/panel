@@ -156,6 +156,24 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.option', $option)->withInput();
     }
 
+    public function deleteOption(Request $request, $option)
+    {
+        try {
+            $service = Models\ServiceOptions::select('parent_service')->where('id', $option)->first();
+            $repo = new ServiceRepository\Option;
+            $repo->delete($option);
+
+            Alert::success('Successfully deleted that option.')->flash();
+            return redirect()->route('admin.services.service', $service->parent_service);
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error was encountered while attempting to delete this option.')->flash();
+        }
+        return redirect()->route('admin.services.option', $option);
+    }
+
     public function postOptionVariable(Request $request, $option, $variable)
     {
         if ($variable === 'new') {

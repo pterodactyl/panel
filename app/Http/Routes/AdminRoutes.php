@@ -388,6 +388,10 @@ class AdminRoutes {
                 'uses' => 'Admin\ServiceController@postOption'
             ]);
 
+            $router->delete('/option/{id}', [
+                'uses' => 'Admin\ServiceController@deleteOption'
+            ]);
+
             $router->post('/option/{option}/{variable}', [
                 'as' => 'admin.services.option.variable',
                 'uses' => 'Admin\ServiceController@postOptionVariable'

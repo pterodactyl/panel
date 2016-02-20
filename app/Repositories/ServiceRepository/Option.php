@@ -73,6 +73,28 @@ class Option
         return $option->id;
     }
 
+    public function delete($id)
+    {
+        $option = Models\ServiceOptions::findOrFail($id);
+        $servers = Models\Server::where('option', $option->id)->get();
+
+        if (count($servers) !== 0) {
+            throw new DisplayException('You cannot delete an option that has servers attached to it currently.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            Models\ServiceVariables::where('option_id', $option->id)->delete();
+            $option->delete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+    }
+
     public function update($id, array $data)
     {
         $option = Models\ServiceOptions::findOrFail($id);
