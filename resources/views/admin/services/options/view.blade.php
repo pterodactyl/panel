@@ -31,28 +31,64 @@
         <li><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></li>
         <li class="active">{{ $option->name }}</li>
     </ul>
-    <h3 class="nopad">Servers</h3>
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Owner</th>
-                <th>Connection</th>
-                <th>Updated</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($servers as $server)
-                <tr>
-                    <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                    <td><a href="{{ route('admin.accounts.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
-                    <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
-                    <td>{{ $server->updated_at }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
-    <h3 class="nopad">Option Variables</h3><hr />
+    <div class="alert alert-warning"><strong>Warning!</strong> This page contains advanced settings that the panel and daemon use to control servers. Modifying information on this page is not recommended unless you are absolutely sure of what you are doing.</div>
+    <h3>Settings</h3><hr />
+    <form action="{{ route('admin.services.option', $option->id) }}" method="POST">
+        <div class="row">
+            <div class="col-md-6 form-group">
+                <label class="control-label">Name:</label>
+                <div>
+                    <input type="text" name="name" value="{{ old('name', $option->name) }}" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-6 form-group">
+                <label class="control-label">Description:</label>
+                <div>
+                    <textarea name="description" class="form-control" rows="3">{{ old('description', $option->description) }}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 form-group">
+                <label class="control-label">Tag:</label>
+                <div>
+                    <input type="text" name="tag" value="{{ old('tag', $option->tag) }}" class="form-control" />
+                </div>
+            </div>
+            <div class="col-md-3 form-group">
+                <label class="control-label">Executable:</label>
+                <div>
+                    <input type="text" name="executable" value="{{ old('executable', $option->executable) }}" class="form-control" />
+                    <p class="text-muted"><small>Leave blank to use parent executable.</small></p>
+                </div>
+            </div>
+            <div class="col-md-6 form-group">
+                <label class="control-label">Docker Image:</label>
+                <div>
+                    <input type="text" name="docker_image" value="{{ old('docker_image', $option->docker_image) }}" class="form-control" />
+                    <p class="text-muted"><small>Changing the docker image will only effect servers created or modified after this point.</small></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-group">
+                <label class="control-label">Default Startup Command:</label>
+                <div>
+                    <input type="text" name="startup" value="{{ old('startup', $option->startup) }}" class="form-control" />
+                    <p class="text-muted"><small>To use the default startup of the parent service simply leave this field blank.</small></p>
+                </div>
+            </div>
+        </div>
+        <div class="well well-sm">
+            <div class="row">
+                <div class="col-md-12">
+                    {!! csrf_field() !!}
+                    <input type="submit" class="btn btn-sm btn-primary" value="Update Service Option" />
+                </div>
+            </div>
+        </div>
+    </form>
+    <h3>Variables</h3><hr />
     @foreach($variables as $variable)
     <form action="{{ route('admin.services.option.variable', [ 'option' => $option->id, 'variable' => $variable->id ]) }}" method="POST">
         <div class="well">
@@ -128,6 +164,27 @@
         </div>
     </form>
     @endforeach
+    <h3>Servers</h3><hr />
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Connection</th>
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($servers as $server)
+                <tr>
+                    <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
+                    <td><a href="{{ route('admin.accounts.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
+                    <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
+                    <td>{{ $server->updated_at }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 <script>
 $(document).ready(function () {

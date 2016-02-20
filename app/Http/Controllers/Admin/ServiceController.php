@@ -107,7 +107,19 @@ class ServiceController extends Controller
 
     public function postOption(Request $request, $option)
     {
-        // editing option
+        try {
+            $repo = new ServiceRepository\Option;
+            $repo->update($option, $request->except([
+                '_token'
+            ]));
+            Alert::success('Option settings successfully updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.option', $option)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to modify this option.')->flash();
+        }
+        return redirect()->route('admin.services.option', $option)->withInput();
     }
 
     public function postOptionVariable(Request $request, $option, $variable)

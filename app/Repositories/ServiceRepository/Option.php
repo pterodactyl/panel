@@ -42,7 +42,31 @@ class Option
 
     public function update($id, array $data)
     {
+        $option = Models\ServiceOptions::findOrFail($id);
 
+        $validator = Validator::make($data, [
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'sometimes|required|string|min:1',
+            'tag' => 'sometimes|required|string|max:255',
+            'executable' => 'sometimes|string|max:255',
+            'docker_image' => 'sometimes|required|string|max:255',
+            'startup' => 'sometimes|string'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        if (isset($data['executable']) && empty($data['executable'])) {
+            $data['executable'] = null;
+        }
+
+        if (isset($data['startup']) && empty($data['startup'])) {
+            $data['startup'] = null;
+        }
+
+        $option->fill($data);
+        $option->save();
     }
 
 }
