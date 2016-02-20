@@ -53,12 +53,27 @@ class ServiceController extends Controller
 
     public function getNew(Request $request)
     {
-        //
+        return view('admin.services.new');
     }
 
     public function postNew(Request $request)
     {
-        //
+        try {
+            $repo = new ServiceRepository\Service;
+            $id = $repo->create($request->except([
+                '_token'
+            ]));
+            Alert::success('Successfully created new service!')->flash();
+            return redirect()->route('admin.services.service', $id);
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.new')->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to add a new service.')->flash();
+        }
+        return redirect()->route('admin.services.new')->withInput();
     }
 
     public function getService(Request $request, $service)

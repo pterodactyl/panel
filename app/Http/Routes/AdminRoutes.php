@@ -348,6 +348,15 @@ class AdminRoutes {
                 'uses' => 'Admin\ServiceController@getIndex'
             ]);
 
+            $router->get('/new', [
+                'as' => 'admin.services.new',
+                'uses' => 'Admin\ServiceController@getNew'
+            ]);
+
+            $router->post('/new', [
+                'uses' => 'Admin\ServiceController@postNew'
+            ]);
+
             $router->get('/service/{id}', [
                 'as' => 'admin.services.service',
                 'uses' => 'Admin\ServiceController@getService'

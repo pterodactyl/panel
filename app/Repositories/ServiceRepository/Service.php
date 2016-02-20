@@ -40,6 +40,31 @@ class Service
         //
     }
 
+    public function create(array $data)
+    {
+        $validator = Validator::make($data, [
+            'name' => 'required|string|min:1|max:255',
+            'description' => 'required|string',
+            'file' => 'required|regex:/^[\w.-]{1,50}$/',
+            'executable' => 'required|max:255|regex:/^(.*)$/',
+            'startup' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        if (Models\Service::where('file', $data['file'])->first()) {
+            throw new DisplayException('A service using that configuration file already exists on the system.');
+        }
+
+        $service = new Models\Service;
+        $service->fill($data);
+        $service->save();
+
+        return $service->id;
+    }
+
     public function update($id, array $data)
     {
         $service = Models\Service::findOrFail($id);
