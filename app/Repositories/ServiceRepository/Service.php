@@ -85,4 +85,26 @@ class Service
         $service->save();
     }
 
+    public function delete($id)
+    {
+        $service = Models\Service::findOrFail($id);
+        $servers = Models\Server::where('service', $service->id)->get();
+        $options = Models\ServiceOptions::select('id')->where('parent_service', $service->id);
+
+        if (count($servers) !== 0) {
+            throw new DisplayException('You cannot delete a service that has servers associated with it.');
+        }
+
+        DB::beginTransaction();
+        try {
+            Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
+            $options->delete();
+            $service->delete();
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+    }
+
 }

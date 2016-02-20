@@ -106,6 +106,22 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.service', $service)->withInput();
     }
 
+    public function deleteService(Request $request, $service)
+    {
+        try {
+            $repo = new ServiceRepository\Service;
+            $repo->delete($service);
+            Alert::success('Successfully deleted that service.')->flash();
+            return redirect()->route('admin.services');
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error was encountered while attempting to delete that service.')->flash();
+        }
+        return redirect()->route('admin.services.service', $service);
+    }
+
     public function getOption(Request $request, $option)
     {
         $opt = Models\ServiceOptions::findOrFail($option);

@@ -106,6 +106,18 @@
             </div>
         </form>
     </div>
+    <form action="{{ route('admin.services.service', $service->id) }}" method="POST">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger">
+                    Deleting a service is an irreversible action. A service can <em>only</em> be deleted if no servers are associated with it.
+                </div>
+                {!! csrf_field() !!}
+                {!! method_field('DELETE') !!}
+                <input type="submit" class="btn btn-sm btn-danger pull-right" value="Delete Service" />
+            </div>
+        </div>
+    </form>
 </div>
 <script>
 $(document).ready(function () {

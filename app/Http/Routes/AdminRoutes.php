@@ -366,6 +366,10 @@ class AdminRoutes {
                 'uses' => 'Admin\ServiceController@postService'
             ]);
 
+            $router->delete('/service/{id}', [
+                'uses' => 'Admin\ServiceController@deleteService'
+            ]);
+
             $router->get('/option/{id}', [
                 'as' => 'admin.services.option',
                 'uses' => 'Admin\ServiceController@getOption'
