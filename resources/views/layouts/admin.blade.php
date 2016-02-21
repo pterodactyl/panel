@@ -65,10 +65,10 @@
                             </ul>
                         </li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Accounts <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">users <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="/admin/accounts">Find Account</a></li>
-                                <li><a href="/admin/accounts/new">New Account</a></li>
+                                <li><a href="/admin/users">Find Account</a></li>
+                                <li><a href="/admin/users/new">New Account</a></li>
                             </ul>
                         </li>
                         <li class="dropdown">
@@ -133,8 +133,8 @@
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Account Management</strong></a>
-                        <a href="/admin/accounts" class="list-group-item">Find Account</a>
-                        <a href="/admin/accounts/new" class="list-group-item">New Account</a>
+                        <a href="/admin/users" class="list-group-item">Find Account</a>
+                        <a href="/admin/users/new" class="list-group-item">New Account</a>
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Server Management</strong></a>

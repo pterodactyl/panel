@@ -108,13 +108,15 @@ class UserRepository
      */
     public function update($id, array $data)
     {
+        $user = Models\User::findOrFail($id);
+
         $validator = Validator::make($data, [
-            'email' => 'email|unique:users,email,' . $id,
-            'password' => 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
-            'root_admin' => 'boolean',
-            'language' => 'string|min:1|max:5',
-            'use_totp' => 'boolean',
-            'totp_secret' => 'size:16'
+            'email' => 'sometimes|required|email|unique:users,email,' . $id,
+            'password' => 'sometimes|required|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'root_admin' => 'sometimes|required|boolean',
+            'language' => 'sometimes|required|string|min:1|max:5',
+            'use_totp' => 'sometimes|required|boolean',
+            'totp_secret' => 'sometimes|required|size:16'
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -127,7 +129,12 @@ class UserRepository
             $data['password'] = Hash::make($data['password']);
         }
 
-        return Models\User::findOrFail($id)->update($data);
+        if (isset($data['password_confirmation'])) {
+            unset($data['password_confirmation']);
+        }
+        
+        $user->fill($data);
+        $user->save();
     }
 
     /**
@@ -144,14 +151,15 @@ class UserRepository
 
         DB::beginTransaction();
 
-        Models\Permission::where('user_id', $id)->delete();
-        Models\Subuser::where('user_id', $id)->delete();
-        Models\User::destroy($id);
-
         try {
+            Models\Permission::where('user_id', $id)->delete();
+            Models\Subuser::where('user_id', $id)->delete();
+            Models\User::destroy($id);
+
             DB::commit();
             return true;
         } catch (\Exception $ex) {
+            DB::rollBack();
             throw $ex;
         }
     }

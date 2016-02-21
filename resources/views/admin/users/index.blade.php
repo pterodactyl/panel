@@ -42,7 +42,7 @@
         <tbody>
             @foreach ($users as $user)
                 <tr>
-                    <td><a href="/admin/accounts/view/{{ $user->id }}"><code>{{ $user->email }}</code></a> @if($user->root_admin === 1)<span class="badge">Administrator</span>@endif</td>
+                    <td><a href="/admin/users/view/{{ $user->id }}"><code>{{ $user->email }}</code></a> @if($user->root_admin === 1)<span class="badge">Administrator</span>@endif</td>
                     <td>{{ $user->created_at }}</td>
                     <td>{{ $user->updated_at }}</td>
                 </tr>
@@ -55,7 +55,7 @@
 </div>
 <script>
 $(document).ready(function () {
-    $('#sidebar_links').find("a[href='/admin/accounts']").addClass('active');
+    $('#sidebar_links').find("a[href='/admin/users']").addClass('active');
 });
 </script>
 @endsection

@@ -44,7 +44,6 @@ return [
     'no_servers' => 'You do not currently have any servers listed on your account.',
     'form_error' => 'The following errors were encountered while trying to process this request.',
     'password_req' => 'Passwords must meet the following requirements: at least one uppercase character, one lowercase character, one digit, and be at least 8 characters in length.',
-    'root_administrator' => 'Setting this to "Yes" gives a user full administrative access to PufferPanel.',
 
     'account' => [
         'totp_header' => 'Two-Factor Authentication',

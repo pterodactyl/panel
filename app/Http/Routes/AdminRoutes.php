@@ -59,7 +59,7 @@ class AdminRoutes {
         });
 
         $router->group([
-            'prefix' => 'admin/accounts',
+            'prefix' => 'admin/users',
             'middleware' => [
                 'auth',
                 'admin',
@@ -69,35 +69,35 @@ class AdminRoutes {
 
             // View All Accounts on System
             $router->get('/', [
-                'as' => 'admin.accounts',
-                'uses' => 'Admin\AccountsController@getIndex'
+                'as' => 'admin.users',
+                'uses' => 'Admin\UserController@getIndex'
             ]);
 
             // View Specific Account
             $router->get('/view/{id}', [
-                'as' => 'admin.accounts.view',
-                'uses' => 'Admin\AccountsController@getView'
+                'as' => 'admin.users.view',
+                'uses' => 'Admin\UserController@getView'
             ]);
 
-            // Show Create Account Page
-            $router->get('/new', [
-                'as' => 'admin.accounts.new',
-                'uses' => 'Admin\AccountsController@getNew'
-            ]);
-
-            // Handle Creating New Account
-            $router->post('/new', [
-                'uses' => 'Admin\AccountsController@postNew'
-            ]);
-
-            // Update A Specific Account
-            $router->post('/update', [
-                'uses' => 'Admin\AccountsController@postUpdate'
+            // View Specific Account
+            $router->post('/view/{id}', [
+                'uses' => 'Admin\UserController@updateUser'
             ]);
 
             // Delete an Account Matching an ID
             $router->delete('/view/{id}', [
-                'uses' => 'Admin\AccountsController@deleteView'
+                'uses' => 'Admin\UserController@deleteUser'
+            ]);
+
+            // Show Create Account Page
+            $router->get('/new', [
+                'as' => 'admin.users.new',
+                'uses' => 'Admin\UserController@getNew'
+            ]);
+
+            // Handle Creating New Account
+            $router->post('/new', [
+                'uses' => 'Admin\UserController@postNew'
             ]);
 
         });

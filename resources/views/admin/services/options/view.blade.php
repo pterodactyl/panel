@@ -179,7 +179,7 @@
             @foreach ($servers as $server)
                 <tr>
                     <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                    <td><a href="{{ route('admin.accounts.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
+                    <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
                     <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                     <td>{{ $server->updated_at }}</td>
                 </tr>
