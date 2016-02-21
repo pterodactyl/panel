@@ -370,29 +370,29 @@ class AdminRoutes {
                 'uses' => 'Admin\ServiceController@deleteService'
             ]);
 
-            $router->get('/option/new/{service}', [
+            $router->get('/service/{service}/option/new', [
                 'as' => 'admin.services.option.new',
                 'uses' => 'Admin\ServiceController@newOption'
             ]);
 
-            $router->post('/option/new/{service}', [
+            $router->post('/service/{service}/option/new', [
                 'uses' => 'Admin\ServiceController@postNewOption'
             ]);
 
-            $router->get('/option/{id}', [
+            $router->get('/service/{service}/option/{option}', [
                 'as' => 'admin.services.option',
                 'uses' => 'Admin\ServiceController@getOption'
             ]);
 
-            $router->post('/option/{id}', [
+            $router->post('/service/{service}/option/{option}', [
                 'uses' => 'Admin\ServiceController@postOption'
             ]);
 
-            $router->delete('/option/{id}', [
+            $router->delete('/service/{service}/option/{id}', [
                 'uses' => 'Admin\ServiceController@deleteOption'
             ]);
 
-            $router->post('/option/{option}/{variable}', [
+            $router->post('/service/{service}/option/{option}/variable/{variable}', [
                 'as' => 'admin.services.option.variable',
                 'uses' => 'Admin\ServiceController@postOptionVariable'
             ]);

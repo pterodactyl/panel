@@ -44,7 +44,7 @@
         <tbody>
             @foreach($options as $option)
                 <tr>
-                    <td><a href="{{ route('admin.services.option', $option->id) }}">{{ $option->name }}</a></td>
+                    <td><a href="{{ route('admin.services.option', [ $service->id, $option->id]) }}">{{ $option->name }}</a></td>
                     <td>{!! $option->description !!}</td>
                     <td><code>{{ $option->docker_image }}</code></td>
                     <td><code>{{ $option->tag }}</code></td>

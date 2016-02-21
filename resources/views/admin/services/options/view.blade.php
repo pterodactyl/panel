@@ -33,7 +33,7 @@
     </ul>
     <div class="alert alert-warning"><strong>Warning!</strong> This page contains advanced settings that the panel and daemon use to control servers. Modifying information on this page is not recommended unless you are absolutely sure of what you are doing.</div>
     <h3>Settings</h3><hr />
-    <form action="{{ route('admin.services.option', $option->id) }}" method="POST">
+    <form action="{{ route('admin.services.option', [$service->id, $option->id]) }}" method="POST">
         <div class="row">
             <div class="col-md-6 form-group">
                 <label class="control-label">Name:</label>
@@ -90,7 +90,7 @@
     </form>
     <h3>Variables</h3><hr />
     @foreach($variables as $variable)
-    <form action="{{ route('admin.services.option.variable', [ 'option' => $option->id, 'variable' => $variable->id ]) }}" method="POST">
+    <form action="{{ route('admin.services.option.variable', [$service->id, $option->id, $variable->id]) }}" method="POST">
         <div class="well">
             <div class="row">
                 <div class="col-md-6 form-group">
@@ -185,7 +185,7 @@
             @endforeach
         </tbody>
     </table>
-    <form action="{{ route('admin.services.option', $option->id) }}" method="POST">
+    <form action="{{ route('admin.services.option', [$service->id, $option->id]) }}" method="POST">
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-danger">
