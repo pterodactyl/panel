@@ -88,7 +88,7 @@
             </div>
         </div>
     </form>
-    <h3>Variables</h3><hr />
+    <h3>Variables <small><a href="{{ route('admin.services.option.variable.new', [$service->id, $option->id]) }}"><i class="fa fa-plus"></i></a></small></h3><hr />
     @foreach($variables as $variable)
     <form action="{{ route('admin.services.option.variable', [$service->id, $option->id, $variable->id]) }}" method="POST">
         <div class="well">
@@ -158,7 +158,8 @@
             <div class="row">
                 <div class="col-md-12">
                     {!! csrf_field() !!}
-                    <input type="submit" class="btn btn-sm btn-success pull-right" value="Update Variable" />
+                    <a href="{{ route('admin.services.option.variable.delete', [$service->id, $option->id, $variable->id]) }}"><button type="button" class="btn btn-sm btn-danger pull-right"><i class="fa fa-times"></i></button></a>
+                    <input type="submit" class="btn btn-sm btn-success" value="Update Variable" />
                 </div>
             </div>
         </div>

@@ -202,6 +202,34 @@ class ServiceController extends Controller
         return redirect()->route('admin.services.option', [$service, $option])->withInput();
     }
 
+    public function getNewVariable(Request $request, $service, $option)
+    {
+        return view('admin.services.options.variable', [
+            'service' => Models\Service::findOrFail($service),
+            'option' => Models\ServiceOptions::where('parent_service', $service)->where('id', $option)->firstOrFail()
+        ]);
+    }
+
+    public function postNewVariable(Request $request, $service, $option)
+    {
+        try {
+            $repo = new ServiceRepository\Variable;
+            $repo->create($option, $request->except([
+                '_token'
+            ]));
+            Alert::success('Successfully added new variable to this option.')->flash();
+            return redirect()->route('admin.services.option', [$service, $option])->withInput();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.option.variable.new', [$service, $option])->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occurred while attempting to add this variable.')->flash();
+        }
+        return redirect()->route('admin.services.option.variable.new', [$service, $option])->withInput();
+    }
+
     public function newOption(Request $request, $service)
     {
         return view('admin.services.options.new', [
@@ -225,6 +253,21 @@ class ServiceController extends Controller
             Alert::danger('An error occured while attempting to add this service option.')->flash();
         }
         return redirect()->route('admin.services.option.new', $service)->withInput();
+    }
+
+    public function deleteVariable(Request $request, $service, $option, $variable)
+    {
+        try {
+            $repo = new ServiceRepository\Variable;
+            $repo->delete($variable);
+            Alert::success('Deleted variable.')->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to delete that variable.')->flash();
+        }
+        return redirect()->route('admin.services.option', [$service, $option]);
     }
 
 }

@@ -40,6 +40,58 @@ class Variable
         //
     }
 
+    public function create($id, array $data)
+    {
+        $option = Models\ServiceOptions::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'name' => 'required|string|min:1|max:255',
+            'description' => 'required|string',
+            'env_variable' => 'required|regex:/^[\w]{1,255}$/',
+            'default_value' => 'required|string|max:255',
+            'user_viewable' => 'sometimes|required|numeric|size:1',
+            'user_editable' => 'sometimes|required|numeric|size:1',
+            'required' => 'sometimes|required|numeric|size:1',
+            'regex' => 'required|string|min:1'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        if (!preg_match($data['regex'], $data['default_value'])) {
+            throw new DisplayException('The default value you entered cannot violate the regex requirements.');
+        }
+
+        if (Models\ServiceVariables::where('env_variable', $data['env_variable'])->where('option_id', $option->id)->first()) {
+            throw new DisplayException('An environment variable with that name already exists for this option.');
+        }
+
+        $data['user_viewable'] = (isset($data['user_viewable']) && in_array((int) $data['user_viewable'], [0, 1])) ? $data['user_viewable'] : 0;
+        $data['user_editable'] = (isset($data['user_editable']) && in_array((int) $data['user_editable'], [0, 1])) ? $data['user_editable'] : 0;
+        $data['required'] = (isset($data['required']) && in_array((int) $data['required'], [0, 1])) ? $data['required'] : 0;
+
+        $variable = new Models\ServiceVariables;
+        $variable->option_id = $option->id;
+        $variable->fill($data);
+        $variable->save();
+    }
+
+    public function delete($id) {
+        $variable = Models\ServiceVariables::findOrFail($id);
+
+        DB::beginTransaction();
+        try {
+            Models\ServerVariables::where('variable_id', $variable->id)->delete();
+            $variable->delete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+    }
+
     public function update($id, array $data)
     {
         $variable = Models\ServiceVariables::findOrFail($id);
@@ -48,7 +100,7 @@ class Variable
             'name' => 'sometimes|required|string|min:1|max:255',
             'description' => 'sometimes|required|string',
             'env_variable' => 'sometimes|required|regex:/^[\w]{1,255}$/',
-            'default_value' => 'sometimes|required|string',
+            'default_value' => 'sometimes|required|string|max:255',
             'user_viewable' => 'sometimes|required|numeric|size:1',
             'user_editable' => 'sometimes|required|numeric|size:1',
             'required' => 'sometimes|required|numeric|size:1',
@@ -64,6 +116,10 @@ class Variable
 
         if (!preg_match($data['regex'], $data['default_value'])) {
             throw new DisplayException('The default value you entered cannot violate the regex requirements.');
+        }
+
+        if (Models\ServiceVariables::where('id', '!=', $variable->id)->where('env_variable', $data['env_variable'])->where('option_id', $variable->option_id)->first()) {
+            throw new DisplayException('An environment variable with that name already exists for this option.');
         }
 
         $data['user_viewable'] = (isset($data['user_viewable']) && in_array((int) $data['user_viewable'], [0, 1])) ? $data['user_viewable'] : $variable->user_viewable;
