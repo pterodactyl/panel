@@ -277,7 +277,7 @@ $(window).load(function () {
             $('#players_notice').hide();
             $('#toggle_players').show();
         }
-        if(data['data'].players != undefined && data['data'].players.length !== 0){
+        if(typeof data['data'] !== 'undefined' && typeof data['data'].players !== 'undefined' && data['data'].players.length !== 0){
             $('#toggle_players').html('');
             $.each(data['data'].players, function(id, d) {
                 $('#toggle_players').append('<code>' + d.name + '</code>,');
