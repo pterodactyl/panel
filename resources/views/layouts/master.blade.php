@@ -182,7 +182,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ trans('pagination.sidebar.account_controls') }} <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/account">{{ trans('pagination.sidebar.account_settings') }}</a></li>
-                                <li><a href="/account/totp">{{ trans('pagination.sidebar.account_security') }}</a></li>
+                                <li><a href="/account/security">{{ trans('pagination.sidebar.account_security') }}</a></li>
                                 <li><a href="/index">{{ trans('pagination.sidebar.servers') }}</a></li>
                             </ul>
                         </li>
@@ -239,7 +239,7 @@
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.account_controls') }}</strong></a>
                         <a href="/account" class="list-group-item">{{ trans('pagination.sidebar.account_settings') }}</a>
-                        <a href="/account/totp" class="list-group-item">{{ trans('pagination.sidebar.account_security') }}</a>
+                        <a href="/account/security" class="list-group-item">{{ trans('pagination.sidebar.account_security') }}</a>
                         <a href="/" class="list-group-item">{{ trans('pagination.sidebar.servers') }}</a>
                     </div>
                     @section('sidebar-server')

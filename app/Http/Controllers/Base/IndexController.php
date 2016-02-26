@@ -29,7 +29,7 @@ use Hash;
 use Google2FA;
 use Alert;
 
-use Pterodactyl\Models\Server;
+use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 
 use Pterodactyl\Http\Controllers\Controller;
@@ -55,7 +55,7 @@ class IndexController extends Controller
     public function getIndex(Request $request)
     {
         return view('base.index', [
-            'servers' => Server::getUserServers(10),
+            'servers' => Models\Server::getUserServers(10),
         ]);
     }
 
@@ -72,14 +72,16 @@ class IndexController extends Controller
     }
 
     /**
-     * Returns TOTP Management Page.
+     * Returns Security Management Page.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function getAccountTotp(Request $request)
+    public function getAccountSecurity(Request $request)
     {
-        return view('base.totp');
+        return view('base.security', [
+            'sessions' => Models\Session::where('user_id', Auth::user()->id)->get()
+        ]);
     }
 
     /**
@@ -225,6 +227,13 @@ class IndexController extends Controller
 
         return redirect()->route('account');
 
+    }
+
+    public function getRevokeSession(Request $request, $id)
+    {
+        $session = Models\Session::where('id', $id)->where('user_id', Auth::user()->id)->firstOrFail();
+        $session->delete();
+        return redirect()->route('account.security');
     }
 
 }
