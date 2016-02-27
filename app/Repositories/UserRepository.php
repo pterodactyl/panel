@@ -69,19 +69,19 @@ class UserRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $user = new Models\User;
-        $uuid = new UuidService;
-
         DB::beginTransaction();
 
-        $user->uuid = $uuid->generate('users', 'uuid');
-        $user->email = $email;
-        $user->password = Hash::make($password);
-        $user->language = 'en';
-        $user->root_admin = ($admin) ? 1 : 0;
-        $user->save();
-
         try {
+            $user = new Models\User;
+            $uuid = new UuidService;
+
+            $user->uuid = $uuid->generate('users', 'uuid');
+            $user->email = $email;
+            $user->password = Hash::make($password);
+            $user->language = 'en';
+            $user->root_admin = ($admin) ? 1 : 0;
+            $user->save();
+
             Mail::queue('emails.new-account', [
                 'email' => $user->email,
                 'forgot' => route('auth.password'),
@@ -132,7 +132,7 @@ class UserRepository
         if (isset($data['password_confirmation'])) {
             unset($data['password_confirmation']);
         }
-        
+
         $user->fill($data);
         $user->save();
     }

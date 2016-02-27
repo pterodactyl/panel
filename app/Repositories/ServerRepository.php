@@ -194,55 +194,54 @@ class ServerRepository
 
         DB::beginTransaction();
 
-        $uuid = new UuidService;
-
-        // Add Server to the Database
-        $server = new Models\Server;
-        $generatedUuid = $uuid->generate('servers', 'uuid');
-        $server->fill([
-            'uuid' => $generatedUuid,
-            'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
-            'node' => $data['node'],
-            'name' => $data['name'],
-            'active' => 1,
-            'owner' => $user->id,
-            'memory' => $data['memory'],
-            'swap' => $data['swap'],
-            'disk' => $data['disk'],
-            'io' => $data['io'],
-            'cpu' => $data['cpu'],
-            'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
-            'ip' => $data['ip'],
-            'port' => $data['port'],
-            'service' => $data['service'],
-            'option' => $data['option'],
-            'startup' => $data['startup'],
-            'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
-            'username' => $this->generateSFTPUsername($data['name'])
-        ]);
-        $server->save();
-
-        // Mark Allocation in Use
-        $allocation->assigned_to = $server->id;
-        $allocation->save();
-
-        // Add Variables
-        $environmentVariables = [];
-        $environmentVariables = array_merge($environmentVariables, [
-            'STARTUP' => $data['startup']
-        ]);
-        foreach($variableList as $item) {
-            $environmentVariables = array_merge($environmentVariables, [
-                $item['env'] => $item['val']
-            ]);
-            Models\ServerVariables::create([
-                'server_id' => $server->id,
-                'variable_id' => $item['id'],
-                'variable_value' => $item['val']
-            ]);
-        }
-
         try {
+            $uuid = new UuidService;
+
+            // Add Server to the Database
+            $server = new Models\Server;
+            $generatedUuid = $uuid->generate('servers', 'uuid');
+            $server->fill([
+                'uuid' => $generatedUuid,
+                'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
+                'node' => $data['node'],
+                'name' => $data['name'],
+                'active' => 1,
+                'owner' => $user->id,
+                'memory' => $data['memory'],
+                'swap' => $data['swap'],
+                'disk' => $data['disk'],
+                'io' => $data['io'],
+                'cpu' => $data['cpu'],
+                'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
+                'ip' => $data['ip'],
+                'port' => $data['port'],
+                'service' => $data['service'],
+                'option' => $data['option'],
+                'startup' => $data['startup'],
+                'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
+                'username' => $this->generateSFTPUsername($data['name'])
+            ]);
+            $server->save();
+
+            // Mark Allocation in Use
+            $allocation->assigned_to = $server->id;
+            $allocation->save();
+
+            // Add Variables
+            $environmentVariables = [];
+            $environmentVariables = array_merge($environmentVariables, [
+                'STARTUP' => $data['startup']
+            ]);
+            foreach($variableList as $item) {
+                $environmentVariables = array_merge($environmentVariables, [
+                    $item['env'] => $item['val']
+                ]);
+                Models\ServerVariables::create([
+                    'server_id' => $server->id,
+                    'variable_id' => $item['id'],
+                    'variable_value' => $item['val']
+                ]);
+            }
 
             $client = Models\Node::guzzleRequest($node->id);
             $client->request('POST', '/servers', [
@@ -317,39 +316,39 @@ class ServerRepository
         }
 
         DB::beginTransaction();
-        $server = Models\Server::findOrFail($id);
-        $owner = Models\User::findOrFail($server->owner);
 
-        // Update daemon secret if it was passed.
-        if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $owner->email)) {
-            $oldDaemonKey = $server->daemonSecret;
-            $server->daemonSecret = $uuid->generate('servers', 'daemonSecret');
-            $resetDaemonKey = true;
-        }
-
-        // Update Server Owner if it was passed.
-        if (isset($data['owner']) && $data['owner'] !== $owner->email) {
-            $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
-            $server->owner = $newOwner->id;
-        }
-
-        // Update Server Name if it was passed.
-        if (isset($data['name'])) {
-            $server->name = $data['name'];
-        }
-
-        // Save our changes
-        $server->save();
-
-        // Do we need to update? If not, return successful.
-        if (!$resetDaemonKey) {
-            DB::commit();
-            return true;
-        }
-
-        // If we need to update do it here.
         try {
+            $server = Models\Server::findOrFail($id);
+            $owner = Models\User::findOrFail($server->owner);
 
+            // Update daemon secret if it was passed.
+            if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $owner->email)) {
+                $oldDaemonKey = $server->daemonSecret;
+                $server->daemonSecret = $uuid->generate('servers', 'daemonSecret');
+                $resetDaemonKey = true;
+            }
+
+            // Update Server Owner if it was passed.
+            if (isset($data['owner']) && $data['owner'] !== $owner->email) {
+                $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
+                $server->owner = $newOwner->id;
+            }
+
+            // Update Server Name if it was passed.
+            if (isset($data['name'])) {
+                $server->name = $data['name'];
+            }
+
+            // Save our changes
+            $server->save();
+
+            // Do we need to update? If not, return successful.
+            if (!$resetDaemonKey) {
+                DB::commit();
+                return true;
+            }
+
+            // If we need to update do it here.
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
 
@@ -411,97 +410,97 @@ class ServerRepository
         }
 
         DB::beginTransaction();
-        $server = Models\Server::findOrFail($id);
-
-        if (isset($data['default'])) {
-            list($ip, $port) = explode(':', $data['default']);
-            if ($ip !== $server->ip || $port !== $server->port) {
-                $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
-                if (!$allocation) {
-                    throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
-                }
-
-                $server->ip = $ip;
-                $server->port = $port;
-            }
-        }
-
-        // Remove Assignments
-        if (isset($data['remove_additional'])) {
-            foreach ($data['remove_additional'] as $id => $combo) {
-                list($ip, $port) = explode(':', $combo);
-                // Invalid, not worth killing the whole thing, we'll just skip over it.
-                if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
-                    continue;
-                }
-
-                // Can't remove the assigned IP/Port combo
-                if ($ip === $server->ip && $port === $server->port) {
-                    continue;
-                }
-
-                Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
-                    'assigned_to' => null
-                ]);
-            }
-        }
-
-        // Add Assignments
-        if (isset($data['add_additional'])) {
-            foreach ($data['add_additional'] as $id => $combo) {
-                list($ip, $port) = explode(':', $combo);
-                // Invalid, not worth killing the whole thing, we'll just skip over it.
-                if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
-                    continue;
-                }
-
-                // Don't allow double port assignments
-                if (Models\Allocation::where('port', $port)->where('assigned_to', $server->id)->count() !== 0) {
-                    continue;
-                }
-
-                Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
-                    'assigned_to' => $server->id
-                ]);
-            }
-        }
-
-        // Loop All Assignments
-        $additionalAssignments = [];
-        $assignments = Models\Allocation::where('assigned_to', $server->id)->get();
-        foreach ($assignments as &$assignment) {
-            if (array_key_exists((string) $assignment->ip, $additionalAssignments)) {
-                array_push($additionalAssignments[ (string) $assignment->ip ], (int) $assignment->port);
-            } else {
-                $additionalAssignments[ (string) $assignment->ip ] = [ (int) $assignment->port ];
-            }
-        }
-
-        // @TODO: verify that server can be set to this much memory without
-        // going over node limits.
-        if (isset($data['memory'])) {
-            $server->memory = $data['memory'];
-        }
-
-        if (isset($data['swap'])) {
-            $server->swap = $data['swap'];
-        }
-
-        // @TODO: verify that server can be set to this much disk without
-        // going over node limits.
-        if (isset($data['disk'])) {
-            $server->disk = $data['disk'];
-        }
-
-        if (isset($data['cpu'])) {
-            $server->cpu = $data['cpu'];
-        }
-
-        if (isset($data['io'])) {
-            $server->io = $data['io'];
-        }
 
         try {
+            $server = Models\Server::findOrFail($id);
+
+            if (isset($data['default'])) {
+                list($ip, $port) = explode(':', $data['default']);
+                if ($ip !== $server->ip || $port !== $server->port) {
+                    $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
+                    if (!$allocation) {
+                        throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
+                    }
+
+                    $server->ip = $ip;
+                    $server->port = $port;
+                }
+            }
+
+            // Remove Assignments
+            if (isset($data['remove_additional'])) {
+                foreach ($data['remove_additional'] as $id => $combo) {
+                    list($ip, $port) = explode(':', $combo);
+                    // Invalid, not worth killing the whole thing, we'll just skip over it.
+                    if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
+                        continue;
+                    }
+
+                    // Can't remove the assigned IP/Port combo
+                    if ($ip === $server->ip && $port === $server->port) {
+                        continue;
+                    }
+
+                    Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
+                        'assigned_to' => null
+                    ]);
+                }
+            }
+
+            // Add Assignments
+            if (isset($data['add_additional'])) {
+                foreach ($data['add_additional'] as $id => $combo) {
+                    list($ip, $port) = explode(':', $combo);
+                    // Invalid, not worth killing the whole thing, we'll just skip over it.
+                    if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
+                        continue;
+                    }
+
+                    // Don't allow double port assignments
+                    if (Models\Allocation::where('port', $port)->where('assigned_to', $server->id)->count() !== 0) {
+                        continue;
+                    }
+
+                    Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
+                        'assigned_to' => $server->id
+                    ]);
+                }
+            }
+
+            // Loop All Assignments
+            $additionalAssignments = [];
+            $assignments = Models\Allocation::where('assigned_to', $server->id)->get();
+            foreach ($assignments as &$assignment) {
+                if (array_key_exists((string) $assignment->ip, $additionalAssignments)) {
+                    array_push($additionalAssignments[ (string) $assignment->ip ], (int) $assignment->port);
+                } else {
+                    $additionalAssignments[ (string) $assignment->ip ] = [ (int) $assignment->port ];
+                }
+            }
+
+            // @TODO: verify that server can be set to this much memory without
+            // going over node limits.
+            if (isset($data['memory'])) {
+                $server->memory = $data['memory'];
+            }
+
+            if (isset($data['swap'])) {
+                $server->swap = $data['swap'];
+            }
+
+            // @TODO: verify that server can be set to this much disk without
+            // going over node limits.
+            if (isset($data['disk'])) {
+                $server->disk = $data['disk'];
+            }
+
+            if (isset($data['cpu'])) {
+                $server->cpu = $data['cpu'];
+            }
+
+            if (isset($data['io'])) {
+                $server->io = $data['io'];
+            }
 
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
@@ -534,7 +533,6 @@ class ServerRepository
             throw new DisplayException('An error occured while attempting to update the configuration: ' . $ex->getMessage());
         } catch (\Exception $ex) {
             DB::rollBack();
-            Log::error($ex);
             throw $ex;
         }
 
@@ -547,21 +545,20 @@ class ServerRepository
 
         DB::beginTransaction();
 
-        // Check the startup
-        if (isset($data['startup'])) {
-            $server->startup = $data['startup'];
-            $server->save();
-        }
-
-        // Check those Variables
-        $variables = Models\ServiceVariables::select(
-                'service_variables.*',
-                DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_currentValue')
-            )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('option_id', $server->option)
-            ->get();
-
         try {
+            // Check the startup
+            if (isset($data['startup'])) {
+                $server->startup = $data['startup'];
+                $server->save();
+            }
+
+            // Check those Variables
+            $variables = Models\ServiceVariables::select(
+                    'service_variables.*',
+                    DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_currentValue')
+                )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
+                ->where('option_id', $server->option)
+                ->get();
 
             $variableList = [];
             if ($variables) {
@@ -664,24 +661,24 @@ class ServerRepository
         $node = Models\Node::findOrFail($server->node);
         DB::beginTransaction();
 
-        // Delete Allocations
-        Models\Allocation::where('assigned_to', $server->id)->update([
-            'assigned_to' => null
-        ]);
-
-        // Remove Variables
-        Models\ServerVariables::where('server_id', $server->id)->delete();
-
-        // Remove SubUsers
-        Models\Subuser::where('server_id', $server->id)->delete();
-
-        // Remove Permissions
-        Models\Permission::where('server_id', $server->id)->delete();
-
-        // Remove Downloads
-        Models\Download::where('server', $server->uuid)->delete();
-
         try {
+            // Delete Allocations
+            Models\Allocation::where('assigned_to', $server->id)->update([
+                'assigned_to' => null
+            ]);
+
+            // Remove Variables
+            Models\ServerVariables::where('server_id', $server->id)->delete();
+
+            // Remove SubUsers
+            Models\Subuser::where('server_id', $server->id)->delete();
+
+            // Remove Permissions
+            Models\Permission::where('server_id', $server->id)->delete();
+
+            // Remove Downloads
+            Models\Download::where('server', $server->uuid)->delete();
+
             $client = Models\Node::guzzleRequest($server->node);
             $client->request('DELETE', '/servers', [
                 'headers' => [
