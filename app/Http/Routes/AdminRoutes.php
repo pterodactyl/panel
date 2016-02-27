@@ -59,7 +59,7 @@ class AdminRoutes {
         });
 
         $router->group([
-            'prefix' => 'admin/accounts',
+            'prefix' => 'admin/users',
             'middleware' => [
                 'auth',
                 'admin',
@@ -69,35 +69,35 @@ class AdminRoutes {
 
             // View All Accounts on System
             $router->get('/', [
-                'as' => 'admin.accounts',
-                'uses' => 'Admin\AccountsController@getIndex'
+                'as' => 'admin.users',
+                'uses' => 'Admin\UserController@getIndex'
             ]);
 
             // View Specific Account
             $router->get('/view/{id}', [
-                'as' => 'admin.accounts.view',
-                'uses' => 'Admin\AccountsController@getView'
+                'as' => 'admin.users.view',
+                'uses' => 'Admin\UserController@getView'
             ]);
 
-            // Show Create Account Page
-            $router->get('/new', [
-                'as' => 'admin.accounts.new',
-                'uses' => 'Admin\AccountsController@getNew'
-            ]);
-
-            // Handle Creating New Account
-            $router->post('/new', [
-                'uses' => 'Admin\AccountsController@postNew'
-            ]);
-
-            // Update A Specific Account
-            $router->post('/update', [
-                'uses' => 'Admin\AccountsController@postUpdate'
+            // View Specific Account
+            $router->post('/view/{id}', [
+                'uses' => 'Admin\UserController@updateUser'
             ]);
 
             // Delete an Account Matching an ID
             $router->delete('/view/{id}', [
-                'uses' => 'Admin\AccountsController@deleteView'
+                'uses' => 'Admin\UserController@deleteUser'
+            ]);
+
+            // Show Create Account Page
+            $router->get('/new', [
+                'as' => 'admin.users.new',
+                'uses' => 'Admin\UserController@getNew'
+            ]);
+
+            // Handle Creating New Account
+            $router->post('/new', [
+                'uses' => 'Admin\UserController@postNew'
             ]);
 
         });
@@ -331,6 +331,84 @@ class AdminRoutes {
             $router->delete('/delete-server/{id}', [
                 'as' => 'admin.databases.delete-server',
                 'uses' => 'Admin\DatabaseController@deleteServer'
+            ]);
+        });
+
+        // Service Routes
+        $router->group([
+            'prefix' => 'admin/services',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.services',
+                'uses' => 'Admin\ServiceController@getIndex'
+            ]);
+
+            $router->get('/new', [
+                'as' => 'admin.services.new',
+                'uses' => 'Admin\ServiceController@getNew'
+            ]);
+
+            $router->post('/new', [
+                'uses' => 'Admin\ServiceController@postNew'
+            ]);
+
+            $router->get('/service/{id}', [
+                'as' => 'admin.services.service',
+                'uses' => 'Admin\ServiceController@getService'
+            ]);
+
+            $router->post('/service/{id}', [
+                'uses' => 'Admin\ServiceController@postService'
+            ]);
+
+            $router->delete('/service/{id}', [
+                'uses' => 'Admin\ServiceController@deleteService'
+            ]);
+
+            $router->get('/service/{service}/option/new', [
+                'as' => 'admin.services.option.new',
+                'uses' => 'Admin\ServiceController@newOption'
+            ]);
+
+            $router->post('/service/{service}/option/new', [
+                'uses' => 'Admin\ServiceController@postNewOption'
+            ]);
+
+            $router->get('/service/{service}/option/{option}', [
+                'as' => 'admin.services.option',
+                'uses' => 'Admin\ServiceController@getOption'
+            ]);
+
+            $router->post('/service/{service}/option/{option}', [
+                'uses' => 'Admin\ServiceController@postOption'
+            ]);
+
+            $router->delete('/service/{service}/option/{id}', [
+                'uses' => 'Admin\ServiceController@deleteOption'
+            ]);
+
+            $router->get('/service/{service}/option/{option}/variable/new', [
+                'as' => 'admin.services.option.variable.new',
+                'uses' => 'Admin\ServiceController@getNewVariable'
+            ]);
+
+            $router->post('/service/{service}/option/{option}/variable/new', [
+                'uses' => 'Admin\ServiceController@postNewVariable'
+            ]);
+
+            $router->post('/service/{service}/option/{option}/variable/{variable}', [
+                'as' => 'admin.services.option.variable',
+                'uses' => 'Admin\ServiceController@postOptionVariable'
+            ]);
+
+            $router->get('/service/{service}/option/{option}/variable/{variable}/delete', [
+                'as' => 'admin.services.option.variable.delete',
+                'uses' => 'Admin\ServiceController@deleteVariable'
             ]);
         });
 

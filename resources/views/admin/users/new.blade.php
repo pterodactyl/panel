@@ -28,7 +28,7 @@
 <div class="col-md-12">
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Controls</a></li>
-        <li><a href="/admin/accounts">Accounts</a></li>
+        <li><a href="/admin/users">Accounts</a></li>
         <li class="active">Add New Account</li>
     </ul>
     <h3>Create New Account</h3><hr />
@@ -88,7 +88,7 @@ $(document).ready(function(){
     });
 });
 $(document).ready(function () {
-    $('#sidebar_links').find("a[href='/admin/accounts/new']").addClass('active');
+    $('#sidebar_links').find("a[href='/admin/users/new']").addClass('active');
 });
 </script>
 @endsection

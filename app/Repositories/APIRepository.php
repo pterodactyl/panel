@@ -122,27 +122,27 @@ class APIRepository
 
         DB::beginTransaction();
 
-        $secretKey = str_random(16) . '.' . str_random(15);
-        $key = new Models\APIKey;
-        $key->fill([
-            'public' => str_random(16),
-            'secret' => Crypt::encrypt($secretKey),
-            'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed)
-        ]);
-        $key->save();
-
-        foreach($data['permissions'] as $permission) {
-            if (in_array($permission, $this->permissions)) {
-                $model = new Models\APIPermission;
-                $model->fill([
-                    'key_id' => $key->id,
-                    'permission' => $permission
-                ]);
-                $model->save();
-            }
-        }
-
         try {
+            $secretKey = str_random(16) . '.' . str_random(15);
+            $key = new Models\APIKey;
+            $key->fill([
+                'public' => str_random(16),
+                'secret' => Crypt::encrypt($secretKey),
+                'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed)
+            ]);
+            $key->save();
+
+            foreach($data['permissions'] as $permission) {
+                if (in_array($permission, $this->permissions)) {
+                    $model = new Models\APIPermission;
+                    $model->fill([
+                        'key_id' => $key->id,
+                        'permission' => $permission
+                    ]);
+                    $model->save();
+                }
+            }
+
             DB::commit();
             return $secretKey;
         } catch (\Exception $ex) {
@@ -164,11 +164,16 @@ class APIRepository
     {
         DB::beginTransaction();
 
-        $model = Models\APIKey::where('public', $key)->firstOrFail();
-        $permissions = Models\APIPermission::where('key_id', $model->id)->delete();
-        $model->delete();
+        try {
+            $model = Models\APIKey::where('public', $key)->firstOrFail();
+            $permissions = Models\APIPermission::where('key_id', $model->id)->delete();
+            $model->delete();
 
-        DB::commit();
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
     }
 
 }

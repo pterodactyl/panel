@@ -28,6 +28,7 @@
     {!! Theme::css('css/metricsgraphics.css') !!}
     {!! Theme::js('js/d3.min.js') !!}
     {!! Theme::js('js/metricsgraphics.min.js') !!}
+    {!! Theme::js('js/async.min.js') !!}
 @endsection
 
 @section('content')
@@ -167,6 +168,7 @@ $(window).load(function () {
         target: document.getElementById('chart_memory'),
         x_accessor: 'date',
         y_accessor: 'memory',
+        animate_on_load: false,
         y_rug: true,
         area: false,
     };
@@ -200,6 +202,7 @@ $(window).load(function () {
         y_accessor: 'cpu',
         aggregate_rollover: true,
         missing_is_hidden: true,
+        animate_on_load: false,
         area: false,
     };
 
@@ -229,46 +232,60 @@ $(window).load(function () {
             'cpu': ({{ $server->cpu }} > 0) ? parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()) : proc.data.cpu.total
         });
 
-        // Remove blank values from listing
-        var activeCores = [];
-        for (i = 0, length = proc.data.cpu.cores.length; i < length; i++) {
-            if (proc.data.cpu.cores[i] > 0) {
-                activeCores.push(proc.data.cpu.cores[i]);
-            }
-        }
-
-        var modifedActiveCores = { '0': 0 };
-        for (i = 0, length = activeCores.length; i < length; i++) {
-            if (i > 7) {
-                modifedActiveCores['0'] = modifedActiveCores['0'] + activeCores[i];
-            } else {
-                if (activeChartArrays.indexOf(i) < 0) {
-                    activeChartArrays.push(i);
-                }
-                modifedActiveCores[i] = activeCores[i];
-            }
-        }
-
-        for (i = 0, length = activeChartArrays.length; i < length; i++) {
-            if (typeof cpuGraphData[(i + 1)] === 'undefined') {
-                cpuGraphData[(i + 1)] = [{
-                    'date': curDate,
-                    'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modifedActiveCores[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modifedActiveCores[i] || null
-                }];
-            } else {
-                if (typeof cpuGraphData[(i + 1)][20] !== 'undefined') {
-                    cpuGraphData[(i + 1)].shift();
-                }
-                cpuGraphData[(i + 1)].push({
-                    'date': curDate,
-                    'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modifedActiveCores[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modifedActiveCores[i] || null
+        async.waterfall([
+            function (callback) {
+                // Remove blank values from listing
+                var activeCores = [];
+                async.forEachOf(proc.data.cpu.cores, function(inner, i, eachCallback) {
+                    if (proc.data.cpu.cores[i] > 0) {
+                        activeCores.push(proc.data.cpu.cores[i]);
+                    }
+                    return eachCallback();
+                }, function () {
+                    return callback(null, activeCores);
                 });
-            }
-        }
-
-        cpuGraphSettings.data = (showOnlyTotal === true) ? cpuGraphData[0] : cpuGraphData;
-        MG.data_graphic(memoryGraphSettings);
-        MG.data_graphic(cpuGraphSettings);
+            },
+            function (active, callback) {
+                var modifedActiveCores = { '0': 0 };
+                async.forEachOf(active, function (inner, i, eachCallback) {
+                    if (i > 7) {
+                        modifedActiveCores['0'] = modifedActiveCores['0'] + active[i];
+                    } else {
+                        if (activeChartArrays.indexOf(i) < 0) activeChartArrays.push(i);
+                        modifedActiveCores[i] = active[i];
+                    }
+                    return eachCallback();
+                }, function () {
+                    return callback(null, modifedActiveCores);
+                });
+            },
+            function (modified, callback) {
+                async.forEachOf(activeChartArrays, function (inner, i, eachCallback) {
+                    if (typeof cpuGraphData[(i + 1)] === 'undefined') {
+                        cpuGraphData[(i + 1)] = [{
+                            'date': curDate,
+                            'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modified[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modified[i] || null
+                        }];
+                    } else {
+                        if (typeof cpuGraphData[(i + 1)][20] !== 'undefined') cpuGraphData[(i + 1)].shift();
+                        cpuGraphData[(i + 1)].push({
+                            'date': curDate,
+                            'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modified[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modified[i] || null
+                        });
+                    }
+                    return eachCallback();
+                }, function () {
+                    return callback();
+                });
+            },
+            function (callback) {
+                cpuGraphSettings.data = (showOnlyTotal === true) ? cpuGraphData[0] : cpuGraphData;
+                return callback();
+            },
+        ], function () {
+            MG.data_graphic(memoryGraphSettings);
+            MG.data_graphic(cpuGraphSettings);
+        });
     });
 
     // Socket Recieves New Query
@@ -277,7 +294,7 @@ $(window).load(function () {
             $('#players_notice').hide();
             $('#toggle_players').show();
         }
-        if(data['data'].players != undefined && data['data'].players.length !== 0){
+        if(typeof data['data'] !== 'undefined' && typeof data['data'].players !== 'undefined' && data['data'].players.length !== 0){
             $('#toggle_players').html('');
             $.each(data['data'].players, function(id, d) {
                 $('#toggle_players').append('<code>' + d.name + '</code>,');

@@ -65,7 +65,7 @@
                             </tr>
                             <tr>
                                 <td>Owner</td>
-                                <td><a href="{{ route('admin.accounts.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
+                                <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
                             </tr>
                             <tr>
                                 <td>Location</td>

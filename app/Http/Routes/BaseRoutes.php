@@ -71,15 +71,19 @@ class BaseRoutes {
 
         // TOTP Routes
         $router->group([
-            'prefix' => 'account/totp',
+            'prefix' => 'account/security',
             'middleware' => [
                 'auth',
                 'csrf'
             ]
         ], function () use ($router) {
             $router->get('/', [
-                'as' => 'account.totp',
-                'uses' => 'Base\IndexController@getAccountTotp'
+                'as' => 'account.security',
+                'uses' => 'Base\IndexController@getAccountSecurity'
+            ]);
+            $router->get('/revoke/{id}', [
+                'as' => 'account.security.revoke',
+                'uses' => 'Base\IndexController@getRevokeSession'
             ]);
             $router->put('/', [
                 'uses' => 'Base\IndexController@putAccountTotp'

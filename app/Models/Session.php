@@ -25,7 +25,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceOptions extends Model
+class Session extends Model
 {
 
     /**
@@ -33,14 +33,7 @@ class ServiceOptions extends Model
      *
      * @var string
      */
-    protected $table = 'service_options';
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $table = 'sessions';
 
     /**
      * Cast values to correct type.
@@ -48,7 +41,8 @@ class ServiceOptions extends Model
      * @var array
      */
      protected $casts = [
-         'parent_service' => 'integer',
+         'id' => 'string',
+         'user_id' => 'integer',
      ];
 
 }

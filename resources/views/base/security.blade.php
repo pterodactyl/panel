@@ -19,7 +19,7 @@
 {{-- SOFTWARE. --}}
 @extends('layouts.master')
 
-@section('title', 'Account TOTP Settings')
+@section('title', 'Account Security')
 
 @section('sidebar-server')
 @endsection
@@ -34,7 +34,46 @@
             </div>
         @endforeach
     @endforeach
-    <h3 style="margin-top:0;">{{ trans('base.account.totp_header') }} <small>@if (Auth::user()->use_totp === 1){{ trans('strings.enabled') }}@else{{ trans('strings.disabled') }}@endif</small></h3><hr />
+    <h3 style="margin-top:0;">Active Sessions</h3><hr />
+    <table class="table table-bordered table-hover" style="margin-bottom:0;">
+        <thead>
+            <tr>
+                <th>Session ID</th>
+                <th>IP Address</th>
+                <th>User Agent</th>
+                <th>Last Location</th>
+                <th>Last Activity</th>
+                <th></th>
+            </th>
+        </thead>
+        <tbody>
+            @foreach($sessions as $session)
+                <tr>
+                    <?php $prev = unserialize(base64_decode($session->payload)) ?>
+                    <td><code>{{ substr($session->id, 0, 8) }}</code></td>
+                    <td>{{ $session->ip_address }}</td>
+                    <td><small>{{ $session->user_agent }}</small></td>
+                    <td>
+                        @if(isset($prev['_previous']['url']))
+                            {{ str_replace(env('APP_URL'), '', $prev['_previous']['url']) }}
+                        @else
+                            <em>unknwon</em>
+                        @endif
+                    </td>
+                    <td>
+                        @if((time() - $session->last_activity < 10))
+                            <em>just now</em>
+                        @else
+                            {{ date('D, M j \a\t H:i:s', $session->last_activity) }}
+                        @endif
+                    </td>
+                    <td><a href="{{ route('account.security.revoke', $session->id) }}"><i class="fa fa-trash-o"></i></a></td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <h3>{{ trans('base.account.totp_header') }} <small>@if (Auth::user()->use_totp === 1){{ trans('strings.enabled') }}@else{{ trans('strings.disabled') }}@endif</small></h3><hr />
     @if (Auth::user()->use_totp === 1)
         <div class="panel panel-default">
             <div class="panel-heading">{{ trans('base.account.totp_disable') }}</div>
@@ -112,7 +151,7 @@
 </div>
 <script>
 $(document).ready(function () {
-    $('#sidebar_links').find('a[href=\'/account/totp\']').addClass('active');
+    $('#sidebar_links').find('a[href=\'/account/security\']').addClass('active');
 
     $('#close_reload').click(function () {
         location.reload();

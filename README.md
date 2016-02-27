@@ -30,6 +30,8 @@ SOFTWARE.
 ### Credits
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
 
+Async.js - [license](https://github.com/caolan/async/blob/master/LICENSE) - [homepage](https://github.com/caolan/async/)
+
 BinaryJS - [license](https://github.com/binaryjs/binaryjs/blob/master/LICENSE) - [homepage](http://binaryjs.com)
 
 Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [homepage](http://getbootstrap.com)
