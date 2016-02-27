@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \Pterodactyl\Console\Commands\MakeUser::class,
         \Pterodactyl\Console\Commands\ShowVersion::class,
         \Pterodactyl\Console\Commands\UpdateEnvironment::class,
+        \Pterodactyl\Console\Commands\RunTasks::class,
     ];
 
     /**
@@ -27,7 +28,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
+        $schedule->command('pterodactyl:tasks')->everyFiveMinutes()->withoutOverlapping();
     }
 }

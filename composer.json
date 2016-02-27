@@ -27,7 +27,8 @@
         "prologue/alerts": "^0.4.0",
         "s1lentium/iptools": "^1.0",
         "edvinaskrucas/settings": "^2.0",
-        "igaster/laravel-theme": "^1.1"
+        "igaster/laravel-theme": "^1.1",
+        "nesbot/carbon": "^1.21"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
