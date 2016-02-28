@@ -29,7 +29,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 
-class CommandRepository {
+class PowerRepository {
 
     protected $server;
     protected $node;
@@ -42,38 +42,51 @@ class CommandRepository {
         $this->client = Models\Node::guzzleRequest($this->server->node);
     }
 
-    /**
-     * [send description]
-     * @param  string   $command
-     * @return boolean
-     * @throws DisplayException
-     * @throws RequestException
-     */
-    public function send($command)
+    public function do($action)
     {
         // We don't use the user's specific daemon secret here since we
         // are assuming that a call to this function has been validated.
         // Additionally not all calls to this will be from a logged in user.
         // (e.g. task queue or API)
         try {
-            $response = $this->client->request('POST', '/server/command', [
+            $response = $this->client->request('PUT', '/server/power', [
                 'headers' => [
                     'X-Access-Token' => $this->server->daemonSecret,
                     'X-Access-Server' => $this->server->uuid
                 ],
                 'json' => [
-                    'command' => $command
+                    'action' => $action
                 ]
             ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                throw new DisplayException('Command sending responded with a non-200 error code.');
+                throw new DisplayException('Power status responded with a non-200 error code.');
             }
 
             return $response->getBody();
         } catch (\Exception $ex) {
             throw $ex;
         }
+    }
+
+    public function start()
+    {
+        $this->do('start');
+    }
+
+    public function stop()
+    {
+        $this->do('stop');
+    }
+
+    public function restart()
+    {
+        $this->do('restart');
+    }
+
+    public function kill()
+    {
+        $this->do('kill');
     }
 
 }

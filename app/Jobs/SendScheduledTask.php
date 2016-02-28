@@ -1,5 +1,26 @@
 <?php
-
+/**
+ * Pterodactyl - Panel
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 namespace Pterodactyl\Jobs;
 
 use Pterodactyl\Jobs\Job;
@@ -11,6 +32,7 @@ use DB;
 use Carbon;
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\Daemon\CommandRepository;
+use Pterodactyl\Repositories\Daemon\PowerRepository;
 
 class SendScheduledTask extends Job implements ShouldQueue
 {
@@ -42,30 +64,42 @@ class SendScheduledTask extends Job implements ShouldQueue
     public function handle()
     {
         $time = Carbon::now();
+        $log = new Models\TaskLog;
+
+        if ($this->attempts() >= 1) {
+            // Just delete the job, we will attempt it again later anyways.
+            $this->delete();
+        }
+
         try {
             if ($this->task->action === 'command') {
                 $repo = new CommandRepository($this->server);
                 $response = $repo->send($this->task->data);
+            } else if ($this->task->action === 'power') {
+                $repo = new PowerRepository($this->server);
+                $response = $repo->do($this->task->data);
             }
-
+            $log->fill([
+                'task_id' => $this->task->id,
+                'run_time' => $time,
+                'run_status' => 0,
+                'response' => $response
+            ]);
+        } catch (\Exception $ex) {
+            $log->fill([
+                'task_id' => $this->task->id,
+                'run_time' => $time,
+                'run_status' => 1,
+                'response' => $ex->getMessage()
+            ]);
+            throw $ex;
+        } finally {
             $this->task->fill([
                 'last_run' => $time,
                 'next_run' => $time->addMonths($this->task->month)->addWeeks($this->task->week)->addDays($this->task->day)->addHours($this->task->hour)->addMinutes($this->task->minute)->addSeconds($this->task->second),
                 'queued' => 0
             ]);
             $this->task->save();
-        } catch (\Exception $ex) {
-            $wasError = true;
-            $response = $ex->getMessage();
-            throw $ex;
-        } finally {
-            $log = new Models\TaskLog;
-            $log->fill([
-                'task_id' => $this->task->id,
-                'run_time' => $time,
-                'run_status' => (int) isset($wasError),
-                'response' => $response
-            ]);
             $log->save();
         }
     }
