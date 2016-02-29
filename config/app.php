@@ -183,6 +183,7 @@ return [
         'Carbon'    => Carbon\Carbon::class,
         'Config'    => Illuminate\Support\Facades\Config::class,
         'Cookie'    => Illuminate\Support\Facades\Cookie::class,
+        'Cron'      => Cron\CronExpression::class,
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
         'DB'        => Illuminate\Support\Facades\DB::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,

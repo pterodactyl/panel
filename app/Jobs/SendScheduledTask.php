@@ -30,6 +30,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 use DB;
 use Carbon;
+use Cron;
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\Daemon\CommandRepository;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
@@ -94,9 +95,17 @@ class SendScheduledTask extends Job implements ShouldQueue
             ]);
             throw $ex;
         } finally {
+            $cron = Cron::factory(sprintf('%s %s %s %s %s %s',
+                $this->task->minute,
+                $this->task->hour,
+                $this->task->day_of_month,
+                $this->task->month,
+                $this->task->day_of_week,
+                $this->task->year
+            ));
             $this->task->fill([
                 'last_run' => $time,
-                'next_run' => $time->addMonths($this->task->month)->addWeeks($this->task->week)->addDays($this->task->day)->addHours($this->task->hour)->addMinutes($this->task->minute)->addSeconds($this->task->second),
+                'next_run' => $cron->getNextRunDate(),
                 'queued' => 0
             ]);
             $this->task->save();

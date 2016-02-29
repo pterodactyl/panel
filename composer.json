@@ -28,7 +28,8 @@
         "s1lentium/iptools": "^1.0",
         "edvinaskrucas/settings": "^2.0",
         "igaster/laravel-theme": "^1.1",
-        "nesbot/carbon": "^1.21"
+        "nesbot/carbon": "^1.21",
+        "mtdowling/cron-expression": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
