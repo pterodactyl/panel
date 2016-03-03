@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
         <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/socket.io.min.js') }}"></script>
         {!! Theme::css('dist/semantic.min.css') !!}
         {!! Theme::js('dist/semantic.min.js') !!}
     @show
@@ -22,6 +23,9 @@
         @endif
         <div class="ui top inverted menu">
             <div class="header item">{{ Settings::get('company') }}</div>
+            @if(isset($server->name) && isset($node->name))
+                <div class="header item">{{ $server->name }} &nbsp;<span id="serverStatus"><div class="ui active mini inverted inline loader"></div></span></div>
+            @endif
             @section('right-nav')
                 <div class="right menu">
                     <div class="ui dropdown simple icon item">
@@ -57,6 +61,25 @@
                                 <a href="/account/totp" class="item" data-tab="/account/totp">{{ trans('pagination.sidebar.account_security') }}</a>
                                 <a href="/" class="item" data-tab="/">{{ trans('pagination.sidebar.servers') }}</a>
                             </div>
+                            @if (isset($server->name) && isset($node->name))
+                                <div class="ui vertical pointing fluid menu" id="sidebar">
+                                    <a class="header item">{{ trans('pagination.sidebar.manage') }}</a>
+                                    <a href="/server/{{ $server->uuidShort }}" class="item">Overview</a>
+                                    @can('list-files', $server)
+                                        <a href="/server/{{ $server->uuidShort }}/files" class="item">{{ trans('pagination.sidebar.files') }}</a>
+                                    @endcan
+                                    @can('list-subusers', $server)
+                                        <a href="/server/{{ $server->uuidShort }}/users" class="item">{{ trans('pagination.sidebar.subusers') }}</a>
+                                    @endcan
+                                    @can('view-sftp', $server)
+                                        <a href="/server/{{ $server->uuidShort }}/settings" class="item">{{ trans('pagination.sidebar.manage') }}</a>
+                                    @else
+                                        @can('view-startup', $server)
+                                            <a href="/server/{{ $server->uuidShort }}/settings" class="item">Server Settings</a>
+                                        @endcan
+                                    @endcan
+                                </div>
+                            @endif
                         @show
                     </div>
                 </div>
@@ -78,7 +101,6 @@
                         @section('resp-alerts')
                             @foreach (Alert::getMessages() as $type => $messages)
                                 @foreach ($messages as $message)
-                                    <div class="ui {{ $type }} message">
                                         <i class="close icon"></i>
                                         <div class="header">{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}</div>
                                         {!! $message !!}
@@ -98,10 +120,54 @@
         </div>
     </div>
     <script>
+        $('#sidebar a[href$="' + window.location.pathname + '"').addClass('active');
         $('.message .close').on('click', function() {
             $(this).closest('.message').transition('fade');
-          });
-        $('#sidebar a[href$="' + window.location.pathname +'"').addClass('active');
+        });
+        @if (isset($server->name) && isset($node->name))
+            $(window).load(function() {
+                var socket = io('{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/ws/{{ $server->uuid }}', {
+                    'query': 'token={{ $server->daemonSecret }}'
+                });
+
+                socket.io.on('connect_error', function(err) {
+                   $('#serverStatus').html('<a class="ui empty gray circular label"></a>');
+                });
+
+                socket.on('error', function(err) {
+                    console.error('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
+                });
+
+                socket.on('initial_status', function(data) {
+                    if (data.status === 1) {
+                        $('#serverStatus').html('<a class="ui empty green circular label"></a>');
+                    } else {
+                        $('#serverStatus').html('<a class="ui empty gray circular label"></a>');
+                    }
+                });
+
+                socket.on('status', function(data) {
+                    if (data.status !== 'crashed') {
+                        switch (data.status) {
+                            case 0:
+                                $('#serverStatus').html('<a class="ui empty red circular label"></a>');
+                                break;
+                            case 1:
+                                $('#serverStatus').html('<a class="ui empty green circular label"></a>');
+                                break;
+                            case 2:
+                                //starting?
+                                $('#serverStatus').html('<a class="ui empty orange circular label"></a>');
+                                break;
+                            case 3:
+                                //stopping
+                                $('#serverStatus').html('<a class="ui empty orange circular label"></a>');
+                                break;
+                        }
+                    }
+                });
+            });
+        @endif
     </script>
 </body>
 </html>
