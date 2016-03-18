@@ -138,6 +138,11 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     width: 100%;
 }
 
+.fuelux .input-group-btn .dropdown-menu {
+    max-height:250px;
+    overflow-y:scroll;
+}
+
 .btn-allocate-delete {
     height:34px;
     width:34px;
@@ -148,4 +153,17 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     .btn-allocate-delete {
         margin-top:22px;
     }
+}
+
+.text-disabled {
+    color: #999;
+    opacity: 0.8;
+}
+
+.text-disabled code {
+    opacity: 0.6;
+}
+
+.text-v-center {
+    vertical-align: middle !important;
 }

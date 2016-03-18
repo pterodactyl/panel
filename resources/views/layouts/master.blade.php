@@ -193,6 +193,7 @@
                                 <li class="server-index"><a href="/server/{{ $server->uuidShort }}">{{ trans('pagination.sidebar.overview') }}</a></li>
                                 @can('list-files', $server)<li class="server-files"><a href="/server/{{ $server->uuidShort }}/files">{{ trans('pagination.sidebar.files') }}</a></li>@endcan
                                 @can('list-subusers', $server)<li class="server-users"><a href="/server/{{ $server->uuidShort }}/users">{{ trans('pagination.sidebar.subusers') }}</a></li>@endcan
+                                @can('list-tasks', $server)<li class="server-tasks"><a href="/server/{{ $server->uuidShort }}/tasks">Scheduled Tasks</a></li>@endcan
                                 @can('view-sftp', $server)
                                     <li class="server-settings"><a href="/server/{{ $server->uuidShort }}/settings">{{ trans('pagination.sidebar.manage') }}</a></li>
                                 @else
@@ -249,6 +250,7 @@
                                 <a href="/server/{{ $server->uuidShort }}/" class="list-group-item server-index">{{ trans('pagination.sidebar.overview') }}</a>
                                 @can('list-files', $server)<a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">{{ trans('pagination.sidebar.files') }}</a>@endcan
                                 @can('list-subusers', $server)<a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">{{ trans('pagination.sidebar.subusers') }}</a>@endcan
+                                @can('list-tasks', $server)<a href="/server/{{ $server->uuidShort }}/tasks" class="list-group-item server-tasks">Scheduled Tasks</a>@endcan
                                 @can('view-sftp', $server)
                                     <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>
                                 @else

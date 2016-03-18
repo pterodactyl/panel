@@ -117,6 +117,30 @@ class ServerRoutes {
                 'uses' => 'Server\SubuserController@deleteSubuser'
             ]);
 
+            $router->get('tasks/', [
+                'as' => 'server.tasks',
+                'uses' => 'Server\TaskController@getIndex'
+            ]);
+
+            $router->get('tasks/view/{id}', [
+                'as' => 'server.tasks.view',
+                'uses' => 'Server\TaskController@getView'
+            ]);
+
+            $router->get('tasks/new', [
+                'as' => 'server.tasks.new',
+                'uses' => 'Server\TaskController@getNew'
+            ]);
+
+            $router->post('tasks/new', [
+                'uses' => 'Server\TaskController@postNew'
+            ]);
+
+            $router->delete('tasks/delete/{id}', [
+                'as' => 'server.tasks.delete',
+                'uses' => 'Server\TaskController@deleteTask'
+            ]);
+
             // Assorted AJAX Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status

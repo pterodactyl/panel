@@ -79,6 +79,14 @@ class SubuserRepository
         'create-subuser' => null,
         'delete-subuser' => null,
 
+        // Tasks
+        'list-tasks' => null,
+        'view-task' => null,
+        'toggle-task' => null,
+        'delete-task' => null,
+        'create-task' => null,
+        'queue-task' => null,
+
         // Management
         'set-connection' => null,
         'view-startup' => null,
