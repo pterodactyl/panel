@@ -64,12 +64,14 @@ class NodeRepository {
             throw new DisplayValidationException($validator->errors());
         }
 
-        // Verify the FQDN
-        if (filter_var($data['fqdn'], FILTER_VALIDATE_IP)) {
-            throw new DisplayException('The FQDN provided was an IP address. You must use a FQDN.');
+        // Verify the FQDN if using SSL
+        if (filter_var($data['fqdn'], FILTER_VALIDATE_IP) && $data['scheme'] === 'https') {
+            throw new DisplayException('A fully qualified domain name is required to use secure comunication on this node.');
         }
+
+        // Verify FQDN is resolvable, or if not using SSL that the IP is valid.
         if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
-            throw new DisplayException('The FQDN provided does not resolve to a valid IP address.');
+            throw new DisplayException('The FQDN (or IP Address) provided does not resolve to a valid IP address.');
         }
 
         // Should we be nulling the overallocations?
@@ -91,6 +93,8 @@ class NodeRepository {
 
     public function update($id, array $data)
     {
+        $node = Models\Node::findOrFail($id);
+
         // Validate Fields
         $validator = $validator = Validator::make($data, [
             'name' => 'regex:/^([\w .-]{1,100})$/',
@@ -116,12 +120,19 @@ class NodeRepository {
 
         // Verify the FQDN
         if (isset($data['fqdn'])) {
-            if (filter_var($data['fqdn'], FILTER_VALIDATE_IP)) {
-                throw new DisplayException('The FQDN provided was an IP address. You must use a FQDN.');
+
+            // Verify the FQDN if using SSL
+            if ((isset($data['scheme']) && $data['scheme'] === 'https') || (!isset($data['scheme']) && $node->scheme === 'https')) {
+                if (filter_var($data['fqdn'], FILTER_VALIDATE_IP)) {
+                    throw new DisplayException('A fully qualified domain name is required to use secure comunication on this node.');
+                }
             }
+
+            // Verify FQDN is resolvable, or if not using SSL that the IP is valid.
             if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
-                throw new DisplayException('The FQDN provided does not resolve to a valid IP address.');
+                throw new DisplayException('The FQDN (or IP Address) provided does not resolve to a valid IP address.');
             }
+
         }
 
         // Should we be nulling the overallocations?
@@ -141,7 +152,6 @@ class NodeRepository {
         }
 
         // Store the Data
-        $node = Models\Node::findOrFail($id);
         return $node->update($data);
 
     }

@@ -67,7 +67,7 @@
                     <div>
                         <input type="text" autocomplete="off" name="fqdn" class="form-control" value="{{ old('fqdn') }}" />
                     </div>
-                    <p class="text-muted"><small>This <strong>must</strong> be a fully qualified domain name, you may not enter an IP address or a domain that does not exist.
+                    <p class="text-muted"><small>Please enter domain name (e.g <code>node.example.com</code>) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.
                         <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Why do I need a FQDN?" data-content="In order to secure communications between your server and this node we use SSL. We cannot generate a SSL certificate for IP Addresses, and as such you will need to provide a FQDN.">Why?</a>
                     </small></p>
                 </div>
