@@ -142,7 +142,7 @@
                                 <thead>
                                     <tr>
                                         <th>Database</th>
-                                        <th>User (Connections From)</th>
+                                        <th>Username</th>
                                         <th>Password</th>
                                         <th>DB Server</th>
                                     </th>
@@ -151,8 +151,8 @@
                                     @foreach($databases as $database)
                                         <tr>
                                             <td>{{ $database->database }}</td>
-                                            <td>{{ $database->username }} ({{ $database->remote }})</td>
-                                            <td><code>{{ Crypt::decrypt($database->password) }}</code></td>
+                                            <td>{{ $database->username }}</td>
+                                            <td><code>{{ Crypt::decrypt($database->password) }}</code> <a href="#" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-refresh pull-right"></i></a></td>
                                             <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
                                         </tr>
                                     @endforeach
@@ -206,7 +206,36 @@ $(document).ready(function () {
         });
         return false;
     });
-
+    $('[data-action="reset-database-password"]').click(function (e) {
+        e.preventDefault();
+        var block = $(this);
+        $(this).find('i').addClass('fa-spin');
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('server.ajax.reset-database-password', $server->uuidShort) }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: {
+                'database': $(this).data('id')
+            }
+        }).done(function (data) {
+            block.parent().find('code').html(data);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error(jqXHR);
+            var error = 'An error occured while trying to process this request.';
+            if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                error = jqXHR.responseJSON.error;
+            }
+            swal({
+                type: 'error',
+                title: 'Whoops!',
+                text: error
+            });
+        }).always(function () {
+            block.find('i').removeClass('fa-spin');
+        });
+    });
 });
 </script>
 @endsection

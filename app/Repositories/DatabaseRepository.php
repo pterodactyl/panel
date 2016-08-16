@@ -60,7 +60,7 @@ class DatabaseRepository {
         try {
             $db = new Models\Database;
             $db->fill([
-                'server' => $server->id,
+                'server_id' => $server->id,
                 'db_server' => $options['db_server'],
                 'database' => $server->uuidShort . '_' . $options['database'],
                 'username' => $server->uuidShort . '_' . str_random(7),
@@ -98,6 +98,54 @@ class DatabaseRepository {
             DB::commit();
             return true;
         } catch (\Exception $ex) {
+            DB::rollback();
+            throw $ex;
+        }
+    }
+
+    /**
+     * Updates the password for a given database.
+     * @param  int $database The ID of the database to modify.
+     * @param  string $password The new password to use for the database.
+     * @return bool
+     */
+    public function modifyPassword($database, $password)
+    {
+        $db = Models\Database::findOrFail($database);
+        $dbr = Models\DatabaseServer::findOrFail($db->db_server);
+
+        DB::beginTransaction();
+        try {
+
+            $db->password = Crypt::encrypt($password);
+            $db->save();
+
+            $capsule = new Capsule;
+            $capsule->addConnection([
+                'driver' => 'mysql',
+                'host' => $dbr->host,
+                'port' => $dbr->port,
+                'database' => 'mysql',
+                'username' => $dbr->username,
+                'password' => Crypt::decrypt($dbr->password),
+                'charset' => 'utf8',
+                'collation' => 'utf8_unicode_ci',
+                'prefix' => '',
+                'options' => [
+                    \PDO::ATTR_TIMEOUT => 3,
+                ]
+            ]);
+
+            $capsule->setAsGlobal();
+            Capsule::statement(sprintf(
+                'ALTER USER \'%s\'@\'%s\' IDENTIFIED BY \'%s\'',
+                $db->username,
+                $db->remote,
+                $password
+            ));
+
+            DB::commit();
+        } catch(\Exception $ex) {
             DB::rollback();
             throw $ex;
         }

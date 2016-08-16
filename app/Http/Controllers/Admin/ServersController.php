@@ -99,7 +99,7 @@ class ServersController extends Controller
                 ->where('server_variables.server_id', $server->id)
                 ->get(),
             'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
-                ->where('server', $server->id)
+                ->where('server_id', $server->id)
                 ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
                 ->get(),
             'db_servers' => Models\DatabaseServer::all()

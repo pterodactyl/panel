@@ -56,6 +56,8 @@ class DatabaseServer extends Model
      */
      protected $casts = [
          'id' => 'integer',
+         'server_id' => 'integer',
+         'db_server' => 'integer'
      ];
 
 }

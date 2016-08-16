@@ -56,7 +56,7 @@ class DatabaseController extends Controller
                     'servers.id as a_serverId',
                     'servers.name as a_serverName'
                 )->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->join('servers', 'databases.server', '=', 'servers.id')
+                ->join('servers', 'databases.server_id', '=', 'servers.id')
                 ->paginate(20),
             'dbh' => Models\DatabaseServer::select(
                     'database_servers.*',

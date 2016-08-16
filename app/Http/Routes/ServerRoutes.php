@@ -152,6 +152,11 @@ class ServerRoutes {
                 $router->post('set-connection', [
                     'uses' => 'Server\AjaxController@postSetConnection'
                 ]);
+
+                $router->post('settings/reset-database-password', [
+                    'as' => 'server.ajax.reset-database-password',
+                    'uses' => 'Server\AjaxController@postResetDatabasePassword'
+                ]);
             });
 
             // Assorted AJAX Routes

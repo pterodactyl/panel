@@ -25,6 +25,7 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
 use Debugbar;
+use Pterodactyl\Models;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Node;
 
@@ -219,6 +220,30 @@ class AjaxController extends Controller
             Log::error($ex);
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to modify the default connection for this server.'
+            ], 503);
+        }
+    }
+
+    public function postResetDatabasePassword(Request $request, $uuid)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $database = Models\Database::where('id', $request->input('database'))->where('server_id', $server->id)->firstOrFail();
+
+        $this->authorize('reset-db-password', $server);
+        try {
+
+            $repo = new Repositories\DatabaseRepository;
+            $password = str_random(16);
+            $repo->modifyPassword($request->input('database'), $password);
+            return response($password);
+        } catch (\Pterodactyl\Exceptions\DisplayException $ex) {
+            return response()->json([
+                'error' => $ex->getMessage(),
+            ], 503);
+        } catch(\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => 'An unhandled error occured while attempting to modify this database\'s password.'
             ], 503);
         }
     }

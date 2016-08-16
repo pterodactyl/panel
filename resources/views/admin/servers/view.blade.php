@@ -363,7 +363,7 @@
                                         <tr>
                                             <td>{{ $database->database }}</td>
                                             <td>{{ $database->username }} ({{ $database->remote }})</td>
-                                            <td><code>{{ Crypt::decrypt($database->password) }}</code></td>
+                                            <td><code>{{ Crypt::decrypt($database->password) }}</code> <a href="#" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-refresh pull-right"></i></a></td>
                                             <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
                                             <td class="text-center"><a href="#delete" data-action="delete_database" data-database="{{ $database->id }}" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
                                         </tr>
@@ -528,6 +528,36 @@ $(document).ready(function () {
                     text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occured while processing this request.'
                 });
             });
+        });
+    });
+    $('[data-action="reset-database-password"]').click(function (e) {
+        e.preventDefault();
+        var block = $(this);
+        $(this).find('i').addClass('fa-spin');
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('server.ajax.reset-database-password', $server->uuidShort) }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: {
+                'database': $(this).data('id')
+            }
+        }).done(function (data) {
+            block.parent().find('code').html(data);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error(jqXHR);
+            var error = 'An error occured while trying to process this request.';
+            if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                error = jqXHR.responseJSON.error;
+            }
+            swal({
+                type: 'error',
+                title: 'Whoops!',
+                text: error
+            });
+        }).always(function () {
+            block.find('i').removeClass('fa-spin');
         });
     });
 });

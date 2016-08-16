@@ -546,4 +546,13 @@ class ServerPolicy
         return $user->permissions()->server($server)->permission('create-task')->exists();
     }
 
+    public function resetDbPassword(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('create-task')->exists();
+    }
+
 }
