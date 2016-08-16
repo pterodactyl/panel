@@ -54,6 +54,9 @@
                         @can('reset-sftp', $server)
                             <form action="{{ route('server.settings.sftp', $server->uuidShort) }}" method="POST">
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="gen_pass" class=" alert alert-success" style="display:none;margin-bottom: 10px;"></div>
+                                    </div>
                                     <div class="form-group col-md-6">
                                         <label class="control-label">New SFTP Password:</label>
                                         <div>
@@ -130,7 +133,7 @@
             </div>
         @endcan
         @can('view-databases', $server)
-            <div class="tab-pane active" id="tab_databases">
+            <div class="tab-pane" id="tab_databases">
                 <div class="panel panel-default">
                     <div class="panel-heading"></div>
                     <div class="panel-body">
@@ -187,6 +190,23 @@ $(document).ready(function () {
             $(this).parent().parent().removeClass('has-error').addClass('has-success');
         }
     });
+    $('[data-action="generate-password"]').click(function(e){
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "/password-gen/12",
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+           },
+            success: function(data) {
+                $("#gen_pass").html('<strong>Generated Password:</strong> ' + data).slideDown();
+                $('input[name="sftp_pass"]').val(data);
+                return false;
+            }
+        });
+        return false;
+    });
+
 });
 </script>
 @endsection
