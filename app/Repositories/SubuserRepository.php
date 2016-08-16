@@ -195,7 +195,7 @@ class SubuserRepository
             return $subuser->id;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('There was an error attempting to connect to the daemon to add this user.');
+            throw new DisplayException('There was an error attempting to connect to the daemon to add this user.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -241,7 +241,7 @@ class SubuserRepository
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('There was an error attempting to connect to the daemon to delete this subuser.');
+            throw new DisplayException('There was an error attempting to connect to the daemon to delete this subuser.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -316,7 +316,7 @@ class SubuserRepository
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('There was an error attempting to connect to the daemon to update permissions.');
+            throw new DisplayException('There was an error attempting to connect to the daemon to update permissions.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;

@@ -23,7 +23,26 @@
  */
 namespace Pterodactyl\Exceptions;
 
+use Log;
+
 class DisplayException extends \Exception
 {
+
+    private $_logging = null;
+
+    public function __construct($message, $log = null)
+    {
+        $this->_logging = $log;
+        if ($this->_logging !== null) {
+            Log::error($log);
+        }
+
+        parent::__construct($message);
+    }
+
+    public function getLogging()
+    {
+        return $this->_logging;
+    }
 
 }

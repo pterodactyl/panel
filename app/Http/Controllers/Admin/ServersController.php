@@ -286,7 +286,7 @@ class ServersController extends Controller
             Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             Log::warning($ex);
-            Alert::danger('An error occured while attempting to toggle a rebuild: ' . $ex->getMessage())->flash();
+            Alert::danger('An error occured while attempting to toggle a rebuild.')->flash();
         }
 
         return redirect()->route('admin.servers.view', [

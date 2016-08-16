@@ -282,7 +282,7 @@ class ServerRepository
             return $server->id;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to create the server: ' . $ex->getMessage());
+            throw new DisplayException('An error occured while attempting to create the server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             Log:error($ex);
@@ -530,7 +530,7 @@ class ServerRepository
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to update the configuration: ' . $ex->getMessage());
+            throw new DisplayException('An error occured while attempting to update the configuration.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -647,7 +647,7 @@ class ServerRepository
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to update the server configuration: ' . $ex->getMessage());
+            throw new DisplayException('An error occured while attempting to update the server configuration.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -697,8 +697,7 @@ class ServerRepository
                 return true;
             } else {
                 DB::rollBack();
-                Log::error($ex);
-                throw new DisplayException('An error occured while attempting to delete the server on the daemon: ' . $ex->getMessage());
+                throw new DisplayException('An error occured while attempting to delete the server on the daemon.', $ex);
             }
         } catch (\Exception $ex) {
             DB::rollBack();
@@ -768,7 +767,7 @@ class ServerRepository
             ]);
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
-            throw new DisplayException('There was an error while attmping to contact the remote service to change the password.');
+            throw new DisplayException('There was an error while attmping to contact the remote service to change the password.', $ex);
         } catch (\Exception $ex) {
             throw $ex;
         }
