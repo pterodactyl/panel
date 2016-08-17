@@ -194,13 +194,9 @@
                                 @can('list-files', $server)<li class="server-files"><a href="/server/{{ $server->uuidShort }}/files">{{ trans('pagination.sidebar.files') }}</a></li>@endcan
                                 @can('list-subusers', $server)<li class="server-users"><a href="/server/{{ $server->uuidShort }}/users">{{ trans('pagination.sidebar.subusers') }}</a></li>@endcan
                                 @can('list-tasks', $server)<li class="server-tasks"><a href="/server/{{ $server->uuidShort }}/tasks">Scheduled Tasks</a></li>@endcan
-                                @can('view-sftp', $server)
+                                @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server))
                                     <li class="server-settings"><a href="/server/{{ $server->uuidShort }}/settings">{{ trans('pagination.sidebar.manage') }}</a></li>
-                                @else
-                                    @can('view-startup', $server)
-                                        <li class="server-settings"><a href="/server/{{ $server->uuidShort }}/settings">{{ trans('pagination.sidebar.manage') }}</a></li>
-                                    @endcan
-                                @endcan
+                                @endif
                             </ul>
                         </li>
                         @endif
@@ -251,13 +247,9 @@
                                 @can('list-files', $server)<a href="/server/{{ $server->uuidShort }}/files" class="list-group-item server-files">{{ trans('pagination.sidebar.files') }}</a>@endcan
                                 @can('list-subusers', $server)<a href="/server/{{ $server->uuidShort }}/users" class="list-group-item server-users">{{ trans('pagination.sidebar.subusers') }}</a>@endcan
                                 @can('list-tasks', $server)<a href="/server/{{ $server->uuidShort }}/tasks" class="list-group-item server-tasks">Scheduled Tasks</a>@endcan
-                                @can('view-sftp', $server)
+                                @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server))
                                     <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>
-                                @else
-                                    @can('view-startup', $server)
-                                        <a href="/server/{{ $server->uuidShort }}/settings" class="list-group-item server-settings">{{ trans('pagination.sidebar.manage') }}</a>
-                                    @endcan
-                                @endcan
+                                @endif
                             </div>
                         @endif
                     @show

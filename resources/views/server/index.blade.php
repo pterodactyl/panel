@@ -48,7 +48,7 @@
                         </div>
                         <div class="col-md-6">
                             <hr />
-                            @can('command', $server)
+                            @can('send-command', $server)
                                 <form action="#" method="post" id="console_command" style="display:none;">
                                     <fieldset>
                                         <div class="input-group">
@@ -408,7 +408,7 @@ $(window).load(function () {
         });
     @endcan
 
-    @can('command', $server)
+    @can('send-command', $server)
         // Send Command to Server
         $('#console_command').submit(function (event) {
 

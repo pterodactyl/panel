@@ -104,7 +104,7 @@
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
                         <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['download-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="download-files"> <strong>Download Files</strong>
-                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows user to download files. If a user is given this permission they can download and view file contents.</small><p>
+                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows user to download files. If a user is given this permission they can download and view file contents even if that permission is not assigned on the panel.</small><p>
                     </label>
                 </div>
             </div>
@@ -163,6 +163,25 @@
                         <p class="text-muted"><small>Allows a user to modify startup variables for a server.</small><p>
                     </label>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 fuelux">
+                <h4>Database Management</h4><hr />
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['view-databases']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-databases"> <strong>View Database Details</strong>
+                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows user to view all databases associated with this server (including usernames and password for the databases).</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['reset-db-password']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="reset-db-password"> <strong>Reset Database Password</strong>
+                        <p class="text-muted"><small>Allows a user to reset passwords for databases.</small><p>
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6 fuelux">
                 <h4>SFTP Management</h4><hr />
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">

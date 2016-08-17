@@ -451,6 +451,22 @@ class ServerPolicy
     }
 
     /**
+     * Check if user has permission to reset database passwords.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function resetDbPassword(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('reset-db-password')->exists();
+    }
+
+    /**
      * Check if user has permission to view all tasks for a server.
      *
      * @param  Pterodactyl\Models\User   $user
@@ -538,15 +554,6 @@ class ServerPolicy
      * @return boolean
      */
     public function createTask(User $user, Server $server)
-    {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('create-task')->exists();
-    }
-
-    public function resetDbPassword(User $user, Server $server)
     {
         if ($this->isOwner($user, $server)) {
             return true;

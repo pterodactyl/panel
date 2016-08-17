@@ -31,7 +31,6 @@
             <tr>
                 <th>Email</th>
                 <th>Created</th>
-                <th>Modified</th>
                 @can('view-subuser', $server)<th></th>@endcan
                 @can('delete-subuser', $server)<th></th>@endcan
             </tr>
@@ -41,7 +40,6 @@
                 <tr>
                     <td><code>{{ $user->a_userEmail }}</code></td>
                     <td>{{ $user->created_at }}</td>
-                    <td>{{ $user->updated_at }}</td>
                     @can('view-subuser', $server)
                         <td class="text-center"><a href="{{ route('server.subusers.view', ['server' => $server->uuidShort, 'id' => md5($user->id)]) }}" class="text-success"><i class="fa fa-wrench"></i></a></td>
                     @endcan

@@ -152,7 +152,7 @@
                                         <tr>
                                             <td>{{ $database->database }}</td>
                                             <td>{{ $database->username }}</td>
-                                            <td><code>{{ Crypt::decrypt($database->password) }}</code> <a href="#" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-refresh pull-right"></i></a></td>
+                                            <td><code>{{ Crypt::decrypt($database->password) }}</code> @can('reset-db-password', $server)<a href="#" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-refresh pull-right"></i></a>@endcan</td>
                                             <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
                                         </tr>
                                     @endforeach

@@ -92,7 +92,11 @@ class SubuserRepository
         'view-startup' => null,
         'edit-startup' => null,
         'view-sftp' => null,
-        'reset-sftp' => 's:set-password'
+        'reset-sftp' => 's:set-password',
+
+        // Databases
+        'view-databases' => null,
+        'reset-db-password' => null
     ];
 
     public function __construct()
