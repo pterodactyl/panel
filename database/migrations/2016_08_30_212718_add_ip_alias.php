@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class FixColumnNameForDatabases extends Migration
+class AddIpAlias extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class FixColumnNameForDatabases extends Migration
      */
     public function up()
     {
-        Schema::table('databases', function (Blueprint $table) {
-            $table->renameColumn('server', 'server_id');
+        Schema::table('allocations', function (Blueprint $table) {
+            $table->text('ip_alias')->nullable()->after('ip');
         });
     }
 
@@ -24,8 +24,8 @@ class FixColumnNameForDatabases extends Migration
      */
     public function down()
     {
-        Schema::table('databases', function (Blueprint $table) {
-            $table->renameColumn('server_id', 'server');
+        Schema::table('allocations', function (Blueprint $table) {
+            $table->dropColumn('ip_alias');
         });
     }
 }
