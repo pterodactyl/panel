@@ -213,8 +213,7 @@ class ServerRepository
                 'io' => $data['io'],
                 'cpu' => $data['cpu'],
                 'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
-                'ip' => $data['ip'],
-                'port' => $data['port'],
+                'allocation' => $allocation->id,
                 'service' => $data['service'],
                 'option' => $data['option'],
                 'startup' => $data['startup'],
@@ -253,11 +252,11 @@ class ServerRepository
                     'user' => $server->username,
                     'build' => [
                         'default' => [
-                            'ip' => $server->ip,
-                            'port' => (int) $server->port
+                            'ip' => $allocation->ip,
+                            'port' => (int) $allocation->port
                         ],
                         'ports' => [
-                            (string) $server->ip => [ (int) $server->port ]
+                            (string) $allocation->ip => [ (int) $allocation->port ]
                         ],
                         'env' => $environmentVariables,
                         'memory' => (int) $server->memory,
@@ -413,17 +412,20 @@ class ServerRepository
 
         try {
             $server = Models\Server::findOrFail($id);
+            $allocation = Models\Allocation::findOrFail($server->allocation);
 
             if (isset($data['default'])) {
                 list($ip, $port) = explode(':', $data['default']);
-                if ($ip !== $server->ip || $port !== $server->port) {
-                    $allocation = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
-                    if (!$allocation) {
+                if ($ip !== $allocation->ip || $port !== $allocation->port) {
+                    $selection = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
+                    if (!$selection) {
                         throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                     }
 
-                    $server->ip = $ip;
-                    $server->port = $port;
+                    $server->allocation = $selection->id;
+
+                    // Re-Run to keep updated for rest of function
+                    $allocation = Models\Allocation::findOrFail($server->allocation);
                 }
             }
 
@@ -437,7 +439,7 @@ class ServerRepository
                     }
 
                     // Can't remove the assigned IP/Port combo
-                    if ($ip === $server->ip && $port === $server->port) {
+                    if ($ip === $allocation->ip && $port === $allocation->port) {
                         continue;
                     }
 
@@ -513,8 +515,8 @@ class ServerRepository
                 'json' => [
                     'build' => [
                         'default' => [
-                            'ip' => $server->ip,
-                            'port' => (int) $server->port
+                            'ip' => $allocation->ip,
+                            'port' => (int) $allocation->port
                         ],
                         'ports|overwrite' => $additionalAssignments,
                         'memory' => (int) $server->memory,

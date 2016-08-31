@@ -195,11 +195,8 @@ class ServerController extends Controller
     public function getSettings(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
-        // $variables = Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
-        //     ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-        //     ->where('service_variables.option_id', $server->option)
-        //     ->where('server_variables.server_id', $server->id)
-        //     ->get();
+        $allocation = Models\Allocation::findOrFail($server->allocation);
+
         $variables = Models\ServiceVariables::select(
                 'service_variables.*',
                 DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
@@ -217,8 +214,8 @@ class ServerController extends Controller
 
         $serverVariables = [
             '{{SERVER_MEMORY}}' => $server->memory,
-            '{{SERVER_IP}}' => $server->ip,
-            '{{SERVER_PORT}}' => $server->port,
+            '{{SERVER_IP}}' => $allocation->ip,
+            '{{SERVER_PORT}}' => $allocation->port,
         ];
 
         $processed = str_replace(array_keys($serverVariables), array_values($serverVariables), $server->startup);

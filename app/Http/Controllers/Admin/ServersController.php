@@ -52,10 +52,17 @@ class ServersController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.servers.index', [
-            'servers' => Models\Server::select('servers.*', 'nodes.name as a_nodeName', 'users.email as a_ownerEmail')
-                ->join('nodes', 'servers.node', '=', 'nodes.id')
-                ->join('users', 'servers.owner', '=', 'users.id')
-                ->paginate(20),
+            'servers' => Models\Server::select(
+                'servers.*',
+                'nodes.name as a_nodeName',
+                'users.email as a_ownerEmail',
+                'allocations.ip',
+                'allocations.port',
+                'allocations.ip_alias'
+            )->join('nodes', 'servers.node', '=', 'nodes.id')
+            ->join('users', 'servers.owner', '=', 'users.id')
+            ->join('allocations', 'servers.allocation', '=', 'allocations.id')
+            ->paginate(20),
         ]);
     }
 
@@ -76,12 +83,16 @@ class ServersController extends Controller
             'locations.long as a_locationName',
             'services.name as a_serviceName',
             'services.executable as a_serviceExecutable',
-            'service_options.name as a_servceOptionName'
+            'service_options.name as a_servceOptionName',
+            'allocations.ip',
+            'allocations.port',
+            'allocations.ip_alias'
         )->join('nodes', 'servers.node', '=', 'nodes.id')
         ->join('users', 'servers.owner', '=', 'users.id')
         ->join('locations', 'nodes.location', '=', 'locations.id')
         ->join('services', 'servers.service', '=', 'services.id')
         ->join('service_options', 'servers.option', '=', 'service_options.id')
+        ->join('allocations', 'servers.allocation', '=', 'allocations.id')
         ->where('servers.id', $id)
         ->first();
 
@@ -91,8 +102,8 @@ class ServersController extends Controller
 
         return view('admin.servers.view', [
             'server' => $server,
-            'assigned' => Models\Allocation::select('id', 'ip', 'port')->where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'unassigned' => Models\Allocation::select('id', 'ip', 'port')->where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'assigned' => Models\Allocation::where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'unassigned' => Models\Allocation::where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
             'startup' => Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
                 ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
                 ->where('service_variables.option_id', $server->option)

@@ -124,10 +124,16 @@ class Server extends Model
     public static function getUserServers($paginate = null)
     {
 
-        $query = self::select('servers.*', 'nodes.name as nodeName', 'locations.short as a_locationShort')
-                    ->join('nodes', 'servers.node', '=', 'nodes.id')
-                    ->join('locations', 'nodes.location', '=', 'locations.id')
-                    ->where('active', 1);
+        $query = self::select(
+            'servers.*',
+            'nodes.name as nodeName',
+            'locations.short as a_locationShort',
+            'allocations.ip_alias',
+            'allocations.port'
+        )->join('nodes', 'servers.node', '=', 'nodes.id')
+        ->join('locations', 'nodes.location', '=', 'locations.id')
+        ->join('allocations', 'servers.allocation', '=', 'allocations.id')
+        ->where('active', 1);
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
