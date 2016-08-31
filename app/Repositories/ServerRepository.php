@@ -504,6 +504,10 @@ class ServerRepository
                 $server->io = $data['io'];
             }
 
+            // Try save() here so if it fails we haven't contacted the daemon
+            // This won't be committed unless the HTTP request succeedes anyways
+            $server->save();
+
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
 
@@ -527,7 +531,7 @@ class ServerRepository
                     ]
                 ]
             ]);
-            $server->save();
+
             DB::commit();
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
