@@ -85,11 +85,15 @@
                             </tr>
                             <tr>
                                 <td>Memory</td>
-                                <td><code>{{ $server->memory }}MB</code> (Swap: {{ $server->swap }}MB) (OOM Killer: <strong>{{ ($server->oom_disabled === 0) ? 'enabled' : 'disabled' }}</strong>)</td>
+                                <td><code>{{ $server->memory }}MB</code> / <code data-toggle="tooltip" data-placement="top" title="Swap Space">{{ $server->swap }}MB</code></td>
+                            </tr>
+                            <tr>
+                                <td><abbr title="Out of Memory">OOM</abbr> Killer</td>
+                                <td>{!! ($server->oom_disabled === 0) ? '<span class="label label-success">enabled</span>' : '<span class="label label-default">disabled</span>' !!}</td>
                             </tr>
                             <tr>
                                 <td>Disk Space</td>
-                                <td><code>{{ $server->disk }}MB</code> (Enforced: <strong>no</strong>)</td>
+                                <td><code>{{ $server->disk }}MB</code></td>
                             </tr>
                             <tr>
                                 <td>Block IO Weight</td>
@@ -104,8 +108,18 @@
                                 <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                             </tr>
                             <tr>
+                                <td>Connection Alias</td>
+                                <td>
+                                    @if($server->ip !== $server->ip_alias)
+                                        <code>{{ $server->ip_alias }}:{{ $server->port }}</code>
+                                    @else
+                                        <span class="label label-default">No Alias Assigned</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Installed</td>
-                                <td>{{ ($server->installed === 1) ? 'Yes' : 'No' }}</td>
+                                <td>{!! ($server->installed === 1) ? '<span class="label label-success">Yes</span>' : '<span class="label label-danger">No</span>' !!}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -213,7 +227,7 @@
                                             <span class="input-group-addon">
                                                 <input type="radio" @if($assignment->ip == $server->ip && $assignment->port == $server->port) checked="checked" @endif name="default" value="{{ $assignment->ip }}:{{ $assignment->port }}"/>
                                             </span>
-                                            <input type="text" class="form-control" value="{{ $assignment->ip }}:{{ $assignment->port }}" readonly />
+                                            <input type="text" class="form-control" value="{{ $assignment->ip_alias }}:{{ $assignment->port }}@if($assignment->ip !== $assignment->ip_alias) (alias of {{ $assignment->ip }})@endif" readonly />
                                         </div>
                                     @endforeach
                                 </div>
@@ -224,7 +238,7 @@
                                             <div>
                                                 <select name="add_additional[]" class="form-control" multiple>
                                                     @foreach ($unassigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">{{ $assignment->ip }}:{{ $assignment->port }}</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">{{ $assignment->ip_alias }}:{{ $assignment->port }}@if($assignment->ip !== $assignment->ip_alias) (alias of {{ $assignment->ip }})@endif</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -237,7 +251,7 @@
                                             <div>
                                                 <select name="remove_additional[]" class="form-control" multiple>
                                                     @foreach ($assigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($assignment->ip == $server->ip && $assignment->port == $server->port) disabled @endif>{{ $assignment->ip }}:{{ $assignment->port }}</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($assignment->ip == $server->ip && $assignment->port == $server->port) disabled @endif>{{ $assignment->ip_alias }}:{{ $assignment->port }}@if($assignment->ip !== $assignment->ip_alias) (alias of {{ $assignment->ip }})@endif</option>
                                                     @endforeach
                                                 </select>
                                             </div>

@@ -194,9 +194,11 @@ class AjaxController extends Controller
     {
 
         $server = Server::getByUUID($uuid);
+        $allocation = Models\Allocation::findOrFail($server->allocation);
+
         $this->authorize('set-connection', $server);
 
-        if ($request->input('connection') === $server->ip . ':' . $server->port) {
+        if ($request->input('connection') === $allocation->ip . ':' . $allocation->port) {
             return response()->json([
                 'error' => 'You are already using this as your default connection.'
             ], 409);

@@ -95,9 +95,9 @@
                     <thead>
                         <tr>
                             <th style="width:2%;"></th>
+                            <th>Identifier</th>
                             <th>Server Name</th>
                             <th>Node</th>
-                            <th>Connection</th>
                             <th style="width:10%;"></th>
                         </tr>
                     </thead>
@@ -105,9 +105,9 @@
                             @foreach($servers as $server)
                                 <tr>
                                     <td><a href="/server/{{ $server->uuidShort }}/"><i class="fa fa-tachometer"></i></a></td>
+                                    <td><code>{{ $server->uuidShort }}</code></td>
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
                                     <td>{{ $server->nodeName }}</td>
-                                    <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                                     <td>@if($server->active)<span class="label label-success">Enabled</span>@else<span class="label label-danger">Disabled</span>@endif</td>
                                 </td>
                             @endforeach

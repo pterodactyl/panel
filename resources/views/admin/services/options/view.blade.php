@@ -171,7 +171,6 @@
             <tr>
                 <th>Name</th>
                 <th>Owner</th>
-                <th>Connection</th>
                 <th>Updated</th>
             </tr>
         </thead>
@@ -180,7 +179,6 @@
                 <tr>
                     <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                     <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
-                    <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
                     <td>{{ $server->updated_at }}</td>
                 </tr>
             @endforeach

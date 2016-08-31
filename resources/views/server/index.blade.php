@@ -94,7 +94,12 @@
                         <div class="alert alert-info">Below is a listing of all avaliable IPs and Ports for your service. To change the default connection address for your server, simply click on the one you would like to make default below.</div>
                         <ul class="nav nav-pills nav-stacked" id="conn_options">
                             @foreach ($allocations as $allocation)
-                                <li role="presentation" @if($allocation->ip === $server->ip && $allocation->port === $server->port) class="active" @endif><a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip }} <span class="badge">{{ $allocation->port }}</span></a></li>
+                                <li role="presentation" @if($allocation->id === $server->allocation) class="active" @endif>
+                                    <a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip_alias }}
+                                        <span class="badge">{{ $allocation->port }}</span>
+                                        @if($allocation->ip !== $allocation->ip_alias)<small><span class="pull-right">Alias for {{ $allocation->ip }}</span></small>@endif
+                                    </a>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
