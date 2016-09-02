@@ -59,7 +59,7 @@ class Server extends Model
      */
      protected $casts = [
          'node' => 'integer',
-         'active' => 'integer',
+         'suspended' => 'integer',
          'owner' => 'integer',
          'memory' => 'integer',
          'swap' => 'integer',
@@ -117,7 +117,7 @@ class Server extends Model
 
     /**
      * Returns array of all servers owned by the logged in user.
-     * Returns all active servers if user is a root admin.
+     * Returns all users servers if user is a root admin.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -132,8 +132,7 @@ class Server extends Model
             'allocations.port'
         )->join('nodes', 'servers.node', '=', 'nodes.id')
         ->join('locations', 'nodes.location', '=', 'locations.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-        ->where('active', 1);
+        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
@@ -164,7 +163,7 @@ class Server extends Model
 
         $query = self::select('servers.*', 'services.file as a_serviceFile')
             ->join('services', 'services.id', '=', 'servers.service')
-            ->where('uuidShort', $uuid)->where('active', 1);
+            ->where('uuidShort', $uuid);
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());

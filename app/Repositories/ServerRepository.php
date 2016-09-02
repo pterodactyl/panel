@@ -205,7 +205,7 @@ class ServerRepository
                 'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
                 'node' => $data['node'],
                 'name' => $data['name'],
-                'active' => 1,
+                'suspended' => 0,
                 'owner' => $user->id,
                 'memory' => $data['memory'],
                 'swap' => $data['swap'],

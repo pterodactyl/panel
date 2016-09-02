@@ -69,7 +69,6 @@ class UserController extends Controller
                 ->join('nodes', 'servers.node', '=', 'nodes.id')
                 ->join('locations', 'nodes.location', '=', 'locations.id')
                 ->where('owner', $id)
-                ->where('active', 1)
                 ->get(),
         ]);
     }
