@@ -23,6 +23,7 @@
  */
 namespace Pterodactyl\Repositories;
 
+use Crypt;
 use DB;
 use Debugbar;
 use Validator;
@@ -804,7 +805,12 @@ class ServerRepository
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
+        DB::beginTransaction();
+        $server->sftp_password = Crypt::encrypt($password);
+
         try {
+            $server->save();
+
             $client = Models\Node::guzzleRequest($server->node);
             $client->request('POST', '/server/password', [
                 'headers' => [
@@ -815,10 +821,14 @@ class ServerRepository
                     'password' => $password,
                 ],
             ]);
+
+            DB::commit();
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            DB::rollBack();
             throw new DisplayException('There was an error while attmping to contact the remote service to change the password.', $ex);
         } catch (\Exception $ex) {
+            DB::rollBack();
             throw $ex;
         }
 

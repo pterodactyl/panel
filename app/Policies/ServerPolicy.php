@@ -435,6 +435,22 @@ class ServerPolicy
     }
 
     /**
+     * Check if user has permission to view the SFTP password for a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function viewSftpPassword(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('view-sftp-password')->exists();
+    }
+
+    /**
      * Check if user has permission to view databases for a server.
      *
      * @param  Pterodactyl\Models\User   $user

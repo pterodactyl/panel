@@ -202,6 +202,12 @@
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['view-sftp-password']))checked="checked"@endif value="view-sftp-password"> <strong>View SFTP Password</strong>
+                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows user to view the SFTP password for the server.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
                         <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['reset-sftp']))checked="checked"@endif value="reset-sftp"> <strong>Reset SFTP Password</strong>
                         <p class="text-muted"><small>Allows user to change the SFTP password for the server.</small><p>
                     </label>

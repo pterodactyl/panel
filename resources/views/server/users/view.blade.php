@@ -191,6 +191,12 @@
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['view-sftp-password']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-sftp-password"> <strong>View SFTP Password</strong>
+                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows user to view the SFTP password for the server.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
                         <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['reset-sftp']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="reset-sftp"> <strong>Reset SFTP Password</strong>
                         <p class="text-muted"><small>Allows user to change the SFTP password for the server.</small><p>
                     </label>

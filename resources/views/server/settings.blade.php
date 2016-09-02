@@ -51,29 +51,34 @@
                                 </div>
                             </div>
                         </div>
-                        @can('reset-sftp', $server)
-                            <form action="{{ route('server.settings.sftp', $server->uuidShort) }}" method="POST">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div id="gen_pass" class=" alert alert-success" style="display:none;margin-bottom: 10px;"></div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="control-label">New SFTP Password:</label>
-                                        <div>
-                                            <input type="password" name="sftp_pass" class="form-control" />
-                                            <p class="text-muted"><small>Passwords must meet the following requirements: at least one uppercase character, one lowercase character, one digit, and be at least 8 characters in length. <a href="#" data-action="generate-password">Click here</a> to generate one to use.</small></p>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label class="control-label">&nbsp;</label>
-                                        <div>
-                                            {!! csrf_field() !!}
-                                            <input type="submit" class="btn btn-sm btn-primary" value="Update Password" />
-                                        </div>
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="gen_pass" class=" alert alert-success" style="display:none;margin-bottom: 10px;"></div>
                                 </div>
-                            </form>
-                        @endcan
+                                <div class="form-group col-md-6">
+                                @can('reset-sftp', $server)
+                                    <form action="{{ route('server.settings.sftp', $server->uuidShort) }}" method="POST">
+                                        <label class="control-label">New SFTP Password:</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" name="sftp_pass" />
+                                            <span class="input-group-btn">
+                                                {!! csrf_field() !!}
+                                                <input type="submit" class="btn btn-primary btn-sm" value="Reset" />
+                                            </span>
+                                        </div>
+                                        <p class="text-muted"><small>Passwords must meet the following requirements: at least one uppercase character, one lowercase character, one digit, and be at least 8 characters in length. <a href="#" data-action="generate-password">Click here</a> to generate one to use.</small></p>
+                                    </form>
+                                @endcan
+                                </div>
+                                <div class="form-group col-md-6">
+                                @can('view-sftp-password', $server)
+                                    <label class="control-label">Current Password:</label>
+                                    <div>
+                                        <input type="text" readonly="readonly" class="form-control" value="@if(!is_null($server->sftp_password)){{ Crypt::decrypt($server->sftp_password) }} @endif" />
+                                    </div>
+                                @endcan
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>

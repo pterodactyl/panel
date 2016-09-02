@@ -93,6 +93,7 @@ class SubuserRepository
         'edit-startup' => null,
         'view-sftp' => null,
         'reset-sftp' => 's:set-password',
+        'view-sftp-password' => null,
 
         // Databases
         'view-databases' => null,
