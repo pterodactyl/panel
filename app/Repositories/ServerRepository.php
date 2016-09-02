@@ -205,7 +205,7 @@ class ServerRepository
                 'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
                 'node' => $data['node'],
                 'name' => $data['name'],
-                'active' => 1,
+                'suspended' => 0,
                 'owner' => $user->id,
                 'memory' => $data['memory'],
                 'swap' => $data['swap'],
@@ -728,9 +728,31 @@ class ServerRepository
      */
     public function suspend($id)
     {
-        // @TODO: Implement logic; not doing it now since that is outside of the
-        // scope of this API brance.
-        return true;
+        $server = Models\Server::findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+
+        DB::beginTransaction();
+
+        try {
+            $server->suspended = 1;
+            $server->save();
+
+            $client = Models\Node::guzzleRequest($server->node);
+            $client->request('POST', '/server/suspend', [
+                'headers' => [
+                    'X-Access-Token' => $node->daemonSecret,
+                    'X-Access-Server' => $server->uuid
+                ]
+            ]);
+
+            return DB::commit();
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            DB::rollBack();
+            throw new DisplayException('An error occured while attempting to suspend this server.', $ex);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
     }
 
     /**
@@ -740,9 +762,31 @@ class ServerRepository
      */
     public function unsuspend($id)
     {
-        // @TODO: Implement logic; not doing it now since that is outside of the
-        // scope of this API brance.
-        return true;
+        $server = Models\Server::findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+
+        DB::beginTransaction();
+
+        try {
+            $server->suspended = 0;
+            $server->save();
+
+            $client = Models\Node::guzzleRequest($server->node);
+            $client->request('POST', '/server/unsuspend', [
+                'headers' => [
+                    'X-Access-Token' => $node->daemonSecret,
+                    'X-Access-Server' => $server->uuid
+                ]
+            ]);
+
+            return DB::commit();
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            DB::rollBack();
+            throw new DisplayException('An error occured while attempting to un-suspend this server.', $ex);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
     }
 
     public function updateSFTPPassword($id, $password)

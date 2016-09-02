@@ -47,7 +47,7 @@
             </thead>
             <tbody>
                 @foreach ($servers as $server)
-                    <tr class="dynUpdate" data-server="{{ $server->uuidShort }}">
+                    <tr class="dynUpdate @if($server->suspended === 1)warning @endif" data-server="{{ $server->uuidShort }}">
                         @if (Auth::user()->root_admin == 1)
                             <td style="width:26px;">
                                 @if ($server->owner === Auth::user()->id)
@@ -63,7 +63,7 @@
                         <td class="text-center" data-action="players">--</td>
                         <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                         <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
-                        <td class="text-center" data-action="status">--</td>
+                        <td class="text-center" data-action="status">@if($server->suspended === 1)<span class="label label-warning">Suspended</span>@else--@endif</td>
                     </tr>
                 @endforeach
             </tbody>

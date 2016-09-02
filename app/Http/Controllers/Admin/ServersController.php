@@ -424,4 +424,42 @@ class ServersController extends Controller
         ])->withInput();
     }
 
+    public function postSuspendServer(Request $request, $id)
+    {
+        try {
+            $repo = new ServerRepository;
+            $repo->suspend($id);
+            Alert::success('Server has been suspended on the system. All running processes have been stopped and will not be startable until it is un-suspended.');
+        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch(\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attemping to suspend this server. Please try again.')->flash();
+        } finally {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_manage'
+            ]);
+        }
+    }
+
+    public function postUnsuspendServer(Request $request, $id)
+    {
+        try {
+            $repo = new ServerRepository;
+            $repo->unsuspend($id);
+            Alert::success('Server has been unsuspended on the system. Access has been re-enabled.');
+        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch(\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attemping to unsuspend this server. Please try again.')->flash();
+        } finally {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_manage'
+            ]);
+        }
+    }
+
 }
