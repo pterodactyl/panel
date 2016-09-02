@@ -30,6 +30,11 @@
         <li><a href="/admin/servers">Servers</a></li>
         <li class="active">{{ $server->name }} ({{ $server->uuidShort}})</li>
     </ul>
+    @if($server->suspended === 1)
+    <div class="alert alert-warning">
+        This server is suspended and has no user access. Processes cannot be started and files cannot be modified. All API access is disabled unless using a master token.
+    </div>
+    @endif
     @if($server->installed === 0)
         <div class="alert alert-warning">
             This server is still running through the install process and is not avaliable for use just yet. This message will disappear once this process is completed.
@@ -89,7 +94,7 @@
                             </tr>
                             <tr>
                                 <td><abbr title="Out of Memory">OOM</abbr> Killer</td>
-                                <td>{!! ($server->oom_disabled === 0) ? '<span class="label label-success">enabled</span>' : '<span class="label label-default">disabled</span>' !!}</td>
+                                <td>{!! ($server->oom_disabled === 0) ? '<span class="label label-success">Enabled</span>' : '<span class="label label-default">Disabled</span>' !!}</td>
                             </tr>
                             <tr>
                                 <td>Disk Space</td>
@@ -120,6 +125,10 @@
                             <tr>
                                 <td>Installed</td>
                                 <td>{!! ($server->installed === 1) ? '<span class="label label-success">Yes</span>' : '<span class="label label-danger">No</span>' !!}</td>
+                            </tr>
+                            <tr>
+                                <td>Suspended</td>
+                                <td>{!! ($server->suspended === 1) ? '<span class="label label-warning">Suspended</span>' : '<span class="label label-success">No</span>' !!}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -437,6 +446,32 @@
                             </div>
                         </div>
                     @endif
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            @if($server->suspended === 0)
+                                <div class="col-md-4 text-center">
+                                    <form action="/admin/servers/view/{{ $server->id }}/suspend" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-sm btn-warning">Suspend Server</button>
+                                    </form>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>This will suspend the server, stop any running processes, and immediately block the user from being able to access their files or otherwise manage the server through the panel or API.</p>
+                                </div>
+                            @else
+                                <div class="col-md-4 text-center">
+                                    <form action="/admin/servers/view/{{ $server->id }}/unsuspend" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-sm btn-success">Unsuspend Server</button>
+                                    </form>
+                                </div>
+                                <div class="col-md-8">
+                                    <p>This will unsuspend the server and restore normal user access.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         @endif

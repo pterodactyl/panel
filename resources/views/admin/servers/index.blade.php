@@ -42,8 +42,8 @@
         </thead>
         <tbody>
             @foreach ($servers as $server)
-                <tr class="dynUpdate @if($server->active !== 1)active @endif" id="{{ $server->uuidShort }}">
-                    <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</td>
+                <tr class="dynUpdate @if($server->suspended === 1)warning @endif" id="{{ $server->uuidShort }}">
+                    <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a>@if($server->suspended === 1) <span class="label label-warning">Suspended</span>@endif</td>
                     <td><a href="/admin/users/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
                     <td class="hidden-xs"><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
                     <td><code>{{ $server->ip_alias }}:{{ $server->port }}</code> @if($server->ip !== $server->ip_alias)<span class="label label-default">alias</span>@endif</td>

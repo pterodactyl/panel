@@ -129,21 +129,21 @@ class AdminRoutes {
             ]);
 
             // Assorted Page Helpers
-                $router->post('/new/get-nodes', [
-                    'uses' => 'Admin\ServersController@postNewServerGetNodes'
-                ]);
+            $router->post('/new/get-nodes', [
+                'uses' => 'Admin\ServersController@postNewServerGetNodes'
+            ]);
 
-                $router->post('/new/get-ips', [
-                    'uses' => 'Admin\ServersController@postNewServerGetIps'
-                ]);
+            $router->post('/new/get-ips', [
+                'uses' => 'Admin\ServersController@postNewServerGetIps'
+            ]);
 
-                $router->post('/new/service-options', [
-                    'uses' => 'Admin\ServersController@postNewServerServiceOptions'
-                ]);
+            $router->post('/new/service-options', [
+                'uses' => 'Admin\ServersController@postNewServerServiceOptions'
+            ]);
 
-                $router->post('/new/service-variables', [
-                    'uses' => 'Admin\ServersController@postNewServerServiceVariables'
-                ]);
+            $router->post('/new/service-variables', [
+                'uses' => 'Admin\ServersController@postNewServerServiceVariables'
+            ]);
             // End Assorted Page Helpers
 
             // View Specific Server
@@ -177,6 +177,16 @@ class AdminRoutes {
             // Change Build Details
             $router->post('/view/{id}/build', [
                 'uses' => 'Admin\ServersController@postUpdateServerUpdateBuild'
+            ]);
+
+            // Suspend Server
+            $router->post('/view/{id}/suspend', [
+                'uses' => 'Admin\ServersController@postSuspendServer'
+            ]);
+
+            // Unsuspend Server
+            $router->post('/view/{id}/unsuspend', [
+                'uses' => 'Admin\ServersController@postUnsuspendServer'
             ]);
 
             // Change Install Status

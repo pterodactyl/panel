@@ -46,11 +46,15 @@ class CheckServer
 
         $server = Server::getByUUID($request->route()->server);
         if (!$server) {
-            return response()->view('errors.403', [], 403);
+            return response()->view('errors.404', [], 404);
+        }
+
+        if ($server->suspended === 1) {
+            return response()->view('errors.suspended', [], 403);
         }
 
         if ($server->installed !== 1) {
-            return response()->view('errors.installing', [], 503);
+            return response()->view('errors.installing', [], 403);
         }
 
         return $next($request);
