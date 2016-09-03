@@ -17,3 +17,6 @@ This file is a running track of new features and fixes to each version of the pa
 * [Security Patch] Fixes listing of server variables for server. Previously a bug made it possible to view settings for all servers, even if the user didn't own that server. (#69)
 * Prevent calling daemon until database call has been confirmed when changing default connection.
 * Fixes a few display issues relating to subusers and database management.
+
+### General
+* Update Laravel to version `5.3` and update dependencies. **[BREAKING]** This removes the remote API from the panel due to Dingo API instability. This message will be removed when it is added back.
