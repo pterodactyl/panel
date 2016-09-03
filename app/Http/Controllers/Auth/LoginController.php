@@ -36,27 +36,28 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
-class AuthController extends Controller
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+class LoginController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | Registration & Login Controller
+    | Login Controller
     |--------------------------------------------------------------------------
     |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
     |
     */
-
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+    use AuthenticatesUsers;
 
     /**
-     * Post-Authentication redirect location.
+     * Where to redirect users after login / registration.
      *
      * @var string
      */
-    protected $redirectPath = '/';
+    protected $redirectTo = '/';
 
     /**
      * Lockout time for failed login requests.
@@ -73,42 +74,13 @@ class AuthController extends Controller
     protected $maxLoginAttempts = 3;
 
     /**
-     * Create a new authentication controller instance.
+     * Create a new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        //
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|confirmed|min:8',
-        ]);
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => password_hash($data['password']),
-        ]);
+        $this->middleware('guest', ['except' => 'logout']);
     }
 
     /**
@@ -117,7 +89,7 @@ class AuthController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function postLogin(Request $request)
+    public function login(Request $request)
     {
 
         $this->validate($request, [
@@ -125,8 +97,8 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $throttled = $this->isUsingThrottlesLoginsTrait();
-        if ($throttled && $this->hasTooManyLoginAttempts($request)) {
+        if ($lockedOut = $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
             return $this->sendLockoutResponse($request);
         }
 
@@ -136,13 +108,11 @@ class AuthController extends Controller
             'password' => $request->input('password')
         ], $request->has('remember'))) {
 
-            if ($throttled) {
+            if (!$lockedOut) {
                 $this->incrementLoginAttempts($request);
             }
 
-            return redirect()->route('auth.login')->withInput($request->only('email', 'remember'))->withErrors([
-                'email' => $this->getFailedLoginMessage(),
-            ]);
+            return $this->sendFailedLoginResponse($request);
 
         }
 
@@ -155,17 +125,17 @@ class AuthController extends Controller
 
                 Auth::logout();
 
-                if ($throttled) {
+                if (!$lockedOut) {
                     $this->incrementLoginAttempts($request);
                 }
 
                 Alert::danger(trans('auth.totp_failed'))->flash();
-                return redirect()->route('auth.login')->withInput($request->only('email', 'remember'));
+                return $this->sendFailedLoginResponse($request);
 
             }
         }
 
-        return $this->handleUserWasAuthenticated($request, $throttled);
+        return $this->sendLoginResponse($request);
 
     }
 

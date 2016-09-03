@@ -31,24 +31,47 @@
 
 @section('content')
 <div class="col-md-8">
-    <form action="/auth/password" method="POST">
+    <form action="{{ url('/auth/password/reset') }}" method="POST">
         <legend>{{ trans('auth.resetpassword') }}</legend>
         <fieldset>
-            @if (session('status'))
-                <div class="alert alert-success">
-                    <strong>{{ trans('strings.success') }}!</strong> {{ trans('auth.emailsent') }}
-                </div>
-            @endif
+            <input type="hidden" name="token" value="{{ $token }}">
             <div class="form-group">
                 <label for="email" class="control-label">{{ trans('strings.email') }}</label>
                 <div>
-                    <input type="text" class="form-control" name="email" id="email" value="{{ old('email') }}" placeholder="{{ trans('strings.email') }}" />
+                    <input type="text" class="form-control" name="email" id="email" value="{{ $email or old('email') }}" required autofocus placeholder="{{ trans('strings.email') }}" />
+                    @if ($errors->has('email'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('email') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="control-label">{{ trans('strings.password') }}</label>
+                <div>
+                    <input type="password" class="form-control" name="password" id="password" required placeholder="{{ trans('strings.password') }}" />
+                    @if ($errors->has('password'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('password') }}</strong>
+                        </span>
+                    @endif
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password_confirmation" class="control-label">{{ trans('auth.confirmpassword') }}</label>
+                <div>
+                    <input type="password" class="form-control" id="password_confirmation" required name="password_confirmation" />
+                    @if ($errors->has('password_confirmation'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('password_confirmation') }}</strong>
+                        </span>
+                    @endif
                 </div>
             </div>
             <div class="form-group">
                 <div>
                     {!! csrf_field() !!}
-                    <button class="btn btn-default btn-sm">{{ trans('auth.sendlink') }}</button>
+                    <button class="btn btn-primary btn-sm">{{ trans('auth.resetpassword') }}</button>
                 </div>
             </div>
         </fieldset>

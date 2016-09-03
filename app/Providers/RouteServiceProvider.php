@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Providers;
 
-use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -22,24 +22,57 @@ class RouteServiceProvider extends ServiceProvider
      * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
-    public function boot(Router $router)
+    public function boot()
     {
         //
 
-        parent::boot($router);
+        parent::boot();
     }
 
     /**
      * Define the routes for the application.
      *
-     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
-    public function map(Router $router)
+    public function map()
     {
-        $router->group(['namespace' => $this->namespace], function ($router) {
+        $this->mapWebRoutes();
+        $this->mapApiRoutes();
+    }
+    /**
+     * Define the "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapWebRoutes()
+    {
+        Route::group([
+            // 'middleware' => 'web',
+            'namespace' => $this->namespace,
+        ], function ($router) {
             foreach (glob(app_path('Http//Routes') . '/*.php') as $file) {
                 $this->app->make('Pterodactyl\\Http\\Routes\\' . basename($file, '.php'))->map($router);
+            }
+        });
+    }
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiRoutes()
+    {
+        Route::group([
+            'middleware' => 'api',
+            'namespace' => $this->namespace,
+            'prefix' => 'api',
+        ], function ($router) {
+            foreach (glob(app_path('Http//Routes//Api') . '/*.php') as $file) {
+                $this->app->make('Pterodactyl\\Http\\Routes\\Api\\' . basename($file, '.php'))->map($router);
             }
         });
     }

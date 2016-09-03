@@ -28,6 +28,7 @@ use Illuminate\Routing\Router;
 use Request;
 use Pterodactyl\Models\User as User;
 
+use Auth;
 class AuthRoutes {
 
     public function map(Router $router) {
@@ -42,39 +43,39 @@ class AuthRoutes {
             // Display Login Page
             $router->get('login', [
                 'as' => 'auth.login',
-                'uses' => 'Auth\AuthController@getLogin'
+                'uses' => 'Auth\LoginController@showLoginForm'
             ]);
 
             // Handle Login
             $router->post('login', [
-                'uses' => 'Auth\AuthController@postLogin'
+                'uses' => 'Auth\LoginController@login'
             ]);
 
             // Determine if we need to ask for a TOTP Token
             $router->post('login/totp', [
-                'uses' => 'Auth\AuthController@checkTotp'
+                'uses' => 'Auth\LoginController@checkTotp'
             ]);
 
             // Show Password Reset Form
             $router->get('password', [
                 'as' => 'auth.password',
-                'uses' => 'Auth\PasswordController@getEmail'
+                'uses' => 'Auth\ForgotPasswordController@showLinkRequestForm'
             ]);
 
             // Handle Password Reset
             $router->post('password', [
-                'uses' => 'Auth\PasswordController@postEmail'
+                'uses' => 'Auth\ForgotPasswordController@sendResetLinkEmail'
             ]);
 
             // Show Verification Checkpoint
             $router->get('password/reset/{token}', [
                 'as' => 'auth.reset',
-                'uses' => 'Auth\PasswordController@getReset'
+                'uses' => 'Auth\ResetPasswordController@showResetForm'
             ]);
 
             // Handle Verification
             $router->post('password/reset', [
-                'uses' => 'Auth\PasswordController@postReset'
+                'uses' => 'Auth\ResetPasswordController@reset'
             ]);
 
         });
@@ -83,7 +84,7 @@ class AuthRoutes {
         $router->get('auth/logout', [
             'as' => 'auth.logout',
             'middleware' => 'auth',
-            'uses' => 'Auth\AuthController@getLogout'
+            'uses' => 'Auth\LoginController@logout'
         ]);
 
     }
