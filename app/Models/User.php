@@ -28,8 +28,10 @@ use Google2FA;
 use Pterodactyl\Exceptions\AccountNotFoundException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -41,7 +43,7 @@ class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Authenticatable, Authorizable, CanResetPassword, Notifiable;
 
     /**
      * The table associated with the model.
@@ -123,5 +125,17 @@ class User extends Model implements AuthenticatableContract,
         return;
 
     }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
 
 }

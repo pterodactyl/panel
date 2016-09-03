@@ -31,32 +31,29 @@
 
 @section('content')
 <div class="col-md-8">
-    <form action="/auth/password/reset" method="POST">
+    <form action="{{ url('/auth/password') }}" method="POST">
         <legend>{{ trans('auth.resetpassword') }}</legend>
         <fieldset>
-            <input type="hidden" name="token" value="{{ $token }}">
-            <div class="form-group">
+            @if (session('status'))
+                <div class="alert alert-success">
+                    <strong>{{ trans('strings.success') }}!</strong> {{ trans('auth.emailsent') }}
+                </div>
+            @endif
+            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                 <label for="email" class="control-label">{{ trans('strings.email') }}</label>
                 <div>
                     <input type="text" class="form-control" name="email" id="email" value="{{ old('email') }}" placeholder="{{ trans('strings.email') }}" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="password" class="control-label">{{ trans('strings.password') }}</label>
-                <div>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="{{ trans('strings.password') }}" />
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="password_confirmation" class="control-label">{{ trans('auth.confirmpassword') }}</label>
-                <div>
-                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" />
+                    @if ($errors->has('email'))
+                        <span class="help-block">
+                            <strong>{{ $errors->first('email') }}</strong>
+                        </span>
+                    @endif
                 </div>
             </div>
             <div class="form-group">
                 <div>
                     {!! csrf_field() !!}
-                    <button class="btn btn-primary btn-sm">{{ trans('auth.resetpassword') }}</button>
+                    <button class="btn btn-default btn-sm">{{ trans('auth.sendlink') }}</button>
                 </div>
             </div>
         </fieldset>
