@@ -93,7 +93,6 @@ class SendScheduledTask extends Job implements ShouldQueue
                 'run_status' => 1,
                 'response' => $ex->getMessage()
             ]);
-            throw $ex;
         } finally {
             $cron = Cron::factory(sprintf('%s %s %s %s %s %s',
                 $this->task->minute,
