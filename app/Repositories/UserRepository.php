@@ -29,9 +29,11 @@ use Settings;
 use Hash;
 use Validator;
 use Mail;
+use Carbon;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
+use Pterodactyl\Notifications\AccountCreated;
 
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
@@ -48,10 +50,10 @@ class UserRepository
      * Creates a user on the panel. Returns the created user's ID.
      *
      * @param  string $email
-     * @param  string $password An unhashed version of the user's password.
+     * @param  string|null $password An unhashed version of the user's password.
      * @return bool|integer
      */
-    public function create($email, $password, $admin = false)
+    public function create($email, $password = null, $admin = false)
     {
         $validator = Validator::make([
             'email' => $email,
@@ -59,7 +61,7 @@ class UserRepository
             'root_admin' => $admin
         ], [
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'password' => 'nullable|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
             'root_admin' => 'required|boolean'
         ]);
 
@@ -77,25 +79,26 @@ class UserRepository
 
             $user->uuid = $uuid->generate('users', 'uuid');
             $user->email = $email;
-            $user->password = Hash::make($password);
+            $user->password = Hash::make((is_null($password)) ? str_random(30) : $password);
             $user->language = 'en';
             $user->root_admin = ($admin) ? 1 : 0;
             $user->save();
 
-            Mail::queue('emails.new-account', [
+            // Setup a Password Reset to use when they set a password.
+            $token = str_random(32);
+            DB::table('password_resets')->insert([
                 'email' => $user->email,
-                'forgot' => route('auth.password'),
-                'login' => route('auth.login')
-            ], function ($message) use ($email) {
-                $message->to($email);
-                $message->from(Settings::get('email_from', env('MAIL_FROM')), Settings::get('email_sender_name', env('MAIL_FROM_NAME', 'Pterodactyl Panel')));
-                $message->subject(Settings::get('company') . ' - New Account');
-            });
+                'token' => $token,
+                'created_at' => Carbon::now()->toDateTimeString()
+            ]);
+
+            $user->notify((new AccountCreated($token)));
+
             DB::commit();
             return $user->id;
         } catch (\Exception $ex) {
             DB::rollBack();
-            throw $e;
+            throw $ex;
         }
     }
 
