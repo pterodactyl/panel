@@ -137,5 +137,4 @@ class User extends Model implements AuthenticatableContract,
         $this->notify(new ResetPasswordNotification($token));
     }
 
-
 }
