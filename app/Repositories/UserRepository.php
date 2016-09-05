@@ -49,8 +49,8 @@ class UserRepository
     /**
      * Creates a user on the panel. Returns the created user's ID.
      *
-     * @param  string $email
-     * @param  string|null $password An unhashed version of the user's password.
+     * @param  string       $email
+     * @param  string|null  $password An unhashed version of the user's password.
      * @return bool|integer
      */
     public function create($email, $password = null, $admin = false)

@@ -96,8 +96,9 @@ class ServerRepository
             'io' => 'required|numeric|min:10|max:1000',
             'cpu' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:0',
-            'ip' => 'required|ip',
-            'port' => 'required|numeric|min:1|max:65535',
+            'allocation' => 'numeric|exists:allocations,id|required_without:ip,port',
+            'ip' => 'required_without:allocation|ip',
+            'port' => 'required_without:allocation|numeric|min:1|max:65535',
             'service' => 'required|numeric|min:1|exists:services,id',
             'option' => 'required|numeric|min:1|exists:service_options,id',
             'startup' => 'required',
@@ -113,14 +114,20 @@ class ServerRepository
         // Get the User ID; user exists since we passed the 'exists:users,email' part of the validation
         $user = Models\User::select('id')->where('email', $data['owner'])->first();
 
+        // Get Node Information
+        $node = Models\Node::getByID($data['node']);
+
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
-        $node = Models\Node::getByID($data['node']);
-        $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+        if (!isset($data['allocation'])) {
+            $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+        } else {
+            $allocation = Models\Allocation::where('id' , $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+        }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
         if (!$allocation) {
-            throw new DisplayException('The selected IP/Port combination (' . $data['ip'] . ':' . $data['port'] . ') is either already in use, or unavaliable for this node.');
+            throw new DisplayException('The selected IP/Port combination or Allocation ID is either already in use, or unavaliable for this node.');
         }
 
         // Validate those Service Option Variables
@@ -282,7 +289,7 @@ class ServerRepository
             return $server->id;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to create the server.', $ex);
+            throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             Log:error($ex);
@@ -735,6 +742,12 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
+
+            // Already suspended, no need to make more requests.
+            if ($server->suspended === 1) {
+                return true;
+            }
+
             $server->suspended = 1;
             $server->save();
 
@@ -749,7 +762,7 @@ class ServerRepository
             return DB::commit();
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to suspend this server.', $ex);
+            throw new DisplayException('An error occured while attempting to contact the remote daemon to suspend this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -769,6 +782,12 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
+
+            // Already unsuspended, no need to make more requests.
+            if ($server->suspended === 0) {
+                return true;
+            }
+
             $server->suspended = 0;
             $server->save();
 
@@ -783,7 +802,7 @@ class ServerRepository
             return DB::commit();
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to un-suspend this server.', $ex);
+            throw new DisplayException('An error occured while attempting to contact the remote daemon to un-suspend this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;

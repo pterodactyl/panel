@@ -47,7 +47,7 @@ class LocationController extends BaseController
      * @Versions({"v1"})
      * @Response(200)
      */
-    public function getLocations(Request $request)
+    public function list(Request $request)
     {
         $locations = Location::select('locations.*', DB::raw('GROUP_CONCAT(nodes.id) as nodes'))
             ->join('nodes', 'locations.id', '=', 'nodes.location')

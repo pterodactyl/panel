@@ -55,7 +55,7 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function getUsers(Request $request)
+    public function list(Request $request)
     {
         $users = Models\User::paginate(50);
         return $this->response->paginator($users, new UserTransformer);
@@ -74,7 +74,7 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function getUser(Request $request, $id)
+    public function user(Request $request, $id)
     {
         $query = Models\User::where('id', $id);
 
@@ -109,7 +109,7 @@ class UserController extends BaseController
      *          "email": "foo@example.com",
      *          "password": "foopassword",
      *          "admin": false
-     *       }, headers={"Authorization": "Bearer <jwt-token>"}),
+     *       }, headers={"Authorization": "Bearer <token>"}),
      *       @Response(201),
      *       @Response(422, body={
      *          "message": "A validation error occured.",
@@ -122,7 +122,7 @@ class UserController extends BaseController
      *       })
      * })
      */
-    public function postUser(Request $request)
+    public function create(Request $request)
     {
         try {
             $user = new UserRepository;
@@ -149,7 +149,7 @@ class UserController extends BaseController
      * @Transaction({
      *      @Request({
      *          "email": "new@email.com"
-     *      }, headers={"Authorization": "Bearer <jwt-token>"}),
+     *      }, headers={"Authorization": "Bearer <token>"}),
      *      @Response(200, body={"email": "new@email.com"}),
      *      @Response(422)
      * })
@@ -157,7 +157,7 @@ class UserController extends BaseController
      *         @Parameter("id", type="integer", required=true, description="The ID of the user to modify.")
      * })
      */
-    public function patchUser(Request $request, $id)
+    public function update(Request $request, $id)
     {
         try {
             $user = new UserRepository;
@@ -178,7 +178,7 @@ class UserController extends BaseController
      * @Delete("/users/{id}")
      * @Versions({"v1"})
      * @Transaction({
-     *      @Request(headers={"Authorization": "Bearer <jwt-token>"}),
+     *      @Request(headers={"Authorization": "Bearer <token>"}),
      *      @Response(204),
      *      @Response(422)
      * })
@@ -186,7 +186,7 @@ class UserController extends BaseController
      *      @Parameter("id", type="integer", required=true, description="The ID of the user to delete.")
      * })
      */
-    public function deleteUser(Request $request, $id)
+    public function delete(Request $request, $id)
     {
         try {
             $user = new UserRepository;

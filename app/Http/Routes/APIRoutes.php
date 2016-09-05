@@ -39,27 +39,27 @@ class APIRoutes
              */
             $api->get('users', [
                 'as' => 'api.users',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUsers'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@list'
             ]);
 
             $api->post('users', [
                 'as' => 'api.users.post',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@postUser'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@create'
             ]);
 
             $api->get('users/{id}', [
                 'as' => 'api.users.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@getUser'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@user'
             ]);
 
             $api->patch('users/{id}', [
                 'as' => 'api.users.patch',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@patchUser'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@update'
             ]);
 
             $api->delete('users/{id}', [
                 'as' => 'api.users.delete',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@deleteUser'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@delete'
             ]);
 
             /**
@@ -67,32 +67,42 @@ class APIRoutes
              */
             $api->get('servers', [
                 'as' => 'api.servers',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@getServers'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@list'
             ]);
 
             $api->post('servers', [
                 'as' => 'api.servers.post',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@postServer'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@create'
             ]);
 
             $api->get('servers/{id}', [
                 'as' => 'api.servers.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@getServer'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@server'
+            ]);
+
+            $api->patch('servers/{id}/config', [
+                'as' => 'api.servers.view',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@config'
+            ]);
+
+            $api->patch('servers/{id}/build', [
+                'as' => 'api.servers.view',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@build'
             ]);
 
             $api->post('servers/{id}/suspend', [
                 'as' => 'api.servers.suspend',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@postServerSuspend'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@suspend'
             ]);
 
             $api->post('servers/{id}/unsuspend', [
                 'as' => 'api.servers.unsuspend',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@postServerUnsuspend'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@unsuspend'
             ]);
 
             $api->delete('servers/{id}/{force?}', [
                 'as' => 'api.servers.delete',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@deleteServer'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@delete'
             ]);
 
             /**
@@ -100,27 +110,27 @@ class APIRoutes
              */
             $api->get('nodes', [
                 'as' => 'api.nodes',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getNodes'
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@list'
             ]);
 
             $api->post('nodes', [
                 'as' => 'api.nodes.post',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@postNode'
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@create'
             ]);
 
             $api->get('nodes/allocations', [
                 'as' => 'api.nodes.allocations',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getAllNodeAllocations'
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@allocations'
             ]);
 
             $api->get('nodes/{id}', [
                 'as' => 'api.nodes.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getNode'
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@node'
             ]);
 
             $api->delete('nodes/{id}', [
                 'as' => 'api.nodes.delete',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@deleteNode'
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@delete'
             ]);
 
             /**
@@ -128,7 +138,7 @@ class APIRoutes
              */
             $api->get('locations', [
                 'as' => 'api.locations',
-                'uses' => 'Pterodactyl\Http\Controllers\API\LocationController@getLocations'
+                'uses' => 'Pterodactyl\Http\Controllers\API\LocationController@list'
             ]);
 
             /**
@@ -136,12 +146,12 @@ class APIRoutes
              */
             $api->get('services', [
                 'as' => 'api.services',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@getServices'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@list'
             ]);
 
             $api->get('services/{id}', [
                 'as' => 'api.services.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@getService'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@service'
             ]);
 
         });

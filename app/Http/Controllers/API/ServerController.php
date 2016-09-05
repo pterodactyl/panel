@@ -25,6 +25,7 @@ namespace Pterodactyl\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 
+use Log;
 use Pterodactyl\Models;
 use Pterodactyl\Transformers\ServerTransformer;
 use Pterodactyl\Repositories\ServerRepository;
@@ -59,7 +60,7 @@ class ServerController extends BaseController
      * })
      * @Response(200)
      */
-    public function getServers(Request $request)
+    public function list(Request $request)
     {
         $servers = Models\Server::paginate(50);
         return $this->response->paginator($servers, new ServerTransformer);
@@ -70,12 +71,9 @@ class ServerController extends BaseController
     *
     * @Post("/servers")
     * @Versions({"v1"})
-    * @Parameters({
-    *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
-    * })
     * @Response(201)
      */
-    public function postServer(Request $request)
+    public function create(Request $request)
     {
         try {
             $server = new ServerRepository;
@@ -87,7 +85,8 @@ class ServerController extends BaseController
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
+            Log::error($ex);
             throw new BadRequestHttpException('There was an error while attempting to add this server to the system.');
         }
     }
@@ -105,7 +104,7 @@ class ServerController extends BaseController
      * })
      * @Response(200)
      */
-    public function getServer(Request $request, $id)
+    public function server(Request $request, $id)
     {
         $query = Models\Server::where('id', $id);
 
@@ -130,6 +129,87 @@ class ServerController extends BaseController
     }
 
     /**
+     * Update Server configuration
+     *
+     * Updates display information on panel.
+     *
+     * @Patch("/servers/{id}/config")
+     * @Versions({"v1"})
+     * @Transaction({
+     *      @Request({
+     *          "owner": "new@email.com",
+     *          "name": "New Name",
+     *          "reset_token": true
+     *      }, headers={"Authorization": "Bearer <token>"}),
+     *      @Response(200, body={"name": "New Name"}),
+     *      @Response(422)
+     * })
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the server to modify.")
+     * })
+     */
+    public function config(Request $request, $id)
+    {
+        try {
+            $server = new ServerRepository;
+            $server->updateDetails($id, $request->all());
+            return Models\Server::findOrFail($id);
+        } catch (DisplayValidationException $ex) {
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('Unable to update server on system due to an error.');
+        }
+    }
+
+    /**
+     * Update Server Build Configuration
+     *
+     * Updates server build information on panel and on node.
+     *
+     * @Patch("/servers/{id}/build")
+     * @Versions({"v1"})
+     * @Transaction({
+     *      @Request({
+     *          "default": "192.168.0.1:25565",
+     *          "add_additional": [
+     *              "192.168.0.1:25566",
+     *              "192.168.0.1:25567",
+     *              "192.168.0.1:25568"
+     *          ],
+     *          "remove_additional": [],
+     *          "memory": 1024,
+     *          "swap": 0,
+     *          "io": 500,
+     *          "cpu": 0,
+     *          "disk": 1024
+     *      }, headers={"Authorization": "Bearer <token>"}),
+     *      @Response(200, body={"name": "New Name"}),
+     *      @Response(422)
+     * })
+     * @Parameters({
+     *      @Parameter("id", type="integer", required=true, description="The ID of the server to modify.")
+     * })
+     */
+    public function build(Request $request, $id)
+    {
+        try {
+            throw new BadRequestHttpException('There was an error while attempting to add this node to the system.');
+
+            $server = new ServerRepository;
+            $server->changeBuild($id, $request->all());
+            return Models\Server::findOrFail($id);
+        } catch (DisplayValidationException $ex) {
+            throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
+        } catch (DisplayException $ex) {
+            throw new ResourceException($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new ServiceUnavailableHttpException('Unable to update server on system due to an error.');
+        }
+    }
+
+    /**
      * Suspend Server
      *
      * @Post("/servers/{id}/suspend")
@@ -139,11 +219,12 @@ class ServerController extends BaseController
      * })
      * @Response(204)
      */
-    public function postServerSuspend(Request $request, $id)
+    public function suspend(Request $request, $id)
     {
         try {
             $server = new ServerRepository;
             $server->suspend($id);
+            return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
         } catch (\Exception $ex) {
@@ -161,11 +242,12 @@ class ServerController extends BaseController
      * })
      * @Response(204)
      */
-    public function postServerUnsuspend(Request $request, $id)
+    public function unsuspend(Request $request, $id)
     {
         try {
             $server = new ServerRepository;
             $server->unsuspend($id);
+            return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
         } catch (\Exception $ex) {
@@ -184,7 +266,7 @@ class ServerController extends BaseController
      * })
      * @Response(204)
      */
-    public function deleteServer(Request $request, $id, $force = null)
+    public function delete(Request $request, $id, $force = null)
     {
         try {
             $server = new ServerRepository;

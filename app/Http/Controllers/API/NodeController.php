@@ -60,7 +60,7 @@ class NodeController extends BaseController
      * })
      * @Response(200)
      */
-    public function getNodes(Request $request)
+    public function list(Request $request)
     {
         $nodes = Models\Node::paginate(50);
         return $this->response->paginator($nodes, new NodeTransformer);
@@ -98,7 +98,7 @@ class NodeController extends BaseController
      *       })
      * })
      */
-    public function postNode(Request $request)
+    public function create(Request $request)
     {
         try {
             $node = new NodeRepository;
@@ -128,7 +128,7 @@ class NodeController extends BaseController
      * })
      * @Response(200)
      */
-    public function getNode(Request $request, $id, $fields = null)
+    public function node(Request $request, $id, $fields = null)
     {
         $query = Models\Node::where('id', $id);
 
@@ -168,7 +168,7 @@ class NodeController extends BaseController
      * @Versions({"v1"})
      * @Response(200)
      */
-     public function getAllNodeAllocations(Request $request)
+     public function allocations(Request $request)
      {
          $allocations = Models\Allocation::paginate(100);
          if ($allocations->count() < 1) {
@@ -187,7 +187,7 @@ class NodeController extends BaseController
      * })
      * @Response(204)
      */
-    public function deleteNode(Request $request, $id)
+    public function delete(Request $request, $id)
     {
         try {
             $node = new NodeRepository;

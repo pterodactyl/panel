@@ -41,12 +41,12 @@ class ServiceController extends BaseController
         //
     }
 
-    public function getServices(Request $request)
+    public function list(Request $request)
     {
         return Models\Service::all();
     }
 
-    public function getService(Request $request, $id)
+    public function service(Request $request, $id)
     {
         $service = Models\Service::find($id);
         if (!$service) {
