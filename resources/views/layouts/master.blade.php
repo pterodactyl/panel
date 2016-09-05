@@ -172,7 +172,7 @@
                 @section('server-name')
                     @if (isset($server->name) && isset($node->name))
                         <ul class="nav navbar-nav">
-                            <li class="active" id="{{ $server->name }}"><a href="/server/{{ $server->id }}/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ $server->name }}</a></li>
+                            <li class="active" id="{{ $server->name }}"><a href="/server/{{ $server->uuidShort }}/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ $server->name }}</a></li>
                         </ul>
                     @endif
                 @show
