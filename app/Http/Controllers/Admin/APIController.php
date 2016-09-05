@@ -65,7 +65,13 @@ class APIController extends Controller
         try {
             $api = new APIRepository;
             $secret = $api->new($request->except(['_token']));
-            Alert::info('An API Keypair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br />Secret: <code>' . $secret . '</code>')->flash();
+            // Alert::info('An API Keypair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br />Secret: <code>' . $secret . '</code>')->flash();
+            Alert::info("<script type='text/javascript'>swal({
+                type: 'info',
+                title: 'Secret Key',
+                html: true,
+                text: 'The secret for this keypair is shown below and will not be shown again.<hr /><code style=\'text-align:center;\'>" . $secret . "</code>'
+            });</script>")->flash();
             return redirect()->route('admin.api');
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.api.new')->withErrors(json_decode($ex->getMessage()))->withInput();
