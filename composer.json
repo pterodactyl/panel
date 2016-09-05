@@ -28,7 +28,8 @@
         "edvinaskrucas/settings": "^2.0",
         "igaster/laravel-theme": "^1.1.3",
         "nesbot/carbon": "^1.21",
-        "mtdowling/cron-expression": "^1.1"
+        "mtdowling/cron-expression": "^1.1",
+        "dingo/api": "1.0.0-beta6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
