@@ -71,7 +71,24 @@ class TaskController extends Controller
 
     public function postNew(Request $request, $uuid)
     {
-        dd($request->input());
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('create-task', $server);
+
+        try {
+            $repo = new Repositories\TaskRepository;
+            $repo->create($server->id, $request->except([
+                '_token'
+            ]));
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('server.tasks', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unknown error occured while attempting to create this task.')->flash();
+        }
+        return redirect()->route('server.tasks', $uuid);
+
     }
 
     public function getView(Request $request, $uuid, $id)

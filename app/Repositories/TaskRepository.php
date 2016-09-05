@@ -106,12 +106,12 @@ class TaskRepository
         $validator = Validator::make($data, [
             'action' => 'string|required',
             'data' => 'string|required',
-            'year' => 'string|sometimes|required',
-            'day_of_week' => 'string|sometimes|required',
-            'month' => 'string|sometimes|required',
-            'day_of_month' => 'string|sometimes|required',
-            'hour' => 'string|sometimes|required',
-            'minute' => 'string|sometimes|required'
+            'year' => 'string|sometimes',
+            'day_of_week' => 'string|sometimes',
+            'month' => 'string|sometimes',
+            'day_of_month' => 'string|sometimes',
+            'hour' => 'string|sometimes',
+            'minute' => 'string|sometimes'
         ]);
 
         if ($validator->fails()) {
@@ -124,7 +124,7 @@ class TaskRepository
 
         $cron = $this->defaults;
         foreach ($this->defaults as $setting => $value) {
-            if (array_key_exists($setting, $data)) {
+            if (array_key_exists($setting, $data) && !is_null($data[$setting]) && $data[$setting] !== '') {
                 $cron[$setting] = $data[$setting];
             }
         }
@@ -140,7 +140,7 @@ class TaskRepository
                 $cron['year']
             ));
         } catch (\Exception $ex) {
-            throw new DisplayException($ex);
+            throw $ex;
         }
 
         $task = new Models\Task;

@@ -40,7 +40,8 @@
         <tbody>
             @foreach($tasks as $task)
                 <tr @if($task->active === 0)class="text-disabled"@endif>
-                    <td><a href="{{ route('server.tasks.view', [ $server->uuidShort, $task->id ]) }}">{{ $actions[$task->action] }}</a></td>
+                    {{-- <td><a href="{{ route('server.tasks.view', [ $server->uuidShort, $task->id ]) }}">{{ $actions[$task->action] }}</a></td> --}}
+                    <td>{{ $actions[$task->action] }}</td>
                     <td><code>{{ $task->data }}</code></td>
                     <td>{{ Carbon::parse($task->last_run)->toDayDateTimeString() }} <p class="text-muted"><small>({{ Carbon::parse($task->last_run)->diffForHumans() }})</small></p></td>
                     <td>
@@ -70,82 +71,85 @@ $(document).ready(function () {
     $('.server-tasks').addClass('active');
     $('[data-toggle="tooltip"]').tooltip();
 
-    $('[data-action="delete-task"]').click(function (event) {
-        var self = $(this);
-        swal({
-            type: 'error',
-            title: 'Delete Task?',
-            text: 'Are you sure you want to delete this task? There is no undo.',
-            showCancelButton: true,
-            allowOutsideClick: true,
-            closeOnConfirm: false,
-            confirmButtonText: 'Delete Task',
-            confirmButtonColor: '#d9534f',
-            showLoaderOnConfirm: true
-        }, function () {
-            $.ajax({
-                method: 'DELETE',
-                url: '{{ route('server.tasks', $server->uuidShort) }}/delete/' + self.data('id'),
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }).done(function (data) {
-                swal({
-                    type: 'success',
-                    title: '',
-                    text: 'Task has been deleted.'
-                });
-                self.parent().parent().slideUp();
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: 'An error occured while attempting to delete this task.'
-                });
-            });
-        });
-    });
-
-    $('[data-action="toggle-task"]').click(function (event) {
-        var self = $(this);
-        swal({
-            type: 'info',
-            title: 'Toggle Task',
-            text: 'This will toggle the selected task.',
-            showCancelButton: true,
-            allowOutsideClick: true,
-            closeOnConfirm: false,
-            confirmButtonText: 'Continue',
-            showLoaderOnConfirm: true
-        }, function () {
-            $.ajax({
-                method: 'POST',
-                url: '{{ route('server.tasks', $server->uuidShort) }}/toggle/' + self.data('id'),
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }).done(function (data) {
-                swal({
-                    type: 'success',
-                    title: '',
-                    text: 'Task has been toggled.'
-                });
-                if (data.status !== 1) {
-                    self.parent().parent().addClass('text-disabled');
-                } else {
-                    self.parent().parent().removeClass('text-disabled');
-                }
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: 'An error occured while attempting to toggle this task.'
+    @can('delete-task', $server)
+        $('[data-action="delete-task"]').click(function (event) {
+            var self = $(this);
+            swal({
+                type: 'error',
+                title: 'Delete Task?',
+                text: 'Are you sure you want to delete this task? There is no undo.',
+                showCancelButton: true,
+                allowOutsideClick: true,
+                closeOnConfirm: false,
+                confirmButtonText: 'Delete Task',
+                confirmButtonColor: '#d9534f',
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'DELETE',
+                    url: '{{ route('server.tasks', $server->uuidShort) }}/delete/' + self.data('id'),
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).done(function (data) {
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: 'Task has been deleted.'
+                    });
+                    self.parent().parent().slideUp();
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        text: 'An error occured while attempting to delete this task.'
+                    });
                 });
             });
         });
-    });
+    @endcan
+    @can('toggle-task', $server)
+        $('[data-action="toggle-task"]').click(function (event) {
+            var self = $(this);
+            swal({
+                type: 'info',
+                title: 'Toggle Task',
+                text: 'This will toggle the selected task.',
+                showCancelButton: true,
+                allowOutsideClick: true,
+                closeOnConfirm: false,
+                confirmButtonText: 'Continue',
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('server.tasks', $server->uuidShort) }}/toggle/' + self.data('id'),
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).done(function (data) {
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: 'Task has been toggled.'
+                    });
+                    if (data.status !== 1) {
+                        self.parent().parent().addClass('text-disabled');
+                    } else {
+                        self.parent().parent().removeClass('text-disabled');
+                    }
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        text: 'An error occured while attempting to toggle this task.'
+                    });
+                });
+            });
+        });
+    @endcan
 
 });
 </script>

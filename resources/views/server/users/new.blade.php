@@ -214,6 +214,49 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 fuelux">
+                <h4>Task Management</h4><hr />
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['list-tasks']))checked="checked"@endif value="list-tasks"> <strong>List Tasks</strong>
+                        <p class="text-muted"><small>Allows a user to list all tasks (enabled and disabled) on a server.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['view-task']))checked="checked"@endif value="view-task"> <strong>View Task</strong>
+                        <p class="text-muted"><small>Allows a user to view a specific task's details.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['toggle-task']))checked="checked"@endif value="toggle-task"> <strong>Toggle Task</strong>
+                        <p class="text-muted"><small>Allows a user to toggle a task on or off.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['queue-task']))checked="checked"@endif value="queue-task"> <strong>Queue Task</strong>
+                        <p class="text-muted"><small>Allows a user to queue a task to run on next cycle.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['create-task']))checked="checked"@endif value="create-task"> <strong>Create Task</strong>
+                        <p class="text-muted"><small>Allows a user to create new tasks.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['delete-task']))checked="checked"@endif value="delete-task"> <strong>Delete Task</strong>
+                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows a user to delete a task.</small><p>
+                    </label>
+                </div>
+            </div>
+            <div class="col-md-6 fuelux">
+            </div>
+        </div>
     @can('edit-subuser', $server)
         <div class="well">
             <div class="row">
