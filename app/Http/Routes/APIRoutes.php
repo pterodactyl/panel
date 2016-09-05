@@ -108,14 +108,14 @@ class APIRoutes
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@postNode'
             ]);
 
+            $api->get('nodes/allocations', [
+                'as' => 'api.nodes.allocations',
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getAllNodeAllocations'
+            ]);
+
             $api->get('nodes/{id}', [
                 'as' => 'api.nodes.view',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getNode'
-            ]);
-
-            $api->get('nodes/{id}/allocations', [
-                'as' => 'api.nodes.view_allocations',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@getNodeAllocations'
             ]);
 
             $api->delete('nodes/{id}', [
