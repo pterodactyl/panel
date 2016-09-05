@@ -128,7 +128,7 @@ class NodeController extends BaseController
      * })
      * @Response(200)
      */
-    public function node(Request $request, $id, $fields = null)
+    public function view(Request $request, $id, $fields = null)
     {
         $query = Models\Node::where('id', $id);
 

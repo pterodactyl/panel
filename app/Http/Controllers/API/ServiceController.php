@@ -46,7 +46,7 @@ class ServiceController extends BaseController
         return Models\Service::all();
     }
 
-    public function service(Request $request, $id)
+    public function view(Request $request, $id)
     {
         $service = Models\Service::find($id);
         if (!$service) {

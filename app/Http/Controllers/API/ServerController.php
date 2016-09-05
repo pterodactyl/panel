@@ -104,7 +104,7 @@ class ServerController extends BaseController
      * })
      * @Response(200)
      */
-    public function server(Request $request, $id)
+    public function view(Request $request, $id)
     {
         $query = Models\Server::where('id', $id);
 

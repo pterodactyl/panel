@@ -43,6 +43,11 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 class UserController extends BaseController
 {
 
+    public function __construct()
+    {
+
+    }
+
     /**
      * List All Users
      *
@@ -74,7 +79,7 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function user(Request $request, $id)
+    public function view(Request $request, $id)
     {
         $query = Models\User::where('id', $id);
 

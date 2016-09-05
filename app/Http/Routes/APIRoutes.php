@@ -38,22 +38,22 @@ class APIRoutes
              * User Routes
              */
             $api->get('users', [
-                'as' => 'api.users',
+                'as' => 'api.users.list',
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@list'
             ]);
 
             $api->post('users', [
-                'as' => 'api.users.post',
+                'as' => 'api.users.create',
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@create'
             ]);
 
             $api->get('users/{id}', [
                 'as' => 'api.users.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@user'
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@view'
             ]);
 
             $api->patch('users/{id}', [
-                'as' => 'api.users.patch',
+                'as' => 'api.users.update',
                 'uses' => 'Pterodactyl\Http\Controllers\API\UserController@update'
             ]);
 
@@ -66,27 +66,27 @@ class APIRoutes
              * Server Routes
              */
             $api->get('servers', [
-                'as' => 'api.servers',
+                'as' => 'api.servers.list',
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@list'
             ]);
 
             $api->post('servers', [
-                'as' => 'api.servers.post',
+                'as' => 'api.servers.create',
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@create'
             ]);
 
             $api->get('servers/{id}', [
                 'as' => 'api.servers.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@server'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@view'
             ]);
 
             $api->patch('servers/{id}/config', [
-                'as' => 'api.servers.view',
+                'as' => 'api.servers.config',
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@config'
             ]);
 
             $api->patch('servers/{id}/build', [
-                'as' => 'api.servers.view',
+                'as' => 'api.servers.build',
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@build'
             ]);
 
@@ -109,12 +109,12 @@ class APIRoutes
              * Node Routes
              */
             $api->get('nodes', [
-                'as' => 'api.nodes',
+                'as' => 'api.nodes.list',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@list'
             ]);
 
             $api->post('nodes', [
-                'as' => 'api.nodes.post',
+                'as' => 'api.nodes.create',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@create'
             ]);
 
@@ -125,7 +125,7 @@ class APIRoutes
 
             $api->get('nodes/{id}', [
                 'as' => 'api.nodes.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@node'
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@view'
             ]);
 
             $api->delete('nodes/{id}', [
@@ -137,7 +137,7 @@ class APIRoutes
              * Location Routes
              */
             $api->get('locations', [
-                'as' => 'api.locations',
+                'as' => 'api.locations.list',
                 'uses' => 'Pterodactyl\Http\Controllers\API\LocationController@list'
             ]);
 
@@ -145,13 +145,13 @@ class APIRoutes
              * Service Routes
              */
             $api->get('services', [
-                'as' => 'api.services',
+                'as' => 'api.services.list',
                 'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@list'
             ]);
 
             $api->get('services/{id}', [
                 'as' => 'api.services.view',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@service'
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@view'
             ]);
 
         });
