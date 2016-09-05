@@ -59,7 +59,7 @@ class UuidService
 
         } while (!$return);
 
-        return $return;
+        return (string) $return;
 
     }
 
@@ -85,7 +85,7 @@ class UuidService
 
         } while (!$return);
 
-        return $return;
+        return (string) $return;
 
     }
 

@@ -28,12 +28,12 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class SendPasswordReset extends Notification implements ShouldQueue
+class AccountCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
-     * The password reset token.
+     * The password reset token to send.
      *
      * @var string
      */
@@ -57,7 +57,7 @@ class SendPasswordReset extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -69,10 +69,9 @@ class SendPasswordReset extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Reset Password')
-            ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url('auth/password/reset', $this->token))
-            ->line('If you did not request a password reset, no further action is required.');
+                    ->line('You are recieving this email because an account has been created for you on Pterodactyl Panel.')
+                    ->line('Email: ' . $notifiable->email)
+                    ->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . $notifiable->email));
     }
 
     /**
@@ -84,7 +83,8 @@ class SendPasswordReset extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            //
+            'email' => $notifiable->email,
+            'token' => $this->token
         ];
     }
 }

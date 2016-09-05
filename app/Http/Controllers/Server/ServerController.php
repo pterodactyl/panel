@@ -176,7 +176,7 @@ class ServerController extends Controller
 
         $download = new Models\Download;
 
-        $download->token = Uuid::generate(4);
+        $download->token = (string) Uuid::generate(4);
         $download->server = $server->uuid;
         $download->path = str_replace('../', '', $file);
 
