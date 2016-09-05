@@ -141,6 +141,11 @@ class ServerRoutes {
                 'uses' => 'Server\TaskController@deleteTask'
             ]);
 
+            $router->post('tasks/toggle/{id}', [
+                'as' => 'server.tasks.toggle',
+                'uses' => 'Server\TaskController@toggleTask'
+            ]);
+
             // Assorted AJAX Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status

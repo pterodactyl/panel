@@ -54,6 +54,43 @@ class TaskRepository
     }
 
     /**
+     * Deletes a given task.
+     * @param  int      $id
+     *
+     * @return bool
+     */
+    public function delete($id)
+    {
+        $task = Models\Task::findOrFail($id);
+        try {
+            $task->delete();
+            return true;
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * Toggles a task active or inactive.
+     * @param  int      $id
+     *
+     * @return int
+     */
+    public function toggle($id)
+    {
+        $task = Models\Task::findOrFail($id);
+        try {
+            $task->active = ($task->active === 1) ? 0 : 1;
+            $task->queued = 0;
+            $task->save();
+
+            return $task->active;
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
      * Create a new scheduled task for a given server.
      * @param  int      $id
      * @param  array    $data

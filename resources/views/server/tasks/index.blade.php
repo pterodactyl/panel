@@ -51,10 +51,10 @@
                         @endif
                     </td>
                     @can('delete-task', $server)
-                        <td class="text-center text-v-center"><a href="#" data-action="delete-task" data-id="{{ $task->id }}"><i class="fa fa-fw fa-trash-o text-danger"></i></a></td>
+                        <td class="text-center text-v-center"><a href="#" data-action="delete-task" data-id="{{ $task->id }}"><i class="fa fa-fw fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></a></td>
                     @endcan
                     @can('toggle-task', $server)
-                        <td class="text-center text-v-center"><a href="#" data-action="toggle-task" data-id="{{ $task->id }}"><i class="fa fa-fw fa-eye-slash text-primary"></i></a></td>
+                        <td class="text-center text-v-center"><a href="#" data-action="toggle-task" data-active="{{ $task->active }}" data-id="{{ $task->id }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="Toggle Status"></i></a></td>
                     @endcan
 
                 </tr>
@@ -68,6 +68,85 @@
 <script>
 $(document).ready(function () {
     $('.server-tasks').addClass('active');
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('[data-action="delete-task"]').click(function (event) {
+        var self = $(this);
+        swal({
+            type: 'error',
+            title: 'Delete Task?',
+            text: 'Are you sure you want to delete this task? There is no undo.',
+            showCancelButton: true,
+            allowOutsideClick: true,
+            closeOnConfirm: false,
+            confirmButtonText: 'Delete Task',
+            confirmButtonColor: '#d9534f',
+            showLoaderOnConfirm: true
+        }, function () {
+            $.ajax({
+                method: 'DELETE',
+                url: '{{ route('server.tasks', $server->uuidShort) }}/delete/' + self.data('id'),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function (data) {
+                swal({
+                    type: 'success',
+                    title: '',
+                    text: 'Task has been deleted.'
+                });
+                self.parent().parent().slideUp();
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: 'An error occured while attempting to delete this task.'
+                });
+            });
+        });
+    });
+
+    $('[data-action="toggle-task"]').click(function (event) {
+        var self = $(this);
+        swal({
+            type: 'info',
+            title: 'Toggle Task',
+            text: 'This will toggle the selected task.',
+            showCancelButton: true,
+            allowOutsideClick: true,
+            closeOnConfirm: false,
+            confirmButtonText: 'Continue',
+            showLoaderOnConfirm: true
+        }, function () {
+            $.ajax({
+                method: 'POST',
+                url: '{{ route('server.tasks', $server->uuidShort) }}/toggle/' + self.data('id'),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function (data) {
+                swal({
+                    type: 'success',
+                    title: '',
+                    text: 'Task has been toggled.'
+                });
+                if (data.status !== 1) {
+                    self.parent().parent().addClass('text-disabled');
+                } else {
+                    self.parent().parent().removeClass('text-disabled');
+                }
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: 'An error occured while attempting to toggle this task.'
+                });
+            });
+        });
+    });
+
 });
 </script>
 @endsection

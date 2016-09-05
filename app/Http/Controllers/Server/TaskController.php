@@ -27,6 +27,7 @@ use Alert;
 use Log;
 use Cron;
 
+use Pterodactyl\Repositories;
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
@@ -83,5 +84,55 @@ class TaskController extends Controller
             'node' => Models\Node::findOrFail($server->node),
             'task' => Models\Task::where('id', $id)->where('server', $server->id)->firstOrFail()
         ]);
+    }
+
+    public function deleteTask(Request $request, $uuid, $id)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('delete-task', $server);
+
+        $task = Models\Task::findOrFail($id);
+
+        if (!$task || $server->id !== $task->server) {
+            return response()->json([
+                'error' => 'No task by that ID was found associated with this server.'
+            ], 404);
+        }
+
+        try {
+            $repo = new Repositories\TaskRepository;
+            $repo->delete($id);
+            return response()->json([], 204);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'error' => 'A server error occured while attempting to delete this task.'
+            ], 503);
+        }
+    }
+
+    public function toggleTask(Request $request, $uuid, $id)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('toggle-task', $server);
+
+        $task = Models\Task::findOrFail($id);
+
+        if (!$task || $server->id !== $task->server) {
+            return response()->json([
+                'error' => 'No task by that ID was found associated with this server.'
+            ], 404);
+        }
+
+        try {
+            $repo = new Repositories\TaskRepository;
+            $resp = $repo->toggle($id);
+            return response()->json([
+                'status' => $resp
+            ]);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'error' => 'A server error occured while attempting to toggle this task.'
+            ], 503);
+        }
     }
 }
