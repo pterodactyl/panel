@@ -47,31 +47,31 @@
                 <h4>User Management</h4><hr />
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users"> <strong>GET /users</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.list"> <strong><span class="label label-default">GET</span> /users</strong>
                         <p class="text-muted"><small>Allows listing of all users currently on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.post"> <strong>POST /users</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.create"> <strong><span class="label label-default">POST</span> /users</strong>
                         <p class="text-muted"><small>Allows creating a new user on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.view"> <strong>GET /users/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.view"> <strong><span class="label label-default">GET</span> /users/{id}</strong>
                         <p class="text-muted"><small>Allows viewing details about a specific user including active services.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.patch"> <strong>PATCH /users/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.update"> <strong><span class="label label-default">PATCH</span> /users/{id}</strong>
                         <p class="text-muted"><small>Allows modifying user details (email, password, TOTP information).</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.delete"> <strong>DELETE /users/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.users.delete"> <strong><span class="label label-danger">DELETE</span> /users/{id}</strong>
                         <p class="text-muted"><small>Allows deleting a user.</small><p>
                     </label>
                 </div>
@@ -80,37 +80,49 @@
                 <h4>Server Management</h4><hr />
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers"> <strong>GET /servers</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.list"> <strong><span class="label label-default">GET</span> /servers</strong>
                         <p class="text-muted"><small>Allows listing of all servers currently on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.post"> <strong>POST /servers</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.create"> <strong><span class="label label-default">POST</span> /servers</strong>
                         <p class="text-muted"><small>Allows creating a new server on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.view"> <strong>GET /servers/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.view"> <strong><span class="label label-default">GET</span> /servers/{id}</strong>
                         <p class="text-muted"><small>Allows viewing details about a specific server.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.suspend"> <strong>POST /servers/{id}/suspend</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.config"> <strong><span class="label label-default">PATCH</span> /servers/{id}/config</strong>
+                        <p class="text-muted"><small>Allows modifying server config (name, owner, and access token).</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.build"> <strong><span class="label label-default">PATCH</span> /servers/{id}/build</strong>
+                        <p class="text-muted"><small>Allows modifying a server's build parameters such as memory, CPU, and disk space along with assigned and default IPs.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.suspend"> <strong><span class="label label-default">POST</span> /servers/{id}/suspend</strong>
                         <p class="text-muted"><small>Allows suspending a server instance.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.unsuspend"> <strong>POST /servers/{id}/unsuspend</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.unsuspend"> <strong><span class="label label-default">POST</span> /servers/{id}/unsuspend</strong>
                         <p class="text-muted"><small>Allows unsuspending a server instance.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.delete"> <strong>DELETE /servers/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.delete"> <strong><span class="label label-danger">DELETE</span> /servers/{id}</strong>
                         <p class="text-muted"><small>Allows deleting a server.</small><p>
                     </label>
                 </div>
@@ -121,31 +133,31 @@
                 <h4>Node Management</h4><hr />
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes"> <strong>GET /nodes</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.list"> <strong><span class="label label-default">GET</span> /nodes</strong>
                         <p class="text-muted"><small>Allows listing of all nodes currently on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.post"> <strong>POST /nodes</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.create"> <strong><span class="label label-default">POST</span> /nodes</strong>
                         <p class="text-muted"><small>Allows creating a new node on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.view"> <strong>GET /nodes/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.view"> <strong><span class="label label-default">GET</span> /nodes/{id}</strong>
                         <p class="text-muted"><small>Allows viewing details about a specific node including active services.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.view_allocations"> <strong>GET /nodes/{id}/allocations</strong>
-                        <p class="text-muted"><small>Allows viewing details about a specific node including active services.</small><p>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.allocations"> <strong><span class="label label-default">GET</span> /nodes/allocations</strong>
+                        <p class="text-muted"><small>Allows viewing all allocations on the panel for all nodes.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.delete"> <strong>DELETE /nodes/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.nodes.delete"> <strong><span class="label label-danger">DELETE</span> /nodes/{id}</strong>
                         <p class="text-muted"><small>Allows deleting a node.</small><p>
                     </label>
                 </div>
@@ -154,20 +166,20 @@
                 <h4>Service Management</h4><hr />
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.services"> <strong>GET /services</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.services.list"> <strong><span class="label label-default">GET</span> /services</strong>
                         <p class="text-muted"><small>Allows listing of all services configured on the system.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.services.view"> <strong>GET /services/{id}</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.services.view"> <strong><span class="label label-default">GET</span> /services/{id}</strong>
                         <p class="text-muted"><small>Allows listing details about each service on the system including service options and variables.</small><p>
                     </label>
                 </div>
                 <h4>Location Management</h4><hr />
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.locations"> <strong>GET /locations</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" value="api.locations.list"> <strong><span class="label label-default">GET</span> /locations</strong>
                         <p class="text-muted"><small>Allows listing all locations and thier associated nodes.</small><p>
                     </label>
                 </div>

@@ -36,43 +36,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapWebRoutes();
-        $this->mapApiRoutes();
-    }
-    /**
-     * Define the "web" routes for the application.
-     *
-     * These routes all receive session state, CSRF protection, etc.
-     *
-     * @return void
-     */
-    protected function mapWebRoutes()
-    {
-        Route::group([
-            // 'middleware' => 'web',
-            'namespace' => $this->namespace,
-        ], function ($router) {
+        Route::group(['namespace' => $this->namespace], function ($router) {
             foreach (glob(app_path('Http//Routes') . '/*.php') as $file) {
                 $this->app->make('Pterodactyl\\Http\\Routes\\' . basename($file, '.php'))->map($router);
-            }
-        });
-    }
-    /**
-     * Define the "api" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
-     * @return void
-     */
-    protected function mapApiRoutes()
-    {
-        Route::group([
-            'middleware' => 'api',
-            'namespace' => $this->namespace,
-            'prefix' => 'api',
-        ], function ($router) {
-            foreach (glob(app_path('Http//Routes//Api') . '/*.php') as $file) {
-                $this->app->make('Pterodactyl\\Http\\Routes\\Api\\' . basename($file, '.php'))->map($router);
             }
         });
     }

@@ -58,7 +58,7 @@
                             <code style="line-height:2;">{{ $perm->permission }}</code><br />
                         @endforeach
                     </td>
-                    <td class="text-center">{{ $key->created_at }}</td>
+                    <td class="text-center">{{ (new Carbon($key->created_at))->toDayDateTimeString() }}</td>
                     <td class="text-center"><a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->public }}"><i class="fa fa-trash"></i></a></td>
                 </tr>
             @endforeach

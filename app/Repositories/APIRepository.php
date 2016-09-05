@@ -43,31 +43,35 @@ class APIRepository
         '*',
 
         // User Management Routes
-        'api.users',
+        'api.users.list',
+        'api.users.create',
         'api.users.view',
-        'api.users.post',
+        'api.users.update',
         'api.users.delete',
-        'api.users.patch',
 
         // Server Manaement Routes
-        'api.servers',
+        'api.servers.list',
+        'api.servers.create',
         'api.servers.view',
-        'api.servers.post',
+        'api.servers.config',
+        'api.servers.build',
         'api.servers.suspend',
         'api.servers.unsuspend',
         'api.servers.delete',
 
         // Node Management Routes
-        'api.nodes',
-        'api.nodes.view',
-        'api.nodes.post',
-        'api.nodes.view_allocations',
+        'api.nodes.list',
+        'api.nodes.create',
+        'api.nodes.list',
+        'api.nodes.allocations',
         'api.nodes.delete',
 
-        // Assorted Routes
-        'api.services',
+        // Service Routes
+        'api.services.list',
         'api.services.view',
-        'api.locations',
+
+        // Location Routes
+        'api.locations.list',
     ];
 
     /**

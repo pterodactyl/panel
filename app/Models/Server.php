@@ -43,7 +43,10 @@ class Server extends Model
      *
      * @var array
      */
-    protected $hidden = ['daemonSecret'];
+    protected $hidden = [
+        'daemonSecret',
+        'sftp_password'
+    ];
 
     /**
      * Fields that are not mass assignable.

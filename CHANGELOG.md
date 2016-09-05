@@ -10,6 +10,7 @@ This file is a running track of new features and fixes to each version of the pa
 * Adds support for IP Aliases on display pages for users. This makes it possible to use GRE tunnels and still show the user what IP they should be connecting to.
 * Adds support for suspending servers
 * Adds support for viewing SFTP password within the panel (#74, thanks @ET-Bent)
+* Improved API with support for server suspension and build modification.
 
 ### Bug Fixes
 * Fixes password auto-generation on 'Manage Server' page. (#67, thanks @ET-Bent)
@@ -19,4 +20,4 @@ This file is a running track of new features and fixes to each version of the pa
 * Fixes a few display issues relating to subusers and database management.
 
 ### General
-* Update Laravel to version `5.3` and update dependencies. **[BREAKING]** This removes the remote API from the panel due to Dingo API instability. This message will be removed when it is added back.
+* Update Laravel to version `5.3` and update dependencies.
