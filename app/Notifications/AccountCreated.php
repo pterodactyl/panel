@@ -23,14 +23,14 @@
  */
 namespace Pterodactyl\Notifications;
 
-# use Illuminate\Bus\Queueable;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class AccountCreated extends Notification implements ShouldQueue
 {
-    # use Queueable;
+    use Queueable;
 
     /**
      * The password reset token to send.
