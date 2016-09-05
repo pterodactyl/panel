@@ -27,6 +27,7 @@ use Illuminate\Http\Request;
 
 use Pterodactyl\Models;
 use Pterodactyl\Transformers\NodeTransformer;
+use Pterodactyl\Transformers\AllocationTransformer;
 use Pterodactyl\Repositories\NodeRepository;
 
 use Pterodactyl\Exceptions\DisplayValidationException;
@@ -143,7 +144,14 @@ class NodeController extends BaseController
             if (!$query->first()) {
                 throw new NotFoundHttpException('No node by that ID was found.');
             }
-            return $query->first();
+
+            return [
+                'node' => $query->first(),
+                'allocations' => [
+                    'assigned' => Models\Allocation::where('node', $id)->whereNotNull('assigned_to')->get(),
+                    'unassigned' => Models\Allocation::where('node', $id)->whereNull('assigned_to')->get()
+                ]
+            ];
         } catch (NotFoundHttpException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
@@ -152,25 +160,22 @@ class NodeController extends BaseController
     }
 
     /**
-     * List Node Allocations
+     * List all Node Allocations
      *
-     * Returns a listing of all node allocations.
+     * Returns a listing of all allocations for every node.
      *
-     * @Get("/nodes/{id}/allocations")
+     * @Get("/nodes/allocations")
      * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the node to get allocations for."),
-     * })
      * @Response(200)
      */
-    public function getNodeAllocations(Request $request, $id)
-    {
-        $allocations = Models\Allocation::select('ip', 'port', 'assigned_to')->where('node', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get();
-        if ($allocations->count() < 1) {
-            throw new NotFoundHttpException('No allocations where found for the requested node.');
-        }
-        return $allocations;
-    }
+     public function getAllNodeAllocations(Request $request)
+     {
+         $allocations = Models\Allocation::paginate(100);
+         if ($allocations->count() < 1) {
+             throw new NotFoundHttpException('No allocations have been created.');
+         }
+         return $this->response->paginator($allocations, new AllocationTransformer);
+     }
 
     /**
      * Delete Node
