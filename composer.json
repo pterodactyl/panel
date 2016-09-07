@@ -76,6 +76,7 @@
             "php artisan key:generate",
             "php artisan pterodactyl:env",
             "php artisan migrate",
+            "php artisan db:seed"
             "php artisan pterodactyl:user"
         ],
         "setup": [
@@ -84,7 +85,13 @@
             "php artisan key:generate",
             "php artisan pterodactyl:env",
             "php artisan migrate",
+            "php artisan db:seed"
             "php artisan pterodactyl:user"
+        ],
+        "upgrade": [
+            "composer update --ansi --no-dev",
+            "php artisan pterodactyl:env",
+            "php artisan migrate"
         ]
     },
     "config": {

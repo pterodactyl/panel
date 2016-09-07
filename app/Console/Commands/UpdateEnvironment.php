@@ -23,6 +23,7 @@
  */
 namespace Pterodactyl\Console\Commands;
 
+use Uuid;
 use Illuminate\Console\Command;
 
 class UpdateEnvironment extends Command
@@ -68,23 +69,48 @@ class UpdateEnvironment extends Command
 
         $envContents = file_get_contents($file);
 
+        if (!env('SERVICE_AUTHOR', false)) {
+            $this->info('No service author set, setting one now.');
+            $variables['SERVICE_AUTHOR'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
+        }
+
         // DB info
-        $variables['DB_HOST'] = $this->anticipate('Database Host (usually \'localhost\' or \'127.0.0.1\')', [ 'localhost', '127.0.0.1', env('DB_HOST') ]);
-        $variables['DB_PORT'] = $this->anticipate('Database Port', [ 3306, env('DB_PORT') ]);
-        $variables['DB_DATABASE'] = $this->anticipate('Database Name', [ 'pterodactyl', 'homestead', ENV('DB_DATABASE') ]);
-        $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ env('DB_USERNAME') ]);
-        $variables['DB_PASSWORD'] = $this->secret('Database User\'s Password');
+        if($this->confirm('Update database host? [' . env('DB_HOST') . ']')) {
+            $variables['DB_HOST'] = $this->anticipate('Database Host (usually \'localhost\' or \'127.0.0.1\')', [ 'localhost', '127.0.0.1', env('DB_HOST') ]);
+        }
+
+        if($this->confirm('Update database port? [' . env('DB_PORT') . ']')) {
+            $variables['DB_PORT'] = $this->anticipate('Database Port', [ 3306, env('DB_PORT') ]);
+        }
+
+        if($this->confirm('Update database name? [' . env('DB_DATABASE') . ']')) {
+            $variables['DB_DATABASE'] = $this->anticipate('Database Name', [ 'pterodactyl', 'homestead', ENV('DB_DATABASE') ]);
+        }
+
+        if($this->confirm('Update database username? [' . env('DB_USERNAME') . ']')) {
+            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ env('DB_USERNAME') ]);
+        }
+
+        if($this->confirm('Update database password?')) {
+            $variables['DB_PASSWORD'] = $this->secret('Database User\'s Password');
+        }
 
         // Other Basic Information
-        $variables['APP_URL'] = $this->anticipate('Enter your current panel URL (include http or https).', [ env('APP_URL', 'http://localhost') ]);
-        $this->line('The timezone should match one of the supported timezones according to http://php.net/manual/en/timezones.php');
-        $variables['APP_TIMEZONE'] = $this->anticipate('Enter the timezone for this panel to run with', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL));
+        if($this->confirm('Update panel URL? [' . env('APP_URL') . ']')) {
+            $variables['APP_URL'] = $this->anticipate('Enter your current panel URL (include http or https).', [ env('APP_URL', 'http://localhost') ]);
+        }
 
-        $bar = $this->output->createProgressBar(count($variables) + 1);
+        if($this->confirm('Update panel timezone? [' . env('APP_TIMEZONE') . ']')) {
+            $this->line('The timezone should match one of the supported timezones according to http://php.net/manual/en/timezones.php');
+            $variables['APP_TIMEZONE'] = $this->anticipate('Enter the timezone for this panel to run with', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL));
+        }
+
+        $bar = $this->output->createProgressBar(count($variables));
 
         $this->line('Writing new environment configuration to file.');
         foreach ($variables as $key => $value) {
             $newValue = $key . '=' . $value;
+
             if (preg_match_all('/^' . $key . '=(.*)$/m', $envContents) < 1) {
                 $envContents = $envContents . "\n" . $newValue;
             } else {

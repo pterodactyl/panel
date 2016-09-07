@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \Pterodactyl\Console\Commands\ShowVersion::class,
         \Pterodactyl\Console\Commands\UpdateEnvironment::class,
         \Pterodactyl\Console\Commands\RunTasks::class,
+        \Pterodactyl\Console\Commands\ClearServices::class,
     ];
 
     /**

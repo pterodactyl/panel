@@ -25,6 +25,7 @@ namespace Pterodactyl\Repositories\ServiceRepository;
 
 use DB;
 use Validator;
+use Uuid;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -57,6 +58,8 @@ class Service
         if (Models\Service::where('file', $data['file'])->first()) {
             throw new DisplayException('A service using that configuration file already exists on the system.');
         }
+
+        $data['author'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
 
         $service = new Models\Service;
         $service->fill($data);
