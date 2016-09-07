@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Exceptions;
 
+use Log;
+
 use Exception;
 use DisplayException;
 use DisplayValidationException;
@@ -46,39 +48,18 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $e
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Exception $exception)
     {
-        if ($e instanceof ModelNotFoundException) {
-            $e = new NotFoundHttpException($e->getMessage(), $e);
-        }
-
         if ($request->isXmlHttpRequest() || $request->ajax() || $request->is('remote/*')) {
-
-            $exception = 'An exception occured while attempting to perform this action, please try again.';
-
-            if ($e instanceof DisplayException) {
-                $exception = $e->getMessage();
-            }
-
-            // Live environment, just return a nice error.
-            if(!env('APP_DEBUG', false)) {
-                return response()->json([
-                    'error' => $exception
-                ], 500);
-            }
-
-            // If we are debugging, return the exception in it's full manner.
-            return response()->json([
-                'error' => (empty($e->getMessage())) ? $exception : $e->getMessage(),
-                'code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTrace(),
+            $response = response()->json([
+                'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.'
             ], 500);
 
+            // parent::render() will log it, we are bypassing it in this case.
+            Log::error($exception);
         }
 
-        return parent::render($request, $e);
+        return (isset($response)) ? $response : parent::render($request, $e);
     }
 
     /**

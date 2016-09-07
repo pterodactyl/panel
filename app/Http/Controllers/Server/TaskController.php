@@ -121,6 +121,7 @@ class TaskController extends Controller
             $repo->delete($id);
             return response()->json([], 204);
         } catch (\Exception $ex) {
+            Log::error($ex);
             return response()->json([
                 'error' => 'A server error occured while attempting to delete this task.'
             ], 503);
@@ -147,6 +148,7 @@ class TaskController extends Controller
                 'status' => $resp
             ]);
         } catch (\Exception $ex) {
+            Log::error($ex);
             return response()->json([
                 'error' => 'A server error occured while attempting to toggle this task.'
             ], 503);

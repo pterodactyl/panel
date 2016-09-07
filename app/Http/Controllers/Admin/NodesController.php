@@ -30,6 +30,8 @@ use DB;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\NodeRepository;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -79,9 +81,9 @@ class NodesController extends Controller
             return redirect()->route('admin.nodes.view', [
                 'id' => $new
             ]);
-        } catch (\Pterodactyl\Exceptions\DisplayValidationException $e) {
+        } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.new')->withErrors(json_decode($e->getMessage()))->withInput();
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+        } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
         } catch (\Exception $e) {
             Log::error($e);
@@ -134,9 +136,9 @@ class NodesController extends Controller
                 'id' => $id,
                 'tab' => 'tab_settings'
             ]);
-        } catch (\Pterodactyl\Exceptions\DisplayValidationException $e) {
+        } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.view', $id)->withErrors(json_decode($e->getMessage()))->withInput();
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+        } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
         } catch (\Exception $e) {
             Log::error($e);
@@ -194,12 +196,12 @@ class NodesController extends Controller
 
         try {
             if(empty($processedData)) {
-                throw new \Pterodactyl\Exceptions\DisplayException('It seems that no data was passed to this function.');
+                throw new DisplayException('It seems that no data was passed to this function.');
             }
             $node = new NodeRepository;
             $node->addAllocations($id, $processedData);
             Alert::success('Successfully added new allocations to this node.')->flash();
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+        } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
         } catch (\Exception $e) {
             Log::error($e);

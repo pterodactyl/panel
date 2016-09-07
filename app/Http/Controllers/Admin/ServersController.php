@@ -121,25 +121,18 @@ class ServersController extends Controller
     {
 
         try {
-
             $server = new ServerRepository;
             $response = $server->create($request->all());
-
             return redirect()->route('admin.servers.view', [ 'id' => $response ]);
-
-        } catch (\Exception $e) {
-
-            if ($e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
-                return redirect()->route('admin.servers.new')->withErrors(json_decode($e->getMessage()))->withInput();
-            } else if ($e instanceof \Pterodactyl\Exceptions\DisplayException) {
-                Alert::danger($e->getMessage())->flash();
-            } else {
-                Debugbar::addException($e);
-                Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-            }
-
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
             return redirect()->route('admin.servers.new')->withInput();
-
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            return redirect()->route('admin.servers.new')->withInput();
         }
 
     }
@@ -259,27 +252,26 @@ class ServersController extends Controller
                 'id' => $id,
                 'tab' => 'tab_details'
             ]);
-
-        } catch (\Exception $e) {
-
-            if ($e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
-                return redirect()->route('admin.servers.view', [
-                    'id' => $id,
-                    'tab' => 'tab_details'
-                ])->withErrors(json_decode($e->getMessage()))->withInput();
-            } else if ($e instanceof \Pterodactyl\Exceptions\DisplayException) {
-                Alert::danger($e->getMessage())->flash();
-            } else {
-                Log::error($e);
-                Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-            }
-
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_details'
+            ])->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
                 'tab' => 'tab_details'
             ])->withInput();
-
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_details'
+            ])->withInput();
         }
+
     }
 
     public function postUpdateServerToggleBuild(Request $request, $id) {
@@ -321,20 +313,22 @@ class ServersController extends Controller
                 'cpu' => $request->input('cpu'),
             ]);
             Alert::success('Server details were successfully updated.')->flash();
-        } catch (\Exception $e) {
-
-            if ($e instanceof \Pterodactyl\Exceptions\DisplayValidationException) {
-                return redirect()->route('admin.servers.view', [
-                    'id' => $id,
-                    'tab' => 'tab_build'
-                ])->withErrors(json_decode($e->getMessage()))->withInput();
-            } else if ($e instanceof \Pterodactyl\Exceptions\DisplayException) {
-                Alert::danger($e->getMessage())->flash();
-            } else {
-                Log::error($e);
-                Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-            }
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_build'
+            ])->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_build'
+            ]);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
         }
+
         return redirect()->route('admin.servers.view', [
             'id' => $id,
             'tab' => 'tab_build'
@@ -348,16 +342,17 @@ class ServersController extends Controller
             $server->deleteServer($id, $force);
             Alert::success('Server was successfully deleted from the panel and the daemon.')->flash();
             return redirect()->route('admin.servers');
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
-            Log::error($e);
-            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch(\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to delete this server. Please try again.')->flash();
+        } finally {
+            return redirect()->route('admin.servers.view', [
+                'id' => $id,
+                'tab' => 'tab_delete'
+            ]);
         }
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_delete'
-        ]);
     }
 
     public function postToggleInstall(Request $request, $id)
@@ -366,7 +361,7 @@ class ServersController extends Controller
             $server = new ServerRepository;
             $server->toggleInstall($id);
             Alert::success('Server status was successfully toggled.')->flash();
-        } catch (\Pterodactyl\Exceptions\DisplayException $ex) {
+        } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch(\Exception $ex) {
             Log::error($ex);
@@ -408,7 +403,7 @@ class ServersController extends Controller
                 '_token'
             ]));
             Alert::success('Added new database to this server.')->flash();
-        } catch (\Pterodactyl\Exceptions\DisplayValidationException $ex) {
+        } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
                 'tab' => 'tab_database'
@@ -430,7 +425,7 @@ class ServersController extends Controller
             $repo = new ServerRepository;
             $repo->suspend($id);
             Alert::success('Server has been suspended on the system. All running processes have been stopped and will not be startable until it is un-suspended.');
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+        } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
         } catch(\Exception $e) {
             Log::error($e);
@@ -449,7 +444,7 @@ class ServersController extends Controller
             $repo = new ServerRepository;
             $repo->unsuspend($id);
             Alert::success('Server has been unsuspended on the system. Access has been re-enabled.');
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
+        } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
         } catch(\Exception $e) {
             Log::error($e);

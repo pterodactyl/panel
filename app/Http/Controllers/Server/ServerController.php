@@ -25,7 +25,6 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Auth;
 use DB;
-use Debugbar;
 use Uuid;
 use Alert;
 use Log;
@@ -133,18 +132,13 @@ class ServerController extends Controller
 
         try {
             $fileContent = $controller->returnFileContents($file);
-        } catch (\Exception $e) {
-
-            Debugbar::addException($e);
-            $exception = 'An error occured while attempting to load the requested file for editing, please try again.';
-
-            if ($e instanceof DisplayException) {
-                $exception = $e->getMessage();
-            }
-
-            Alert::danger($exception)->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
             return redirect()->route('server.files.index', $uuid);
-
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to load the requested file for editing, please try again.')->flash();
+            return redirect()->route('server.files.index', $uuid);
         }
 
         return view('server.files.edit', [
