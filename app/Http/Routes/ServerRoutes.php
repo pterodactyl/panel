@@ -60,22 +60,22 @@ class ServerRoutes {
 
             // File Manager Routes
             $router->get('/files', [
-                'as' => 'files.index',
+                'as' => 'server.files.index',
                 'uses' => 'Server\ServerController@getFiles'
             ]);
 
             $router->get('/files/edit/{file}', [
-                'as' => 'files.edit',
+                'as' => 'server.files.edit',
                 'uses' => 'Server\ServerController@getEditFile'
             ])->where('file', '.*');
 
             $router->get('/files/download/{file}', [
-                'as' => 'files.download',
+                'as' => 'server.files.download',
                 'uses' => 'Server\ServerController@getDownloadFile'
             ])->where('file', '.*');
 
             $router->get('/files/add', [
-                'as' => 'files.add',
+                'as' => 'server.files.add',
                 'uses' => 'Server\ServerController@getAddFile'
             ]);
 

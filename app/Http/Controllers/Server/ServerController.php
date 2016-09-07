@@ -143,7 +143,7 @@ class ServerController extends Controller
             }
 
             Alert::danger($exception)->flash();
-            return redirect()->route('files.index', $uuid);
+            return redirect()->route('server.files.index', $uuid);
 
         }
 

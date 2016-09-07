@@ -186,7 +186,7 @@ $(window).load(function () {
         $("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
         $.ajax({
             type: 'POST',
-            url: '/server/{{ $server->uuidShort }}/ajax/files/save',
+            url: '{{ route('server.files.save', $server->uuidShort) }}',
             headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
             data: {
                 file: '{{ $directory }}' + $('#file_name').val(),
