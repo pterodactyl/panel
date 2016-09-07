@@ -98,14 +98,16 @@
 
         // Handle Deleting Files
         function reloadActionDelete () {
-            $('a.delete_file').click(function (e) {
+            $('[data-action="delete_file"]').click(function (e) {
                 e.preventDefault();
                 var clicked = $(this);
                 var deleteItemPath = $(this).attr('href');
 
                 swal({
                     type: 'warning',
-                    title: 'Really Delete this File?',
+                    title: '',
+                    text: 'Are you sure you want to delete <code>' + clicked.data('name') + '</code>?',
+                    html: true,
                     showCancelButton: true,
                     showConfirmButton: true,
                     closeOnConfirm: false,

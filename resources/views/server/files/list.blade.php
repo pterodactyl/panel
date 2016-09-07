@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-md-3">
                             @can('delete-files', $server)
-                                <a href="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                                <a href="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" data-action="delete_file" data-name="{{ $folder['entry'] }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                             @endcan
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         </div>
                         <div class="col-md-3">
                             @can('delete-files', $server)
-                                <a href="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" class="delete_file"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span>
+                                <a href="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" data-action="delete_file" data-name="{{ $file['entry'] }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span>
                             @endcan
                         </div>
                     </div>
