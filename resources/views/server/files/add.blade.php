@@ -98,7 +98,7 @@ $(window).load(function () {
                     };
                 }
 
-                e.preventDefault();
+                // e.preventDefault();
                 $.each(e.originalEvent.dataTransfer.files, function(index, value) {
 
                     var file = e.originalEvent.dataTransfer.files[index];
