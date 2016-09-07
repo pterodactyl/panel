@@ -59,7 +59,7 @@ class Handler extends ExceptionHandler
             Log::error($exception);
         }
 
-        return (isset($response)) ? $response : parent::render($request, $e);
+        return (isset($response)) ? $response : parent::render($request, $exception);
     }
 
     /**
