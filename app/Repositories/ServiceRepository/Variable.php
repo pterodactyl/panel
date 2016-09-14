@@ -48,7 +48,7 @@ class Variable
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|string',
             'env_variable' => 'required|regex:/^[\w]{1,255}$/',
-            'default_value' => 'required|string|max:255',
+            'default_value' => 'string|max:255',
             'user_viewable' => 'sometimes|required|numeric|size:1',
             'user_editable' => 'sometimes|required|numeric|size:1',
             'required' => 'sometimes|required|numeric|size:1',
@@ -59,7 +59,7 @@ class Variable
             throw new DisplayValidationException($validator->errors());
         }
 
-        if (!preg_match($data['regex'], $data['default_value'])) {
+        if ($data['default_value'] !== '' && !preg_match($data['regex'], $data['default_value'])) {
             throw new DisplayException('The default value you entered cannot violate the regex requirements.');
         }
 
