@@ -274,7 +274,8 @@
         }
     },
     "docker": {
-        "socket": "/var/run/docker.sock"
+        "socket": "/var/run/docker.sock",
+        "autoupdate_images": false
     },
     "sftp": {
         "path": "{{ $node->daemonBase }}",
