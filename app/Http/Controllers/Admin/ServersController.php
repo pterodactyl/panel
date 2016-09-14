@@ -347,12 +347,11 @@ class ServersController extends Controller
         } catch(\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to delete this server. Please try again.')->flash();
-        } finally {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_delete'
-            ]);
         }
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_delete'
+        ]);
     }
 
     public function postToggleInstall(Request $request, $id)
