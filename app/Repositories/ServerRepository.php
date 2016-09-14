@@ -401,8 +401,8 @@ class ServerRepository
                 'string',
                 'regex:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5])):(\d{1,5})$/'
             ],
-            'add_additional' => 'array',
-            'remove_additional' => 'array',
+            'add_additional' => 'nullable|array',
+            'remove_additional' => 'nullable|array',
             'memory' => 'integer|min:0',
             'swap' => 'integer|min:-1',
             'io' => 'integer|min:10|max:1000',
@@ -422,23 +422,31 @@ class ServerRepository
             $server = Models\Server::findOrFail($id);
             $allocation = Models\Allocation::findOrFail($server->allocation);
 
+            $newBuild = [];
+
             if (isset($data['default'])) {
                 list($ip, $port) = explode(':', $data['default']);
-                if ($ip !== $allocation->ip || $port !== $allocation->port) {
+                if ($ip !== $allocation->ip || (int) $port !== $allocation->port) {
                     $selection = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
                     if (!$selection) {
                         throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                     }
 
                     $server->allocation = $selection->id;
+                    $newBuild['default'] = [
+                        'ip' => $ip,
+                        'port' => (int) $port
+                    ];
 
                     // Re-Run to keep updated for rest of function
                     $allocation = Models\Allocation::findOrFail($server->allocation);
                 }
             }
 
+            $newPorts = false;
             // Remove Assignments
             if (isset($data['remove_additional'])) {
+                $newPorts = true;
                 foreach ($data['remove_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
@@ -459,6 +467,7 @@ class ServerRepository
 
             // Add Assignments
             if (isset($data['add_additional'])) {
+                $newPorts = true;
                 foreach ($data['add_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
@@ -486,6 +495,10 @@ class ServerRepository
                 } else {
                     $additionalAssignments[ (string) $assignment->ip ] = [ (int) $assignment->port ];
                 }
+            }
+
+            if ($newPorts === true) {
+                $newBuild['ports|overwrite'] = $additionalAssignments;
             }
 
             // @TODO: verify that server can be set to this much memory without
@@ -516,6 +529,12 @@ class ServerRepository
             // This won't be committed unless the HTTP request succeedes anyways
             $server->save();
 
+            $newBuild['memory'] = (int) $server->memory;
+            $newBuild['swap'] = (int) $server->swap;
+            $newBuild['io'] = (int) $server->io;
+            $newBuild['cpu'] = (int) $server->cpu;
+            $newBuild['disk'] = (int) $server->disk;
+
             $node = Models\Node::getByID($server->node);
             $client = Models\Node::guzzleRequest($server->node);
 
@@ -525,18 +544,7 @@ class ServerRepository
                     'X-Access-Token' => $node->daemonSecret
                 ],
                 'json' => [
-                    'build' => [
-                        'default' => [
-                            'ip' => $allocation->ip,
-                            'port' => (int) $allocation->port
-                        ],
-                        'ports|overwrite' => $additionalAssignments,
-                        'memory' => (int) $server->memory,
-                        'swap' => (int) $server->swap,
-                        'io' => (int) $server->io,
-                        'cpu' => (int) $server->cpu,
-                        'disk' => (int) $server->disk
-                    ]
+                    'build' => $newBuild
                 ]
             ]);
 
