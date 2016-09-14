@@ -58,6 +58,7 @@ class SourceServiceTableSeeder extends Seeder
         $this->service = Models\Service::create([
             'author' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
             'name' => 'Source Engine',
+            'description' => 'Includes support for most Source Dedicated Server games.',
             'file' => 'srcds',
             'executable' => './srcds_run',
             'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} -strictportbind -norestart'

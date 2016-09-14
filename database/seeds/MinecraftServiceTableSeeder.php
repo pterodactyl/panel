@@ -58,6 +58,7 @@ class MinecraftServiceTableSeeder extends Seeder
         $this->service = Models\Service::create([
             'author' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
             'name' => 'Minecraft',
+            'description' => 'Minecraft - the classic game from Mojang. With support for Vanilla MC, Spigot, and many others!',
             'file' => 'minecraft',
             'executable' => 'java',
             'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
