@@ -32,8 +32,8 @@ use Pterodactyl\Models;
 use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Repositories\DatabaseRepository;
 
-use Pterodactly\Exceptions\DisplayException;
-use Pterodactly\Exceptions\DisplayValidationException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
