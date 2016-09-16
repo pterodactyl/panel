@@ -76,6 +76,16 @@ class MinecraftServiceTableSeeder extends Seeder
             'executable' => null,
             'startup' => null
         ]);
+
+        $this->option['spigot'] = Models\ServiceOptions::create([
+            'parent_service' => $this->service->id,
+            'name' => 'Spigot',
+            'description' => 'Spigot is the most widely-used modded Minecraft server software in the world. It powers many of the top Minecraft server networks around to ensure they can cope with their huge player base and ensure the satisfaction of their players. Spigot works by reducing and eliminating many causes of lag, as well as adding in handy features and settings that help make your job of server administration easier.',
+            'tag' => 'spigot',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:spigot',
+            'executable' => null,
+            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -Djline.terminal=jline.UnsupportedTerminal -jar {{SERVER_JARFILE}}'
+        ]);
     }
 
     private function addVariables()
@@ -102,6 +112,42 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_editable' => 1,
             'required' => 1,
             'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
+        ]);
+
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['spigot']->id,
+            'name' => 'Server Jar File',
+            'description' => 'The name of the server jarfile to run the server with.',
+            'env_variable' => 'SERVER_JARFILE',
+            'default_value' => 'server.jar',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'required' => 1,
+            'regex' => '/^([\w\d._-]+)(\.jar)$/'
+        ]);
+
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['spigot']->id,
+            'name' => 'Spigot Version',
+            'description' => 'The version of Spigot to download (using the --rev tag). Use "latest" for latest.',
+            'env_variable' => 'DL_VERSION',
+            'default_value' => 'latest',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'required' => 1,
+            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
+        ]);
+
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['spigot']->id,
+            'name' => 'Download Path',
+            'description' => 'A URL to use to download Spigot rather than building it on the server. This is not user viewable. Use <code>{{DL_VERSION}}</code> in the URL to automatically insert the assigned version into the URL. If you do not enter a URL Spigot will build directly in the container (this will fail on low memory containers).',
+            'env_variable' => 'DL_PATH',
+            'default_value' => '',
+            'user_viewable' => 0,
+            'user_editable' => 0,
+            'required' => 0,
+            'regex' => '/^(.*)$/'
         ]);
     }
 }
