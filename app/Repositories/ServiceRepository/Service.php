@@ -47,8 +47,8 @@ class Service
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|string',
             'file' => 'required|regex:/^[\w.-]{1,50}$/',
-            'executable' => 'required|max:255|regex:/^(.*)$/',
-            'startup' => 'required|string'
+            'executable' => 'max:255|regex:/^(.*)$/',
+            'startup' => 'string'
         ]);
 
         if ($validator->fails()) {
@@ -76,8 +76,8 @@ class Service
             'name' => 'sometimes|required|string|min:1|max:255',
             'description' => 'sometimes|required|string',
             'file' => 'sometimes|required|regex:/^[\w.-]{1,50}$/',
-            'executable' => 'sometimes|required|max:255|regex:/^(.*)$/',
-            'startup' => 'sometimes|required|string'
+            'executable' => 'sometimes|max:255|regex:/^(.*)$/',
+            'startup' => 'sometimes|string'
         ]);
 
         if ($validator->fails()) {
