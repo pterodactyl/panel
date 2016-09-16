@@ -12,7 +12,8 @@ Requires `Daemon@0.2.0`
 * Adds support for suspending servers
 * Adds support for viewing SFTP password within the panel ([#74](https://github.com/Pterodactyl/Panel/issues/74), thanks [@ET-Bent](https://github.com/ET-Bent))
 * Improved API with support for server suspension and build modification.
-* Improved service managment and setup on first install.
+* Improved service management and setup on first install.
+* New terminal that supports ANSI color codes as well as cleaner output. You can also simply type `start` or `boot` to start your server rather than having to use the start button.
 
 ### Bug Fixes
 * Fixes password auto-generation on 'Manage Server' page. ([#67](https://github.com/Pterodactyl/Panel/issues/67), thanks [@ET-Bent](https://github.com/ET-Bent))

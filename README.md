@@ -2,7 +2,7 @@
 Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.2)`.
 
 ## Support & Documentation
-Support for using Pterodactyl can be found on our [community forums](https://community.pterodactyl.io) or on our [Discord chat](https://discord.gg/0gYt8oU8QOkDhKLS).
+Support for using Pterodactyl can be found on our [wiki](https://github.com/Pterodactyl/Panel/wiki) or on our [Discord chat](https://discord.gg/0gYt8oU8QOkDhKLS).
 
 ## License
 ```
@@ -45,6 +45,8 @@ FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://font
 FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - [homepage](http://getfuelux.com)
 
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)
+
+jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/master/LICENSE) - [homepage](http://terminal.jcubic.pl)
 
 MetricsGraphics.js - [license](https://github.com/mozilla/metrics-graphics/blob/master/LICENSE) - [homepage](http://metricsgraphicsjs.org/)
 
