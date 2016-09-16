@@ -82,7 +82,7 @@ class ServersController extends Controller
             'users.email as a_ownerEmail',
             'locations.long as a_locationName',
             'services.name as a_serviceName',
-            'services.executable as a_serviceExecutable',
+            DB::raw('IFNULL(service_options.executable, services.executable) as a_serviceExecutable'),
             'service_options.name as a_servceOptionName',
             'allocations.ip',
             'allocations.port',

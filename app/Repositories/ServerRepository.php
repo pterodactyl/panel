@@ -101,7 +101,7 @@ class ServerRepository
             'port' => 'required_without:allocation|numeric|min:1|max:65535',
             'service' => 'required|numeric|min:1|exists:services,id',
             'option' => 'required|numeric|min:1|exists:service_options,id',
-            'startup' => 'required',
+            'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
         ]);
 
