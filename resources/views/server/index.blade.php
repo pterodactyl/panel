@@ -26,15 +26,19 @@
 @section('scripts')
     @parent
     {!! Theme::css('css/metricsgraphics.css') !!}
+    {!! Theme::css('css/jquery.terminal.css') !!}
     {!! Theme::js('js/d3.min.js') !!}
     {!! Theme::js('js/metricsgraphics.min.js') !!}
     {!! Theme::js('js/async.min.js') !!}
+    {!! Theme::js('js/jquery.mousewheel-min.js') !!}
+    {!! Theme::js('js/jquery.terminal-0.11.6.min.js') !!}
+    {!! Theme::js('js/unix_formatting.js') !!}
 @endsection
 
 @section('content')
 <div class="col-md-12">
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
-        <li id="triggerConsoleView" class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
+        <li class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
         @can('view-allocation', $server)<li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>@endcan
     </ul>
     <div class="tab-content">
@@ -44,25 +48,9 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <textarea id="live_console" class="form-control console" readonly="readonly">Loading Previous Content...</textarea>
+                            <div id="terminal"></div>
                         </div>
-                        <div class="col-md-6">
-                            <hr />
-                            @can('send-command', $server)
-                                <form action="#" method="post" id="console_command" style="display:none;">
-                                    <fieldset>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="command" id="ccmd" placeholder="{{ trans('server.index.command') }}" />
-                                            <span class="input-group-btn">
-                                                <button id="sending_command" class="btn btn-primary btn-sm">&rarr;</button>
-                                            </span>
-                                        </div>
-                                    </fieldset>
-                                </form>
-                                <div class="alert alert-danger" id="sc_resp" style="display:none;margin-top: 15px;"></div>
-                            @endcan
-                        </div>
-                        <div class="col-md-6" style="text-align:center;">
+                        <div class="col-md-12" style="text-align:center;">
                             <hr />
                             @can('power-start', $server)<button class="btn btn-success btn-sm disabled" data-attr="power" data-action="start">Start</button>@endcan
                             @can('power-restart', $server)<button class="btn btn-primary btn-sm disabled" data-attr="power" data-action="restart">Restart</button>@endcan
@@ -130,12 +118,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="PauseConsole">{{ trans('server.index.scrollstop') }}</h4>
+                <h4 class="modal-title" id="PauseConsole">ScrollStop&trade;</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <textarea id="paused_console" class="form-control console" readonly="readonly"></textarea>
+                        <div id="paused_console" style="height: 300px; overflow-x: scroll;"></div>
                     </div>
                 </div>
             </div>
@@ -151,6 +139,51 @@
 <script>
 $(window).load(function () {
     $('[data-toggle="tooltip"]').tooltip();
+    var initialStatusSent = false;
+    var currentStatus = 0;
+
+    var terminal = $('#terminal').terminal(function (command, term) {
+        @can('power-start', $server)
+            if (currentStatus === 0 && (command === 'start' || command === 'boot')) {
+                powerToggleServer('start');
+            }
+        @endcan
+        @can('send-command', $server)
+            if (currentStatus === 0 && !(command === 'start' || command === 'boot')) {
+                term.error('Server is currently off, type `start` or `boot` to start server.');
+            }
+            if (currentStatus !== 0 && command !== '') {
+                $.ajax({
+                    type: 'POST',
+                    headers: {
+                        'X-Access-Token': '{{ $server->daemonSecret }}',
+                        'X-Access-Server': '{{ $server->uuid }}'
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/command',
+                    timeout: 10000,
+                    data: JSON.stringify({ command: command })
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    var error = 'An error occured while trying to process this request.';
+                    if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                        error = jqXHR.responseJSON.error;
+                    }
+                    term.error(error);
+                });
+            }
+        @else
+            term.error('You do not have permission to send commands to this server.');
+        @endcan
+    }, {
+        greetings: '',
+        name: '{{ $server->uuid }}',
+        height: 400,
+        prompt: '{{$server->name}}&#64;{{ $server->uuidShort }}:~$ ',
+        onBlur: function (terminal) {
+            return false;
+        }
+    });
 
     var showOnlyTotal = true;
     $('[data-action="show-all-cores"]').click(function (event) {
@@ -311,12 +344,13 @@ $(window).load(function () {
 
     // New Console Data Recieved
     socket.on('console', function (data) {
-        $('#live_console').val($('#live_console').val() + data.line);
-        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
+        terminal.echo(data.line);
     });
 
     // Update Listings on Initial Status
     socket.on('initial_status', function (data) {
+        currentStatus = data.status;
+        console.log(data.status);
         if (data.status !== 0) {
             $.ajax({
                 type: 'GET',
@@ -327,13 +361,10 @@ $(window).load(function () {
                 url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/log',
                 timeout: 10000
             }).done(function(data) {
-                $('#live_console').val(data);
-                $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                alert('Unable to load initial server log, try reloading the page.');
+                terminal.echo(data);
+            }).fail(function() {
+                terminal.error('Unable to load initial server log, try reloading the page.');
             });
-        } else {
-            $('#live_console').val('Server is currently off.');
         }
         updateServerPowerControls(data.status);
         updatePlayerListVisibility(data.status);
@@ -341,24 +372,14 @@ $(window).load(function () {
 
     // Update Listings on Status
     socket.on('status', function (data) {
+        currentStatus = data.status;
         updateServerPowerControls(data.status);
         updatePlayerListVisibility(data.status);
     });
 
-    // Scroll to the top of the Console when switching to that tab.
-    $('#triggerConsoleView').click(function () {
-        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
-    });
-    if($('triggerConsoleView').is(':visible')) {
-        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
-    }
-    $('a[data-toggle=\'tab\']').on('shown.bs.tab', function (e) {
-        $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
-    });
-
     // Load Paused Console with Live Console Data
     $('#pause_console').click(function(){
-        $('#paused_console').val($('#live_console').val());
+        $('#paused_console').html($('#terminal').html());
     });
 
     function updatePlayerListVisibility(data) {
@@ -413,61 +434,19 @@ $(window).load(function () {
         });
     @endcan
 
-    @can('send-command', $server)
-        // Send Command to Server
-        $('#console_command').submit(function (event) {
-
-            event.preventDefault();
-            var ccmd = $('#ccmd').val();
-            if (ccmd == '') {
-                return;
-            }
-
-            $('#sending_command').html('<i class=\'fa fa-refresh fa-spin\'></i>').addClass('disabled');
-            $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-Access-Token': '{{ $server->daemonSecret }}',
-                    'X-Access-Server': '{{ $server->uuid }}'
-                },
-                contentType: 'application/json; charset=utf-8',
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/command',
-                timeout: 10000,
-                data: JSON.stringify({ command: ccmd })
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: error
-                });
-            }).done(function () {
-                $('#ccmd').val('');
-            }).always(function () {
-                $('#sending_command').html('&rarr;').removeClass('disabled');
-            });
-        });
-    @endcan
     var can_run = true;
     function updateServerPowerControls (data) {
 
         // Reset Console Data
         if (data === 2) {
-            $('#live_console').val($('#live_console').val() + '\n --+ Server Detected as Booting + --\n');
-            $('#live_console').scrollTop($('#live_console')[0].scrollHeight);
+            terminal.echo('\n[Daemon] -- + Server Detected as Booting + --\n');
         }
 
         // Server is On or Starting
         if(data == 1 || data == 2) {
-            $("#console_command").slideDown();
             $('[data-attr="power"][data-action="start"]').addClass('disabled');
             $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
         } else {
-            $("#console_command").slideUp();
             $('[data-attr="power"][data-action="start"]').removeClass('disabled');
             $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
         }
