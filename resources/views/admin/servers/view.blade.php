@@ -310,7 +310,7 @@
                                         <div>
                                             <input type="text" name="{{ $item->env_variable }}" class="form-control" value="{{ old($item->env_variable, $item->a_serverValue) }}" data-action="matchRegex" data-regex="{{ $item->regex }}" />
                                         </div>
-                                        <p class="text-muted"><small>{{ $item->description }}<br />Regex: <code>{{ $item->regex }}</code><br />Access as: <code>&#123;&#123;{{$item->env_variable}}&#125;&#125;</code></small></p>
+                                        <p class="text-muted"><small>{!! $item->description !!}<br />Regex: <code>{{ $item->regex }}</code><br />Access as: <code>&#123;&#123;{{$item->env_variable}}&#125;&#125;</code></small></p>
                                     </div>
                                 @endforeach
                             </div>
