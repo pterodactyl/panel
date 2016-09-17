@@ -76,6 +76,16 @@ class VoiceServiceTableSeeder extends Seeder
             'executable' => './murmur.x86',
             'startup' => '-fg'
         ]);
+
+        $this->option['ts3'] = Models\ServiceOptions::create([
+            'parent_service' => $this->service->id,
+            'name' => 'Teamspeak3 Server',
+            'description' => 'VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.',
+            'tag' => 'ts3',
+            'docker_image' => 'quay.io/pterodactyl/voice:ts3',
+            'executable' => './ts3server_minimal_runscript.sh',
+            'startup' => 'default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}'
+        ]);
     }
 
     private function addVariables()
@@ -93,7 +103,7 @@ class VoiceServiceTableSeeder extends Seeder
         ]);
 
         Models\ServiceVariables::create([
-            'option_id' => $this->option['vanilla']->id,
+            'option_id' => $this->option['mumble']->id,
             'name' => 'Server Version',
             'description' => 'Version of Mumble Server to download and use.',
             'env_variable' => 'MUMBLE_VERSION',
@@ -102,6 +112,18 @@ class VoiceServiceTableSeeder extends Seeder
             'user_editable' => 1,
             'required' => 1,
             'regex' => '/^([0-9_\.-]{5,8})$/'
+        ]);
+
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['ts3']->id,
+            'name' => 'Server Version',
+            'description' => 'The version of Teamspeak 3 to use when running the server.',
+            'env_variable' => 'T_VERSION',
+            'default_value' => '3.0.13.4',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'required' => 1,
+            'regex' => '/^([0-9_\.-]{5,10})$/'
         ]);
     }
 }
