@@ -131,6 +131,7 @@ class Server extends Model
             'servers.*',
             'nodes.name as nodeName',
             'locations.short as a_locationShort',
+            'allocations.ip',
             'allocations.ip_alias',
             'allocations.port'
         )->join('nodes', 'servers.node', '=', 'nodes.id')

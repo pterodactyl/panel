@@ -59,7 +59,7 @@
                         @endif
                         <td><a href="/server/{{ $server->uuidShort }}">{{ $server->name }}</a></td>
                         <td>{{ $server->nodeName }} ({{ $server->a_locationShort }})</td>
-                        <td><code>{{ $server->ip_alias }}:{{ $server->port }}</code></td>
+                        <td><code>@if(!is_null($server->ip_alias)){{ $server->ip_alias }}@else{{ $server->ip }}@endif:{{ $server->port }}</code></td>
                         <td class="text-center" data-action="players">--</td>
                         <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                         <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>

@@ -115,7 +115,7 @@
                             <tr>
                                 <td>Connection Alias</td>
                                 <td>
-                                    @if($server->ip !== $server->ip_alias)
+                                    @if(!is_null($server->ip_alias))
                                         <code>{{ $server->ip_alias }}:{{ $server->port }}</code>
                                     @else
                                         <span class="label label-default">No Alias Assigned</span>
@@ -236,7 +236,7 @@
                                             <span class="input-group-addon">
                                                 <input type="radio" @if($assignment->ip == $server->ip && $assignment->port == $server->port) checked="checked" @endif name="default" value="{{ $assignment->ip }}:{{ $assignment->port }}"/>
                                             </span>
-                                            <input type="text" class="form-control" value="{{ $assignment->ip_alias }}:{{ $assignment->port }}@if($assignment->ip !== $assignment->ip_alias) (alias of {{ $assignment->ip }})@endif" readonly />
+                                            <input type="text" class="form-control" value="@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif" readonly />
                                         </div>
                                     @endforeach
                                 </div>
@@ -247,7 +247,7 @@
                                             <div>
                                                 <select name="add_additional[]" class="form-control" multiple>
                                                     @foreach ($unassigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">{{ $assignment->ip_alias }}:{{ $assignment->port }}@if($assignment->ip !== $assignment->ip_alias) (alias of {{ $assignment->ip }})@endif</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -260,7 +260,7 @@
                                             <div>
                                                 <select name="remove_additional[]" class="form-control" multiple>
                                                     @foreach ($assigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($assignment->ip == $server->ip && $assignment->port == $server->port) disabled @endif>{{ $assignment->ip_alias }}:{{ $assignment->port }}@if($assignment->ip !== $assignment->ip_alias) (alias of {{ $assignment->ip }})@endif</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif</option>
                                                     @endforeach
                                                 </select>
                                             </div>
