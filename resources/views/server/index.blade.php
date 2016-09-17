@@ -179,6 +179,7 @@ $(window).load(function () {
         greetings: '',
         name: '{{ $server->uuid }}',
         height: 400,
+        exit: false,
         prompt: '{{$server->name}}&#64;{{ $server->uuidShort }}:~$ ',
         onBlur: function (terminal) {
             return false;
