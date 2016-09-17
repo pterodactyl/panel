@@ -436,12 +436,6 @@ $(window).load(function () {
 
     var can_run = true;
     function updateServerPowerControls (data) {
-
-        // Reset Console Data
-        if (data === 2) {
-            terminal.echo('\n[Daemon] -- + Server Detected as Booting + --\n');
-        }
-
         // Server is On or Starting
         if(data == 1 || data == 2) {
             $('[data-attr="power"][data-action="start"]').addClass('disabled');
@@ -456,7 +450,6 @@ $(window).load(function () {
         } else {
             $('[data-attr="power"][data-action="kill"]').addClass('disabled');
         }
-
     }
 
     $('[data-attr="power"]').click(function (event) {
