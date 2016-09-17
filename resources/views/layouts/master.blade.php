@@ -98,6 +98,9 @@
                             if (data.status === 1) {
                                 color = '#53B30C';
                                 selector = 'fa-check-circle';
+                            } else if (data.status === 2) {
+                                color = '#5bc0de';
+                                selector = 'fa-circle-o-notch fa-spin'
                             }
 
                             $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
@@ -105,46 +108,44 @@
 
                         // Socket Recieves New Status from Scales
                         socket.on('status', function(data) {
-                            if(data.status !== 'crashed') {
+                            var newStatus, selector = 'fa-times-circle';
+                            var color = '#E33200';
 
-                                var newStatus, selector = 'fa-times-circle';
-                                var color = '#E33200';
-
-                                switch (data.status) {
-                                    case 0:
-                                        newStatus = 'OFF';
-                                        break;
-                                    case 1:
-                                        newStatus = 'ON';
-                                        color = "#53B30C";
-                                        selector = "fa-check-circle";
-                                        break;
-                                    case 2:
-                                        newStatus = 'STARTING';
-                                        break;
-                                    case 3:
-                                        newStatus = 'STOPPING';
-                                        break;
-                                }
-
-                                $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
-
-                                $.notify({
-                                    message: '{{ trans('server.ajax.socket_status') }} <strong>' + newStatus + '</strong>.'
-                                }, {
-                                    type: 'info'
-                                });
-
-                            } else {
-
-                                $.notify({
-                                    message: '{{ trans('server.ajax.socket_status_crashed') }}'
-                                }, {
-                                    delay: 5000,
-                                    type: 'danger'
-                                });
+                            switch (data.status) {
+                                case 0:
+                                    newStatus = 'OFF';
+                                    break;
+                                case 1:
+                                    newStatus = 'ON';
+                                    color = "#53B30C";
+                                    selector = "fa-check-circle";
+                                    break;
+                                case 2:
+                                    newStatus = 'STARTING';
+                                    color = '#5bc0de';
+                                    selector = 'fa-circle-o-notch fa-spin'
+                                    break;
+                                case 3:
+                                    newStatus = 'STOPPING';
+                                    break;
                             }
 
+                            $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
+
+                            $.notify({
+                                message: '{{ trans('server.ajax.socket_status') }} <strong>' + newStatus + '</strong>.'
+                            }, {
+                                type: 'info'
+                            });
+                        });
+
+                        socket.on('crashed', function () {
+                            $.notify({
+                                message: '{{ trans('server.ajax.socket_status_crashed') }}'
+                            }, {
+                                delay: 5000,
+                                type: 'danger'
+                            });
                         });
 
                     });
