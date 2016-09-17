@@ -478,21 +478,23 @@
         <div class="tab-pane" id="tab_delete">
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <form action="/admin/servers/view/{{ $server->id }}" method="POST" data-attr="deleteServer">
-                                {!! csrf_field() !!}
-                                {!! method_field('DELETE') !!}
-                                <button type="submit" class="btn btn-sm btn-danger">Delete Server</button>
-                            </form>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="alert alert-danger">Deleting a server is an irreversible action. <strong>All data will be immediately removed relating to this server.</strong></div>
+                @if($server->installed === 1)
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <form action="/admin/servers/view/{{ $server->id }}" method="POST" data-attr="deleteServer">
+                                    {!! csrf_field() !!}
+                                    {!! method_field('DELETE') !!}
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete Server</button>
+                                </form>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="alert alert-danger">Deleting a server is an irreversible action. <strong>All data will be immediately removed relating to this server.</strong></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                @endif
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-4 text-center">
