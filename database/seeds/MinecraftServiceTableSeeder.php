@@ -86,9 +86,37 @@ class MinecraftServiceTableSeeder extends Seeder
             'executable' => null,
             'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -Djline.terminal=jline.UnsupportedTerminal -jar {{SERVER_JARFILE}}'
         ]);
+
+        $this->option['sponge'] = Models\ServiceOptions::create([
+            'parent_service' => $this->service->id,
+            'name' => 'Sponge (SpongeVanilla)',
+            'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
+            'tag' => 'spigot',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:sponge',
+            'executable' => null,
+            'startup' => null
+        ]);
+
+        $this->option['bungeecord'] = Models\ServiceOptions::create([
+            'parent_service' => $this->service->id,
+            'name' => 'Bungeecord',
+            'description' => 'For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community\'s full potential.',
+            'tag' => 'bungeecord',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:bungeecord',
+            'executable' => null,
+            'startup' => null
+        ]);
     }
 
     private function addVariables()
+    {
+        $this->addVanillaVariables();
+        $this->addSpigotVariables();
+        $this->addSpongeVariables();
+        $this->addBungeecordVariables();
+    }
+
+    private function addVanillaVariables()
     {
         Models\ServiceVariables::create([
             'option_id' => $this->option['vanilla']->id,
@@ -105,7 +133,7 @@ class MinecraftServiceTableSeeder extends Seeder
         Models\ServiceVariables::create([
             'option_id' => $this->option['vanilla']->id,
             'name' => 'Server Jar File',
-            'description' => 'The version of Minecraft Vanilla to install. Use "latest" to install the latest version..',
+            'description' => 'The version of Minecraft Vanilla to install. Use "latest" to install the latest version.',
             'env_variable' => 'VANILLA_VERSION',
             'default_value' => 'latest',
             'user_viewable' => 1,
@@ -113,7 +141,10 @@ class MinecraftServiceTableSeeder extends Seeder
             'required' => 1,
             'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
         ]);
+    }
 
+    private function addSpigotVariables()
+    {
         Models\ServiceVariables::create([
             'option_id' => $this->option['spigot']->id,
             'name' => 'Server Jar File',
@@ -148,6 +179,60 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_editable' => 0,
             'required' => 0,
             'regex' => '/^(.*)$/'
+        ]);
+    }
+
+    private function addSpongeVariables()
+    {
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['sponge']->id,
+            'name' => 'Sponge Version',
+            'description' => 'The version of SpongeVanilla to download and use.',
+            'env_variable' => 'SPONGE_VERSION',
+            'default_value' => '1.8.9-4.2.0-BETA-351',
+            'user_viewable' => 1,
+            'user_editable' => 0,
+            'required' => 1,
+            'regex' => '/^(.*)$/'
+        ]);
+
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['sponge']->id,
+            'name' => 'Server Jar File',
+            'description' => 'The name of the Jarfile to use when running SpongeVanilla.',
+            'env_variable' => 'SERVER_JARFILE',
+            'default_value' => 'server.jar',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'required' => 1,
+            'regex' => '/^([\w\d._-]+)(\.jar)$/'
+        ]);
+    }
+
+    private function addBungeecordVariables()
+    {
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['bungeecord']->id,
+            'name' => 'Bungeecord Version',
+            'description' => 'The version of Bungeecord to download and use.',
+            'env_variable' => 'BUNGE_VERSION',
+            'default_value' => 'latest',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'required' => 1,
+            'regex' => '/^(latest|[\d]{3,5})$/'
+        ]);
+
+        Models\ServiceVariables::create([
+            'option_id' => $this->option['bungeecord']->id,
+            'name' => 'Bungeecord Jar File',
+            'description' => 'The name of the Jarfile to use when running Bungeecord.',
+            'env_variable' => 'SERVER_JARFILE',
+            'default_value' => 'bungeecord.jar',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'required' => 1,
+            'regex' => '/^([\w\d._-]+)(\.jar)$/'
         ]);
     }
 }
