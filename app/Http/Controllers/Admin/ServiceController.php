@@ -181,7 +181,11 @@ class ServiceController extends Controller
 
             // Because of the way old() works on the display side we prefix all of the variables with thier ID
             // We need to remove that prefix here since the repo doesn't want it.
-            $data = [];
+            $data = [
+                'user_viewable' => '0',
+                'user_editable' => '0',
+                'required' => '0'
+            ];
             foreach($request->except(['_token']) as $id => $val) {
                 $data[str_replace($variable.'_', '', $id)] = $val;
             }
