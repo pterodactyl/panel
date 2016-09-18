@@ -174,6 +174,31 @@
                             </div>
                         </form>
                     </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-body">
+                        <form action="{{ route('admin.servers.post.container', $server->id) }}" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name" class="control-label">Docker Container Image</label>
+                                        <div>
+                                            <input type="text" name="docker_image" value="{{ $server->image }}" class="form-control" />
+                                            <p class="text-muted"><small>The docker image to use for this server. The default image for this service and option combination is <code>{{ $server->docker_image }}</code>.</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-center">
+                                    <div class="form-group">
+                                        <label for="name" class="control-label">&nbsp;</label>
+                                        <div>
+                                            {!! csrf_field() !!}
+                                            <input type="submit" class="btn btn-sm btn-primary" value="Update Docker Image" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane" id="tab_build">

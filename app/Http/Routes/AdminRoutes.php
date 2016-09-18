@@ -164,6 +164,12 @@ class AdminRoutes {
             ]);
 
             // Change Server Details
+            $router->post('/view/{id}/container', [
+                'as' => 'admin.servers.post.container',
+                'uses' => 'Admin\ServersController@postUpdateContainerDetails'
+            ]);
+
+            // Change Server Details
             $router->post('/view/{id}/startup', [
                 'as' => 'admin.servers.post.startup',
                 'uses' => 'Admin\ServersController@postUpdateServerStartup'

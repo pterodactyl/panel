@@ -388,6 +388,58 @@ class ServerRepository
     }
 
     /**
+     * [updateContainer description]
+     * @param  int      $id
+     * @param  array    $data
+     * @return bool
+     */
+    public function updateContainer($id, array $data)
+    {
+        $validator = Validator::make($data, [
+            'image' => 'required|string'
+        ]);
+
+        // Run validator, throw catchable and displayable exception if it fails.
+        // Exception includes a JSON result of failed validation rules.
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        DB::beginTransaction();
+        try {
+            $server = Models\Server::findOrFail($id);
+
+            $server->image = $data['image'];
+            $server->save();
+
+            $node = Models\Node::getByID($server->node);
+            $client = Models\Node::guzzleRequest($server->node);
+
+            $client->request('PATCH', '/server', [
+                'headers' => [
+                    'X-Access-Server' => $server->uuid,
+                    'X-Access-Token' => $node->daemonSecret
+                ],
+                'json' => [
+                    'build' => [
+                        'image' => $server->image
+                    ]
+                ]
+            ]);
+
+            DB::commit();
+            return true;
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            DB::rollBack();
+            throw new DisplayException('An error occured while attempting to update the container image.', $ex);
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+
+    }
+
+    /**
      * [changeBuild description]
      * @param  integer  $id
      * @param  array    $data

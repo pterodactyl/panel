@@ -83,6 +83,7 @@ class ServersController extends Controller
             'locations.long as a_locationName',
             'services.name as a_serviceName',
             DB::raw('IFNULL(service_options.executable, services.executable) as a_serviceExecutable'),
+            'service_options.docker_image',
             'service_options.name as a_servceOptionName',
             'allocations.ip',
             'allocations.port',
@@ -248,10 +249,6 @@ class ServersController extends Controller
             ]);
 
             Alert::success('Server details were successfully updated.')->flash();
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_details'
-            ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
@@ -259,19 +256,40 @@ class ServersController extends Controller
             ])->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_details'
-            ])->withInput();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to update this server. Please try again.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_details'
+        ])->withInput();
+    }
+
+    public function postUpdateContainerDetails(Request $request, $id) {
+        try {
+            $server = new ServerRepository;
+            $server->updateContainer($id, [
+                'image' => $request->input('docker_image')
+            ]);
+            Alert::success('Successfully updated this server\'s docker image.')->flash();
+        } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
                 'tab' => 'tab_details'
-            ])->withInput();
+            ])->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. Please try again.')->flash();
         }
 
+        return redirect()->route('admin.servers.view', [
+            'id' => $id,
+            'tab' => 'tab_details'
+        ]);
     }
 
     public function postUpdateServerToggleBuild(Request $request, $id) {
