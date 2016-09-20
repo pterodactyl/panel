@@ -117,6 +117,7 @@ class UpdateEmailSettings extends Command
                 $variables['MANDRILL_SECRET'] = $this->ask('Mandrill Secret');
                 break;
             case 'postmark':
+                $variables['MAIL_DRIVER'] = 'smtp';
                 $variables['MAIL_HOST'] = 'smtp.postmarkapp.com';
                 $variables['MAIL_PORT'] = 587;
                 $variables['MAIL_USERNAME'] = $this->ask('Postmark API Token');
