@@ -75,6 +75,7 @@
             "rm Homestead.yaml.bak",
             "php artisan key:generate",
             "php artisan pterodactyl:env",
+            "php artisan pterodactyl:mail",
             "php artisan migrate",
             "php artisan db:seed",
             "php artisan pterodactyl:user"
@@ -84,6 +85,7 @@
             "php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "php artisan key:generate",
             "php artisan pterodactyl:env",
+            "php artisan pterodactyl:mail",
             "php artisan migrate",
             "php artisan db:seed",
             "php artisan pterodactyl:user"

@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         \Pterodactyl\Console\Commands\UpdateEnvironment::class,
         \Pterodactyl\Console\Commands\RunTasks::class,
         \Pterodactyl\Console\Commands\ClearServices::class,
+        \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
     ];
 
     /**
