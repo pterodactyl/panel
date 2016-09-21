@@ -73,27 +73,15 @@
             "php vendor/bin/homestead make --ip=192.168.10.32",
             "sed -i.bak 's/homestead.app/pterodactyl.local/g' Homestead.yaml",
             "rm Homestead.yaml.bak",
-            "php artisan key:generate",
-            "php artisan pterodactyl:env",
-            "php artisan pterodactyl:mail",
-            "php artisan migrate",
-            "php artisan db:seed",
-            "php artisan pterodactyl:user"
+            "php artisan key:generate"
         ],
         "setup": [
             "composer install --ansi --no-dev",
             "php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "php artisan key:generate",
-            "php artisan pterodactyl:env",
-            "php artisan pterodactyl:mail",
-            "php artisan migrate",
-            "php artisan db:seed",
-            "php artisan pterodactyl:user"
+            "php artisan key:generate"
         ],
         "upgrade": [
-            "composer update --ansi --no-dev",
-            "php artisan pterodactyl:env",
-            "php artisan migrate"
+            "composer update --ansi --no-dev"
         ]
     },
     "config": {
