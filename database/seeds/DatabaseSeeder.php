@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MinecraftServiceTableSeeder::class);
         $this->call(SourceServiceTableSeeder::class);
+        $this->call(TerrariaServiceTableSeeder::class);
+        $this->call(VoiceServiceTableSeeder::class);
 
         Model::reguard();
     }
