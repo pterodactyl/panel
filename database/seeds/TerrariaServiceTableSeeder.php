@@ -93,7 +93,7 @@ class TerrariaServiceTableSeeder extends Seeder
         ]);
 
         Models\ServiceVariables::create([
-            'option_id' => $this->option['vanilla']->id,
+            'option_id' => $this->option['tshock']->id,
             'name' => 'Maximum Slots',
             'description' => 'Total number of slots to allow on the server.',
             'env_variable' => 'MAX_SLOTS',
