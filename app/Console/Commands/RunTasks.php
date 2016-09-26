@@ -67,7 +67,7 @@ class RunTasks extends Command
      */
     public function handle()
     {
-        $tasks = Models\Task::where('queued', 0)->where('active', 1)->where('next_run', '<=', (Carbon::now())->toAtomString())->get();
+        $tasks = Models\Task::where('queued', 0)->where('active', 1)->where('next_run', '<=', Carbon::now()->toAtomString())->get();
 
         $this->info(sprintf('Preparing to queue %d tasks.', count($tasks)));
         $bar = $this->output->createProgressBar(count($tasks));
