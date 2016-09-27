@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Fixed
 * Wrong error highlighting of overallocate fields on Node creation ([#90](https://github.com/Pterodactyl/Panel/issues/90), thanks [@schrej](https://github.com/schrej))
+* Server link in navbar directed to 404 link (PR by [@Randomfish132](https://github.com/Randomfish132))
 
 ## v0.4.0
 

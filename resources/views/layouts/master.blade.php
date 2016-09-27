@@ -173,7 +173,7 @@
                 @section('server-name')
                     @if (isset($server->name) && isset($node->name))
                         <ul class="nav navbar-nav">
-                            <li class="active" id="{{ $server->name }}"><a href="/server/{{ $server->uuidShort }}/index"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ $server->name }}</a></li>
+                            <li class="active" id="{{ $server->name }}"><a href="/server/{{ $server->uuidShort }}"><i id="applyUpdate" class="fa fa-circle-o-notch fa-spinner fa-spin spin-light"></i> {{ $server->name }}</a></li>
                         </ul>
                     @endif
                 @show
@@ -230,7 +230,6 @@
                 @show
             </div>
         </div>
-        <!-- Add Back Mobile Support -->
         <div class="row">
             <div class="col-md-3 hidden-xs hidden-sm" id="sidebar_links">
                 @section('sidebar')
