@@ -200,9 +200,9 @@
 
         @if (count($errors) > 0)
             @foreach ($errors->all() as $error)
-                <?php preg_match('/^The\s(.*?)\s/', $error, $matches) ?>
+                <?php preg_match('/^The\s(.*?)\sfield/', $error, $matches) ?>
                 @if (isset($matches[1]))
-                    $('[name="{{ $matches[1] }}"]').parent().parent().addClass('has-error');
+                    $('[name="{{ str_replace(' ', '_', $matches[1]) }}"]').parent().parent().addClass('has-error');
                 @endif
             @endforeach
         @endif
