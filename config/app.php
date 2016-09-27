@@ -4,7 +4,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'version' => env('APP_VERSION', 'v0.5.0-beta'),
+    'version' => env('APP_VERSION', 'v0.4.1-beta'),
 
     /*
     |--------------------------------------------------------------------------
@@ -115,7 +115,7 @@ return [
     'providers' => [
 
         Dingo\Api\Provider\LaravelServiceProvider::class,
-        
+
         /*
          * Laravel Framework Service Providers...
          */
