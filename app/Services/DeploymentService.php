@@ -104,7 +104,12 @@ class DeploymentService
      */
     public static function randomAllocation($node)
     {
-        return Models\Allocation::where('node', $node)->whereNull('assigned_to')->inRandomOrder()->first();
+        $allocation = Models\Allocation::where('node', $node)->whereNull('assigned_to')->inRandomOrder()->first();
+        if (!$allocation) {
+            throw new DisplayException('No available allocation could be found for the assigned node.');
+        }
+
+        return $allocation;
     }
 
     /**
