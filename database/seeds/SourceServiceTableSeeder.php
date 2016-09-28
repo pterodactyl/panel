@@ -79,7 +79,7 @@ class SourceServiceTableSeeder extends Seeder
 
         $this->option['tf2'] = Models\ServiceOptions::create([
             'parent_service' => $this->service->id,
-            'name' => 'Insurgency',
+            'name' => 'Team Fortress 2',
             'description' => 'Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.',
             'tag' => 'srcds',
             'docker_image' => 'quay.io/pterodactyl/srcds',
