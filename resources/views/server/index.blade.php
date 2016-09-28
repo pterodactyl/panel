@@ -83,9 +83,9 @@
                         <ul class="nav nav-pills nav-stacked" id="conn_options">
                             @foreach ($allocations as $allocation)
                                 <li role="presentation" @if($allocation->id === $server->allocation) class="active" @endif>
-                                    <a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">{{ $allocation->ip_alias }}
+                                    <a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">@if(!is_null($allocation->ip_alias)){{ $allocation->ip_alias }}@else{{ $allocation->ip }}@endif
                                         <span class="badge">{{ $allocation->port }}</span>
-                                        @if($allocation->ip !== $allocation->ip_alias)<small><span class="pull-right">Alias for {{ $allocation->ip }}</span></small>@endif
+                                        @if(!is_null($allocation->ip_alias))<small><span class="pull-right">Alias for {{ $allocation->ip }}</span></small>@endif
                                     </a>
                                 </li>
                             @endforeach
