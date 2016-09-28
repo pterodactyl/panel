@@ -442,7 +442,9 @@ $(window).load(function () {
             $('[data-attr="power"][data-action="start"]').addClass('disabled');
             $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
         } else {
-            $('[data-attr="power"][data-action="start"]').removeClass('disabled');
+            if (data == 0) {
+                $('[data-attr="power"][data-action="start"]').removeClass('disabled');
+            }
             $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
         }
 

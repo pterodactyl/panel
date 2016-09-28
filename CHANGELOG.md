@@ -9,6 +9,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
 
 ### Changed
+* Prevent clicking server start button until server is completely off, not just stopping.
+
 ### Fixed
 * Team Fortress named 'Insurgency' in panel in database seeder. ([#96](https://github.com/Pterodactyl/Panel/issues/96), PR by [@MeltedLux](https://github.com/MeltedLux))
 * Server allocation listing display now showing the connection IP unless an alias was assigned.
