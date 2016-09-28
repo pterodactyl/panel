@@ -31,6 +31,7 @@ use Log;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
+use Pterodactyl\Services\DeploymentService;
 
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\AccountNotFoundException;
@@ -88,22 +89,36 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner' => 'required|email|exists:users,email',
-            'node' => 'required|numeric|min:1|exists:nodes,id',
+            'owner' => 'bail|required|email|exists:users,email',
             'name' => 'required|regex:/^([\w -]{4,35})$/',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
             'io' => 'required|numeric|min:10|max:1000',
             'cpu' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:0',
-            'allocation' => 'numeric|exists:allocations,id|required_without:ip,port',
-            'ip' => 'required_without:allocation|ip',
-            'port' => 'required_without:allocation|numeric|min:1|max:65535',
-            'service' => 'required|numeric|min:1|exists:services,id',
-            'option' => 'required|numeric|min:1|exists:service_options,id',
+            'service' => 'bail|required|numeric|min:1|exists:services,id',
+            'option' => 'bail|required|numeric|min:1|exists:service_options,id',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
+            'auto_deploy' => 'sometimes|boolean'
         ]);
+
+        $validator->sometimes('node', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
+            return !($input->auto_deploy);
+        });
+
+        $validator->sometimes('ip', 'required|ip', function ($input) {
+            return (!$input->auto_deploy && !$input->allocation);
+        });
+
+        $validator->sometimes('port', 'required|numeric|min:1|max:65535', function ($input) {
+            return (!$input->auto_deploy && !$input->allocation);
+        });
+
+        $validator->sometimes('allocation', 'numeric|exists:allocations,id', function ($input) {
+            return !($input->auto_deploy || ($input->port && $input->ip));
+        });
+
 
         // Run validator, throw catchable and displayable exception if it fails.
         // Exception includes a JSON result of failed validation rules.
@@ -114,15 +129,27 @@ class ServerRepository
         // Get the User ID; user exists since we passed the 'exists:users,email' part of the validation
         $user = Models\User::select('id')->where('email', $data['owner'])->first();
 
-        // Get Node Information
-        $node = Models\Node::getByID($data['node']);
+        $autoDeployed = false;
+        if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, "1"])) {
+            // This is an auto-deployment situation
+            // Ignore any other passed node data
+            unset($data['node'], $data['ip'], $data['port'], $data['allocation']);
+
+            $autoDeployed = true;
+            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location']);
+            $allocation = DeploymentService::randomAllocation($node->id);
+        } else {
+            $node = Models\Node::getByID($data['node']);
+        }
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
-        if (!isset($data['allocation'])) {
-            $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
-        } else {
-            $allocation = Models\Allocation::where('id' , $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+        if (!$autoDeployed) {
+            if (!isset($data['allocation'])) {
+                $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+            } else {
+                $allocation = Models\Allocation::where('id' , $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+            }
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
@@ -176,28 +203,29 @@ class ServerRepository
         }
 
         // Check Overallocation
-        if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
+        if (!$autoDeployed) {
+            if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
 
-            $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
+                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
 
-            // Check memory limits
-            if (is_numeric($node->memory_overallocate)) {
-                $newMemory = $totals->memory + $data['memory'];
-                $memoryLimit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
-                if($newMemory > $memoryLimit) {
-                    throw new DisplayException('The amount of memory allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->memory_overallocate + 100) . '% of its assigned ' . $node->memory . 'Mb of memory (' . $memoryLimit . 'Mb) of which ' . (($totals->memory / $node->memory) * 100) . '% (' . $totals->memory . 'Mb) is in use already. By allocating this server the node would be at ' . (($newMemory / $node->memory) * 100) . '% (' . $newMemory . 'Mb) usage.');
+                // Check memory limits
+                if (is_numeric($node->memory_overallocate)) {
+                    $newMemory = $totals->memory + $data['memory'];
+                    $memoryLimit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
+                    if($newMemory > $memoryLimit) {
+                        throw new DisplayException('The amount of memory allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->memory_overallocate + 100) . '% of its assigned ' . $node->memory . 'Mb of memory (' . $memoryLimit . 'Mb) of which ' . (($totals->memory / $node->memory) * 100) . '% (' . $totals->memory . 'Mb) is in use already. By allocating this server the node would be at ' . (($newMemory / $node->memory) * 100) . '% (' . $newMemory . 'Mb) usage.');
+                    }
+                }
+
+                // Check Disk Limits
+                if (is_numeric($node->disk_overallocate)) {
+                    $newDisk = $totals->disk + $data['disk'];
+                    $diskLimit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
+                    if($newDisk > $diskLimit) {
+                        throw new DisplayException('The amount of disk allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->disk_overallocate + 100) . '% of its assigned ' . $node->disk . 'Mb of disk (' . $diskLimit . 'Mb) of which ' . (($totals->disk / $node->disk) * 100) . '% (' . $totals->disk . 'Mb) is in use already. By allocating this server the node would be at ' . (($newDisk / $node->disk) * 100) . '% (' . $newDisk . 'Mb) usage.');
+                    }
                 }
             }
-
-            // Check Disk Limits
-            if (is_numeric($node->disk_overallocate)) {
-                $newDisk = $totals->disk + $data['disk'];
-                $diskLimit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
-                if($newDisk > $diskLimit) {
-                    throw new DisplayException('The amount of disk allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->disk_overallocate + 100) . '% of its assigned ' . $node->disk . 'Mb of disk (' . $diskLimit . 'Mb) of which ' . (($totals->disk / $node->disk) * 100) . '% (' . $totals->disk . 'Mb) is in use already. By allocating this server the node would be at ' . (($newDisk / $node->disk) * 100) . '% (' . $newDisk . 'Mb) usage.');
-                }
-            }
-
         }
 
         DB::beginTransaction();
@@ -211,7 +239,7 @@ class ServerRepository
             $server->fill([
                 'uuid' => $generatedUuid,
                 'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
-                'node' => $data['node'],
+                'node' => $node->id,
                 'name' => $data['name'],
                 'suspended' => 0,
                 'owner' => $user->id,
@@ -226,7 +254,8 @@ class ServerRepository
                 'option' => $data['option'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
-                'username' => $this->generateSFTPUsername($data['name'])
+                'username' => $this->generateSFTPUsername($data['name']),
+                'sftp_password' => Crypt::encrypt('not set')
             ]);
             $server->save();
 
@@ -292,7 +321,6 @@ class ServerRepository
             throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
-            Log:error($ex);
             throw $ex;
         }
 

@@ -3,7 +3,18 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.4.1
+## v0.5.0 (Bodacious Boreopterus) [Unreleased]
+
+### Added
+* Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
+
+### Changed
+### Fixed
+### Deprecated
+### Removed
+### Security
+
+## v0.4.1 (Articulate Aerotitan)
 
 ### Changed
 * Overallocate fields are now auto-filled with a value of `0`
@@ -13,7 +24,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Server link in navbar directed to 404 link (PR by [@Randomfish132](https://github.com/Randomfish132))
 * Composer fails to finish ([#92](https://github.com/Pterodactyl/Panel/issues/92), PR by [@schrej](https://github.com/schrej), thanks [@parkervcp](https://github.com/parkervcp))
 
-## v0.4.0
+## v0.4.0 (Arty Aerodactylus)
 
 ### Added
 * Task scheduler supporting customized CRON syntax or dropdown selected options. (currently only support command and power options)

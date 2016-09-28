@@ -65,7 +65,7 @@
                             <p class="text-muted"><small>The location in which this server will be deployed.</small></p>
                         </div>
                     </div>
-                    <div class="form-group col-md-6 hidden">
+                    <div class="form-group col-md-6 hidden" id="allocationNode">
                         <label for="node" class="control-label">Server Node</label>
                         <div>
                             <select name="node" id="getNode" class="form-control">
@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-6 hidden">
+                    <div class="form-group col-md-6 hidden" id="allocationIP">
                         <label for="ip" class="control-label">Server IP</label>
                         <div>
                             <select name="ip" id="getIP" class="form-control">
@@ -85,11 +85,22 @@
                             <p class="text-muted"><small>Select the main IP that this server will be listening on. You can assign additional open IPs and ports below.</small></p>
                         </div>
                     </div>
-                    <div class="form-group col-md-6 hidden">
+                    <div class="form-group col-md-6 hidden" id="allocationPort">
                         <label for="port" class="control-label">Server Port</label>
                         <div>
                             <select name="port" id="getPort" class="form-control"></select>
                             <p class="text-muted"><small>Select the main port that this server will be listening on.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 fuelux">
+                        <hr style="margin-top: 10px;"/>
+                        <div class="checkbox highlight" style="margin: 0;">
+                            <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                <input class="sr-only" name="auto_deploy" type="checkbox" @if(isset($oldInput['auto_deploy']))checked="checked"@endif value="1"> <strong>Enable Automatic Deployment</strong>
+                                <p class="text-muted"><small>Check this box if you want the panel to automatically select a node and allocation for this server in the given location.</small><p>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -339,6 +350,17 @@ $(document).ready(function () {
 
         $('#getPort').parent().parent().removeClass('hidden');
 
+    });
+
+    $('input[name="auto_deploy"]').change(function () {
+        if ($(this).is(':checked')) {
+            $('#allocationPort, #allocationIP, #allocationNode').addClass('hidden');
+        } else {
+            currentLocation = null;
+            $('#getLocation').trigger('change', function (e) {
+                alert('triggered');
+            });
+        }
     });
 
     $('#getService').on('change', function (event) {
