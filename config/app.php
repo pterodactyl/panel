@@ -4,7 +4,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'version' => env('APP_VERSION', 'v0.4.1-beta'),
+    'version' => env('APP_VERSION', 'v0.5.0-beta'),
 
     /*
     |--------------------------------------------------------------------------
