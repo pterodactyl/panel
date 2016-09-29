@@ -77,9 +77,10 @@ class NodesController extends Controller
             $new = $node->create($request->except([
                 '_token'
             ]));
-            Alert::success('Successfully created new node. You should allocate some IP addresses to it now.')->flash();
+            Alert::success('Successfully created new node. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
             return redirect()->route('admin.nodes.view', [
-                'id' => $new
+                'id' => $new,
+                'tab' => 'tab_allocation'
             ]);
         } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.new')->withErrors(json_decode($e->getMessage()))->withInput();
