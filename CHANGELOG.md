@@ -17,6 +17,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Team Fortress named 'Insurgency' in panel in database seeder. ([#96](https://github.com/Pterodactyl/Panel/issues/96), PR by [@MeltedLux](https://github.com/MeltedLux))
 * Server allocation listing display now showing the connection IP unless an alias was assigned.
+* Fixed bug where node allocation would appear to be successful but actual encounter an error. Made it cleared how to enter ports.
 
 ### Deprecated
 ### Removed

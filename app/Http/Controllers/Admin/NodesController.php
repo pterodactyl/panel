@@ -27,6 +27,7 @@ use Alert;
 use Debugbar;
 use Log;
 use DB;
+use Validator;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\NodeRepository;
@@ -116,6 +117,10 @@ class NodesController extends Controller
                 ->orderBy('allocations.ip', 'asc')
                 ->orderBy('allocations.port', 'asc')
                 ->paginate(20, ['*'], 'allocations'),
+            'allocation_ips' => Models\Allocation::select('id', 'ip')
+                ->where('node', $node->id)
+                ->groupBy('ip')
+                ->get(),
         ]);
     }
 
@@ -169,7 +174,7 @@ class NodesController extends Controller
         Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
         return redirect()->route('admin.nodes.view', [
             'id' => $node,
-            'tab' => 'tab_allocations'
+            'tab' => 'tab_allocation'
         ]);
     }
 
@@ -198,6 +203,19 @@ class NodesController extends Controller
 
     public function postAllocations(Request $request, $id)
     {
+
+        $validator = Validator::make($request->all(), [
+            'allocate_ip.*' => 'required|string',
+            'allocate_port.*' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.nodes.view', [
+                'id' => $id,
+                'tab' => 'tab_allocation'
+            ])->withErrors($validator->errors())->withInput();
+        }
+
         $processedData = [];
         foreach($request->input('allocate_ip') as $ip) {
             if (!array_key_exists($ip, $processedData)) {
@@ -217,9 +235,6 @@ class NodesController extends Controller
         }
 
         try {
-            if(empty($processedData)) {
-                throw new DisplayException('It seems that no data was passed to this function.');
-            }
             $node = new NodeRepository;
             $node->addAllocations($id, $processedData);
             Alert::success('Successfully added new allocations to this node.')->flash();

@@ -275,7 +275,7 @@
     },
     "docker": {
         "socket": "/var/run/docker.sock",
-        "autoupdate_images": false
+        "autoupdate_images": true
     },
     "sftp": {
         "path": "{{ $node->daemonBase }}",
@@ -318,8 +318,8 @@
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                         <ul class="dropdown-menu dropdown-menu-right">
-                                            @foreach($allocations as $ip => $ports)
-                                                <li data-action="alloc_dropdown_val" data-value="{{ $ip }}"><a href="#">{{ $ip }}</a></li>
+                                            @foreach($allocation_ips as $allocation)
+                                                <li data-action="alloc_dropdown_val" data-value="{{ $allocation->ip }}"><a href="#">{{ $allocation->ip }}</a></li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -334,7 +334,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <p class="text-muted"><small>Please enter a comma (<code>,</code>) after each port or port range.</small></p>
+                                <p class="text-muted"><small>You <strong>must</strong> enter a comma (<code>,</code>) or press the enter key after each port or range that you enter. They should appear in a blue box.</small></p>
                                 <input name="allocate_port[]" type="hidden" class="pillboxMain"/>
                             </div>
                             <div class="form-group col-md-1 col-xs-2" style="margin-left: -10px;">
@@ -468,12 +468,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <select class="form-control" name="ip">
-                                <?php $displayed = []; ?>
-                                @foreach($allocations as $allocation)
-                                    @if(!array_key_exists($allocation->ip, $displayed))
-                                        <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
-                                        <?php $displayed[$allocation->ip] = true; ?>
-                                    @endif
+                                @foreach($allocation_ips as $allocation)
+                                    <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
                         </div>
