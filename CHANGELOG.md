@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Prevent clicking server start button until server is completely off, not just stopping.
 * Upon successful creation of a node it will redirect to the allocation tab and display a clearer message to add allocations.
+* Trying to add a new node if no location exists redirects user to location management page and alerts them to add a location first.
 
 ### Fixed
 * Team Fortress named 'Insurgency' in panel in database seeder. ([#96](https://github.com/Pterodactyl/Panel/issues/96), PR by [@MeltedLux](https://github.com/MeltedLux))

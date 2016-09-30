@@ -65,6 +65,11 @@ class NodesController extends Controller
 
     public function getNew(Request $request)
     {
+        if (!Models\Location::all()->count()) {
+            Alert::warning('You must add a location before you can add a new node.')->flash();
+            return redirect()->route('admin.locations');
+        }
+
         return view('admin.nodes.new', [
             'locations' => Models\Location::all()
         ]);
