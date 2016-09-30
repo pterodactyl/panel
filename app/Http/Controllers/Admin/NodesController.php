@@ -176,7 +176,7 @@ class NodesController extends Controller
 
         try {
             $update = Models\Allocation::findOrFail($request->input('allocation'));
-            $update->ip_alias = $request->input('alias');
+            $update->ip_alias = (empty($request->input('alias'))) ? null : $request->input('alias');
             $update->save();
 
             return response('', 204);
