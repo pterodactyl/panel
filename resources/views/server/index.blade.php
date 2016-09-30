@@ -80,16 +80,36 @@
                     <div class="panel-heading"></div>
                     <div class="panel-body">
                         <div class="alert alert-info">Below is a listing of all avaliable IPs and Ports for your service. To change the default connection address for your server, simply click on the one you would like to make default below.</div>
-                        <ul class="nav nav-pills nav-stacked" id="conn_options">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>IP Address</th>
+                                <th>Alias</th>
+                                <th>Port</th>
+                                <th></th>
+                            </tr>
                             @foreach ($allocations as $allocation)
-                                <li role="presentation" @if($allocation->id === $server->allocation) class="active" @endif>
-                                    <a href="#/set-connnection/{{ $allocation->ip }}:{{ $allocation->port }}" data-action="set-connection" data-connection="{{ $allocation->ip }}:{{ $allocation->port }}">@if(!is_null($allocation->ip_alias)){{ $allocation->ip_alias }}@else{{ $allocation->ip }}@endif
-                                        <span class="badge">{{ $allocation->port }}</span>
-                                        @if(!is_null($allocation->ip_alias))<small><span class="pull-right">Alias for {{ $allocation->ip }}</span></small>@endif
-                                    </a>
-                                </li>
+                                <tr>
+                                    <td>
+                                        <code>{{ $allocation->ip }}</code>
+                                    </td>
+                                    <td @if(is_null($allocation->ip_alias))class="muted"@endif>
+                                        @if(is_null($allocation->ip_alias))
+                                            <span class="label label-default">none</span>
+                                        @else
+                                            <code>{{ $allocation->ip_alias }}</code>
+                                        @endif
+                                    </td>
+                                    <td><code>{{ $allocation->port }}</code></td>
+                                    <td class="col-xs-2">
+                                        @if($allocation->id === $server->allocation)
+                                            <span class="label label-primary is-primary" data-allocation="{{ $allocation->id }}">Primary</span>
+                                        @else
+                                            <span class="label label-success muted muted-hover use-pointer" data-action="set-connection" data-allocation="{{ $allocation->id }}">Make Primary</span>
+                                        @endif
+                                    </td>
+                                </tr>
                             @endforeach
-                        </ul>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -351,7 +371,6 @@ $(window).load(function () {
     // Update Listings on Initial Status
     socket.on('initial_status', function (data) {
         currentStatus = data.status;
-        console.log(data.status);
         if (data.status !== 0) {
             $.ajax({
                 type: 'GET',
@@ -394,45 +413,46 @@ $(window).load(function () {
 
     @can('set-allocation', $server)
         // Send Request
-        $('[data-action="set-connection"]').click(function (event) {
-            event.preventDefault();
-            var element = $(this);
-            if (element.hasClass('active')) {
-                return;
-            }
+        function handleChange() {
+            $('[data-action="set-connection"]').click(function (event) {
+                event.preventDefault();
+                var element = $(this);
 
-            $.ajax({
-                method: 'POST',
-                url: '/server/{{ $server->uuidShort }}/ajax/set-connection',
-                data: {
-                    connection: element.data('connection')
-                },
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }).done(function (data) {
-                swal({
-                    type: 'success',
-                    title: '',
-                    text: data
-                });
-                $('#conn_options').find('li.active').removeClass('active');
-                element.parent().addClass('active');
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                var respError;
-                if (typeof jqXHR.responseJSON.error === 'undefined' || jqXHR.responseJSON.error === '') {
-                    respError = 'An error occured while attempting to perform this action.';
-                } else {
-                    respError = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: respError
+                $.ajax({
+                    method: 'POST',
+                    url: '/server/{{ $server->uuidShort }}/ajax/set-primary',
+                    data: {
+                        allocation: element.data('allocation')
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).done(function (data) {
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: data
+                    });
+                    element.parents().eq(2).find('.is-primary').addClass('muted muted-hover label-success use-pointer').attr('data-action', 'set-connection').data('action', 'set-connection').removeClass('label-primary is-primary').html('Make Primary');
+                    element.removeClass('muted muted-hover label-success use-pointer').attr('data-action', 'do-nothing').data('action', 'do-nothing').addClass('label-primary is-primary').html('Primary');
+                    handleChange();
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    var respError;
+                    if (typeof jqXHR.responseJSON.error === 'undefined' || jqXHR.responseJSON.error === '') {
+                        respError = 'An error occured while attempting to perform this action.';
+                    } else {
+                        respError = jqXHR.responseJSON.error;
+                    }
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        text: respError
+                    });
                 });
             });
-        });
+        }
+        handleChange();
     @endcan
 
     var can_run = true;

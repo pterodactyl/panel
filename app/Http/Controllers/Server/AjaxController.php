@@ -171,35 +171,40 @@ class AjaxController extends Controller
     }
 
     /**
-     * [postSetConnection description]
+     * [postSetPrimary description]
      * @param  Request $request
      * @param  string  $uuid
      * @return \Illuminate\Http\Response
      */
-    public function postSetConnection(Request $request, $uuid)
+    public function postSetPrimary(Request $request, $uuid)
     {
 
         $server = Models\Server::getByUUID($uuid);
-        $allocation = Models\Allocation::findOrFail($server->allocation);
-
         $this->authorize('set-connection', $server);
 
-        if ($request->input('connection') === $allocation->ip . ':' . $allocation->port) {
+        if ((int) $request->input('allocation') === $server->allocation) {
             return response()->json([
                 'error' => 'You are already using this as your default connection.'
             ], 409);
         }
 
         try {
+            $allocation = Models\Allocation::where('id', $request->input('allocation'))->where('assigned_to', $server->id)->first();
+            if (!$allocation) {
+                return response()->json([
+                    'error' => 'No allocation matching your request was found in the system.'
+                ], 422);
+            }
+
             $repo = new Repositories\ServerRepository;
             $repo->changeBuild($server->id, [
-                'default' => $request->input('connection'),
+                'default' => $allocation->ip . ':' . $allocation->port,
             ]);
             return response('The default connection for this server has been updated. Please be aware that you will need to restart your server for this change to go into effect.');
         } catch (DisplayValidationException $ex) {
             return response()->json([
                 'error' => json_decode($ex->getMessage(), true),
-            ], 503);
+            ], 422);
         } catch (DisplayException $ex) {
             return response()->json([
                 'error' => $ex->getMessage(),

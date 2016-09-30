@@ -185,3 +185,17 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 .text-v-center {
     vertical-align: middle !important;
 }
+
+.muted {
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+}
+
+.muted-hover:hover {
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+.use-pointer {
+    cursor: pointer !important;
+}

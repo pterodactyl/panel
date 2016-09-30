@@ -154,8 +154,8 @@ class ServerRoutes {
                 ]);
 
                 // Sets the Default Connection for the Server
-                $router->post('set-connection', [
-                    'uses' => 'Server\AjaxController@postSetConnection'
+                $router->post('set-primary', [
+                    'uses' => 'Server\AjaxController@postSetPrimary'
                 ]);
 
                 $router->post('settings/reset-database-password', [
