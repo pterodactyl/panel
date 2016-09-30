@@ -243,8 +243,17 @@ class AdminRoutes {
                 'uses' => 'Admin\NodesController@postView'
             ]);
 
-            $router->delete('/view/{id}/allocation/{ip}/{port?}', [
-                'uses' => 'Admin\NodesController@deleteAllocation'
+            $router->delete('/view/{id}/deallocate/single/{allocation}', [
+                'uses' => 'Admin\NodesController@deallocateSingle'
+            ]);
+
+            $router->post('/view/{id}/deallocate/block', [
+                'uses' => 'Admin\NodesController@deallocateBlock'
+            ]);
+
+            $router->post('/view/{id}/alias', [
+                'as' => 'admin.nodes.alias',
+                'uses' => 'Admin\NodesController@setAlias'
             ]);
 
             $router->get('/view/{id}/allocations.json', [

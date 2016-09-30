@@ -96,32 +96,21 @@ class NodesController extends Controller
     public function getView(Request $request, $id)
     {
         $node = Models\Node::findOrFail($id);
-        $allocations = [];
-        $alloc = Models\Allocation::select('ip', 'port', 'assigned_to')->where('node', $node->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get();
-        if ($alloc) {
-            foreach($alloc as &$alloc) {
-                if (!array_key_exists($alloc->ip, $allocations)) {
-                    $allocations[$alloc->ip] = [[
-                        'port' => $alloc->port,
-                        'assigned_to' => $alloc->assigned_to
-                    ]];
-                } else {
-                    array_push($allocations[$alloc->ip], [
-                        'port' => $alloc->port,
-                        'assigned_to' => $alloc->assigned_to
-                    ]);
-                }
-            }
-        }
+
         return view('admin.nodes.view', [
             'node' => $node,
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
                 ->join('users', 'users.id', '=', 'servers.owner')
                 ->join('services', 'services.id', '=', 'servers.service')
-                ->where('node', $id)->paginate(10),
+                ->where('node', $id)->paginate(10, ['*'], 'servers'),
             'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
             'locations' => Models\Location::all(),
-            'allocations' => json_decode(json_encode($allocations), false),
+            'allocations' => Models\Allocation::select('allocations.*', 'servers.name as assigned_to_name')
+                ->where('allocations.node', $node->id)
+                ->leftJoin('servers', 'servers.id', '=', 'allocations.assigned_to')
+                ->orderBy('allocations.ip', 'asc')
+                ->orderBy('allocations.port', 'asc')
+                ->paginate(20, ['*'], 'allocations'),
         ]);
     }
 
@@ -151,22 +140,49 @@ class NodesController extends Controller
         ])->withInput();
     }
 
-    public function deleteAllocation(Request $request, $id, $ip, $port = null)
+    public function deallocateSingle(Request $request, $node, $allocation)
     {
-        $query = Models\Allocation::where('node', $id)->whereNull('assigned_to')->where('ip', $ip);
-        if (is_null($port) || $port === 'undefined') {
-            $allocation = $query;
-        } else {
-            $allocation = $query->where('port', $port)->first();
-        }
-
-        if (!$allocation) {
+        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('id', $allocation)->delete();
+        if ((int) $query === 0) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.'
             ], 400);
         }
-        $allocation->delete();
         return response('', 204);
+    }
+
+    public function deallocateBlock(Request $request, $node)
+    {
+        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('ip', $request->input('ip'))->delete();
+        if ((int) $query === 0) {
+            Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
+            return redirect()->route('admin.nodes.view', [
+                'id' => $node,
+                'tab' => 'tab_allocations'
+            ]);
+        }
+        Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
+        return redirect()->route('admin.nodes.view', [
+            'id' => $node,
+            'tab' => 'tab_allocations'
+        ]);
+    }
+
+    public function setAlias(Request $request, $node)
+    {
+        if (!$request->input('allocation')) {
+            return response('Missing required parameters.', 422);
+        }
+
+        try {
+            $update = Models\Allocation::findOrFail($request->input('allocation'));
+            $update->ip_alias = $request->input('alias');
+            $update->save();
+
+            return response('', 204);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 
     public function getAllocationsJson(Request $request, $id)

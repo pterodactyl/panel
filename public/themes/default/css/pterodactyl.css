@@ -90,6 +90,21 @@ body{font-size:13px}
 .btn-xxs{padding:2px 6px;font-size:10px;-webkit-border-radius:1px;-moz-border-radius:1px;border-radius:2px}
 .form-control{height:36px}
 .input-group-addon{font-size:12px;}
+.input-sm {
+    height: 30px;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    border-radius: 2px;
+}
+.input-loader {
+    display: none;
+    position:relative;
+    top: -23px;
+    float: right;
+    right: 5px;
+    color: #cccccc;
+    height: 0;
+}
 pre{display:block;padding:12px 12px;margin:0;font-size:12px;color:#c7254e;background-color:#f9f2f4;border:1px solid #c7254e;border-radius:0;white-space:pre}
 .badge.label-danger {background: #d9534f !important;}
 .close {color:#000;opacity:0.2;font-size:1.6em;}
@@ -102,6 +117,9 @@ form .text-muted {margin: 0 0 -5.5px}
 .label{border-radius: .25em;padding: .2em .6em .3em;}
 kbd{border-radius: .25em}
 .modal-open .modal {padding-left: 0px !important;padding-right: 0px !important;overflow-y: scroll;}
+.align-middle {
+    vertical-align: middle !important;
+}
 
 /**
  * Pillboxes

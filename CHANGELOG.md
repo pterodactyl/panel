@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
+* Support for setting IP Aliases through the panel on the node overview page. Also cleaned up allocation removal.
 
 ### Changed
 * Prevent clicking server start button until server is completely off, not just stopping.

@@ -308,45 +308,6 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
-                        <thead>
-                            <td>IP Address</td>
-                            <td>Ports</td>
-                            <td></td>
-                        </thead>
-                        <tbody>
-                            @foreach($allocations as $ip => $ports)
-                                <tr>
-                                    <td><span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-total="{{ count($ports) }}" class="is-ipblock"><i class="fa fa-fw fa-square-o"></i></span> {{ $ip }}</td>
-                                    <td>
-                                        @foreach($ports as $id => $allocation)
-                                            @if (($id % 2) === 0)
-                                                @if($allocation->assigned_to === null)
-                                                    <span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-port="{{ $allocation->port }}"><i class="fa fa-fw fa-square-o"></i> {{ $allocation->port }} <br /></span>
-                                                @else
-                                                    <i class="fa fa-fw fa-check-square-o"></i> {{ $allocation->port }} <br />
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        @foreach($ports as $id => $allocation)
-                                            @if (($id % 2) === 1)
-                                                @if($allocation->assigned_to === null)
-                                                    <span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-port="{{ $allocation->port }}"><i class="fa fa-fw fa-square-o"></i> {{ $allocation->port }} <br /></span>
-                                                @else
-                                                    <i class="fa fa-fw fa-check-square-o"></i> {{ $allocation->port }} <br />
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
-                <div class="panel-body">
                     <h4 style="margin-top:0;">Allocate Additional Ports</h4>
                     <form action="{{ route('admin.nodes.post.allocations', $node->id) }}" method="POST">
                         <div class="row" id="duplicate">
@@ -390,6 +351,43 @@
                             </div>
                         </div>
                     </form>
+                </div>
+                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <table class="table table-hover" style="margin-bottom:0;">
+                            <thead style="font-weight:bold;">
+                                <td>IP Address <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></td>
+                                <td>IP Alias</td>
+                                <td>Port</td>
+                                <td>Assigned To</td>
+                                <td></td>
+                            </thead>
+                            <tbody>
+                                @foreach($allocations as $allocation)
+                                        <tr>
+                                        <td class="col-sm-3 align-middle">{{ $allocation->ip }}</td>
+                                        <td class="col-sm-3 align-middle">
+                                            <input class="form-control input-sm" type="text" value="{{ $allocation->ip_alias }}" data-action="set-alias" data-id="{{ $allocation->id }}" placeholder="none" />
+                                            <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+                                        </td>
+                                        <td class="col-sm-2 align-middle">{{ $allocation->port }}</td>
+                                        <td class="col-sm-3 align-middle">@if(!is_null($allocation->assigned_to))<a href="{{ route('admin.servers.view', $allocation->assigned_to) }}">{{ $allocation->assigned_to_name }}</a>@endif</td>
+                                        <td class="col-sm-1 align-middle">
+                                            @if(is_null($allocation->assigned_to))
+                                                <a href="#" data-action="deallocate" data-id="{{ $allocation->id }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                                            @else
+                                                <span class="badge label-default"><i class="fa fa-trash-o"></i></span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="col-md-12 text-center">
+                            {{ $allocations->appends(['tab' => 'tab_allocation'])->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -456,6 +454,38 @@
     </div>
     <div class="row">
         <div class="col-xs-11" id="col11_setter"></div>
+    </div>
+</div>
+<div class="modal fade" id="allocationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Allocations for IP Block</h4>
+            </div>
+            <form action="{{ route('admin.nodes.view', $node->id) }}/deallocate/block" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select class="form-control" name="ip">
+                                <?php $displayed = []; ?>
+                                @foreach($allocations as $allocation)
+                                    @if(!array_key_exists($allocation->ip, $displayed))
+                                        <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
+                                        <?php $displayed[$allocation->ip] = true; ?>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {{{ csrf_field() }}}
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Delete Allocations</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <script>
@@ -655,14 +685,13 @@ $(document).ready(function () {
         $(this).find('i').css('color', 'inherit').addClass('fa-square-o').removeClass('fa-minus-square');
     });
 
-    $('span[data-action="delete"]').click(function (event) {
+    $('a[data-action="deallocate"]').click(function (event) {
         event.preventDefault();
         var element = $(this);
-        var deleteIp = $(this).data('ip');
-        var deletePort = $(this).data('port');
+        var allocation = $(this).data('id');
         swal({
             title: '',
-            text: 'Are you sure you want to delete this port?',
+            text: 'Are you sure you want to delete this allocation?',
             type: 'warning',
             showCancelButton: true,
             allowOutsideClick: true,
@@ -673,27 +702,12 @@ $(document).ready(function () {
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: '{{ route('admin.nodes.view', $node->id) }}/allocation/' + deleteIp + '/' + deletePort,
+                url: '{{ route('admin.nodes.view', $node->id) }}/deallocate/single/' + allocation,
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).done(function (data) {
-                if (element.hasClass('is-ipblock')) {
-                    var tMatched = 0;
-                    element.parent().parent().find('*').each(function () {
-                        if ($(this).attr('data-port') && $(this).attr('data-ip')) {
-                            $(this).fadeOut();
-                            tMatched++;
-                        }
-                    });
-                    if (tMatched === element.data('total')) {
-                        element.fadeOut();
-                        $('li[data-action="alloc_dropdown_val"][data-value="' + deleteIp + '"]').remove();
-                        element.parent().parent().slideUp().remove();
-                    }
-                } else {
-                    element.fadeOut();
-                }
+                element.parent().parent().addClass('warning').delay(100).fadeOut();
                 swal({
                     type: 'success',
                     title: 'Port Deleted!',
@@ -708,6 +722,42 @@ $(document).ready(function () {
             });
         });
     });
+
+    var typingTimer;
+    $('input[data-action="set-alias"]').keyup(function () {
+        clearTimeout(typingTimer);
+        $(this).parent().removeClass('has-error has-success');
+        typingTimer = setTimeout(sendAlias, 700, $(this));
+    });
+
+    var fadeTimers = [];
+    function sendAlias(element) {
+        element.parent().find('.input-loader').show();
+        clearTimeout(fadeTimers[element.data('id')]);
+        $.ajax({
+            method: 'POST',
+            url: '{{ route('admin.nodes.alias', $node->id) }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: {
+                alias: element.val(),
+                allocation: element.data('id')
+            }
+        }).done(function (data) {
+            element.parent().addClass('has-success');
+        }).fail(function (jqXHR) {
+            console.error(jqXHR);
+            element.parent().addClass('has-error');
+        }).always(function () {
+            element.parent().find('.input-loader').hide();
+            fadeTimers[element.data('id')] = setTimeout(clearHighlight, 2500, element);
+        });
+    }
+
+    function clearHighlight(element) {
+        element.parent().removeClass('has-error has-success');
+    }
 
 });
 </script>
