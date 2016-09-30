@@ -268,7 +268,7 @@
     "web": {
         "listen": {{ $node->daemonListen }},
         "ssl": {
-            "enabled": {{ $node->sceheme === 'https' ? 'true' : 'false' }},
+            "enabled": {{ $node->scheme === 'https' ? 'true' : 'false' }},
             "certificate": "/etc/letsencrypt/live/{{ $node->fqdn }}/fullchain.pem",
             "key": "/etc/letsencrypt/live/{{ $node->fqdn }}/privkey.pem"
         }
