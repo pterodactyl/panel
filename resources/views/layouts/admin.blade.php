@@ -24,16 +24,16 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        {!! Theme::css('css/bootstrap.css') !!}
+        {!! Theme::css('css/vendor/bootstrap/bootstrap.css') !!}
         {!! Theme::css('css/pterodactyl.css') !!}
         {!! Theme::css('css/animate.css') !!}
-        {!! Theme::css('css/fontawesome/font-awesome.min.css') !!}
-        {!! Theme::css('css/sweetalert.min.css') !!}
-        {!! Theme::css('css/fuelux.min.css') !!}
-        {!! Theme::js('js/jquery.min.js') !!}
-        {!! Theme::js('js/bootstrap.min.js') !!}
-        {!! Theme::js('js/sweetalert.min.js') !!}
-        {!! Theme::js('js/fuelux.min.js') !!}
+        {!! Theme::css('css/vendor/fontawesome/font-awesome.min.css') !!}
+        {!! Theme::css('css/vendor/sweetalert/sweetalert.min.css') !!}
+        {!! Theme::css('css/vendor/fuelux/fuelux.min.css') !!}
+        {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+        {!! Theme::js('js/vendor/bootstrap/bootstrap.min.js') !!}
+        {!! Theme::js('js/vendor/sweetalert/sweetalert.min.js') !!}
+        {!! Theme::js('js/vendor/fuelux/fuelux.min.js') !!}
         {!! Theme::js('js/admin.min.js') !!}
     @show
     <title>{{ Settings::get('company') }} - @yield('title')</title>
