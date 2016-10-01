@@ -117,6 +117,8 @@ form .text-muted {margin: 0 0 -5.5px}
 .label{border-radius: .25em;padding: .2em .6em .3em;}
 kbd{border-radius: .25em}
 .modal-open .modal {padding-left: 0px !important;padding-right: 0px !important;overflow-y: scroll;}
+tr.align-middle > *,
+th.align-middle > *,
 .align-middle {
     vertical-align: middle !important;
 }
@@ -180,10 +182,6 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 
 .text-disabled code {
     opacity: 0.6;
-}
-
-.text-v-center {
-    vertical-align: middle !important;
 }
 
 .muted {
