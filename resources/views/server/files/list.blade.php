@@ -30,7 +30,7 @@
     </thead>
     <tbody>
         @if (isset($directory['first']) && $directory['first'] === true)
-            <tr>
+            <tr data-type="disabled">
                 <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
                 <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
                 <td></td>
@@ -39,7 +39,7 @@
             </tr>
         @endif
         @if (isset($directory['show']) && $directory['show'] === true)
-            <tr>
+            <tr data-type="disabled">
                 <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
                 <td><a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory['link']) }}" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a></a></td>
                 <td></td>
@@ -48,9 +48,11 @@
             </tr>
         @endif
         @foreach ($folders as $folder)
-            <tr class="align-middle" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}">
+            <tr class="align-middle" data-type="folder" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}">
                 <td data-identifier="type"><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td data-identifier="name" data-hash="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}"><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a></td>
+                <td data-identifier="name" data-hash="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}">
+                    <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
+                </td>
                 <td data-identifier="size">{{ $folder['size'] }}</td>
                 <td data-identifier="modified">{{ date('m/d/y H:i:s', $folder['date']) }}</td>
                 {{-- <td class="text-center">
@@ -68,9 +70,9 @@
             </tr>
         @endforeach
         @foreach ($files as $file)
-            <tr class="align-middle">
-                <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
-                <td>
+            <tr class="align-middle" data-type="file" data-mime="{{ $file['mime'] }}">
+                <td data-identifier="type"><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
+                <td data-identifier="name" data-hash="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}">
                     @if(in_array($file['extension'], $extensions))
                         @can('edit-files', $server)
                             <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" class="edit_file">{{ $file['entry'] }}</a>
@@ -81,8 +83,8 @@
                         {{ $file['entry'] }}
                     @endif
                 </td>
-                <td>{{ $file['size'] }}</td>
-                <td>{{ date('m/d/y H:i:s', $file['date']) }}</td>
+                <td data-identifier="size">{{ $file['size'] }}</td>
+                <td data-identifier="modified">{{ date('m/d/y H:i:s', $file['date']) }}</td>
                 {{-- <td style="text-align:center;">
                     <div class="row" style="text-align:center;">
                         <div class="col-md-3 hidden-xs hidden-sm">

@@ -29,30 +29,55 @@ class FileActions {
         this.rightClick();
     }
 
+    makeMenu() {
+        $(document).find('#fileOptionMenu').remove();
+        return $('<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
+                    <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-arrow-right"></i> Move</a></li> \
+                    <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-pencil-square-o"></i> Rename</a></li> \
+                    <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li> \
+                    <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-expand"></i> Decompress</a></li> \
+                    <li class="divider"></li> \
+                    <li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-download"></i> Download</a></li> \
+                    <li data-action="delete"><a tabindex="-1" href="#"><i class="fa fa-trash-o"></i> Delete</a></li> \
+                </ul>');
+    }
+
     rightClick() {
         $('#file_listing > tbody').on('contextmenu', event => {
-            event.preventDefault();
-            const parent = $(event.target).parent();
 
-            $('#fileOptionMenu').appendTo('body');
-            $('#fileOptionMenu').data('invokedOn', $(event.target)).show().css({
+            const parent = $(event.target).parent();
+            const menu = this.makeMenu();
+
+            if (parent.data('type') === 'disabled') return;
+            event.preventDefault();
+
+            menu.appendTo('body');
+            menu.data('invokedOn', $(event.target)).show().css({
                 position: 'absolute',
                 left: event.pageX,
                 top: event.pageY,
             });
 
+            if (parent.data('type') === 'file') {
+                menu.find('li[data-action="download"]').removeClass('hidden');
+            }
+
+            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
+                menu.find('li[data-action="decompress"]').removeClass('hidden');
+            }
+
             // Handle Events
             var Context = new ContextMenuActions(parent);
-            $('#fileOptionMenu li[data-action="move"]').unbind().on('click', e => {
+            menu.find('li[data-action="move"]').unbind().on('click', e => {
                 Context.move();
             });
 
-            $('#fileOptionMenu li[data-action="rename"]').unbind().on('click', e => {
+            menu.find('li[data-action="rename"]').unbind().on('click', e => {
                 Context.rename();
             });
 
-            $(window).click(() => {
-                $('#fileOptionMenu').hide();
+            $(window).on('click', () => {
+                menu.remove();
             });
         });
     }

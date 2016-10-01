@@ -185,7 +185,8 @@ class FileRepository
                     'entry' => $value->name,
                     'directory' => trim($directory, '/'),
                     'size' => null,
-                    'date' => strtotime($value->modified)
+                    'date' => strtotime($value->modified),
+                    'mime' => $value->mime
                 ]]);
 
             } else if ($value->file === true) {
@@ -195,7 +196,8 @@ class FileRepository
                     'directory' => trim($directory, '/'),
                     'extension' => pathinfo($value->name, PATHINFO_EXTENSION),
                     'size' => HelperRepository::bytesToHuman($value->size),
-                    'date' => strtotime($value->modified)
+                    'date' => strtotime($value->modified),
+                    'mime' => $value->mime
                 ]]);
 
             }

@@ -56,14 +56,6 @@
             </div>
         </div>
     </div>
-    <ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" >
-        <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-arrow-right"></i> Move</a></li>
-        <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-pencil-square-o"></i> Rename</a></li>
-        <li><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li>
-        <li class="divider"></li>
-        <li><a tabindex="-1" href="#"><i class="fa fa-download"></i> Download</a></li>
-        <li><a tabindex="-1" href="#"><i class="fa fa-trash-o"></i> Delete</a></li>
-    </ul>
 </div>
 <script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'index.js']) }}"></script>
 <script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'actions.js']) }}"></script>

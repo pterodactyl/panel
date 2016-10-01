@@ -28,7 +28,7 @@ class FileManager {
         $('[data-toggle="tooltip"]').tooltip();
     }
 
-    list(path) {
+    list(path, isError) {
         if (_.isUndefined(path)) {
             path = this.decodeHash();
         }
@@ -54,7 +54,7 @@ class FileManager {
                 title: 'File Error',
                 text: 'An error occured while attempting to process this request. Please try again.',
             });
-            this.list('/');
+            if (!isError) this.list('/', true);
             console.log(jqXHR);
         }).always(() => {
             this.loader(false);
