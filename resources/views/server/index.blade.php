@@ -154,7 +154,7 @@
     </div>
 </div>
 @if($server->a_serviceFile === 'minecraft')
-    <script src="{{ route('server.js', [$server->uuidShort, 'minecraft/eula.js']) }}"></script>
+    <script src="{{ route('server.js', [$server->uuidShort, 'minecraft', 'eula.js']) }}"></script>
 @endif
 <script>
 $(window).load(function () {

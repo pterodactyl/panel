@@ -51,10 +51,10 @@ class ServerController extends Controller
         //
     }
 
-    public function getJavascript(Request $request, $uuid, $file)
+    public function getJavascript(Request $request, $uuid, $folder, $file)
     {
         $server = Models\Server::getByUUID($uuid);
-        return response()->view('server.js.' . $server->a_serviceFile . '.' . basename($file, '.js'), [
+        return response()->view('server.js.' . $folder . '.' . basename($file, '.js'), [
             'server' => $server,
             'node' => Models\Node::find($server->node)
         ])->header('Content-Type', 'application/javascript');
