@@ -18,57 +18,57 @@
 {{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
 {{-- SOFTWARE. --}}
 <h4 class="nopad">/home/container{{ $directory['header'] }} &nbsp;<small><a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add New File(s)"></i></a></small></h4>
-<table class="table table-striped table-bordered table-hover">
+<table class="table table-striped table-bordered table-hover" id="file_listing">
     <thead>
         <tr>
             <th style="width:2%;text-align:center;"></th>
             <th style="width:45%">File Name</th>
             <th style="width:15%">Size</th>
             <th style="width:20%">Last Modified</th>
-            <th style="width:20%;text-align:center;">Options</th>
+            {{-- <th style="width:20%;text-align:center;">Options</th> --}}
         </tr>
     </thead>
     <tbody>
         @if (isset($directory['first']) && $directory['first'] === true)
             <tr>
                 <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files" class="load_new">&larr;</a></a></td>
+                <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                {{-- <td></td> --}}
             </tr>
         @endif
         @if (isset($directory['show']) && $directory['show'] === true)
             <tr>
                 <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory['link']) }}" class="load_new">&larr; {{ $directory['link_show'] }}</a></a></td>
+                <td><a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory['link']) }}" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a></a></td>
                 <td></td>
                 <td></td>
-                <td></td>
+                {{-- <td></td> --}}
             </tr>
         @endif
         @foreach ($folders as $folder)
-            <tr>
-                <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files?dir=/@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" class="load_new">{{ $folder['entry'] }}</a></td>
-                <td>{{ $folder['size'] }}</td>
-                <td>{{ date('m/d/y H:i:s', $folder['date']) }}</td>
-                <td style="text-align:center;">
+            <tr class="align-middle" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}">
+                <td data-identifier="type"><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
+                <td data-identifier="name" data-hash="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}"><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a></td>
+                <td data-identifier="size">{{ $folder['size'] }}</td>
+                <td data-identifier="modified">{{ date('m/d/y H:i:s', $folder['date']) }}</td>
+                {{-- <td class="text-center">
                     <div class="row" style="text-align:center;">
                         <div class="col-md-3 hidden-xs hidden-sm"></div>
                         <div class="col-md-3 hidden-xs hidden-sm">
                         </div>
                         <div class="col-md-3">
                             @can('delete-files', $server)
-                                <a href="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" data-action="delete_file" data-name="{{ $folder['entry'] }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                                <a href="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" data-action="delete_file" data-name="{{ $folder['entry'] }}"><button class="btn btn-danger btn-xxs"><i class="fa fa-trash-o"></i></button></a>
                             @endcan
                         </div>
                     </div>
-                </td>
+                </td> --}}
             </tr>
         @endforeach
         @foreach ($files as $file)
-            <tr>
+            <tr class="align-middle">
                 <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
                 <td>
                     @if(in_array($file['extension'], $extensions))
@@ -83,7 +83,7 @@
                 </td>
                 <td>{{ $file['size'] }}</td>
                 <td>{{ date('m/d/y H:i:s', $file['date']) }}</td>
-                <td style="text-align:center;">
+                {{-- <td style="text-align:center;">
                     <div class="row" style="text-align:center;">
                         <div class="col-md-3 hidden-xs hidden-sm">
                         </div>
@@ -98,7 +98,7 @@
                             @endcan
                         </div>
                     </div>
-                </td>
+                </td> --}}
             </tr>
         @endforeach
     </tbody>
