@@ -44,11 +44,13 @@ class FileManager {
                 directory: path,
             },
         }).done(data => {
-            $('#load_files').slideUp().html(data).slideDown(() => {
+            this.loader(false);
+            $('#load_files').slideUp().html(data).slideDown(100, () => {
                 Actions.run();
             });
             $('#internal_alert').slideUp();
         }).fail(jqXHR => {
+            this.loader(false);
             swal({
                 type: 'error',
                 title: 'File Error',
@@ -56,9 +58,7 @@ class FileManager {
             });
             if (!isError) this.list('/', true);
             console.log(jqXHR);
-        }).always(() => {
-            this.loader(false);
-        });
+        })
     }
 
     loader(show) {
@@ -76,9 +76,9 @@ class FileManager {
                 'font-size': '60px'
             });
 
-            $('.ajax_loading_box').css('height', (height + 5)).fadeIn();
+            $('.ajax_loading_box').css('height', (height + 5)).show();
         } else {
-            $('.ajax_loading_box').fadeOut(100);
+            $('.ajax_loading_box').hide();
         }
     }
 

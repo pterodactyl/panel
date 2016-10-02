@@ -85,7 +85,7 @@ class FileRepository
      * Get the contents of a requested file for the server.
      *
      * @param  string $file
-     * @return string
+     * @return array
      */
     public function returnFileContents($file)
     {
@@ -95,22 +95,39 @@ class FileRepository
         }
 
         $file = (object) pathinfo($file);
-        if (!in_array($file->extension, HelperRepository::editableFiles())) {
-            throw new DisplayException('You do not have permission to edit this type of file.');
-        }
 
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('GET', '/server/file/' . rawurlencode($file->dirname.$file->basename), [
+        $res = $this->client->request('GET', '/server/files/stat/' . rawurlencode($file->dirname.$file->basename) , [
+            'headers' => $this->headers
+        ]);
+
+        $stat = json_decode($res->getBody());
+        if($res->getStatusCode() !== 200 || !isset($stat->size)) {
+            throw new DisplayException('The daemon provided a non-200 error code on stat lookup: HTTP\\' . $res->getStatusCode());
+        }
+
+        if (!in_array($stat->mime, HelperRepository::editableFiles())) {
+            throw new DisplayException('You cannot edit that type of file (' . $stat->mime . ') through the panel.');
+        }
+
+        if ($stat->size > 5000000) {
+            throw new DisplayException('That file is too large to open in the browser, consider using a SFTP client.');
+        }
+
+        $res = $this->client->request('GET', '/server/file/' . rawurlencode($file->dirname.$file->basename) , [
             'headers' => $this->headers
         ]);
 
         $json = json_decode($res->getBody());
         if($res->getStatusCode() !== 200 || !isset($json->content)) {
-            throw new DisplayException('Scales provided a non-200 error code: HTTP\\' . $res->getStatusCode());
+            throw new DisplayException('The daemon provided a non-200 error code: HTTP\\' . $res->getStatusCode());
         }
 
-        return $json;
+        return [
+            'file' => $json,
+            'stat' => $stat
+        ];
 
     }
 
@@ -130,11 +147,24 @@ class FileRepository
 
         $file = (object) pathinfo($file);
 
-        if(!in_array($file->extension, HelperRepository::editableFiles())) {
-            throw new DisplayException('You do not have permission to edit this type of file.');
+        $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
+
+        $res = $this->client->request('GET', '/server/files/stat/' . rawurlencode($file->dirname.$file->basename) , [
+            'headers' => $this->headers
+        ]);
+
+        $stat = json_decode($res->getBody());
+        if($res->getStatusCode() !== 200 || !isset($stat->size)) {
+            throw new DisplayException('The daemon provided a non-200 error code on stat lookup: HTTP\\' . $res->getStatusCode());
         }
 
-        $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
+        if (!in_array($stat->mime, HelperRepository::editableFiles())) {
+            throw new DisplayException('You cannot edit that type of file (' . $stat->mime . ') through the panel.');
+        }
+
+        if ($stat->size > 5000000) {
+            throw new DisplayException('That file is too large to save in the browser, consider using a SFTP client.');
+        }
 
         $res = $this->client->request('POST', '/server/file/' . rawurlencode($file->dirname.$file->basename), [
             'headers' => $this->headers,

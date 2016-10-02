@@ -8,6 +8,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
 * Support for setting IP Aliases through the panel on the node overview page. Also cleaned up allocation removal.
+* Support for renaming files through the panel's file mananger.
 
 ### Changed
 * Prevent clicking server start button until server is completely off, not just stopping.
@@ -15,6 +16,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Trying to add a new node if no location exists redirects user to location management page and alerts them to add a location first.
 * `Server\AjaxController@postSetConnection` is now `Server\AjaxController@postSetPrimary` and accepts one post parameter of `allocation` rather than a combined `ip:port` value.
 * Port allocations on server view are now cleaner and should make more sense.
+* Improved File Manager
+  * Rewritten Javascript to load, rename, and handle other file actions.
+  * Uses Ace Editor for editing files rather than a non-formatted textarea
+  * File actions that were previously icons to the right are now contained in a menu that appears when right-clicking a file or folder.
 
 ### Fixed
 * Team Fortress named 'Insurgency' in panel in database seeder. ([#96](https://github.com/Pterodactyl/Panel/issues/96), PR by [@MeltedLux](https://github.com/MeltedLux))

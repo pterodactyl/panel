@@ -20,8 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 class ContextMenuActions {
-    constructor(element) {
+    constructor(element, menu) {
         this.element = element;
+        this.menu = menu;
     }
 
     destroy() {
@@ -32,27 +33,45 @@ class ContextMenuActions {
         alert($(this.element).data('path'));
     }
 
+    download() {
+        var baseURL = $(this.menu).find('li[data-action="download"] a').attr('href');
+        var toURL = baseURL + $(this.element).find('td[data-identifier="name"]').data('name');
+
+        window.location = toURL;
+    }
+
     rename() {
-        var desiredElement = $(this.element).find('td[data-identifier="name"]');
-        var linkElement = desiredElement.find('a');
-        var currentName = linkElement.html();
-        var editField = `<input class="form-control input-sm" type="text" value="${currentName}" />`;
-        desiredElement.find('a').remove();
-        desiredElement.html(editField);
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const currentLink = nameBlock.find('a');
+        const currentName = decodeURIComponent(nameBlock.attr('data-name'));
+        const attachEditor = `
+            <input class="form-control input-sm" type="text" value="${currentName}" />
+            <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+        `;
 
-        const inputField = desiredElement.find('input');
+        nameBlock.html(attachEditor);
+        const inputField = nameBlock.find('input');
+        const inputLoader = nameBlock.find('.input-loader');
+
         inputField.focus();
-
         inputField.on('blur keypress', e => {
             // Save Field
             if (e.type === 'blur' || (e.type === 'keypress' && e.which !== 13)) {
                 // Escape Key Pressed, don't save.
                 if (e.which === 27 || e.type === 'blur') {
-                    desiredElement.html(linkElement);
+                    if (!_.isEmpty(currentLink)) {
+                        nameBlock.html(currentLink);
+                    } else {
+                        nameBlock.html(currentName);
+                    }
                     inputField.remove();
+                    Actions.run();
                 }
                 return;
             }
+
+            inputLoader.show();
+            const currentPath = decodeURIComponent(nameBlock.data('path'));
 
             $.ajax({
                 type: 'POST',
@@ -64,16 +83,24 @@ class ContextMenuActions {
                 url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/files/rename',
                 timeout: 10000,
                 data: JSON.stringify({
-                    from: currentName,
-                    to: inputField.val(),
+                    from: `${currentPath}${currentName}`,
+                    to: `${currentPath}${inputField.val()}`,
                 }),
             }).done(data => {
-                this.element.attr('data-path', inputField.val());
-                desiredElement.attr('data-hash', inputField.val());
-                desiredElement.html(linkElement.html(inputField.val()));
+                nameBlock.attr('data-name', inputField.val());
+                if (!_.isEmpty(currentLink)) {
+                    const newLink = currentLink.attr('href').substr(0, currentLink.attr('href').lastIndexOf('/')) + '/' + inputField.val();
+                    currentLink.attr('href', newLink);
+                    nameBlock.html(
+                        currentLink.html(inputField.val())
+                    );
+                } else {
+                    nameBlock.html(inputField.val());
+                }
                 inputField.remove();
-                Actions.run();
             }).fail(jqXHR => {
+                nameBlock.addClass('has-error');
+                inputLoader.remove();
                 console.error(jqXHR);
                 var error = 'An error occured while trying to process this request.';
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
@@ -84,6 +111,8 @@ class ContextMenuActions {
                     title: '',
                     text: error,
                 });
+            }).always(() => {
+                inputLoader.remove();
             });
         });
     }

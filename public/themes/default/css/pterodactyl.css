@@ -197,3 +197,41 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 .use-pointer {
     cursor: pointer !important;
 }
+
+.dropdown-menu > li.bg-danger {
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+}
+
+.dropdown-menu > li.bg-info {
+    background-color:#fcf8f2;
+    color:#474a54;
+    border-left: 4px solid #f0ad4e !important;
+}
+
+.dropdown-menu > li.bg-success {
+    background-color:#f4f8fa;
+    color:#474a54;
+    border-left: 4px solid #5bc0de !important;
+}
+
+.dropdown-menu > li.bg-warning {
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+}
+
+.dropdown-menu > li.bg-default {
+    border-left: 4px solid #bbbbbb !important;
+}
+
+.dropdown-menu > li.bg-danger > a,
+.dropdown-menu > li.bg-info > a,
+.dropdown-menu > li.bg-success > a,
+.dropdown-menu > li.bg-warning > a,
+.dropdown-menu > li.bg-default > a {
+    padding-left: 11px !important;
+}
+/*.bg-danger:active,.bg-danger:focus,.bg-danger:hover{color:#fff;background-color:#d32a0e;border-color:#b1240c}
+.bg-danger.disabled,.bg-danger.disabled:active,.bg-danger.disabled:focus,.bg-danger.disabled:hover,.bg-danger[disabled]{background-color:#f04124;border-color:#ea2f10}*/

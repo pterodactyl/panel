@@ -145,9 +145,9 @@ class ServerController extends Controller
             'server' => $server,
             'node' => Models\Node::find($server->node),
             'file' => $file,
-            'contents' => $fileContent->content,
-            'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/',
-            'extension' => $fileInfo->extension
+            'stat' => $fileContent['stat'],
+            'contents' => $fileContent['file']->content,
+            'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/'
         ]);
 
     }

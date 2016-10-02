@@ -137,7 +137,7 @@ class AjaxController extends Controller
             'server' => $server,
             'files' => $directoryContents->files,
             'folders' => $directoryContents->folders,
-            'extensions' => Repositories\HelperRepository::editableFiles(),
+            'editableMime' => Repositories\HelperRepository::editableFiles(),
             'directory' => $prevDir
         ]);
 

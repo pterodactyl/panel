@@ -1,5 +1,5 @@
 ## Pterodactyl Panel
-Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.2)`.
+Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.3)`.
 
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [wiki](https://github.com/Pterodactyl/Panel/wiki) or on our [Discord chat](https://discord.gg/0gYt8oU8QOkDhKLS).
@@ -28,6 +28,8 @@ SOFTWARE.
 ```
 
 ### Credits
+Ace Editor - [license](https://github.com/ajaxorg/ace/blob/master/LICENSE) - [homepage](https://ace.c9.io)
+
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
 
 Async.js - [license](https://github.com/caolan/async/blob/master/LICENSE) - [homepage](https://github.com/caolan/async/)
@@ -47,6 +49,8 @@ FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - 
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)
 
 jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/master/LICENSE) - [homepage](http://terminal.jcubic.pl)
+
+Lodash - [license](https://github.com/lodash/lodash/blob/master/LICENSE) - [homepage](https://lodash.com/)
 
 MetricsGraphics.js - [license](https://github.com/mozilla/metrics-graphics/blob/master/LICENSE) - [homepage](http://metricsgraphicsjs.org/)
 
