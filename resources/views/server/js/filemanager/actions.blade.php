@@ -30,7 +30,50 @@ class ActionsClass {
     }
 
     move() {
-        alert($(this.element).data('path'));
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const currentName = decodeURIComponent(nameBlock.attr('data-name'));
+        const currentPath = decodeURIComponent(nameBlock.data('path'));
+
+        swal({
+            type: 'input',
+            title: 'Move File',
+            text: 'Please enter the new path for the file below.',
+            showCancelButton: true,
+            showConfirmButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            inputValue: `${currentPath}${currentName}`,
+        }, (val) => {
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                },
+                contentType: 'application/json; charset=utf-8',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/files/rename',
+                timeout: 10000,
+                data: JSON.stringify({
+                    from: `${currentPath}${currentName}`,
+                    to: `${val}`,
+                }),
+            }).done(data => {
+                nameBlock.parent().addClass('warning').delay(200).fadeOut();
+                swal.close();
+            }).fail(jqXHR => {
+                console.error(jqXHR);
+                var error = 'An error occured while trying to process this request.';
+                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                    error = jqXHR.responseJSON.error;
+                }
+                swal({
+                    type: 'error',
+                    title: '',
+                    text: error,
+                });
+            });
+        });
+
     }
 
     download() {
@@ -56,17 +99,14 @@ class ActionsClass {
         inputField.focus();
         inputField.on('blur keypress', e => {
             // Save Field
-            if (e.type === 'blur' || (e.type === 'keypress' && e.which !== 13)) {
-                // Escape Key Pressed, don't save.
-                if (e.which === 27 || e.type === 'blur') {
-                    if (!_.isEmpty(currentLink)) {
-                        nameBlock.html(currentLink);
-                    } else {
-                        nameBlock.html(currentName);
-                    }
-                    inputField.remove();
-                    ContextMenu.run();
+            if (e.type === 'blur' || (e.type === 'keypress' && e.which === 27) || currentName === inputField.val()) {
+                if (!_.isEmpty(currentLink)) {
+                    nameBlock.html(currentLink);
+                } else {
+                    nameBlock.html(currentName);
                 }
+                inputField.remove();
+                ContextMenu.run();
                 return;
             }
 
@@ -99,18 +139,20 @@ class ActionsClass {
                 }
                 inputField.remove();
             }).fail(jqXHR => {
-                nameBlock.addClass('has-error');
-                inputLoader.remove();
                 console.error(jqXHR);
                 var error = 'An error occured while trying to process this request.';
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
-                swal({
-                    type: 'error',
-                    title: '',
-                    text: error,
+                nameBlock.addClass('has-error').delay(2000).queue(() => {
+                    nameBlock.removeClass('has-error').dequeue();
                 });
+                inputField.popover({
+                    animation: true,
+                    placement: 'top',
+                    content: error,
+                    title: 'Save Error'
+                }).popover('show');
             }).always(() => {
                 inputLoader.remove();
             });
@@ -140,7 +182,7 @@ class ActionsClass {
                     'X-Access-Server': '{{ $server->uuid }}'
                 }
             }).done(data => {
-                // nameBlock.parent().addClass('warning').delay(200).fadeOut();
+                nameBlock.parent().addClass('warning').delay(200).fadeOut();
                 swal({
                     type: 'success',
                     title: 'File Deleted'
