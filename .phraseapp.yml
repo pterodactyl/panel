@@ -1,0 +1,29 @@
+phraseapp:
+  project_id: 94f8b39450cd749ae9c3cc0ab8cdb61d
+  file_format: laravel
+  push:
+    sources:
+    - file: ./resources/lang/<locale_code>/<tag>.php
+  pull:
+    targets:
+    - file: ./resources/lang/<locale_code>/auth.php
+      params:
+        tag: "auth"
+    - file: ./resources/lang/<locale_code>/base.php
+      params:
+        tag: "base"
+    - file: ./resources/lang/<locale_code>/pagination.php
+      params:
+        tag: "pagination"
+    - file: ./resources/lang/<locale_code>/passwords.php
+      params:
+        tag: "passwords"
+    - file: ./resources/lang/<locale_code>/server.php
+      params:
+        tag: "server"
+    - file: ./resources/lang/<locale_code>/strings.php
+      params:
+        tag: "strings"
+    - file: ./resources/lang/<locale_code>/validation.php
+      params:
+        tag: "validation"
