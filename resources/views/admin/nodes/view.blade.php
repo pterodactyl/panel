@@ -25,10 +25,10 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('css/metricsgraphics.css') !!}
-    {!! Theme::js('js/d3.min.js') !!}
-    {!! Theme::js('js/metricsgraphics.min.js') !!}
-    {!! Theme::js('js/socket.io.min.js') !!}
+    {!! Theme::css('css/vendor/metricsgraphics/metricsgraphics.css') !!}
+    {!! Theme::js('js/vendor/d3/d3.min.js') !!}
+    {!! Theme::js('js/vendor/metricsgraphics/metricsgraphics.min.js') !!}
+    {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
     {!! Theme::js('js/bootstrap-notify.min.js') !!}
     <script>
         $(document).ready(function () {

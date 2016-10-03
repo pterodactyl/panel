@@ -25,11 +25,11 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('css/metricsgraphics.css') !!}
+    {!! Theme::css('css/vendor/metricsgraphics/metricsgraphics.css') !!}
     {!! Theme::css('css/jquery.terminal.css') !!}
-    {!! Theme::js('js/d3.min.js') !!}
-    {!! Theme::js('js/metricsgraphics.min.js') !!}
-    {!! Theme::js('js/async.min.js') !!}
+    {!! Theme::js('js/vendor/d3/d3.min.js') !!}
+    {!! Theme::js('js/vendor/metricsgraphics/metricsgraphics.min.js') !!}
+    {!! Theme::js('js/vendor/async/async.min.js') !!}
     {!! Theme::js('js/jquery.mousewheel-min.js') !!}
     {!! Theme::js('js/jquery.terminal-0.11.6.min.js') !!}
     {!! Theme::js('js/unix_formatting.js') !!}
