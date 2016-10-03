@@ -30,6 +30,7 @@ use Hash;
 use Validator;
 use Mail;
 use Carbon;
+use Auth;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -150,6 +151,10 @@ class UserRepository
     {
         if(Models\Server::where('owner', $id)->count() > 0) {
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
+        }
+
+        if(Auth::user()->id === $id) {
+          throw new DisplayException('Cannot delete your own account.');
         }
 
         DB::beginTransaction();
