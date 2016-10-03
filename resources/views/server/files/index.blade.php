@@ -58,8 +58,8 @@
     </div>
 </div>
 <script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'index.js']) }}"></script>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'actions.js']) }}"></script>
 <script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'contextmenu.js']) }}"></script>
+<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'actions.js']) }}"></script>
 <script>
 $(window).load(function () {
     $('.server-files').addClass('active');

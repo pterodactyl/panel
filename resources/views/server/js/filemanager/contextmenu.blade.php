@@ -19,101 +19,95 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-class ContextMenuActions {
-    constructor(element, menu) {
-        this.element = element;
-        this.menu = menu;
+class ContextMenuClass {
+    constructor() {
+        this.activeLine = null;
     }
 
-    destroy() {
-        this.element = undefined;
+    run() {
+        this.directoryClick();
+        this.rightClick();
     }
 
-    move() {
-        alert($(this.element).data('path'));
+    makeMenu() {
+        $(document).find('#fileOptionMenu').remove();
+        if (!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
+        return '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
+                    <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-arrow-right"></i> Move</a></li> \
+                    <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-pencil-square-o"></i> Rename</a></li> \
+                    <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li> \
+                    <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-expand"></i> Decompress</a></li> \
+                    <li class="divider"></li> \
+                    <li data-action="download" class="hidden"><a tabindex="-1" href="/server/{{ $server->uuidShort }}/files/download/"><i class="fa fa-download"></i> Download</a></li> \
+                    <li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-trash-o"></i> Delete</a></li> \
+                </ul>';
     }
 
-    download() {
-        var baseURL = $(this.menu).find('li[data-action="download"] a').attr('href');
-        var toURL = baseURL + $(this.element).find('td[data-identifier="name"]').data('name');
+    rightClick() {
+        $('#file_listing > tbody td').on('contextmenu', event => {
 
-        window.location = toURL;
-    }
+            const parent = $(event.target).parent();
+            const menu = $(this.makeMenu());
 
-    rename() {
-        const nameBlock = $(this.element).find('td[data-identifier="name"]');
-        const currentLink = nameBlock.find('a');
-        const currentName = decodeURIComponent(nameBlock.attr('data-name'));
-        const attachEditor = `
-            <input class="form-control input-sm" type="text" value="${currentName}" />
-            <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
-        `;
+            if (parent.data('type') === 'disabled') return;
+            event.preventDefault();
 
-        nameBlock.html(attachEditor);
-        const inputField = nameBlock.find('input');
-        const inputLoader = nameBlock.find('.input-loader');
+            $(menu).appendTo('body');
+            $(menu).data('invokedOn', $(event.target)).show().css({
+                position: 'absolute',
+                left: event.pageX,
+                top: event.pageY,
+            });
 
-        inputField.focus();
-        inputField.on('blur keypress', e => {
-            // Save Field
-            if (e.type === 'blur' || (e.type === 'keypress' && e.which !== 13)) {
-                // Escape Key Pressed, don't save.
-                if (e.which === 27 || e.type === 'blur') {
-                    if (!_.isEmpty(currentLink)) {
-                        nameBlock.html(currentLink);
-                    } else {
-                        nameBlock.html(currentName);
-                    }
-                    inputField.remove();
-                    Actions.run();
-                }
-                return;
+            this.activeLine = parent;
+            this.activeLine.addClass('active');
+
+            if (parent.data('type') === 'file') {
+                $(menu).find('li[data-action="download"]').removeClass('hidden');
             }
 
-            inputLoader.show();
-            const currentPath = decodeURIComponent(nameBlock.data('path'));
+            if (parent.data('type') === 'folder') {
+                $(menu).find('li[data-action="compress"]').removeClass('hidden');
+            }
 
-            $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-Access-Token': '{{ $server->daemonSecret }}',
-                    'X-Access-Server': '{{ $server->uuid }}'
-                },
-                contentType: 'application/json; charset=utf-8',
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/files/rename',
-                timeout: 10000,
-                data: JSON.stringify({
-                    from: `${currentPath}${currentName}`,
-                    to: `${currentPath}${inputField.val()}`,
-                }),
-            }).done(data => {
-                nameBlock.attr('data-name', inputField.val());
-                if (!_.isEmpty(currentLink)) {
-                    const newLink = currentLink.attr('href').substr(0, currentLink.attr('href').lastIndexOf('/')) + '/' + inputField.val();
-                    currentLink.attr('href', newLink);
-                    nameBlock.html(
-                        currentLink.html(inputField.val())
-                    );
-                } else {
-                    nameBlock.html(inputField.val());
-                }
-                inputField.remove();
-            }).fail(jqXHR => {
-                nameBlock.addClass('has-error');
-                inputLoader.remove();
-                console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: '',
-                    text: error,
-                });
-            }).always(() => {
-                inputLoader.remove();
+            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
+                $(menu).find('li[data-action="decompress"]').removeClass('hidden');
+            }
+
+            // Handle Events
+            const Actions = new ActionsClass(parent, menu);
+            $(menu).find('li[data-action="move"]').unbind().on('click', e => {
+                Actions.move();
+            });
+
+            $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
+                Actions.rename();
+            });
+
+            $(menu).find('li[data-action="download"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.download();
+            });
+
+            $(window).on('click', () => {
+                $(menu).remove();
+                if(!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
             });
         });
     }
+
+    directoryClick() {
+        $('a[data-action="directory-view"]').on('click', function (event) {
+            event.preventDefault();
+
+            const path = $(this).parent().data('path') || '';
+            const name = $(this).parent().data('name') || '';
+
+            console.log('changing hash');
+            window.location.hash = encodeURIComponent(path + name);
+            Files.list();
+        });
+    }
 }
+
+window.ContextMenu = new ContextMenuClass;

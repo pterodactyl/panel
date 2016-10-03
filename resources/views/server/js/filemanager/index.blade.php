@@ -46,7 +46,7 @@ class FileManager {
         }).done(data => {
             this.loader(false);
             $('#load_files').slideUp().html(data).slideDown(100, () => {
-                Actions.run();
+                ContextMenu.run();
             });
             $('#internal_alert').slideUp();
         }).fail(jqXHR => {
