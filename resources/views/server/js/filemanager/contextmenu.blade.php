@@ -77,16 +77,23 @@ class ContextMenuClass {
             // Handle Events
             const Actions = new ActionsClass(parent, menu);
             $(menu).find('li[data-action="move"]').unbind().on('click', e => {
+                e.preventDefault();
                 Actions.move();
             });
 
             $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
+                e.preventDefault();
                 Actions.rename();
             });
 
             $(menu).find('li[data-action="download"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.download();
+            });
+
+            $(menu).find('li[data-action="delete"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.delete();
             });
 
             $(window).on('click', () => {
@@ -103,7 +110,6 @@ class ContextMenuClass {
             const path = $(this).parent().data('path') || '';
             const name = $(this).parent().data('name') || '';
 
-            console.log('changing hash');
             window.location.hash = encodeURIComponent(path + name);
             Files.list();
         });

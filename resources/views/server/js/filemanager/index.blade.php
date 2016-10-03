@@ -24,10 +24,6 @@ class FileManager {
         this.list(this.decodeHash());
     }
 
-    reload() {
-        $('[data-toggle="tooltip"]').tooltip();
-    }
-
     list(path, isError) {
         if (_.isUndefined(path)) {
             path = this.decodeHash();

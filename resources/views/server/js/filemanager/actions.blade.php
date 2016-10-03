@@ -116,4 +116,44 @@ class ActionsClass {
             });
         });
     }
+
+    delete() {
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const delPath = decodeURIComponent(nameBlock.data('path'));
+        const delName = decodeURIComponent(nameBlock.data('name'));
+
+        swal({
+            type: 'warning',
+            title: '',
+            text: 'Are you sure you want to delete <code>' + delName + '</code>? There is <strong>no</strong> reversing this action.',
+            html: true,
+            showCancelButton: true,
+            showConfirmButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true
+        }, () => {
+            $.ajax({
+                type: 'DELETE',
+                url: `{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/${delPath}${delName}`,
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                }
+            }).done(data => {
+                // nameBlock.parent().addClass('warning').delay(200).fadeOut();
+                swal({
+                    type: 'success',
+                    title: 'File Deleted'
+                });
+            }).fail(jqXHR => {
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    html: true,
+                    text: 'An error occured while attempting to delete this file. Please try again.',
+                });
+            });
+        });
+    }
 }
