@@ -37,7 +37,7 @@
                 <hr />
                 <input type="hidden" name="file" value="{{ $file }}" />
                 <button class="btn btn-primary btn-sm" id="save_file" type="submit">{{ trans('strings.save') }}</button>
-                <a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory) }}" class="text-muted pull-right"><small>{{ trans('server.files.back') }}</small></a>
+                <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="text-muted pull-right"><small>{{ trans('server.files.back') }}</small></a>
             </div>
         </div>
     @endcan
