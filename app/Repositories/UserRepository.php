@@ -3,6 +3,7 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
  * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Some Modifications (c) 2016 Dominic Fitch-Jones <dominic@dominicmfj.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +31,7 @@ use Hash;
 use Validator;
 use Mail;
 use Carbon;
+use Auth;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -150,6 +152,10 @@ class UserRepository
     {
         if(Models\Server::where('owner', $id)->count() > 0) {
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
+        }
+
+        if(Auth::user()->id == $id) {
+          throw new DisplayException('Cannot delete your own account.');
         }
 
         DB::beginTransaction();
