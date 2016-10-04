@@ -25,7 +25,8 @@
 
 @section('scripts')
     @parent
-    <script src="{{ asset('js/binaryjs.js') }}"></script>
+    {!! Theme::js('js/binaryjs.js') !!}
+    {!! Theme::js('js/vendor/lodash/lodash.js') !!}
 @endsection
 
 @section('content')
@@ -36,56 +37,72 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="create">
-            <div id="write_status" style="display:none;width: 100%; margin: 10px 0 5px;"></div>
-            <form method="post" id="new_file">
-                <h4>/home/container/{{ $directory }} <input type="text" id="file_name" class="filename" value="newfile.txt" /></h4>
-                <div class="form-group">
-                    <div id="fileContents" style="height:500px;"></div>
+            <div class="row" style="margin: 15px 0 0;">
+                <div class="col-md-8" style="padding-left:0;">
+                    <div class="input-group" style="margin-bottom:5px;">
+                        <span class="input-group-addon">Save As:</span>
+                        <input type="text" class="form-control" id="file_name" placeholder="filename.json" value="{{ $directory}}">
+                    </div>
+                    <small><p class="text-muted">All files are saved relative to <code>/home/container</code>. You can enter more of the path into the Save As field to save the file into a specific folder.</p></small>
                 </div>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <button class="btn btn-primary btn-sm" id="create_file">{{ trans('strings.save') }}</button>
-                            <button class="btn btn-default btn-sm" onclick="window.location='/server/{{ $server->uuidShort }}/files?dir=/{{ $directory }}';return false;">{{ trans('server.files.back') }}</button>
-                        </div>
-                        <div class="col-md-4 pull-right">
-                            <select name="aceMode" id="aceMode" class="form-control">
-                                <option value="assembly_x86">Assembly x86</option>
-                                <option value="c_cpp">C/C++</option>
-                                <option value="coffee">CoffeeScript</option>
-                                <option value="csharp">C#</option>
-                                <option value="css">CSS</option>
-                                <option value="golang">Go</option>
-                                <option value="haml">HAML</option>
-                                <option value="html">HTML</option>
-                                <option value="ini">INI</option>
-                                <option value="java">Java</option>
-                                <option value="javascript">JavaScript</option>
-                                <option value="json">JSON</option>
-                                <option value="lua">Lua</option>
-                                <option value="markdown">Markdown</option>
-                                <option value="mysql">MySQL</option>
-                                <option value="objectivec">Objective-C</option>
-                                <option value="perl">Perl</option>
-                                <option value="php">PHP</option>
-                                <option value="properties">Properties</option>
-                                <option value="python">Python</option>
-                                <option value="ruby">Ruby</option>
-                                <option value="rust">Rust</option>
-                                <option value="smarty">Smarty</option>
-                                <option value="textile" selected="selected">Plain Text</option>
-                                <option value="xml">XML</option>
-                                <option value="yaml">YAML</option>
-                            </select>
-                        </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div id="fileContents" style="height:500px;"></div>
                     </div>
                 </div>
-            </form>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <button class="btn btn-primary btn-sm" id="create_file">{{ trans('strings.save') }}</button>
+                    <button class="btn btn-default btn-sm" onclick="window.location='/server/{{ $server->uuidShort }}/files?dir=/{{ $directory }}';return false;">{{ trans('server.files.back') }}</button>
+                </div>
+                <div class="col-md-4 pull-right">
+                    <select name="aceMode" id="aceMode" class="form-control">
+                        <option value="assembly_x86">Assembly x86</option>
+                        <option value="c_cpp">C/C++</option>
+                        <option value="coffee">CoffeeScript</option>
+                        <option value="csharp">C#</option>
+                        <option value="css">CSS</option>
+                        <option value="golang">Go</option>
+                        <option value="haml">HAML</option>
+                        <option value="html">HTML</option>
+                        <option value="ini">INI</option>
+                        <option value="java">Java</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="json">JSON</option>
+                        <option value="lua">Lua</option>
+                        <option value="markdown">Markdown</option>
+                        <option value="mysql">MySQL</option>
+                        <option value="objectivec">Objective-C</option>
+                        <option value="perl">Perl</option>
+                        <option value="php">PHP</option>
+                        <option value="properties">Properties</option>
+                        <option value="python">Python</option>
+                        <option value="ruby">Ruby</option>
+                        <option value="rust">Rust</option>
+                        <option value="smarty">Smarty</option>
+                        <option value="textile" selected="selected">Plain Text</option>
+                        <option value="xml">XML</option>
+                        <option value="yaml">YAML</option>
+                    </select>
+                </div>
+            </div>
         </div>
         @can('upload-files', $server)
             <div class="tab-pane" id="upload">
-                <h4>/home/container/&nbsp;&nbsp;<input type="text" id="u_file_name" value="{{ $directory }}" style='outline: none;width:450px;background: transparent;margin-left:-5px;padding:0;border: 0px;font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight: 250;line-height: 1.1;color: inherit;font-size: 19px;'/></h4>
-                <div class="alert alert-warning">Please edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. Simply click next to <code>/home/container/</code> and begin typing. You can change this each time you upload a new file without having to press anything else.</div>
+                <div class="row" style="margin: 15px 0 0;">
+                    <div class="col-md-8" style="padding-left:0;">
+                        <div class="input-group" style="margin-bottom:5px;">
+                            <span class="input-group-addon">Upload Directory:</span>
+                            <input type="text" class="form-control" id="u_file_name" placeholder="logs/" value="{{ $directory}}">
+                        </div>
+                        <small><p class="text-muted">All files are saved relative to <code>/home/container</code>. You can enter more of the path into the Save As field to save the file into a specific folder.</p></small>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">Edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. You can change this each time you upload a new file without having to press anything else.</div>
                 <div class="alert alert-danger" id="upload_error" style="display: none;"></div>
                 <input type="file" id="fileinput" name="fileUpload[]" multiple="" style="display:none;"/>
                 <div id="uploader_box" class="well well-sm" style="cursor:pointer;">
@@ -227,7 +244,14 @@ $(window).load(function () {
     });
 
     function save() {
-        var fileName = $('input[name="file"]').val();
+        if (_.isEmpty($('#file_name').val())) {
+            $.notify({
+                message: 'No filename was passed.'
+            }, {
+                type: 'danger'
+            });
+            return;
+        }
         $('#create_file').append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
         $.ajax({
             type: 'POST',

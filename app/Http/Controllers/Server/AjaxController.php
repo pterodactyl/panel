@@ -115,11 +115,12 @@ class AjaxController extends Controller
 
         // Determine if we should show back links in the file browser.
         // This code is strange, and could probably be rewritten much better.
-        $goBack = explode('/', rtrim($this->directory, '/'));
-        if (isset($goBack[2]) && !empty($goBack[2])) {
+        $goBack = explode('/', trim($this->directory, '/'));
+        if (!empty(array_filter($goBack)) && count($goBack) >= 2) {
             $prevDir['show'] = true;
-            $prevDir['link'] = '/' . trim(str_replace(end($goBack), '', $this->directory), '/');
-            $prevDir['link_show'] = trim($prevDir['link'], '/');
+            array_pop($goBack);
+            $prevDir['link'] = '/' . implode('/', $goBack);
+            $prevDir['link_show'] = implode('/', $goBack) . '/';
         }
 
         $controller = new Repositories\Daemon\FileRepository($uuid);
