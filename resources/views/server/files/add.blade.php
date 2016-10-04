@@ -40,14 +40,44 @@
             <form method="post" id="new_file">
                 <h4>/home/container/{{ $directory }} <input type="text" id="file_name" class="filename" value="newfile.txt" /></h4>
                 <div class="form-group">
-                    <div>
-                        <textarea name="file_contents" id="fileContents" style="border: 1px solid #dddddd;" class="form-control console"></textarea>
-                    </div>
+                    <div id="fileContents" style="height:500px;"></div>
                 </div>
                 <div class="form-group">
-                    <div>
-                        <button class="btn btn-primary btn-sm" id="create_file">{{ trans('strings.save') }}</button>
-                        <button class="btn btn-default btn-sm" onclick="window.location='/server/{{ $server->uuidShort }}/files?dir=/{{ $directory }}';return false;">{{ trans('server.files.back') }}</button>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <button class="btn btn-primary btn-sm" id="create_file">{{ trans('strings.save') }}</button>
+                            <button class="btn btn-default btn-sm" onclick="window.location='/server/{{ $server->uuidShort }}/files?dir=/{{ $directory }}';return false;">{{ trans('server.files.back') }}</button>
+                        </div>
+                        <div class="col-md-4 pull-right">
+                            <select name="aceMode" id="aceMode" class="form-control">
+                                <option value="assembly_x86">Assembly x86</option>
+                                <option value="c_cpp">C/C++</option>
+                                <option value="coffee">CoffeeScript</option>
+                                <option value="csharp">C#</option>
+                                <option value="css">CSS</option>
+                                <option value="golang">Go</option>
+                                <option value="haml">HAML</option>
+                                <option value="html">HTML</option>
+                                <option value="ini">INI</option>
+                                <option value="java">Java</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="json">JSON</option>
+                                <option value="lua">Lua</option>
+                                <option value="markdown">Markdown</option>
+                                <option value="mysql">MySQL</option>
+                                <option value="objectivec">Objective-C</option>
+                                <option value="perl">Perl</option>
+                                <option value="php">PHP</option>
+                                <option value="properties">Properties</option>
+                                <option value="python">Python</option>
+                                <option value="ruby">Ruby</option>
+                                <option value="rust">Rust</option>
+                                <option value="smarty">Smarty</option>
+                                <option value="textile" selected="selected">Plain Text</option>
+                                <option value="xml">XML</option>
+                                <option value="yaml">YAML</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -66,6 +96,8 @@
         @endcan
     </div>
 </div>
+{!! Theme::js('js/vendor/ace/ace.js') !!}
+{!! Theme::js('js/vendor/ace/ext-modelist.js') !!}
 <script>
 $(window).load(function () {
 
@@ -170,35 +202,54 @@ $(window).load(function () {
         }
     @endcan
 
-    $('textarea').keydown(function (e) {
-        if (e.keyCode === 9) {
-            var start = this.selectionStart;
-            var end = this.selectionEnd;
-            var value = $(this).val();
-            $(this).val(value.substring(0, start) + '\t' + value.substring(end));
-            this.selectionStart = this.selectionEnd = start + 1;
-            e.preventDefault();
-        }
+    const Editor = ace.edit('fileContents');
+
+    Editor.setTheme('ace/theme/chrome');
+    Editor.getSession().setUseWrapMode(true);
+    Editor.setShowPrintMargin(false);
+
+    $('#aceMode').on('change', event => {
+        Editor.getSession().setMode(`ace/mode/${$('#aceMode').val()}`);
     });
 
-    $("#create_file").click(function(e) {
+    Editor.commands.addCommand({
+        name: 'save',
+        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+        exec: function(editor) {
+            save();
+        },
+        readOnly: false
+    });
+
+    $('#create_file').on('click', function (e) {
         e.preventDefault();
-        $("#create_file").append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass("disabled");
+        save();
+    });
+
+    function save() {
+        var fileName = $('input[name="file"]').val();
+        $('#create_file').append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
         $.ajax({
             type: 'POST',
             url: '{{ route('server.files.save', $server->uuidShort) }}',
             headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
             data: {
                 file: '{{ $directory }}' + $('#file_name').val(),
-                contents: $('#fileContents').val()
+                contents: Editor.getValue()
             }
         }).done(function (data) {
             window.location.replace('/server/{{ $server->uuidShort }}/files/edit/{{ $directory }}' + $('#file_name').val());
         }).fail(function (jqXHR) {
-            $('#write_status').html('<div class="alert alert-danger">' + jqXHR.responseText + '</div>').show();
-            $('#create_file').html('{{ trans('strings.save') }}').removeClass('disabled');
+            $.notify({
+                message: jqXHR.responseText
+            }, {
+                type: 'danger'
+            });
+        }).always(function () {
+            $('#save_file').html('{{ trans('strings.save') }}').removeClass('disabled');
         });
-    });
+    }
+
 
 });
 </script>

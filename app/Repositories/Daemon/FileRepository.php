@@ -136,7 +136,7 @@ class FileRepository
      *
      * @param  string $file
      * @param  string $content
-     * @return boolean
+     * @return bool
      */
     public function saveFileContents($file, $content)
     {
@@ -148,23 +148,6 @@ class FileRepository
         $file = (object) pathinfo($file);
 
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
-
-        $res = $this->client->request('GET', '/server/files/stat/' . rawurlencode($file->dirname.$file->basename) , [
-            'headers' => $this->headers
-        ]);
-
-        $stat = json_decode($res->getBody());
-        if($res->getStatusCode() !== 200 || !isset($stat->size)) {
-            throw new DisplayException('The daemon provided a non-200 error code on stat lookup: HTTP\\' . $res->getStatusCode());
-        }
-
-        if (!in_array($stat->mime, HelperRepository::editableFiles())) {
-            throw new DisplayException('You cannot edit that type of file (' . $stat->mime . ') through the panel.');
-        }
-
-        if ($stat->size > 5000000) {
-            throw new DisplayException('That file is too large to save in the browser, consider using a SFTP client.');
-        }
 
         $res = $this->client->request('POST', '/server/file/' . rawurlencode($file->dirname.$file->basename), [
             'headers' => $this->headers,

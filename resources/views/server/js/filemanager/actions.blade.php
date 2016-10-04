@@ -99,7 +99,11 @@ class ActionsClass {
         inputField.focus();
         inputField.on('blur keypress', e => {
             // Save Field
-            if (e.type === 'blur' || (e.type === 'keypress' && e.which === 27) || currentName === inputField.val()) {
+            if (
+                (e.type === 'keypress' && e.which === 27)
+                || e.type === 'blur'
+                || (e.type === 'keypress' && e.which === 13 && currentName === inputField.val())
+            ) {
                 if (!_.isEmpty(currentLink)) {
                     nameBlock.html(currentLink);
                 } else {
@@ -109,6 +113,10 @@ class ActionsClass {
                 ContextMenu.run();
                 return;
             }
+
+            if (e.type === 'keypress' && e.which !== 13) return;
+
+            console.log('did not');
 
             inputLoader.show();
             const currentPath = decodeURIComponent(nameBlock.data('path'));

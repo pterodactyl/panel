@@ -50,7 +50,7 @@ $(document).ready(function () {
     const Editor = ace.edit('editor');
     const Modelist = ace.require('ace/ext/modelist')
 
-    Editor.setTheme('ace/theme/github');
+    Editor.setTheme('ace/theme/chrome');
     Editor.getSession().setMode(Modelist.getModeForPath('{{ $stat->name }}').mode);
     Editor.getSession().setUseWrapMode(true);
     Editor.setShowPrintMargin(false);
