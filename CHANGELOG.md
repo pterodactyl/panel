@@ -3,12 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.5.0 (Bodacious Boreopterus) [Unreleased]
+## v0.5.0-pre.1 (Bodacious Boreopterus) [Unreleased]
 
 ### Added
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
 * Support for setting IP Aliases through the panel on the node overview page. Also cleaned up allocation removal.
-* Support for renaming files through the panel's file mananger.
+* Support for renaming files through the panel's file manager.
 
 ### Changed
 * Prevent clicking server start button until server is completely off, not just stopping.
