@@ -98,7 +98,7 @@ class FileRepository
 
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('GET', '/server/files/stat/' . rawurlencode($file->dirname.$file->basename) , [
+        $res = $this->client->request('GET', '/server/file/stat/' . rawurlencode($file->dirname.$file->basename) , [
             'headers' => $this->headers
         ]);
 
@@ -115,7 +115,7 @@ class FileRepository
             throw new DisplayException('That file is too large to open in the browser, consider using a SFTP client.');
         }
 
-        $res = $this->client->request('GET', '/server/file/' . rawurlencode($file->dirname.$file->basename) , [
+        $res = $this->client->request('GET', '/server/file/f/' . rawurlencode($file->dirname.$file->basename) , [
             'headers' => $this->headers
         ]);
 
@@ -149,9 +149,10 @@ class FileRepository
 
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('POST', '/server/file/' . rawurlencode($file->dirname.$file->basename), [
+        $res = $this->client->request('POST', '/server/file/save', [
             'headers' => $this->headers,
             'json' => [
+                'path' => rawurlencode($file->dirname.$file->basename),
                 'content' => $content
             ]
         ]);

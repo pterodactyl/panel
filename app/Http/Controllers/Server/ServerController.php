@@ -172,11 +172,11 @@ class ServerController extends Controller
 
         $download->token = (string) Uuid::generate(4);
         $download->server = $server->uuid;
-        $download->path = str_replace('../', '', $file);
+        $download->path = $file;
 
         $download->save();
 
-        return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/download/' . $download->token);
+        return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/file/download/' . $download->token);
 
     }
 
