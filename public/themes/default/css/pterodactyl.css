@@ -233,5 +233,16 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 .dropdown-menu > li.bg-default > a {
     padding-left: 11px !important;
 }
-/*.bg-danger:active,.bg-danger:focus,.bg-danger:hover{color:#fff;background-color:#d32a0e;border-color:#b1240c}
-.bg-danger.disabled,.bg-danger.disabled:active,.bg-danger.disabled:focus,.bg-danger.disabled:hover,.bg-danger[disabled]{background-color:#f04124;border-color:#ea2f10}*/
+
+.success.pulsate {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #fff;
+  }
+  100% {
+    background-color: #dff0d8;
+  }
+}

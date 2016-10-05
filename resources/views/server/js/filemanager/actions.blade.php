@@ -51,7 +51,7 @@ class ActionsClass {
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/files/rename',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/rename',
                 timeout: 10000,
                 data: JSON.stringify({
                     from: `${currentPath}${currentName}`,
@@ -77,10 +77,11 @@ class ActionsClass {
     }
 
     download() {
-        var baseURL = $(this.menu).find('li[data-action="download"] a').attr('href');
-        var toURL = baseURL + $(this.element).find('td[data-identifier="name"]').data('name');
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const fileName = decodeURIComponent(nameBlock.attr('data-name'));
+        const filePath = decodeURIComponent(nameBlock.data('path'));
 
-        window.location = toURL;
+        window.location = `/server/{{ $server->uuidShort }}/files/download/${filePath}${fileName}`;
     }
 
     rename() {
@@ -128,7 +129,7 @@ class ActionsClass {
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/files/rename',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/rename',
                 timeout: 10000,
                 data: JSON.stringify({
                     from: `${currentPath}${currentName}`,
@@ -184,7 +185,7 @@ class ActionsClass {
         }, () => {
             $.ajax({
                 type: 'DELETE',
-                url: `{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/${delPath}${delName}`,
+                url: `{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/f/${delPath}${delName}`,
                 headers: {
                     'X-Access-Token': '{{ $server->daemonSecret }}',
                     'X-Access-Server': '{{ $server->uuid }}'
@@ -203,6 +204,79 @@ class ActionsClass {
                     html: true,
                     text: 'An error occured while attempting to delete this file. Please try again.',
                 });
+            });
+        });
+    }
+
+    decompress() {
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const compPath = decodeURIComponent(nameBlock.data('path'));
+        const compName = decodeURIComponent(nameBlock.data('name'));
+
+        $.ajax({
+            type: 'POST',
+            url: `{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/decompress`,
+            headers: {
+                'X-Access-Token': '{{ $server->daemonSecret }}',
+                'X-Access-Server': '{{ $server->uuid }}'
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                files: `${compPath}${compName}`
+            })
+        }).done(data => {
+            Files.list(compPath);
+        }).fail(jqXHR => {
+            console.error(jqXHR);
+            var error = 'An error occured while trying to process this request.';
+            if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                error = jqXHR.responseJSON.error;
+            }
+            swal({
+                type: 'error',
+                title: 'Whoops!',
+                html: true,
+                text: error
+            });
+        });
+    }
+
+    compress() {
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const compPath = decodeURIComponent(nameBlock.data('path'));
+        const compName = decodeURIComponent(nameBlock.data('name'));
+
+        $.ajax({
+            type: 'POST',
+            url: `{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/compress`,
+            headers: {
+                'X-Access-Token': '{{ $server->daemonSecret }}',
+                'X-Access-Server': '{{ $server->uuid }}'
+            },
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify({
+                files: `${compPath}${compName}`,
+                to: compPath.toString()
+            })
+        }).done(data => {
+            Files.list(compPath, err => {
+                if (err) return;
+                const fileListing = $('#file_listing').find(`[data-name="${data.saved_as}"]`).parent();
+                fileListing.addClass('success pulsate').delay(3000).queue(() => {
+                    fileListing.removeClass('success pulsate').dequeue();
+                });
+            });
+        }).fail(jqXHR => {
+            console.error(jqXHR);
+            var error = 'An error occured while trying to process this request.';
+            if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                error = jqXHR.responseJSON.error;
+            }
+            swal({
+                type: 'error',
+                title: 'Whoops!',
+                html: true,
+                text: error
             });
         });
     }

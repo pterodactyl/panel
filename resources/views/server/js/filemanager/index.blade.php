@@ -24,7 +24,7 @@ class FileManager {
         this.list(this.decodeHash());
     }
 
-    list(path, isError) {
+    list(path, next) {
         if (_.isUndefined(path)) {
             path = this.decodeHash();
         }
@@ -43,16 +43,21 @@ class FileManager {
             this.loader(false);
             $('#load_files').slideUp().html(data).slideDown(100, () => {
                 ContextMenu.run();
+                if (_.isFunction(next)) {
+                    return next();
+                }
             });
             $('#internal_alert').slideUp();
         }).fail(jqXHR => {
             this.loader(false);
+            if (_.isFunction(next)) {
+                return next(new Error('Failed to load file listing.'));
+            }
             swal({
                 type: 'error',
                 title: 'File Error',
                 text: 'An error occured while attempting to process this request. Please try again.',
             });
-            if (!isError) this.list('/', true);
             console.log(jqXHR);
         })
     }

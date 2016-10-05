@@ -38,7 +38,7 @@ class ContextMenuClass {
                     <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li> \
                     <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-expand"></i> Decompress</a></li> \
                     <li class="divider"></li> \
-                    <li data-action="download" class="hidden"><a tabindex="-1" href="/server/{{ $server->uuidShort }}/files/download/"><i class="fa fa-download"></i> Download</a></li> \
+                    <li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-download"></i> Download</a></li> \
                     <li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-trash-o"></i> Delete</a></li> \
                 </ul>';
     }
@@ -84,6 +84,16 @@ class ContextMenuClass {
             $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.rename();
+            });
+
+            $(menu).find('li[data-action="compress"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.compress();
+            });
+
+            $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.decompress();
             });
 
             $(menu).find('li[data-action="download"]').unbind().on('click', e => {
