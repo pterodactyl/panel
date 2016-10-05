@@ -41,7 +41,6 @@
                 <th>Session ID</th>
                 <th>IP Address</th>
                 <th>User Agent</th>
-                <th>Last Location</th>
                 <th>Last Activity</th>
                 <th></th>
             </th>
@@ -53,13 +52,6 @@
                     <td><code>{{ substr($session->id, 0, 8) }}</code></td>
                     <td>{{ $session->ip_address }}</td>
                     <td><small>{{ $session->user_agent }}</small></td>
-                    <td>
-                        @if(isset($prev['_previous']['url']))
-                            {{ str_replace(env('APP_URL'), '', $prev['_previous']['url']) }}
-                        @else
-                            <em>unknwon</em>
-                        @endif
-                    </td>
                     <td>
                         @if((time() - $session->last_activity < 10))
                             <em>just now</em>

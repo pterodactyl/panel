@@ -28,6 +28,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Deprecated
 ### Removed
+* Removed active session management table displaying the last location of a session.
+
 ### Security
 
 ## v0.4.1 (Articulate Aerotitan)
