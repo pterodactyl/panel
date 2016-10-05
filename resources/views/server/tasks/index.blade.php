@@ -52,10 +52,10 @@
                         @endif
                     </td>
                     @can('delete-task', $server)
-                        <td class="text-center text-v-center"><a href="#" data-action="delete-task" data-id="{{ $task->id }}"><i class="fa fa-fw fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></a></td>
+                        <td class="text-center align-middle"><a href="#" data-action="delete-task" data-id="{{ $task->id }}"><i class="fa fa-fw fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></a></td>
                     @endcan
                     @can('toggle-task', $server)
-                        <td class="text-center text-v-center"><a href="#" data-action="toggle-task" data-active="{{ $task->active }}" data-id="{{ $task->id }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="Toggle Status"></i></a></td>
+                        <td class="text-center align-middle"><a href="#" data-action="toggle-task" data-active="{{ $task->active }}" data-id="{{ $task->id }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="Toggle Status"></i></a></td>
                     @endcan
 
                 </tr>

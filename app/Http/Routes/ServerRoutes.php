@@ -167,7 +167,7 @@ class ServerRoutes {
             // Assorted AJAX Routes
             $router->group(['prefix' => 'js'], function ($server) use ($router) {
                 // Returns Server Status
-                $router->get('{file}', [
+                $router->get('{folder}/{file}', [
                     'as' => 'server.js',
                     'uses' => 'Server\ServerController@getJavascript'
                 ])->where('file', '.*');

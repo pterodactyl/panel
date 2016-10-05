@@ -117,6 +117,8 @@ form .text-muted {margin: 0 0 -5.5px}
 .label{border-radius: .25em;padding: .2em .6em .3em;}
 kbd{border-radius: .25em}
 .modal-open .modal {padding-left: 0px !important;padding-right: 0px !important;overflow-y: scroll;}
+tr.align-middle > *,
+th.align-middle > *,
 .align-middle {
     vertical-align: middle !important;
 }
@@ -182,10 +184,6 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     opacity: 0.6;
 }
 
-.text-v-center {
-    vertical-align: middle !important;
-}
-
 .muted {
     filter: alpha(opacity=20);
     opacity: 0.2;
@@ -198,4 +196,53 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 
 .use-pointer {
     cursor: pointer !important;
+}
+
+.dropdown-menu > li.bg-danger {
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+}
+
+.dropdown-menu > li.bg-info {
+    background-color:#fcf8f2;
+    color:#474a54;
+    border-left: 4px solid #f0ad4e !important;
+}
+
+.dropdown-menu > li.bg-success {
+    background-color:#f4f8fa;
+    color:#474a54;
+    border-left: 4px solid #5bc0de !important;
+}
+
+.dropdown-menu > li.bg-warning {
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+}
+
+.dropdown-menu > li.bg-default {
+    border-left: 4px solid #bbbbbb !important;
+}
+
+.dropdown-menu > li.bg-danger > a,
+.dropdown-menu > li.bg-info > a,
+.dropdown-menu > li.bg-success > a,
+.dropdown-menu > li.bg-warning > a,
+.dropdown-menu > li.bg-default > a {
+    padding-left: 11px !important;
+}
+
+.success.pulsate {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #fff;
+  }
+  100% {
+    background-color: #dff0d8;
+  }
 }

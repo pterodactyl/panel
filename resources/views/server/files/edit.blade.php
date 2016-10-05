@@ -26,65 +26,52 @@
 @section('content')
 <div class="col-md-12">
     <h3 class="nopad"><small>Editing File: /home/container/{{ $file }}</small></h3>
-    <form method="post" id="editing_file">
-        <div class="form-group">
-            <div>
-                @if (in_array($extension, ['yaml', 'yml']))
-                    <div class="alert alert-info">
-                        {!! trans('server.files.yaml_notice', [
-                            'dropdown' => '<select id="space_yaml">
-                                    <option value="2">2</option>
-                                    <option value="4" selected="selected">4</option>
-                                    <option value="8">8</option>
-                                </select>'
-                        ]) !!}
-                    </div>
-                @endif
-                <textarea name="file_contents" id="fileContent" style="border: 1px solid #dddddd;height:500px;" class="form-control console">{{ $contents }}</textarea>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="editor" style="height:500px;">{{ $contents }}</div>
+        </div>
+    </div>
+    @can('save-files', $server)
+        <div class="row">
+            <div class="col-md-12">
+                <hr />
+                <input type="hidden" name="file" value="{{ $file }}" />
+                <button class="btn btn-primary btn-sm" id="save_file" type="submit">{{ trans('strings.save') }}</button>
+                <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="text-muted pull-right"><small>{{ trans('server.files.back') }}</small></a>
             </div>
         </div>
-        @can('save-files', $server)
-            <div class="form-group">
-                <div>
-                    <input type="hidden" name="file" value="{{ $file }}" />
-                    {!! csrf_field() !!}
-                    <button class="btn btn-primary btn-sm" id="save_file" type="submit">{{ trans('strings.save') }}</button>
-                    <a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory) }}" class="text-muted pull-right"><small>{{ trans('server.files.back') }}</small></a>
-                </div>
-            </div>
-        @endcan
-    </form>
+    @endcan
 </div>
+{!! Theme::js('js/vendor/ace/ace.js') !!}
+{!! Theme::js('js/vendor/ace/ext-modelist.js') !!}
 <script>
 $(document).ready(function () {
     $('.server-files').addClass('active');
-    $('textarea').keydown(function (e) {
-        if (e.keyCode === 9) {
+    const Editor = ace.edit('editor');
+    const Modelist = ace.require('ace/ext/modelist')
 
-            var start = this.selectionStart;
-            var end = this.selectionEnd;
-            var value = $(this).val();
-            var joinYML = '\t';
-            var yamlSpaces = 1;
+    Editor.setTheme('ace/theme/chrome');
+    Editor.getSession().setMode(Modelist.getModeForPath('{{ $stat->name }}').mode);
+    Editor.getSession().setUseWrapMode(true);
+    Editor.setShowPrintMargin(false);
 
-            @if (in_array($extension, ['yaml', 'yml']))
-                yamlSpaces = parseInt($("#space_yaml").val());
-                joinYML = Array(yamlSpaces + 1).join(" ");
-            @endif
-
-            $(this).val(value.substring(0, start) + joinYML + value.substring(end));
-            this.selectionStart = this.selectionEnd = start + yamlSpaces;
-            e.preventDefault();
-
-        }
-    });
     @can('save-files', $server)
-        $('#save_file').click(function (e) {
+        Editor.commands.addCommand({
+            name: 'save',
+            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+            exec: function(editor) {
+                save();
+            },
+            readOnly: false
+        });
+
+        $('#save_file').on('click', function (e) {
             e.preventDefault();
+            save();
+        });
 
+        function save() {
             var fileName = $('input[name="file"]').val();
-            var fileContents = $('#fileContent').val();
-
             $('#save_file').append(' <i class="fa fa-spinner fa fa-spin"></i>').addClass('disabled');
             $.ajax({
                 type: 'POST',
@@ -92,17 +79,24 @@ $(document).ready(function () {
                 headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
                 data: {
                     file: fileName,
-                    contents: fileContents
+                    contents: Editor.getValue()
                 }
             }).done(function (data) {
-                $('#tpl_messages').html('<div class="alert alert-success">{{ trans('server.files.saved') }}</div>').show().delay(3000).slideUp();
+                $.notify({
+                    message: '{{ trans('server.files.saved') }}'
+                }, {
+                    type: 'success'
+                });
             }).fail(function (jqXHR) {
-                $('#tpl_messages').html('<div class="alert alert-danger">' + jqXHR.responseText + '</div>');
+                $.notify({
+                    message: jqXHR.responseText
+                }, {
+                    type: 'danger'
+                });
             }).always(function () {
                 $('#save_file').html('{{ trans('strings.save') }}').removeClass('disabled');
             });
-
-        });
+        }
     @endcan
 });
 </script>

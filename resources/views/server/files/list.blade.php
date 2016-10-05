@@ -17,61 +17,109 @@
 {{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
 {{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
 {{-- SOFTWARE. --}}
-<h4 class="nopad">/home/container{{ $directory['header'] }} &nbsp;<small><a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted"><i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add New File(s)"></i></a></small></h4>
-<table class="table table-striped table-bordered table-hover">
+<table class="table table-hover" id="file_listing">
     <thead>
         <tr>
             <th style="width:2%;text-align:center;"></th>
             <th style="width:45%">File Name</th>
             <th style="width:15%">Size</th>
             <th style="width:20%">Last Modified</th>
-            <th style="width:20%;text-align:center;">Options</th>
+        </tr>
+        <tr>
+            <th><i class="fa fa-folder-open"></i></th>
+            <th colspan="3">
+                <code>/home/container{{ $directory['header'] }}</code>
+                <small>
+                    <a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted">
+                        <i class="fa fa-plus" data-toggle="tooltip" data-placement="top" title="Add New File(s)"></i>
+                    </a>
+                </small>
+            </th>
         </tr>
     </thead>
     <tbody>
         @if (isset($directory['first']) && $directory['first'] === true)
-            <tr>
-                <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files" class="load_new">&larr;</a></a></td>
-                <td></td>
+            <tr data-type="disabled">
+                <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
                 <td></td>
                 <td></td>
             </tr>
         @endif
         @if (isset($directory['show']) && $directory['show'] === true)
-            <tr>
-                <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files?dir={{ rawurlencode($directory['link']) }}" class="load_new">&larr; {{ $directory['link_show'] }}</a></a></td>
-                <td></td>
+            <tr data-type="disabled">
+                <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                <td data-name="{{ rawurlencode($directory['link']) }}">
+                    <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a>
+                </td>
                 <td></td>
                 <td></td>
             </tr>
         @endif
         @foreach ($folders as $folder)
-            <tr>
-                <td><i class="fa fa-folder-open" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files?dir=/@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" class="load_new">{{ $folder['entry'] }}</a></td>
-                <td>{{ $folder['size'] }}</td>
-                <td>{{ date('m/d/y H:i:s', $folder['date']) }}</td>
-                <td style="text-align:center;">
-                    <div class="row" style="text-align:center;">
-                        <div class="col-md-3 hidden-xs hidden-sm"></div>
-                        <div class="col-md-3 hidden-xs hidden-sm">
-                        </div>
-                        <div class="col-md-3">
-                            @can('delete-files', $server)
-                                <a href="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}/@endif{{ rawurlencode($folder['entry']) }}" data-action="delete_file" data-name="{{ $folder['entry'] }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
-                            @endcan
-                        </div>
-                    </div>
+            <tr class="align-middle" data-type="folder">
+                <td data-identifier="type"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
+                    <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                 </td>
+                <td data-identifier="size">{{ $folder['size'] }}</td>
+                <td data-identifier="modified">{{ date('m/d/y H:i:s', $folder['date']) }}</td>
             </tr>
         @endforeach
         @foreach ($files as $file)
-            <tr>
-                <td><i class="fa fa-file-text" style="margin-left: 2px;"></i></td>
-                <td>
-                    @if(in_array($file['extension'], $extensions))
+            <tr class="align-middle" data-type="file" data-mime="{{ $file['mime'] }}">
+                <td data-identifier="type">
+                    {{--  oh boy --}}
+                    @if(in_array($file['mime'], [
+                        'application/x-7z-compressed',
+                        'application/zip',
+                        'application/x-compressed-zip',
+                        'application/x-tar',
+                        'application/x-gzip',
+                        'application/x-bzip',
+                        'application/x-bzip2',
+                        'application/java-archive'
+                    ]))
+                        <i class="fa fa-file-archive-o" style="margin-left: 2px;"></i>
+                    @elseif(in_array($file['mime'], [
+                        'application/json',
+                        'application/javascript',
+                        'application/xml',
+                        'application/xhtml+xml',
+                        'text/xml',
+                        'text/css',
+                        'text/html',
+                        'text/x-perl',
+                        'text/x-shellscript'
+                    ]))
+                        <i class="fa fa-file-code-o" style="margin-left: 2px;"></i>
+                    @elseif(starts_with($file['mime'], 'image'))
+                        <i class="fa fa-file-image-o" style="margin-left: 2px;"></i>
+                    @elseif(starts_with($file['mime'], 'video'))
+                        <i class="fa fa-file-video-o" style="margin-left: 2px;"></i>
+                    @elseif(starts_with($file['mime'], 'video'))
+                        <i class="fa fa-file-audio-o" style="margin-left: 2px;"></i>
+                    @elseif(starts_with($file['mime'], 'application/vnd.ms-powerpoint'))
+                        <i class="fa fa-file-powerpoint-o" style="margin-left: 2px;"></i>
+                    @elseif(in_array($file['mime'], [
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
+                        'application/msword'
+                    ]) || starts_with($file['mime'], 'application/vnd.ms-word'))
+                        <i class="fa fa-file-word-o" style="margin-left: 2px;"></i>
+                    @elseif(in_array($file['mime'], [
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+                    ]) || starts_with($file['mime'], 'application/vnd.ms-excel'))
+                        <i class="fa fa-file-excel-o" style="margin-left: 2px;"></i>
+                    @elseif($file['mime'] === 'application/pdf')
+                        <i class="fa fa-file-pdf-o" style="margin-left: 2px;"></i>
+                    @else
+                        <i class="fa fa-file-text-o" style="margin-left: 2px;"></i>
+                    @endif
+                </td>
+                <td data-identifier="name" data-name="{{ rawurlencode($file['entry']) }}" data-path="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}@endif/">
+                    @if(in_array($file['mime'], $editableMime))
                         @can('edit-files', $server)
                             <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" class="edit_file">{{ $file['entry'] }}</a>
                         @else
@@ -81,24 +129,8 @@
                         {{ $file['entry'] }}
                     @endif
                 </td>
-                <td>{{ $file['size'] }}</td>
-                <td>{{ date('m/d/y H:i:s', $file['date']) }}</td>
-                <td style="text-align:center;">
-                    <div class="row" style="text-align:center;">
-                        <div class="col-md-3 hidden-xs hidden-sm">
-                        </div>
-                        <div class="col-md-3 hidden-xs hidden-sm">
-                            @can('download-files', $server)
-                                <a href="/server/{{ $server->uuidShort }}/files/download/@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}"><span class="badge"><i class="fa fa-download"></i></span></a>
-                            @endcan
-                        </div>
-                        <div class="col-md-3">
-                            @can('delete-files', $server)
-                                <a href="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" data-action="delete_file" data-name="{{ $file['entry'] }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span>
-                            @endcan
-                        </div>
-                    </div>
-                </td>
+                <td data-identifier="size">{{ $file['size'] }}</td>
+                <td data-identifier="modified">{{ date('m/d/y H:i:s', $file['date']) }}</td>
             </tr>
         @endforeach
     </tbody>

@@ -30,24 +30,19 @@ class HelperRepository {
      * @var array
      */
     protected static $editable = [
-        'txt',
-        'yml',
-        'yaml',
-        'log',
-        'conf',
-        'config',
-        'html',
-        'json',
-        'properties',
-        'props',
-        'cfg',
-        'lang',
-        'ini',
-        'cmd',
-        'sh',
-        'lua',
-        '0' // Supports BungeeCord Files
+        'application/json',
+        'application/javascript',
+        'application/xml',
+        'application/xhtml+xml',
+        'text/xml',
+        'text/css',
+        'text/html',
+        'text/plain',
+        'text/x-perl',
+        'text/x-shellscript',
+        'inode/x-empty'
     ];
+
 
     public function __construct()
     {
