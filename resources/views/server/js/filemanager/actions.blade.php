@@ -98,12 +98,12 @@ class ActionsClass {
         const inputLoader = nameBlock.find('.input-loader');
 
         inputField.focus();
-        inputField.on('blur keypress', e => {
+        inputField.on('blur keydown', e => {
             // Save Field
             if (
-                (e.type === 'keypress' && e.which === 27)
+                (e.type === 'keydown' && e.which === 27)
                 || e.type === 'blur'
-                || (e.type === 'keypress' && e.which === 13 && currentName === inputField.val())
+                || (e.type === 'keydown' && e.which === 13 && currentName === inputField.val())
             ) {
                 if (!_.isEmpty(currentLink)) {
                     nameBlock.html(currentLink);
@@ -111,13 +111,11 @@ class ActionsClass {
                     nameBlock.html(currentName);
                 }
                 inputField.remove();
-                ContextMenu.run();
+                ContextMenu.unbind().run();
                 return;
             }
 
-            if (e.type === 'keypress' && e.which !== 13) return;
-
-            console.log('did not');
+            if (e.type === 'keydown' && e.which !== 13) return;
 
             inputLoader.show();
             const currentPath = decodeURIComponent(nameBlock.data('path'));
@@ -138,7 +136,10 @@ class ActionsClass {
             }).done(data => {
                 nameBlock.attr('data-name', inputField.val());
                 if (!_.isEmpty(currentLink)) {
-                    const newLink = currentLink.attr('href').substr(0, currentLink.attr('href').lastIndexOf('/')) + '/' + inputField.val();
+                    let newLink = currentLink.attr('href');
+                    if (nameBlock.parent().data('type') !== 'folder') {
+                        newLink = newLink.substr(0, newLink.lastIndexOf('/')) + '/' + inputField.val();
+                    }
                     currentLink.attr('href', newLink);
                     nameBlock.html(
                         currentLink.html(inputField.val())
@@ -164,6 +165,7 @@ class ActionsClass {
                 }).popover('show');
             }).always(() => {
                 inputLoader.remove();
+                ContextMenu.unbind().run();
             });
         });
     }
