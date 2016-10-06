@@ -51,7 +51,7 @@ class ActionsClass {
                     'X-Access-Server': '{{ $server->uuid }}'
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/rename',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/move',
                 timeout: 10000,
                 data: JSON.stringify({
                     from: `${currentPath}${currentName}`,
