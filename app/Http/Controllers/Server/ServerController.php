@@ -38,6 +38,8 @@ use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use InvalidArgumentException;
+
 class ServerController extends Controller
 {
 
@@ -54,10 +56,19 @@ class ServerController extends Controller
     public function getJavascript(Request $request, $uuid, $folder, $file)
     {
         $server = Models\Server::getByUUID($uuid);
-        return response()->view('server.js.' . $folder . '.' . basename($file, '.js'), [
-            'server' => $server,
-            'node' => Models\Node::find($server->node)
-        ])->header('Content-Type', 'application/javascript');
+
+        $info = pathinfo($file);
+        $routeFile = str_replace('/', '.', $info['dirname']) . '.' . $info['filename'];
+        try {
+            return response()->view('server.js.' . $folder . '.' . $routeFile, [
+                'server' => $server,
+                'node' => Models\Node::find($server->node)
+            ])->header('Content-Type', 'application/javascript');
+        } catch (InvalidArgumentException $ex) {
+            return abort(404);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 
     /**
