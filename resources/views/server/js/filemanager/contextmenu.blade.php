@@ -46,7 +46,7 @@ class ContextMenuClass {
     rightClick() {
         $('#file_listing > tbody td').on('contextmenu', event => {
 
-            const parent = $(event.target).parent();
+            const parent = $(event.target).closest('tr');
             const menu = $(this.makeMenu());
 
             if (parent.data('type') === 'disabled') return;
