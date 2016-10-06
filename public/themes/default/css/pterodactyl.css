@@ -246,3 +246,11 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     background-color: #dff0d8;
   }
 }
+
+#fileOptionMenu li a {
+    padding: 7px 10px !important;
+}
+
+#fileOptionMenu li.divider {
+    margin: 4.5px 0 !important;
+}
