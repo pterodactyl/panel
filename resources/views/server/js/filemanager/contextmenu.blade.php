@@ -41,17 +41,17 @@ class ContextMenuClass {
             newFilePath = `${currentPath}${currentName}`;
         }
         return '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
-                    <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-arrow-right"></i> Move</a></li> \
-                    <li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-clone"></i> Copy</a></li> \
-                    <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-pencil-square-o"></i> Rename</a></li> \
-                    <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li> \
-                    <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-expand"></i> Decompress</a></li> \
+                    <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-fw fa-arrow-right"></i> Move</a></li> \
+                    <li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-fw fa-clone"></i> Copy</a></li> \
+                    <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-fw fa-pencil-square-o"></i> Rename</a></li> \
+                    <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-file-archive-o"></i> Compress</a></li> \
+                    <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-expand"></i> Decompress</a></li> \
                     <li class="divider"></li> \
-                    <li data-action="file"><a href="/server/{{ $server->uuidShort }}/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-plus"></i> New File</a></li> \
-                    <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-folder"></i> New Folder</a></li> \
+                    <li data-action="file"><a href="/server/{{ $server->uuidShort }}/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
+                    <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-fw fa-folder"></i> New Folder</a></li> \
                     <li class="divider"></li> \
-                    <li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-download"></i> Download</a></li> \
-                    <li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-trash-o"></i> Delete</a></li> \
+                    <li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-download"></i> Download</a></li> \
+                    <li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-fw fa-trash-o"></i> Delete</a></li> \
                 </ul>';
     }
 

@@ -226,14 +226,6 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     border-left: 4px solid #bbbbbb !important;
 }
 
-.dropdown-menu > li.bg-danger > a,
-.dropdown-menu > li.bg-info > a,
-.dropdown-menu > li.bg-success > a,
-.dropdown-menu > li.bg-warning > a,
-.dropdown-menu > li.bg-default > a {
-    padding-left: 11px !important;
-}
-
 .success.pulsate {
   animation: pulse 3s infinite;
 }
@@ -253,4 +245,12 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 
 #fileOptionMenu li.divider {
     margin: 4.5px 0 !important;
+}
+
+#fileOptionMenu > li.bg-danger > a,
+#fileOptionMenu > li.bg-info > a,
+#fileOptionMenu > li.bg-success > a,
+#fileOptionMenu > li.bg-warning > a,
+#fileOptionMenu > li.bg-default > a {
+    padding-left: 5px !important;
 }
