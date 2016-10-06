@@ -59,7 +59,6 @@ select{background:#fff!important}
 .table{border-collapse:collapse!important}
 .table td,.table th{background-color:#fff!important}
 .table-bordered td,.table-bordered th{border:1px solid #ddd!important}}
-@font-face{font-family:'Glyphicons Halflings';src:url(../fonts/glyphicons-halflings-regular.eot);src:url(../fonts/glyphicons-halflings-regular.eot?#iefix) format('embedded-opentype'),url(../fonts/glyphicons-halflings-regular.woff2) format('woff2'),url(../fonts/glyphicons-halflings-regular.woff) format('woff'),url(../fonts/glyphicons-halflings-regular.ttf) format('truetype'),url(../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular) format('svg')}
 *,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 html{font-size:10px;-webkit-tap-highlight-color:rgba(0,0,0,0)}
 body{font-family:"Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;font-size:15px;line-height:1.4;color:#222;background-color:#fff}
