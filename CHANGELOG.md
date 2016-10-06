@@ -3,7 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.5.0 (Bodacious Boreopterus) [Unreleased]
+## v0.5.0-pre.2 (Bodacious Boreopterus)
+
+### Added
+* Adds support for file copying through the file manager. [#127](https://github.com/Pterodactyl/Panel/issues/127)
+
+### Changed
+* Support for sub-folders within the `getJavascript()` route for servers.
+
+### Fixed
+* File manager would do multiple up-down-up-down loading actions if you escaped renaming a file. Fixed the binding issue. [#122](https://github.com/Pterodactyl/Panel/issues/122)
+* File manager actions would not trigger properly if text in a row was used to right-click from.
+* File manager rename field would not disappear when pressing the escape key in chrome. [#121](https://github.com/Pterodactyl/Panel/issues/121)
+
+## v0.5.0-pre.1 (Bodacious Boreopterus)
 
 ### Added
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.

@@ -76,6 +76,57 @@ class ActionsClass {
 
     }
 
+    copy() {
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const currentName = decodeURIComponent(nameBlock.attr('data-name'));
+        const currentPath = decodeURIComponent(nameBlock.data('path'));
+
+        swal({
+            type: 'input',
+            title: 'Copy File',
+            text: 'Please enter the new path for the copied file below.',
+            showCancelButton: true,
+            showConfirmButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            inputValue: `${currentPath}${currentName}`,
+        }, (val) => {
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                },
+                contentType: 'application/json; charset=utf-8',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/copy',
+                timeout: 10000,
+                data: JSON.stringify({
+                    from: `${currentPath}${currentName}`,
+                    to: `${val}`,
+                }),
+            }).done(data => {
+                swal({
+                    type: 'success',
+                    title: '',
+                    text: 'File successfully copied.'
+                });
+                Files.list();
+            }).fail(jqXHR => {
+                console.error(jqXHR);
+                var error = 'An error occured while trying to process this request.';
+                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                    error = jqXHR.responseJSON.error;
+                }
+                swal({
+                    type: 'error',
+                    title: '',
+                    text: error,
+                });
+            });
+        });
+
+    }
+
     download() {
         const nameBlock = $(this.element).find('td[data-identifier="name"]');
         const fileName = decodeURIComponent(nameBlock.attr('data-name'));

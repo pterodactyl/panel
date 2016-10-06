@@ -34,6 +34,7 @@ class ContextMenuClass {
         if (!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
         return '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
                     <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-arrow-right"></i> Move</a></li> \
+                    <li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-clone"></i> Copy</a></li> \
                     <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-pencil-square-o"></i> Rename</a></li> \
                     <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li> \
                     <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-expand"></i> Decompress</a></li> \
@@ -79,6 +80,11 @@ class ContextMenuClass {
             $(menu).find('li[data-action="move"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.move();
+            });
+
+            $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.copy();
             });
 
             $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
