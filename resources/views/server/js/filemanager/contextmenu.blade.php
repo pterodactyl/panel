@@ -29,15 +29,26 @@ class ContextMenuClass {
         this.rightClick();
     }
 
-    makeMenu() {
+    makeMenu(parent) {
         $(document).find('#fileOptionMenu').remove();
         if (!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
+
+        let newFilePath = $('#headerTableRow').attr('data-currentDir');
+        if (parent.data('type') === 'folder') {
+            const nameBlock = parent.find('td[data-identifier="name"]');
+            const currentName = decodeURIComponent(nameBlock.attr('data-name'));
+            const currentPath = decodeURIComponent(nameBlock.data('path'));
+            newFilePath = `${currentPath}${currentName}`;
+        }
         return '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
                     <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-arrow-right"></i> Move</a></li> \
                     <li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-clone"></i> Copy</a></li> \
                     <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-pencil-square-o"></i> Rename</a></li> \
                     <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-file-archive-o"></i> Compress</a></li> \
                     <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-expand"></i> Decompress</a></li> \
+                    <li class="divider"></li> \
+                    <li data-action="file"><a href="/server/{{ $server->uuidShort }}/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-plus"></i> New File</a></li> \
+                    <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-folder"></i> New Folder</a></li> \
                     <li class="divider"></li> \
                     <li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-download"></i> Download</a></li> \
                     <li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-trash-o"></i> Delete</a></li> \
@@ -48,7 +59,7 @@ class ContextMenuClass {
         $('#file_listing > tbody td').on('contextmenu', event => {
 
             const parent = $(event.target).closest('tr');
-            const menu = $(this.makeMenu());
+            const menu = $(this.makeMenu(parent));
 
             if (parent.data('type') === 'disabled') return;
             event.preventDefault();
@@ -100,6 +111,11 @@ class ContextMenuClass {
             $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.decompress();
+            });
+
+            $(menu).find('li[data-action="folder"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.folder();
             });
 
             $(menu).find('li[data-action="download"]').unbind().on('click', e => {

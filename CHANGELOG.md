@@ -6,7 +6,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.5.0-pre.2 (Bodacious Boreopterus)
 
 ### Added
-* Adds support for file copying through the file manager. [#127](https://github.com/Pterodactyl/Panel/issues/127)
+* Added support for file copying through the file manager. [#127](https://github.com/Pterodactyl/Panel/issues/127)
+* Added support for creating new files and folders directly from the right-click dropdown menu.
 
 ### Changed
 * Support for sub-folders within the `getJavascript()` route for servers.

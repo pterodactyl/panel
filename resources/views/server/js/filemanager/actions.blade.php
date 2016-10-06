@@ -29,6 +29,55 @@ class ActionsClass {
         this.element = undefined;
     }
 
+    folder() {
+        const nameBlock = $(this.element).find('td[data-identifier="name"]');
+        const currentName = decodeURIComponent(nameBlock.attr('data-name'));
+        const currentPath = decodeURIComponent(nameBlock.data('path'));
+
+        let inputValue = `${currentPath}${currentName}/`;
+        if ($(this.element).data('type') === 'file') {
+            inputValue = currentPath;
+        }
+        swal({
+            type: 'input',
+            title: 'Create Folder',
+            text: 'Please enter the path and folder name below.',
+            showCancelButton: true,
+            showConfirmButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+            inputValue: inputValue
+        }, (val) => {
+            $.ajax({
+                type: 'POST',
+                headers: {
+                    'X-Access-Token': '{{ $server->daemonSecret }}',
+                    'X-Access-Server': '{{ $server->uuid }}'
+                },
+                contentType: 'application/json; charset=utf-8',
+                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/folder',
+                timeout: 10000,
+                data: JSON.stringify({
+                    path: val,
+                }),
+            }).done(data => {
+                swal.close();
+                Files.list();
+            }).fail(jqXHR => {
+                console.error(jqXHR);
+                var error = 'An error occured while trying to process this request.';
+                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                    error = jqXHR.responseJSON.error;
+                }
+                swal({
+                    type: 'error',
+                    title: '',
+                    text: error,
+                });
+            });
+        });
+    }
+
     move() {
         const nameBlock = $(this.element).find('td[data-identifier="name"]');
         const currentName = decodeURIComponent(nameBlock.attr('data-name'));

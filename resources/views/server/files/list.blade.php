@@ -25,7 +25,7 @@
             <th style="width:15%">Size</th>
             <th style="width:20%">Last Modified</th>
         </tr>
-        <tr>
+        <tr id="headerTableRow" data-currentdir="{{ $directory['header'] }}">
             <th><i class="fa fa-folder-open"></i></th>
             <th colspan="3">
                 <code>/home/container{{ $directory['header'] }}</code>
