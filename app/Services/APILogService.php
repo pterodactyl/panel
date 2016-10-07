@@ -36,7 +36,7 @@ class APILogService
         //
     }
 
-    public static function log(Request $request, $authorized = false)
+    public static function log(Request $request, $error = null, $authorized = false)
     {
         if ($request->bearerToken() && !empty($request->bearerToken())) {
             list($public, $hashed) = explode('.', $request->bearerToken());
@@ -47,6 +47,7 @@ class APILogService
         try {
             $log = APILog::create([
                 'authorized' => $authorized,
+                'error' => $error,
                 'key' => $public,
                 'method' => $request->method(),
                 'route' => $request->fullUrl(),

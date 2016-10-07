@@ -62,15 +62,15 @@ class APISecretToken extends Authorization
     public function authenticate(Request $request, Route $route)
     {
         if (!$request->bearerToken() || empty($request->bearerToken())) {
-            APILogService::log($request);
-            throw new UnauthorizedHttpException('The authentication header was missing or malformed');
+            APILogService::log($request, 'The authentication header was missing or malformed.');
+            throw new UnauthorizedHttpException('The authentication header was missing or malformed.');
         }
 
         list($public, $hashed) = explode('.', $request->bearerToken());
 
         $key = APIKey::where('public', $public)->first();
         if (!$key) {
-            APILogService::log($request);
+            APILogService::log($request, 'Invalid API Key.');
             throw new AccessDeniedHttpException('Invalid API Key.');
         }
 
@@ -85,7 +85,7 @@ class APISecretToken extends Authorization
                     }
                 }
                 if (!$inRange) {
-                    APILogService::log($request);
+                    APILogService::log($request, 'This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                     throw new AccessDeniedHttpException('This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                 }
             }
@@ -98,7 +98,7 @@ class APISecretToken extends Authorization
             }
 
             if (!$this->permissionAllowed) {
-                APILogService::log($request);
+                APILogService::log($request, 'You do not have permission to access this resource.');
                 throw new AccessDeniedHttpException('You do not have permission to access this resource.');
             }
         }
@@ -106,18 +106,18 @@ class APISecretToken extends Authorization
         try {
             $decrypted = Crypt::decrypt($key->secret);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $ex) {
-            APILogService::log($request);
+            APILogService::log($request, 'There was an error while attempting to check your secret key.');
             throw new HttpException('There was an error while attempting to check your secret key.');
         }
 
         $this->url = urldecode($request->fullUrl());
         if($this->_generateHMAC($request->getContent(), $decrypted) !== base64_decode($hashed)) {
-            APILogService::log($request);
+            APILogService::log($request, 'The hashed body was not valid. Potential modification of contents in route.');
             throw new BadRequestHttpException('The hashed body was not valid. Potential modification of contents in route.');
         }
 
         // Log the Route Access
-        APILogService::log($request, true);
+        APILogService::log($request, null, true);
         return true;
 
     }

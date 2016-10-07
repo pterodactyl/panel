@@ -16,6 +16,7 @@ class BuildApiLogTable extends Migration
         Schema::create('api_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('authorized');
+            $table->text('error')->nullable();
             $table->char('key', 16)->nullable();
             $table->char('method', 6);
             $table->text('route');
