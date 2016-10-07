@@ -354,9 +354,10 @@ $(document).ready(function () {
 
     $('input[name="auto_deploy"]').change(function () {
         if ($(this).is(':checked')) {
-            $('#allocationPort, #allocationIP, #allocationNode').addClass('hidden');
+            $('#allocationPort, #allocationIP, #allocationNode').hide();
         } else {
             currentLocation = null;
+            $('#allocationPort, #allocationIP, #allocationNode').show().addClass('hidden');
             $('#getLocation').trigger('change', function (e) {
                 alert('triggered');
             });

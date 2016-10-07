@@ -23,6 +23,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * File manager actions would not trigger properly if text in a row was used to right-click from.
 * File manager rename field would not disappear when pressing the escape key in chrome. [#121](https://github.com/Pterodactyl/Panel/issues/121)
 * Fixes bug where server image assigned was not being saved to the database.
+* Fixes instances where selecting auto-deploy would not hide the node selection dropdown.
 
 ## v0.5.0-pre.1 (Bodacious Boreopterus)
 
