@@ -254,3 +254,12 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 #fileOptionMenu > li.bg-default > a {
     padding-left: 5px !important;
 }
+
+.left-icon {
+    padding: 8px 2px !important;
+    border-right: 0 !important;
+}
+
+.left-icon + td {
+    border-left: 0px !important;
+}

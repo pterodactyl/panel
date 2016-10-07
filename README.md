@@ -44,6 +44,8 @@ D3.js - [license](https://github.com/mbostock/d3/blob/master/LICENSE) - [homepag
 
 FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://fontawesome.io)
 
+FontAwesome Animations - [license](https://github.com/l-lin/font-awesome-animation#license) - [homepage](https://github.com/l-lin/font-awesome-animation)
+
 FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - [homepage](http://getfuelux.com)
 
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)

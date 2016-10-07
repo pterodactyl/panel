@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Support for setting custom `user_id` when using the API to create users.
 * Support for creating a new server through the API by passing a user ID rather than an email.
 * Passing `?daemon=true` flag to [`/api/servers/:id`](https://pterodactyl.readme.io/v0.5.0/reference#single-server) will return the daemon stats as well as the `daemon_token` if using HTTPS.
+* Small check for current node status that shows up to the left of the name when viewing a listing of all nodes.
 
 ### Changed
 * Support for sub-folders within the `getJavascript()` route for servers.
