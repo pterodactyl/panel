@@ -71,6 +71,10 @@ class SubuserRepository
         'download-files' => null,
         'upload-files' => 's:files:upload',
         'delete-files' => 's:files:delete',
+        'move-files' => 's:files:move',
+        'copy-files' => 's:files:copy',
+        'compress-files' => 's:files:compress',
+        'decompress-files' => 's:files:decompress',
 
         // Subusers
         'list-subusers' => null,

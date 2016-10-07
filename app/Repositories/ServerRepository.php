@@ -41,19 +41,7 @@ class ServerRepository
 {
 
     protected $daemonPermissions = [
-        's:get',
-        's:power:start',
-        's:power:stop',
-        's:power:restart',
-        's:power:kill',
-        's:console',
-        's:command',
-        's:files:get',
-        's:files:read',
-        's:files:post',
-        's:files:delete',
-        's:files:upload',
-        's:set-password'
+        's:*'
     ];
 
     public function __construct()

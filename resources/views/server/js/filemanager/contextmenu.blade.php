@@ -41,17 +41,17 @@ class ContextMenuClass {
             newFilePath = `${currentPath}${currentName}`;
         }
         return '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
-                    <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-fw fa-arrow-right"></i> Move</a></li> \
-                    <li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-fw fa-clone"></i> Copy</a></li> \
-                    <li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-fw fa-pencil-square-o"></i> Rename</a></li> \
-                    <li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-file-archive-o"></i> Compress</a></li> \
-                    <li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-expand"></i> Decompress</a></li> \
+                    @can('move-files', $server)<li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-fw fa-arrow-right"></i> Move</a></li>@endcan \
+                    @can('copy-files', $server)<li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-fw fa-clone"></i> Copy</a></li>@endcan \
+                    @can('move-files', $server)<li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-fw fa-pencil-square-o"></i> Rename</a></li>@endcan \
+                    @can('compress-files', $server)<li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-file-archive-o"></i> Compress</a></li>@endcan \
+                    @can('decompress-files', $server)<li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-expand"></i> Decompress</a></li>@endcan \
                     <li class="divider"></li> \
-                    <li data-action="file"><a href="/server/{{ $server->uuidShort }}/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
-                    <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-fw fa-folder"></i> New Folder</a></li> \
+                    @can('create-files', $server)<li data-action="file"><a href="/server/{{ $server->uuidShort }}/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
+                    <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-fw fa-folder"></i> New Folder</a></li>@endcan \
                     <li class="divider"></li> \
-                    <li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-download"></i> Download</a></li> \
-                    <li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-fw fa-trash-o"></i> Delete</a></li> \
+                    @can('download-files', $server)<li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-download"></i> Download</a></li>@endcan \
+                    @can('delete-files', $server)<li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-fw fa-trash-o"></i> Delete</a></li>@endcan \
                 </ul>';
     }
 
@@ -74,54 +74,74 @@ class ContextMenuClass {
             this.activeLine = parent;
             this.activeLine.addClass('active');
 
-            if (parent.data('type') === 'file') {
-                $(menu).find('li[data-action="download"]').removeClass('hidden');
-            }
+            @can('download-files', $server)
+                if (parent.data('type') === 'file') {
+                    $(menu).find('li[data-action="download"]').removeClass('hidden');
+                }
+            @endcan
 
-            if (parent.data('type') === 'folder') {
-                $(menu).find('li[data-action="compress"]').removeClass('hidden');
-            }
+            @can('compress-files', $server)
+                if (parent.data('type') === 'folder') {
+                    $(menu).find('li[data-action="compress"]').removeClass('hidden');
+                }
+            @endcan
 
-            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
-                $(menu).find('li[data-action="decompress"]').removeClass('hidden');
-            }
+            @can('decompress-files', $server)
+                if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
+                    $(menu).find('li[data-action="decompress"]').removeClass('hidden');
+                }
+            @endcan
 
             // Handle Events
             const Actions = new ActionsClass(parent, menu);
-            $(menu).find('li[data-action="move"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.move();
-            });
+            @can('move-files', $server)
+                $(menu).find('li[data-action="move"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.move();
+                });
+            @endcan
 
-            $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.copy();
-            });
+            @can('copy-files', $server)
+                $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.copy();
+                });
+            @endcan
 
-            $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.rename();
-            });
+            @can('move-files', $server)
+                $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.rename();
+                });
+            @endcan
 
-            $(menu).find('li[data-action="compress"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.compress();
-            });
+            @can('compress-files', $server)
+                $(menu).find('li[data-action="compress"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.compress();
+                });
+            @endcan
 
-            $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.decompress();
-            });
+            @can('decompress-files', $server)
+                $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.decompress();
+                });
+            @endcan
 
-            $(menu).find('li[data-action="folder"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.folder();
-            });
+            @can('create-files', $server)
+                $(menu).find('li[data-action="folder"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.folder();
+                });
+            @endcan
 
-            $(menu).find('li[data-action="download"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.download();
-            });
+            @can('download-files', $server)
+                $(menu).find('li[data-action="download"]').unbind().on('click', e => {
+                    e.preventDefault();
+                    Actions.download();
+                });
+            @endcan
 
             $(menu).find('li[data-action="delete"]').unbind().on('click', e => {
                 e.preventDefault();

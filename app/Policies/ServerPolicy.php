@@ -210,6 +210,70 @@ class ServerPolicy
     }
 
     /**
+     * Check if user has permission to move and rename files and folders on a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function moveFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('move-files')->exists();
+    }
+
+    /**
+     * Check if user has permission to copy folders and files on a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function copyFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('copy-files')->exists();
+    }
+
+    /**
+     * Check if user has permission to compress files and folders on a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function compressFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('compress-files')->exists();
+    }
+
+    /**
+     * Check if user has permission to decompress files on a server.
+     *
+     * @param  Pterodactyl\Models\User   $user
+     * @param  Pterodactyl\Models\Server $server
+     * @return boolean
+     */
+    public function decompressFiles(User $user, Server $server)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission('decompress-files')->exists();
+    }
+
+    /**
      * Check if user has permission to add files to a server.
      *
      * @param  Pterodactyl\Models\User   $user
