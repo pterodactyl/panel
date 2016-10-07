@@ -52,18 +52,22 @@ class UserRepository
      *
      * @param  string       $email
      * @param  string|null  $password An unhashed version of the user's password.
+     * @param  bool         $admin    Boolean value if user should be an admin or not.
+     * @param  int          $token    A custom user ID.
      * @return bool|integer
      */
-    public function create($email, $password = null, $admin = false)
+    public function create($email, $password = null, $admin = false, $token = null)
     {
         $validator = Validator::make([
             'email' => $email,
             'password' => $password,
-            'root_admin' => $admin
+            'root_admin' => $admin,
+            'custom_id' => $token,
         ], [
             'email' => 'required|email|unique:users,email',
             'password' => 'nullable|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
-            'root_admin' => 'required|boolean'
+            'root_admin' => 'required|boolean',
+            'custom_id' => 'nullable|unique:users,id',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -77,6 +81,11 @@ class UserRepository
         try {
             $user = new Models\User;
             $uuid = new UuidService;
+
+            // Support for API Services
+            if (!is_null($token)) {
+                $user->id = $token;
+            }
 
             $user->uuid = $uuid->generate('users', 'uuid');
             $user->email = $email;

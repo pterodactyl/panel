@@ -8,9 +8,12 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Added support for file copying through the file manager. [#127](https://github.com/Pterodactyl/Panel/issues/127)
 * Added support for creating new files and folders directly from the right-click dropdown menu.
+* Added support for setting custom `user_id` when using the API to create users.
 
 ### Changed
 * Support for sub-folders within the `getJavascript()` route for servers.
+* API route for [`/api/users`](https://pterodactyl.readme.io/v0.5.0/reference#users) now returns a non-paginated result set, and is a single array.
+* API route for [`/api/users/:id`](https://pterodactyl.readme.io/v0.5.0/reference#single-user) now returns a single array including an array of all servers the user is set as the owner of.
 
 ### Fixed
 * File manager would do multiple up-down-up-down loading actions if you escaped renaming a file. Fixed the binding issue. [#122](https://github.com/Pterodactyl/Panel/issues/122)
