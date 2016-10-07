@@ -16,6 +16,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * File manager would do multiple up-down-up-down loading actions if you escaped renaming a file. Fixed the binding issue. [#122](https://github.com/Pterodactyl/Panel/issues/122)
 * File manager actions would not trigger properly if text in a row was used to right-click from.
 * File manager rename field would not disappear when pressing the escape key in chrome. [#121](https://github.com/Pterodactyl/Panel/issues/121)
+* Fixes bug where server image assigned was not being saved to the database.
 
 ## v0.5.0-pre.1 (Bodacious Boreopterus)
 

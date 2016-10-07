@@ -242,6 +242,7 @@ class ServerRepository
                 'option' => $data['option'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
+                'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
                 'username' => $this->generateSFTPUsername($data['name']),
                 'sftp_password' => Crypt::encrypt('not set')
             ]);
