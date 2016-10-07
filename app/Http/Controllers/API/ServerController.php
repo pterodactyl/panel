@@ -62,8 +62,7 @@ class ServerController extends BaseController
      */
     public function list(Request $request)
     {
-        $servers = Models\Server::paginate(50);
-        return $this->response->paginator($servers, new ServerTransformer);
+        return Models\Server::all()->toArray();
     }
 
     /**
@@ -120,9 +119,41 @@ class ServerController extends BaseController
             if (!$query->first()) {
                 throw new NotFoundHttpException('No server by that ID was found.');
             }
-            return $query->first();
+
+            // Requested Daemon Stats
+            $server = $query->first();
+            if ($request->input('daemon') === 'true') {
+                $node = Models\Node::findOrFail($server->node);
+                $client = Models\Node::guzzleRequest($node->id);
+
+                $response = $client->request('GET', '/servers', [
+                    'headers' => [
+                        'X-Access-Token' => $node->daemonSecret
+                    ]
+                ]);
+
+                $server->toArray();
+
+                // Only return the daemon token if the request is using HTTPS
+                if ($request->secure()) {
+                    $server->daemon_token = $server->daemonSecret;
+                }
+                $server->daemon = json_decode($response->getBody())->{$server->uuid};
+
+                return $server;
+            }
+
+            return $server;
+
         } catch (NotFoundHttpException $ex) {
             throw $ex;
+        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            // Couldn't hit the daemon, return what we have though.
+            $server->toArray();
+            $server->daemon = [
+                'error' => 'There was an error encountered while attempting to connect to the remote daemon.'
+            ];
+            return $server;
         } catch (\Exception $ex) {
             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
         }

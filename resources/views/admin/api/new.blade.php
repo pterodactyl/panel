@@ -93,7 +93,7 @@
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
                         <input class="sr-only" name="permissions[]" type="checkbox" value="api.servers.view"> <strong><span class="label label-default">GET</span> /servers/{id}</strong>
-                        <p class="text-muted"><small>Allows viewing details about a specific server.</small><p>
+                        <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows viewing details about a specific server including the <code>daemon_token</code> as current process information.</small><p>
                     </label>
                 </div>
                 <div class="checkbox highlight">
