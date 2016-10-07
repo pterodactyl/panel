@@ -24,6 +24,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * File manager rename field would not disappear when pressing the escape key in chrome. [#121](https://github.com/Pterodactyl/Panel/issues/121)
 * Fixes bug where server image assigned was not being saved to the database.
 * Fixes instances where selecting auto-deploy would not hide the node selection dropdown.
+* Fixes bug in auto-deployment that would throw a `ModelNotFoundException` if the location passed was not valid. Not normally an issue in the panel, but caused display isses for the API.
 
 ## v0.5.0-pre.1 (Bodacious Boreopterus)
 

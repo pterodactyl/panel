@@ -61,9 +61,12 @@ class DeploymentService
      */
     public static function randomNode($location, array $not = [])
     {
-        $useLocation = Models\Location::findOrFail($location);
-        $node = Models\Node::where('location', $useLocation->id)->where('public', 1)->whereNotIn('id', $not)->inRandomOrder()->first();
+        $useLocation = Models\Location::where('id', $location)->first();
+        if (!$useLocation) {
+            throw new DisplayException("The location passed was not valid and could not be found.");
+        }
 
+        $node = Models\Node::where('location', $useLocation->id)->where('public', 1)->whereNotIn('id', $not)->inRandomOrder()->first();
         if (!$node) {
             throw new DisplayException("Unable to find a node in location {$useLocation->short} (id: {$useLocation->id}) that is available and has space.");
         }
