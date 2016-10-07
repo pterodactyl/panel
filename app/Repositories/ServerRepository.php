@@ -77,7 +77,7 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner' => 'bail|required|string',
+            'owner' => 'bail|required',
             'name' => 'required|regex:/^([\w -]{4,35})$/',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',

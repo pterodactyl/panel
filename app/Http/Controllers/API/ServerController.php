@@ -132,28 +132,25 @@ class ServerController extends BaseController
                     ]
                 ]);
 
-                $server->toArray();
-
                 // Only return the daemon token if the request is using HTTPS
                 if ($request->secure()) {
                     $server->daemon_token = $server->daemonSecret;
                 }
                 $server->daemon = json_decode($response->getBody())->{$server->uuid};
 
-                return $server;
+                return $server->toArray();
             }
 
-            return $server;
+            return $server->toArray();
 
         } catch (NotFoundHttpException $ex) {
             throw $ex;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             // Couldn't hit the daemon, return what we have though.
-            $server->toArray();
             $server->daemon = [
                 'error' => 'There was an error encountered while attempting to connect to the remote daemon.'
             ];
-            return $server;
+            return $server->toArray();
         } catch (\Exception $ex) {
             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
         }

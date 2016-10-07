@@ -14,9 +14,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Support for sub-folders within the `getJavascript()` route for servers.
-* API route for [`/api/users`](https://pterodactyl.readme.io/v0.5.0/reference#users) now returns a non-paginated result set, and is a single array.
-* API route for [`/api/users/:id`](https://pterodactyl.readme.io/v0.5.0/reference#single-user) now returns a single array including an array of all servers the user is set as the owner of.
-* API route for [`/api/servers`](https://pterodactyl.readme.io/v0.5.0/reference#servers) now returns a non-paginated result set, and is a single array.
+* **ALL** API routes previously returning paginated result sets, or result sets nested inside a descriptive block (e.g. `servers:`) have been changed to return a single array of all associated items. Please see the [updated documentation](https://pterodactyl.readme.io/v0.5.0/reference) for how this change might effect your API use.
+* API route for [`/api/users/:id`](https://pterodactyl.readme.io/v0.5.0/reference#single-user) now includes an array of all servers the user is set as the owner of.
 
 ### Fixed
 * File manager would do multiple up-down-up-down loading actions if you escaped renaming a file. Fixed the binding issue. [#122](https://github.com/Pterodactyl/Panel/issues/122)

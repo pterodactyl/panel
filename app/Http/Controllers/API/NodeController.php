@@ -62,8 +62,7 @@ class NodeController extends BaseController
      */
     public function list(Request $request)
     {
-        $nodes = Models\Node::paginate(50);
-        return $this->response->paginator($nodes, new NodeTransformer);
+        return Models\Node::all()->toArray();
     }
 
     /**
@@ -170,11 +169,11 @@ class NodeController extends BaseController
      */
      public function allocations(Request $request)
      {
-         $allocations = Models\Allocation::paginate(100);
+         $allocations = Models\Allocation::all();
          if ($allocations->count() < 1) {
              throw new NotFoundHttpException('No allocations have been created.');
          }
-         return $this->response->paginator($allocations, new AllocationTransformer);
+         return $allocations;
      }
 
     /**
