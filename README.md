@@ -28,6 +28,9 @@ SOFTWARE.
 ```
 
 ### Credits
+![](http://static.s3.pterodactyl.io/PhraseApp-parrot.png)
+A huge thanks to [PhraseApp](https://phraseapp.com) who provide us the software to help translate this project.
+
 Ace Editor - [license](https://github.com/ajaxorg/ace/blob/master/LICENSE) - [homepage](https://ace.c9.io)
 
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
