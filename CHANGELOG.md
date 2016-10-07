@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Added support for file copying through the file manager. [#127](https://github.com/Pterodactyl/Panel/issues/127)
 * Added support for creating new files and folders directly from the right-click dropdown menu.
 * Added support for setting custom `user_id` when using the API to create users.
+* Support for creating a new server through the API by passing a user ID rather than an email.
 
 ### Changed
 * Support for sub-folders within the `getJavascript()` route for servers.

@@ -77,7 +77,7 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner' => 'bail|required|email|exists:users,email',
+            'owner' => 'bail|required|string',
             'name' => 'required|regex:/^([\w -]{4,35})$/',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
@@ -114,8 +114,15 @@ class ServerRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        // Get the User ID; user exists since we passed the 'exists:users,email' part of the validation
-        $user = Models\User::select('id')->where('email', $data['owner'])->first();
+        if (is_int($data['owner'])) {
+            $user = Models\User::select('id')->where('id', $data['owner'])->first();
+        } else {
+            $user = Models\User::select('id')->where('email', $data['owner'])->first();
+        }
+
+        if (!$user) {
+            throw new DisplayValidationException('The user id or email passed to the function was not found on the system.');
+        }
 
         $autoDeployed = false;
         if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, "1"])) {
