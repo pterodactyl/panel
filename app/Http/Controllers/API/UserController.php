@@ -129,9 +129,7 @@ class UserController extends BaseController
         try {
             $user = new UserRepository;
             $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'), $request->input('custom_id'));
-            return $this->response->created(route('api.users.view', [
-                'id' => $create
-            ]));
+            return [ 'id' => $create ];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {

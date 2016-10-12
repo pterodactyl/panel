@@ -128,6 +128,11 @@ class APIRoutes
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@view'
             ]);
 
+            $api->get('nodes/{id}/config', [
+                'as' => 'api.nodes.view',
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@config'
+            ]);
+
             $api->delete('nodes/{id}', [
                 'as' => 'api.nodes.delete',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@delete'

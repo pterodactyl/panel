@@ -85,7 +85,7 @@ class NodeController extends BaseController
      *      	'daemonSFTP' => 2022,
      *      	'daemonListen' => 8080
      *      }, headers={"Authorization": "Bearer <jwt-token>"}),
-     *       @Response(201),
+     *       @Response(200),
      *       @Response(422, body={
      *          "message": "A validation error occured.",
      *          "errors": {},
@@ -102,9 +102,7 @@ class NodeController extends BaseController
         try {
             $node = new NodeRepository;
             $new = $node->create($request->all());
-            return $this->response->created(route('api.nodes.view', [
-                'id' => $new
-            ]));
+            return [ 'id' => $new ];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -129,23 +127,23 @@ class NodeController extends BaseController
      */
     public function view(Request $request, $id, $fields = null)
     {
-        $query = Models\Node::where('id', $id);
+        $node = Models\Node::where('id', $id);
 
         if (!is_null($request->input('fields'))) {
             foreach(explode(',', $request->input('fields')) as $field) {
                 if (!empty($field)) {
-                    $query->addSelect($field);
+                    $node->addSelect($field);
                 }
             }
         }
 
         try {
-            if (!$query->first()) {
+            if (!$node->first()) {
                 throw new NotFoundHttpException('No node by that ID was found.');
             }
 
             return [
-                'node' => $query->first(),
+                'node' => $node->first(),
                 'allocations' => [
                     'assigned' => Models\Allocation::where('node', $id)->whereNotNull('assigned_to')->get(),
                     'unassigned' => Models\Allocation::where('node', $id)->whereNull('assigned_to')->get()
@@ -156,6 +154,59 @@ class NodeController extends BaseController
         } catch (\Exception $ex) {
             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
         }
+    }
+
+    public function config(Request $request, $id)
+    {
+        if (!$request->secure()) {
+            throw new BadRequestHttpException('This API route can only be accessed using a secure connection.');
+        }
+
+        $node = Models\Node::where('id', $id)->first();
+        if (!$node) {
+            throw new NotFoundHttpException('No node by that ID was found.');
+        }
+
+        return [
+            'web' => [
+                'listen' => $node->daemonListen,
+                'ssl' => [
+                    'enabled' => ($node->scheme === 'https'),
+                    'certificate' => '/etc/certs/' . $node->fqdn . '/fullchain.pem',
+                    'key' => '/etc/certs/' . $node->fqdn . '/privkey.pem'
+                ]
+            ],
+            'docker' => [
+                'socket' => '/var/run/docker.sock',
+                'autoupdate_images' => true
+            ],
+            'sftp' => [
+                'path' => $node->daemonBase,
+                'port' => (int) $node->daemonSFTP,
+                'container' => '0x0000'
+            ],
+            'logger' => [
+                'path' => 'logs/',
+                'src' => false,
+                'level' => 'info',
+                'period' => '1d',
+                'count' => 3
+            ],
+            'remote' => [
+                'download' => route('remote.download'),
+                'installed' => route('remote.install')
+            ],
+            'uploads' => [
+                'maximumSize' => 100000000
+            ],
+            'keys' => [
+                $node->daemonSecret
+            ],
+            'query' => [
+                'kill_on_fail' => true,
+                'fail_limit' => 3
+            ]
+        ];
     }
 
     /**

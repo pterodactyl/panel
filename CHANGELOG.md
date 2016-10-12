@@ -6,6 +6,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.5.0-pre.2 (Bodacious Boreopterus)
 
 ### Added
+* Return node configuration from remote API by using `/api/nodes/{id}/config` endpoint. Only accepts SSL connections.
+
+### Changed
+* Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.
+
+## v0.5.0-pre.2 (Bodacious Boreopterus)
+
+### Added
 * Added support for file copying through the file manager. [#127](https://github.com/Pterodactyl/Panel/issues/127)
 * Creating new files and folders directly from the right-click dropdown menu in the file manager.
 * Support for setting custom `user_id` when using the API to create users.

@@ -77,9 +77,7 @@ class ServerController extends BaseController
         try {
             $server = new ServerRepository;
             $new = $server->create($request->all());
-            return $this->response->created(route('api.servers.view', [
-                'id' => $new
-            ]));
+            return [ 'id' => $new ];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
