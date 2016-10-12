@@ -32,7 +32,13 @@ class UpdateEmailSettings extends Command
      *
      * @var string
      */
-    protected $signature = 'pterodactyl:mail';
+    protected $signature = 'pterodactyl:mail
+                            {--driver=}
+                            {--email=}
+                            {--host=}
+                            {--port=}
+                            {--username=}
+                            {--password=}';
 
     /**
      * The console command description.
@@ -92,35 +98,35 @@ class UpdateEmailSettings extends Command
                 'Postmark Transactional Email Service'
             ]
         ]);
-        $variables['MAIL_DRIVER'] = $this->choice('Which email driver would you like to use?', [
+        $variables['MAIL_DRIVER'] = is_null($this->option('driver')) ? $this->choice('Which email driver would you like to use?', [
             'smtp',
             'mail',
             'mailgun',
             'mandrill',
             'postmark'
-        ]);
+        ]) : $this->option('driver');
 
         switch ($variables['MAIL_DRIVER']) {
             case 'smtp':
-                $variables['MAIL_HOST'] = $this->ask('SMTP Host (e.g smtp.google.com)');
-                $variables['MAIL_PORT'] = $this->anticipate('SMTP Host Port (e.g 587)', ['587']);
-                $variables['MAIL_USERNAME'] = $this->ask('SMTP Username');
-                $variables['MAIL_PASSWORD'] = $this->secret('SMTP Password');
+                $variables['MAIL_HOST'] = is_null($this->option('host')) ? $this->ask('SMTP Host (e.g smtp.google.com)') : $this->option('host');
+                $variables['MAIL_PORT'] = is_null($this->option('port')) ? $this->anticipate('SMTP Host Port (e.g 587)', ['587']) : $this->option('port');
+                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('SMTP Username') : $this->option('password');
+                $variables['MAIL_PASSWORD'] = is_null($this->option('password')) ? $this->secret('SMTP Password') : $this->option('password');
                 break;
             case 'mail':
                 break;
             case 'mailgun':
-                $variables['MAILGUN_DOMAIN'] = $this->ask('Mailgun Domain');
-                $variables['MAILGUN_KEY'] = $this->ask('Mailgun Key');
+                $variables['MAILGUN_DOMAIN'] = is_null($this->option('host')) ? $this->ask('Mailgun Domain') : $this->option('host');
+                $variables['MAILGUN_KEY'] = is_null($this->option('username')) ? $this->ask('Mailgun Key') : $this->option('username');
                 break;
             case 'mandrill':
-                $variables['MANDRILL_SECRET'] = $this->ask('Mandrill Secret');
+                $variables['MANDRILL_SECRET'] = is_null($this->option('username')) ? $this->ask('Mandrill Secret') : $this->option('username');
                 break;
             case 'postmark':
                 $variables['MAIL_DRIVER'] = 'smtp';
                 $variables['MAIL_HOST'] = 'smtp.postmarkapp.com';
                 $variables['MAIL_PORT'] = 587;
-                $variables['MAIL_USERNAME'] = $this->ask('Postmark API Token');
+                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('Postmark API Token') : $this->option('username');
                 $variables['MAIL_PASSWORD'] = $variables['MAIL_USERNAME'];
                 break;
             default:
@@ -129,7 +135,7 @@ class UpdateEmailSettings extends Command
                 break;
         }
 
-        $variables['MAIL_FROM'] = $this->ask('Email address emails should originate from');
+        $variables['MAIL_FROM'] = is_null($this->option('email')) ? $this->ask('Email address emails should originate from') : $this->option('email');
         $variables['MAIL_ENCRYPTION'] = 'tls';
 
         $bar = $this->output->createProgressBar(count($variables));
