@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Return node configuration from remote API by using `/api/nodes/{id}/config` endpoint. Only accepts SSL connections.
+* Support for filtering servers within Admin CP to narrow down results by name, email, allocation, or defined fields.
 
 ### Changed
 * Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.

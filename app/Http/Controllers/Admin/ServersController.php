@@ -51,8 +51,40 @@ class ServersController extends Controller
 
     public function getIndex(Request $request)
     {
-        return view('admin.servers.index', [
-            'servers' => Models\Server::select(
+        $query = Models\Server::select(
+            'servers.*',
+            'nodes.name as a_nodeName',
+            'users.email as a_ownerEmail',
+            'allocations.ip',
+            'allocations.port',
+            'allocations.ip_alias'
+        )->join('nodes', 'servers.node', '=', 'nodes.id')
+        ->join('users', 'servers.owner', '=', 'users.id')
+        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
+
+        if ($request->input('filter') && !is_null($request->input('filter'))) {
+            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
+            foreach($matches[0] as $match) {
+                $match = str_replace('"', '', $match);
+                if (strpos($match, ':')) {
+                    list($field, $term) = explode(':', $match);
+                    $field = (strpos($field, '.')) ? $field : 'servers.' . $field;
+                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
+                } else {
+                    $query->where('servers.name', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('servers.username', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('users.email', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('allocations.port', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('allocations.ip', 'LIKE', '%' . $match . '%');
+                }
+            }
+        }
+
+        try {
+            $servers = $query->paginate(20);
+        } catch (\Exception $ex) {
+            Alert::warning('There was an error with the search parameters provided.');
+            $servers = Models\Server::select(
                 'servers.*',
                 'nodes.name as a_nodeName',
                 'users.email as a_ownerEmail',
@@ -62,7 +94,11 @@ class ServersController extends Controller
             )->join('nodes', 'servers.node', '=', 'nodes.id')
             ->join('users', 'servers.owner', '=', 'users.id')
             ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-            ->paginate(20),
+            ->paginate(20);
+        }
+
+        return view('admin.servers.index', [
+            'servers' => $servers
         ]);
     }
 

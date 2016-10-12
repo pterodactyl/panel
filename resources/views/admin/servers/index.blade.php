@@ -30,6 +30,14 @@
         <li class="active">Servers</li>
     </ul>
     <h3>All Servers</h3><hr />
+    <form method="GET" style="margin-bottom:20px;">
+        <div class="input-group">
+            <input type="text" name="filter" class="form-control" value="{{ urldecode(Input::get('filter')) }}" placeholder="search term" />
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-sm btn-primary">Filter Servers</button>
+            </div>
+        </div>
+    </form>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
