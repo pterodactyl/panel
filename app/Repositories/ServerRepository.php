@@ -51,19 +51,17 @@ class ServerRepository
 
     /**
      * Generates a SFTP username for a server given a server name.
+     * format: mumble_67c7a4b0
      *
      * @param  string $name
+     * @param  string $uuid
      * @return string
      */
-    protected function generateSFTPUsername($name)
+    protected function generateSFTPUsername($name, $uuid = null)
     {
 
-        $name = preg_replace('/\s+/', '', $name);
-        if (strlen($name) > 6) {
-            return strtolower('ptdl-' . substr($name, 0, 6) . '_' . str_random(5));
-        }
-
-        return strtolower('ptdl-' . $name . '_' . str_random((11 - strlen($name))));
+        $uuid = is_null($uuid) ? str_random(8) : $uuid;
+        return strtolower(substr(preg_replace('/\s+/', '', $name), 0, 6) . '_' . $uuid);
 
     }
 
@@ -230,10 +228,11 @@ class ServerRepository
 
             // Add Server to the Database
             $server = new Models\Server;
-            $generatedUuid = $uuid->generate('servers', 'uuid');
+            $genUuid = $uuid->generate('servers', 'uuid');
+            $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $generatedUuid);
             $server->fill([
-                'uuid' => $generatedUuid,
-                'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
+                'uuid' => $genUuid,
+                'uuidShort' => $genShortUuid,
                 'node' => $node->id,
                 'name' => $data['name'],
                 'suspended' => 0,
@@ -250,7 +249,7 @@ class ServerRepository
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
                 'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
-                'username' => $this->generateSFTPUsername($data['name']),
+                'username' => $this->generateSFTPUsername($data['name'], $genShortUuid),
                 'sftp_password' => Crypt::encrypt('not set')
             ]);
             $server->save();
