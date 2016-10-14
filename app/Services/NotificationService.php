@@ -21,31 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Http\Routes;
+namespace Pterodactyl\Services;
 
-use Illuminate\Routing\Router;
-use Request;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 
-class RemoteRoutes {
+use Pterodactyl\Notifications\Daemon;
 
-    public function map(Router $router) {
-        $router->group(['prefix' => 'remote'], function () use ($router) {
-            // Handles Remote Download Authentication Requests
-            $router->post('download', [
-                'as' => 'remote.download',
-                'uses' => 'Remote\RemoteController@postDownload'
-            ]);
+class NotificationService {
 
-            $router->post('install', [
-                'as' => 'remote.install',
-                'uses' => 'Remote\RemoteController@postInstall'
-            ]);
+    protected $server;
 
-            $router->post('event', [
-                'as' => 'remote.event',
-                'uses' => 'Remote\RemoteController@event'
-            ]);
-        });
+    protected $user;
+
+    /**
+     * Daemon will pass an event name, this matches that event name with the notification to send.
+     * @var array
+     */
+    protected $types = [
+        // 'crashed' => 'CrashNotification',
+        // 'started' => 'StartNotification',
+        // 'stopped' => 'StopNotification',
+        // 'rebuild' => 'RebuildNotification'
+    ];
+
+    public function __construct(Server $server)
+    {
+        $this->server = $server;
+        $this->user = User::findOrFail($server->owner);
     }
 
+    public function pass(array $notification)
+    {
+        if (!$notification->type) {
+            return;
+        }
+
+        if (class_exists($this->types[$notification->event]::class)) {
+            $user->notify(new $this->types[$notification->type]($notification->event));
+        }
+    }
 }

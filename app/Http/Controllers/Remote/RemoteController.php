@@ -25,6 +25,7 @@ namespace Pterodactyl\Http\Controllers\Remote;
 
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\NotificationService;
 
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -80,6 +81,31 @@ class RemoteController extends Controller
         return response()->json([
             'message' => 'Recieved!'
         ], 200);
+    }
+
+    public function event(Request $request)
+    {
+        $server = Models\Server::where('uuid', $request->input('server'))->first();
+        if (!$server) {
+            return response()->json([
+                'error' => 'No server by that ID was found on the system.'
+            ], 422);
+        }
+
+        $node = Models\Node::findOrFail($server->node);
+
+        $hmac = $request->input('signed');
+        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {
+            return response()->json([
+                'error' => 'Signed HMAC was invalid.'
+            ], 403);
+        }
+
+        // Passes Validation, Setup Notifications
+        $notify = new NotificationService($server);
+        $notify->pass($request->input('notification'));
+
+        return response('', 201);
     }
 
 }
