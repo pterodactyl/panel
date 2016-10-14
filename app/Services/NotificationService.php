@@ -57,8 +57,8 @@ class NotificationService {
             return;
         }
 
-        if (class_exists($this->types[$notification->event]::class)) {
-            $user->notify(new $this->types[$notification->type]($notification->event));
+        if (class_exists($this->types[$notification->type]::class)) {
+            $user->notify(new $this->types[$notification->type]($notification->payload));
         }
     }
 }
