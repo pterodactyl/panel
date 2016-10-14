@@ -51,20 +51,20 @@ class BaseRoutes {
 
         // Account Routes
         $router->group([
-            'profix' => 'account',
+            'prefix' => 'account',
             'middleware' => [
                 'auth',
                 'csrf'
             ]
         ], function () use ($router) {
-            $router->get('account', [
+            $router->get('/', [
                 'as' => 'account',
                 'uses' => 'Base\AccountController@index'
             ]);
-            $router->post('/account/password', [
+            $router->post('/password', [
                 'uses' => 'Base\AccountController@password'
             ]);
-            $router->post('/account/email', [
+            $router->post('/email', [
                 'uses' => 'Base\AccountController@email'
             ]);
         });
