@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.5.0-pre.2 (Bodacious Boreopterus)
+## v0.5.0-pre.3 (Bodacious Boreopterus)
 
 ### Added
 * Return node configuration from remote API by using `/api/nodes/{id}/config` endpoint. Only accepts SSL connections.
@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.
 * Environment setting script is much more user friendly and does not require an excessive amount of clicking and typing.
+* File upload method switched from BinaryJS to Socket.io implementation to fix bugs as well as be a little speedier and allow upload throttling.
 
 ## v0.5.0-pre.2 (Bodacious Boreopterus)
 
