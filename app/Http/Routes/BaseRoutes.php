@@ -59,13 +59,13 @@ class BaseRoutes {
         ], function () use ($router) {
             $router->get('account', [
                 'as' => 'account',
-                'uses' => 'Base\IndexController@getAccount'
+                'uses' => 'Base\AccountController@index'
             ]);
             $router->post('/account/password', [
-                'uses' => 'Base\IndexController@postAccountPassword'
+                'uses' => 'Base\AccountController@password'
             ]);
             $router->post('/account/email', [
-                'uses' => 'Base\IndexController@postAccountEmail'
+                'uses' => 'Base\AccountController@email'
             ]);
         });
 
@@ -79,20 +79,20 @@ class BaseRoutes {
         ], function () use ($router) {
             $router->get('/', [
                 'as' => 'account.security',
-                'uses' => 'Base\IndexController@getAccountSecurity'
+                'uses' => 'Base\SecurityController@index'
             ]);
             $router->get('/revoke/{id}', [
                 'as' => 'account.security.revoke',
-                'uses' => 'Base\IndexController@getRevokeSession'
+                'uses' => 'Base\SecurityController@revoke'
             ]);
-            $router->put('/', [
-                'uses' => 'Base\IndexController@putAccountTotp'
+            $router->put('/totp', [
+                'uses' => 'Base\SecurityController@generateTotp'
             ]);
-            $router->post('/', [
-                'uses' => 'Base\IndexController@postAccountTotp'
+            $router->post('/totp', [
+                'uses' => 'Base\SecurityController@setTotp'
             ]);
-            $router->delete('/', [
-                'uses' => 'Base\IndexController@deleteAccountTotp'
+            $router->delete('/totp', [
+                'uses' => 'Base\SecurityController@disableTotp'
             ]);
         });
 
