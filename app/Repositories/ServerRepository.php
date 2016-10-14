@@ -32,6 +32,7 @@ use Log;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Services\DeploymentService;
+use Pterodactyl\Notifications\ServerCreated;
 
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\AccountNotFoundException;
@@ -113,9 +114,9 @@ class ServerRepository
         }
 
         if (is_int($data['owner'])) {
-            $user = Models\User::select('id')->where('id', $data['owner'])->first();
+            $user = Models\User::select('id', 'email')->where('id', $data['owner'])->first();
         } else {
-            $user = Models\User::select('id')->where('email', $data['owner'])->first();
+            $user = Models\User::select('id', 'email')->where('email', $data['owner'])->first();
         }
 
         if (!$user) {
@@ -229,7 +230,7 @@ class ServerRepository
             // Add Server to the Database
             $server = new Models\Server;
             $genUuid = $uuid->generate('servers', 'uuid');
-            $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $generatedUuid);
+            $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $genUuid);
             $server->fill([
                 'uuid' => $genUuid,
                 'uuidShort' => $genShortUuid,
@@ -273,6 +274,16 @@ class ServerRepository
                     'variable_value' => $item['val']
                 ]);
             }
+
+            // Queue Notification Email
+            $user->notify((new ServerCreated([
+                'name' => $server->name,
+                'memory' => $server->memory,
+                'node' => $node->name,
+                'service' => $service->name,
+                'option' => $option->name,
+                'uuidShort' => $server->uuidShort
+            ])));
 
             $client = Models\Node::guzzleRequest($node->id);
             $client->request('POST', '/servers', [

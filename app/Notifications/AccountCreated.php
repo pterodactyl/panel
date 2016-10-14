@@ -57,7 +57,7 @@ class AccountCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
     /**
@@ -74,17 +74,4 @@ class AccountCreated extends Notification implements ShouldQueue
                     ->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . $notifiable->email));
     }
 
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            'email' => $notifiable->email,
-            'token' => $this->token
-        ];
-    }
 }
