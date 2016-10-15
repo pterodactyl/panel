@@ -23,12 +23,15 @@
  */
 namespace Pterodactyl\Http\Middleware;
 
+use Auth;
 use Crypt;
+use Config;
 use IPTools\IP;
 use IPTools\Range;
 
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\APILogService;
 
 use Illuminate\Http\Request;
@@ -51,7 +54,7 @@ class APISecretToken extends Authorization
 
     public function __construct()
     {
-        //
+        Config::set('session.driver', 'array');
     }
 
     public function getAuthorizationMethod()
@@ -90,14 +93,11 @@ class APISecretToken extends Authorization
                 }
             }
 
-            foreach(APIPermission::where('key_id', $key->id)->get() as &$row) {
-                if ($row->permission === '*' || $row->permission === $request->route()->getName()) {
-                    $this->permissionAllowed = true;
-                    continue;
-                }
-            }
-
-            if (!$this->permissionAllowed) {
+            $permission = APIPermission::where('key_id', $key->id)
+                            ->where('permission', $request->route()->getName())
+                            ->orWhere('permission', '*')
+                            ->first();
+            if (!$permission) {
                 APILogService::log($request, 'You do not have permission to access this resource.');
                 throw new AccessDeniedHttpException('You do not have permission to access this resource.');
             }
@@ -118,7 +118,7 @@ class APISecretToken extends Authorization
 
         // Log the Route Access
         APILogService::log($request, null, true);
-        return true;
+        return Auth::loginUsingId($key->user);
 
     }
 

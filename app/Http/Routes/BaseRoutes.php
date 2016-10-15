@@ -69,6 +69,27 @@ class BaseRoutes {
             ]);
         });
 
+        // API Management Routes
+        $router->group([
+            'prefix' => 'account/api',
+            'middleware' => [
+                'auth',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'account.api',
+                'uses' => 'Base\APIController@index'
+            ]);
+            $router->get('/new', [
+                'as' => 'account.api.new',
+                'uses' => 'Base\APIController@new'
+            ]);
+            $router->post('/new', [
+                'uses' => 'Base\APIController@save'
+            ]);
+        });
+
         // TOTP Routes
         $router->group([
             'prefix' => 'account/security',

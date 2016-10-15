@@ -24,7 +24,6 @@
 namespace Pterodactyl\Models;
 
 use Auth;
-
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
 
@@ -91,7 +90,11 @@ class Server extends Model
      */
     public function __construct()
     {
-        self::$user = Auth::user();
+        if (!is_null(Auth::user())) {
+            self::$user = Auth::user();
+        } else {
+            throw new \Exception('Auth::user and Dingo::user cannot both be null.');
+        }
     }
 
     /**
@@ -133,9 +136,13 @@ class Server extends Model
             'locations.short as a_locationShort',
             'allocations.ip',
             'allocations.ip_alias',
-            'allocations.port'
+            'allocations.port',
+            'services.name as a_serviceName',
+            'service_options.name as a_serviceOptionName'
         )->join('nodes', 'servers.node', '=', 'nodes.id')
         ->join('locations', 'nodes.location', '=', 'locations.id')
+        ->join('services', 'servers.service', '=', 'services.id')
+        ->join('service_options', 'servers.option', '=', 'service_options.id')
         ->join('allocations', 'servers.allocation', '=', 'allocations.id');
 
         if (self::$user->root_admin !== 1) {

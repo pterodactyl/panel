@@ -263,3 +263,7 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 .left-icon + td {
     border-left: 0px !important;
 }
+
+.fuelux .wizard .step-content > .alert {
+    margin-bottom: 0 !important;
+}

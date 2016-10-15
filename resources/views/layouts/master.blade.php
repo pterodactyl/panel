@@ -184,6 +184,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/account">{{ trans('pagination.sidebar.account_settings') }}</a></li>
                                 <li><a href="/account/security">{{ trans('pagination.sidebar.account_security') }}</a></li>
+                                <li><a href="/account/api">API Settings</a></li>
                                 <li><a href="/index">{{ trans('pagination.sidebar.servers') }}</a></li>
                             </ul>
                         </li>
@@ -237,6 +238,7 @@
                         <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.account_controls') }}</strong></a>
                         <a href="/account" class="list-group-item">{{ trans('pagination.sidebar.account_settings') }}</a>
                         <a href="/account/security" class="list-group-item">{{ trans('pagination.sidebar.account_security') }}</a>
+                        <a href="/account/api" class="list-group-item">API Access</a>
                         <a href="/" class="list-group-item">{{ trans('pagination.sidebar.servers') }}</a>
                     </div>
                     @section('sidebar-server')
