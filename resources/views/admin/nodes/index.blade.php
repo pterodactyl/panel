@@ -75,14 +75,14 @@ $(document).ready(function () {
 });
 function pingNodes() {
     $('td[data-action="ping"]').each(function(i, element) {
-        elem = $(this);
         $.ajax({
             type: 'GET',
-            url: elem.data('location'),
+            url: $(element).data('location'),
+            timeout: 5000
         }).done(function (data) {
-            elem.removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
+            $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
         }).fail(function () {
-            elem.removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
+            $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
         });
     });
 }
