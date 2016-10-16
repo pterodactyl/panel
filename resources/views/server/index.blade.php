@@ -200,7 +200,7 @@ $(window).load(function () {
         name: '{{ $server->uuid }}',
         height: 400,
         exit: false,
-        prompt: '{{$server->name}}&#64;{{ $server->uuidShort }}:~$ ',
+        prompt: '{{ $server->username }}:~$ ',
         onBlur: function (terminal) {
             return false;
         }
