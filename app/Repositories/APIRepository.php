@@ -23,6 +23,7 @@
  */
 namespace Pterodactyl\Repositories;
 
+use Auth;
 use DB;
 use Crypt;
 use Validator;
@@ -40,38 +41,51 @@ class APIRepository
      * @var array
      */
     protected $permissions = [
-        '*',
+        'admin' => [
+            '*',
 
-        // User Management Routes
-        'api.users.list',
-        'api.users.create',
-        'api.users.view',
-        'api.users.update',
-        'api.users.delete',
+            // User Management Routes
+            'users.list',
+            'users.create',
+            'users.view',
+            'users.update',
+            'users.delete',
 
-        // Server Manaement Routes
-        'api.servers.list',
-        'api.servers.create',
-        'api.servers.view',
-        'api.servers.config',
-        'api.servers.build',
-        'api.servers.suspend',
-        'api.servers.unsuspend',
-        'api.servers.delete',
+            // Server Manaement Routes
+            'servers.list',
+            'servers.create',
+            'servers.view',
+            'servers.config',
+            'servers.build',
+            'servers.suspend',
+            'servers.unsuspend',
+            'servers.delete',
 
-        // Node Management Routes
-        'api.nodes.list',
-        'api.nodes.create',
-        'api.nodes.list',
-        'api.nodes.allocations',
-        'api.nodes.delete',
+            // Node Management Routes
+            'nodes.list',
+            'nodes.create',
+            'nodes.list',
+            'nodes.allocations',
+            'nodes.delete',
 
-        // Service Routes
-        'api.services.list',
-        'api.services.view',
+            // Service Routes
+            'services.list',
+            'services.view',
 
-        // Location Routes
-        'api.locations.list',
+            // Location Routes
+            'locations.list',
+
+        ],
+        'user' => [
+            '*',
+
+            // Informational
+            'me',
+
+            // Server Control
+            'server',
+            'server.power',
+        ],
     ];
 
     /**
@@ -80,12 +94,17 @@ class APIRepository
      */
     protected $allowed = [];
 
+    protected $user;
+
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(Models\User $user = null)
     {
-        //
+        $this->user = is_null($user) ? Auth::user() : $user;
+        if (is_null($this->user)) {
+            throw new \Exception('Cannot access API Repository without passing a user to __construct().');
+        }
     }
 
     /**
@@ -101,7 +120,9 @@ class APIRepository
     public function new(array $data)
     {
         $validator = Validator::make($data, [
-            'permissions' => 'required|array'
+            'memo' => 'string|max:500',
+            'permissions' => 'sometimes|required|array',
+            'adminPermissions' => 'sometimes|required|array'
         ]);
 
         $validator->after(function($validator) use ($data) {
@@ -125,31 +146,62 @@ class APIRepository
         }
 
         DB::beginTransaction();
-
         try {
-            $secretKey = str_random(16) . '.' . str_random(15);
+            $secretKey = str_random(16) . '.' . str_random(7) . '.' . str_random(7);
             $key = new Models\APIKey;
             $key->fill([
+                'user' => $this->user->id,
                 'public' => str_random(16),
                 'secret' => Crypt::encrypt($secretKey),
-                'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed)
+                'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed),
+                'memo' => $data['memo'],
+                'expires_at' => null
             ]);
             $key->save();
 
-            foreach($data['permissions'] as $permission) {
-                if (in_array($permission, $this->permissions)) {
-                    $model = new Models\APIPermission;
-                    $model->fill([
-                        'key_id' => $key->id,
-                        'permission' => $permission
-                    ]);
-                    $model->save();
+            $totalPermissions = 0;
+            if (isset($data['permissions'])) {
+                foreach($data['permissions'] as $permNode) {
+                    if (!strpos($permNode, ':')) continue;
+
+                    list($toss, $permission) = explode(':', $permNode);
+                    if (in_array($permission, $this->permissions['user'])) {
+                        $totalPermissions++;
+                        $model = new Models\APIPermission;
+                        $model->fill([
+                            'key_id' => $key->id,
+                            'permission' => 'api.user.' . $permission
+                        ]);
+                        $model->save();
+                    }
                 }
+            }
+
+            if ($this->user->root_admin === 1 && isset($data['adminPermissions'])) {
+                foreach($data['adminPermissions'] as $permNode) {
+                    if (!strpos($permNode, ':')) continue;
+
+                    list($toss, $permission) = explode(':', $permNode);
+                    if (in_array($permission, $this->permissions['admin'])) {
+                        $totalPermissions++;
+                        $model = new Models\APIPermission;
+                        $model->fill([
+                            'key_id' => $key->id,
+                            'permission' => 'api.admin.' . $permission
+                        ]);
+                        $model->save();
+                    }
+                }
+            }
+
+            if ($totalPermissions < 1) {
+                throw new DisplayException('No valid permissions were passed.');
             }
 
             DB::commit();
             return $secretKey;
         } catch (\Exception $ex) {
+            DB::rollBack();
             throw $ex;
         }
 
@@ -169,7 +221,7 @@ class APIRepository
         DB::beginTransaction();
 
         try {
-            $model = Models\APIKey::where('public', $key)->firstOrFail();
+            $model = Models\APIKey::where('public', $key)->where('user', $this->user->id)->firstOrFail();
             $permissions = Models\APIPermission::where('key_id', $model->id)->delete();
             $model->delete();
 

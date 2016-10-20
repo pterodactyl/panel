@@ -303,32 +303,6 @@ class AdminRoutes {
             ]);
         });
 
-        // API Routes
-        $router->group([
-            'prefix' => 'admin/api',
-            'middleware' => [
-                'auth',
-                'admin',
-                'csrf'
-            ]
-        ], function () use ($router) {
-            $router->get('/', [
-                'as' => 'admin.api',
-                'uses' => 'Admin\APIController@getIndex'
-            ]);
-            $router->get('/new', [
-                'as' => 'admin.api.new',
-                'uses' => 'Admin\APIController@getNew'
-            ]);
-            $router->post('/new', [
-                'uses' => 'Admin\APIController@postNew'
-            ]);
-            $router->delete('/revoke/{key?}', [
-                'as' => 'admin.api.revoke',
-                'uses' => 'Admin\APIController@deleteRevokeKey'
-            ]);
-        });
-
         // Database Routes
         $router->group([
             'prefix' => 'admin/databases',

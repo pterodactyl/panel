@@ -162,7 +162,8 @@ class UserRepository
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
         }
 
-        if(Auth::user()->id === $id) {
+        // @TODO: this should probably be checked outside of this method because we won't always have Auth::user()
+        if(!is_null(Auth::user()) && Auth::user()->id === $id) {
           throw new DisplayException('Cannot delete your own account.');
         }
 

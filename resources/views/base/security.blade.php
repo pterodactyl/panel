@@ -72,7 +72,7 @@
             <div class="panel-body">
                 <p>{{ trans('base.account.totp_disable_help') }}</p>
                 <br />
-                <form action="/account/totp" method="post">
+                <form action="/account/security/totp" method="post">
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon">{{ trans('base.account.totp_token') }}</span>
@@ -155,7 +155,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'PUT',
-            url: '/account/totp',
+            url: '/account/security/totp',
             headers: { 'X-CSRF-Token': '{{ csrf_token() }}' }
         }).done(function (data) {
             var image = new Image();
@@ -180,7 +180,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url:'/account/totp',
+            url:'/account/security/totp',
             headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
             data: {
                 token: $('#totp_token').val()

@@ -28,6 +28,7 @@ use Illuminate\Routing\Router;
 class ServerRoutes {
 
     public function map(Router $router) {
+
         $router->group([
             'prefix' => 'server/{server}',
             'middleware' => [
@@ -36,6 +37,7 @@ class ServerRoutes {
                 'csrf'
             ]
         ], function ($server) use ($router) {
+
             // Index View for Server
             $router->get('/', [
                 'as' => 'server.index',

@@ -184,6 +184,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/account">{{ trans('pagination.sidebar.account_settings') }}</a></li>
                                 <li><a href="/account/security">{{ trans('pagination.sidebar.account_security') }}</a></li>
+                                <li><a href="/account/api">API Settings</a></li>
                                 <li><a href="/index">{{ trans('pagination.sidebar.servers') }}</a></li>
                             </ul>
                         </li>
@@ -237,6 +238,7 @@
                         <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.account_controls') }}</strong></a>
                         <a href="/account" class="list-group-item">{{ trans('pagination.sidebar.account_settings') }}</a>
                         <a href="/account/security" class="list-group-item">{{ trans('pagination.sidebar.account_security') }}</a>
+                        <a href="/account/api" class="list-group-item">API Access</a>
                         <a href="/" class="list-group-item">{{ trans('pagination.sidebar.servers') }}</a>
                     </div>
                     @section('sidebar-server')
@@ -258,29 +260,25 @@
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-12" id="tpl_messages">
-                        @section('resp-errors')
-                            @if (count($errors) > 0)
-                                <div class="alert alert-danger">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @foreach (Alert::getMessages() as $type => $messages)
+                            @foreach ($messages as $message)
+                                <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                                    {!! $message !!}
                                 </div>
-                            @endif
-                        @show
-                        @section('resp-alerts')
-                            @foreach (Alert::getMessages() as $type => $messages)
-                                @foreach ($messages as $message)
-                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        {!! $message !!}
-                                    </div>
-                                @endforeach
                             @endforeach
-                        @show
+                        @endforeach
                     </div>
                 </div>
                 <div class="row">

@@ -23,12 +23,15 @@
  */
 namespace Pterodactyl\Http\Middleware;
 
+use Auth;
 use Crypt;
+use Config;
 use IPTools\IP;
 use IPTools\Range;
 
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\APILogService;
 
 use Illuminate\Http\Request;
@@ -51,7 +54,7 @@ class APISecretToken extends Authorization
 
     public function __construct()
     {
-        //
+        Config::set('session.driver', 'array');
     }
 
     public function getAuthorizationMethod()
@@ -90,16 +93,18 @@ class APISecretToken extends Authorization
                 }
             }
 
-            foreach(APIPermission::where('key_id', $key->id)->get() as &$row) {
-                if ($row->permission === '*' || $row->permission === $request->route()->getName()) {
-                    $this->permissionAllowed = true;
-                    continue;
-                }
+            $permission = APIPermission::where('key_id', $key->id)->where('permission', $request->route()->getName());
+
+            // Suport Wildcards
+            if (starts_with($request->route()->getName(), 'api.user')) {
+                $permission->orWhere('permission', 'api.user.*');
+            } else if(starts_with($request->route()->getName(), 'api.admin')) {
+                $permission->orWhere('permission', 'api.admin.*');
             }
 
-            if (!$this->permissionAllowed) {
-                APILogService::log($request, 'You do not have permission to access this resource.');
-                throw new AccessDeniedHttpException('You do not have permission to access this resource.');
+            if (!$permission->first()) {
+                APILogService::log($request, 'You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
+                throw new AccessDeniedHttpException('You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
             }
         }
 
@@ -118,7 +123,7 @@ class APISecretToken extends Authorization
 
         // Log the Route Access
         APILogService::log($request, null, true);
-        return true;
+        return Auth::loginUsingId($key->user);
 
     }
 

@@ -2,7 +2,6 @@
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,47 +21,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Http\Controllers\Base;
+namespace Pterodactyl\Http\Controllers\API\User;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Http\Controllers\Controller;
-
+use Auth;
+use Dingo;
+use Pterodactyl\Models;
 use Illuminate\Http\Request;
 
-class IndexController extends Controller
+use Pterodactyl\Http\Controllers\API\BaseController;
+
+class InfoController extends BaseController
 {
-
-    /**
-     * Controller Constructor
-     */
-    public function __construct()
+    public function me(Request $request)
     {
-        //
-    }
+        $servers = Models\Server::getUserServers();
+        $response = [];
 
-    /**
-     * Returns listing of user's servers.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function getIndex(Request $request)
-    {
-        return view('base.index', [
-            'servers' => Server::getUserServers(10),
-        ]);
-    }
+        foreach($servers as &$server) {
+            $response = array_merge($response, [[
+                'id' => $server->uuidShort,
+                'uuid' => $server->uuid,
+                'name' => $server->name,
+                'node' => $server->nodeName,
+                'ip' => [
+                    'set' => $server->ip,
+                    'alias' => $server->ip_alias
+                ],
+                'port' => $server->port,
+                'service' => $server->a_serviceName,
+                'option' => $server->a_serviceOptionName
+            ]]);
+        }
 
-    /**
-     * Generate a random string.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return string
-     */
-    public function getPassword(Request $request, $length = 16)
-    {
-        $length = ($length < 8) ? 8 : $length;
-        return str_random($length);
+        return $response;
     }
-
 }
