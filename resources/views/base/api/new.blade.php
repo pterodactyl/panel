@@ -33,12 +33,14 @@
                     <span class="badge">1</span>Permissions
                     <span class="chevron"></span>
                 </li>
-                <li data-step="2" data-name="admin">
-                    <span class="badge">2</span>Admin
-                    <span class="chevron"></span>
-                </li>
+                @if(Auth::user()->root_admin === 1)
+                    <li data-step="2" data-name="admin">
+                        <span class="badge">2</span>Admin
+                        <span class="chevron"></span>
+                    </li>
+                @endif
                 <li data-step="3" data-name="ips">
-                    <span class="badge">3</span>Security
+                    <span class="badge">@if(Auth::user()->root_admin === 1)3 @else 2 @endif</span>Security
                     <span class="chevron"></span>
                 </li>
             </ul>
@@ -87,161 +89,163 @@
                     </div>
                 </div>
             </div>
-            <div class="step-pane alert" data-step="2">
-                <div class="row">
-                    <div class="col-md-12 fuelux">
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:*"> <strong>Admin:*</strong>
-                                <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows performing any action aganist the Admin API.</small><p>
-                            </label>
+            @if(Auth::user()->root_admin === 1)
+                <div class="step-pane alert" data-step="2">
+                    <div class="row">
+                        <div class="col-md-12 fuelux">
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:*"> <strong>Admin:*</strong>
+                                    <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows performing any action aganist the Admin API.</small><p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 fuelux">
+                            <h4>User Management</h4><hr />
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.list"> <strong><span class="label label-default">GET</span> List Users</strong>
+                                    <p class="text-muted"><small>Allows listing of all users currently on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.create"> <strong><span class="label label-default">POST</span> Create User</strong>
+                                    <p class="text-muted"><small>Allows creating a new user on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.view"> <strong><span class="label label-default">GET</span> List Single User</strong>
+                                    <p class="text-muted"><small>Allows viewing details about a specific user including active services.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.update"> <strong><span class="label label-default">PATCH</span> Update User</strong>
+                                    <p class="text-muted"><small>Allows modifying user details (email, password, TOTP information).</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.delete"> <strong><span class="label label-danger">DELETE</span> Delete User</strong>
+                                    <p class="text-muted"><small>Allows deleting a user.</small><p>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 fuelux">
+                            <h4>Server Management</h4><hr />
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.list"> <strong><span class="label label-default">GET</span> List Servers</strong>
+                                    <p class="text-muted"><small>Allows listing of all servers currently on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.create"> <strong><span class="label label-default">POST</span> Create Server</strong>
+                                    <p class="text-muted"><small>Allows creating a new server on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.view"> <strong><span class="label label-default">GET</span> List Single Server</strong>
+                                    <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows viewing details about a specific server including the <code>daemon_token</code> as current process information.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.config"> <strong><span class="label label-default">PATCH</span> Update Configuration</strong>
+                                    <p class="text-muted"><small>Allows modifying server config (name, owner, and access token).</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.build"> <strong><span class="label label-default">PATCH</span> Update Build</strong>
+                                    <p class="text-muted"><small>Allows modifying a server's build parameters such as memory, CPU, and disk space along with assigned and default IPs.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.suspend"> <strong><span class="label label-default">POST</span> Suspend</strong>
+                                    <p class="text-muted"><small>Allows suspending a server instance.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.unsuspend"> <strong><span class="label label-default">POST</span> Unsuspend</strong>
+                                    <p class="text-muted"><small>Allows unsuspending a server instance.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.delete"> <strong><span class="label label-danger">DELETE</span> Delete Server</strong>
+                                    <p class="text-muted"><small>Allows deleting a server.</small><p>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 fuelux">
+                            <h4>Node Management</h4><hr />
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.list"> <strong><span class="label label-default">GET</span> List Nodes</strong>
+                                    <p class="text-muted"><small>Allows listing of all nodes currently on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.create"> <strong><span class="label label-default">POST</span> Create Node</strong>
+                                    <p class="text-muted"><small>Allows creating a new node on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.view"> <strong><span class="label label-default">GET</span> List Single Node</strong>
+                                    <p class="text-muted"><small>Allows viewing details about a specific node including active services.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.allocations"> <strong><span class="label label-default">GET</span> List Allocations</strong>
+                                    <p class="text-muted"><small>Allows viewing all allocations on the panel for all nodes.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.delete"> <strong><span class="label label-danger">DELETE</span> Delete Node</strong>
+                                    <p class="text-muted"><small>Allows deleting a node.</small><p>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 fuelux">
+                            <h4>Service Management</h4><hr />
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:services.list"> <strong><span class="label label-default">GET</span> List Services</strong>
+                                    <p class="text-muted"><small>Allows listing of all services configured on the system.</small><p>
+                                </label>
+                            </div>
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:services.view"> <strong><span class="label label-default">GET</span> List Single Service</strong>
+                                    <p class="text-muted"><small>Allows listing details about each service on the system including service options and variables.</small><p>
+                                </label>
+                            </div>
+                            <h4>Location Management</h4><hr />
+                            <div class="checkbox highlight">
+                                <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                    <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:locations.list"> <strong><span class="label label-default">GET</span> List Locations</strong>
+                                    <p class="text-muted"><small>Allows listing all locations and thier associated nodes.</small><p>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6 fuelux">
-                        <h4>User Management</h4><hr />
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.list"> <strong><span class="label label-default">GET</span> List Users</strong>
-                                <p class="text-muted"><small>Allows listing of all users currently on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.create"> <strong><span class="label label-default">POST</span> Create User</strong>
-                                <p class="text-muted"><small>Allows creating a new user on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.view"> <strong><span class="label label-default">GET</span> List Single User</strong>
-                                <p class="text-muted"><small>Allows viewing details about a specific user including active services.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.update"> <strong><span class="label label-default">PATCH</span> Update User</strong>
-                                <p class="text-muted"><small>Allows modifying user details (email, password, TOTP information).</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:users.delete"> <strong><span class="label label-danger">DELETE</span> Delete User</strong>
-                                <p class="text-muted"><small>Allows deleting a user.</small><p>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-6 fuelux">
-                        <h4>Server Management</h4><hr />
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.list"> <strong><span class="label label-default">GET</span> List Servers</strong>
-                                <p class="text-muted"><small>Allows listing of all servers currently on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.create"> <strong><span class="label label-default">POST</span> Create Server</strong>
-                                <p class="text-muted"><small>Allows creating a new server on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.view"> <strong><span class="label label-default">GET</span> List Single Server</strong>
-                                <p class="text-muted"><small><span class="label label-danger">Danger</span> Allows viewing details about a specific server including the <code>daemon_token</code> as current process information.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.config"> <strong><span class="label label-default">PATCH</span> Update Configuration</strong>
-                                <p class="text-muted"><small>Allows modifying server config (name, owner, and access token).</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.build"> <strong><span class="label label-default">PATCH</span> Update Build</strong>
-                                <p class="text-muted"><small>Allows modifying a server's build parameters such as memory, CPU, and disk space along with assigned and default IPs.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.suspend"> <strong><span class="label label-default">POST</span> Suspend</strong>
-                                <p class="text-muted"><small>Allows suspending a server instance.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.unsuspend"> <strong><span class="label label-default">POST</span> Unsuspend</strong>
-                                <p class="text-muted"><small>Allows unsuspending a server instance.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:servers.delete"> <strong><span class="label label-danger">DELETE</span> Delete Server</strong>
-                                <p class="text-muted"><small>Allows deleting a server.</small><p>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 fuelux">
-                        <h4>Node Management</h4><hr />
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.list"> <strong><span class="label label-default">GET</span> List Nodes</strong>
-                                <p class="text-muted"><small>Allows listing of all nodes currently on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.create"> <strong><span class="label label-default">POST</span> Create Node</strong>
-                                <p class="text-muted"><small>Allows creating a new node on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.view"> <strong><span class="label label-default">GET</span> List Single Node</strong>
-                                <p class="text-muted"><small>Allows viewing details about a specific node including active services.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.allocations"> <strong><span class="label label-default">GET</span> List Allocations</strong>
-                                <p class="text-muted"><small>Allows viewing all allocations on the panel for all nodes.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:nodes.delete"> <strong><span class="label label-danger">DELETE</span> Delete Node</strong>
-                                <p class="text-muted"><small>Allows deleting a node.</small><p>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-md-6 fuelux">
-                        <h4>Service Management</h4><hr />
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:services.list"> <strong><span class="label label-default">GET</span> List Services</strong>
-                                <p class="text-muted"><small>Allows listing of all services configured on the system.</small><p>
-                            </label>
-                        </div>
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:services.view"> <strong><span class="label label-default">GET</span> List Single Service</strong>
-                                <p class="text-muted"><small>Allows listing details about each service on the system including service options and variables.</small><p>
-                            </label>
-                        </div>
-                        <h4>Location Management</h4><hr />
-                        <div class="checkbox highlight">
-                            <label class="checkbox-custom highlight" data-initialize="checkbox">
-                                <input class="sr-only" name="adminPermissions[]" type="checkbox" value="admin:locations.list"> <strong><span class="label label-default">GET</span> List Locations</strong>
-                                <p class="text-muted"><small>Allows listing all locations and thier associated nodes.</small><p>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endif
             <div class="step-pane alert" data-step="3">
                 <div class="form-group">
                     <label for="allowed_ips" class="control-label">Descriptive Memo</label>
