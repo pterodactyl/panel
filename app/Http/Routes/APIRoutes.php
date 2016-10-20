@@ -34,7 +34,7 @@ class APIRoutes
         $api = app('Dingo\Api\Routing\Router');
         $api->version('v1', ['prefix' => 'api/me', 'middleware' => 'api.auth'], function ($api) {
             $api->get('/', [
-                'as' => 'api.user',
+                'as' => 'api.user.me',
                 'uses' => 'Pterodactyl\Http\Controllers\API\User\InfoController@me'
             ]);
 

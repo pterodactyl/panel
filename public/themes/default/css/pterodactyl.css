@@ -267,3 +267,7 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 .fuelux .wizard .step-content > .alert {
     margin-bottom: 0 !important;
 }
+
+.fuelux .wizard .steps-container {
+    background-color: #eee;
+}

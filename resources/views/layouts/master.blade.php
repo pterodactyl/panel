@@ -260,29 +260,25 @@
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-12" id="tpl_messages">
-                        @section('resp-errors')
-                            @if (count($errors) > 0)
-                                <div class="alert alert-danger">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        @foreach (Alert::getMessages() as $type => $messages)
+                            @foreach ($messages as $message)
+                                <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
+                                    {!! $message !!}
                                 </div>
-                            @endif
-                        @show
-                        @section('resp-alerts')
-                            @foreach (Alert::getMessages() as $type => $messages)
-                                @foreach ($messages as $message)
-                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        {!! $message !!}
-                                    </div>
-                                @endforeach
                             @endforeach
-                        @show
+                        @endforeach
                     </div>
                 </div>
                 <div class="row">

@@ -24,6 +24,12 @@
 @section('sidebar-server')
 @endsection
 
+@section('scripts')
+    @parent
+    {!! Theme::css('css/vendor/sweetalert/sweetalert.min.css') !!}
+    {!! Theme::js('js/vendor/sweetalert/sweetalert.min.js') !!}
+@endsection
+
 @section('content')
 <div class="col-md-12">
     <table class="table table-bordered table-hover">
@@ -61,6 +67,43 @@
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find('a[href="/account/api"]').addClass('active');
+    $('[data-action="delete"]').click(function (event) {
+        var self = $(this);
+        event.preventDefault();
+        swal({
+            type: 'error',
+            title: 'Revoke API Key',
+            text: 'Once this API key is revoked any applications currently using it will stop working.',
+            showCancelButton: true,
+            allowOutsideClick: true,
+            closeOnConfirm: false,
+            confirmButtonText: 'Revoke',
+            confirmButtonColor: '#d9534f',
+            showLoaderOnConfirm: true
+        }, function () {
+            $.ajax({
+                method: 'DELETE',
+                url: '{{ route('account.api') }}/revoke/' + self.data('attr'),
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).done(function (data) {
+                swal({
+                    type: 'success',
+                    title: '',
+                    text: 'API Key has been revoked.'
+                });
+                self.parent().parent().slideUp();
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                swal({
+                    type: 'error',
+                    title: 'Whoops!',
+                    text: 'An error occured while attempting to revoke this key.'
+                });
+            });
+        });
+    });
 });
 </script>
 @endsection

@@ -25,9 +25,12 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Alert;
+use Log;
 
 use Pterodactyl\Models;
 
+use Pterodactyl\Repositories\APIRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 
@@ -45,7 +48,6 @@ class APIController extends Controller
         return view('base.api.index', [
             'keys' => $keys
         ]);
-
     }
 
     public function new(Request $request)
@@ -55,6 +57,32 @@ class APIController extends Controller
 
     public function save(Request $request)
     {
+        try {
+            $repo = new APIRepository($request->user());
+            $secret = $repo->new($request->except(['_token']));
+            Alert::success('An API Keypair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br /><code>' . $secret . '</code>')->flash();
+            return redirect()->route('account.api');
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('account.api.new')->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attempting to add this API key.')->flash();
+        }
+        return redirect()->route('account.api.new')->withInput();
+    }
 
+    public function revoke(Request $request, $key)
+    {
+        try {
+            $repo = new APIRepository($request->user());
+            $repo->revoke($key);
+            return response('', 204);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'error' => 'An error occured while attempting to remove this key.'
+            ], 503);
+        }
     }
 }

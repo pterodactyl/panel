@@ -88,6 +88,10 @@ class BaseRoutes {
             $router->post('/new', [
                 'uses' => 'Base\APIController@save'
             ]);
+
+            $router->delete('/revoke/{key}', [
+                'uses' => 'Base\APIController@revoke'
+            ]);
         });
 
         // TOTP Routes
