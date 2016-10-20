@@ -23,6 +23,7 @@
  */
 namespace Pterodactyl\Http\Controllers\API\User;
 
+use Auth;
 use Log;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
@@ -79,7 +80,7 @@ class ServerController extends BaseController
             ],
             'allocations' => $allocations,
             'sftp' => [
-                'username' => $server->username
+                'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null
             ],
             'daemon' => [
                 'token' => ($request->secure()) ? $server->daemonSecret : false,
@@ -93,6 +94,8 @@ class ServerController extends BaseController
         $server = Models\Server::getByUUID($uuid);
         $node = Models\Node::getByID($server->node);
         $client = Models\Node::guzzleRequest($server->node);
+
+        Auth::user()->can('power-' . $request->input('action'), $server);
 
         $res = $client->request('PUT', '/server/power', [
             'headers' => [

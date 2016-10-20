@@ -27,7 +27,7 @@ use Auth;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
 
-use Pterodactyl\Exception\DisplayException;
+use Pterodactyl\Exceptions\DisplayException;
 
 class Server extends Model
 {
