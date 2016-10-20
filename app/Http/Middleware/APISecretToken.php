@@ -93,13 +93,18 @@ class APISecretToken extends Authorization
                 }
             }
 
-            $permission = APIPermission::where('key_id', $key->id)
-                            ->where('permission', $request->route()->getName())
-                            ->orWhere('permission', '*')
-                            ->first();
-            if (!$permission) {
-                APILogService::log($request, 'You do not have permission to access this resource.');
-                throw new AccessDeniedHttpException('You do not have permission to access this resource.');
+            $permission = APIPermission::where('key_id', $key->id)->where('permission', $request->route()->getName());
+
+            // Suport Wildcards
+            if (starts_with($request->route()->getName(), 'api.user')) {
+                $permission->orWhere('permission', 'api.user.*');
+            } else if(starts_with($request->route()->getName(), 'api.admin')) {
+                $permission->orWhere('permission', 'api.admin.*');
+            }
+
+            if (!$permission->first()) {
+                APILogService::log($request, 'You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
+                throw new AccessDeniedHttpException('You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
             }
         }
 
