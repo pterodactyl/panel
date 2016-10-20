@@ -70,11 +70,7 @@ class Subuser extends Model
      */
     public function __construct()
     {
-        if (!is_null(Auth::user())) {
-            self::$user = Auth::user();
-        } else {
-            throw new \Exception('Auth::user and Dingo::user cannot both be null.');
-        }
+        self::$user = Auth::user();
     }
 
     /**
