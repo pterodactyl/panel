@@ -26,14 +26,37 @@ namespace Pterodactyl\Http\Controllers\API\User;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 
-class PowerController extends BaseController
+use Pterodactyl\Http\Controllers\API\BaseController;
+
+class ServerController extends BaseController
 {
-    public function __constructor()
+
+    public function info(Request $request, $uuid)
     {
+        // Will return server info including latest query and stats from daemon.
     }
 
-    public function pass(Request $request, $uuid)
+    public function power(Request $request, $uuid)
     {
-        //$server = Models\Server::where('id', $id)->where();
+        $server = Models\Server::getByUUID($uuid);
+        $node = Models\Node::getByID($server->node);
+        $client = Models\Node::guzzleRequest($server->node);
+
+        $res = $client->request('PUT', '/server/power', [
+            'headers' => [
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->daemonSecret
+            ],
+            'exceptions' => false,
+            'json' => [
+                'action' => $request->input('action')
+            ]
+        ]);
+
+        if ($res->getStatusCode() !== 204) {
+            return $this->response->error(json_decode($res->getBody())->error, $res->getStatusCode());
+        }
+
+        return $this->response->noContent();
     }
 }

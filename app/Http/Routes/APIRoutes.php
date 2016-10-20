@@ -37,6 +37,16 @@ class APIRoutes
                 'as' => 'api.user',
                 'uses' => 'Pterodactyl\Http\Controllers\API\User\InfoController@me'
             ]);
+
+            $api->get('/server/{uuid}', [
+                'as' => 'api.user.server',
+                'uses' => 'Pterodactyl\Http\Controllers\API\User\ServerController@info'
+            ]);
+
+            $api->put('/server/{uuid}', [
+                'as' => 'api.user.server.power',
+                'uses' => 'Pterodactyl\Http\Controllers\API\User\ServerController@power'
+            ]);
         });
 
         $api->version('v1', ['prefix' => 'api', 'middleware' => 'api.auth'], function ($api) {
