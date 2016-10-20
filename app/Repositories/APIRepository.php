@@ -159,26 +159,31 @@ class APIRepository
             ]);
             $key->save();
 
-            foreach($data['permissions'] as $permNode) {
-                if (!strpos($permNode, ':')) continue;
-
-                list($toss, $permission) = explode(':', $permNode);
-                if (in_array('api.user.' . $permission, $this->permissions['user'])) {
-                    $model = new Models\APIPermission;
-                    $model->fill([
-                        'key_id' => $key->id,
-                        'permission' => 'api.user.' . $permission
-                    ]);
-                    $model->save();
-                }
-            }
-
-            if ($this->user->root_admin === 1) {
+            $totalPermissions = 0;
+            if (isset($data['permissions'])) {
                 foreach($data['permissions'] as $permNode) {
                     if (!strpos($permNode, ':')) continue;
 
                     list($toss, $permission) = explode(':', $permNode);
-                    if (in_array('api.admin.' . $permission, $this->permissions['admin'])) {
+                    if (in_array($permission, $this->permissions['user'])) {
+                        $totalPermissions++;
+                        $model = new Models\APIPermission;
+                        $model->fill([
+                            'key_id' => $key->id,
+                            'permission' => 'api.user.' . $permission
+                        ]);
+                        $model->save();
+                    }
+                }
+            }
+
+            if ($this->user->root_admin === 1 && isset($data['adminPermissions'])) {
+                foreach($data['adminPermissions'] as $permNode) {
+                    if (!strpos($permNode, ':')) continue;
+
+                    list($toss, $permission) = explode(':', $permNode);
+                    if (in_array($permission, $this->permissions['admin'])) {
+                        $totalPermissions++;
                         $model = new Models\APIPermission;
                         $model->fill([
                             'key_id' => $key->id,
@@ -187,6 +192,10 @@ class APIRepository
                         $model->save();
                     }
                 }
+            }
+
+            if ($totalPermissions < 1) {
+                throw new DisplayException('No valid permissions were passed.');
             }
 
             DB::commit();
