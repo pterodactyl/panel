@@ -27,6 +27,8 @@ use Auth;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
 
+use Pterodactyl\Exception\DisplayException;
+
 class Server extends Model
 {
 
@@ -104,7 +106,7 @@ class Server extends Model
      * @param Illuminate\Database\Eloquent\Model\Server $server
      * @return string
      */
-    protected static function getUserDaemonSecret(Server $server)
+    public static function getUserDaemonSecret(Server $server)
     {
 
         if (self::$user->id === $server->owner || self::$user->root_admin === 1) {
@@ -174,13 +176,18 @@ class Server extends Model
 
         $query = self::select('servers.*', 'services.file as a_serviceFile')
             ->join('services', 'services.id', '=', 'servers.service')
-            ->where('uuidShort', $uuid);
+            ->where('uuidShort', $uuid)
+            ->orWhere('uuid', $uuid);
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
         }
 
         $result = $query->first();
+
+        if (!$result) {
+            throw new DisplayException('No server was found belonging to this user.');
+        }
 
         if(!is_null($result)) {
             $result->daemonSecret = self::getUserDaemonSecret($result);

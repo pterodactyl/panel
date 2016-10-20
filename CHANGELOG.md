@@ -9,11 +9,13 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Return node configuration from remote API by using `/api/nodes/{id}/config` endpoint. Only accepts SSL connections.
 * Support for filtering servers within Admin CP to narrow down results by name, email, allocation, or defined fields.
 * Setup scripts (user, mail, env) now support argument flags for use in containers and other non-terminal environments.
+* New API endpoints for individual users to control their servers with at `/api/me/*`.
 
 ### Changed
 * Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.
 * Environment setting script is much more user friendly and does not require an excessive amount of clicking and typing.
 * File upload method switched from BinaryJS to Socket.io implementation to fix bugs as well as be a little speedier and allow upload throttling.
+* `Server::getbyUUID()` now accepts either the `uuidShort` or full-length `uuid` for server identification.
 
 ## v0.5.0-pre.2 (Bodacious Boreopterus)
 
