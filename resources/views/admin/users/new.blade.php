@@ -42,6 +42,11 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
+                    <div class="well well-sm">
+                        <p>Providing a user password is optional. New user emails prompt users to create a password the first time they login. If a password is provided here you will need to find a different method of providing it to the user.</p>
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <div id="gen_pass" class=" alert alert-success" style="display:none;margin-bottom: 10px;"></div>
                 </div>
                 <div class="form-group col-md-6">
