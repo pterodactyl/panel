@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Setup scripts (user, mail, env) now support argument flags for use in containers and other non-terminal environments.
 * New API endpoints for individual users to control their servers with at `/api/me/*`.
 * Typeahead support for owner email when adding a new server.
+* Scheduled command to clear out task log every month (configurable timespan).
 
 ### Changed
 * Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.
@@ -21,6 +22,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Fixed
 * Server overview listing the location short-code as the name of the node.
+* Server task manager only sending commands every 5 minutes at the quickest.
 
 ## v0.5.0-pre.2 (Bodacious Boreopterus)
 
