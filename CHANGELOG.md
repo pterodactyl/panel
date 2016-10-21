@@ -16,6 +16,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Environment setting script is much more user friendly and does not require an excessive amount of clicking and typing.
 * File upload method switched from BinaryJS to Socket.io implementation to fix bugs as well as be a little speedier and allow upload throttling.
 * `Server::getbyUUID()` now accepts either the `uuidShort` or full-length `uuid` for server identification.
+* API keys are tied to individual users and no longer created through the Admin CP.
+
+### Fixed
+* Server overview listing the location short-code as the name of the node.
 
 ## v0.5.0-pre.2 (Bodacious Boreopterus)
 
