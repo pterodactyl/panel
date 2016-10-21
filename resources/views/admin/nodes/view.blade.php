@@ -312,7 +312,7 @@
                     <form action="{{ route('admin.nodes.post.allocations', $node->id) }}" method="POST">
                         <div class="row" id="duplicate">
                             <div class="col-md-4 fuelux">
-                                <label for="" class="control-label">IP Address</label>
+                                <label for="" class="control-label">IP Address or FQDN</label>
                                 <div class="input-group input-append dropdown combobox allocationComboBox" data-initialize="combobox">
                                     <input type="text" name="allocate_ip[]" class="form-control pillbox_ip" style="border-right:0;">
                                     <div class="input-group-btn">
@@ -509,27 +509,27 @@ $(document).ready(function () {
 
     $('.cloneElement').on('click', function (event) {
         event.preventDefault();
-        var cloned = $('#duplicate').clone();
         var rnd = randomKey(10);
+        var cloned = $('#duplicate').clone().attr('id', rnd);
         cloned.find('.allocationPillbox').removeClass('allocationPillbox').addClass('allocationPillbox_' + rnd);
         cloned.find('.pillboxMain').removeClass('pillboxMain').addClass('pillbox_' + rnd);
-        cloned.find('.removeClone').removeClass('disabled');
+        cloned.find('.removeClone').removeClass('disabled').attr('data-parent', rnd);
         cloned.find('.pillbox_ip').removeClass('pillbox_ip').addClass('pillbox_ip_' + rnd);
         cloned.insertAfter('#duplicate');
         $('.allocationPillbox_' + rnd).pillbox();
         $('.allocationPillbox_' + rnd).on('added.fu.pillbox edited.fu.pillbox removed.fu.pillbox', function pillboxChanged() {
             $('.pillbox_' + rnd).val(JSON.stringify($('.allocationPillbox_' + rnd).pillbox('items')));
         });
-        $('.removeClone').on('click', function (event) {
+        $('.removeClone').unbind().on('click', function (event) {
             event.preventDefault();
             var element = $(this);
-            element.parent().parent().slideUp(function () {
+            $('#' + element.attr('data-parent')).slideUp(function () {
                 element.remove();
-                $('.pillbox_' + rnd).remove();
-                $('.pillbox_ip_' + rnd).remove();
+                $('.pillbox_' + element.attr('data-parent')).remove();
+                $('.pillbox_ip_' + element.attr('data-parent')).remove();
             });
         });
-    })
+    });
 
     $('.allocationPillbox').pillbox();
     $('.allocationComboBox').combobox();
@@ -628,35 +628,35 @@ $(document).ready(function () {
 
     socket.on('live-stats', function (data) {
 
-        if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
-            memoryGraphSettings.data[0].shift();
-        }
-        if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
-            cpuGraphSettings.data[0].shift();
-        }
-        if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
-            playersGraphSettings.data[0].shift();
-        }
+        // if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
+        //     memoryGraphSettings.data[0].shift();
+        // }
+        // if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
+        //     cpuGraphSettings.data[0].shift();
+        // }
+        // if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
+        //     playersGraphSettings.data[0].shift();
+        // }
 
-        memoryGraphSettings.data[0].push({
-            'date': new Date(),
-            'memory': parseInt(data.stats.memory / (1024 * 1024))
-        });
+        // memoryGraphSettings.data[0].push({
+        //     'date': new Date(),
+        //     'memory': parseInt(data.stats.memory / (1024 * 1024))
+        // });
+        //
+        // cpuGraphSettings.data[0].push({
+        //     'date': new Date(),
+        //     'cpu': data.stats.cpu
+        // });
+        //
+        // playersGraphSettings.data[0].push({
+        //     'date': new Date(),
+        //     'players': data.stats.players
+        // });
 
-        cpuGraphSettings.data[0].push({
-            'date': new Date(),
-            'cpu': data.stats.cpu
-        });
-
-        playersGraphSettings.data[0].push({
-            'date': new Date(),
-            'players': data.stats.players
-        });
-
-        MG.data_graphic(memoryGraphSettings);
-        MG.data_graphic(cpuGraphSettings);
-        MG.data_graphic(playersGraphSettings);
-
+        // MG.data_graphic(memoryGraphSettings);
+        // MG.data_graphic(cpuGraphSettings);
+        // MG.data_graphic(playersGraphSettings);
+        //
         $.each(data.servers, function (uuid, info) {
             var element = $('tr[data-server="' + uuid + '"]');
             element.find('[data-action="status"]').html(Status[info.status]);
