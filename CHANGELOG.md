@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Typeahead support for owner email when adding a new server.
 * Scheduled command to clear out task log every month (configurable timespan).
 * Support for allocating a FQDN as an allocation (panel will convert to IP and assign the FQDN as the alias automatically).
+* Refresh files button in file manager to reload file listing without full page refresh.
 
 ### Changed
 * Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.

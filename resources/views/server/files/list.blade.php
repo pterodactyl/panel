@@ -20,7 +20,7 @@
 <table class="table table-hover" id="file_listing">
     <thead>
         <tr>
-            <th style="width:2%;text-align:center;"></th>
+            <th style="width:2%;text-align:center;"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files"></i></th>
             <th style="width:45%">File Name</th>
             <th style="width:15%">Size</th>
             <th style="width:20%">Last Modified</th>

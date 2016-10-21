@@ -43,6 +43,7 @@ class FileManager {
             this.loader(false);
             $('#load_files').slideUp().html(data).slideDown(100, () => {
                 ContextMenu.run();
+                this.reloadFilesButton();
                 if (_.isFunction(next)) {
                     return next();
                 }
@@ -59,7 +60,7 @@ class FileManager {
                 text: 'An error occured while attempting to process this request. Please try again.',
             });
             console.log(jqXHR);
-        })
+        });
     }
 
     loader(show) {
@@ -81,6 +82,13 @@ class FileManager {
         } else {
             $('.ajax_loading_box').hide();
         }
+    }
+
+    reloadFilesButton() {
+        $('i[data-action="reload-files"]').unbind().on('click', () => {
+            $('i[data-action="reload-files"]').addClass('fa-spin');
+            this.list();
+        });
     }
 
     decodeHash() {
