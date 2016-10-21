@@ -552,7 +552,7 @@ $(document).ready(function () {
         title: 'Memory Usage (MB)',
         data: [{
             'date': new Date(),
-            'memory': -1
+            'memory': 0
         }],
         full_width: true,
         full_height: true,
@@ -567,7 +567,7 @@ $(document).ready(function () {
         title: 'CPU Usage (%)',
         data: [{
             'date': new Date(),
-            'cpu': -1
+            'cpu': 0
         }],
         full_width: true,
         full_height: true,
@@ -582,7 +582,7 @@ $(document).ready(function () {
         title: 'Players Online',
         data: [{
             'date': new Date(),
-            'players': -1
+            'players': 0
         }],
         full_width: true,
         full_height: true,
@@ -628,35 +628,35 @@ $(document).ready(function () {
 
     socket.on('live-stats', function (data) {
 
-        // if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
-        //     memoryGraphSettings.data[0].shift();
-        // }
-        // if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
-        //     cpuGraphSettings.data[0].shift();
-        // }
-        // if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
-        //     playersGraphSettings.data[0].shift();
-        // }
+        if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
+            memoryGraphSettings.data[0].shift();
+        }
+        if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
+            cpuGraphSettings.data[0].shift();
+        }
+        if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
+            playersGraphSettings.data[0].shift();
+        }
 
-        // memoryGraphSettings.data[0].push({
-        //     'date': new Date(),
-        //     'memory': parseInt(data.stats.memory / (1024 * 1024))
-        // });
-        //
-        // cpuGraphSettings.data[0].push({
-        //     'date': new Date(),
-        //     'cpu': data.stats.cpu
-        // });
-        //
-        // playersGraphSettings.data[0].push({
-        //     'date': new Date(),
-        //     'players': data.stats.players
-        // });
+        memoryGraphSettings.data[0].push({
+            'date': new Date(),
+            'memory': parseInt(data.stats.memory / (1024 * 1024))
+        });
 
-        // MG.data_graphic(memoryGraphSettings);
-        // MG.data_graphic(cpuGraphSettings);
-        // MG.data_graphic(playersGraphSettings);
-        //
+        cpuGraphSettings.data[0].push({
+            'date': new Date(),
+            'cpu': data.stats.cpu
+        });
+
+        playersGraphSettings.data[0].push({
+            'date': new Date(),
+            'players': data.stats.players
+        });
+
+        MG.data_graphic(memoryGraphSettings);
+        MG.data_graphic(cpuGraphSettings);
+        MG.data_graphic(playersGraphSettings);
+
         $.each(data.servers, function (uuid, info) {
             var element = $('tr[data-server="' + uuid + '"]');
             element.find('[data-action="status"]').html(Status[info.status]);
