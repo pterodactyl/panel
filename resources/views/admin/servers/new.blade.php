@@ -23,6 +23,11 @@
     Create New Server
 @endsection
 
+@section('scripts')
+    @parent
+    {!! Theme::js('js/vendor/typeahead/typeahead.min.js') !!}
+@endsection
+
 @section('content')
 <div class="col-md-12">
     <ul class="breadcrumb">
@@ -44,6 +49,8 @@
                 <div class="form-group col-md-6">
                     <label for="owner" class="control-label">Owner Email</label>
                     <div>
+                        {{-- Hacky workaround to prevent Safari and Chrome from trying to suggest emails here --}}
+                        <input id="fake_user_name" name="fake_user[name]" style="position:absolute; top:-10000px;" type="text" value="Autofill Me">
                         <input type="text" autocomplete="off" name="owner" class="form-control" value="{{ old('owner', Input::get('email')) }}" />
                     </div>
                 </div>
@@ -251,6 +258,17 @@ $(document).ready(function () {
 
     $('input[name="use_custom_image"]').change(function () {
         $('input[name="custom_image_name"]').val('').prop('disabled', !($(this).is(':checked')));
+    });
+
+    // Typeahead
+    $.ajax({
+        type: 'GET',
+        url: '{{ route('admin.users.json') }}',
+    }).done(function (data) {
+        $('input[name="owner"]').typeahead({ fitToElement: true, source: data });
+    }).fail(function (jqXHR) {
+        alert('Could not initialize user email typeahead.')
+        console.log(jqXHR);
     });
 
     var nodeData = null;

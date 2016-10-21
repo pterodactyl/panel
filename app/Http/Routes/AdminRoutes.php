@@ -73,6 +73,11 @@ class AdminRoutes {
                 'uses' => 'Admin\UserController@getIndex'
             ]);
 
+            $router->get('/accounts.json', [
+                'as' => 'admin.users.json',
+                'uses' => 'Admin\UserController@getJson'
+            ]);
+
             // View Specific Account
             $router->get('/view/{id}', [
                 'as' => 'admin.users.view',

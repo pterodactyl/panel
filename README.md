@@ -63,6 +63,8 @@ Socket.io - [license](https://github.com/socketio/socket.io/blob/master/LICENSE)
 
 SweetAlert - [license](https://github.com/t4t5/sweetalert/blob/master/LICENSE) - [homepage](http://t4t5.github.io/sweetalert/)
 
+Typeahead — [license](https://github.com/bassjobsen/Bootstrap-3-Typeahead/blob/master/bootstrap3-typeahead.js) — [homepage](https://github.com/bassjobsen/Bootstrap-3-Typeahead)
+
 ### Additional License Information
 Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apache 2.0`. Please check their respective header files for more information.
 

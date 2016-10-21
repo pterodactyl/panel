@@ -130,4 +130,12 @@ class UserController extends Controller
         return redirect()->route('admin.users.view', $user);
     }
 
+    public function getJson(Request $request)
+    {
+        foreach(User::select('email')->get() as $user) {
+            $resp[] = $user->email;
+        }
+        return $resp;
+    }
+
 }
