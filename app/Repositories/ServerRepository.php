@@ -120,7 +120,7 @@ class ServerRepository
         }
 
         if (!$user) {
-            throw new DisplayValidationException('The user id or email passed to the function was not found on the system.');
+            throw new DisplayException('The user id or email passed to the function was not found on the system.');
         }
 
         $autoDeployed = false;
