@@ -788,6 +788,14 @@ class ServerRepository
             // Remove Downloads
             Models\Download::where('server', $server->uuid)->delete();
 
+            // Delete Databases
+            $databases = Models\Database::select('id')->where('server_id', $server->id)->get();
+            $repository = new DatabaseRepository;
+            foreach($databases as &$database) {
+                // Use the repository to drop the database, we don't need to delete here because it is now gone.
+                $repository->drop($database->id);
+            }
+
             $client = Models\Node::guzzleRequest($server->node);
             $client->request('DELETE', '/servers', [
                 'headers' => [
