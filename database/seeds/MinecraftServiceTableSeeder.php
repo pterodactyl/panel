@@ -215,7 +215,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'option_id' => $this->option['bungeecord']->id,
             'name' => 'Bungeecord Version',
             'description' => 'The version of Bungeecord to download and use.',
-            'env_variable' => 'BUNGEE_VERSION',
+            'env_variable' => 'BUNGE_VERSION',
             'default_value' => 'latest',
             'user_viewable' => 1,
             'user_editable' => 1,
