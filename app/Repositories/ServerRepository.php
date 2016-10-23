@@ -537,12 +537,12 @@ class ServerRepository
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
                     if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
-                        continue;
+                        break;
                     }
 
                     // Can't remove the assigned IP/Port combo
                     if ($ip === $allocation->ip && $port === $allocation->port) {
-                        continue;
+                        break;
                     }
 
                     Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
@@ -558,12 +558,12 @@ class ServerRepository
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
                     if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
-                        continue;
+                        break;
                     }
 
                     // Don't allow double port assignments
                     if (Models\Allocation::where('port', $port)->where('assigned_to', $server->id)->count() !== 0) {
-                        continue;
+                        break;
                     }
 
                     Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
