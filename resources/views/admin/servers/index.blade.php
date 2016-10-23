@@ -43,18 +43,16 @@
             <tr>
                 <th>Server Name</th>
                 <th>Owner</th>
-                <th class="hidden-xs">Node</th>
-                <th>Default Connection</th>
+                <th>Node</th>
                 <th class="hidden-xs">SFTP Username</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($servers as $server)
-                <tr class="dynUpdate @if($server->suspended === 1)warning @endif" id="{{ $server->uuidShort }}">
+                <tr @if($server->suspended === 1)class="warning"@endif data-server="{{ $server->uuidShort }}">
                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a>@if($server->suspended === 1) <span class="label label-warning">Suspended</span>@endif</td>
                     <td><a href="/admin/users/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
-                    <td class="hidden-xs"><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
-                    <td><code>@if(!is_null($server->ip_alias)){{ $server->ip_alias }}@else{{ $server->ip }}@endif:{{ $server->port }}</code> @if(!is_null($server->ip_alias))<span class="label label-default">alias</span>@endif</td>
+                    <td><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
                     <td class="hidden-xs"><code>{{ $server->username }}</code></td>
                 </tr>
             @endforeach
