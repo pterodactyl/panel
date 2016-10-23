@@ -532,7 +532,6 @@ class ServerRepository
             $newPorts = false;
             // Remove Assignments
             if (isset($data['remove_additional'])) {
-                $newPorts = true;
                 foreach ($data['remove_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
@@ -541,10 +540,11 @@ class ServerRepository
                     }
 
                     // Can't remove the assigned IP/Port combo
-                    if ($ip === $allocation->ip && $port === $allocation->port) {
+                    if ($ip === $allocation->ip && (int) $port === (int) $allocation->port) {
                         break;
                     }
 
+                    $newPorts = true;
                     Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
                         'assigned_to' => null
                     ]);
@@ -553,7 +553,6 @@ class ServerRepository
 
             // Add Assignments
             if (isset($data['add_additional'])) {
-                $newPorts = true;
                 foreach ($data['add_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
@@ -566,6 +565,7 @@ class ServerRepository
                         break;
                     }
 
+                    $newPorts = true;
                     Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
                         'assigned_to' => $server->id
                     ]);
@@ -589,50 +589,51 @@ class ServerRepository
 
             // @TODO: verify that server can be set to this much memory without
             // going over node limits.
-            if (isset($data['memory'])) {
+            if (isset($data['memory']) && $server->memory !== (int) $data['memory']) {
                 $server->memory = $data['memory'];
+                $newBuild['memory'] = (int) $server->memory;
             }
 
-            if (isset($data['swap'])) {
+            if (isset($data['swap']) && $server->swap !== (int) $data['swap']) {
                 $server->swap = $data['swap'];
+                $newBuild['swap'] = (int) $server->swap;
             }
 
             // @TODO: verify that server can be set to this much disk without
             // going over node limits.
-            if (isset($data['disk'])) {
+            if (isset($data['disk']) && $server->disk !== (int) $data['disk']) {
                 $server->disk = $data['disk'];
+                $newBuild['disk'] = (int) $server->disk;
             }
 
-            if (isset($data['cpu'])) {
+            if (isset($data['cpu']) && $server->cpu !== (int) $data['cpu']) {
                 $server->cpu = $data['cpu'];
+                $newBuild['cpu'] = (int) $server->cpu;
             }
 
-            if (isset($data['io'])) {
+            if (isset($data['io']) && $server->io !== (int) $data['io']) {
                 $server->io = $data['io'];
+                $newBuild['io'] = (int) $server->io;
             }
 
             // Try save() here so if it fails we haven't contacted the daemon
             // This won't be committed unless the HTTP request succeedes anyways
             $server->save();
 
-            $newBuild['memory'] = (int) $server->memory;
-            $newBuild['swap'] = (int) $server->swap;
-            $newBuild['io'] = (int) $server->io;
-            $newBuild['cpu'] = (int) $server->cpu;
-            $newBuild['disk'] = (int) $server->disk;
+            if (!empty($newBuild)) {
+                $node = Models\Node::getByID($server->node);
+                $client = Models\Node::guzzleRequest($server->node);
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
-
-            $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
-                ],
-                'json' => [
-                    'build' => $newBuild
-                ]
-            ]);
+                $client->request('PATCH', '/server', [
+                    'headers' => [
+                        'X-Access-Server' => $server->uuid,
+                        'X-Access-Token' => $node->daemonSecret
+                    ],
+                    'json' => [
+                        'build' => $newBuild
+                    ]
+                ]);
+            }
 
             DB::commit();
             return true;
