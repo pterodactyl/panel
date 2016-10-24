@@ -271,3 +271,17 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 .fuelux .wizard .steps-container {
     background-color: #eee;
 }
+
+#consoleThrottled {
+    z-index: 999;
+    top: 0px;
+    opacity: 0.6;
+    left: 0;
+    position: absolute;
+    margin: 0 15px;
+    border-radius: 4px 4px 0 0;
+}
+
+#consoleThrottled:hover {
+    opacity: 1;
+}
