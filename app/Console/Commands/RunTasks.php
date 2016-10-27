@@ -74,7 +74,7 @@ class RunTasks extends Command
 
         foreach ($tasks as &$task) {
             $bar->advance();
-            $this->dispatch(new SendScheduledTask(Models\Server::findOrFail($task->server), $task));
+            $this->dispatch((new SendScheduledTask(Models\Server::findOrFail($task->server), $task))->onQueue('low'));
         }
 
         $bar->finish();
