@@ -48,7 +48,11 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <div id="terminal"></div>
+                            <div class="alert alert-info hidden" id="consoleThrottled">
+                                The console is currently being throttled due to the speed at which data is being sent. Messages are being queued and will appear as the queue is worked through.
+                            </div>
+                            <div id="terminal">
+                            </div>
                         </div>
                         <div class="col-md-12" style="text-align:center;">
                             <hr />
@@ -364,9 +368,26 @@ $(window).load(function () {
     });
 
     // New Console Data Recieved
+    var outputQueue = [];
     socket.on('console', function (data) {
-        terminal.echo(data.line);
+        outputQueue.push(data.line);
     });
+
+    window.setInterval(pushOutputQueue, {{ env('CONSOLE_PUSH_FREQ', 250) }});
+    function pushOutputQueue()
+    {
+        if (outputQueue.length > {{ env('CONSOLE_PUSH_COUNT', 10) }}) {
+            $('#consoleThrottled').removeClass('hidden');
+        } else {
+            $('#consoleThrottled').addClass('hidden');
+        }
+
+        for (var i = 0; i < {{ env('CONSOLE_PUSH_COUNT', 10) }}; i++)
+        {
+            terminal.echo(outputQueue[0]);
+            outputQueue.shift();
+        }
+    }
 
     // Update Listings on Initial Status
     socket.on('initial_status', function (data) {
