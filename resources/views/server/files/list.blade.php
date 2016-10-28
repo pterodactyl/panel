@@ -63,7 +63,16 @@
                     <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                 </td>
                 <td data-identifier="size">{{ $folder['size'] }}</td>
-                <td data-identifier="modified">{{ date('m/d/y H:i:s', $folder['date']) }}</td>
+                <td data-identifier="modified">
+                    <?php $carbon = Carbon::createFromTimestamp($folder['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
+                    @if($carbon->diffInMinutes(Carbon::now()) > 60)
+                        {{ $carbon->format('m/d/y H:i:s') }}
+                    @elseif($carbon->diffInSeconds(Carbon::now()) < 5 || $carbon->isFuture())
+                        <em>seconds ago</em>
+                    @else
+                        {{ $carbon->diffForHumans() }}
+                    @endif
+                </td>
             </tr>
         @endforeach
         @foreach ($files as $file)
@@ -130,7 +139,16 @@
                     @endif
                 </td>
                 <td data-identifier="size">{{ $file['size'] }}</td>
-                <td data-identifier="modified">{{ date('m/d/y H:i:s', $file['date']) }}</td>
+                <td data-identifier="modified">
+                    <?php $carbon = Carbon::createFromTimestamp($file['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
+                    @if($carbon->diffInMinutes(Carbon::now()) > 60)
+                        {{ $carbon->format('m/d/y H:i:s') }}
+                    @elseif($carbon->diffInSeconds(Carbon::now()) < 5 || $carbon->isFuture())
+                        <em>seconds ago</em>
+                    @else
+                        {{ $carbon->diffForHumans() }}
+                    @endif
+                </td>
             </tr>
         @endforeach
     </tbody>

@@ -51,7 +51,7 @@
                     <h3 class="panel-title">File Path Information</h3>
                 </div>
                 <div class="panel-body">
-                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path. While your SFTP client sees the files as <code>/public</code> this is not true for the server process.
+                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path.
                 </div>
             </div>
         </div>
