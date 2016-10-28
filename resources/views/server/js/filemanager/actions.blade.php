@@ -325,6 +325,15 @@ class ActionsClass {
             const compPath = decodeURIComponent(nameBlock.data('path'));
             const compName = decodeURIComponent(nameBlock.data('name'));
 
+            swal({
+                title: '<i class="fa fa-refresh fa-spin"></i> Decompressing...',
+                text: 'This might take a few seconds to complete.',
+                html: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+            });
+
             $.ajax({
                 type: 'POST',
                 url: `{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/decompress`,
@@ -337,6 +346,7 @@ class ActionsClass {
                     files: `${compPath}${compName}`
                 })
             }).done(data => {
+                swal.close();
                 Files.list(compPath);
             }).fail(jqXHR => {
                 console.error(jqXHR);
