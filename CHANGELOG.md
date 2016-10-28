@@ -3,6 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.0-pre.4 (Bodacious Boreopterus)
+
+### Added
+* Foreign keys are now enabled on all tables that the panel makes use of to prevent accidental data deletion when associated with other tables.
+* Javascript changes to prevent crashing browsers when large quantities of data are sent over the websocket to the console. Includes a small popover message on the console to alert users that it is being throttled.
+
+### Changed
+* Servers are now queued for deletion to allow for cancellation of deletion, as well as run in the background to speed up page loading.
+
 ## v0.5.0-pre.3 (Bodacious Boreopterus)
 
 ### Added
