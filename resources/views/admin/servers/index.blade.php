@@ -49,8 +49,21 @@
         </thead>
         <tbody>
             @foreach ($servers as $server)
-                <tr @if($server->suspended === 1)class="warning"@endif data-server="{{ $server->uuidShort }}">
-                    <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a>@if($server->suspended === 1) <span class="label label-warning">Suspended</span>@endif</td>
+                <tr
+                    @if($server->suspended === 1 && !$server->trashed())
+                        class="warning"
+                    @elseif($server->trashed())
+                        class="danger"
+                    @endif
+                data-server="{{ $server->uuidShort }}">
+                    <td>
+                        <a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a>
+                        @if($server->suspended === 1 && !$server->trashed())
+                            <span class="label label-warning">Suspended</span>
+                        @elseif($server->trashed())
+                            <span class="label label-danger">Pending Deletion</span>
+                        @endif
+                    </td>
                     <td><a href="/admin/users/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
                     <td><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
                     <td class="hidden-xs"><code>{{ $server->username }}</code></td>

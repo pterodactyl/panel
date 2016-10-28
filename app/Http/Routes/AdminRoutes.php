@@ -210,6 +210,11 @@ class AdminRoutes {
                 'uses' => 'Admin\ServersController@deleteServer'
             ]);
 
+            $router->post('/view/{id}/queuedDeletion', [
+                'uses' => 'Admin\ServersController@postQueuedDeletionHandler',
+                'as' => 'admin.servers.post.queuedDeletion'
+            ]);
+
         });
 
         // Node Routes

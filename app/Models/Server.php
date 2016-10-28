@@ -26,11 +26,14 @@ namespace Pterodactyl\Models;
 use Auth;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Pterodactyl\Exceptions\DisplayException;
 
 class Server extends Model
 {
+
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -44,17 +47,21 @@ class Server extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        'daemonSecret',
-        'sftp_password'
-    ];
+    protected $hidden = ['daemonSecret', 'sftp_password'];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * Fields that are not mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'installed', 'created_at', 'updated_at'];
+    protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * Cast values to correct type.
@@ -92,6 +99,7 @@ class Server extends Model
      */
     public function __construct()
     {
+        parent::__construct();
         self::$user = Auth::user();
     }
 
@@ -180,10 +188,6 @@ class Server extends Model
         }
 
         $result = $query->first();
-
-        if (!$result) {
-            throw new DisplayException('No server was found belonging to this user.');
-        }
 
         if(!is_null($result)) {
             $result->daemonSecret = self::getUserDaemonSecret($result);
