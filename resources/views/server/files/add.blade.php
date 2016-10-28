@@ -160,7 +160,7 @@ $(window).load(function () {
 
 
         var siofu = new SocketIOFileUpload(uploadSocket);
-        siofu.chunkDelay = 50;
+        siofu.chunkDelay = 25;
 
         document.getElementById("uploader_box").addEventListener("click", siofu.prompt, false);
         siofu.listenOnDrop(document.getElementById("uploader_box"));
@@ -183,7 +183,6 @@ $(window).load(function () {
         });
 
         siofu.addEventListener('progress', function(event) {
-            console.log(event.file);
             var percent = event.bytesLoaded / event.file.size * 100;
             if (percent >= 100) {
                 $('.prog-bar-text-' + event.file.meta.identifier).text('Upload Complete');
