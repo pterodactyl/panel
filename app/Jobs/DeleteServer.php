@@ -21,63 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Console\Commands;
+namespace Pterodactyl\Jobs;
 
 use DB;
-use Carbon;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+
 use Pterodactyl\Models;
-use Illuminate\Console\Command;
-use Illuminate\Foundation\Bus\DispatchesJobs;
+use Pterodactyl\Repositories\ServerRepository;
 
-use Pterodactyl\Jobs\SendScheduledTask;
-
-class RunTasks extends Command
+class DeleteServer extends Job implements ShouldQueue
 {
-
-    use DispatchesJobs;
+    use InteractsWithQueue, SerializesModels;
 
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
+     * Id of server to be deleted.
+     * @var object
      */
-    protected $signature = 'pterodactyl:tasks';
+    protected $id;
 
     /**
-     * The console command description.
+     * Create a new job instance.
      *
-     * @var string
-     */
-    protected $description = 'Find and run scheduled tasks.';
-
-    /**
-     * Create a new command instance.
-     *
+     * @param  integer  $server
      * @return void
      */
-    public function __construct()
+    public function __construct($id)
     {
-        parent::__construct();
+        $this->id = $id;
     }
 
     /**
-     * Execute the console command.
+     * Execute the job.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
-        $tasks = Models\Task::where('queued', 0)->where('active', 1)->where('next_run', '<=', Carbon::now()->toAtomString())->get();
-
-        $this->info(sprintf('Preparing to queue %d tasks.', count($tasks)));
-        $bar = $this->output->createProgressBar(count($tasks));
-
-        foreach ($tasks as &$task) {
-            $bar->advance();
-            $this->dispatch((new SendScheduledTask(Models\Server::findOrFail($task->server), $task))->onQueue(env('QUEUE_LOW', 'low')));
-        }
-
-        $bar->finish();
-        $this->info("\nFinished queuing tasks for running.");
+        $repo = new ServerRepository;
+        $repo->deleteNow($this->id);
     }
 }

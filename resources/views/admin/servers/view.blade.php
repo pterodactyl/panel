@@ -30,10 +30,21 @@
         <li><a href="/admin/servers">Servers</a></li>
         <li class="active">{{ $server->name }} ({{ $server->uuidShort}})</li>
     </ul>
-    @if($server->suspended === 1)
-    <div class="alert alert-warning">
-        This server is suspended and has no user access. Processes cannot be started and files cannot be modified. All API access is disabled unless using a master token.
-    </div>
+    @if($server->suspended === 1 && !$server->trashed())
+        <div class="alert alert-warning">
+            This server is suspended and has no user access. Processes cannot be started and files cannot be modified. All API access is disabled unless using a master token.
+        </div>
+    @elseif($server->trashed())
+        <div class="alert alert-danger">
+            This server is marked for deletion <strong>{{ Carbon::parse($server->deleted_at)->addMinutes(env('APP_DELETE_MINUTES', 10))->diffForHumans() }}</strong>. If you want to cancel this action simply click the button below.
+            <br /><br />
+            <form action="{{ route('admin.servers.post.queuedDeletion', $server->id) }}" method="POST">
+                <button class="btn btn-sm btn-default" name="cancel" value="1">Cancel Deletion</button>
+                <button class="btn btn-sm btn-danger pull-right" name="force_delete" value="1"><strong>Force</strong> Delete</button>
+                <button class="btn btn-sm btn-danger pull-right" name="delete" style="margin-right:10px;" value="1">Delete</button>
+                {!! csrf_field() !!}
+            </form>
+        </div>
     @endif
     @if($server->installed === 0)
         <div class="alert alert-warning">
@@ -55,7 +66,7 @@
         @if($server->installed !== 2)
             <li><a href="#tab_manage" data-toggle="tab">Manage</a></li>
         @endif
-        <li><a href="#tab_delete" data-toggle="tab">Delete</a></li>
+        @if(!$server->trashed())<li><a href="#tab_delete" data-toggle="tab">Delete</a></li>@endif
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_about">

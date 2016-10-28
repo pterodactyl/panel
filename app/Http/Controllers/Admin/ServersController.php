@@ -51,7 +51,7 @@ class ServersController extends Controller
 
     public function getIndex(Request $request)
     {
-        $query = Models\Server::select(
+        $query = Models\Server::withTrashed()->select(
             'servers.*',
             'nodes.name as a_nodeName',
             'users.email as a_ownerEmail',
@@ -84,7 +84,7 @@ class ServersController extends Controller
             $servers = $query->paginate(20);
         } catch (\Exception $ex) {
             Alert::warning('There was an error with the search parameters provided.');
-            $servers = Models\Server::select(
+            $servers = Models\Server::withTrashed()->select(
                 'servers.*',
                 'nodes.name as a_nodeName',
                 'users.email as a_ownerEmail',
@@ -112,7 +112,7 @@ class ServersController extends Controller
 
     public function getView(Request $request, $id)
     {
-        $server = Models\Server::select(
+        $server = Models\Server::withTrashed()->select(
             'servers.*',
             'nodes.name as a_nodeName',
             'users.email as a_ownerEmail',
@@ -394,7 +394,7 @@ class ServersController extends Controller
         try {
             $server = new ServerRepository;
             $server->deleteServer($id, $force);
-            Alert::success('Server was successfully deleted from the panel and the daemon.')->flash();
+            Alert::success('Server has been marked for deletion on the system.')->flash();
             return redirect()->route('admin.servers');
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -507,6 +507,33 @@ class ServersController extends Controller
                 'id' => $id,
                 'tab' => 'tab_manage'
             ]);
+        }
+    }
+
+    public function postQueuedDeletionHandler(Request $request, $id)
+    {
+        try {
+            $repo = new ServerRepository;
+            if (!is_null($request->input('cancel'))) {
+                $repo->cancelDeletion($id);
+                Alert::success('Server deletion has been cancelled. This server will remain suspended until you unsuspend it.')->flash();
+                return redirect()->route('admin.servers.view', $id);
+            } else if(!is_null($request->input('delete'))) {
+                $repo->deleteNow($id);
+                Alert::success('Server was successfully deleted from the system.')->flash();
+                return redirect()->route('admin.servers');
+            } else if(!is_null($request->input('force_delete'))) {
+                $repo->deleteNow($id, true);
+                Alert::success('Server was successfully force deleted from the system.')->flash();
+                return redirect()->route('admin.servers');
+            }
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+            return redirect()->route('admin.servers.view', $id);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled error occured while attempting to perform this action.')->flash();
+            return redirect()->route('admin.servers.view', $id);
         }
     }
 

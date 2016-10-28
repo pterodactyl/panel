@@ -8,28 +8,25 @@
             "email": "dane@daneeveritt.com",
             "homepage": "https://github.com/DaneEveritt",
             "role": "Lead Developer"
-        },
-        {
-            "name": "Dylan Seidt",
-            "email": "dylan.seidt@gmail.com",
-            "role": "Developer"
         }
     ],
     "require": {
         "php": ">=5.6.4",
-        "laravel/framework": "5.3.6",
-        "barryvdh/laravel-debugbar": "^2.2.3",
-        "doctrine/dbal": "^2.5.4",
-        "guzzlehttp/guzzle": "^6.2.1",
-        "pragmarx/google2fa": "^1.0.1",
-        "webpatser/laravel-uuid": "^2.0",
-        "prologue/alerts": "^0.4.0",
-        "s1lentium/iptools": "^1.1.0",
-        "edvinaskrucas/settings": "^2.0",
-        "igaster/laravel-theme": "^1.1.3",
-        "nesbot/carbon": "^1.21",
-        "mtdowling/cron-expression": "^1.1",
-        "dingo/api": "1.0.0-beta6"
+        "laravel/framework": "5.3.21",
+        "barryvdh/laravel-debugbar": "2.2.3",
+        "doctrine/dbal": "2.5.5",
+        "guzzlehttp/guzzle": "6.2.2",
+        "pragmarx/google2fa": "1.0.1",
+        "webpatser/laravel-uuid": "2.0.1",
+        "prologue/alerts": "0.4.0",
+        "s1lentium/iptools": "1.1.0",
+        "edvinaskrucas/settings": "2.0.0",
+        "igaster/laravel-theme": "1.1.3",
+        "nesbot/carbon": "1.21.0",
+        "mtdowling/cron-expression": "1.1.0",
+        "dingo/api": "1.0.0-beta6",
+        "aws/aws-sdk-php": "3.19.20",
+        "predis/predis": "1.1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -21,63 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Console\Commands;
+namespace Pterodactyl\Listeners;
 
-use DB;
 use Carbon;
-use Pterodactyl\Models;
-use Illuminate\Console\Command;
+
+use Pterodactyl\Events\ServerDeleted;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-use Pterodactyl\Jobs\SendScheduledTask;
+use Pterodactyl\Jobs\SuspendServer;
+use Pterodactyl\Jobs\DeleteServer;
 
-class RunTasks extends Command
+class DeleteServerListener
 {
 
     use DispatchesJobs;
 
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'pterodactyl:tasks';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Find and run scheduled tasks.';
-
-    /**
-     * Create a new command instance.
+     * Create the event listener.
      *
      * @return void
      */
     public function __construct()
     {
-        parent::__construct();
+        //
     }
 
     /**
-     * Execute the console command.
+     * Handle the event.
      *
-     * @return mixed
+     * @param  DeleteServerEvent  $event
+     * @return void
      */
-    public function handle()
+    public function handle(ServerDeleted $event)
     {
-        $tasks = Models\Task::where('queued', 0)->where('active', 1)->where('next_run', '<=', Carbon::now()->toAtomString())->get();
-
-        $this->info(sprintf('Preparing to queue %d tasks.', count($tasks)));
-        $bar = $this->output->createProgressBar(count($tasks));
-
-        foreach ($tasks as &$task) {
-            $bar->advance();
-            $this->dispatch((new SendScheduledTask(Models\Server::findOrFail($task->server), $task))->onQueue(env('QUEUE_LOW', 'low')));
-        }
-
-        $bar->finish();
-        $this->info("\nFinished queuing tasks for running.");
+        $this->dispatch((new SuspendServer($event->server))->onQueue(env('QUEUE_HIGH', 'high')));
+        $this->dispatch(
+            (new DeleteServer($event->server))
+            ->delay(Carbon::now()->addMinutes(env('APP_DELETE_MINUTES', 10)))
+            ->onQueue(env('QUEUE_STANDARD', 'standard'))
+        );
     }
 }

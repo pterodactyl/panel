@@ -33,6 +33,7 @@ use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Notifications\ServerCreated;
+use Pterodactyl\Events\ServerDeleted;
 
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\AccountNotFoundException;
@@ -767,11 +768,37 @@ class ServerRepository
     public function deleteServer($id, $force)
     {
         $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
         DB::beginTransaction();
 
         try {
-            // Delete Allocations
+            if ($force === 'force' || $force === true) {
+                $server->installed = 3;
+                $server->save();
+            }
+
+            $server->delete();
+            DB::commit();
+
+            event(new ServerDeleted($server->id));
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+    }
+
+    public function deleteNow($id, $force = false) {
+        $server = Models\Server::withTrashed()->findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+
+        // Handle server being restored previously or
+        // an accidental queue.
+        if (!$server->trashed()) {
+            return;
+        }
+
+        DB::beginTransaction();
+        try {
+            // Unassign Allocations
             Models\Allocation::where('assigned_to', $server->id)->update([
                 'assigned_to' => null
             ]);
@@ -779,20 +806,23 @@ class ServerRepository
             // Remove Variables
             Models\ServerVariables::where('server_id', $server->id)->delete();
 
+            // Remove Permissions (Foreign Key requires before Subusers)
+            Models\Permission::where('server_id', $server->id)->delete();
+
             // Remove SubUsers
             Models\Subuser::where('server_id', $server->id)->delete();
-
-            // Remove Permissions
-            Models\Permission::where('server_id', $server->id)->delete();
 
             // Remove Downloads
             Models\Download::where('server', $server->uuid)->delete();
 
+            // Clear Tasks
+            Models\Task::where('server', $server->id)->delete();
+
             // Delete Databases
-            $databases = Models\Database::select('id')->where('server_id', $server->id)->get();
+            // This is the one un-recoverable point where
+            // transactions will not save us.
             $repository = new DatabaseRepository;
-            foreach($databases as &$database) {
-                // Use the repository to drop the database, we don't need to delete here because it is now gone.
+            foreach(Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
                 $repository->drop($database->id);
             }
 
@@ -804,22 +834,30 @@ class ServerRepository
                 ]
             ]);
 
-            $server->delete();
+            $server->forceDelete();
             DB::commit();
-            return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
-            if ($force === 'force') {
-                $server->delete();
+            // Set installed is set to 3 when force deleting.
+            if ($server->installed === 3 || $force) {
+                $server->forceDelete();
                 DB::commit();
-                return true;
             } else {
                 DB::rollBack();
-                throw new DisplayException('An error occured while attempting to delete the server on the daemon.', $ex);
+                throw $ex;
             }
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
         }
+    }
+
+    public function cancelDeletion($id)
+    {
+        $server = Models\Server::withTrashed()->findOrFail($id);
+        $server->restore();
+
+        $server->installed = 1;
+        $server->save();
     }
 
     public function toggleInstall($id)
@@ -837,9 +875,9 @@ class ServerRepository
      * @param  integer $id
      * @return boolean
      */
-    public function suspend($id)
+    public function suspend($id, $deleted = false)
     {
-        $server = Models\Server::findOrFail($id);
+        $server = ($deleted) ? Models\Server::withTrashed()->findOrFail($id) : Models\Server::findOrFail($id);
         $node = Models\Node::findOrFail($server->node);
 
         DB::beginTransaction();
