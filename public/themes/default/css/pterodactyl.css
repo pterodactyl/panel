@@ -285,3 +285,25 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
 #consoleThrottled:hover {
     opacity: 1;
 }
+
+.hasFileHover {
+    border: 2px dashed #0087F7;
+    border-radius: 5px;
+    margin: 0;
+    opacity: 0.5;
+}
+
+.hasFileHover * {
+    pointer-events: none;
+}
+
+td.has-progress {
+    padding: 0px !important;
+    border-top: 0px !important;
+}
+.progress.progress-table-bottom {
+    margin: 0 !important;
+    height:5px !important;
+    padding:0;
+    border:0;
+}

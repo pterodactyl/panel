@@ -37,7 +37,7 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="append_files_to">
         @if (isset($directory['first']) && $directory['first'] === true)
             <tr data-type="disabled">
                 <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
