@@ -25,20 +25,19 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('css/vendor/metricsgraphics/metricsgraphics.css') !!}
     {!! Theme::css('css/jquery.terminal.css') !!}
-    {!! Theme::js('js/vendor/d3/d3.min.js') !!}
-    {!! Theme::js('js/vendor/metricsgraphics/metricsgraphics.min.js') !!}
-    {!! Theme::js('js/vendor/async/async.min.js') !!}
     {!! Theme::js('js/jquery.mousewheel-min.js') !!}
     {!! Theme::js('js/jquery.terminal-0.11.6.min.js') !!}
     {!! Theme::js('js/unix_formatting.js') !!}
+    {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
+    {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
 @endsection
 
 @section('content')
 <div class="col-md-12">
     <ul class="nav nav-tabs tabs_with_panel" id="config_tabs">
         <li class="active"><a href="#console" data-toggle="tab">{{ trans('server.index.control') }}</a></li>
+        <li><a href="#resources" data-toggle="tab">Resource Use</a></li>
         @can('view-allocation', $server)<li><a href="#allocation" data-toggle="tab">{{ trans('server.index.allocation') }}</a></li>@endcan
     </ul>
     <div class="tab-content">
@@ -62,6 +61,23 @@
                             @can('power-kill', $server)<button class="btn btn-danger btn-sm disabled" data-attr="power" data-action="kill"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Kill Running Process"></i></button>@endcan
                             <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#pauseConsole" id="pause_console"><small><i class="fa fa-pause fa-fw"></i></small></button>
                             <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="resources">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <canvas id="chart_memory" style="max-height:300px;"></canvas>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:15px;">
+                        <div class="col-md-12">
+                            <canvas id="chart_cpu" style="max-height:300px;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -107,23 +123,6 @@
                 </div>
             </div>
         @endcan
-    </div>
-    <div class="panel panel-default" style="margin-top:-22px;">
-        <div class="panel-heading"></div>
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <h4 class="text-center">Memory Usage (MB)</h4>
-                    <div class="col-md-12" id="chart_memory" style="height:250px;"></div>
-                </div>
-            </div>
-            <div class="row" style="margin-top:15px;">
-                <div class="col-md-12">
-                    <h4 class="text-center">CPU Usage (% Total) <small><a href="#" data-action="show-all-cores">toggle cores</a></small></h4>
-                    <div class="col-md-12" id="chart_cpu" style="height:250px;"></div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 <div class="modal fade" id="pauseConsole" tabindex="-1" role="dialog" aria-labelledby="PauseConsole" aria-hidden="true">
@@ -199,145 +198,112 @@ $(window).load(function () {
         }
     });
 
-    var showOnlyTotal = true;
-    $('[data-action="show-all-cores"]').click(function (event) {
-        event.preventDefault();
-        showOnlyTotal = !showOnlyTotal;
-        $('#chart_cpu').empty();
+    var ctc = $('#chart_cpu');
+    var timeLabels = [];
+    var cpuData = [];
+    var CPUChart = new Chart(ctc, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: "Percent Use",
+                    fill: false,
+                    lineTension: 0.03,
+                    backgroundColor: "#00A1CB",
+                    borderColor: "#00A1CB",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: cpuData,
+                    spanGaps: false,
+                }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'CPU Usage (as Percent Total)'
+            },
+            legend: {
+                display: false,
+            },
+            animation: {
+                duration: 1,
+            }
+        }
     });
 
-    // -----------------+
-    // Charting Methods |
-    // -----------------+
-    var memoryGraphSettings = {
-        data: [{
-            'date': new Date(),
-            'memory': -1
-        }],
-        full_width: true,
-        full_height: true,
-        right: 40,
-        target: document.getElementById('chart_memory'),
-        x_accessor: 'date',
-        y_accessor: 'memory',
-        animate_on_load: false,
-        y_rug: true,
-        area: false,
-    };
-
-    var cpuGraphData = [
-        [{
-            'date': new Date(),
-            'cpu': -1
-        }]
-    ];
-    var cpuGraphSettings = {
-        data: cpuGraphData,
-        legend: ['Total', 'C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7'],
-        colors: [
-            '#113F8C',
-            '#00A1CB',
-            '#01A4A4',
-            '#61AE24',
-            '#D0D102',
-            '#D70060',
-            '#E54028',
-            '#F18D05',
-            '#616161',
-            '#32742C',
-        ],
-        right: 40,
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_cpu'),
-        x_accessor: 'date',
-        y_accessor: 'cpu',
-        aggregate_rollover: true,
-        missing_is_hidden: true,
-        animate_on_load: false,
-        area: false,
-    };
-
-    MG.data_graphic(memoryGraphSettings);
-    MG.data_graphic(cpuGraphSettings);
-
-    // Socket Recieves New Server Stats
-    var activeChartArrays = [];
+    var ctm = $('#chart_memory');
+    var memoryData = [];
+    var MemoryChart = new Chart(ctm, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: "Memory Use",
+                    fill: false,
+                    lineTension: 0.03,
+                    backgroundColor: "#01A4A4",
+                    borderColor: "#01A4A4",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: memoryData,
+                    spanGaps: false,
+                }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Memory Usage (in Megabytes)'
+            },
+            legend: {
+                display: false,
+            },
+            animation: {
+                duration: 1,
+            }
+        }
+    });
     socket.on('proc', function (proc) {
-
-        var curDate = new Date();
-        if (typeof memoryGraphSettings.data[0][20] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
-            memoryGraphSettings.data[0].shift();
+        if (cpuData.length > 10) {
+            cpuData.shift();
+            memoryData.shift();
+            timeLabels.shift();
         }
 
-        if (typeof cpuGraphData[0][20] !== 'undefined' || cpuGraphData[0][0].cpu === -1) {
-            cpuGraphData[0].shift();
-        }
+        var cpuUse = ({{ $server->cpu }} > 0) ? parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()) : proc.data.cpu.total;
+        cpuData.push(cpuUse);
+        memoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
 
-        memoryGraphSettings.data[0].push({
-            'date': curDate,
-            'memory': parseInt(proc.data.memory.total / (1024 * 1024))
-        });
+        var m = new Date();
+        timeLabels.push($.format.date(new Date(), 'HH:MM:ss'));
 
-        cpuGraphData[0].push({
-            'date': curDate,
-            'cpu': ({{ $server->cpu }} > 0) ? parseFloat(((proc.data.cpu.total / {{ $server->cpu }}) * 100).toFixed(3).toString()) : proc.data.cpu.total
-        });
-
-        async.waterfall([
-            function (callback) {
-                // Remove blank values from listing
-                var activeCores = [];
-                async.forEachOf(proc.data.cpu.cores, function(inner, i, eachCallback) {
-                    if (proc.data.cpu.cores[i] > 0) {
-                        activeCores.push(proc.data.cpu.cores[i]);
-                    }
-                    return eachCallback();
-                }, function () {
-                    return callback(null, activeCores);
-                });
-            },
-            function (active, callback) {
-                var modifedActiveCores = { '0': 0 };
-                async.forEachOf(active, function (inner, i, eachCallback) {
-                    if (i > 7) {
-                        modifedActiveCores['0'] = modifedActiveCores['0'] + active[i];
-                    } else {
-                        if (activeChartArrays.indexOf(i) < 0) activeChartArrays.push(i);
-                        modifedActiveCores[i] = active[i];
-                    }
-                    return eachCallback();
-                }, function () {
-                    return callback(null, modifedActiveCores);
-                });
-            },
-            function (modified, callback) {
-                async.forEachOf(activeChartArrays, function (inner, i, eachCallback) {
-                    if (typeof cpuGraphData[(i + 1)] === 'undefined') {
-                        cpuGraphData[(i + 1)] = [{
-                            'date': curDate,
-                            'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modified[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modified[i] || null
-                        }];
-                    } else {
-                        if (typeof cpuGraphData[(i + 1)][20] !== 'undefined') cpuGraphData[(i + 1)].shift();
-                        cpuGraphData[(i + 1)].push({
-                            'date': curDate,
-                            'cpu': ({{ $server->cpu }} > 0) ? parseFloat((((modified[i] || 0)/ {{ $server->cpu }}) * 100).toFixed(3).toString()) : modified[i] || null
-                        });
-                    }
-                    return eachCallback();
-                }, function () {
-                    return callback();
-                });
-            },
-            function (callback) {
-                cpuGraphSettings.data = (showOnlyTotal === true) ? cpuGraphData[0] : cpuGraphData;
-                return callback();
-            },
-        ], function () {
-            MG.data_graphic(memoryGraphSettings);
-            MG.data_graphic(cpuGraphSettings);
-        });
+        CPUChart.update();
+        MemoryChart.update();
     });
 
     // Socket Recieves New Query

@@ -25,11 +25,10 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('css/vendor/metricsgraphics/metricsgraphics.css') !!}
-    {!! Theme::js('js/vendor/d3/d3.min.js') !!}
-    {!! Theme::js('js/vendor/metricsgraphics/metricsgraphics.min.js') !!}
     {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
     {!! Theme::js('js/bootstrap-notify.min.js') !!}
+    {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
+    {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
     <script>
         $(document).ready(function () {
             $.notifyDefaults({
@@ -102,9 +101,8 @@
                 <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-11 text-center" id="chart_memory" style="height:250px;"></div>
-                        <div class="col-xs-11 text-center" id="chart_cpu" style="height:250px;"></div>
-                        <div class="col-xs-11 text-center" id="chart_players" style="height:250px;"></div>
+                        <canvas id="chart_memory" style="max-height:300px;"></canvas>
+                        <canvas id="chart_cpu" style="max-height:300px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -545,58 +543,6 @@ $(document).ready(function () {
         3: 'Stopping'
     };
 
-    // -----------------+
-    // Charting Methods |
-    // -----------------+
-    var memoryGraphSettings = {
-        title: 'Memory Usage (MB)',
-        data: [{
-            'date': new Date(),
-            'memory': 0
-        }],
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_memory'),
-        x_accessor: 'date',
-        y_accessor: 'memory',
-        y_rug: true,
-        area: false,
-    };
-
-    var cpuGraphSettings = {
-        title: 'CPU Usage (%)',
-        data: [{
-            'date': new Date(),
-            'cpu': 0
-        }],
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_cpu'),
-        x_accessor: 'date',
-        y_accessor: 'cpu',
-        y_rug: true,
-        area: false,
-    };
-
-    var playersGraphSettings = {
-        title: 'Players Online',
-        data: [{
-            'date': new Date(),
-            'players': 0
-        }],
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_players'),
-        x_accessor: 'date',
-        y_accessor: 'players',
-        y_rug: true,
-        area: false,
-    };
-
-    MG.data_graphic(memoryGraphSettings);
-    MG.data_graphic(cpuGraphSettings);
-    MG.data_graphic(playersGraphSettings);
-
     // Main Socket Object
     var socket = io('{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/stats/', {
         'query': 'token={{ $node->daemonSecret }}'
@@ -626,36 +572,112 @@ $(document).ready(function () {
         console.error('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
     });
 
+    var ctc = $('#chart_cpu');
+    var timeLabels = [];
+    var cpuData = [];
+    var CPUChart = new Chart(ctc, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: "Percent Use",
+                    fill: false,
+                    lineTension: 0.03,
+                    backgroundColor: "#00A1CB",
+                    borderColor: "#00A1CB",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: cpuData,
+                    spanGaps: false,
+                }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'CPU Usage (as Percent Total)'
+            },
+            legend: {
+                display: false,
+            },
+            animation: {
+                duration: 1,
+            }
+        }
+    });
+
+    var ctm = $('#chart_memory');
+    var memoryData = [];
+    var MemoryChart = new Chart(ctm, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: "Memory Use",
+                    fill: false,
+                    lineTension: 0.03,
+                    backgroundColor: "#01A4A4",
+                    borderColor: "#01A4A4",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: memoryData,
+                    spanGaps: false,
+                }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Memory Usage (in Megabytes)'
+            },
+            legend: {
+                display: false,
+            },
+            animation: {
+                duration: 1,
+            }
+        }
+    });
+
     socket.on('live-stats', function (data) {
-
-        if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
-            memoryGraphSettings.data[0].shift();
-        }
-        if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
-            cpuGraphSettings.data[0].shift();
-        }
-        if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
-            playersGraphSettings.data[0].shift();
+        if (cpuData.length > 10) {
+            cpuData.shift();
+            memoryData.shift();
+            timeLabels.shift();
         }
 
-        memoryGraphSettings.data[0].push({
-            'date': new Date(),
-            'memory': parseInt(data.stats.memory / (1024 * 1024))
-        });
+        cpuData.push(data.stats.cpu);
+        memoryData.push(parseInt(data.stats.memory / (1024 * 1024)));
 
-        cpuGraphSettings.data[0].push({
-            'date': new Date(),
-            'cpu': data.stats.cpu
-        });
+        var m = new Date();
+        timeLabels.push($.format.date(new Date(), 'HH:MM:ss'));
 
-        playersGraphSettings.data[0].push({
-            'date': new Date(),
-            'players': data.stats.players
-        });
-
-        MG.data_graphic(memoryGraphSettings);
-        MG.data_graphic(cpuGraphSettings);
-        MG.data_graphic(playersGraphSettings);
+        CPUChart.update();
+        MemoryChart.update();
 
         $.each(data.servers, function (uuid, info) {
             var element = $('tr[data-server="' + uuid + '"]');

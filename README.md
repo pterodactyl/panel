@@ -43,7 +43,7 @@ Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [
 
 BootStrap Notify - [license](https://github.com/mouse0270/bootstrap-notify/blob/master/LICENSE) - [homepage](http://bootstrap-notify.remabledesigns.com)
 
-D3.js - [license](https://github.com/mbostock/d3/blob/master/LICENSE) - [homepage](https://d3js.org/)
+Chart.js - [license](https://github.com/chartjs/Chart.js/blob/master/LICENSE.md) - [homepage](http://www.chartjs.org)
 
 FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://fontawesome.io)
 
@@ -56,8 +56,6 @@ jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [
 jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/master/LICENSE) - [homepage](http://terminal.jcubic.pl)
 
 Lodash - [license](https://github.com/lodash/lodash/blob/master/LICENSE) - [homepage](https://lodash.com/)
-
-MetricsGraphics.js - [license](https://github.com/mozilla/metrics-graphics/blob/master/LICENSE) - [homepage](http://metricsgraphicsjs.org/)
 
 Socket.io - [license](https://github.com/socketio/socket.io/blob/master/LICENSE) - [homepage](http://socket.io)
 

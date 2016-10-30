@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Servers are now queued for deletion to allow for cancellation of deletion, as well as run in the background to speed up page loading.
+* Switched to new graphing library to make graphs less... broken.
 
 ### Removed
 * Removed online player listing due to inconsistency in query library and an assortment of query related bugs. This will return in future versions when we get it working correctly.
