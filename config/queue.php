@@ -38,7 +38,7 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
-            'queue' => env('QUEUE_STANDARD'),
+            'queue' => env('QUEUE_STANDARD', 'standard'),
             'retry_after' => 60,
         ],
 
@@ -47,14 +47,14 @@ return [
             'key'    => env('SQS_KEY'),
             'secret' => env('SQS_SECRET'),
             'prefix' => env('SQS_QUEUE_PREFIX'),
-            'queue'  => env('QUEUE_STANDARD'),
+            'queue'  => env('QUEUE_STANDARD', 'standard'),
             'region' => env('SQS_REGION', 'us-east-1'),
         ],
 
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue'  => env('QUEUE_STANDARD'),
+            'queue'  => env('QUEUE_STANDARD', 'standard'),
             'retry_after' => 60,
         ],
 

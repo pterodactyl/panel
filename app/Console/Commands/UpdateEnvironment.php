@@ -82,6 +82,14 @@ class UpdateEnvironment extends Command
             $variables['SERVICE_AUTHOR'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
         }
 
+        if (!env('QUEUE_STANDARD', false) || !env('QUEUE_DRIVER', false)) {
+            $this->info('Setting default queue settings.');
+            $variables['QUEUE_DRIVER'] = env('QUEUE_DRIVER', 'database');
+            $variables['QUEUE_HIGH'] = env('QUEUE_HIGH', 'high');
+            $variables['QUEUE_STANDARD'] = env('QUEUE_STANDARD', 'standard');
+            $variables['QUEUE_LOW'] = env('QUEUE_LOW', 'low');
+        }
+
         if (is_null($this->option('dbhost'))) {
             $variables['DB_HOST'] = $this->anticipate('Database Host', [ 'localhost', '127.0.0.1', env('DB_HOST') ], env('DB_HOST'));
         } else {
