@@ -55,6 +55,7 @@
                             <strong>{{ $errors->first('password') }}</strong>
                         </span>
                     @endif
+                    <p class="text-muted"><small>{{ trans('base.password_req') }}</small></p>
                 </div>
             </div>
             <div class="form-group">
