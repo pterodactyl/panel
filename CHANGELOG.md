@@ -8,10 +8,24 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Foreign keys are now enabled on all tables that the panel makes use of to prevent accidental data deletion when associated with other tables.
 * Javascript changes to prevent crashing browsers when large quantities of data are sent over the websocket to the console. Includes a small popover message on the console to alert users that it is being throttled.
+* Support for 'ARK: Survival Evolved' servers through the panel.
+
+### Fixed
+* Fixes bug where resetting a user password through the login form would not hold passwords to the same requirements as the rest of the panel (mixed case and at least one numeric character).
+* Fixes misnamed environment variable for Bungeecord Servers (`BUNGE_VERSION` -> `BUNGEE_VERSION`).
+* Fixes bug where no error would be displayed when adding a new server with an invalid owner email.
+* Fixes a bug that could allow an admin to delete the default allocation for a server causing all sorts of issues.
+* Databases assigned to a server are now actually deleted when a server is removed.
+* Fixes file uploads being improperly throttled.
 
 ### Changed
 * Servers are now queued for deletion to allow for cancellation of deletion, as well as run in the background to speed up page loading.
 * Switched to new graphing library to make graphs less... broken.
+* Rebuild triggers are only sent to the node if there is actually something changed that requires a rebuild.
+* Dependencies are now hard-coded into the `composer.json` file to prevent users installing slightly different versions with different features or bugs.
+* Server related tasks now use the lowest priorty queue to prevent clogging the pipes when there are more important tasks to be run by the panel.
+* Decompressing files now shows a pop-over box that does not dismiss until it is complete.
+* Dates displayed in the file manager are now more user friendly.
 
 ### Removed
 * Removed online player listing due to inconsistency in query library and an assortment of query related bugs. This will return in future versions when we get it working correctly.
