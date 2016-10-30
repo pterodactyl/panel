@@ -76,6 +76,13 @@ class User extends Model implements AuthenticatableContract,
      */
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
+    /**
+    * The rules for user passwords
+    * 
+    * @var string
+    */
+    const PASSWORD_RULES = 'min:8|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
+
     public function permissions()
     {
         return $this->hasMany(Permission::class);

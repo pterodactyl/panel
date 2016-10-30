@@ -84,7 +84,7 @@ class AccountController extends Controller
 
         $this->validate($request, [
             'current_password' => 'required',
-            'new_password' => 'required|confirmed|different:current_password|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'new_password' => 'required|confirmed|different:current_password|' . Models\User::PASSWORD_RULES,
             'new_password_confirmation' => 'required'
         ]);
 
