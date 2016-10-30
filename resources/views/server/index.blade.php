@@ -64,17 +64,6 @@
                             <div id="pw_resp" style="display:none;margin-top: 15px;"></div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12" id="stats_players">
-                            <h3>Active Players</h3><hr />
-                            <div id="players_notice" class="alert alert-info">
-                                <i class="fa fa-spinner fa-spin"></i> Waiting for response from server...
-                            </div>
-                            <span id="toggle_players" style="display:none;">
-                                <p class="text-muted">No players are online.</p>
-                            </span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -353,18 +342,7 @@ $(window).load(function () {
 
     // Socket Recieves New Query
     socket.on('query', function (data){
-        if($('#players_notice').is(':visible')){
-            $('#players_notice').hide();
-            $('#toggle_players').show();
-        }
-        if(typeof data['data'] !== 'undefined' && typeof data['data'].players !== 'undefined' && data['data'].players.length !== 0){
-            $('#toggle_players').html('');
-            $.each(data['data'].players, function(id, d) {
-                $('#toggle_players').append('<code>' + d.name + '</code>,');
-            });
-        }else{
-            $('#toggle_players').html('<p class=\'text-muted\'>No players are currently online.</p>');
-        }
+        // Disabled.
     });
 
     // New Console Data Recieved
