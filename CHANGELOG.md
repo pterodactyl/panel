@@ -3,7 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.5.0-pre.4 (Bodacious Boreopterus)
+## v0.5.0-rc.2 (Bodacious Boreopterus)
+
+### Fixed
+* Fixes a bug that would cause MySQL errors when attempting to install the panel rather than upgrading.
+
+## v0.5.0-rc.1 (Bodacious Boreopterus)
 
 ### Added
 * Foreign keys are now enabled on all tables that the panel makes use of to prevent accidental data deletion when associated with other tables.
