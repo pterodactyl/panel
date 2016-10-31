@@ -19,7 +19,7 @@ class AddArkServiceOption extends Migration
                 return;
             }
 
-            $oid = DB::table('service_options')->getInsertId([
+            $oid = DB::table('service_options')->insertGetId([
                 'parent_service' => $service->id,
                 'name' => 'Ark: Survival Evolved',
                 'description' => 'As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! — Gamepedia: ARK',
