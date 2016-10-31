@@ -16,7 +16,7 @@ class AddArkServiceOption extends Migration
         DB::transaction(function () {
             $service = DB::table('services')->select('id')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('name', 'Source Engine')->first();
             if (!$service) {
-                exit('No service could be found.');
+                return;
             }
 
             $oid = DB::table('service_options')->getInsertId([
