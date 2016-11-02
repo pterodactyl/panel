@@ -326,7 +326,7 @@ $(window).load(function () {
             $('#consoleThrottled').addClass('hidden');
         }
 
-        for (var i = 0; i < {{ env('CONSOLE_PUSH_COUNT', 10) }}; i++)
+        for (var i = 0; i < {{ env('CONSOLE_PUSH_COUNT', 10) }} && outputQueue.length > 0; i++)
         {
             terminal.echo(outputQueue[0]);
             outputQueue.shift();
