@@ -115,11 +115,12 @@ class AjaxController extends Controller
 
         // Determine if we should show back links in the file browser.
         // This code is strange, and could probably be rewritten much better.
-        $goBack = explode('/', rtrim($this->directory, '/'));
-        if (isset($goBack[2]) && !empty($goBack[2])) {
+        $goBack = explode('/', trim($this->directory, '/'));
+        if (!empty(array_filter($goBack)) && count($goBack) >= 2) {
             $prevDir['show'] = true;
-            $prevDir['link'] = '/' . trim(str_replace(end($goBack), '', $this->directory), '/');
-            $prevDir['link_show'] = trim($prevDir['link'], '/');
+            array_pop($goBack);
+            $prevDir['link'] = '/' . implode('/', $goBack);
+            $prevDir['link_show'] = implode('/', $goBack) . '/';
         }
 
         $controller = new Repositories\Daemon\FileRepository($uuid);
@@ -137,7 +138,7 @@ class AjaxController extends Controller
             'server' => $server,
             'files' => $directoryContents->files,
             'folders' => $directoryContents->folders,
-            'extensions' => Repositories\HelperRepository::editableFiles(),
+            'editableMime' => Repositories\HelperRepository::editableFiles(),
             'directory' => $prevDir
         ]);
 
@@ -171,35 +172,40 @@ class AjaxController extends Controller
     }
 
     /**
-     * [postSetConnection description]
+     * [postSetPrimary description]
      * @param  Request $request
      * @param  string  $uuid
      * @return \Illuminate\Http\Response
      */
-    public function postSetConnection(Request $request, $uuid)
+    public function postSetPrimary(Request $request, $uuid)
     {
 
         $server = Models\Server::getByUUID($uuid);
-        $allocation = Models\Allocation::findOrFail($server->allocation);
-
         $this->authorize('set-connection', $server);
 
-        if ($request->input('connection') === $allocation->ip . ':' . $allocation->port) {
+        if ((int) $request->input('allocation') === $server->allocation) {
             return response()->json([
                 'error' => 'You are already using this as your default connection.'
             ], 409);
         }
 
         try {
+            $allocation = Models\Allocation::where('id', $request->input('allocation'))->where('assigned_to', $server->id)->first();
+            if (!$allocation) {
+                return response()->json([
+                    'error' => 'No allocation matching your request was found in the system.'
+                ], 422);
+            }
+
             $repo = new Repositories\ServerRepository;
             $repo->changeBuild($server->id, [
-                'default' => $request->input('connection'),
+                'default' => $allocation->ip . ':' . $allocation->port,
             ]);
             return response('The default connection for this server has been updated. Please be aware that you will need to restart your server for this change to go into effect.');
         } catch (DisplayValidationException $ex) {
             return response()->json([
                 'error' => json_decode($ex->getMessage(), true),
-            ], 503);
+            ], 422);
         } catch (DisplayException $ex) {
             return response()->json([
                 'error' => $ex->getMessage(),

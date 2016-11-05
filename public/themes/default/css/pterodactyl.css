@@ -90,6 +90,21 @@ body{font-size:13px}
 .btn-xxs{padding:2px 6px;font-size:10px;-webkit-border-radius:1px;-moz-border-radius:1px;border-radius:2px}
 .form-control{height:36px}
 .input-group-addon{font-size:12px;}
+.input-sm {
+    height: 30px;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    border-radius: 2px;
+}
+.input-loader {
+    display: none;
+    position:relative;
+    top: -23px;
+    float: right;
+    right: 5px;
+    color: #cccccc;
+    height: 0;
+}
 pre{display:block;padding:12px 12px;margin:0;font-size:12px;color:#c7254e;background-color:#f9f2f4;border:1px solid #c7254e;border-radius:0;white-space:pre}
 .badge.label-danger {background: #d9534f !important;}
 .close {color:#000;opacity:0.2;font-size:1.6em;}
@@ -102,6 +117,11 @@ form .text-muted {margin: 0 0 -5.5px}
 .label{border-radius: .25em;padding: .2em .6em .3em;}
 kbd{border-radius: .25em}
 .modal-open .modal {padding-left: 0px !important;padding-right: 0px !important;overflow-y: scroll;}
+tr.align-middle > *,
+th.align-middle > *,
+.align-middle {
+    vertical-align: middle !important;
+}
 
 /**
  * Pillboxes
@@ -164,6 +184,126 @@ li.btn.btn-default.pill:active,li.btn.btn-default.pill:focus,li.btn.btn-default.
     opacity: 0.6;
 }
 
-.text-v-center {
-    vertical-align: middle !important;
+.muted {
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+}
+
+.muted-hover:hover {
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+.use-pointer {
+    cursor: pointer !important;
+}
+
+.dropdown-menu > li.bg-danger {
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+}
+
+.dropdown-menu > li.bg-info {
+    background-color:#fcf8f2;
+    color:#474a54;
+    border-left: 4px solid #f0ad4e !important;
+}
+
+.dropdown-menu > li.bg-success {
+    background-color:#f4f8fa;
+    color:#474a54;
+    border-left: 4px solid #5bc0de !important;
+}
+
+.dropdown-menu > li.bg-warning {
+    background-color:#fdf7f7;
+    color:#474a54;
+    border-left: 4px solid #d9534f !important;
+}
+
+.dropdown-menu > li.bg-default {
+    border-left: 4px solid #bbbbbb !important;
+}
+
+.success.pulsate {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #fff;
+  }
+  100% {
+    background-color: #dff0d8;
+  }
+}
+
+#fileOptionMenu li a {
+    padding: 7px 10px !important;
+}
+
+#fileOptionMenu li.divider {
+    margin: 4.5px 0 !important;
+}
+
+#fileOptionMenu > li.bg-danger > a,
+#fileOptionMenu > li.bg-info > a,
+#fileOptionMenu > li.bg-success > a,
+#fileOptionMenu > li.bg-warning > a,
+#fileOptionMenu > li.bg-default > a {
+    padding-left: 5px !important;
+}
+
+.left-icon {
+    padding: 8px 2px !important;
+    border-right: 0 !important;
+}
+
+.left-icon + td {
+    border-left: 0px !important;
+}
+
+.fuelux .wizard .step-content > .alert {
+    margin-bottom: 0 !important;
+}
+
+.fuelux .wizard .steps-container {
+    background-color: #eee;
+}
+
+#consoleThrottled {
+    z-index: 999;
+    top: 0px;
+    opacity: 0.6;
+    left: 0;
+    position: absolute;
+    margin: 0 15px;
+    border-radius: 4px 4px 0 0;
+}
+
+#consoleThrottled:hover {
+    opacity: 1;
+}
+
+.hasFileHover {
+    border: 2px dashed #0087F7;
+    border-radius: 5px;
+    margin: 0;
+    opacity: 0.5;
+}
+
+.hasFileHover * {
+    pointer-events: none;
+}
+
+td.has-progress {
+    padding: 0px !important;
+    border-top: 0px !important;
+}
+.progress.progress-table-bottom {
+    margin: 0 !important;
+    height:5px !important;
+    padding:0;
+    border:0;
 }

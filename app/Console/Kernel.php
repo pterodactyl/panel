@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \Pterodactyl\Console\Commands\ShowVersion::class,
         \Pterodactyl\Console\Commands\UpdateEnvironment::class,
         \Pterodactyl\Console\Commands\RunTasks::class,
+        \Pterodactyl\Console\Commands\ClearTasks::class,
         \Pterodactyl\Console\Commands\ClearServices::class,
         \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
     ];
@@ -30,6 +31,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('pterodactyl:tasks')->everyFiveMinutes()->withoutOverlapping();
+        $schedule->command('pterodactyl:tasks')->everyMinute()->withoutOverlapping();
+        $schedule->command('pterodactyl:tasks:clearlog')->twiceDaily(3, 15);
     }
 }

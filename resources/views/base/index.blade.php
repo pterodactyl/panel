@@ -40,8 +40,8 @@
                     <th>{{ trans('strings.node') }}</th>
                     <th>{{ trans('strings.connection') }}</th>
                     <th class="text-center">{{ trans('strings.players') }}</th>
-                    <th class="text-center">{{ trans('strings.memory') }}</th>
-                    <th class="text-center">{{ trans('strings.cpu') }}</th>
+                    <th class="text-center hidden-sm hidden-xs">{{ trans('strings.memory') }}</th>
+                    <th class="text-center hidden-sm hidden-xs">{{ trans('strings.cpu') }}</th>
                     <th class="text-center">{{ trans('strings.status') }}</th>
                 </tr>
             </thead>
@@ -58,11 +58,11 @@
                             </td>
                         @endif
                         <td><a href="/server/{{ $server->uuidShort }}">{{ $server->name }}</a></td>
-                        <td>{{ $server->nodeName }} ({{ $server->a_locationShort }})</td>
+                        <td>{{ $server->nodeName }}</td>
                         <td><code>@if(!is_null($server->ip_alias)){{ $server->ip_alias }}@else{{ $server->ip }}@endif:{{ $server->port }}</code></td>
                         <td class="text-center" data-action="players">--</td>
-                        <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
-                        <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
+                        <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
+                        <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
                         <td class="text-center" data-action="status">@if($server->suspended === 1)<span class="label label-warning">Suspended</span>@else--@endif</td>
                     </tr>
                 @endforeach

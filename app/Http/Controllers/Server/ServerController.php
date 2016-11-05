@@ -38,6 +38,8 @@ use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use InvalidArgumentException;
+
 class ServerController extends Controller
 {
 
@@ -51,13 +53,22 @@ class ServerController extends Controller
         //
     }
 
-    public function getJavascript(Request $request, $uuid, $file)
+    public function getJavascript(Request $request, $uuid, $folder, $file)
     {
         $server = Models\Server::getByUUID($uuid);
-        return response()->view('server.js.' . $server->a_serviceFile . '.' . basename($file, '.js'), [
-            'server' => $server,
-            'node' => Models\Node::find($server->node)
-        ])->header('Content-Type', 'application/javascript');
+
+        $info = pathinfo($file);
+        $routeFile = str_replace('/', '.', $info['dirname']) . '.' . $info['filename'];
+        try {
+            return response()->view('server.js.' . $folder . '.' . $routeFile, [
+                'server' => $server,
+                'node' => Models\Node::find($server->node)
+            ])->header('Content-Type', 'application/javascript');
+        } catch (InvalidArgumentException $ex) {
+            return abort(404);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 
     /**
@@ -145,9 +156,9 @@ class ServerController extends Controller
             'server' => $server,
             'node' => Models\Node::find($server->node),
             'file' => $file,
-            'contents' => $fileContent->content,
-            'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/',
-            'extension' => $fileInfo->extension
+            'stat' => $fileContent['stat'],
+            'contents' => $fileContent['file']->content,
+            'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/'
         ]);
 
     }
@@ -172,11 +183,11 @@ class ServerController extends Controller
 
         $download->token = (string) Uuid::generate(4);
         $download->server = $server->uuid;
-        $download->path = str_replace('../', '', $file);
+        $download->path = $file;
 
         $download->save();
 
-        return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/download/' . $download->token);
+        return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/file/download/' . $download->token);
 
     }
 

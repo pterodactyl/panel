@@ -40,6 +40,11 @@ class RemoteRoutes {
                 'as' => 'remote.install',
                 'uses' => 'Remote\RemoteController@postInstall'
             ]);
+
+            $router->post('event', [
+                'as' => 'remote.event',
+                'uses' => 'Remote\RemoteController@event'
+            ]);
         });
     }
 

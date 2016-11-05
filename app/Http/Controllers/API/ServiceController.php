@@ -43,7 +43,7 @@ class ServiceController extends BaseController
 
     public function list(Request $request)
     {
-        return Models\Service::all();
+        return Models\Service::all()->toArray();
     }
 
     public function view(Request $request, $id)

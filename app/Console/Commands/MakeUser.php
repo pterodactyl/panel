@@ -35,7 +35,10 @@ class MakeUser extends Command
      *
      * @var string
      */
-    protected $signature = 'pterodactyl:user';
+    protected $signature = 'pterodactyl:user
+                            {--email= : Email address to use for this account.}
+                            {--password= : Password to assign to the user.}
+                            {--admin= :  Boolean flag for if user should be an admin.}';
 
     /**
      * The console command description.
@@ -61,15 +64,15 @@ class MakeUser extends Command
      */
     public function handle()
     {
-        $email = $this->ask('Email');
-        $password = $this->secret('Password');
-        $password_confirmation = $this->secret('Confirm Password');
+        $email = is_null($this->option('email')) ? $this->ask('Email') : $this->option('email');
+        $password = is_null($this->option('password')) ? $this->secret('Password') : $this->option('password');
+        $password_confirmation = is_null($this->option('password')) ? $this->secret('Confirm Password') : $this->option('password');
 
         if ($password !== $password_confirmation) {
             return $this->error('The passwords provided did not match!');
         }
 
-        $admin = $this->confirm('Is this user a root administrator?');
+        $admin = is_null($this->option('admin')) ? $this->confirm('Is this user a root administrator?') : $this->option('admin');
 
         try {
             $user = new UserRepository;

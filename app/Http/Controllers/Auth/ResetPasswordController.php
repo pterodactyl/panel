@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
@@ -30,5 +31,13 @@ class ResetPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+    }
+
+
+    protected function rules() {
+        return [
+            'token' => 'required', 'email' => 'required|email',
+            'password' => 'required|confirmed|' . User::PASSWORD_RULES,
+        ];
     }
 }

@@ -62,8 +62,7 @@ class UserController extends BaseController
      */
     public function list(Request $request)
     {
-        $users = Models\User::paginate(50);
-        return $this->response->paginator($users, new UserTransformer);
+        return Models\User::all()->toArray();
     }
 
     /**
@@ -95,7 +94,12 @@ class UserController extends BaseController
             if (!$query->first()) {
                 throw new NotFoundHttpException('No user by that ID was found.');
             }
-            return $query->first();
+
+            $user = $query->first();
+            $userArray = $user->toArray();
+            $userArray['servers'] =  Models\Server::select('id', 'uuid', 'node', 'suspended')->where('owner', $user->id)->get();
+
+            return $userArray;
         } catch (NotFoundHttpException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
@@ -113,28 +117,19 @@ class UserController extends BaseController
      *      @Request({
      *          "email": "foo@example.com",
      *          "password": "foopassword",
-     *          "admin": false
+     *          "admin": false,
+     *          "custom_id": 123
      *       }, headers={"Authorization": "Bearer <token>"}),
      *       @Response(201),
-     *       @Response(422, body={
-     *          "message": "A validation error occured.",
-     *          "errors": {
-     *              "email": {"The email field is required."},
-     *              "password": {"The password field is required."},
-     *              "admin": {"The admin field is required."}
-     *          },
-     *          "status_code": 422
-     *       })
+     *       @Response(422)
      * })
      */
     public function create(Request $request)
     {
         try {
             $user = new UserRepository;
-            $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'));
-            return $this->response->created(route('api.users.view', [
-                'id' => $create
-            ]));
+            $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'), $request->input('custom_id'));
+            return [ 'id' => $create ];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {

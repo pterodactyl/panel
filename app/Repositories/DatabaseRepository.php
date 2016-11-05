@@ -138,7 +138,7 @@ class DatabaseRepository {
 
             $capsule->setAsGlobal();
             Capsule::statement(sprintf(
-                'ALTER USER \'%s\'@\'%s\' IDENTIFIED BY \'%s\'',
+                'SET PASSWORD FOR \'%s\'@\'%s\' = PASSWORD(\'%s\')',
                 $db->username,
                 $db->remote,
                 $password

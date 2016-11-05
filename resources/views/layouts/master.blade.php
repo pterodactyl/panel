@@ -24,17 +24,17 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        {!! Theme::css('css/bootstrap.css') !!}
+        {!! Theme::css('css/vendor/bootstrap/bootstrap.css') !!}
         {!! Theme::css('css/pterodactyl.css') !!}
         {!! Theme::css('css/animate.css') !!}
-        {!! Theme::css('css/fontawesome/font-awesome.min.css') !!}
-        {!! Theme::css('css/sweetalert.min.css') !!}
-        {!! Theme::css('css/fuelux.min.css') !!}
-        {!! Theme::js('js/jquery.min.js') !!}
-        {!! Theme::js('js/bootstrap.min.js') !!}
-        {!! Theme::js('js/socket.io.min.js') !!}
-        {!! Theme::js('js/sweetalert.min.js') !!}
-        {!! Theme::js('js/fuelux.min.js') !!}
+        {!! Theme::css('css/vendor/fontawesome/font-awesome.min.css') !!}
+        {!! Theme::css('css/vendor/sweetalert/sweetalert.min.css') !!}
+        {!! Theme::css('css/vendor/fuelux/fuelux.min.css') !!}
+        {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+        {!! Theme::js('js/vendor/bootstrap/bootstrap.min.js') !!}
+        {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
+        {!! Theme::js('js/vendor/sweetalert/sweetalert.min.js') !!}
+        {!! Theme::js('js/vendor/fuelux/fuelux.min.js') !!}
         {!! Theme::js('js/admin.min.js') !!}
         {!! Theme::js('js/bootstrap-notify.min.js') !!}
         <script>
@@ -157,9 +157,6 @@
 </head>
 <body>
     <div class="container">
-        <div class="alert alert-danger" style="margin:10px auto -20px;">
-            <strong>Notice:</strong> You are running a developmental build of Pterodactyl Panel. Please report any bugs on our <a href="https://github.com/Pterodactyl/Panel/issues" target="_blank">Issue Tracker</a>.
-        </div>
         <div class="navbar navbar-default">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
@@ -184,6 +181,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/account">{{ trans('pagination.sidebar.account_settings') }}</a></li>
                                 <li><a href="/account/security">{{ trans('pagination.sidebar.account_security') }}</a></li>
+                                <li><a href="/account/api">API Settings</a></li>
                                 <li><a href="/index">{{ trans('pagination.sidebar.servers') }}</a></li>
                             </ul>
                         </li>
@@ -237,6 +235,7 @@
                         <a href="#" class="list-group-item list-group-item-heading"><strong>{{ trans('pagination.sidebar.account_controls') }}</strong></a>
                         <a href="/account" class="list-group-item">{{ trans('pagination.sidebar.account_settings') }}</a>
                         <a href="/account/security" class="list-group-item">{{ trans('pagination.sidebar.account_security') }}</a>
+                        <a href="/account/api" class="list-group-item">API Access</a>
                         <a href="/" class="list-group-item">{{ trans('pagination.sidebar.servers') }}</a>
                     </div>
                     @section('sidebar-server')

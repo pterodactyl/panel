@@ -74,7 +74,7 @@
                                 @can('view-sftp-password', $server)
                                     <label class="control-label">Current Password:</label>
                                     <div>
-                                        <input type="text" readonly="readonly" class="form-control" value="@if(!is_null($server->sftp_password)){{ Crypt::decrypt($server->sftp_password) }} @endif" />
+                                        <input type="text" readonly="readonly" class="form-control" value="@if(!is_null($server->sftp_password)){{ Crypt::decrypt($server->sftp_password) }}@endif" />
                                     </div>
                                 @endcan
                                 </div>

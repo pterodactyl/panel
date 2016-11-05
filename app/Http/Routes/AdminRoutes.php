@@ -73,6 +73,11 @@ class AdminRoutes {
                 'uses' => 'Admin\UserController@getIndex'
             ]);
 
+            $router->get('/accounts.json', [
+                'as' => 'admin.users.json',
+                'uses' => 'Admin\UserController@getJson'
+            ]);
+
             // View Specific Account
             $router->get('/view/{id}', [
                 'as' => 'admin.users.view',
@@ -205,6 +210,11 @@ class AdminRoutes {
                 'uses' => 'Admin\ServersController@deleteServer'
             ]);
 
+            $router->post('/view/{id}/queuedDeletion', [
+                'uses' => 'Admin\ServersController@postQueuedDeletionHandler',
+                'as' => 'admin.servers.post.queuedDeletion'
+            ]);
+
         });
 
         // Node Routes
@@ -243,8 +253,17 @@ class AdminRoutes {
                 'uses' => 'Admin\NodesController@postView'
             ]);
 
-            $router->delete('/view/{id}/allocation/{ip}/{port?}', [
-                'uses' => 'Admin\NodesController@deleteAllocation'
+            $router->delete('/view/{id}/deallocate/single/{allocation}', [
+                'uses' => 'Admin\NodesController@deallocateSingle'
+            ]);
+
+            $router->post('/view/{id}/deallocate/block', [
+                'uses' => 'Admin\NodesController@deallocateBlock'
+            ]);
+
+            $router->post('/view/{id}/alias', [
+                'as' => 'admin.nodes.alias',
+                'uses' => 'Admin\NodesController@setAlias'
             ]);
 
             $router->get('/view/{id}/allocations.json', [
@@ -291,32 +310,6 @@ class AdminRoutes {
             ]);
             $router->post('/', [
                 'uses' => 'Admin\LocationsController@postLocation'
-            ]);
-        });
-
-        // API Routes
-        $router->group([
-            'prefix' => 'admin/api',
-            'middleware' => [
-                'auth',
-                'admin',
-                'csrf'
-            ]
-        ], function () use ($router) {
-            $router->get('/', [
-                'as' => 'admin.api',
-                'uses' => 'Admin\APIController@getIndex'
-            ]);
-            $router->get('/new', [
-                'as' => 'admin.api.new',
-                'uses' => 'Admin\APIController@getNew'
-            ]);
-            $router->post('/new', [
-                'uses' => 'Admin\APIController@postNew'
-            ]);
-            $router->delete('/revoke/{key?}', [
-                'as' => 'admin.api.revoke',
-                'uses' => 'Admin\APIController@deleteRevokeKey'
             ]);
         });
 

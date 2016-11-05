@@ -164,7 +164,17 @@ class NodeRepository {
 
         try {
             foreach($allocations as $rawIP => $ports) {
-                $parsedIP = Network::parse($rawIP);
+                try {
+                    $setAlias = null;
+                    $parsedIP = Network::parse($rawIP);
+                } catch (\Exception $ex) {
+                    try {
+                        $setAlias = $rawIP;
+                        $parsedIP = Network::parse(gethostbyname($rawIP));
+                    } catch (\Exception $ex) {
+                        throw $ex;
+                    }
+                }
                 foreach($parsedIP as $ip) {
                     foreach($ports as $port) {
                         if (!is_int($port) && !preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
@@ -182,6 +192,7 @@ class NodeRepository {
                                         'node' => $node->id,
                                         'ip' => $ip,
                                         'port' => $assignPort,
+                                        'ip_alias' => $setAlias,
                                         'assigned_to' => null
                                     ]);
                                     $alloc->save();
@@ -198,6 +209,7 @@ class NodeRepository {
                                     'node' => $node->id,
                                     'ip' => $ip,
                                     'port' => $port,
+                                    'ip_alias' => $setAlias,
                                     'assigned_to' => null
                                 ]);
                                 $alloc->save();
@@ -208,7 +220,7 @@ class NodeRepository {
             }
 
             DB::commit();
-            return true;
+            // return true;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;

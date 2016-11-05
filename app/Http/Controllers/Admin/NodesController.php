@@ -27,6 +27,7 @@ use Alert;
 use Debugbar;
 use Log;
 use DB;
+use Validator;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\NodeRepository;
@@ -65,6 +66,11 @@ class NodesController extends Controller
 
     public function getNew(Request $request)
     {
+        if (!Models\Location::all()->count()) {
+            Alert::warning('You must add a location before you can add a new node.')->flash();
+            return redirect()->route('admin.locations');
+        }
+
         return view('admin.nodes.new', [
             'locations' => Models\Location::all()
         ]);
@@ -77,9 +83,10 @@ class NodesController extends Controller
             $new = $node->create($request->except([
                 '_token'
             ]));
-            Alert::success('Successfully created new node. You should allocate some IP addresses to it now.')->flash();
+            Alert::success('Successfully created new node. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
             return redirect()->route('admin.nodes.view', [
-                'id' => $new
+                'id' => $new,
+                'tab' => 'tab_allocation'
             ]);
         } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.new')->withErrors(json_decode($e->getMessage()))->withInput();
@@ -95,32 +102,25 @@ class NodesController extends Controller
     public function getView(Request $request, $id)
     {
         $node = Models\Node::findOrFail($id);
-        $allocations = [];
-        $alloc = Models\Allocation::select('ip', 'port', 'assigned_to')->where('node', $node->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get();
-        if ($alloc) {
-            foreach($alloc as &$alloc) {
-                if (!array_key_exists($alloc->ip, $allocations)) {
-                    $allocations[$alloc->ip] = [[
-                        'port' => $alloc->port,
-                        'assigned_to' => $alloc->assigned_to
-                    ]];
-                } else {
-                    array_push($allocations[$alloc->ip], [
-                        'port' => $alloc->port,
-                        'assigned_to' => $alloc->assigned_to
-                    ]);
-                }
-            }
-        }
+
         return view('admin.nodes.view', [
             'node' => $node,
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
                 ->join('users', 'users.id', '=', 'servers.owner')
                 ->join('services', 'services.id', '=', 'servers.service')
-                ->where('node', $id)->paginate(10),
+                ->where('node', $id)->paginate(10, ['*'], 'servers'),
             'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
             'locations' => Models\Location::all(),
-            'allocations' => json_decode(json_encode($allocations), false),
+            'allocations' => Models\Allocation::select('allocations.*', 'servers.name as assigned_to_name')
+                ->where('allocations.node', $node->id)
+                ->leftJoin('servers', 'servers.id', '=', 'allocations.assigned_to')
+                ->orderBy('allocations.ip', 'asc')
+                ->orderBy('allocations.port', 'asc')
+                ->paginate(20, ['*'], 'allocations'),
+            'allocation_ips' => Models\Allocation::select('id', 'ip')
+                ->where('node', $node->id)
+                ->groupBy('ip')
+                ->get(),
         ]);
     }
 
@@ -150,22 +150,49 @@ class NodesController extends Controller
         ])->withInput();
     }
 
-    public function deleteAllocation(Request $request, $id, $ip, $port = null)
+    public function deallocateSingle(Request $request, $node, $allocation)
     {
-        $query = Models\Allocation::where('node', $id)->whereNull('assigned_to')->where('ip', $ip);
-        if (is_null($port) || $port === 'undefined') {
-            $allocation = $query;
-        } else {
-            $allocation = $query->where('port', $port)->first();
-        }
-
-        if (!$allocation) {
+        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('id', $allocation)->delete();
+        if ((int) $query === 0) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.'
             ], 400);
         }
-        $allocation->delete();
         return response('', 204);
+    }
+
+    public function deallocateBlock(Request $request, $node)
+    {
+        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('ip', $request->input('ip'))->delete();
+        if ((int) $query === 0) {
+            Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
+            return redirect()->route('admin.nodes.view', [
+                'id' => $node,
+                'tab' => 'tab_allocations'
+            ]);
+        }
+        Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
+        return redirect()->route('admin.nodes.view', [
+            'id' => $node,
+            'tab' => 'tab_allocation'
+        ]);
+    }
+
+    public function setAlias(Request $request, $node)
+    {
+        if (!$request->input('allocation')) {
+            return response('Missing required parameters.', 422);
+        }
+
+        try {
+            $update = Models\Allocation::findOrFail($request->input('allocation'));
+            $update->ip_alias = (empty($request->input('alias'))) ? null : $request->input('alias');
+            $update->save();
+
+            return response('', 204);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 
     public function getAllocationsJson(Request $request, $id)
@@ -176,6 +203,19 @@ class NodesController extends Controller
 
     public function postAllocations(Request $request, $id)
     {
+
+        $validator = Validator::make($request->all(), [
+            'allocate_ip.*' => 'required|string',
+            'allocate_port.*' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.nodes.view', [
+                'id' => $id,
+                'tab' => 'tab_allocation'
+            ])->withErrors($validator->errors())->withInput();
+        }
+
         $processedData = [];
         foreach($request->input('allocate_ip') as $ip) {
             if (!array_key_exists($ip, $processedData)) {
@@ -195,9 +235,6 @@ class NodesController extends Controller
         }
 
         try {
-            if(empty($processedData)) {
-                throw new DisplayException('It seems that no data was passed to this function.');
-            }
             $node = new NodeRepository;
             $node->addAllocations($id, $processedData);
             Alert::success('Successfully added new allocations to this node.')->flash();

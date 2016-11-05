@@ -98,6 +98,7 @@
                             <th>Identifier</th>
                             <th>Server Name</th>
                             <th>Node</th>
+                            <th>Username</th>
                             <th style="width:10%;"></th>
                         </tr>
                     </thead>
@@ -108,7 +109,8 @@
                                     <td><code>{{ $server->uuidShort }}</code></td>
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
                                     <td>{{ $server->nodeName }}</td>
-                                    <td>@if($server->active)<span class="label label-success">Enabled</span>@else<span class="label label-danger">Disabled</span>@endif</td>
+                                    <td><code>{{ $server->username }}</code></td>
+                                    <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
                                 </td>
                             @endforeach
                     </tbody>
@@ -148,7 +150,7 @@ $(document).ready(function(){
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
            },
             success: function(data) {
-                $("#gen_pass").html('<strong>Generated Password:</strong> ' + data).slideDown();
+                $("#gen_pass").html('You must click <em>Update User</em> to the left for this password to be applied.<br /><br /><strong>Generated Password:</strong> ' + data).slideDown();
                 $('input[name="password"], input[name="password_confirmation"]').val(data);
                 return false;
             }

@@ -1,5 +1,5 @@
 ## Pterodactyl Panel
-Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.2)`.
+Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.3)`.
 
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [wiki](https://github.com/Pterodactyl/Panel/wiki) or on our [Discord chat](https://discord.gg/0gYt8oU8QOkDhKLS).
@@ -28,6 +28,11 @@ SOFTWARE.
 ```
 
 ### Credits
+![](http://static.s3.pterodactyl.io/PhraseApp-parrot.png)
+A huge thanks to [PhraseApp](https://phraseapp.com) who provide us the software to help translate this project.
+
+Ace Editor - [license](https://github.com/ajaxorg/ace/blob/master/LICENSE) - [homepage](https://ace.c9.io)
+
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
 
 Async.js - [license](https://github.com/caolan/async/blob/master/LICENSE) - [homepage](https://github.com/caolan/async/)
@@ -38,9 +43,11 @@ Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [
 
 BootStrap Notify - [license](https://github.com/mouse0270/bootstrap-notify/blob/master/LICENSE) - [homepage](http://bootstrap-notify.remabledesigns.com)
 
-D3.js - [license](https://github.com/mbostock/d3/blob/master/LICENSE) - [homepage](https://d3js.org/)
+Chart.js - [license](https://github.com/chartjs/Chart.js/blob/master/LICENSE.md) - [homepage](http://www.chartjs.org)
 
 FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://fontawesome.io)
+
+FontAwesome Animations - [license](https://github.com/l-lin/font-awesome-animation#license) - [homepage](https://github.com/l-lin/font-awesome-animation)
 
 FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - [homepage](http://getfuelux.com)
 
@@ -48,11 +55,13 @@ jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [
 
 jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/master/LICENSE) - [homepage](http://terminal.jcubic.pl)
 
-MetricsGraphics.js - [license](https://github.com/mozilla/metrics-graphics/blob/master/LICENSE) - [homepage](http://metricsgraphicsjs.org/)
+Lodash - [license](https://github.com/lodash/lodash/blob/master/LICENSE) - [homepage](https://lodash.com/)
 
 Socket.io - [license](https://github.com/socketio/socket.io/blob/master/LICENSE) - [homepage](http://socket.io)
 
 SweetAlert - [license](https://github.com/t4t5/sweetalert/blob/master/LICENSE) - [homepage](http://t4t5.github.io/sweetalert/)
+
+Typeahead — [license](https://github.com/bassjobsen/Bootstrap-3-Typeahead/blob/master/bootstrap3-typeahead.js) — [homepage](https://github.com/bassjobsen/Bootstrap-3-Typeahead)
 
 ### Additional License Information
 Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apache 2.0`. Please check their respective header files for more information.

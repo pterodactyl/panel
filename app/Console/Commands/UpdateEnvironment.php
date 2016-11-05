@@ -33,7 +33,14 @@ class UpdateEnvironment extends Command
      *
      * @var string
      */
-    protected $signature = 'pterodactyl:env';
+    protected $signature = 'pterodactyl:env
+                            {--dbhost=}
+                            {--dbport=}
+                            {--dbname=}
+                            {--dbuser=}
+                            {--dbpass=}
+                            {--url=}
+                            {--timezone=}';
 
     /**
      * The console command description.
@@ -69,40 +76,62 @@ class UpdateEnvironment extends Command
 
         $envContents = file_get_contents($file);
 
+        $this->info('Simply leave blank and press enter to fields that you do not wish to update.');
         if (!env('SERVICE_AUTHOR', false)) {
             $this->info('No service author set, setting one now.');
             $variables['SERVICE_AUTHOR'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
         }
 
-        // DB info
-        if($this->confirm('Update database host? [' . env('DB_HOST') . ']')) {
-            $variables['DB_HOST'] = $this->anticipate('Database Host (usually \'localhost\' or \'127.0.0.1\')', [ 'localhost', '127.0.0.1', env('DB_HOST') ]);
+        if (!env('QUEUE_STANDARD', false) || !env('QUEUE_DRIVER', false)) {
+            $this->info('Setting default queue settings.');
+            $variables['QUEUE_DRIVER'] = env('QUEUE_DRIVER', 'database');
+            $variables['QUEUE_HIGH'] = env('QUEUE_HIGH', 'high');
+            $variables['QUEUE_STANDARD'] = env('QUEUE_STANDARD', 'standard');
+            $variables['QUEUE_LOW'] = env('QUEUE_LOW', 'low');
         }
 
-        if($this->confirm('Update database port? [' . env('DB_PORT') . ']')) {
-            $variables['DB_PORT'] = $this->anticipate('Database Port', [ 3306, env('DB_PORT') ]);
+        if (is_null($this->option('dbhost'))) {
+            $variables['DB_HOST'] = $this->anticipate('Database Host', [ 'localhost', '127.0.0.1', env('DB_HOST') ], env('DB_HOST'));
+        } else {
+            $variables['DB_HOST'] = $this->option('dbhost');
         }
 
-        if($this->confirm('Update database name? [' . env('DB_DATABASE') . ']')) {
-            $variables['DB_DATABASE'] = $this->anticipate('Database Name', [ 'pterodactyl', 'homestead', ENV('DB_DATABASE') ]);
+        if (is_null($this->option('dbport'))) {
+            $variables['DB_PORT'] = $this->anticipate('Database Port', [ 3306, env('DB_PORT') ], env('DB_PORT'));
+        } else {
+            $variables['DB_PORT'] = $this->option('dbport');
         }
 
-        if($this->confirm('Update database username? [' . env('DB_USERNAME') . ']')) {
-            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ env('DB_USERNAME') ]);
+        if (is_null($this->option('dbname'))) {
+            $variables['DB_DATABASE'] = $this->anticipate('Database Name', [ 'pterodactyl', 'homestead', ENV('DB_DATABASE') ], env('DB_DATABASE'));
+        } else {
+            $variables['DB_DATABASE'] = $this->option('dbname');
         }
 
-        if($this->confirm('Update database password?')) {
-            $variables['DB_PASSWORD'] = $this->secret('Database User\'s Password');
+        if (is_null($this->option('dbuser'))) {
+            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ ENV('DB_DATABASE') ], env('DB_USERNAME'));
+        } else {
+            $variables['DB_USERNAME'] = $this->option('dbuser');
         }
 
-        // Other Basic Information
-        if($this->confirm('Update panel URL? [' . env('APP_URL') . ']')) {
-            $variables['APP_URL'] = $this->anticipate('Enter your current panel URL (include http or https).', [ env('APP_URL', 'http://localhost') ]);
+        if (is_null($this->option('dbpass'))) {
+            $this->line('The Database Password field is required; you cannot hit enter and use a default value.');
+            $variables['DB_PASSWORD'] = $this->secret('Database User Password');
+        } else {
+            $variables['DB_PASSWORD'] = $this->option('dbpass');
         }
 
-        if($this->confirm('Update panel timezone? [' . env('APP_TIMEZONE') . ']')) {
+        if (is_null($this->option('url'))) {
+            $variables['APP_URL'] = $this->ask('Panel URL', env('APP_URL'));
+        } else {
+            $variables['APP_URL'] = $this->option('url');
+        }
+
+        if (is_null($this->option('timezone'))) {
             $this->line('The timezone should match one of the supported timezones according to http://php.net/manual/en/timezones.php');
-            $variables['APP_TIMEZONE'] = $this->anticipate('Enter the timezone for this panel to run with', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL));
+            $variables['APP_TIMEZONE'] = $this->anticipate('Panel Timezone', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL), env('APP_TIMEZONE'));
+        } else {
+            $variables['APP_TIMEZONE'] = $this->option('timezone');
         }
 
         $bar = $this->output->createProgressBar(count($variables));

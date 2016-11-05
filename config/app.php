@@ -4,7 +4,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'version' => env('APP_VERSION', 'v0.4.1-beta'),
+    'version' => env('APP_VERSION', 'v0.5.0'),
 
     /*
     |--------------------------------------------------------------------------
@@ -188,6 +188,8 @@ return [
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
         'DB'        => Illuminate\Support\Facades\DB::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
+        'Dingo'     => Dingo\Api\Facade\API::class,
+        'DingoRoute'=> Dingo\Api\Facade\Route::class,
         'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
         'Event'     => Illuminate\Support\Facades\Event::class,
         'File'      => Illuminate\Support\Facades\File::class,

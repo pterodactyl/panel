@@ -24,12 +24,16 @@
 namespace Pterodactyl\Models;
 
 use Auth;
-
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+use Pterodactyl\Exceptions\DisplayException;
 
 class Server extends Model
 {
+
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -43,17 +47,21 @@ class Server extends Model
      *
      * @var array
      */
-    protected $hidden = [
-        'daemonSecret',
-        'sftp_password'
-    ];
+    protected $hidden = ['daemonSecret', 'sftp_password'];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at'];
 
     /**
      * Fields that are not mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'installed', 'created_at', 'updated_at'];
+    protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
      * Cast values to correct type.
@@ -91,6 +99,7 @@ class Server extends Model
      */
     public function __construct()
     {
+        parent::__construct();
         self::$user = Auth::user();
     }
 
@@ -101,7 +110,7 @@ class Server extends Model
      * @param Illuminate\Database\Eloquent\Model\Server $server
      * @return string
      */
-    protected static function getUserDaemonSecret(Server $server)
+    public static function getUserDaemonSecret(Server $server)
     {
 
         if (self::$user->id === $server->owner || self::$user->root_admin === 1) {
@@ -133,9 +142,13 @@ class Server extends Model
             'locations.short as a_locationShort',
             'allocations.ip',
             'allocations.ip_alias',
-            'allocations.port'
+            'allocations.port',
+            'services.name as a_serviceName',
+            'service_options.name as a_serviceOptionName'
         )->join('nodes', 'servers.node', '=', 'nodes.id')
         ->join('locations', 'nodes.location', '=', 'locations.id')
+        ->join('services', 'servers.service', '=', 'services.id')
+        ->join('service_options', 'servers.option', '=', 'service_options.id')
         ->join('allocations', 'servers.allocation', '=', 'allocations.id');
 
         if (self::$user->root_admin !== 1) {
@@ -167,7 +180,8 @@ class Server extends Model
 
         $query = self::select('servers.*', 'services.file as a_serviceFile')
             ->join('services', 'services.id', '=', 'servers.service')
-            ->where('uuidShort', $uuid);
+            ->where('uuidShort', $uuid)
+            ->orWhere('uuid', $uuid);
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());

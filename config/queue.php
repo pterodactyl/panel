@@ -38,38 +38,23 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
-            'queue' => 'default',
+            'queue' => env('QUEUE_STANDARD', 'standard'),
             'retry_after' => 60,
-        ],
-
-        'beanstalkd' => [
-            'driver' => 'beanstalkd',
-            'host'   => 'localhost',
-            'queue'  => 'default',
-            'retry_after'    => 60,
         ],
 
         'sqs' => [
             'driver' => 'sqs',
-            'key'    => 'your-public-key',
-            'secret' => 'your-secret-key',
-            'queue'  => 'your-queue-url',
-            'region' => 'us-east-1',
-        ],
-
-        'iron' => [
-            'driver'  => 'iron',
-            'host'    => 'mq-aws-us-east-1.iron.io',
-            'token'   => 'your-token',
-            'project' => 'your-project-id',
-            'queue'   => 'your-queue-name',
-            'encrypt' => true,
+            'key'    => env('SQS_KEY'),
+            'secret' => env('SQS_SECRET'),
+            'prefix' => env('SQS_QUEUE_PREFIX'),
+            'queue'  => env('QUEUE_STANDARD', 'standard'),
+            'region' => env('SQS_REGION', 'us-east-1'),
         ],
 
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue'  => 'default',
+            'queue'  => env('QUEUE_STANDARD', 'standard'),
             'retry_after' => 60,
         ],
 

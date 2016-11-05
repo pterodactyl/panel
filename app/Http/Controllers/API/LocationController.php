@@ -58,7 +58,7 @@ class LocationController extends BaseController
             $location->nodes = explode(',', $location->nodes);
         }
 
-        return $locations;
+        return $locations->toArray();
     }
 
 }

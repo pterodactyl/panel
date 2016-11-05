@@ -23,6 +23,11 @@
     Create New Server
 @endsection
 
+@section('scripts')
+    @parent
+    {!! Theme::js('js/vendor/typeahead/typeahead.min.js') !!}
+@endsection
+
 @section('content')
 <div class="col-md-12">
     <ul class="breadcrumb">
@@ -44,6 +49,8 @@
                 <div class="form-group col-md-6">
                     <label for="owner" class="control-label">Owner Email</label>
                     <div>
+                        {{-- Hacky workaround to prevent Safari and Chrome from trying to suggest emails here --}}
+                        <input id="fake_user_name" name="fake_user[name]" style="position:absolute; top:-10000px;" type="text" value="Autofill Me">
                         <input type="text" autocomplete="off" name="owner" class="form-control" value="{{ old('owner', Input::get('email')) }}" />
                     </div>
                 </div>
@@ -65,7 +72,7 @@
                             <p class="text-muted"><small>The location in which this server will be deployed.</small></p>
                         </div>
                     </div>
-                    <div class="form-group col-md-6 hidden">
+                    <div class="form-group col-md-6 hidden" id="allocationNode">
                         <label for="node" class="control-label">Server Node</label>
                         <div>
                             <select name="node" id="getNode" class="form-control">
@@ -76,7 +83,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-md-6 hidden">
+                    <div class="form-group col-md-6 hidden" id="allocationIP">
                         <label for="ip" class="control-label">Server IP</label>
                         <div>
                             <select name="ip" id="getIP" class="form-control">
@@ -85,11 +92,22 @@
                             <p class="text-muted"><small>Select the main IP that this server will be listening on. You can assign additional open IPs and ports below.</small></p>
                         </div>
                     </div>
-                    <div class="form-group col-md-6 hidden">
+                    <div class="form-group col-md-6 hidden" id="allocationPort">
                         <label for="port" class="control-label">Server Port</label>
                         <div>
                             <select name="port" id="getPort" class="form-control"></select>
                             <p class="text-muted"><small>Select the main port that this server will be listening on.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 fuelux">
+                        <hr style="margin-top: 10px;"/>
+                        <div class="checkbox highlight" style="margin: 0;">
+                            <label class="checkbox-custom highlight" data-initialize="checkbox">
+                                <input class="sr-only" name="auto_deploy" type="checkbox" @if(isset($oldInput['auto_deploy']))checked="checked"@endif value="1"> <strong>Enable Automatic Deployment</strong>
+                                <p class="text-muted"><small>Check this box if you want the panel to automatically select a node and allocation for this server in the given location.</small><p>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -242,6 +260,17 @@ $(document).ready(function () {
         $('input[name="custom_image_name"]').val('').prop('disabled', !($(this).is(':checked')));
     });
 
+    // Typeahead
+    $.ajax({
+        type: 'GET',
+        url: '{{ route('admin.users.json') }}',
+    }).done(function (data) {
+        $('input[name="owner"]').typeahead({ fitToElement: true, source: data });
+    }).fail(function (jqXHR) {
+        alert('Could not initialize user email typeahead.')
+        console.log(jqXHR);
+    });
+
     var nodeData = null;
     var currentLocation = null;
     var currentNode = null;
@@ -339,6 +368,18 @@ $(document).ready(function () {
 
         $('#getPort').parent().parent().removeClass('hidden');
 
+    });
+
+    $('input[name="auto_deploy"]').change(function () {
+        if ($(this).is(':checked')) {
+            $('#allocationPort, #allocationIP, #allocationNode').hide();
+        } else {
+            currentLocation = null;
+            $('#allocationPort, #allocationIP, #allocationNode').show().addClass('hidden');
+            $('#getLocation').trigger('change', function (e) {
+                alert('triggered');
+            });
+        }
     });
 
     $('#getService').on('change', function (event) {

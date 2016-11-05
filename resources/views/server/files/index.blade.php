@@ -23,6 +23,13 @@
     Managing Files for: {{ $server->name }}
 @endsection
 
+@section('scripts')
+    @parent
+    {!! Theme::js('js/vendor/async/async.min.js') !!}
+    {!! Theme::js('js/vendor/lodash/lodash.js') !!}
+    {!! Theme::js('js/vendor/upload/client.min.js') !!}
+@endsection
+
 @section('content')
 <div class="col-md-12">
     <div class="row">
@@ -37,7 +44,7 @@
             <div class="ajax_loading_box"><i class="fa fa-refresh fa-spin" id="position_me"></i></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" id="upload_box">
         <div class="col-md-12" id="load_files"></div>
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -45,133 +52,136 @@
                     <h3 class="panel-title">File Path Information</h3>
                 </div>
                 <div class="panel-body">
-                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path. While your SFTP client sees the files as <code>/public</code> this is not true for the server process.
+                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path.
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'index.js']) }}"></script>
+<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'contextmenu.js']) }}"></script>
+<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'actions.js']) }}"></script>
 <script>
-    $(document).ready(function () {
-        $('.server-files').addClass('active');
-    });
-    $(window).load(function(){
-        var doneLoad = false;
+$(window).load(function () {
+    $('.server-files').addClass('active');
+    @can('upload-files', $server)
+        var notifyUploadSocketError = false;
+        var uploadSocket = io('{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/upload/{{ $server->uuid }}', {
+            'query': 'token={{ $server->daemonSecret }}'
+        });
 
-        // Show Loading Animation
-        function handleLoader (show) {
-
-            // Hide animation if no files displayed.
-            if ($('#load_files').height() < 5) { return; }
-
-            // Show Animation
-            if (show === true){
-                var height = $('#load_files').height();
-                var width = $('.ajax_loading_box').width();
-                var center_height = (height / 2) - 30;
-                var center_width = (width / 2) - 30;
-                $('#position_me').css({
-                    'top': center_height,
-                    'left': center_width,
-                    'font-size': '60px'
+        socket.io.on('connect_error', function (err) {
+            siofu.destroy();
+            $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin').addClass('fa-question-circle').css({ color: '#FF9900' });
+            if(typeof notifyUploadSocketError !== 'object') {
+                notifyUploadSocketError = $.notify({
+                    message: 'There was an error connecting to the Upload Socket for this server.'
+                }, {
+                    type: 'danger',
+                    delay: 0
                 });
-                $(".ajax_loading_box").css('height', (height + 5)).fadeIn();
-            } else {
-                $('.ajax_loading_box').fadeOut(100);
             }
+        });
 
-        }
+        uploadSocket.on('error', err => {
+            siofu.destroy();
+            console.error(err);
+        });
 
-        function reloadActions () {
-            reloadActionClick();
-            reloadActionDelete();
-        }
+        uploadSocket.on('connect', function () {
+            if (notifyUploadSocketError !== false) {
+                notifyUploadSocketError.close();
+                notifyUploadSocketError = false;
+            }
+        });
 
-        // Handle folder clicking to load new contents
-        function reloadActionClick () {
-            $('a.load_new').click(function (e) {
-                e.preventDefault();
-                window.history.pushState(null, null, $(this).attr('href'));
-                loadDirectoryContents($.urlParam('dir', $(this).attr('href')));
-            });
-        }
+        socket.on('error', function (err) {
+            console.error('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
+        });
 
-        // Handle Deleting Files
-        function reloadActionDelete () {
-            $('[data-action="delete_file"]').click(function (e) {
-                e.preventDefault();
-                var clicked = $(this);
-                var deleteItemPath = $(this).attr('href');
 
-                swal({
-                    type: 'warning',
-                    title: '',
-                    text: 'Are you sure you want to delete <code>' + clicked.data('name') + '</code>?',
-                    html: true,
-                    showCancelButton: true,
-                    showConfirmButton: true,
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-                }, function () {
-                    $.ajax({
-                        type: 'DELETE',
-                        url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server/file/' + deleteItemPath,
-                        headers: {
-                            'X-Access-Token': '{{ $server->daemonSecret }}',
-                            'X-Access-Server': '{{ $server->uuid }}'
-                        }
-                    }).done(function (data) {
-                        clicked.parent().parent().parent().parent().fadeOut();
-                        swal({
-                            type: 'success',
-                            title: 'File Deleted'
-                        });
-                    }).fail(function (jqXHR) {
-                        console.error(jqXHR);
-                        swal({
-                            type: 'error',
-                            title: 'Whoops!',
-                            html: true,
-                            text: 'An error occured while attempting to delete this file. Please try again.',
-                        });
-                    });
+        var siofu = new SocketIOFileUpload(uploadSocket);
+        siofu.chunkDelay = 25;
+
+        siofu.listenOnDrop(document.getElementById("upload_box"));
+
+        window.addEventListener('dragover', function (event) {
+            event.preventDefault();
+        }, false);
+
+        window.addEventListener('drop', function (event) {
+            event.preventDefault();
+        }, false);
+
+        var dropCounter = 0;
+        $('#upload_box').bind({
+            dragenter: function (event) {
+                event.preventDefault();
+                dropCounter++;
+                $(this).addClass('hasFileHover');
+            },
+            dragleave: function (event) {
+                dropCounter--;
+                if (dropCounter === 0) {
+                    $(this).removeClass('hasFileHover');
+                }
+            },
+            drop: function (event) {
+                dropCounter = 0;
+                $(this).removeClass('hasFileHover');
+            }
+        });
+
+        siofu.addEventListener('start', function (event) {
+            event.file.meta.path = $('#headerTableRow').attr('data-currentdir');
+            event.file.meta.identifier = Math.random().toString(36).slice(2);
+
+            $('#append_files_to').append('<tr id="file-upload-' + event.file.meta.identifier +'"> \
+                <td><i class="fa fa-file-text-o" style="margin-left: 2px;"></i></td> \
+                <td>' + event.file.name + '</td> \
+                <td colspan=2">&nbsp;</td> \
+            </tr><tr> \
+                <td colspan="4" class="has-progress"> \
+                    <div class="progress progress-table-bottom active"> \
+                        <div class="progress-bar progress-bar-info prog-bar-' + event.file.meta.identifier +'" style="width: 0%"></div> \
+                    </div> \
+                </td> \
+            </tr>\
+            ');
+        });
+
+        siofu.addEventListener('progress', function(event) {
+            var percent = event.bytesLoaded / event.file.size * 100;
+            if (percent >= 100) {
+                $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-success').parent().removeClass('active');
+            } else {
+                $('.prog-bar-' + event.file.meta.identifier).css('width', percent + '%');
+            }
+        });
+
+        // Do something when a file is uploaded:
+        siofu.addEventListener('complete', function(event){
+            if (!event.success) {
+                $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
+                $.notify({
+                    message: 'An error was encountered while attempting to upload this file.'
+                }, {
+                    type: 'danger',
+                    delay: 5000
                 });
+            }
+        });
 
+        siofu.addEventListener('error', function(event){
+            $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
+            $.notify({
+                message: 'An error was encountered while attempting to upload this file.'
+            }, {
+                type: 'danger',
+                delay: 5000
             });
-        }
-
-        // Handle Loading Contents
-        function loadDirectoryContents (dir) {
-
-            handleLoader(true);
-            var outputContent;
-            var urlDirectory = (dir === null) ? '/' : dir;
-
-            $.ajax({
-                type: 'POST',
-                url: '{{ route('server.files.directory-list', $server->uuidShort) }}',
-                headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
-                data: { directory: urlDirectory }
-            }).done(function (data) {
-                handleLoader(false);
-                $("#load_files").slideUp(function () {
-                    $("#load_files").html(data).slideDown();
-                    $('[data-toggle="tooltip"]').tooltip();
-                    $('#internal_alert').slideUp();
-
-                    // Run Actions Again
-                    reloadActions();
-                });
-            }).fail(function (jqXHR) {
-                $("#internal_alert").html('<div class="alert alert-danger">An error occured while attempting to process this request. Please try again.</div>').show();
-                console.log(jqXHR);
-            });
-
-        }
-
-        // Load on Initial Page Load
-        loadDirectoryContents($.urlParam('dir'));
-
-    });
+        });
+    @endcan
+});
 </script>
 @endsection

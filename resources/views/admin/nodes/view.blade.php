@@ -25,11 +25,10 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('css/metricsgraphics.css') !!}
-    {!! Theme::js('js/d3.min.js') !!}
-    {!! Theme::js('js/metricsgraphics.min.js') !!}
-    {!! Theme::js('js/socket.io.min.js') !!}
+    {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
     {!! Theme::js('js/bootstrap-notify.min.js') !!}
+    {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
+    {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
     <script>
         $(document).ready(function () {
             $.notifyDefaults({
@@ -102,9 +101,8 @@
                 <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-xs-11 text-center" id="chart_memory" style="height:250px;"></div>
-                        <div class="col-xs-11 text-center" id="chart_cpu" style="height:250px;"></div>
-                        <div class="col-xs-11 text-center" id="chart_players" style="height:250px;"></div>
+                        <canvas id="chart_memory" style="max-height:300px;"></canvas>
+                        <canvas id="chart_cpu" style="max-height:300px;"></canvas>
                     </div>
                 </div>
             </div>
@@ -268,14 +266,14 @@
     "web": {
         "listen": {{ $node->daemonListen }},
         "ssl": {
-            "enabled": {{ $node->sceheme === 'https' ? 'true' : 'false' }},
+            "enabled": {{ $node->scheme === 'https' ? 'true' : 'false' }},
             "certificate": "/etc/letsencrypt/live/{{ $node->fqdn }}/fullchain.pem",
             "key": "/etc/letsencrypt/live/{{ $node->fqdn }}/privkey.pem"
         }
     },
     "docker": {
         "socket": "/var/run/docker.sock",
-        "autoupdate_images": false
+        "autoupdate_images": true
     },
     "sftp": {
         "path": "{{ $node->daemonBase }}",
@@ -308,57 +306,18 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <table class="table table-striped table-bordered table-hover" style="margin-bottom:0;">
-                        <thead>
-                            <td>IP Address</td>
-                            <td>Ports</td>
-                            <td></td>
-                        </thead>
-                        <tbody>
-                            @foreach($allocations as $ip => $ports)
-                                <tr>
-                                    <td><span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-total="{{ count($ports) }}" class="is-ipblock"><i class="fa fa-fw fa-square-o"></i></span> {{ $ip }}</td>
-                                    <td>
-                                        @foreach($ports as $id => $allocation)
-                                            @if (($id % 2) === 0)
-                                                @if($allocation->assigned_to === null)
-                                                    <span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-port="{{ $allocation->port }}"><i class="fa fa-fw fa-square-o"></i> {{ $allocation->port }} <br /></span>
-                                                @else
-                                                    <i class="fa fa-fw fa-check-square-o"></i> {{ $allocation->port }} <br />
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        @foreach($ports as $id => $allocation)
-                                            @if (($id % 2) === 1)
-                                                @if($allocation->assigned_to === null)
-                                                    <span style="cursor:pointer" data-action="delete" data-ip="{{ $ip }}" data-port="{{ $allocation->port }}"><i class="fa fa-fw fa-square-o"></i> {{ $allocation->port }} <br /></span>
-                                                @else
-                                                    <i class="fa fa-fw fa-check-square-o"></i> {{ $allocation->port }} <br />
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
-                <div class="panel-body">
                     <h4 style="margin-top:0;">Allocate Additional Ports</h4>
                     <form action="{{ route('admin.nodes.post.allocations', $node->id) }}" method="POST">
                         <div class="row" id="duplicate">
                             <div class="col-md-4 fuelux">
-                                <label for="" class="control-label">IP Address</label>
+                                <label for="" class="control-label">IP Address or FQDN</label>
                                 <div class="input-group input-append dropdown combobox allocationComboBox" data-initialize="combobox">
                                     <input type="text" name="allocate_ip[]" class="form-control pillbox_ip" style="border-right:0;">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                         <ul class="dropdown-menu dropdown-menu-right">
-                                            @foreach($allocations as $ip => $ports)
-                                                <li data-action="alloc_dropdown_val" data-value="{{ $ip }}"><a href="#">{{ $ip }}</a></li>
+                                            @foreach($allocation_ips as $allocation)
+                                                <li data-action="alloc_dropdown_val" data-value="{{ $allocation->ip }}"><a href="#">{{ $allocation->ip }}</a></li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -373,7 +332,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <p class="text-muted"><small>Please enter a comma (<code>,</code>) after each port or port range.</small></p>
+                                <p class="text-muted"><small>You <strong>must</strong> enter a comma (<code>,</code>) or press the enter key after each port or range that you enter. They should appear in a blue box.</small></p>
                                 <input name="allocate_port[]" type="hidden" class="pillboxMain"/>
                             </div>
                             <div class="form-group col-md-1 col-xs-2" style="margin-left: -10px;">
@@ -390,6 +349,43 @@
                             </div>
                         </div>
                     </form>
+                </div>
+                <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                <div class="panel-body">
+                    <div class="row">
+                        <table class="table table-hover" style="margin-bottom:0;">
+                            <thead style="font-weight:bold;">
+                                <td>IP Address <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></td>
+                                <td>IP Alias</td>
+                                <td>Port</td>
+                                <td>Assigned To</td>
+                                <td></td>
+                            </thead>
+                            <tbody>
+                                @foreach($allocations as $allocation)
+                                        <tr>
+                                        <td class="col-sm-3 align-middle">{{ $allocation->ip }}</td>
+                                        <td class="col-sm-3 align-middle">
+                                            <input class="form-control input-sm" type="text" value="{{ $allocation->ip_alias }}" data-action="set-alias" data-id="{{ $allocation->id }}" placeholder="none" />
+                                            <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
+                                        </td>
+                                        <td class="col-sm-2 align-middle">{{ $allocation->port }}</td>
+                                        <td class="col-sm-3 align-middle">@if(!is_null($allocation->assigned_to))<a href="{{ route('admin.servers.view', $allocation->assigned_to) }}">{{ $allocation->assigned_to_name }}</a>@endif</td>
+                                        <td class="col-sm-1 align-middle">
+                                            @if(is_null($allocation->assigned_to))
+                                                <a href="#" data-action="deallocate" data-id="{{ $allocation->id }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
+                                            @else
+                                                <span class="badge label-default"><i class="fa fa-trash-o"></i></span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <div class="col-md-12 text-center">
+                            {{ $allocations->appends(['tab' => 'tab_allocation'])->links() }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -458,6 +454,34 @@
         <div class="col-xs-11" id="col11_setter"></div>
     </div>
 </div>
+<div class="modal fade" id="allocationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Delete Allocations for IP Block</h4>
+            </div>
+            <form action="{{ route('admin.nodes.view', $node->id) }}/deallocate/block" method="POST">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <select class="form-control" name="ip">
+                                @foreach($allocation_ips as $allocation)
+                                    <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {{{ csrf_field() }}}
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Delete Allocations</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/nodes']").addClass('active');
@@ -483,27 +507,27 @@ $(document).ready(function () {
 
     $('.cloneElement').on('click', function (event) {
         event.preventDefault();
-        var cloned = $('#duplicate').clone();
         var rnd = randomKey(10);
+        var cloned = $('#duplicate').clone().attr('id', rnd);
         cloned.find('.allocationPillbox').removeClass('allocationPillbox').addClass('allocationPillbox_' + rnd);
         cloned.find('.pillboxMain').removeClass('pillboxMain').addClass('pillbox_' + rnd);
-        cloned.find('.removeClone').removeClass('disabled');
+        cloned.find('.removeClone').removeClass('disabled').attr('data-parent', rnd);
         cloned.find('.pillbox_ip').removeClass('pillbox_ip').addClass('pillbox_ip_' + rnd);
         cloned.insertAfter('#duplicate');
         $('.allocationPillbox_' + rnd).pillbox();
         $('.allocationPillbox_' + rnd).on('added.fu.pillbox edited.fu.pillbox removed.fu.pillbox', function pillboxChanged() {
             $('.pillbox_' + rnd).val(JSON.stringify($('.allocationPillbox_' + rnd).pillbox('items')));
         });
-        $('.removeClone').on('click', function (event) {
+        $('.removeClone').unbind().on('click', function (event) {
             event.preventDefault();
             var element = $(this);
-            element.parent().parent().slideUp(function () {
+            $('#' + element.attr('data-parent')).slideUp(function () {
                 element.remove();
-                $('.pillbox_' + rnd).remove();
-                $('.pillbox_ip_' + rnd).remove();
+                $('.pillbox_' + element.attr('data-parent')).remove();
+                $('.pillbox_ip_' + element.attr('data-parent')).remove();
             });
         });
-    })
+    });
 
     $('.allocationPillbox').pillbox();
     $('.allocationComboBox').combobox();
@@ -518,58 +542,6 @@ $(document).ready(function () {
         2: 'Starting',
         3: 'Stopping'
     };
-
-    // -----------------+
-    // Charting Methods |
-    // -----------------+
-    var memoryGraphSettings = {
-        title: 'Memory Usage (MB)',
-        data: [{
-            'date': new Date(),
-            'memory': -1
-        }],
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_memory'),
-        x_accessor: 'date',
-        y_accessor: 'memory',
-        y_rug: true,
-        area: false,
-    };
-
-    var cpuGraphSettings = {
-        title: 'CPU Usage (%)',
-        data: [{
-            'date': new Date(),
-            'cpu': -1
-        }],
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_cpu'),
-        x_accessor: 'date',
-        y_accessor: 'cpu',
-        y_rug: true,
-        area: false,
-    };
-
-    var playersGraphSettings = {
-        title: 'Players Online',
-        data: [{
-            'date': new Date(),
-            'players': -1
-        }],
-        full_width: true,
-        full_height: true,
-        target: document.getElementById('chart_players'),
-        x_accessor: 'date',
-        y_accessor: 'players',
-        y_rug: true,
-        area: false,
-    };
-
-    MG.data_graphic(memoryGraphSettings);
-    MG.data_graphic(cpuGraphSettings);
-    MG.data_graphic(playersGraphSettings);
 
     // Main Socket Object
     var socket = io('{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/stats/', {
@@ -600,36 +572,112 @@ $(document).ready(function () {
         console.error('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
     });
 
+    var ctc = $('#chart_cpu');
+    var timeLabels = [];
+    var cpuData = [];
+    var CPUChart = new Chart(ctc, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: "Percent Use",
+                    fill: false,
+                    lineTension: 0.03,
+                    backgroundColor: "#00A1CB",
+                    borderColor: "#00A1CB",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: cpuData,
+                    spanGaps: false,
+                }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'CPU Usage (as Percent Total)'
+            },
+            legend: {
+                display: false,
+            },
+            animation: {
+                duration: 1,
+            }
+        }
+    });
+
+    var ctm = $('#chart_memory');
+    var memoryData = [];
+    var MemoryChart = new Chart(ctm, {
+        type: 'line',
+        data: {
+            labels: timeLabels,
+            datasets: [
+                {
+                    label: "Memory Use",
+                    fill: false,
+                    lineTension: 0.03,
+                    backgroundColor: "#01A4A4",
+                    borderColor: "#01A4A4",
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                    pointBorderColor: "rgba(75,192,192,1)",
+                    pointBackgroundColor: "#fff",
+                    pointBorderWidth: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                    pointHoverBorderColor: "rgba(220,220,220,1)",
+                    pointHoverBorderWidth: 2,
+                    pointRadius: 1,
+                    pointHitRadius: 10,
+                    data: memoryData,
+                    spanGaps: false,
+                }
+            ]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Memory Usage (in Megabytes)'
+            },
+            legend: {
+                display: false,
+            },
+            animation: {
+                duration: 1,
+            }
+        }
+    });
+
     socket.on('live-stats', function (data) {
-
-        if (typeof memoryGraphSettings.data[0][100] !== 'undefined' || memoryGraphSettings.data[0][0].memory === -1) {
-            memoryGraphSettings.data[0].shift();
-        }
-        if (typeof cpuGraphSettings.data[0][100] !== 'undefined' || cpuGraphSettings.data[0][0].cpu === -1) {
-            cpuGraphSettings.data[0].shift();
-        }
-        if (typeof playersGraphSettings.data[0][100] !== 'undefined' || playersGraphSettings.data[0][0].players === -1) {
-            playersGraphSettings.data[0].shift();
+        if (cpuData.length > 10) {
+            cpuData.shift();
+            memoryData.shift();
+            timeLabels.shift();
         }
 
-        memoryGraphSettings.data[0].push({
-            'date': new Date(),
-            'memory': parseInt(data.stats.memory / (1024 * 1024))
-        });
+        cpuData.push(data.stats.cpu);
+        memoryData.push(parseInt(data.stats.memory / (1024 * 1024)));
 
-        cpuGraphSettings.data[0].push({
-            'date': new Date(),
-            'cpu': data.stats.cpu
-        });
+        var m = new Date();
+        timeLabels.push($.format.date(new Date(), 'HH:MM:ss'));
 
-        playersGraphSettings.data[0].push({
-            'date': new Date(),
-            'players': data.stats.players
-        });
-
-        MG.data_graphic(memoryGraphSettings);
-        MG.data_graphic(cpuGraphSettings);
-        MG.data_graphic(playersGraphSettings);
+        CPUChart.update();
+        MemoryChart.update();
 
         $.each(data.servers, function (uuid, info) {
             var element = $('tr[data-server="' + uuid + '"]');
@@ -655,14 +703,13 @@ $(document).ready(function () {
         $(this).find('i').css('color', 'inherit').addClass('fa-square-o').removeClass('fa-minus-square');
     });
 
-    $('span[data-action="delete"]').click(function (event) {
+    $('a[data-action="deallocate"]').click(function (event) {
         event.preventDefault();
         var element = $(this);
-        var deleteIp = $(this).data('ip');
-        var deletePort = $(this).data('port');
+        var allocation = $(this).data('id');
         swal({
             title: '',
-            text: 'Are you sure you want to delete this port?',
+            text: 'Are you sure you want to delete this allocation?',
             type: 'warning',
             showCancelButton: true,
             allowOutsideClick: true,
@@ -673,27 +720,12 @@ $(document).ready(function () {
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: '{{ route('admin.nodes.view', $node->id) }}/allocation/' + deleteIp + '/' + deletePort,
+                url: '{{ route('admin.nodes.view', $node->id) }}/deallocate/single/' + allocation,
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             }).done(function (data) {
-                if (element.hasClass('is-ipblock')) {
-                    var tMatched = 0;
-                    element.parent().parent().find('*').each(function () {
-                        if ($(this).attr('data-port') && $(this).attr('data-ip')) {
-                            $(this).fadeOut();
-                            tMatched++;
-                        }
-                    });
-                    if (tMatched === element.data('total')) {
-                        element.fadeOut();
-                        $('li[data-action="alloc_dropdown_val"][data-value="' + deleteIp + '"]').remove();
-                        element.parent().parent().slideUp().remove();
-                    }
-                } else {
-                    element.fadeOut();
-                }
+                element.parent().parent().addClass('warning').delay(100).fadeOut();
                 swal({
                     type: 'success',
                     title: 'Port Deleted!',
@@ -708,6 +740,42 @@ $(document).ready(function () {
             });
         });
     });
+
+    var typingTimer;
+    $('input[data-action="set-alias"]').keyup(function () {
+        clearTimeout(typingTimer);
+        $(this).parent().removeClass('has-error has-success');
+        typingTimer = setTimeout(sendAlias, 700, $(this));
+    });
+
+    var fadeTimers = [];
+    function sendAlias(element) {
+        element.parent().find('.input-loader').show();
+        clearTimeout(fadeTimers[element.data('id')]);
+        $.ajax({
+            method: 'POST',
+            url: '{{ route('admin.nodes.alias', $node->id) }}',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            data: {
+                alias: element.val(),
+                allocation: element.data('id')
+            }
+        }).done(function (data) {
+            element.parent().addClass('has-success');
+        }).fail(function (jqXHR) {
+            console.error(jqXHR);
+            element.parent().addClass('has-error');
+        }).always(function () {
+            element.parent().find('.input-loader').hide();
+            fadeTimers[element.data('id')] = setTimeout(clearHighlight, 2500, element);
+        });
+    }
+
+    function clearHighlight(element) {
+        element.parent().removeClass('has-error has-success');
+    }
 
 });
 </script>

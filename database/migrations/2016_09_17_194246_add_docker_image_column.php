@@ -20,15 +20,17 @@ class AddDockerImageColumn extends Migration
         });
 
         // Populate the column
-        $servers = Server::select(
-            'servers.id',
-            'service_options.docker_image as s_optionImage'
-        )->join('service_options', 'service_options.id', '=', 'servers.option')->get();
+        DB::transaction(function () {
+            $servers = DB::table('servers')->select(
+                'servers.id',
+                'service_options.docker_image as s_optionImage'
+            )->join('service_options', 'service_options.id', '=', 'servers.option')->get();
 
-        foreach ($servers as $server) {
-            $server->image = $server->s_optionImage;
-            $server->save();
-        }
+            foreach ($servers as $server) {
+                $server->image = $server->s_optionImage;
+                $server->save();
+            }
+        });
     }
 
     /**

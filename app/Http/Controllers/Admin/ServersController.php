@@ -51,8 +51,40 @@ class ServersController extends Controller
 
     public function getIndex(Request $request)
     {
-        return view('admin.servers.index', [
-            'servers' => Models\Server::select(
+        $query = Models\Server::withTrashed()->select(
+            'servers.*',
+            'nodes.name as a_nodeName',
+            'users.email as a_ownerEmail',
+            'allocations.ip',
+            'allocations.port',
+            'allocations.ip_alias'
+        )->join('nodes', 'servers.node', '=', 'nodes.id')
+        ->join('users', 'servers.owner', '=', 'users.id')
+        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
+
+        if ($request->input('filter') && !is_null($request->input('filter'))) {
+            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
+            foreach($matches[0] as $match) {
+                $match = str_replace('"', '', $match);
+                if (strpos($match, ':')) {
+                    list($field, $term) = explode(':', $match);
+                    $field = (strpos($field, '.')) ? $field : 'servers.' . $field;
+                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
+                } else {
+                    $query->where('servers.name', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('servers.username', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('users.email', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('allocations.port', 'LIKE', '%' . $match . '%');
+                    $query->orWhere('allocations.ip', 'LIKE', '%' . $match . '%');
+                }
+            }
+        }
+
+        try {
+            $servers = $query->paginate(20);
+        } catch (\Exception $ex) {
+            Alert::warning('There was an error with the search parameters provided.');
+            $servers = Models\Server::withTrashed()->select(
                 'servers.*',
                 'nodes.name as a_nodeName',
                 'users.email as a_ownerEmail',
@@ -62,7 +94,11 @@ class ServersController extends Controller
             )->join('nodes', 'servers.node', '=', 'nodes.id')
             ->join('users', 'servers.owner', '=', 'users.id')
             ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-            ->paginate(20),
+            ->paginate(20);
+        }
+
+        return view('admin.servers.index', [
+            'servers' => $servers
         ]);
     }
 
@@ -76,7 +112,7 @@ class ServersController extends Controller
 
     public function getView(Request $request, $id)
     {
-        $server = Models\Server::select(
+        $server = Models\Server::withTrashed()->select(
             'servers.*',
             'nodes.name as a_nodeName',
             'users.email as a_ownerEmail',
@@ -358,7 +394,7 @@ class ServersController extends Controller
         try {
             $server = new ServerRepository;
             $server->deleteServer($id, $force);
-            Alert::success('Server was successfully deleted from the panel and the daemon.')->flash();
+            Alert::success('Server has been marked for deletion on the system.')->flash();
             return redirect()->route('admin.servers');
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -471,6 +507,33 @@ class ServersController extends Controller
                 'id' => $id,
                 'tab' => 'tab_manage'
             ]);
+        }
+    }
+
+    public function postQueuedDeletionHandler(Request $request, $id)
+    {
+        try {
+            $repo = new ServerRepository;
+            if (!is_null($request->input('cancel'))) {
+                $repo->cancelDeletion($id);
+                Alert::success('Server deletion has been cancelled. This server will remain suspended until you unsuspend it.')->flash();
+                return redirect()->route('admin.servers.view', $id);
+            } else if(!is_null($request->input('delete'))) {
+                $repo->deleteNow($id);
+                Alert::success('Server was successfully deleted from the system.')->flash();
+                return redirect()->route('admin.servers');
+            } else if(!is_null($request->input('force_delete'))) {
+                $repo->deleteNow($id, true);
+                Alert::success('Server was successfully force deleted from the system.')->flash();
+                return redirect()->route('admin.servers');
+            }
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+            return redirect()->route('admin.servers.view', $id);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled error occured while attempting to perform this action.')->flash();
+            return redirect()->route('admin.servers.view', $id);
         }
     }
 

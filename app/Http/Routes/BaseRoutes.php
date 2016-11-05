@@ -51,21 +51,46 @@ class BaseRoutes {
 
         // Account Routes
         $router->group([
-            'profix' => 'account',
+            'prefix' => 'account',
             'middleware' => [
                 'auth',
                 'csrf'
             ]
         ], function () use ($router) {
-            $router->get('account', [
+            $router->get('/', [
                 'as' => 'account',
-                'uses' => 'Base\IndexController@getAccount'
+                'uses' => 'Base\AccountController@index'
             ]);
-            $router->post('/account/password', [
-                'uses' => 'Base\IndexController@postAccountPassword'
+            $router->post('/password', [
+                'uses' => 'Base\AccountController@password'
             ]);
-            $router->post('/account/email', [
-                'uses' => 'Base\IndexController@postAccountEmail'
+            $router->post('/email', [
+                'uses' => 'Base\AccountController@email'
+            ]);
+        });
+
+        // API Management Routes
+        $router->group([
+            'prefix' => 'account/api',
+            'middleware' => [
+                'auth',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'account.api',
+                'uses' => 'Base\APIController@index'
+            ]);
+            $router->get('/new', [
+                'as' => 'account.api.new',
+                'uses' => 'Base\APIController@new'
+            ]);
+            $router->post('/new', [
+                'uses' => 'Base\APIController@save'
+            ]);
+
+            $router->delete('/revoke/{key}', [
+                'uses' => 'Base\APIController@revoke'
             ]);
         });
 
@@ -79,20 +104,20 @@ class BaseRoutes {
         ], function () use ($router) {
             $router->get('/', [
                 'as' => 'account.security',
-                'uses' => 'Base\IndexController@getAccountSecurity'
+                'uses' => 'Base\SecurityController@index'
             ]);
             $router->get('/revoke/{id}', [
                 'as' => 'account.security.revoke',
-                'uses' => 'Base\IndexController@getRevokeSession'
+                'uses' => 'Base\SecurityController@revoke'
             ]);
-            $router->put('/', [
-                'uses' => 'Base\IndexController@putAccountTotp'
+            $router->put('/totp', [
+                'uses' => 'Base\SecurityController@generateTotp'
             ]);
-            $router->post('/', [
-                'uses' => 'Base\IndexController@postAccountTotp'
+            $router->post('/totp', [
+                'uses' => 'Base\SecurityController@setTotp'
             ]);
-            $router->delete('/', [
-                'uses' => 'Base\IndexController@deleteAccountTotp'
+            $router->delete('/totp', [
+                'uses' => 'Base\SecurityController@disableTotp'
             ]);
         });
 

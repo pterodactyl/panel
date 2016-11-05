@@ -23,12 +23,16 @@
  */
 namespace Pterodactyl\Http\Middleware;
 
+use Auth;
 use Crypt;
+use Config;
 use IPTools\IP;
 use IPTools\Range;
 
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
+use Pterodactyl\Models\User;
+use Pterodactyl\Services\APILogService;
 
 use Illuminate\Http\Request;
 use Dingo\Api\Routing\Route;
@@ -50,7 +54,7 @@ class APISecretToken extends Authorization
 
     public function __construct()
     {
-        //
+        Config::set('session.driver', 'array');
     }
 
     public function getAuthorizationMethod()
@@ -61,13 +65,15 @@ class APISecretToken extends Authorization
     public function authenticate(Request $request, Route $route)
     {
         if (!$request->bearerToken() || empty($request->bearerToken())) {
-            throw new UnauthorizedHttpException('The authentication header was missing or malformed');
+            APILogService::log($request, 'The authentication header was missing or malformed.');
+            throw new UnauthorizedHttpException('The authentication header was missing or malformed.');
         }
 
         list($public, $hashed) = explode('.', $request->bearerToken());
 
         $key = APIKey::where('public', $public)->first();
         if (!$key) {
+            APILogService::log($request, 'Invalid API Key.');
             throw new AccessDeniedHttpException('Invalid API Key.');
         }
 
@@ -82,34 +88,42 @@ class APISecretToken extends Authorization
                     }
                 }
                 if (!$inRange) {
+                    APILogService::log($request, 'This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                     throw new AccessDeniedHttpException('This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                 }
             }
 
-            foreach(APIPermission::where('key_id', $key->id)->get() as &$row) {
-                if ($row->permission === '*' || $row->permission === $request->route()->getName()) {
-                    $this->permissionAllowed = true;
-                    continue;
-                }
+            $permission = APIPermission::where('key_id', $key->id)->where('permission', $request->route()->getName());
+
+            // Suport Wildcards
+            if (starts_with($request->route()->getName(), 'api.user')) {
+                $permission->orWhere('permission', 'api.user.*');
+            } else if(starts_with($request->route()->getName(), 'api.admin')) {
+                $permission->orWhere('permission', 'api.admin.*');
             }
 
-            if (!$this->permissionAllowed) {
-                throw new AccessDeniedHttpException('You do not have permission to access this resource.');
+            if (!$permission->first()) {
+                APILogService::log($request, 'You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
+                throw new AccessDeniedHttpException('You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
             }
         }
 
         try {
             $decrypted = Crypt::decrypt($key->secret);
         } catch (\Illuminate\Contracts\Encryption\DecryptException $ex) {
+            APILogService::log($request, 'There was an error while attempting to check your secret key.');
             throw new HttpException('There was an error while attempting to check your secret key.');
         }
 
         $this->url = urldecode($request->fullUrl());
         if($this->_generateHMAC($request->getContent(), $decrypted) !== base64_decode($hashed)) {
+            APILogService::log($request, 'The hashed body was not valid. Potential modification of contents in route.');
             throw new BadRequestHttpException('The hashed body was not valid. Potential modification of contents in route.');
         }
 
-        return true;
+        // Log the Route Access
+        APILogService::log($request, null, true);
+        return Auth::loginUsingId($key->user);
 
     }
 

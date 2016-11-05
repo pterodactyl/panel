@@ -24,25 +24,22 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex">
-        {!! Theme::css('css/bootstrap.css') !!}
+        {!! Theme::css('css/vendor/bootstrap/bootstrap.css') !!}
         {!! Theme::css('css/pterodactyl.css') !!}
         {!! Theme::css('css/animate.css') !!}
-        {!! Theme::css('css/fontawesome/font-awesome.min.css') !!}
-        {!! Theme::css('css/sweetalert.min.css') !!}
-        {!! Theme::css('css/fuelux.min.css') !!}
-        {!! Theme::js('js/jquery.min.js') !!}
-        {!! Theme::js('js/bootstrap.min.js') !!}
-        {!! Theme::js('js/sweetalert.min.js') !!}
-        {!! Theme::js('js/fuelux.min.js') !!}
+        {!! Theme::css('css/vendor/fontawesome/font-awesome.min.css') !!}
+        {!! Theme::css('css/vendor/sweetalert/sweetalert.min.css') !!}
+        {!! Theme::css('css/vendor/fuelux/fuelux.min.css') !!}
+        {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+        {!! Theme::js('js/vendor/bootstrap/bootstrap.min.js') !!}
+        {!! Theme::js('js/vendor/sweetalert/sweetalert.min.js') !!}
+        {!! Theme::js('js/vendor/fuelux/fuelux.min.js') !!}
         {!! Theme::js('js/admin.min.js') !!}
     @show
     <title>{{ Settings::get('company') }} - @yield('title')</title>
 </head>
 <body>
     <div class="container">
-        <div class="alert alert-danger" style="margin:10px auto -20px;">
-            <strong>Notice:</strong> You are running a developmental build of Pterodactyl Panel. Please report any bugs on our <a href="https://github.com/Pterodactyl/Panel/issues" target="_blank">Issue Tracker</a>.
-        </div>
         <div class="navbar navbar-default">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
@@ -60,7 +57,6 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/admin">Admin Index</a></li>
                                 <li><a href="/admin/settings">General Settings</a></li>
-                                <li><a href="/admin/api">API Management</a></li>
                                 <li><a href="/admin/databases">Database Management</a></li>
                             </ul>
                         </li>
@@ -128,7 +124,6 @@
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Management</strong></a>
                         <a href="/admin" id="sidenav_admin-index" class="list-group-item">Admin Index</a>
                         <a href="/admin/settings" class="list-group-item">General Settings</a>
-                        <a href="/admin/api" class="list-group-item">API Management</a>
                         <a href="/admin/databases" class="list-group-item">Database Management</a>
                     </div>
                     <div class="list-group">
@@ -157,25 +152,29 @@
             <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-12" id="tpl_messages">
-                        @if (count($errors) > 0)
-                            <div class="alert alert-danger">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                        @foreach (Alert::getMessages() as $type => $messages)
-                            @foreach ($messages as $message)
-                                <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                        @section('resp-errors')
+                            @if (count($errors) > 0)
+                                <div class="alert alert-danger">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    {!! $message !!}
+                                    <strong>{{ trans('strings.whoops') }}!</strong> {{ trans('auth.errorencountered') }}<br><br>
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
                                 </div>
+                            @endif
+                        @show
+                        @section('resp-alerts')
+                            @foreach (Alert::getMessages() as $type => $messages)
+                                @foreach ($messages as $message)
+                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        {!! $message !!}
+                                    </div>
+                                @endforeach
                             @endforeach
-                        @endforeach
+                        @show
                     </div>
                 </div>
                 <div class="row">

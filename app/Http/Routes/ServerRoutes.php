@@ -28,6 +28,7 @@ use Illuminate\Routing\Router;
 class ServerRoutes {
 
     public function map(Router $router) {
+
         $router->group([
             'prefix' => 'server/{server}',
             'middleware' => [
@@ -36,6 +37,7 @@ class ServerRoutes {
                 'csrf'
             ]
         ], function ($server) use ($router) {
+
             // Index View for Server
             $router->get('/', [
                 'as' => 'server.index',
@@ -154,8 +156,8 @@ class ServerRoutes {
                 ]);
 
                 // Sets the Default Connection for the Server
-                $router->post('set-connection', [
-                    'uses' => 'Server\AjaxController@postSetConnection'
+                $router->post('set-primary', [
+                    'uses' => 'Server\AjaxController@postSetPrimary'
                 ]);
 
                 $router->post('settings/reset-database-password', [
@@ -167,7 +169,7 @@ class ServerRoutes {
             // Assorted AJAX Routes
             $router->group(['prefix' => 'js'], function ($server) use ($router) {
                 // Returns Server Status
-                $router->get('{file}', [
+                $router->get('{folder}/{file}', [
                     'as' => 'server.js',
                     'uses' => 'Server\ServerController@getJavascript'
                 ])->where('file', '.*');

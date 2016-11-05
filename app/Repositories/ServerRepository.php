@@ -31,6 +31,9 @@ use Log;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
+use Pterodactyl\Services\DeploymentService;
+use Pterodactyl\Notifications\ServerCreated;
+use Pterodactyl\Events\ServerDeleted;
 
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\AccountNotFoundException;
@@ -40,19 +43,7 @@ class ServerRepository
 {
 
     protected $daemonPermissions = [
-        's:get',
-        's:power:start',
-        's:power:stop',
-        's:power:restart',
-        's:power:kill',
-        's:console',
-        's:command',
-        's:files:get',
-        's:files:read',
-        's:files:post',
-        's:files:delete',
-        's:files:upload',
-        's:set-password'
+        's:*'
     ];
 
     public function __construct()
@@ -62,19 +53,17 @@ class ServerRepository
 
     /**
      * Generates a SFTP username for a server given a server name.
+     * format: mumble_67c7a4b0
      *
      * @param  string $name
+     * @param  string $uuid
      * @return string
      */
-    protected function generateSFTPUsername($name)
+    protected function generateSFTPUsername($name, $uuid = null)
     {
 
-        $name = preg_replace('/\s+/', '', $name);
-        if (strlen($name) > 6) {
-            return strtolower('ptdl-' . substr($name, 0, 6) . '_' . str_random(5));
-        }
-
-        return strtolower('ptdl-' . $name . '_' . str_random((11 - strlen($name))));
+        $uuid = is_null($uuid) ? str_random(8) : $uuid;
+        return strtolower(substr(preg_replace('/\s+/', '', $name), 0, 6) . '_' . $uuid);
 
     }
 
@@ -88,22 +77,36 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner' => 'required|email|exists:users,email',
-            'node' => 'required|numeric|min:1|exists:nodes,id',
+            'owner' => 'bail|required',
             'name' => 'required|regex:/^([\w -]{4,35})$/',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
             'io' => 'required|numeric|min:10|max:1000',
             'cpu' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:0',
-            'allocation' => 'numeric|exists:allocations,id|required_without:ip,port',
-            'ip' => 'required_without:allocation|ip',
-            'port' => 'required_without:allocation|numeric|min:1|max:65535',
-            'service' => 'required|numeric|min:1|exists:services,id',
-            'option' => 'required|numeric|min:1|exists:service_options,id',
+            'service' => 'bail|required|numeric|min:1|exists:services,id',
+            'option' => 'bail|required|numeric|min:1|exists:service_options,id',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
+            'auto_deploy' => 'sometimes|boolean'
         ]);
+
+        $validator->sometimes('node', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
+            return !($input->auto_deploy);
+        });
+
+        $validator->sometimes('ip', 'required|ip', function ($input) {
+            return (!$input->auto_deploy && !$input->allocation);
+        });
+
+        $validator->sometimes('port', 'required|numeric|min:1|max:65535', function ($input) {
+            return (!$input->auto_deploy && !$input->allocation);
+        });
+
+        $validator->sometimes('allocation', 'numeric|exists:allocations,id', function ($input) {
+            return !($input->auto_deploy || ($input->port && $input->ip));
+        });
+
 
         // Run validator, throw catchable and displayable exception if it fails.
         // Exception includes a JSON result of failed validation rules.
@@ -111,18 +114,37 @@ class ServerRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        // Get the User ID; user exists since we passed the 'exists:users,email' part of the validation
-        $user = Models\User::select('id')->where('email', $data['owner'])->first();
+        if (is_int($data['owner'])) {
+            $user = Models\User::select('id', 'email')->where('id', $data['owner'])->first();
+        } else {
+            $user = Models\User::select('id', 'email')->where('email', $data['owner'])->first();
+        }
 
-        // Get Node Information
-        $node = Models\Node::getByID($data['node']);
+        if (!$user) {
+            throw new DisplayException('The user id or email passed to the function was not found on the system.');
+        }
+
+        $autoDeployed = false;
+        if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, "1"])) {
+            // This is an auto-deployment situation
+            // Ignore any other passed node data
+            unset($data['node'], $data['ip'], $data['port'], $data['allocation']);
+
+            $autoDeployed = true;
+            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location']);
+            $allocation = DeploymentService::randomAllocation($node->id);
+        } else {
+            $node = Models\Node::getByID($data['node']);
+        }
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
-        if (!isset($data['allocation'])) {
-            $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
-        } else {
-            $allocation = Models\Allocation::where('id' , $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+        if (!$autoDeployed) {
+            if (!isset($data['allocation'])) {
+                $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+            } else {
+                $allocation = Models\Allocation::where('id' , $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+            }
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
@@ -176,28 +198,29 @@ class ServerRepository
         }
 
         // Check Overallocation
-        if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
+        if (!$autoDeployed) {
+            if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
 
-            $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
+                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
 
-            // Check memory limits
-            if (is_numeric($node->memory_overallocate)) {
-                $newMemory = $totals->memory + $data['memory'];
-                $memoryLimit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
-                if($newMemory > $memoryLimit) {
-                    throw new DisplayException('The amount of memory allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->memory_overallocate + 100) . '% of its assigned ' . $node->memory . 'Mb of memory (' . $memoryLimit . 'Mb) of which ' . (($totals->memory / $node->memory) * 100) . '% (' . $totals->memory . 'Mb) is in use already. By allocating this server the node would be at ' . (($newMemory / $node->memory) * 100) . '% (' . $newMemory . 'Mb) usage.');
+                // Check memory limits
+                if (is_numeric($node->memory_overallocate)) {
+                    $newMemory = $totals->memory + $data['memory'];
+                    $memoryLimit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
+                    if($newMemory > $memoryLimit) {
+                        throw new DisplayException('The amount of memory allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->memory_overallocate + 100) . '% of its assigned ' . $node->memory . 'Mb of memory (' . $memoryLimit . 'Mb) of which ' . (($totals->memory / $node->memory) * 100) . '% (' . $totals->memory . 'Mb) is in use already. By allocating this server the node would be at ' . (($newMemory / $node->memory) * 100) . '% (' . $newMemory . 'Mb) usage.');
+                    }
+                }
+
+                // Check Disk Limits
+                if (is_numeric($node->disk_overallocate)) {
+                    $newDisk = $totals->disk + $data['disk'];
+                    $diskLimit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
+                    if($newDisk > $diskLimit) {
+                        throw new DisplayException('The amount of disk allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->disk_overallocate + 100) . '% of its assigned ' . $node->disk . 'Mb of disk (' . $diskLimit . 'Mb) of which ' . (($totals->disk / $node->disk) * 100) . '% (' . $totals->disk . 'Mb) is in use already. By allocating this server the node would be at ' . (($newDisk / $node->disk) * 100) . '% (' . $newDisk . 'Mb) usage.');
+                    }
                 }
             }
-
-            // Check Disk Limits
-            if (is_numeric($node->disk_overallocate)) {
-                $newDisk = $totals->disk + $data['disk'];
-                $diskLimit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
-                if($newDisk > $diskLimit) {
-                    throw new DisplayException('The amount of disk allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->disk_overallocate + 100) . '% of its assigned ' . $node->disk . 'Mb of disk (' . $diskLimit . 'Mb) of which ' . (($totals->disk / $node->disk) * 100) . '% (' . $totals->disk . 'Mb) is in use already. By allocating this server the node would be at ' . (($newDisk / $node->disk) * 100) . '% (' . $newDisk . 'Mb) usage.');
-                }
-            }
-
         }
 
         DB::beginTransaction();
@@ -207,11 +230,12 @@ class ServerRepository
 
             // Add Server to the Database
             $server = new Models\Server;
-            $generatedUuid = $uuid->generate('servers', 'uuid');
+            $genUuid = $uuid->generate('servers', 'uuid');
+            $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $genUuid);
             $server->fill([
-                'uuid' => $generatedUuid,
-                'uuidShort' => $uuid->generateShort('servers', 'uuidShort', $generatedUuid),
-                'node' => $data['node'],
+                'uuid' => $genUuid,
+                'uuidShort' => $genShortUuid,
+                'node' => $node->id,
                 'name' => $data['name'],
                 'suspended' => 0,
                 'owner' => $user->id,
@@ -226,7 +250,9 @@ class ServerRepository
                 'option' => $data['option'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
-                'username' => $this->generateSFTPUsername($data['name'])
+                'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
+                'username' => $this->generateSFTPUsername($data['name'], $genShortUuid),
+                'sftp_password' => Crypt::encrypt('not set')
             ]);
             $server->save();
 
@@ -249,6 +275,16 @@ class ServerRepository
                     'variable_value' => $item['val']
                 ]);
             }
+
+            // Queue Notification Email
+            $user->notify((new ServerCreated([
+                'name' => $server->name,
+                'memory' => $server->memory,
+                'node' => $node->name,
+                'service' => $service->name,
+                'option' => $option->name,
+                'uuidShort' => $server->uuidShort
+            ])));
 
             $client = Models\Node::guzzleRequest($node->id);
             $client->request('POST', '/servers', [
@@ -292,7 +328,6 @@ class ServerRepository
             throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
-            Log:error($ex);
             throw $ex;
         }
 
@@ -498,19 +533,19 @@ class ServerRepository
             $newPorts = false;
             // Remove Assignments
             if (isset($data['remove_additional'])) {
-                $newPorts = true;
                 foreach ($data['remove_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
                     if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
-                        continue;
+                        break;
                     }
 
                     // Can't remove the assigned IP/Port combo
-                    if ($ip === $allocation->ip && $port === $allocation->port) {
-                        continue;
+                    if ($ip === $allocation->ip && (int) $port === (int) $allocation->port) {
+                        break;
                     }
 
+                    $newPorts = true;
                     Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
                         'assigned_to' => null
                     ]);
@@ -519,19 +554,19 @@ class ServerRepository
 
             // Add Assignments
             if (isset($data['add_additional'])) {
-                $newPorts = true;
                 foreach ($data['add_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
                     if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
-                        continue;
+                        break;
                     }
 
                     // Don't allow double port assignments
                     if (Models\Allocation::where('port', $port)->where('assigned_to', $server->id)->count() !== 0) {
-                        continue;
+                        break;
                     }
 
+                    $newPorts = true;
                     Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
                         'assigned_to' => $server->id
                     ]);
@@ -555,50 +590,51 @@ class ServerRepository
 
             // @TODO: verify that server can be set to this much memory without
             // going over node limits.
-            if (isset($data['memory'])) {
+            if (isset($data['memory']) && $server->memory !== (int) $data['memory']) {
                 $server->memory = $data['memory'];
+                $newBuild['memory'] = (int) $server->memory;
             }
 
-            if (isset($data['swap'])) {
+            if (isset($data['swap']) && $server->swap !== (int) $data['swap']) {
                 $server->swap = $data['swap'];
+                $newBuild['swap'] = (int) $server->swap;
             }
 
             // @TODO: verify that server can be set to this much disk without
             // going over node limits.
-            if (isset($data['disk'])) {
+            if (isset($data['disk']) && $server->disk !== (int) $data['disk']) {
                 $server->disk = $data['disk'];
+                $newBuild['disk'] = (int) $server->disk;
             }
 
-            if (isset($data['cpu'])) {
+            if (isset($data['cpu']) && $server->cpu !== (int) $data['cpu']) {
                 $server->cpu = $data['cpu'];
+                $newBuild['cpu'] = (int) $server->cpu;
             }
 
-            if (isset($data['io'])) {
+            if (isset($data['io']) && $server->io !== (int) $data['io']) {
                 $server->io = $data['io'];
+                $newBuild['io'] = (int) $server->io;
             }
 
             // Try save() here so if it fails we haven't contacted the daemon
             // This won't be committed unless the HTTP request succeedes anyways
             $server->save();
 
-            $newBuild['memory'] = (int) $server->memory;
-            $newBuild['swap'] = (int) $server->swap;
-            $newBuild['io'] = (int) $server->io;
-            $newBuild['cpu'] = (int) $server->cpu;
-            $newBuild['disk'] = (int) $server->disk;
+            if (!empty($newBuild)) {
+                $node = Models\Node::getByID($server->node);
+                $client = Models\Node::guzzleRequest($server->node);
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
-
-            $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
-                ],
-                'json' => [
-                    'build' => $newBuild
-                ]
-            ]);
+                $client->request('PATCH', '/server', [
+                    'headers' => [
+                        'X-Access-Server' => $server->uuid,
+                        'X-Access-Token' => $node->daemonSecret
+                    ],
+                    'json' => [
+                        'build' => $newBuild
+                    ]
+                ]);
+            }
 
             DB::commit();
             return true;
@@ -732,11 +768,37 @@ class ServerRepository
     public function deleteServer($id, $force)
     {
         $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
         DB::beginTransaction();
 
         try {
-            // Delete Allocations
+            if ($force === 'force' || $force === true) {
+                $server->installed = 3;
+                $server->save();
+            }
+
+            $server->delete();
+            DB::commit();
+
+            event(new ServerDeleted($server->id));
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+    }
+
+    public function deleteNow($id, $force = false) {
+        $server = Models\Server::withTrashed()->findOrFail($id);
+        $node = Models\Node::findOrFail($server->node);
+
+        // Handle server being restored previously or
+        // an accidental queue.
+        if (!$server->trashed()) {
+            return;
+        }
+
+        DB::beginTransaction();
+        try {
+            // Unassign Allocations
             Models\Allocation::where('assigned_to', $server->id)->update([
                 'assigned_to' => null
             ]);
@@ -744,14 +806,25 @@ class ServerRepository
             // Remove Variables
             Models\ServerVariables::where('server_id', $server->id)->delete();
 
+            // Remove Permissions (Foreign Key requires before Subusers)
+            Models\Permission::where('server_id', $server->id)->delete();
+
             // Remove SubUsers
             Models\Subuser::where('server_id', $server->id)->delete();
 
-            // Remove Permissions
-            Models\Permission::where('server_id', $server->id)->delete();
-
             // Remove Downloads
             Models\Download::where('server', $server->uuid)->delete();
+
+            // Clear Tasks
+            Models\Task::where('server', $server->id)->delete();
+
+            // Delete Databases
+            // This is the one un-recoverable point where
+            // transactions will not save us.
+            $repository = new DatabaseRepository;
+            foreach(Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
+                $repository->drop($database->id);
+            }
 
             $client = Models\Node::guzzleRequest($server->node);
             $client->request('DELETE', '/servers', [
@@ -761,22 +834,30 @@ class ServerRepository
                 ]
             ]);
 
-            $server->delete();
+            $server->forceDelete();
             DB::commit();
-            return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
-            if ($force === 'force') {
-                $server->delete();
+            // Set installed is set to 3 when force deleting.
+            if ($server->installed === 3 || $force) {
+                $server->forceDelete();
                 DB::commit();
-                return true;
             } else {
                 DB::rollBack();
-                throw new DisplayException('An error occured while attempting to delete the server on the daemon.', $ex);
+                throw $ex;
             }
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
         }
+    }
+
+    public function cancelDeletion($id)
+    {
+        $server = Models\Server::withTrashed()->findOrFail($id);
+        $server->restore();
+
+        $server->installed = 1;
+        $server->save();
     }
 
     public function toggleInstall($id)
@@ -794,9 +875,9 @@ class ServerRepository
      * @param  integer $id
      * @return boolean
      */
-    public function suspend($id)
+    public function suspend($id, $deleted = false)
     {
-        $server = Models\Server::findOrFail($id);
+        $server = ($deleted) ? Models\Server::withTrashed()->findOrFail($id) : Models\Server::findOrFail($id);
         $node = Models\Node::findOrFail($server->node);
 
         DB::beginTransaction();
