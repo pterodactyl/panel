@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddArkServiceOption extends Migration
+class AddArkServiceOptionFixed extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,14 @@ class AddArkServiceOption extends Migration
     {
         DB::transaction(function () {
             $service = DB::table('services')->select('id')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('name', 'Source Engine')->first();
+
+            // No SRCDS Service, Skipping
             if (!$service) {
+                return;
+            }
+
+            // Already have this service option installed.
+            if (DB::table('service_options')->select('id')->where('name', 'Ark: Survival Evolved')->where('parent_service', $service->id)->first()) {
                 return;
             }
 
