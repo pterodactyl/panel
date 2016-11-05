@@ -26,6 +26,7 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Alert;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 
@@ -84,7 +85,7 @@ class AccountController extends Controller
 
         $this->validate($request, [
             'current_password' => 'required',
-            'new_password' => 'required|confirmed|different:current_password|' . Models\User::PASSWORD_RULES,
+            'new_password' => 'required|confirmed|different:current_password|' . User::PASSWORD_RULES,
             'new_password_confirmation' => 'required'
         ]);
 
