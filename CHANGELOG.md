@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.5.0 (Bodacious Boreopterus) [Unreleased]
+## v0.5.0 (Bodacious Boreopterus)
 After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 
 ### Added
@@ -65,6 +65,7 @@ After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 * Fixed bug where node allocation would appear to be successful but actual encounter an error. Made it cleared how to enter ports.
 * Fixes display where an extra space was added to the end of SFTP passwords when they were copied from the panel. [#116](https://github.com/Pterodactyl/Panel/issues/116), thanks [@OrangeJuiced](https://github.com/OrangeJuiced)
 * Fixes a bug that prevented viewing database servers if not assigned to a node.
+* Checkboxes previously not displayed checkmarks are now fixed.
 
 ### Fixed (bugs from v0.5.0-rc.2)
 * Fixes a bug causing password resets to fail for server databases.
