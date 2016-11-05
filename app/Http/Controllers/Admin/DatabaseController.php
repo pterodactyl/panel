@@ -62,7 +62,7 @@ class DatabaseController extends Controller
                     'database_servers.*',
                     'nodes.name as a_linkedNode',
                     DB::raw('(SELECT COUNT(*) FROM `databases` WHERE `databases`.`db_server` = database_servers.id) as c_databases')
-                )->join('nodes', 'nodes.id', '=', 'database_servers.linked_node')
+                )->leftJoin('nodes', 'nodes.id', '=', 'database_servers.linked_node')
                 ->paginate(20)
         ]);
     }
