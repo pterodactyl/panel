@@ -40,9 +40,6 @@
 </head>
 <body>
     <div class="container">
-        <div class="alert alert-danger" style="margin:10px auto -20px;">
-            <strong>Notice:</strong> You are running a developmental build of Pterodactyl Panel. Please report any bugs on our <a href="https://github.com/Pterodactyl/Panel/issues" target="_blank">Issue Tracker</a>.
-        </div>
         <div class="navbar navbar-default">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
