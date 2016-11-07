@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.1 (Bodacious Boreopterus)
+### Fixed
+* Fixes a bug that allowed a user to bypass 2FA authentication if using the correct username and password for an account.
+
 ## v0.5.0 (Bodacious Boreopterus)
 After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 
