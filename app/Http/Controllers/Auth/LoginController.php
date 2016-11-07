@@ -103,7 +103,7 @@ class LoginController extends Controller
         }
 
         // Is the email & password valid?
-        if (!Auth::attempt([
+        if (!Auth::once([
             'email' => $request->input('email'),
             'password' => $request->input('password')
         ], $request->has('remember'))) {
@@ -116,14 +116,10 @@ class LoginController extends Controller
 
         }
 
-        $G2FA = new Google2FA();
-        $user = User::select('use_totp', 'totp_secret')->where('email', $request->input('email'))->first();
-
         // Verify TOTP Token was Valid
-        if($user->use_totp === 1) {
-            if(!$G2FA->verifyKey($user->totp_secret, $request->input('totp_token'))) {
-
-                Auth::logout();
+        if(Auth::user()->use_totp === 1) {
+            $G2FA = new Google2FA();
+            if(is_null($request->input('totp_token')) || !$G2FA->verifyKey(Auth::user()->totp_secret, $request->input('totp_token'))) {
 
                 if (!$lockedOut) {
                     $this->incrementLoginAttempts($request);
@@ -135,6 +131,8 @@ class LoginController extends Controller
             }
         }
 
+        // Successfully Authenticated.
+        Auth::login(Auth::user(), $request->has('remember'));
         return $this->sendLoginResponse($request);
 
     }

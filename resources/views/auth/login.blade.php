@@ -125,7 +125,10 @@ $(document).ready(function() {
             }
         }).done(function (data) {
             if (typeof data.id !== 'undefined') {
-                $('#openTOTP').modal('show');
+                $('#openTOTP').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
                 $('#openTOTP').on('shown.bs.modal', function() {
                     $('#totp_token').focus();
                 });
