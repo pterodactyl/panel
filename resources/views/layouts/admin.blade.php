@@ -35,6 +35,23 @@
         {!! Theme::js('js/vendor/sweetalert/sweetalert.min.js') !!}
         {!! Theme::js('js/vendor/fuelux/fuelux.min.js') !!}
         {!! Theme::js('js/admin.min.js') !!}
+        {!! Theme::js('js/bootstrap-notify.min.js') !!}
+        <script>
+            $(document).ready(function () {
+                $.notifyDefaults({
+                    placement: {
+                        from: 'bottom',
+                        align: 'right'
+                    },
+                    newest_on_top: true,
+                    delay: 2000,
+                    animate: {
+                        enter: 'animated fadeInUp',
+                        exit: 'animated fadeOutDown'
+                    }
+                });
+            });
+        </script>
     @show
     <title>{{ Settings::get('company') }} - @yield('title')</title>
 </head>

@@ -1,0 +1,75 @@
+{
+    "latest": {
+        "tag": "^(latest)$",
+        "symlink": "vanilla"
+    },
+    "vanilla": {
+        "tag": "^(vanilla){1}(-[\\w\\d.-]+)?$",
+        "startup": {
+            "done": ")! For help, type ",
+            "userInteraction": [
+                "Go to eula.txt for more info."
+            ]
+        },
+        "stop": "stop",
+        "configs": {
+            "server.properties": {
+                "parser": "properties",
+                "find": {
+                    "server-ip": "0.0.0.0",
+                    "enable-query": "true",
+                    "server-port": "{{ build.default.port }}",
+                    "query.port": "{{ build.default.port }}"
+                }
+            }
+        },
+        "log": {
+            "custom": false,
+            "location": "logs/latest.log"
+        },
+        "query": "minecraftping"
+    },
+    "spigot": {
+        "tag": "^(spigot)$",
+        "symlink": "vanilla",
+        "configs": {
+            "spigot.yml": {
+                "parser": "yaml",
+                "find": {
+                    "settings.restart-on-crash": "false"
+                }
+            }
+        }
+    },
+    "bungeecord": {
+        "tag": "^(bungeecord)$",
+        "startup": {
+            "done": "Listening on "
+        },
+        "stop": "end",
+        "configs": {
+            "config.yml": {
+                "parser": "yaml",
+                "find": {
+                    "listeners[0].query_enabled": true,
+                    "listeners[0].query_port": "{{ build.default.port }}",
+                    "listeners[0].host": "0.0.0.0:{{ build.default.port }}"
+                }
+            }
+        },
+        "log": {
+            "custom": false,
+            "location": "proxy.log.0"
+        },
+        "query": "minecraftping"
+    },
+    "sponge": {
+        "tag": "^(sponge)$",
+        "symlink": "vanilla",
+        "startup": {
+            "userInteraction": [
+                "You need to agree to the EULA"
+            ]
+        }
+    }
+}

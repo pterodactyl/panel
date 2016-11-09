@@ -26,6 +26,7 @@ namespace Pterodactyl\Repositories\ServiceRepository;
 use DB;
 use Validator;
 use Uuid;
+use Storage;
 
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -108,6 +109,46 @@ class Service
             DB::rollBack();
             throw $ex;
         }
+    }
+
+    public function updateFile($id, array $data)
+    {
+        $service = Models\Service::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'file' => 'required|in:index,main',
+            'contents' => 'required|string'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        $filename = ($data['file'] === 'main') ? 'main.json' : 'index.js';
+        $filepath = 'services/' . $service->file . '/' . $filename;
+        $backup = 'services/.bak/' . str_random(12) . '.bak';
+
+        DB::beginTransaction();
+
+        try {
+            Storage::move($filepath, $backup);
+            Storage::put($filepath, $data['contents']);
+
+            $checksum = Models\Checksum::firstOrNew([
+                'service' => $service->id,
+                'filename' => $filename
+            ]);
+
+            $checksum->checksum = sha1_file(storage_path('app/' . $filepath));
+            $checksum->save();
+
+            DB::commit();
+        } catch(\Exception $ex) {
+            DB::rollback();
+            Storage::move($backup, $filepath);
+            throw $ex;
+        }
+
     }
 
 }

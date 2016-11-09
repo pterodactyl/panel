@@ -27,6 +27,7 @@ use Alert;
 use DB;
 use Log;
 use Validator;
+use Storage;
 
 use Pterodactyl\Models;
 use Pterodactyl\Repositories\ServiceRepository;
@@ -272,6 +273,38 @@ class ServiceController extends Controller
             Alert::danger('An error occured while attempting to delete that variable.')->flash();
         }
         return redirect()->route('admin.services.option', [$service, $option]);
+    }
+
+    public function getConfiguration(Request $request, $serviceId)
+    {
+        $service = Models\Service::findOrFail($serviceId);
+        return view('admin.services.config', [
+            'service' => $service,
+            'contents' => [
+                'json' => Storage::get('services/' . $service->file . '/main.json'),
+                'index' => Storage::get('services/' . $service->file . '/index.js')
+            ]
+        ]);
+    }
+
+    public function postConfiguration(Request $request, $serviceId)
+    {
+        try {
+            $repo = new ServiceRepository\Service;
+            $repo->updateFile($serviceId, $request->except([
+                '_token'
+            ]));
+            return response('', 204);
+        } catch (DisplayException $ex) {
+            return response()->json([
+                'error' => $ex->getMessage()
+            ], 503);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => 'An error occured while attempting to save the file.'
+            ], 503);
+        }
     }
 
 }

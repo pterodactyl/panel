@@ -1,0 +1,24 @@
+{
+    "tshock": {
+        "tag": "^(tshock)$",
+        "startup": {
+            "done": "Type 'help' for a list of commands",
+            "userInteraction": []
+        },
+        "stop": "exit",
+        "configs": {
+            "tshock/config.json": {
+                "parser": "json",
+                "find": {
+                    "ServerPort": "{{ build.default.port }}",
+                    "MaxSlots": "{{ build.env.MAX_SLOTS }}"
+                }
+            }
+        },
+        "log": {
+            "custom": false,
+            "location": "ServerLog.txt"
+        },
+        "query": "none"
+    }
+}
