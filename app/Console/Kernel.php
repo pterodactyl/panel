@@ -34,5 +34,6 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('pterodactyl:tasks')->everyMinute()->withoutOverlapping();
         $schedule->command('pterodactyl:tasks:clearlog')->twiceDaily(3, 15);
+        $schedule->command('pterodactyl:cleanservices')->twiceDaily(1, 13);
     }
 }
