@@ -101,6 +101,8 @@ class Service
 
         DB::beginTransaction();
         try {
+            Storage::deleteDirectory('services/' . $service->file);
+
             Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
             $options->delete();
             $service->delete();
@@ -128,23 +130,10 @@ class Service
         $filepath = 'services/' . $service->file . '/' . $filename;
         $backup = 'services/.bak/' . str_random(12) . '.bak';
 
-        DB::beginTransaction();
-
         try {
             Storage::move($filepath, $backup);
             Storage::put($filepath, $data['contents']);
-
-            $checksum = Models\Checksum::firstOrNew([
-                'service' => $service->id,
-                'filename' => $filename
-            ]);
-
-            $checksum->checksum = sha1_file(storage_path('app/' . $filepath));
-            $checksum->save();
-
-            DB::commit();
         } catch(\Exception $ex) {
-            DB::rollback();
             Storage::move($backup, $filepath);
             throw $ex;
         }

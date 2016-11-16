@@ -307,3 +307,14 @@ td.has-progress {
     padding:0;
     border:0;
 }
+
+.fuelux .checkbox-formheight.checkbox-custom.checkbox-inline.highlight {
+    height: 36px;
+    padding: 10px 8px 4px 28px;
+    width: 100%;
+}
+
+.fuelux .checkbox-formheight.checkbox-custom.checkbox-inline.highlight:before {
+    left: 8px;
+    top: 11px;
+}

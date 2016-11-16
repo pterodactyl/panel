@@ -1,4 +1,6 @@
 *
 !.gitignore
 !services/*
+packs/**/*
 services/.bak/*
+!packs/.githold

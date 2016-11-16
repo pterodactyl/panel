@@ -30,6 +30,7 @@
         <li><a href="/admin/services">Services</a></li>
         <li><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></li>
         <li class="active">{{ $option->name }}</li>
+        <li><a href="{{ route('admin.services.packs.for', $option->id) }}">Service Packs</a></li>
     </ul>
     <div class="alert alert-warning"><strong>Warning!</strong> This page contains advanced settings that the panel and daemon use to control servers. Modifying information on this page is not recommended unless you are absolutely sure of what you are doing.</div>
     <h3>Settings</h3><hr />

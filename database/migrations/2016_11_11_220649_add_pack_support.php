@@ -1,0 +1,46 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class AddPackSupport extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('service_packs', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('option');
+            $table->char('uuid', 36)->unique();
+            $table->unsignedInteger('build_memory')->nullable();
+            $table->unsignedInteger('build_swap')->nullable();
+            $table->unsignedInteger('build_cpu')->nullable();
+            $table->unsignedInteger('build_io')->nullable();
+            $table->text('build_script')->nullable();
+            $table->string('build_container')->default('alpine:latest');
+            $table->string('name');
+            $table->string('version');
+            $table->text('description')->nullable();
+            $table->boolean('selectable')->default(true);
+            $table->boolean('visible')->default(true);
+            $table->timestamps();
+
+            $table->foreign('option')->references('id')->on('service_options');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('service_packs');
+    }
+}

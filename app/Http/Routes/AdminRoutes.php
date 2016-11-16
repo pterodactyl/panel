@@ -430,6 +430,32 @@ class AdminRoutes {
             ]);
         });
 
+        // Service Packs
+        $router->group([
+            'prefix' => 'admin/services/packs',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf'
+            ]
+        ], function () use ($router) {
+            $router->get('/new/{option?}', [
+                'as' => 'admin.services.packs.new',
+                'uses' => 'Admin\PackController@new'
+            ]);
+            $router->post('/new', [
+                'uses' => 'Admin\PackController@create'
+            ]);
+            $router->get('/for/{option}', [
+                'as' => 'admin.services.packs.for',
+                'uses' => 'Admin\PackController@list'
+            ]);
+            $router->get('/edit/{pack}', [
+                'as' => 'admin.services.packs.edit',
+                'uses' => 'Admin\PackController@edit'
+            ]);
+        });
+
     }
 
 }
