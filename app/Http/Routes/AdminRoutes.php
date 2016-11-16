@@ -446,13 +446,28 @@ class AdminRoutes {
             $router->post('/new', [
                 'uses' => 'Admin\PackController@create'
             ]);
-            $router->get('/for/{option}', [
-                'as' => 'admin.services.packs.for',
-                'uses' => 'Admin\PackController@list'
+            $router->get('/', [
+                'as' => 'admin.services.packs',
+                'uses' => 'Admin\PackController@listAll'
+            ]);
+            $router->get('/for/option/{option}', [
+                'as' => 'admin.services.packs.option',
+                'uses' => 'Admin\PackController@listByOption'
+            ]);
+            $router->get('/for/service/{service}', [
+                'as' => 'admin.services.packs.service',
+                'uses' => 'Admin\PackController@listByService'
             ]);
             $router->get('/edit/{pack}', [
                 'as' => 'admin.services.packs.edit',
                 'uses' => 'Admin\PackController@edit'
+            ]);
+            $router->post('/edit/{pack}', [
+                'uses' => 'Admin\PackController@update'
+            ]);
+            $router->get('/edit/{pack}/export/{archive?}', [
+                'as' => 'admin.services.packs.export',
+                'uses' => 'Admin\PackController@export'
             ]);
         });
 

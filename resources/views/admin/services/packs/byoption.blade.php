@@ -28,9 +28,9 @@
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/services">Services</a></li>
-        <li><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></li>
-        <li><a href="{{ route('admin.services.option', [$service->id, $option->id]) }}">{{ $option->name }}</a></li>
-        <li class="active">Service Packs</li>
+        <li><a href="{{ route('admin.services.packs') }}">Packs</a></li>
+        <li><a href="{{ route('admin.services.packs.service', $service->id) }}">{{ $service->name }}</a></li>
+        <li class="active">{{ $option->name }}</li>
     </ul>
     <h3 class="nopad">Service Packs</h3><hr />
     <table class="table table-bordered table-hover">
@@ -46,7 +46,7 @@
         <tbody>
             @foreach ($packs as $pack)
                 <tr>
-                    <td>{{ $pack->name }}</td>
+                    <td><a href="{{ route('admin.services.packs.edit', $pack->id) }}">{{ $pack->name }}</a></td>
                     <td>{{ $pack->version }}</td>
                     <td><code>{{ $pack->uuid }}</code></td>
                     <td>@if($pack->selectable)<span class="label label-success"><i class="fa fa-check"></i></span>@else<span class="label label-default"><i class="fa fa-times"></i></span>@endif</td>
@@ -66,4 +66,9 @@
         </tbody>
     </table>
 </div>
+<script>
+$(document).ready(function () {
+    $('#sidebar_links').find("a[href='/admin/services/packs']").addClass('active');
+});
+</script>
 @endsection

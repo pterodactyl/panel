@@ -172,6 +172,7 @@
 {!! Theme::js('js/vendor/ace/ext-modelist.js') !!}
 <script type="text/javascript">
 $(document).ready(function () {
+    $('#sidebar_links').find("a[href='/admin/services/packs']").addClass('active');
     const Editor = ace.edit('build_script');
 
     Editor.setTheme('ace/theme/chrome');

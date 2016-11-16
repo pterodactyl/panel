@@ -24,6 +24,7 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
+use DB;
 use Log;
 use Storage;
 
@@ -42,17 +43,7 @@ class PackController extends Controller
         //
     }
 
-    public function list(Request $request, $id)
-    {
-        $option = Models\ServiceOptions::findOrFail($id);
-        return view('admin.services.packs.index', [
-            'packs' => Models\ServicePack::where('option', $option->id)->get(),
-            'service' => Models\Service::findOrFail($option->parent_service),
-            'option' => $option
-        ]);
-    }
-
-    public function new(Request $request, $opt = null)
+    protected function formatServices()
     {
         $options = Models\ServiceOptions::select(
             'services.name AS p_service',
@@ -72,8 +63,41 @@ class PackController extends Controller
             ]]);
         }
 
+        return $array;
+    }
+
+    public function listAll(Request $request)
+    {
+        //
+    }
+
+    public function listByOption(Request $request, $id)
+    {
+        $option = Models\ServiceOptions::findOrFail($id);
+        return view('admin.services.packs.byoption', [
+            'packs' => Models\ServicePack::where('option', $option->id)->get(),
+            'service' => Models\Service::findOrFail($option->parent_service),
+            'option' => $option
+        ]);
+    }
+
+    public function listByService(Request $request, $id)
+    {
+        return view('admin.services.packs.byservice', [
+            'service' => Models\Service::findOrFail($id),
+            'options' => Models\ServiceOptions::select(
+                'service_options.id',
+                'service_options.name',
+                DB::raw('(SELECT COUNT(id) FROM service_packs WHERE service_packs.option = service_options.id) AS p_count')
+            )->where('parent_service', $id)->get()
+        ]);
+    }
+
+    public function new(Request $request, $opt = null)
+    {
+
         return view('admin.services.packs.new', [
-            'services' => $array,
+            'services' => $this->formatServices(),
             'packFor' => $opt,
         ]);
     }
@@ -103,6 +127,58 @@ class PackController extends Controller
     public function edit(Request $request, $id)
     {
         $pack = Models\ServicePack::findOrFail($id);
-        dd($pack, Storage::url('packs/' . $pack->uuid));
+        $option = Models\ServiceOptions::select('id', 'parent_service', 'name')->where('id', $pack->option)->first();
+        return view('admin.services.packs.edit', [
+            'pack' => $pack,
+            'services' => $this->formatServices(),
+            'files' => Storage::files('packs/' . $pack->uuid),
+            'service' => Models\Service::findOrFail($option->parent_service),
+            'option' => $option
+        ]);
+    }
+
+    public function export(Request $request, $id, $files = false)
+    {
+        $pack = Models\ServicePack::findOrFail($id);
+        $json = [
+            'name' => $pack->name,
+            'version' => $pack->version,
+            'description' => $pack->dscription,
+            'selectable' => (bool) $pack->selectable,
+            'visible' => (bool) $pack->visible,
+            'build' => [
+                'memory' => $pack->build_memory,
+                'swap' => $pack->build_swap,
+                'cpu' => $pack->build_cpu,
+                'io' => $pack->build_io,
+                'container' => $pack->build_container,
+                'script' => $pack->build_script
+            ]
+        ];
+
+        $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');
+        if ((bool) $files) {
+            $zip = new \ZipArchive;
+            if (!$zip->open($filename, \ZipArchive::CREATE)) {
+                exit("cannot open <$filename>\n");
+            }
+
+            $files = Storage::files('packs/' . $pack->uuid);
+            foreach ($files as $file) {
+                $zip->addFile(storage_path('app/' . $file), basename(storage_path('app/' . $file)));
+            }
+
+            $zip->addFromString('import.json', json_encode($json, JSON_PRETTY_PRINT));
+            $zip->close();
+
+            return response()->download($filename, 'pack-' . $pack->name . '.zip')->deleteFileAfterSend(true);
+        } else {
+            $fp = fopen($filename, 'a+');
+            fwrite($fp, json_encode($json, JSON_PRETTY_PRINT));
+            fclose($fp);
+            return response()->download($filename, 'pack-' . $pack->name . '.json', [
+                'Content-Type' => 'application/json'
+            ])->deleteFileAfterSend(true);
+        }
     }
 }
