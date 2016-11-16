@@ -58,7 +58,7 @@
                     <a href="{{ route('admin.services.packs.new', $option->id) }}">
                         <button class="pull-right btn btn-xxs btn-primary"><i class="fa fa-plus"></i></button>
                     </a>
-                    <a href="{{ route('admin.services.packs.new', $option->id) }}">
+                    <a href="#upload" id="toggleUpload">
                         <button class="pull-right btn btn-xxs btn-default" style="margin-right:5px;"><i class="fa fa-upload"></i> Install from Template</button>
                     </a>
                 </td>
@@ -69,6 +69,22 @@
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/services/packs']").addClass('active');
+    $('#toggleUpload').on('click', function (event) {
+        event.preventDefault();
+        var element = $(this);
+        element.find('button').addClass('disabled');
+        $.ajax({
+            method: 'GET',
+            url: '{{ route('admin.services.packs.uploadForm', $option->id) }}'
+        }).fail(function (jqXhr) {
+            console.error(jqXhr);
+            alert('There was an error trying to create the upload form.');
+        }).success(function (data) {
+            $(data).modal();
+        }).always(function () {
+            element.find('button').removeClass('disabled');
+        });
+    });
 });
 </script>
 @endsection

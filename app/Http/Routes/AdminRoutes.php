@@ -446,6 +446,13 @@ class AdminRoutes {
             $router->post('/new', [
                 'uses' => 'Admin\PackController@create'
             ]);
+            $router->get('/upload/{option?}', [
+                'as' => 'admin.services.packs.uploadForm',
+                'uses' => 'Admin\PackController@uploadForm'
+            ]);
+            $router->post('/upload', [
+                'uses' => 'Admin\PackController@postUpload'
+            ]);
             $router->get('/', [
                 'as' => 'admin.services.packs',
                 'uses' => 'Admin\PackController@listAll'

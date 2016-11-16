@@ -97,7 +97,6 @@ class PackController extends Controller
 
     public function new(Request $request, $opt = null)
     {
-
         return view('admin.services.packs.new', [
             'services' => $this->formatServices(),
             'packFor' => $opt,
@@ -106,7 +105,6 @@ class PackController extends Controller
 
     public function create(Request $request)
     {
-        // dd($request->all());
         try {
             $repo = new Pack;
             $id = $repo->create($request->except([
@@ -123,7 +121,6 @@ class PackController extends Controller
             Alert::danger('An error occured while attempting to add a new service pack.')->flash();
         }
         return redirect()->route('admin.services.packs.new', $request->input('option'))->withInput();
-
     }
 
     public function edit(Request $request, $id)
@@ -179,7 +176,7 @@ class PackController extends Controller
         if ((bool) $files) {
             $zip = new \ZipArchive;
             if (!$zip->open($filename, \ZipArchive::CREATE)) {
-                exit("cannot open <$filename>\n");
+                abort(503, 'Unable to open file for writing.');
             }
 
             $files = Storage::files('packs/' . $pack->uuid);
@@ -199,5 +196,32 @@ class PackController extends Controller
                 'Content-Type' => 'application/json'
             ])->deleteFileAfterSend(true);
         }
+    }
+
+    public function uploadForm(Request $request, $for = null) {
+        return view('admin.services.packs.upload', [
+            'services' => $this->formatServices(),
+            'for' => $for
+        ]);
+    }
+
+    public function postUpload(Request $request)
+    {
+        try {
+            $repo = new Pack;
+            $id = $repo->createWithTemplate($request->except([
+                '_token'
+            ]));
+            Alert::success('Successfully created new service!')->flash();
+            return redirect()->route('admin.services.packs.edit', $id)->withInput();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->back()->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to add a new service pack.')->flash();
+        }
+        return redirect()->back();
     }
 }

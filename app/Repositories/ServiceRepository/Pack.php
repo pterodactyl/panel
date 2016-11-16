@@ -46,7 +46,7 @@ class Pack
         $validator = Validator::make($data, [
             'name' => 'required|string',
             'version' => 'required|string',
-            'description' => 'string',
+            'description' => 'sometimes|nullable|string',
             'option' => 'required|exists:service_options,id',
             'selectable' => 'sometimes|boolean',
             'visible' => 'sometimes|boolean',
@@ -55,7 +55,7 @@ class Pack
             'build_cpu' => 'required|integer|min:0',
             'build_io' => 'required|integer|min:10|max:1000',
             'build_container' => 'required|string',
-            'build_script' => 'sometimes|string'
+            'build_script' => 'sometimes|nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -75,7 +75,8 @@ class Pack
             }
         }
 
-        DB::transaction(function () use ($data) {
+        DB::beginTransaction();
+        try {
             $uuid = new UuidService;
             $pack = Models\ServicePack::create([
                 'option' => $data['option'],
@@ -93,13 +94,94 @@ class Pack
                 'visible' => isset($data['visible'])
             ]);
 
-            $filename = ($data['file_upload']->getMimeType() === 'application/zip') ? 'archive.zip' : 'archive.tar.gz';
-            $data['file_upload']->storeAs('packs/' . $pack->uuid, $filename);
+            Storage::makeDirectory('packs/' . $pack->uuid);
+            if (isset($data['file_upload'])) {
+                $filename = ($data['file_upload']->getMimeType() === 'application/zip') ? 'archive.zip' : 'archive.tar.gz';
+                $data['file_upload']->storeAs('packs/' . $pack->uuid, $filename);
+            }
 
-            $pack->save();
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
 
+        return $pack->id;
+    }
+
+    public function createWithTemplate(array $data)
+    {
+        if (!isset($data['file_upload'])) {
+            throw new DisplayException('No template file was found submitted with this request.');
+        }
+
+        if (!$data['file_upload']->isValid()) {
+            throw new DisplayException('The file provided does not appear to be valid.');
+        }
+
+        if (!in_array($data['file_upload']->getMimeType(), [
+            'application/zip',
+            'text/plain',
+            'application/json'
+        ])) {
+            throw new DisplayException('The file provided (' . $data['file_upload']->getMimeType() . ') does not meet the required filetypes of application/zip or application/json.');
+        }
+
+        if ($data['file_upload']->getMimeType() === 'application/zip') {
+            $zip = new \ZipArchive;
+            if (!$zip->open($data['file_upload']->path())) {
+                throw new DisplayException('The uploaded archive was unable to be opened.');
+            }
+
+            $isZip = $zip->locateName('archive.zip');
+            $isTar = $zip->locateName('archive.tar.gz');
+
+            if ($zip->locateName('import.json') === false || ($isZip === false && $isTar === false)) {
+                throw new DisplayException('This contents of the provided archive were in an invalid format.');
+            }
+
+            $json = json_decode($zip->getFromName('import.json'));
+            $id = $this->create([
+                'name' => $json->name,
+                'version' => $json->version,
+                'description' => $json->description,
+                'option' => $data['option'],
+                'selectable' => $json->selectable,
+                'visible' => $json->visible,
+                'build_memory' => $json->build->memory,
+                'build_swap' => $json->build->swap,
+                'build_cpu' => $json->build->cpu,
+                'build_io' => $json->build->io,
+                'build_container' => $json->build->container,
+                'build_script' => $json->build->script
+            ]);
+
+            $pack = Models\ServicePack::findOrFail($id);
+            if (!$zip->extractTo(storage_path('app/packs/' . $pack->uuid), ($isZip === false) ? 'archive.tar.gz' : 'archive.zip')) {
+                $pack->delete();
+                throw new DisplayException('Unable to extract the archive file to the correct location.');
+            }
+
+            $zip->close();
             return $pack->id;
-        });
+        } else {
+            $json = json_decode(file_get_contents($data['file_upload']->path()));
+            return $this->create([
+                'name' => $json->name,
+                'version' => $json->version,
+                'description' => $json->description,
+                'option' => $data['option'],
+                'selectable' => $json->selectable,
+                'visible' => $json->visible,
+                'build_memory' => $json->build->memory,
+                'build_swap' => $json->build->swap,
+                'build_cpu' => $json->build->cpu,
+                'build_io' => $json->build->io,
+                'build_container' => $json->build->container,
+                'build_script' => $json->build->script
+            ]);
+        }
+
     }
 
     public function update($id, array $data)
