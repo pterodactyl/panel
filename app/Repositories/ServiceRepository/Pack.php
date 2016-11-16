@@ -102,4 +102,45 @@ class Pack
         });
     }
 
+    public function update($id, array $data)
+    {
+        $validator = Validator::make($data, [
+            'name' => 'required|string',
+            'version' => 'required|string',
+            'description' => 'string',
+            'option' => 'required|exists:service_options,id',
+            'selectable' => 'sometimes|boolean',
+            'visible' => 'sometimes|boolean',
+            'build_memory' => 'required|integer|min:0',
+            'build_swap' => 'required|integer|min:0',
+            'build_cpu' => 'required|integer|min:0',
+            'build_io' => 'required|integer|min:10|max:1000',
+            'build_container' => 'required|string',
+            'build_script' => 'sometimes|string'
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        DB::transaction(function () use ($id, $data) {
+            Models\ServicePack::findOrFail($id)->update([
+                'option' => $data['option'],
+                'build_memory' => $data['build_memory'],
+                'build_swap' => $data['build_swap'],
+                'build_cpu' => $data['build_swap'],
+                'build_io' => $data['build_io'],
+                'build_script' => (empty($data['build_script'])) ? null : $data['build_script'],
+                'build_container' => $data['build_container'],
+                'name' => $data['name'],
+                'version' => $data['version'],
+                'description' => (empty($data['description'])) ? null : $data['description'],
+                'selectable' => isset($data['selectable']),
+                'visible' => isset($data['visible'])
+            ]);
+
+            return true;
+        });
+    }
+
 }

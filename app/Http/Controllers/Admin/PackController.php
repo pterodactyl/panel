@@ -68,7 +68,9 @@ class PackController extends Controller
 
     public function listAll(Request $request)
     {
-        //
+        return view('admin.services.packs.index', [
+            'services' => Models\Service::all()
+        ]);
     }
 
     public function listByOption(Request $request, $id)
@@ -135,6 +137,23 @@ class PackController extends Controller
             'service' => Models\Service::findOrFail($option->parent_service),
             'option' => $option
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $repo = new Pack;
+            $repo->update($id, $request->except([
+                '_token'
+            ]));
+            Alert::success('Service pack has been successfully updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.packs.edit', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to add edit this pack.')->flash();
+        }
+        return redirect()->route('admin.services.packs.edit', $id);
     }
 
     public function export(Request $request, $id, $files = false)
