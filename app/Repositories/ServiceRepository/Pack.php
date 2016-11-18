@@ -225,4 +225,13 @@ class Pack
         });
     }
 
+    public function delete($id) {
+        $pack = Models\ServicePack::findOrFail($id);
+        // @TODO Check for linked servers; foreign key should block this.
+        DB::transaction(function () use ($pack) {
+            $pack->delete();
+            Storage::deleteDirectory('packs/' . $pack->uuid);
+        });
+    }
+
 }

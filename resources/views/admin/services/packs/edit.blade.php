@@ -186,8 +186,9 @@
             <div class="col-md-12">
                 <div class="form-group">
                     {!! csrf_field() !!}
-                    <input type="submit" class="btn btn-sm btn-primary" value="Edit Service Pack" />
-                    <a href="{{ route('admin.services.packs.export', $pack->id) }}"><button type="button" class="pull-right btn btn-sm btn-default"><i class="fa fa-file"></i> Export</button></a>
+                    <input type="submit" name="action_submit" class="btn btn-sm btn-primary" value="Edit Service Pack" />
+                    <button type="submit" name="action_delete" class="pull-right btn btn-sm btn-danger"><i class="fa fa-times"></i> Delete</button>
+                    <a href="{{ route('admin.services.packs.export', $pack->id) }}"><button type="button" class="pull-right btn btn-sm btn-default" style="margin-right:10px;"><i class="fa fa-file"></i> Export</button></a>
                     <a href="{{ route('admin.services.packs.export', [ $pack->id, 'true' ]) }}"><button type="button" class="pull-right btn btn-sm btn-default" style="margin-right:10px;"><i class="fa fa-download"></i> Export with Files</button></a>
             </div>
         </div>

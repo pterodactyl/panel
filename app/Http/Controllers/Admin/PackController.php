@@ -138,19 +138,34 @@ class PackController extends Controller
 
     public function update(Request $request, $id)
     {
-        try {
-            $repo = new Pack;
-            $repo->update($id, $request->except([
-                '_token'
-            ]));
-            Alert::success('Service pack has been successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.packs.edit', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add edit this pack.')->flash();
+        if (!is_null($request->input('action_delete'))) {
+            try {
+                $repo = new Pack;
+                $repo->delete($id);
+                Alert::success('The requested service pack has been deleted from the system.')->flash();
+                return redirect()->route('admin.services.packs');
+            } catch (DisplayException $ex) {
+                Alert::danger($ex->getMessage())->flash();
+            } catch (\Exception $ex) {
+                Log::error($ex);
+                Alert::danger('An error occured while attempting to delete this pack.')->flash();
+            }
+            return redirect()->route('admin.services.packs.edit', $id);
+        } else {
+            try {
+                $repo = new Pack;
+                $repo->update($id, $request->except([
+                    '_token'
+                ]));
+                Alert::success('Service pack has been successfully updated.')->flash();
+            } catch (DisplayValidationException $ex) {
+                return redirect()->route('admin.services.packs.edit', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
+            } catch (\Exception $ex) {
+                Log::error($ex);
+                Alert::danger('An error occured while attempting to add edit this pack.')->flash();
+            }
+            return redirect()->route('admin.services.packs.edit', $id);
         }
-        return redirect()->route('admin.services.packs.edit', $id);
     }
 
     public function export(Request $request, $id, $files = false)
