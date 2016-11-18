@@ -47,7 +47,7 @@ class Service
         $validator = Validator::make($data, [
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|string',
-            'file' => 'required|regex:/^[\w.-]{1,50}$/',
+            'file' => 'required|unique:services,file|regex:/^[\w.-]{1,50}$/',
             'executable' => 'max:255|regex:/^(.*)$/',
             'startup' => 'string'
         ]);
@@ -56,15 +56,23 @@ class Service
             throw new DisplayValidationException($validator->errors());
         }
 
-        if (Models\Service::where('file', $data['file'])->first()) {
-            throw new DisplayException('A service using that configuration file already exists on the system.');
-        }
-
         $data['author'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
 
         $service = new Models\Service;
-        $service->fill($data);
-        $service->save();
+        DB::beginTransaction();
+
+        try {
+            $service->fill($data);
+            $service->save();
+
+            Storage::put('services/' . $data['file'] . '/main.json', '{}');
+            Storage::copy('services/.templates/index.js', 'services/' . $data['file'] . '/index.js');
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
 
         return $service->id;
     }
@@ -101,11 +109,11 @@ class Service
 
         DB::beginTransaction();
         try {
-            Storage::deleteDirectory('services/' . $service->file);
-
             Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
             $options->delete();
             $service->delete();
+
+            Storage::deleteDirectory('services/' . $service->file);
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
