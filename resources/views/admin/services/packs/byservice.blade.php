@@ -35,7 +35,7 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Service Option</th>
                 <th>Total Packs</th>
             </tr>
         </thead>

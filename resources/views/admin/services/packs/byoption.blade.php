@@ -36,7 +36,7 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Pack Name</th>
                 <th>Version</th>
                 <th>UUID</th>
                 <th>Selectable</th>
@@ -47,7 +47,7 @@
             @foreach ($packs as $pack)
                 <tr>
                     <td><a href="{{ route('admin.services.packs.edit', $pack->id) }}">{{ $pack->name }}</a></td>
-                    <td>{{ $pack->version }}</td>
+                    <td><code>{{ $pack->version }}</code></td>
                     <td><code>{{ $pack->uuid }}</code></td>
                     <td>@if($pack->selectable)<span class="label label-success"><i class="fa fa-check"></i></span>@else<span class="label label-default"><i class="fa fa-times"></i></span>@endif</td>
                     <td>@if($pack->visible)<span class="label label-success"><i class="fa fa-check"></i></span>@else<span class="label label-default"><i class="fa fa-times"></i></span>@endif</td>
