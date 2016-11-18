@@ -1,6 +1,5 @@
 {
     "srcds": {
-        "tag": "^(srcds)$",
         "startup": {
             "done": "Assigned anonymous gameserver Steam ID",
             "userInteraction": []
@@ -14,7 +13,6 @@
         "query": "protocol-valve"
     },
     "ark": {
-        "tag": "^(ark)$",
         "symlink": "srcds",
         "startup": {
             "done": "Setting breakpad minidump AppID"

@@ -1,10 +1,5 @@
 {
-    "latest": {
-        "tag": "^(latest)$",
-        "symlink": "vanilla"
-    },
     "vanilla": {
-        "tag": "^(vanilla){1}(-[\\w\\d.-]+)?$",
         "startup": {
             "done": ")! For help, type ",
             "userInteraction": [
@@ -30,7 +25,6 @@
         "query": "minecraftping"
     },
     "spigot": {
-        "tag": "^(spigot)$",
         "symlink": "vanilla",
         "configs": {
             "spigot.yml": {
@@ -42,7 +36,6 @@
         }
     },
     "bungeecord": {
-        "tag": "^(bungeecord)$",
         "startup": {
             "done": "Listening on "
         },
@@ -64,7 +57,6 @@
         "query": "minecraftping"
     },
     "sponge": {
-        "tag": "^(sponge)$",
         "symlink": "vanilla",
         "startup": {
             "userInteraction": [

@@ -24,34 +24,8 @@
  */
 const rfr = require('rfr');
 
-const Configuration = rfr('src/services/voice/main.json');
 const Core = rfr('src/services/index.js');
 
-class Service extends Core {
-    constructor(server) {
-        super(server, Configuration);
-    }
-
-    onPreflight(next) {
-        return super.onPreflight(next);
-    }
-
-    onStart(next) {
-        return super.onStart(next);
-    }
-
-    onConsole(data) {
-        return super.onConsole(data);
-    }
-
-    onStop(next) {
-        return super.onStop(next);
-    }
-
-    doQuery(next) {
-        return super.doQuery(next);
-    }
-
-}
+class Service extends Core {}
 
 module.exports = Service;

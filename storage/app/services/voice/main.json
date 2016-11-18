@@ -1,6 +1,5 @@
 {
     "mumble": {
-        "tag": "^(mumble)$",
         "startup": {
             "done": "Server listening on",
             "userInteraction": [
@@ -26,7 +25,6 @@
         "query": "mumbleping"
     },
     "teamspeak": {
-        "tag": "^(ts3)$",
         "startup": {
             "done": "listening on 0.0.0.0:",
             "userInteraction": []

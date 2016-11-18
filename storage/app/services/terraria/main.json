@@ -1,6 +1,5 @@
 {
     "tshock": {
-        "tag": "^(tshock)$",
         "startup": {
             "done": "Type 'help' for a list of commands",
             "userInteraction": []
