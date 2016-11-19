@@ -674,7 +674,7 @@ $(document).ready(function () {
         memoryData.push(parseInt(data.stats.memory / (1024 * 1024)));
 
         var m = new Date();
-        timeLabels.push($.format.date(new Date(), 'HH:MM:ss'));
+        timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
 
         CPUChart.update();
         MemoryChart.update();
