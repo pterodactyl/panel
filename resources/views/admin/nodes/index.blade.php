@@ -78,6 +78,9 @@ function pingNodes() {
         $.ajax({
             type: 'GET',
             url: $(element).data('location'),
+            headers: {
+                'X-Access-Token': '{{ $node->daemonSecret }}'
+            },
             timeout: 5000
         }).done(function (data) {
             $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
