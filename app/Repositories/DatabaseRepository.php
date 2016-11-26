@@ -56,13 +56,12 @@ class DatabaseRepository {
         }
 
         DB::beginTransaction();
-
         try {
             $db = new Models\Database;
             $db->fill([
                 'server_id' => $server->id,
                 'db_server' => $options['db_server'],
-                'database' => $server->uuidShort . '_' . $options['database'],
+                'database' => "s{$server->id}_{$options['database']}",
                 'username' => $server->uuidShort . '_' . str_random(7),
                 'remote' => $options['remote'],
                 'password' => Crypt::encrypt(str_random(20))
@@ -90,16 +89,29 @@ class DatabaseRepository {
 
             $capsule->setAsGlobal();
 
-            Capsule::statement('CREATE DATABASE ' . $db->database);
-            Capsule::statement('CREATE USER \'' . $db->username . '\'@\'' . $db->remote . '\' IDENTIFIED BY \'' . Crypt::decrypt($db->password) . '\'');
-            Capsule::statement('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON ' . $db->database . '.* TO \'' . $db->username . '\'@\'' . $db->remote . '\'');
-            Capsule::statement('FLUSH PRIVILEGES');
-
-            DB::commit();
-            return true;
         } catch (\Exception $ex) {
-            DB::rollback();
-            throw $ex;
+            DB::rollBack();
+            throw new DisplayException('There was an error while connecting to the Database Host Server. Please check the error logs.', $ex);
+        }
+
+        try {
+            Capsule::statement('CREATE DATABASE `' . $db->database . '`');
+            Capsule::statement('CREATE USER `' . $db->username . '`@`' . $db->remote . '` IDENTIFIED BY \'' . Crypt::decrypt($db->password) . '\'');
+            Capsule::statement('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `' . $db->database . '`.* TO `' . $db->username . '`@`' . $db->remote . '`');
+            Capsule::statement('FLUSH PRIVILEGES');
+            DB::commit();
+        } catch (\Exception $ex) {
+            try {
+                Capsule::statement('DROP DATABASE `' . $db->database . '`');
+                Capsule::statement('DROP USER `' . $db->username . '`@`' . $db->remote . '`');
+            } catch (\Exception $exi) {
+                // ignore it, if it fails its probably
+                // because we failed to ever make the DB
+                // or the user on the system.
+            } finally {
+                DB::rollBack();
+                throw $ex;
+            }
         }
     }
 
@@ -138,7 +150,7 @@ class DatabaseRepository {
 
             $capsule->setAsGlobal();
             Capsule::statement(sprintf(
-                'SET PASSWORD FOR \'%s\'@\'%s\' = PASSWORD(\'%s\')',
+                'SET PASSWORD FOR `%s`@`%s` = PASSWORD(\'%s\')',
                 $db->username,
                 $db->remote,
                 $password
@@ -182,8 +194,8 @@ class DatabaseRepository {
 
             $capsule->setAsGlobal();
 
-            Capsule::statement('DROP USER \'' . $db->username . '\'@\'' . $db->remote . '\'');
-            Capsule::statement('DROP DATABASE ' . $db->database);
+            Capsule::statement('DROP USER `' . $db->username . '`@`' . $db->remote . '`');
+            Capsule::statement('DROP DATABASE `' . $db->database . '`');
 
             $db->delete();
 

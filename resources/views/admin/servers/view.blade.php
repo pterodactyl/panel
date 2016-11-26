@@ -373,7 +373,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Database Name:</label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">{{ $server->uuidShort }}_</div>
+                                        <div class="input-group-addon">s{{ $server->id }}_</div>
                                         <input type="text" name="database" value="{{ old('database') }}" class="form-control">
                                     </div>
                                 </div>
