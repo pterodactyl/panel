@@ -70,24 +70,27 @@
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/nodes']").addClass('active');
-    pingNodes();
-    setInterval(pingNodes, 10000);
-});
-function pingNodes() {
-    $('td[data-action="ping"]').each(function(i, element) {
-        $.ajax({
-            type: 'GET',
-            url: $(element).data('location'),
-            headers: {
-                'X-Access-Token': '{{ $node->daemonSecret }}'
-            },
-            timeout: 5000
-        }).done(function (data) {
-            $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
-        }).fail(function () {
-            $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
+    (function pingNodes() {
+        $('td[data-action="ping"]').each(function(i, element) {
+            $.ajax({
+                type: 'GET',
+                url: $(element).data('location'),
+                headers: {
+                    'X-Access-Token': '{{ $node->daemonSecret }}'
+                },
+                timeout: 5000
+            }).done(function (data) {
+                $(element).find('i').tooltip({
+                    title: 'v' + data.version,
+                });
+                $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
+            }).fail(function () {
+                $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
+            }).always(function () {
+                setTimeout(pingNodes, 10000);
+            });
         });
-    });
+    })();
 }
 </script>
 @endsection

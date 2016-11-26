@@ -70,6 +70,18 @@
                     <table class="table table-striped" style="margin-bottom:0;">
                         <tbody>
                             <tr>
+                                <td>Daemon Version</td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code></td>
+                            </tr>
+                            <tr>
+                                <td>System Information</td>
+                                <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Total CPU Cores</td>
+                                <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                            <tr>
                                 <td>Total Servers</td>
                                 <td>{{ count($servers) }}</td>
                             </tr>
@@ -777,6 +789,24 @@ $(document).ready(function () {
         element.parent().removeClass('has-error has-success');
     }
 
+    (function getInformation() {
+        $.ajax({
+            method: 'GET',
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}',
+            timeout: 5000,
+            headers: {
+                'X-Access-Token': '{{ $node->daemonSecret }}'
+            },
+        }).done(function (data) {
+            $('[data-attr="info-version"]').html(data.version);
+            $('[data-attr="info-system"]').html(data.system.type + '(' + data.system.arch + ') <code>' + data.system.release + '</code>');
+            $('[data-attr="info-cpus"]').html(data.system.cpus);
+        }).fail(function (jqXHR) {
+
+        }).always(function() {
+            setTimeout(getInformation, 10000);
+        });
+    })();
 });
 </script>
 @endsection
