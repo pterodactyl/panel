@@ -229,8 +229,30 @@ class NodeRepository {
 
     public function delete($id)
     {
-        // @TODO: add logic;
-        return true;
+        $node = Models\Node::findOrFail($id);
+        if (Models\Server::where('node', $id)->count() > 0) {
+            throw new DisplayException('You cannot delete a node with servers currently attached to it.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Unlink Database Servers
+            Models\DatabaseServer::where('linked_node', $node->id)->update([
+                'linked_node' => null,
+            ]);
+
+            // Delete Allocations
+            Models\Allocation::where('node', $node->id)->delete();
+
+            // Delete Node
+            $node->delete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollback();
+            throw $ex;
+        }
     }
 
 }

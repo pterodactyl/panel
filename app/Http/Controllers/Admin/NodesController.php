@@ -253,20 +253,22 @@ class NodesController extends Controller
 
     public function deleteNode(Request $request, $id)
     {
-        $node = Models\Node::findOrFail($id);
-        $servers = Models\Server::where('node', $id)->count();
-        if ($servers > 0) {
-            Alert::danger('You cannot delete a node with servers currently attached to it.')->flash();
-            return redirect()->route('admin.nodes.view', [
-                'id' => $id,
-                'tab' => 'tab_delete'
-            ]);
+        try {
+            $repo = new NodeRepository;
+            $repo->delete($id);
+            Alert::success('Successfully deleted the requested node from the panel.')->flash();
+            return redirect()->route('admin.nodes');
+        } catch (DisplayException $e) {
+            Alert::danger($e->getMessage())->flash();
+        } catch (\Exception $e) {
+            Log::error($e);
+            Alert::danger('An unhandled exception occured while attempting to delete this node. Please try again.')->flash();
         }
 
-        $node->delete();
-        Alert::success('Node successfully deleted.')->flash();
-        return redirect()->route('admin.nodes');
-
+        return redirect()->route('admin.nodes.view', [
+            'id' => $id,
+            'tab' => 'tab_delete'
+        ]);
     }
 
 }
