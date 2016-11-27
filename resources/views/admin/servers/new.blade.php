@@ -201,6 +201,15 @@
                                 <p class="text-muted"><small>Select the type of service that this server will be running.</small></p>
                             </div>
                         </div>
+                        <div class="form-group col-md-12 hidden">
+                            <label for="option" class="control-label">Service Pack</label>
+                            <div>
+                                <select name="pack" id="getPack" class="form-control">
+                                    <option disabled selected> -- Select a Service Pack</option>
+                                </select>
+                                <p class="text-muted"><small>Select the service pack that should be used for this server. This option can be changed later.</small></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -392,6 +401,7 @@ $(document).ready(function () {
         handleLoader('#load_services', true);
         $('#serviceOptions').slideUp();
         $('#getOption').html('<option disabled selected> -- Select a Service Option</option>');
+        $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
 
         $.ajax({
             method: 'POST',
@@ -423,10 +433,11 @@ $(document).ready(function () {
         handleLoader('#serviceOptions', true);
         $('#serverVariables').html('');
         $('input[name="custom_image_name"]').val($(this).find(':selected').data('image'));
+        $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
 
         $.ajax({
             method: 'POST',
-            url: '/admin/servers/new/service-variables',
+            url: '/admin/servers/new/option-details',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
@@ -436,6 +447,12 @@ $(document).ready(function () {
         }).done(function (data) {
             $('#startupExec').html(data.exec);
             $('input[name="startup"]').val(data.startup);
+
+            $.each(data.packs, function (i, item) {
+                $('#getPack').append('<option value="' + item.uuid + '">' + item.name + ' (' + item.version + ')</option>');
+            });
+            $('#getPack').append('<option value="none">No Service Pack</option>').parent().parent().removeClass('hidden');
+
             $.each(data.variables, function (i, item) {
                 var isRequired = (item.required === 1) ? '<span class="label label-primary">Required</span> ' : '';
                 var dataAppend = ' \

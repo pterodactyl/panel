@@ -146,8 +146,8 @@ class AdminRoutes {
                 'uses' => 'Admin\ServersController@postNewServerServiceOptions'
             ]);
 
-            $router->post('/new/service-variables', [
-                'uses' => 'Admin\ServersController@postNewServerServiceVariables'
+            $router->post('/new/option-details', [
+                'uses' => 'Admin\ServersController@postNewServerOptionDetails'
             ]);
             // End Assorted Page Helpers
 
