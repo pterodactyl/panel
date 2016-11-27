@@ -231,6 +231,11 @@ class DatabaseRepository {
      */
     public function add(array $data)
     {
+
+        if (isset($data['host'])) {
+            $data['host'] = gethostbyname($data['host']);
+        }
+
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'host' => 'required|ip|unique:database_servers,host',
