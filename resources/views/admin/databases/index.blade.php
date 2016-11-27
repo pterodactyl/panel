@@ -93,7 +93,7 @@
                                     <td>{{ $db->username }}</td>
                                     <td class="text-center">{{ $db->c_databases }}</td>
                                     <td>@if(is_null($db->a_linkedNode))<em>unlinked</em>@else{{ $db->a_linkedNode }}@endif</td>
-                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-dbserver" data-attr="{{ $db->id }}"><i class="fa fa-trash-o"></i></a></td>
+                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-server" data-attr="{{ $db->id }}"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>

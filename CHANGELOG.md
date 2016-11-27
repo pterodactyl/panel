@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes an issue that could occur if a UUID contained `#e#` formatting within it when it comes to creating databases.
 * Fixed node status display to account for updated daemon security changes.
 * Fixes default language being selected as German (defaults to English now).
+* Fixes bug preventing the deletion of database servers.
 
 ### Changed
 * Using `node:<name>` when filtering servers now properly filters the servers by node name, rather than looking for the node ID.
