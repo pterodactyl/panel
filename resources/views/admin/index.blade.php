@@ -24,13 +24,31 @@
 @endsection
 
 @section('content')
-<div class="col-md-12">
-    <ul class="breadcrumb">
-        <li class="active">Admin Control</li>
-    </ul>
-    <h3 class="nopad">Pterodactyl Admin Control Panel</h3><hr />
-    <p>Welcome to the most advanced, lightweight, and user-friendly open source game server control panel.</p>
-    <p>You are running version <code>{{ config('app.version') }}</code>.</p>
+<div class="row">
+    <div class="col-md-12">
+        <ul class="breadcrumb">
+            <li class="active">Admin Control</li>
+        </ul>
+        <h3 class="nopad">Pterodactyl Admin Control Panel</h3><hr />
+        @if (Version::isLatestPanel())
+            <div class="alert alert-success">You are running Pterodactyl Panel version <code>{{ Version::getCurrentPanel() }}</code>. Your panel is up-to-date!</div>
+        @else
+            <div class="alert alert-danger">
+                Your panel is <strong>not up-to-date!</strong> The latest version is <a href="https://github.com/Pterodactyl/Panel/releases/v{{ Version::getPanel() }}" target="_blank"><code>{{ Version::getPanel() }}</code></a> and you are currently running version <code>{{ Version::getCurrentPanel() }}</code>.
+            </div>
+        @endif
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-4 text-center">
+        <a href="https://discord.gg/0gYt8oU8QOkDhKLS"><button class="btn btn-sm btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Get Help <small>(via Discord)</small></button></a>
+    </div>
+    <div class="col-xs-4 text-center">
+        <a href="https://docs.pterodactyl.io"><button class="btn btn-sm btn-default" style="width:100%;"><i class="fa fa-fw fa-link"></i> Documentation</button></a>
+    </div>
+    <div class="col-xs-4 text-center">
+        <a href="https://github.com/Pterodactyl/Panel"><button class="btn btn-sm btn-default" style="width:100%;"><i class="fa fa-fw fa-support"></i> Github</button></a>
+    </div>
 </div>
 <script>
 $(document).ready(function () {

@@ -92,14 +92,14 @@
                         <div class="form-group col-md-6 col-xs-6">
                             <label for="memory" class="control-label">Total Memory</label>
                             <div class="input-group">
-                                <input type="text" name="memory" class="form-control" value="{{ old('memory') }}"/>
+                                <input type="text" name="memory" data-multiplicator="true" class="form-control" value="{{ old('memory') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6 col-xs-6">
                             <label for="memory_overallocate" class="control-label">Overallocate</label>
                             <div class="input-group">
-                                <input type="text" name="memory_overallocate" class="form-control" value="{{ old('memory_overallocate', 0) }}"/>
+                                <input type="text" name="memory_overallocate" data-multiplicator="true" class="form-control" value="{{ old('memory_overallocate', 0) }}"/>
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>

@@ -3,6 +3,27 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.2 (Bodacious Boreopterus)
+### Fixed
+* Time axis on server graphs is corrected to show the minutes rather than the current month.
+* Node deletion now works correctly and deletes allocations as well.
+* Fixes a bug that would leave orphaned databases on the system if there was an error during creation.
+* Fixes an issue that could occur if a UUID contained `#e#` formatting within it when it comes to creating databases.
+* Fixed node status display to account for updated daemon security changes.
+* Fixes default language being selected as German (defaults to English now).
+* Fixes bug preventing the deletion of database servers.
+
+### Changed
+* Using `node:<name>` when filtering servers now properly filters the servers by node name, rather than looking for the node ID.
+* Using `owner:<email>` when filtering servers now properly filters by the owner's email rather than ID.
+* Added some quick help buttons to the admin index page for getting support or checking the documentation.
+* Panel now displays `Pterodactyl Panel` as the company name if one is not set.
+
+### Added
+* Added basic information about the daemon when viewing a node, including the host OS and version, CPU count, and the daemon version.
+* Added version checking for the daemon and panel that alerts admins when daemons or the panel is out of date.
+* Added multiplicator support to certain memory and disk fields that allow users to enter `10g` and have it converted to MB automatically.
+
 ## v0.5.1 (Bodacious Boreopterus)
 ### Fixed
 * Fixes a bug that allowed a user to bypass 2FA authentication if using the correct username and password for an account.

@@ -68,14 +68,23 @@ class ServersController extends Controller
                 $match = str_replace('"', '', $match);
                 if (strpos($match, ':')) {
                     list($field, $term) = explode(':', $match);
-                    $field = (strpos($field, '.')) ? $field : 'servers.' . $field;
+                    if ($field === 'node') {
+                        $field = 'nodes.name';
+                    } else if ($field === 'owner') {
+                        $field = 'users.email';
+                    } else if (!strpos($field, '.')) {
+                        $field = 'servers.' . $field;
+                    }
+
                     $query->orWhere($field, 'LIKE', '%' . $term . '%');
                 } else {
                     $query->where('servers.name', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('servers.username', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('users.email', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('allocations.port', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('allocations.ip', 'LIKE', '%' . $match . '%');
+                    $query->orWhere([
+                        ['servers.username', 'LIKE', '%' . $match . '%'],
+                        ['users.email', 'LIKE', '%' . $match . '%'],
+                        ['allocations.port', 'LIKE', '%' . $match . '%'],
+                        ['allocations.ip', 'LIKE', '%' . $match . '%'],
+                    ]);
                 }
             }
         }

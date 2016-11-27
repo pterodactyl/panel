@@ -118,14 +118,14 @@
                 <div class="form-group col-md-4 col-xs-4">
                     <label for="memory" class="control-label">Memory</label>
                     <div class="input-group">
-                        <input type="text" name="memory" class="form-control" value="{{ old('memory') }}"/>
+                        <input type="text" name="memory" data-multiplicator="true" class="form-control" value="{{ old('memory') }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>
                 <div class="form-group col-md-4 col-xs-4">
                     <label for="memory" class="control-label">Swap</label>
                     <div class="input-group">
-                        <input type="text" name="swap" class="form-control" value="{{ old('swap', 0) }}"/>
+                        <input type="text" name="swap" data-multiplicator="true" class="form-control" value="{{ old('swap', 0) }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
                 <div class="form-group col-md-4 col-xs-4">
                     <label for="disk" class="control-label">Disk Space</label>
                     <div class="input-group">
-                        <input type="text" name="disk" class="form-control" value="{{ old('disk') }}"/>
+                        <input type="text" name="disk" data-multiplicator="true" class="form-control" value="{{ old('disk') }}"/>
                         <span class="input-group-addon">MB</span>
                     </div>
                 </div>

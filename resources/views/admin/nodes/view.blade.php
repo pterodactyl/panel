@@ -70,6 +70,18 @@
                     <table class="table table-striped" style="margin-bottom:0;">
                         <tbody>
                             <tr>
+                                <td>Daemon Version</td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getPanel() }}</code>)</td>
+                            </tr>
+                            <tr>
+                                <td>System Information</td>
+                                <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Total CPU Cores</td>
+                                <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                            <tr>
                                 <td>Total Servers</td>
                                 <td>{{ count($servers) }}</td>
                             </tr>
@@ -171,7 +183,7 @@
                             <div class="form-group col-md-3 col-xs-6">
                                 <label for="memory" class="control-label">Total Memory</label>
                                 <div class="input-group">
-                                    <input type="text" name="memory" class="form-control" value="{{ old('memory', $node->memory) }}"/>
+                                    <input type="text" name="memory" class="form-control" data-multiplicator="true" value="{{ old('memory', $node->memory) }}"/>
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </div>
@@ -185,7 +197,7 @@
                             <div class="form-group col-md-3 col-xs-6">
                                 <label for="disk" class="control-label">Disk Space</label>
                                 <div class="input-group">
-                                    <input type="text" name="disk" class="form-control" value="{{ old('disk', $node->disk) }}"/>
+                                    <input type="text" name="disk" class="form-control" data-multiplicator="true" value="{{ old('disk', $node->disk) }}"/>
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </div>
@@ -777,6 +789,24 @@ $(document).ready(function () {
         element.parent().removeClass('has-error has-success');
     }
 
+    (function getInformation() {
+        $.ajax({
+            method: 'GET',
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}',
+            timeout: 5000,
+            headers: {
+                'X-Access-Token': '{{ $node->daemonSecret }}'
+            },
+        }).done(function (data) {
+            $('[data-attr="info-version"]').html(data.version);
+            $('[data-attr="info-system"]').html(data.system.type + '(' + data.system.arch + ') <code>' + data.system.release + '</code>');
+            $('[data-attr="info-cpus"]').html(data.system.cpus);
+        }).fail(function (jqXHR) {
+
+        }).always(function() {
+            setTimeout(getInformation, 10000);
+        });
+    })();
 });
 </script>
 @endsection
