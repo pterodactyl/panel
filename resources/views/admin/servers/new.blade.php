@@ -449,7 +449,7 @@ $(document).ready(function () {
             $('input[name="startup"]').val(data.startup);
 
             $.each(data.packs, function (i, item) {
-                $('#getPack').append('<option value="' + item.uuid + '">' + item.name + ' (' + item.version + ')</option>');
+                $('#getPack').append('<option value="' + item.id + '">' + item.name + ' (' + item.version + ')</option>');
             });
             $('#getPack').append('<option value="0">No Service Pack</option>').parent().parent().removeClass('hidden');
 

@@ -86,7 +86,7 @@ class ServerRepository
             'disk' => 'required|numeric|min:0',
             'service' => 'bail|required|numeric|min:1|exists:services,id',
             'option' => 'bail|required|numeric|min:1|exists:service_options,id',
-            'pack' => 'bail|required|numeric|min:0'
+            'pack' => 'bail|required|numeric|min:0',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
             'auto_deploy' => 'sometimes|boolean'

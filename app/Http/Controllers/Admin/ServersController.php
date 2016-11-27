@@ -276,7 +276,7 @@ class ServersController extends Controller
             ->first();
 
         return response()->json([
-            'packs' => Models\ServicePack::select('uuid', 'name', 'version')->where('option', $request->input('option'))->where('selectable', true)->get(),
+            'packs' => Models\ServicePack::select('id', 'name', 'version')->where('option', $request->input('option'))->where('selectable', true)->get(),
             'variables' => Models\ServiceVariables::where('option_id', $request->input('option'))->get(),
             'exec' => $option->executable,
             'startup' => $option->startup
