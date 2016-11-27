@@ -70,6 +70,8 @@ class ServersController extends Controller
                     list($field, $term) = explode(':', $match);
                     if ($field === 'node') {
                         $field = 'nodes.name';
+                    } else if ($field === 'owner') {
+                        $field = 'users.email';
                     } else if (!strpos($field, '.')) {
                         $field = 'servers.' . $field;
                     }

@@ -10,9 +10,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a bug that would leave orphaned databases on the system if there was an error during creation.
 * Fixes an issue that could occur if a UUID contained `#e#` formatting within it when it comes to creating databases.
 * Fixed node status display to account for updated daemon security changes.
+* Fixes default language being selected as German (defaults to English now).
 
 ### Changed
 * Using `node:<name>` when filtering servers now properly filters the servers by node name, rather than looking for the node ID.
+* Using `owner:<email>` when filtering servers now properly filters by the owner's email rather than ID.
 * Added some quick help buttons to the admin index page for getting support or checking the documentation.
 * Panel now displays `Pterodactyl Panel` as the company name if one is not set.
 
