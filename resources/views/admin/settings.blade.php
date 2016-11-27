@@ -44,7 +44,7 @@
                 <div>
                     <select name="default_language" class="form-control">
                         <option value="de" @if(Settings::get('default_language') === 'de')selected @endif>Deutsch</option>
-                        <option value="en" @if(Settings::get('default_language') === 'en')selected @endif>English</option>
+                        <option value="en" @if(Settings::get('default_language', 'en') === 'en')selected @endif>English</option>
                         <option value="es" @if(Settings::get('default_language') === 'es')selected @endif>Espa&ntilde;ol</option>
                         <option value="fr" @if(Settings::get('default_language') === 'fr')selected @endif>Fran&ccedil;ais</option>
                         <option value="it" @if(Settings::get('default_language') === 'it')selected @endif>Italiano</option>
