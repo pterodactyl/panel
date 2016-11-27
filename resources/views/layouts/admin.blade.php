@@ -47,7 +47,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">{{ Settings::get('company') }}</a>
+                <a class="navbar-brand" href="/">{{ Settings::get('company', 'Pterodactyl Panel') }}</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 @section('navbar-links')
