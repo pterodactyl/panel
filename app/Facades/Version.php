@@ -21,44 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Console\Commands;
+namespace Pterodactyl\Facades;
 
-use Illuminate\Console\Command;
-use Version;
+use Illuminate\Support\Facades\Facade;
 
-class ShowVersion extends Command
+class Version extends Facade
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'pterodactyl:version';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Display current panel version.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    protected static function getFacadeAccessor()
     {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $this->info('You are running Pterodactyl Panel v' . Version::getCurrentPanel() . ' (' . ((Version::isLatestPanel()) ? 'Up to Date' : 'Latest: ' . Version::getDaemon()) . ')');
+        return '\Pterodactyl\Services\VersionService';
     }
 }

@@ -71,7 +71,7 @@
                         <tbody>
                             <tr>
                                 <td>Daemon Version</td>
-                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code></td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getPanel() }}</code>)</td>
                             </tr>
                             <tr>
                                 <td>System Information</td>

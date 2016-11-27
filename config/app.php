@@ -217,6 +217,7 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Uuid'      => Webpatser\Uuid\Uuid::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
+        'Version'   => Pterodactyl\Facades\Version::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
     ],
