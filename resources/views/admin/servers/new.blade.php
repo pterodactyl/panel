@@ -451,7 +451,7 @@ $(document).ready(function () {
             $.each(data.packs, function (i, item) {
                 $('#getPack').append('<option value="' + item.uuid + '">' + item.name + ' (' + item.version + ')</option>');
             });
-            $('#getPack').append('<option value="none">No Service Pack</option>').parent().parent().removeClass('hidden');
+            $('#getPack').append('<option value="0">No Service Pack</option>').parent().parent().removeClass('hidden');
 
             $.each(data.variables, function (i, item) {
                 var isRequired = (item.required === 1) ? '<span class="label label-primary">Required</span> ' : '';

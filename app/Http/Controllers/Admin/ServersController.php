@@ -168,7 +168,9 @@ class ServersController extends Controller
 
         try {
             $server = new ServerRepository;
-            $response = $server->create($request->all());
+            $response = $server->create($request->except([
+                '_token'
+            ]));
             return redirect()->route('admin.servers.view', [ 'id' => $response ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
