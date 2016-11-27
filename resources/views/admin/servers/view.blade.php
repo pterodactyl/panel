@@ -228,14 +228,14 @@
                                 <div class="col-md-6 form-group {{ $errors->has('memory') ? 'has-error' : '' }}">
                                     <label for="memory" class="control-label">Allocated Memory</label>
                                     <div class="input-group">
-                                        <input type="text" name="memory" class="form-control" value="{{ old('memory', $server->memory) }}"/>
+                                        <input type="text" name="memory" data-multiplicator="true" class="form-control" value="{{ old('memory', $server->memory) }}"/>
                                         <span class="input-group-addon">MB</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 form-group {{ $errors->has('swap') ? 'has-error' : '' }}">
                                     <label for="swap" class="control-label">Allocated Swap</label>
                                     <div class="input-group">
-                                        <input type="text" name="swap" class="form-control" value="{{ old('swap', $server->swap) }}"/>
+                                        <input type="text" name="swap" data-multiplicator="true" class="form-control" value="{{ old('swap', $server->swap) }}"/>
                                         <span class="input-group-addon">MB</span>
                                     </div>
                                     <p class="text-muted"><small>Setting this to <code>0</code> will disable swap space on this server.</small></p>

@@ -183,7 +183,7 @@
                             <div class="form-group col-md-3 col-xs-6">
                                 <label for="memory" class="control-label">Total Memory</label>
                                 <div class="input-group">
-                                    <input type="text" name="memory" class="form-control" value="{{ old('memory', $node->memory) }}"/>
+                                    <input type="text" name="memory" class="form-control" data-multiplicator="true" value="{{ old('memory', $node->memory) }}"/>
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </div>
@@ -197,7 +197,7 @@
                             <div class="form-group col-md-3 col-xs-6">
                                 <label for="disk" class="control-label">Disk Space</label>
                                 <div class="input-group">
-                                    <input type="text" name="disk" class="form-control" value="{{ old('disk', $node->disk) }}"/>
+                                    <input type="text" name="disk" class="form-control" data-multiplicator="true" value="{{ old('disk', $node->disk) }}"/>
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </div>
