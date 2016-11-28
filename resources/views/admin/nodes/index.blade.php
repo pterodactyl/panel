@@ -51,7 +51,7 @@
         <tbody>
             @foreach ($nodes as $node)
                 <tr>
-                    <td class="text-center text-muted left-icon" data-action="ping" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                    <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                     <td><a href="/admin/nodes/view/{{ $node->id }}">{{ $node->name }}</td>
                     <td>{{ $node->a_locationName }}</td>
                     <td class="hidden-xs">{{ $node->memory }} MB</td>
@@ -76,7 +76,7 @@ $(document).ready(function () {
                 type: 'GET',
                 url: $(element).data('location'),
                 headers: {
-                    'X-Access-Token': '{{ $node->daemonSecret }}'
+                    'X-Access-Token': $(element).data('secret'),
                 },
                 timeout: 5000
             }).done(function (data) {

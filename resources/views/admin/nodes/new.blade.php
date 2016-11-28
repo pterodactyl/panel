@@ -99,7 +99,7 @@
                         <div class="form-group col-md-6 col-xs-6">
                             <label for="memory_overallocate" class="control-label">Overallocate</label>
                             <div class="input-group">
-                                <input type="text" name="memory_overallocate" data-multiplicator="true" class="form-control" value="{{ old('memory_overallocate', 0) }}"/>
+                                <input type="text" name="memory_overallocate" class="form-control" value="{{ old('memory_overallocate', 0) }}"/>
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                         <div class="form-group col-md-6 col-xs-6">
                             <label for="disk" class="control-label">Disk Space</label>
                             <div class="input-group">
-                                <input type="text" name="disk" class="form-control" value="{{ old('disk') }}"/>
+                                <input type="text" name="disk" data-multiplicator="true" class="form-control" value="{{ old('disk') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>

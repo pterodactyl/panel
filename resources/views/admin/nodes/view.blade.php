@@ -71,7 +71,7 @@
                         <tbody>
                             <tr>
                                 <td>Daemon Version</td>
-                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getPanel() }}</code>)</td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getDaemon() }}</code>)</td>
                             </tr>
                             <tr>
                                 <td>System Information</td>
@@ -276,6 +276,7 @@
                     <div class="col-md-12">
                         <pre><code>{
     "web": {
+        "host": "0.0.0.0",
         "listen": {{ $node->daemonListen }},
         "ssl": {
             "enabled": {{ $node->scheme === 'https' ? 'true' : 'false' }},
@@ -292,6 +293,10 @@
         "port": {{ $node->daemonSFTP }},
         "container": "ptdl-sftp"
     },
+    "query": {
+        "kill_on_fail": false,
+        "fail_limit": 5
+    },
     "logger": {
         "path": "logs/",
         "src": false,
@@ -300,6 +305,7 @@
         "count": 3
     },
     "remote": {
+        "base": "{{ config('app.url') }}",
         "download": "{{ route('remote.download') }}",
         "installed": "{{ route('remote.install') }}"
     },

@@ -3,6 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.3 (Bodacious Boreopterus)
+### Fixed
+* Fixed an error that occurred when viewing a node listing when no nodes were created yet due to a mis-declared variable. Also fixes a bug that would have all nodes trying to connect to the daemon using the same secret token on the node listing, causing only the last node to display properly.
+* Fixes a bug that displayed the panel version rather than the daemon version when viewing a node.
+* Fixes a multiplicator being applied to an overallocation field rather than a storage space field when adding a node.
+
+### Changed
+* Added a few new configuration variables for nodes to the default config, as well as a variable that will be used in future versions of the daemon.
+
 ## v0.5.2 (Bodacious Boreopterus)
 ### Fixed
 * Time axis on server graphs is corrected to show the minutes rather than the current month.
