@@ -89,7 +89,7 @@ class ServerRepository
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
             'auto_deploy' => 'sometimes|boolean',
-            'custom_id' => 'nullable|unique:servers,id',
+            'custom_id' => 'sometimes|required|numeric|unique:servers,id',
         ]);
 
         $validator->sometimes('node', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
@@ -234,7 +234,7 @@ class ServerRepository
             $genUuid = $uuid->generate('servers', 'uuid');
             $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $genUuid);
 			
-            if (!is_null($data['custom_id'])) {
+            if (isset($data['custom_id'])) {
                 $server->id = $data['custom_id'];
             }
 
