@@ -221,8 +221,6 @@ class ServerController extends BaseController
     public function build(Request $request, $id)
     {
         try {
-            throw new BadRequestHttpException('There was an error while attempting to add this node to the system.');
-
             $server = new ServerRepository;
             $server->changeBuild($id, $request->all());
             return Models\Server::findOrFail($id);
