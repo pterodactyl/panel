@@ -106,6 +106,7 @@ class NodeRepository {
             'memory_overallocate' => 'numeric|min:-1',
             'disk' => 'numeric|min:1',
             'disk_overallocate' => 'numeric|min:-1',
+            'upload_size' => 'numeric|min:0',
             'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
             'daemonSFTP' => 'numeric|between:1,65535',
             'daemonListen' => 'numeric|between:1,65535',
@@ -151,8 +152,43 @@ class NodeRepository {
             unset($data['reset_secret']);
         }
 
-        // Store the Data
-        return $node->update($data);
+        $oldDaemonKey = $node->daemonSecret;
+        $node->update($data);
+        try {
+            $client = Models\Node::guzzleRequest($node->id);
+            $client->request('PATCH', '/config', [
+                'headers' => [
+                    'X-Access-Token' => $oldDaemonKey,
+                ],
+                'json' => [
+                    'web' => [
+                        'listen' => $node->daemonListen,
+                        'ssl' => [
+                            'enabled' => ($node->scheme === 'https'),
+                            'certificate' => '/etc/letsencrypt/live/' . $node->fqdn .'/fullchain.pem',
+                            'key' => '/etc/letsencrypt/live/' . $node->fqdn . '/privkey.pem',
+                        ],
+                    ],
+                    'sftp' => [
+                        'path' => $node->daemonBase,
+                        'port' => $node->daemonSFTP,
+                    ],
+                    'remote' => [
+                        'base' => config('app.url'),
+                        'download' => route('remote.download'),
+                        'installed' => route('remote.install'),
+                    ],
+                    'uploads' => [
+                        'size_limit' => $node->upload_size,
+                    ],
+                    'keys' => [
+                        $node->daemonSecret,
+                    ]
+                ],
+            ]);
+        } catch (\Exception $ex) {
+            throw new DisplayException('Failed to update the node configuration, however your changes have been saved to the database. You will need to manually update the configuration file for the node to apply these changes.');
+        }
 
     }
 

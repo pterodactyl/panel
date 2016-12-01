@@ -4,6 +4,9 @@ This file is a running track of new features and fixes to each version of the pa
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.5.4 (Bodacious Boreopterus)
+### Added
+* Changing node configuration values now automatically makes a call to the daemon and updates the configuration there. Changing daemon tokens now does not require any intervention, and takes effect immediately. SSL & Port configurations will still require a daemon reboot.
+
 ### Changed
 * File uploads now account for a maximum file size that is assigned for the daemon, and gives cleaner errors when that limit is reached.
 * File upload limit can now be controlled from the panel.

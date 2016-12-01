@@ -255,7 +255,7 @@
                             <div class="col-xs-6">
                                 <div class="row">
                                     <div class="form-group col-md-12">
-                                        <label for="reset_secret" class="control-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Reset Daemon Key</label>
+                                        <label for="reset_secret" class="control-label">Reset Daemon Key</label>
                                         <div style="padding: 7px 0;">
                                             <input type="checkbox" name="reset_secret" id="reset_secret" /> Reset Daemon Master Key
                                         </div>
