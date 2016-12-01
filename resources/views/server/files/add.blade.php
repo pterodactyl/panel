@@ -105,8 +105,11 @@
                 <div class="alert alert-warning">Edit the path location above <strong>before you upload files</strong>. They will automatically be placed in the directory you specify above. You can change this each time you upload a new file without having to press anything else. <em>The directory must exist before performing an upload.</em></div>
                 <div class="alert alert-danger" id="upload_error" style="display: none;"></div>
                 <input type="file" id="fileinput" name="fileUpload[]" multiple="" style="display:none;"/>
-                <div id="uploader_box" class="well well-sm" style="cursor:pointer;">
-                    <center><h2 style="margin-bottom: 25px;">Drag and Drop File Here</h2></center>
+                <div id="upload_box" class="well well-sm" style="cursor:pointer;">
+                    <center>
+                        <h2 style="margin-bottom: 25px;">Drag and Drop File(s) Here</h2>
+                        <p class="text-muted">The maximum size for web-based file uploads is currently <code>{{ $node->upload_size }} MB</code>.</p>
+                    </center>
                 </div>
                 <span id="file_progress"></span>
             </div>
@@ -154,16 +157,33 @@ $(window).load(function () {
             }
         });
 
+        var dropCounter = 0;
+        $('#upload_box').bind({
+            dragenter: function (event) {
+                event.preventDefault();
+                dropCounter++;
+                $(this).addClass('hasFileHover');
+            },
+            dragleave: function (event) {
+                dropCounter--;
+                if (dropCounter === 0) {
+                    $(this).removeClass('hasFileHover');
+                }
+            },
+            drop: function (event) {
+                dropCounter = 0;
+                $(this).removeClass('hasFileHover');
+            }
+        });
+
         socket.on('error', function (err) {
             console.error('There was an error while attemping to connect to the websocket: ' + err + '\n\nPlease try loading this page again.');
         });
 
-
         var siofu = new SocketIOFileUpload(uploadSocket);
-        siofu.chunkDelay = 25;
 
-        document.getElementById("uploader_box").addEventListener("click", siofu.prompt, false);
-        siofu.listenOnDrop(document.getElementById("uploader_box"));
+        document.getElementById("upload_box").addEventListener("click", siofu.prompt, false);
+        siofu.listenOnDrop(document.getElementById("upload_box"));
 
         siofu.addEventListener('start', function (event) {
             event.file.meta.path = $("#u_file_name").val();
@@ -197,13 +217,13 @@ $(window).load(function () {
         // Do something when a file is uploaded:
         siofu.addEventListener('complete', function(event){
             if (!event.success) {
-                $("#upload_error").html('An error was encountered while attempting to upload this file. Does the target directory exist?').show();
+                $("#upload_error").html('An error was encountered while attempting to upload this file: <strong>' + event.message + '.</strong>').show();
                 $("#file-upload-" + event.file.meta.identifier).hide();
             }
         });
 
         siofu.addEventListener('error', function(event){
-            $("#upload_error").html('An error was encountered while attempting to upload this file. Does the target directory exist?').show();
+            $("#upload_error").html('An error was encountered while attempting to upload this file: <strong>' + event.message + '.</strong>').show();
             $("#file-upload-" + event.file.meta.identifier).hide();
         });
 

@@ -218,6 +218,19 @@
                     <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
                     <div class="panel-body">
                         <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="disk_overallocate" class="control-label">Maximum Web Upload Filesize</label>
+                                <div class="input-group">
+                                    <input type="text" name="upload_size" class="form-control" value="{{ old('upload_size', $node->upload_size) }}"/>
+                                    <span class="input-group-addon">MB</span>
+                                </div>
+                                <p class="text-muted"><small>Enter the maximum size of files that can be uploaded through the web-based file manager.</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-body">
+                        <div class="row">
                             <div class="col-xs-6">
                                 <div class="row">
                                     <div class="form-group col-md-6">
@@ -310,7 +323,7 @@
         "installed": "{{ route('remote.install') }}"
     },
     "uploads": {
-        "maximumSize": 100000000
+        "size_limit": {{ $node->upload_size }}
     },
     "keys": [
         "{{ $node->daemonSecret }}"
