@@ -106,7 +106,7 @@
                             $('#applyUpdate').removeClass('fa-circle-o-notch fa-spinner fa-spin fa-check-circle fa-times-circle').addClass(selector).css({ color: color });
                         });
 
-                        // Socket Recieves New Status from Scales
+                        // Socket Recieves New Status from Daemon
                         socket.on('status', function(data) {
                             var newStatus, selector = 'fa-times-circle';
                             var color = '#E33200';

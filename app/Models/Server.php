@@ -199,7 +199,7 @@ class Server extends Model
     }
 
     /**
-     * Returns non-administrative headers for accessing a server on Scales
+     * Returns non-administrative headers for accessing a server on the daemon
      *
      * @param  string $uuid
      * @return array

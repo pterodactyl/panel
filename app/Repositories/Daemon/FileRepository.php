@@ -132,7 +132,7 @@ class FileRepository
     }
 
     /**
-     * Save the contents of a requested file on the Scales instance.
+     * Save the contents of a requested file on the daemon.
      *
      * @param  string $file
      * @param  string $content
@@ -166,7 +166,7 @@ class FileRepository
     }
 
     /**
-     * Returns a listing of all files and folders within a specified Scales directory.
+     * Returns a listing of all files and folders within a specified directory on the daemon.
      *
      * @param  string $directory
      * @return object
