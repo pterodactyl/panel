@@ -140,6 +140,11 @@ class APIRoutes
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@allocations'
             ]);
 
+            $api->get('nodes/allocations/{id}', [
+                'as' => 'api.admin.nodes.allocations',
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@allocations_view'
+            ]);
+			
             $api->get('nodes/{id}', [
                 'as' => 'api.admin.nodes.view',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@view'

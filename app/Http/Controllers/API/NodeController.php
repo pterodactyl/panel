@@ -226,6 +226,33 @@ class NodeController extends BaseController
          }
          return $allocations;
      }
+	 
+    /**
+     * List Node Allocation based on assigned to ID
+     *
+     * Returns a listing of the allocation for the specified server id.
+     *
+     * @Get("/nodes/allocations/{id}")
+     * @Versions({"v1"})
+     * @Response(200)
+     */
+     public function allocations_view(Request $request, $id)
+     {
+        $query = Models\Allocation::where('assigned_to', $id);
+        try {
+            if (!$query->first()) {
+                throw new NotFoundHttpException('No allocation with that ID was found.');
+            }
+    
+            $allocation = $query->first();
+
+            return $allocation->toArray();
+        } catch (NotFoundHttpException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
+        }
+    }
 
     /**
      * Delete Node
