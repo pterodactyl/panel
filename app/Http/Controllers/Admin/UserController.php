@@ -51,8 +51,33 @@ class UserController extends Controller
 
     public function getIndex(Request $request)
     {
+        $query = User::select('users.*');
+        if ($request->input('filter') && !is_null($request->input('filter'))) {
+            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
+            foreach($matches[0] as $match) {
+                $match = str_replace('"', '', $match);
+                if (strpos($match, ':')) {
+                    list($field, $term) = explode(':', $match);
+                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
+                } else {
+                    $query->where('email', 'LIKE', '%' . $match . '%');
+                    $query->orWhere([
+                        ['uuid', 'LIKE', '%' . $match . '%'],
+                        ['root_admin', 'LIKE', '%' . $match . '%']
+                    ]);
+                }
+            }
+        }
+
+        try {
+            $users = $query->paginate(20);
+        } catch (\Exception $ex) {
+            Alert::warning('There was an error with the search parameters provided.');
+            $users = User::all()->paginate(20);
+        }
+
         return view('admin.users.index', [
-            'users' => User::paginate(20)
+            'users' => $users
         ]);
     }
 
