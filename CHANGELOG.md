@@ -12,6 +12,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * File uploads now account for a maximum file size that is assigned for the daemon, and gives cleaner errors when that limit is reached.
 * File upload limit can now be controlled from the panel.
 
+### Fixed
+* Fixes potential for generated password to not meet own validation requirements.
+
 ## v0.5.3 (Bodacious Boreopterus)
 ### Fixed
 * Fixed an error that occurred when viewing a node listing when no nodes were created yet due to a mis-declared variable. Also fixes a bug that would have all nodes trying to connect to the daemon using the same secret token on the node listing, causing only the last node to display properly.

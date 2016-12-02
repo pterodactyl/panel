@@ -62,7 +62,16 @@ class IndexController extends Controller
     public function getPassword(Request $request, $length = 16)
     {
         $length = ($length < 8) ? 8 : $length;
-        return str_random($length);
+
+        $returnable = false;
+        while (!$returnable) {
+            $generated = str_random($length);
+            if (preg_match('/[A-Z]+[a-z]+[0-9]+/', $generated)) {
+                $returnable = true;
+            }
+        }
+
+        return $generated;
     }
 
 }
