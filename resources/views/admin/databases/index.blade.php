@@ -88,7 +88,7 @@
                         <tbody>
                             @foreach($dbh as $db)
                                 <tr>
-                                    <td><a href="#">{{ $db->name }}</a></td>
+                                    <td>{{ $db->name }}</td>
                                     <td><code>{{ $db->host }}:{{ $db->port }}</code></td>
                                     <td>{{ $db->username }}</td>
                                     <td class="text-center">{{ $db->c_databases }}</td>
