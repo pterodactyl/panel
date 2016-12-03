@@ -12,9 +12,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * File uploads now account for a maximum file size that is assigned for the daemon, and gives cleaner errors when that limit is reached.
 * File upload limit can now be controlled from the panel.
+* Updates regex and default values for some Minecraft services to reflect current technology.
 
 ### Fixed
 * Fixes potential for generated password to not meet own validation requirements.
+* Fixes some regex checking issues with newer versions of Minecraft.
 
 ## v0.5.3 (Bodacious Boreopterus)
 ### Fixed

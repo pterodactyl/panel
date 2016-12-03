@@ -84,7 +84,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'tag' => 'spigot',
             'docker_image' => 'quay.io/pterodactyl/minecraft:spigot',
             'executable' => null,
-            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -Djline.terminal=jline.UnsupportedTerminal -jar {{SERVER_JARFILE}}'
+            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
         ]);
 
         $this->option['sponge'] = Models\ServiceOptions::create([
@@ -132,14 +132,14 @@ class MinecraftServiceTableSeeder extends Seeder
 
         Models\ServiceVariables::create([
             'option_id' => $this->option['vanilla']->id,
-            'name' => 'Server Jar File',
+            'name' => 'Server Version',
             'description' => 'The version of Minecraft Vanilla to install. Use "latest" to install the latest version.',
             'env_variable' => 'VANILLA_VERSION',
             'default_value' => 'latest',
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
+            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{3,7})$/'
         ]);
     }
 
@@ -166,7 +166,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
+            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{3,7})$/'
         ]);
 
         Models\ServiceVariables::create([
@@ -189,11 +189,11 @@ class MinecraftServiceTableSeeder extends Seeder
             'name' => 'Sponge Version',
             'description' => 'The version of SpongeVanilla to download and use.',
             'env_variable' => 'SPONGE_VERSION',
-            'default_value' => '1.8.9-4.2.0-BETA-351',
+            'default_value' => '1.10.2-5.1.0-BETA-359',
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(.*)$/'
+            'regex' => '/^([a-zA-Z0-9.\-_]+)$/'
         ]);
 
         Models\ServiceVariables::create([
@@ -220,7 +220,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(latest|[\d]{3,5})$/'
+            'regex' => '/^(latest|[\d]{1,6})$/'
         ]);
 
         Models\ServiceVariables::create([
