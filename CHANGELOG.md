@@ -8,6 +8,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Changing node configuration values now automatically makes a call to the daemon and updates the configuration there. Changing daemon tokens now does not require any intervention, and takes effect immediately. SSL & Port configurations will still require a daemon reboot.
 * New button in file manager that triggers the right click menu to enable support on mobile devices and those who cannot right click (blessed be them).
 * Support for filtering users when listing all users on the system.
+* Container ID and User ID on the daemon are now shown when viewing a server in the panel.
 
 ### Changed
 * File uploads now account for a maximum file size that is assigned for the daemon, and gives cleaner errors when that limit is reached.
