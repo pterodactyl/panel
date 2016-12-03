@@ -123,9 +123,7 @@ class ServersController extends Controller
     {
         $server = Models\Server::withTrashed()->select(
             'servers.*',
-            'nodes.name as a_nodeName',
             'users.email as a_ownerEmail',
-            'locations.long as a_locationName',
             'services.name as a_serviceName',
             DB::raw('IFNULL(service_options.executable, services.executable) as a_serviceExecutable'),
             'service_options.docker_image',
@@ -135,7 +133,6 @@ class ServersController extends Controller
             'allocations.ip_alias'
         )->join('nodes', 'servers.node', '=', 'nodes.id')
         ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('locations', 'nodes.location', '=', 'locations.id')
         ->join('services', 'servers.service', '=', 'services.id')
         ->join('service_options', 'servers.option', '=', 'service_options.id')
         ->join('allocations', 'servers.allocation', '=', 'allocations.id')
@@ -148,6 +145,12 @@ class ServersController extends Controller
 
         return view('admin.servers.view', [
             'server' => $server,
+            'node' => Models\Node::select(
+                    'nodes.*',
+                    'locations.long as a_locationName'
+                )->join('locations', 'nodes.location', '=', 'locations.id')
+                ->where('nodes.id', $server->node)
+                ->first(),
             'assigned' => Models\Allocation::where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
             'unassigned' => Models\Allocation::where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
             'startup' => Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')

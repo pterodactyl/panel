@@ -80,16 +80,24 @@
                                 <td>{{ $server->uuid }}</td>
                             </tr>
                             <tr>
+                                <td>Docker Container ID</td>
+                                <td data-attr="container-id"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Docker User ID</td>
+                                <td data-attr="container-user"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                            </tr>
+                            <tr>
                                 <td>Owner</td>
                                 <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
                             </tr>
                             <tr>
                                 <td>Location</td>
-                                <td><a href="{{ route('admin.locations') }}">{{ $server->a_locationName }}</a></td>
+                                <td><a href="{{ route('admin.locations') }}">{{ $node->a_locationName }}</a></td>
                             </tr>
                             <tr>
                                 <td>Node</td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node) }}">{{ $server->a_nodeName }}</a></td>
+                                <td><a href="{{ route('admin.nodes.view', $server->node) }}">{{ $node->name }}</a></td>
                             </tr>
                             <tr>
                                 <td>Service</td>
@@ -553,6 +561,27 @@
 $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('#sidebar_links').find("a[href='/admin/servers']").addClass('active');
+    (function checkServerInfo() {
+        $.ajax({
+            type: 'GET',
+            headers: {
+                'X-Access-Token': '{{ $server->daemonSecret }}',
+                'X-Access-Server': '{{ $server->uuid }}'
+            },
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server',
+            dataType: 'json',
+            timeout: 5000,
+        }).done(function (data) {
+            $('td[data-attr="container-id"]').html('<code>' + data.container.id + '</code>');
+            $('td[data-attr="container-user"]').html('<code>' + data.user + '</code>');
+        }).fail(function (jqXHR) {
+            $('td[data-attr="container-id"]').html('<code>error</code>');
+            $('td[data-attr="container-user"]').html('<code>error</code>');
+            console.error(jqXHR);
+        }).always(function () {
+            setTimeout(checkServerInfo, 60000);
+        })
+    })();
     $('input[name="default"]').on('change', function (event) {
         $('select[name="remove_additional[]"]').find('option:disabled').prop('disabled', false);
         $('select[name="remove_additional[]"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);
