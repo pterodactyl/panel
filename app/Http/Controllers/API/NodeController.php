@@ -236,17 +236,18 @@ class NodeController extends BaseController
      * @Versions({"v1"})
      * @Response(200)
      */
-     public function allocations_view(Request $request, $id)
+     public function allocationsView(Request $request, $id)
      {
         $query = Models\Allocation::where('assigned_to', $id);
         try {
-            if (!$query->first()) {
-                throw new NotFoundHttpException('No allocation with that ID was found.');
+			
+			$allocations = $query->get();
+
+            if (!$allocations->first()) {
+                throw new NotFoundHttpException('No allocations for that server were found.');
             }
     
-            $allocation = $query->first();
-
-            return $allocation->toArray();
+            return $allocations;
         } catch (NotFoundHttpException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
