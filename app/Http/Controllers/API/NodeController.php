@@ -170,6 +170,7 @@ class NodeController extends BaseController
         return [
             'web' => [
                 'listen' => $node->daemonListen,
+                'host' => '0.0.0.0',
                 'ssl' => [
                     'enabled' => ($node->scheme === 'https'),
                     'certificate' => '/etc/certs/' . $node->fqdn . '/fullchain.pem',
@@ -183,7 +184,11 @@ class NodeController extends BaseController
             'sftp' => [
                 'path' => $node->daemonBase,
                 'port' => (int) $node->daemonSFTP,
-                'container' => '0x0000'
+                'container' => 'ptdl-sftp'
+            ],
+            'query' => [
+                'kill_on_fail' => true,
+                'fail_limit' => 5
             ],
             'logger' => [
                 'path' => 'logs/',
@@ -193,19 +198,16 @@ class NodeController extends BaseController
                 'count' => 3
             ],
             'remote' => [
+                'base' => config('app.url'),
                 'download' => route('remote.download'),
                 'installed' => route('remote.install')
             ],
             'uploads' => [
-                'maximumSize' => 100000000
+                'size_limit' => $node->upload_size
             ],
             'keys' => [
                 $node->daemonSecret
             ],
-            'query' => [
-                'kill_on_fail' => true,
-                'fail_limit' => 3
-            ]
         ];
     }
 

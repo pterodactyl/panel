@@ -307,7 +307,7 @@
         "container": "ptdl-sftp"
     },
     "query": {
-        "kill_on_fail": false,
+        "kill_on_fail": true,
         "fail_limit": 5
     },
     "logger": {
