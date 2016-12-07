@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
-class HelperRepository {
-
+class HelperRepository
+{
     /**
      * Listing of editable files in the control panel.
      * @var array
@@ -40,9 +41,8 @@ class HelperRepository {
         'text/plain',
         'text/x-perl',
         'text/x-shellscript',
-        'inode/x-empty'
+        'inode/x-empty',
     ];
-
 
     public function __construct()
     {
@@ -58,17 +58,14 @@ class HelperRepository {
      */
     public static function bytesToHuman($bytes, $decimals = 2)
     {
-
         $sz = explode(',', 'B,KB,MB,GB');
         $factor = floor((strlen($bytes) - 1) / 3);
 
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).' '.$sz[$factor];
-
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . $sz[$factor];
     }
 
     public static function editableFiles()
     {
         return self::$editable;
     }
-
 }

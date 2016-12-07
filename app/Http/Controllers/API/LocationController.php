@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API;
 
 use DB;
@@ -32,14 +33,13 @@ use Pterodactyl\Models\Location;
  */
 class LocationController extends BaseController
 {
-
     public function __construct()
     {
         //
     }
 
     /**
-     * List All Locations
+     * List All Locations.
      *
      * Lists all locations currently on the system.
      *
@@ -54,11 +54,10 @@ class LocationController extends BaseController
             ->groupBy('locations.id')
             ->get();
 
-        foreach($locations as &$location) {
+        foreach ($locations as &$location) {
             $location->nodes = explode(',', $location->nodes);
         }
 
         return $locations->toArray();
     }
-
 }

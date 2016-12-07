@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use Illuminate\Database\Seeder;
-
 use Pterodactyl\Models;
+use Illuminate\Database\Seeder;
 
 class TerrariaServiceTableSeeder extends Seeder
 {
@@ -35,7 +34,7 @@ class TerrariaServiceTableSeeder extends Seeder
     protected $service;
 
     /**
-     * Stores all of the option objects
+     * Stores all of the option objects.
      *
      * @var array
      */
@@ -61,7 +60,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'description' => 'Terraria is a land of adventure! A land of mystery! A land that\'s yours to shape, defend, and enjoy. Your options in Terraria are limitless. Are you an action gamer with an itchy trigger finger? A master builder? A collector? An explorer? There\'s something for everyone.',
             'file' => 'terraria',
             'executable' => 'TerrariaServer.exe',
-            'startup' => '-port {{SERVER_PORT}} -autocreate 2 -worldname World'
+            'startup' => '-port {{SERVER_PORT}} -autocreate 2 -worldname World',
         ]);
     }
 
@@ -74,7 +73,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'tag' => 'tshock',
             'docker_image' => 'quay.io/pterodactyl/terraria:tshock',
             'executable' => '',
-            'startup' => ''
+            'startup' => '',
         ]);
     }
 
@@ -89,7 +88,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([0-9_\.-]{5,10})$/'
+            'regex' => '/^([0-9_\.-]{5,10})$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -101,7 +100,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(\d){1,3}$/'
+            'regex' => '/^(\d){1,3}$/',
         ]);
     }
 }

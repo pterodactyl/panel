@@ -3,12 +3,8 @@
 namespace Pterodactyl\Exceptions;
 
 use Log;
-
 use Exception;
 use DisplayException;
-use DisplayValidationException;
-use AccountNotFoundException;
-
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -52,7 +48,7 @@ class Handler extends ExceptionHandler
     {
         if ($request->isXmlHttpRequest() || $request->ajax() || $request->is('remote/*')) {
             $response = response()->json([
-                'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.'
+                'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.',
             ], 500);
 
             // parent::render() will log it, we are bypassing it in this case.
@@ -74,7 +70,7 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
+
         return redirect()->guest('/auth/login');
     }
-
 }

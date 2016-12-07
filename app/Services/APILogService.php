@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Services;
 
 use Log;
-
 use Illuminate\Http\Request;
 use Pterodactyl\Models\APILog;
 
 class APILogService
 {
-
     public function __constructor()
     {
         //
@@ -38,7 +37,7 @@ class APILogService
 
     public static function log(Request $request, $error = null, $authorized = false)
     {
-        if ($request->bearerToken() && !empty($request->bearerToken())) {
+        if ($request->bearerToken() && ! empty($request->bearerToken())) {
             list($public, $hashed) = explode('.', $request->bearerToken());
         } else {
             $public = null;
@@ -53,7 +52,7 @@ class APILogService
                 'route' => $request->fullUrl(),
                 'content' => (empty($request->getContent())) ? null : $request->getContent(),
                 'user_agent' => $request->header('User-Agent'),
-                'request_ip' => $request->ip()
+                'request_ip' => $request->ip(),
             ]);
             $log->save();
         } catch (\Exception $ex) {

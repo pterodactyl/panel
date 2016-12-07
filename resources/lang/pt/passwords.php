@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,5 +36,5 @@ return [
     'reset' => 'Sua senha foi resetada!',
     'sent' => 'Nós te enviamos um email com o link para resetar sua senha!',
     'token' => 'O token para resetar esta senha é inválido.',
-    'user' => "Nós não pudemos achar um usuário com este endereço de email.",
+    'user' => 'Nós não pudemos achar um usuário com este endereço de email.',
 ];

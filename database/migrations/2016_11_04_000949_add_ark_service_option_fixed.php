@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class AddArkServiceOptionFixed extends Migration
@@ -17,7 +15,7 @@ class AddArkServiceOptionFixed extends Migration
             $service = DB::table('services')->select('id')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('name', 'Source Engine')->first();
 
             // No SRCDS Service, Skipping
-            if (!$service) {
+            if (! $service) {
                 return;
             }
 
@@ -33,7 +31,7 @@ class AddArkServiceOptionFixed extends Migration
                 'tag' => 'ark',
                 'docker_image' => 'quay.io/pterodactyl/srcds:ark',
                 'executable' => './ShooterGameServer',
-                'startup' => 'TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}'
+                'startup' => 'TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}',
             ]);
 
             DB::table('service_variables')->insert([
@@ -45,7 +43,7 @@ class AddArkServiceOptionFixed extends Migration
                 'user_viewable' => 1,
                 'user_editable' => 1,
                 'required' => 0,
-                'regex' => '/^(\w\.*)$/'
+                'regex' => '/^(\w\.*)$/',
             ]);
 
             DB::table('service_variables')->insert([
@@ -57,7 +55,7 @@ class AddArkServiceOptionFixed extends Migration
                 'user_viewable' => 1,
                 'user_editable' => 1,
                 'required' => 0,
-                'regex' => '/^(\w\.*)$/'
+                'regex' => '/^(\w\.*)$/',
             ]);
 
             DB::table('service_variables')->insert([
@@ -69,10 +67,9 @@ class AddArkServiceOptionFixed extends Migration
                 'user_viewable' => 1,
                 'user_editable' => 1,
                 'required' => 1,
-                'regex' => '/^(\d{1,4})$/'
+                'regex' => '/^(\d{1,4})$/',
             ]);
         });
-
     }
 
     /**

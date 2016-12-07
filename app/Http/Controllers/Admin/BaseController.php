@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
 use Settings;
 use Validator;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Pterodactyl\Http\Controllers\Controller;
 
 class BaseController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -57,7 +56,7 @@ class BaseController extends Controller
             'company' => 'required|between:1,256',
             'default_language' => 'required|alpha_dash|min:2|max:5',
             'email_from' => 'required|email',
-            'email_sender_name' => 'required|between:1,256'
+            'email_sender_name' => 'required|between:1,256',
         ]);
 
         if ($validator->fails()) {
@@ -70,8 +69,7 @@ class BaseController extends Controller
         Settings::set('email_sender_name', $request->input('email_sender_name'));
 
         Alert::success('Settings have been successfully updated.')->flash();
+
         return redirect()->route('admin.settings');
-
     }
-
 }

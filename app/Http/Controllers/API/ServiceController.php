@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API;
 
-use Illuminate\Http\Request;
-
 use Pterodactyl\Models;
-use Pterodactyl\Transformers\ServiceTransformer;
-
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -35,7 +33,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class ServiceController extends BaseController
 {
-
     public function __construct()
     {
         //
@@ -49,20 +46,18 @@ class ServiceController extends BaseController
     public function view(Request $request, $id)
     {
         $service = Models\Service::find($id);
-        if (!$service) {
+        if (! $service) {
             throw new NotFoundHttpException('No service by that ID was found.');
         }
 
         $options = Models\ServiceOptions::select('id', 'name', 'description', 'tag', 'docker_image')->where('parent_service', $service->id)->get();
-        foreach($options as &$opt) {
+        foreach ($options as &$opt) {
             $opt->variables = Models\ServiceVariables::where('option_id', $opt->id)->get();
         }
 
         return [
             'service' => $service,
-            'options' => $options
+            'options' => $options,
         ];
-
     }
-
 }

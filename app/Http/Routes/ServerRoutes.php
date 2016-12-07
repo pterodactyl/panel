@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,148 +21,149 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Routes;
 
 use Illuminate\Routing\Router;
 
-class ServerRoutes {
-
-    public function map(Router $router) {
-
+class ServerRoutes
+{
+    public function map(Router $router)
+    {
         $router->group([
             'prefix' => 'server/{server}',
             'middleware' => [
                 'auth',
                 'server',
-                'csrf'
-            ]
+                'csrf',
+            ],
         ], function ($server) use ($router) {
 
             // Index View for Server
             $router->get('/', [
                 'as' => 'server.index',
-                'uses' => 'Server\ServerController@getIndex'
+                'uses' => 'Server\ServerController@getIndex',
             ]);
 
             // Settings
             $router->get('/settings', [
                 'as' => 'server.settings',
-                'uses' => 'Server\ServerController@getSettings'
+                'uses' => 'Server\ServerController@getSettings',
             ]);
 
             $router->post('/settings/sftp', [
                 'as' => 'server.settings.sftp',
-                'uses' => 'Server\ServerController@postSettingsSFTP'
+                'uses' => 'Server\ServerController@postSettingsSFTP',
             ]);
 
             $router->post('/settings/startup', [
                 'as' => 'server.settings.startup',
-                'uses' => 'Server\ServerController@postSettingsStartup'
+                'uses' => 'Server\ServerController@postSettingsStartup',
             ]);
 
             // File Manager Routes
             $router->get('/files', [
                 'as' => 'server.files.index',
-                'uses' => 'Server\ServerController@getFiles'
+                'uses' => 'Server\ServerController@getFiles',
             ]);
 
             $router->get('/files/edit/{file}', [
                 'as' => 'server.files.edit',
-                'uses' => 'Server\ServerController@getEditFile'
+                'uses' => 'Server\ServerController@getEditFile',
             ])->where('file', '.*');
 
             $router->get('/files/download/{file}', [
                 'as' => 'server.files.download',
-                'uses' => 'Server\ServerController@getDownloadFile'
+                'uses' => 'Server\ServerController@getDownloadFile',
             ])->where('file', '.*');
 
             $router->get('/files/add', [
                 'as' => 'server.files.add',
-                'uses' => 'Server\ServerController@getAddFile'
+                'uses' => 'Server\ServerController@getAddFile',
             ]);
 
             $router->post('files/directory-list', [
                 'as' => 'server.files.directory-list',
-                'uses' => 'Server\AjaxController@postDirectoryList'
+                'uses' => 'Server\AjaxController@postDirectoryList',
             ]);
 
             $router->post('files/save', [
                 'as' => 'server.files.save',
-                'uses' => 'Server\AjaxController@postSaveFile'
+                'uses' => 'Server\AjaxController@postSaveFile',
             ]);
 
             // Sub-User Routes
             $router->get('users', [
                 'as' => 'server.subusers',
-                'uses' => 'Server\SubuserController@getIndex'
+                'uses' => 'Server\SubuserController@getIndex',
             ]);
 
             $router->get('users/new', [
                 'as' => 'server.subusers.new',
-                'uses' => 'Server\SubuserController@getNew'
+                'uses' => 'Server\SubuserController@getNew',
             ]);
 
             $router->post('users/new', [
-                'uses' => 'Server\SubuserController@postNew'
+                'uses' => 'Server\SubuserController@postNew',
             ]);
 
             $router->get('users/view/{id}', [
                 'as' => 'server.subusers.view',
-                'uses' => 'Server\SubuserController@getView'
+                'uses' => 'Server\SubuserController@getView',
             ]);
 
             $router->post('users/view/{id}', [
-                'uses' => 'Server\SubuserController@postView'
+                'uses' => 'Server\SubuserController@postView',
             ]);
 
             $router->delete('users/delete/{id}', [
-                'uses' => 'Server\SubuserController@deleteSubuser'
+                'uses' => 'Server\SubuserController@deleteSubuser',
             ]);
 
             $router->get('tasks/', [
                 'as' => 'server.tasks',
-                'uses' => 'Server\TaskController@getIndex'
+                'uses' => 'Server\TaskController@getIndex',
             ]);
 
             $router->get('tasks/view/{id}', [
                 'as' => 'server.tasks.view',
-                'uses' => 'Server\TaskController@getView'
+                'uses' => 'Server\TaskController@getView',
             ]);
 
             $router->get('tasks/new', [
                 'as' => 'server.tasks.new',
-                'uses' => 'Server\TaskController@getNew'
+                'uses' => 'Server\TaskController@getNew',
             ]);
 
             $router->post('tasks/new', [
-                'uses' => 'Server\TaskController@postNew'
+                'uses' => 'Server\TaskController@postNew',
             ]);
 
             $router->delete('tasks/delete/{id}', [
                 'as' => 'server.tasks.delete',
-                'uses' => 'Server\TaskController@deleteTask'
+                'uses' => 'Server\TaskController@deleteTask',
             ]);
 
             $router->post('tasks/toggle/{id}', [
                 'as' => 'server.tasks.toggle',
-                'uses' => 'Server\TaskController@toggleTask'
+                'uses' => 'Server\TaskController@toggleTask',
             ]);
 
             // Assorted AJAX Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status
                 $router->get('status', [
-                    'uses' => 'Server\AjaxController@getStatus'
+                    'uses' => 'Server\AjaxController@getStatus',
                 ]);
 
                 // Sets the Default Connection for the Server
                 $router->post('set-primary', [
-                    'uses' => 'Server\AjaxController@postSetPrimary'
+                    'uses' => 'Server\AjaxController@postSetPrimary',
                 ]);
 
                 $router->post('settings/reset-database-password', [
                     'as' => 'server.ajax.reset-database-password',
-                    'uses' => 'Server\AjaxController@postResetDatabasePassword'
+                    'uses' => 'Server\AjaxController@postResetDatabasePassword',
                 ]);
             });
 
@@ -171,11 +172,9 @@ class ServerRoutes {
                 // Returns Server Status
                 $router->get('{folder}/{file}', [
                     'as' => 'server.js',
-                    'uses' => 'Server\ServerController@getJavascript'
+                    'uses' => 'Server\ServerController@getJavascript',
                 ])->where('file', '.*');
-
             });
         });
     }
-
 }

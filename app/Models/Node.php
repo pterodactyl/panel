@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use GuzzleHttp\Client;
@@ -28,7 +29,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Node extends Model
 {
-
     /**
      * The table associated with the model.
      *
@@ -43,11 +43,11 @@ class Node extends Model
      */
     protected $hidden = ['daemonSecret'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'public' => 'integer',
          'location' => 'integer',
@@ -88,9 +88,9 @@ class Node extends Model
             return self::$nodes[$id];
         }
 
-        self::$nodes[$id] = Node::where('id', $id)->first();
-        return self::$nodes[$id];
+        self::$nodes[$id] = self::where('id', $id)->first();
 
+        return self::$nodes[$id];
     }
 
     /**
@@ -116,7 +116,5 @@ class Node extends Model
         ]);
 
         return self::$guzzle[$node];
-
     }
-
 }

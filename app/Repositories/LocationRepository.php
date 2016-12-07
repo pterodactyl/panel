@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use Validator;
-
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class LocationRepository
 {
-
     public function __construct()
     {
         //
@@ -40,13 +39,13 @@ class LocationRepository
      * Creates a new location on the system.
      * @param  array  $data
      * @throws Pterodactyl\Exceptions\DisplayValidationException
-     * @return integer
+     * @return int
      */
     public function create(array $data)
     {
         $validator = Validator::make($data, [
             'short' => 'required|regex:/^[a-z0-9_.-]{1,10}$/i|unique:locations,short',
-            'long' => 'required|string|min:1|max:255'
+            'long' => 'required|string|min:1|max:255',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -58,7 +57,7 @@ class LocationRepository
         $location = new Models\Location;
         $location->fill([
             'long' => $data['long'],
-            'short' => $data['short']
+            'short' => $data['short'],
         ]);
         $location->save();
 
@@ -67,16 +66,16 @@ class LocationRepository
 
     /**
      * Modifies a location based on the fields passed in $data.
-     * @param  integer $id
+     * @param  int $id
      * @param  array   $data
      * @throws Pterodactyl\Exceptions\DisplayValidationException
-     * @return boolean
+     * @return bool
      */
     public function edit($id, array $data)
     {
         $validator = Validator::make($data, [
             'short' => 'regex:/^[a-z0-9_.-]{1,10}$/i',
-            'long' => 'string|min:1|max:255'
+            'long' => 'string|min:1|max:255',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.

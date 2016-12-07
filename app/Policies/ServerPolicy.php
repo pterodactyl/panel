@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Policies;
 
 use Pterodactyl\Models\User;
@@ -28,7 +29,6 @@ use Pterodactyl\Models\Server;
 
 class ServerPolicy
 {
-
     /**
      * Create a new policy instance.
      *
@@ -44,7 +44,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User    $user
      * @param  Pterodactyl\Models\Server  $server
-     * @return boolean
+     * @return bool
      */
     protected function isOwner(User $user, Server $server)
     {
@@ -56,7 +56,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User $user
      * @param  string $ability
-     * @return boolean
+     * @return bool
      */
     public function before(User $user, $ability)
     {
@@ -70,7 +70,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function power(User $user, Server $server)
     {
@@ -86,7 +86,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function powerStart(User $user, Server $server)
     {
@@ -102,7 +102,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function powerStop(User $user, Server $server)
     {
@@ -118,7 +118,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function powerRestart(User $user, Server $server)
     {
@@ -134,7 +134,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function powerKill(User $user, Server $server)
     {
@@ -150,7 +150,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function sendCommand(User $user, Server $server)
     {
@@ -166,7 +166,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function listFiles(User $user, Server $server)
     {
@@ -182,7 +182,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function editFiles(User $user, Server $server)
     {
@@ -198,7 +198,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function saveFiles(User $user, Server $server)
     {
@@ -214,7 +214,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function moveFiles(User $user, Server $server)
     {
@@ -230,7 +230,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function copyFiles(User $user, Server $server)
     {
@@ -246,7 +246,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function compressFiles(User $user, Server $server)
     {
@@ -262,7 +262,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function decompressFiles(User $user, Server $server)
     {
@@ -278,7 +278,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function addFiles(User $user, Server $server)
     {
@@ -295,7 +295,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function uploadFiles(User $user, Server $server)
     {
@@ -311,7 +311,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function downloadFiles(User $user, Server $server)
     {
@@ -327,7 +327,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function deleteFiles(User $user, Server $server)
     {
@@ -343,7 +343,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function listSubusers(User $user, Server $server)
     {
@@ -359,7 +359,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function viewSubuser(User $user, Server $server)
     {
@@ -375,7 +375,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function editSubuser(User $user, Server $server)
     {
@@ -391,7 +391,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function deleteSubuser(User $user, Server $server)
     {
@@ -407,7 +407,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function createSubuser(User $user, Server $server)
     {
@@ -423,7 +423,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function setConnection(User $user, Server $server)
     {
@@ -439,7 +439,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function viewStartup(User $user, Server $server)
     {
@@ -455,7 +455,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function editStartup(User $user, Server $server)
     {
@@ -471,7 +471,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function viewSftp(User $user, Server $server)
     {
@@ -487,7 +487,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function resetSftp(User $user, Server $server)
     {
@@ -503,7 +503,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function viewSftpPassword(User $user, Server $server)
     {
@@ -519,7 +519,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function viewDatabases(User $user, Server $server)
     {
@@ -535,7 +535,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function resetDbPassword(User $user, Server $server)
     {
@@ -551,7 +551,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function listTasks(User $user, Server $server)
     {
@@ -567,7 +567,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function viewTask(User $user, Server $server)
     {
@@ -583,7 +583,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function toggleTask(User $user, Server $server)
     {
@@ -599,7 +599,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function queueTask(User $user, Server $server)
     {
@@ -615,7 +615,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function deleteTask(User $user, Server $server)
     {
@@ -631,7 +631,7 @@ class ServerPolicy
      *
      * @param  Pterodactyl\Models\User   $user
      * @param  Pterodactyl\Models\Server $server
-     * @return boolean
+     * @return bool
      */
     public function createTask(User $user, Server $server)
     {
@@ -641,5 +641,4 @@ class ServerPolicy
 
         return $user->permissions()->server($server)->permission('create-task')->exists();
     }
-
 }

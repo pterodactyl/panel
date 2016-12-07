@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
-use Crypt;
 use DB;
-use Debugbar;
-use Validator;
 use Log;
-
+use Crypt;
+use Validator;
 use Pterodactyl\Models;
+use Pterodactyl\Events\ServerDeleted;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Services\DeploymentService;
-use Pterodactyl\Notifications\ServerCreated;
-use Pterodactyl\Events\ServerDeleted;
-
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\AccountNotFoundException;
+use Pterodactyl\Notifications\ServerCreated;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerRepository
 {
-
     protected $daemonPermissions = [
-        's:*'
+        's:*',
     ];
 
     public function __construct()
@@ -53,7 +49,7 @@ class ServerRepository
 
     /**
      * Generates a SFTP username for a server given a server name.
-     * format: mumble_67c7a4b0
+     * format: mumble_67c7a4b0.
      *
      * @param  string $name
      * @param  string $uuid
@@ -61,16 +57,15 @@ class ServerRepository
      */
     protected function generateSFTPUsername($name, $uuid = null)
     {
-
         $uuid = is_null($uuid) ? str_random(8) : $uuid;
-        return strtolower(substr(preg_replace('/\s+/', '', $name), 0, 6) . '_' . $uuid);
 
+        return strtolower(substr(preg_replace('/\s+/', '', $name), 0, 6) . '_' . $uuid);
     }
 
     /**
      * Adds a new server to the system.
      * @param   array  $data  An array of data descriptors for creating the server. These should align to the columns in the database.
-     * @return  integer
+     * @return  int
      */
     public function create(array $data)
     {
@@ -93,21 +88,20 @@ class ServerRepository
         ]);
 
         $validator->sometimes('node', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
-            return !($input->auto_deploy);
+            return ! ($input->auto_deploy);
         });
 
         $validator->sometimes('ip', 'required|ip', function ($input) {
-            return (!$input->auto_deploy && !$input->allocation);
+            return ! $input->auto_deploy && ! $input->allocation;
         });
 
         $validator->sometimes('port', 'required|numeric|min:1|max:65535', function ($input) {
-            return (!$input->auto_deploy && !$input->allocation);
+            return ! $input->auto_deploy && ! $input->allocation;
         });
 
         $validator->sometimes('allocation', 'numeric|exists:allocations,id', function ($input) {
-            return !($input->auto_deploy || ($input->port && $input->ip));
+            return ! ($input->auto_deploy || ($input->port && $input->ip));
         });
-
 
         // Run validator, throw catchable and displayable exception if it fails.
         // Exception includes a JSON result of failed validation rules.
@@ -121,12 +115,12 @@ class ServerRepository
             $user = Models\User::select('id', 'email')->where('email', $data['owner'])->first();
         }
 
-        if (!$user) {
+        if (! $user) {
             throw new DisplayException('The user id or email passed to the function was not found on the system.');
         }
 
         $autoDeployed = false;
-        if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, "1"])) {
+        if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, '1'])) {
             // This is an auto-deployment situation
             // Ignore any other passed node data
             unset($data['node'], $data['ip'], $data['port'], $data['allocation']);
@@ -140,16 +134,16 @@ class ServerRepository
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
-        if (!$autoDeployed) {
-            if (!isset($data['allocation'])) {
+        if (! $autoDeployed) {
+            if (! isset($data['allocation'])) {
                 $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
             } else {
-                $allocation = Models\Allocation::where('id' , $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+                $allocation = Models\Allocation::where('id', $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
             }
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
-        if (!$allocation) {
+        if (! $allocation) {
             throw new DisplayException('The selected IP/Port combination or Allocation ID is either already in use, or unavaliable for this node.');
         }
 
@@ -158,7 +152,7 @@ class ServerRepository
         // We need to verify that the option exists for the service, and then check for
         // any required variable fields. (fields are labeled env_<env_variable>)
         $option = Models\ServiceOptions::where('id', $data['option'])->where('parent_service', $data['service'])->first();
-        if (!$option) {
+        if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
 
@@ -169,46 +163,45 @@ class ServerRepository
         $variables = Models\ServiceVariables::where('option_id', $data['option'])->get();
         $variableList = [];
         if ($variables) {
-            foreach($variables as $variable) {
+            foreach ($variables as $variable) {
 
                 // Is the variable required?
-                if (!$data['env_' . $variable->env_variable]) {
+                if (! $data['env_' . $variable->env_variable]) {
                     if ($variable->required === 1) {
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
                     $variableList = array_merge($variableList, [[
                         'id' => $variable->id,
                         'env' => $variable->env_variable,
-                        'val' => $variable->default_value
+                        'val' => $variable->default_value,
                     ]]);
                     continue;
                 }
 
                 // Check aganist Regex Pattern
-                if (!is_null($variable->regex) && !preg_match($variable->regex, $data['env_' . $variable->env_variable])) {
+                if (! is_null($variable->regex) && ! preg_match($variable->regex, $data['env_' . $variable->env_variable])) {
                     throw new DisplayException('Failed to validate service option variable field (env_' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
                 }
 
                 $variableList = array_merge($variableList, [[
                     'id' => $variable->id,
                     'env' => $variable->env_variable,
-                    'val' => $data['env_' . $variable->env_variable]
+                    'val' => $data['env_' . $variable->env_variable],
                 ]]);
                 continue;
             }
         }
 
         // Check Overallocation
-        if (!$autoDeployed) {
+        if (! $autoDeployed) {
             if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
-
                 $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
 
                 // Check memory limits
                 if (is_numeric($node->memory_overallocate)) {
                     $newMemory = $totals->memory + $data['memory'];
                     $memoryLimit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
-                    if($newMemory > $memoryLimit) {
+                    if ($newMemory > $memoryLimit) {
                         throw new DisplayException('The amount of memory allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->memory_overallocate + 100) . '% of its assigned ' . $node->memory . 'Mb of memory (' . $memoryLimit . 'Mb) of which ' . (($totals->memory / $node->memory) * 100) . '% (' . $totals->memory . 'Mb) is in use already. By allocating this server the node would be at ' . (($newMemory / $node->memory) * 100) . '% (' . $newMemory . 'Mb) usage.');
                     }
                 }
@@ -217,7 +210,7 @@ class ServerRepository
                 if (is_numeric($node->disk_overallocate)) {
                     $newDisk = $totals->disk + $data['disk'];
                     $diskLimit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
-                    if($newDisk > $diskLimit) {
+                    if ($newDisk > $diskLimit) {
                         throw new DisplayException('The amount of disk allocated to this server would put the node over its allocation limits. This node is allowed ' . ($node->disk_overallocate + 100) . '% of its assigned ' . $node->disk . 'Mb of disk (' . $diskLimit . 'Mb) of which ' . (($totals->disk / $node->disk) * 100) . '% (' . $totals->disk . 'Mb) is in use already. By allocating this server the node would be at ' . (($newDisk / $node->disk) * 100) . '% (' . $newDisk . 'Mb) usage.');
                     }
                 }
@@ -233,7 +226,7 @@ class ServerRepository
             $server = new Models\Server;
             $genUuid = $uuid->generate('servers', 'uuid');
             $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $genUuid);
-			
+
             if (isset($data['custom_id'])) {
                 $server->id = $data['custom_id'];
             }
@@ -258,7 +251,7 @@ class ServerRepository
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
                 'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
                 'username' => $this->generateSFTPUsername($data['name'], $genShortUuid),
-                'sftp_password' => Crypt::encrypt('not set')
+                'sftp_password' => Crypt::encrypt('not set'),
             ]);
             $server->save();
 
@@ -269,16 +262,16 @@ class ServerRepository
             // Add Variables
             $environmentVariables = [];
             $environmentVariables = array_merge($environmentVariables, [
-                'STARTUP' => $data['startup']
+                'STARTUP' => $data['startup'],
             ]);
-            foreach($variableList as $item) {
+            foreach ($variableList as $item) {
                 $environmentVariables = array_merge($environmentVariables, [
-                    $item['env'] => $item['val']
+                    $item['env'] => $item['val'],
                 ]);
                 Models\ServerVariables::create([
                     'server_id' => $server->id,
                     'variable_id' => $item['id'],
-                    'variable_value' => $item['val']
+                    'variable_value' => $item['val'],
                 ]);
             }
 
@@ -289,13 +282,13 @@ class ServerRepository
                 'node' => $node->name,
                 'service' => $service->name,
                 'option' => $option->name,
-                'uuidShort' => $server->uuidShort
+                'uuidShort' => $server->uuidShort,
             ])));
 
             $client = Models\Node::guzzleRequest($node->id);
             $client->request('POST', '/servers', [
                 'headers' => [
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'json' => [
                     'uuid' => (string) $server->uuid,
@@ -303,10 +296,10 @@ class ServerRepository
                     'build' => [
                         'default' => [
                             'ip' => $allocation->ip,
-                            'port' => (int) $allocation->port
+                            'port' => (int) $allocation->port,
                         ],
                         'ports' => [
-                            (string) $allocation->ip => [ (int) $allocation->port ]
+                            (string) $allocation->ip => [(int) $allocation->port],
                         ],
                         'env' => $environmentVariables,
                         'memory' => (int) $server->memory,
@@ -314,20 +307,21 @@ class ServerRepository
                         'io' => (int) $server->io,
                         'cpu' => (int) $server->cpu,
                         'disk' => (int) $server->disk,
-                        'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image
+                        'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
                     ],
                     'service' => [
                         'type' => $service->file,
-                        'option' => $option->tag
+                        'option' => $option->tag,
                     ],
                     'keys' => [
-                        (string) $server->daemonSecret => $this->daemonPermissions
+                        (string) $server->daemonSecret => $this->daemonPermissions,
                     ],
-                    'rebuild' => false
-                ]
+                    'rebuild' => false,
+                ],
             ]);
 
             DB::commit();
+
             return $server->id;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -336,25 +330,23 @@ class ServerRepository
             DB::rollBack();
             throw $ex;
         }
-
     }
 
     /**
-     * [updateDetails description]
-     * @param  integer  $id
+     * [updateDetails description].
+     * @param  int  $id
      * @param  array    $data
-     * @return boolean
+     * @return bool
      */
     public function updateDetails($id, array $data)
     {
-
         $uuid = new UuidService;
         $resetDaemonKey = false;
 
         // Validate Fields
         $validator = Validator::make($data, [
             'owner' => 'email|exists:users,email',
-            'name' => 'regex:([\w -]{4,35})'
+            'name' => 'regex:([\w -]{4,35})',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -391,8 +383,9 @@ class ServerRepository
             $server->save();
 
             // Do we need to update? If not, return successful.
-            if (!$resetDaemonKey) {
+            if (! $resetDaemonKey) {
                 DB::commit();
+
                 return true;
             }
 
@@ -403,19 +396,20 @@ class ServerRepository
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'exceptions' => false,
                 'json' => [
                     'keys' => [
                         (string) $oldDaemonKey => [],
-                        (string) $server->daemonSecret => $this->daemonPermissions
-                    ]
-                ]
+                        (string) $server->daemonSecret => $this->daemonPermissions,
+                    ],
+                ],
             ]);
 
             if ($res->getStatusCode() === 204) {
                 DB::commit();
+
                 return true;
             } else {
                 throw new DisplayException('Daemon returned a a non HTTP/204 error code. HTTP/' + $res->getStatusCode());
@@ -425,11 +419,10 @@ class ServerRepository
             Log::error($ex);
             throw new DisplayException('An error occured while attempting to update this server\'s information.');
         }
-
     }
 
     /**
-     * [updateContainer description]
+     * [updateContainer description].
      * @param  int      $id
      * @param  array    $data
      * @return bool
@@ -437,7 +430,7 @@ class ServerRepository
     public function updateContainer($id, array $data)
     {
         $validator = Validator::make($data, [
-            'image' => 'required|string'
+            'image' => 'required|string',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -459,16 +452,17 @@ class ServerRepository
             $client->request('PATCH', '/server', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'json' => [
                     'build' => [
-                        'image' => $server->image
-                    ]
-                ]
+                        'image' => $server->image,
+                    ],
+                ],
             ]);
 
             DB::commit();
+
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -477,22 +471,20 @@ class ServerRepository
             DB::rollBack();
             throw $ex;
         }
-
     }
 
     /**
-     * [changeBuild description]
-     * @param  integer  $id
+     * [changeBuild description].
+     * @param  int  $id
      * @param  array    $data
-     * @return boolean
+     * @return bool
      */
     public function changeBuild($id, array $data)
     {
-
         $validator = Validator::make($data, [
             'default' => [
                 'string',
-                'regex:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5])):(\d{1,5})$/'
+                'regex:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5])):(\d{1,5})$/',
             ],
             'add_additional' => 'nullable|array',
             'remove_additional' => 'nullable|array',
@@ -500,7 +492,7 @@ class ServerRepository
             'swap' => 'integer|min:-1',
             'io' => 'integer|min:10|max:1000',
             'cpu' => 'integer|min:0',
-            'disk' => 'integer|min:0'
+            'disk' => 'integer|min:0',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -521,14 +513,14 @@ class ServerRepository
                 list($ip, $port) = explode(':', $data['default']);
                 if ($ip !== $allocation->ip || (int) $port !== $allocation->port) {
                     $selection = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
-                    if (!$selection) {
+                    if (! $selection) {
                         throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                     }
 
                     $server->allocation = $selection->id;
                     $newBuild['default'] = [
                         'ip' => $ip,
-                        'port' => (int) $port
+                        'port' => (int) $port,
                     ];
 
                     // Re-Run to keep updated for rest of function
@@ -542,7 +534,7 @@ class ServerRepository
                 foreach ($data['remove_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
-                    if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
+                    if (! filter_var($ip, FILTER_VALIDATE_IP) || ! preg_match('/^(\d{1,5})$/', $port)) {
                         break;
                     }
 
@@ -553,7 +545,7 @@ class ServerRepository
 
                     $newPorts = true;
                     Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
-                        'assigned_to' => null
+                        'assigned_to' => null,
                     ]);
                 }
             }
@@ -563,7 +555,7 @@ class ServerRepository
                 foreach ($data['add_additional'] as $id => $combo) {
                     list($ip, $port) = explode(':', $combo);
                     // Invalid, not worth killing the whole thing, we'll just skip over it.
-                    if (!filter_var($ip, FILTER_VALIDATE_IP) || !preg_match('/^(\d{1,5})$/', $port)) {
+                    if (! filter_var($ip, FILTER_VALIDATE_IP) || ! preg_match('/^(\d{1,5})$/', $port)) {
                         break;
                     }
 
@@ -574,7 +566,7 @@ class ServerRepository
 
                     $newPorts = true;
                     Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
-                        'assigned_to' => $server->id
+                        'assigned_to' => $server->id,
                     ]);
                 }
             }
@@ -584,9 +576,9 @@ class ServerRepository
             $assignments = Models\Allocation::where('assigned_to', $server->id)->get();
             foreach ($assignments as &$assignment) {
                 if (array_key_exists((string) $assignment->ip, $additionalAssignments)) {
-                    array_push($additionalAssignments[ (string) $assignment->ip ], (int) $assignment->port);
+                    array_push($additionalAssignments[(string) $assignment->ip], (int) $assignment->port);
                 } else {
-                    $additionalAssignments[ (string) $assignment->ip ] = [ (int) $assignment->port ];
+                    $additionalAssignments[(string) $assignment->ip] = [(int) $assignment->port];
                 }
             }
 
@@ -627,22 +619,23 @@ class ServerRepository
             // This won't be committed unless the HTTP request succeedes anyways
             $server->save();
 
-            if (!empty($newBuild)) {
+            if (! empty($newBuild)) {
                 $node = Models\Node::getByID($server->node);
                 $client = Models\Node::guzzleRequest($server->node);
 
                 $client->request('PATCH', '/server', [
                     'headers' => [
                         'X-Access-Server' => $server->uuid,
-                        'X-Access-Token' => $node->daemonSecret
+                        'X-Access-Token' => $node->daemonSecret,
                     ],
                     'json' => [
-                        'build' => $newBuild
-                    ]
+                        'build' => $newBuild,
+                    ],
                 ]);
             }
 
             DB::commit();
+
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -651,12 +644,10 @@ class ServerRepository
             DB::rollBack();
             throw $ex;
         }
-
     }
 
     public function updateStartup($id, array $data, $admin = false)
     {
-
         $server = Models\Server::findOrFail($id);
 
         DB::beginTransaction();
@@ -678,13 +669,13 @@ class ServerRepository
 
             $variableList = [];
             if ($variables) {
-                foreach($variables as &$variable) {
+                foreach ($variables as &$variable) {
                     // Move on if the new data wasn't even sent
-                    if (!isset($data[$variable->env_variable])) {
+                    if (! isset($data[$variable->env_variable])) {
                         $variableList = array_merge($variableList, [[
                             'id' => $variable->id,
                             'env' => $variable->env_variable,
-                            'val' => $variable->a_currentValue
+                            'val' => $variable->a_currentValue,
                         ]]);
                         continue;
                     }
@@ -694,7 +685,7 @@ class ServerRepository
                         $variableList = array_merge($variableList, [[
                             'id' => $variable->id,
                             'env' => $variable->env_variable,
-                            'val' => null
+                            'val' => null,
                         ]]);
                         continue;
                     }
@@ -708,19 +699,19 @@ class ServerRepository
                     }
 
                     // Variable hidden and/or not user editable
-                    if (($variable->user_viewable === 0 || $variable->user_editable === 0) && !$admin) {
+                    if (($variable->user_viewable === 0 || $variable->user_editable === 0) && ! $admin) {
                         throw new DisplayException('A service option variable field (' . $variable->env_variable . ') does not exist or you do not have permission to edit it.');
                     }
 
                     // Check aganist Regex Pattern
-                    if (!is_null($variable->regex) && !preg_match($variable->regex, $data[$variable->env_variable])) {
+                    if (! is_null($variable->regex) && ! preg_match($variable->regex, $data[$variable->env_variable])) {
                         throw new DisplayException('Failed to validate service option variable field (' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
                     }
 
                     $variableList = array_merge($variableList, [[
                         'id' => $variable->id,
                         'env' => $variable->env_variable,
-                        'val' => $data[$variable->env_variable]
+                        'val' => $data[$variable->env_variable],
                     ]]);
                 }
             }
@@ -728,17 +719,17 @@ class ServerRepository
             // Add Variables
             $environmentVariables = [];
             $environmentVariables = array_merge($environmentVariables, [
-                'STARTUP' => $server->startup
+                'STARTUP' => $server->startup,
             ]);
-            foreach($variableList as $item) {
+            foreach ($variableList as $item) {
                 $environmentVariables = array_merge($environmentVariables, [
-                    $item['env'] => $item['val']
+                    $item['env'] => $item['val'],
                 ]);
 
                 // Update model or make a new record if it doesn't exist.
                 $model = Models\ServerVariables::firstOrNew([
                     'variable_id' => $item['id'],
-                    'server_id' => $server->id
+                    'server_id' => $server->id,
                 ]);
                 $model->variable_value = $item['val'];
                 $model->save();
@@ -750,16 +741,17 @@ class ServerRepository
             $client->request('PATCH', '/server', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'json' => [
                     'build' => [
-                        'env|overwrite' => $environmentVariables
-                    ]
-                ]
+                        'env|overwrite' => $environmentVariables,
+                    ],
+                ],
             ]);
 
             DB::commit();
+
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -768,7 +760,6 @@ class ServerRepository
             DB::rollBack();
             throw $ex;
         }
-
     }
 
     public function deleteServer($id, $force)
@@ -792,13 +783,14 @@ class ServerRepository
         }
     }
 
-    public function deleteNow($id, $force = false) {
+    public function deleteNow($id, $force = false)
+    {
         $server = Models\Server::withTrashed()->findOrFail($id);
         $node = Models\Node::findOrFail($server->node);
 
         // Handle server being restored previously or
         // an accidental queue.
-        if (!$server->trashed()) {
+        if (! $server->trashed()) {
             return;
         }
 
@@ -806,7 +798,7 @@ class ServerRepository
         try {
             // Unassign Allocations
             Models\Allocation::where('assigned_to', $server->id)->update([
-                'assigned_to' => null
+                'assigned_to' => null,
             ]);
 
             // Remove Variables
@@ -828,7 +820,7 @@ class ServerRepository
             // This is the one un-recoverable point where
             // transactions will not save us.
             $repository = new DatabaseRepository;
-            foreach(Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
+            foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
                 $repository->drop($database->id);
             }
 
@@ -836,8 +828,8 @@ class ServerRepository
             $client->request('DELETE', '/servers', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid
-                ]
+                    'X-Access-Server' => $server->uuid,
+                ],
             ]);
 
             $server->forceDelete();
@@ -873,13 +865,14 @@ class ServerRepository
             throw new DisplayException('This server was marked as having a failed install, you cannot override this.');
         }
         $server->installed = ($server->installed === 1) ? 0 : 1;
+
         return $server->save();
     }
 
     /**
      * Suspends a server instance making it unable to be booted or used by a user.
-     * @param  integer $id
-     * @return boolean
+     * @param  int $id
+     * @return bool
      */
     public function suspend($id, $deleted = false)
     {
@@ -902,8 +895,8 @@ class ServerRepository
             $client->request('POST', '/server/suspend', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid
-                ]
+                    'X-Access-Server' => $server->uuid,
+                ],
             ]);
 
             return DB::commit();
@@ -918,8 +911,8 @@ class ServerRepository
 
     /**
      * Unsuspends a server instance.
-     * @param  integer $id
-     * @return boolean
+     * @param  int $id
+     * @return bool
      */
     public function unsuspend($id)
     {
@@ -942,8 +935,8 @@ class ServerRepository
             $client->request('POST', '/server/unsuspend', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid
-                ]
+                    'X-Access-Server' => $server->uuid,
+                ],
             ]);
 
             return DB::commit();
@@ -964,7 +957,7 @@ class ServerRepository
         $validator = Validator::make([
             'password' => $password,
         ], [
-            'password' => 'required|regex:/^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})$/'
+            'password' => 'required|regex:/^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})$/',
         ]);
 
         if ($validator->fails()) {
@@ -981,7 +974,7 @@ class ServerRepository
             $client->request('POST', '/server/password', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid
+                    'X-Access-Server' => $server->uuid,
                 ],
                 'json' => [
                     'password' => $password,
@@ -989,6 +982,7 @@ class ServerRepository
             ]);
 
             DB::commit();
+
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -997,7 +991,5 @@ class ServerRepository
             DB::rollBack();
             throw $ex;
         }
-
     }
-
 }

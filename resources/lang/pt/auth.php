@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,5 +40,5 @@ return [
     'sendlink' => 'Enviar link de troca de senha',
     'emailsent' => 'O seu email para trocar de senha está a caminho.',
     'remeberme' => 'Lembre-me',
-    'totp_failed' => 'O token TOTP dado é inválido. Por favor tenha certeza que o token gerado pelo seu dispositivo era correto.'
+    'totp_failed' => 'O token TOTP dado é inválido. Por favor tenha certeza que o token gerado pelo seu dispositivo era correto.',
 ];

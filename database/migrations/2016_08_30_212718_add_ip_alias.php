@@ -17,12 +17,12 @@ class AddIpAlias extends Migration
         });
 
         $allocations = DB::select('SELECT id, ip FROM allocations');
-        foreach($allocations as $allocation) {
+        foreach ($allocations as $allocation) {
             DB::update(
                 'UPDATE allocations SET ip_alias = :ip WHERE id = :id',
                 [
                     'ip' => $allocation->ip,
-                    'id' => $allocation->id
+                    'id' => $allocation->id,
                 ]
             );
         }

@@ -34,5 +34,4 @@ class AddForeignPermissions extends Migration
              $table->dropIndex('permissions_server_id_foreign');
          });
      }
-
 }
