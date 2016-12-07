@@ -2,7 +2,7 @@
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,15 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Alert;
-
+use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
@@ -53,16 +52,16 @@ class AccountController extends Controller
      */
     public function email(Request $request)
     {
-
         $this->validate($request, [
             'new_email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $user = $request->user();
 
-        if (!password_verify($request->input('password'), $user->password)) {
+        if (! password_verify($request->input('password'), $user->password)) {
             Alert::danger('The password provided was not valid for this account.')->flash();
+
             return redirect()->route('account');
         }
 
@@ -70,8 +69,8 @@ class AccountController extends Controller
         $user->save();
 
         Alert::success('Your email address has successfully been updated.')->flash();
-        return redirect()->route('account');
 
+        return redirect()->route('account');
     }
 
     /**
@@ -82,17 +81,17 @@ class AccountController extends Controller
      */
     public function password(Request $request)
     {
-
         $this->validate($request, [
             'current_password' => 'required',
             'new_password' => 'required|confirmed|different:current_password|' . User::PASSWORD_RULES,
-            'new_password_confirmation' => 'required'
+            'new_password_confirmation' => 'required',
         ]);
 
         $user = $request->user();
 
-        if (!password_verify($request->input('current_password'), $user->password)) {
+        if (! password_verify($request->input('current_password'), $user->password)) {
             Alert::danger('The password provided was not valid for this account.')->flash();
+
             return redirect()->route('account');
         }
 
@@ -104,6 +103,5 @@ class AccountController extends Controller
         }
 
         return redirect()->route('account');
-
     }
 }

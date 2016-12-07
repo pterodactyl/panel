@@ -2,7 +2,7 @@
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,19 +22,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Routes;
 
 use Illuminate\Routing\Router;
 
-class BaseRoutes {
-
-    public function map(Router $router) {
+class BaseRoutes
+{
+    public function map(Router $router)
+    {
 
         // Index of Panel
         $router->get('/', [
             'as' => 'index',
             'middleware' => 'auth',
-            'uses' => 'Base\IndexController@getIndex'
+            'uses' => 'Base\IndexController@getIndex',
         ]);
 
         // Handle Index. Redirect /index to /
@@ -46,7 +48,7 @@ class BaseRoutes {
         $router->get('/password-gen/{length}', [
             'as' => 'password-gen',
             'middleware' => 'auth',
-            'uses' => 'Base\IndexController@getPassword'
+            'uses' => 'Base\IndexController@getPassword',
         ]);
 
         // Account Routes
@@ -54,18 +56,18 @@ class BaseRoutes {
             'prefix' => 'account',
             'middleware' => [
                 'auth',
-                'csrf'
-            ]
+                'csrf',
+            ],
         ], function () use ($router) {
             $router->get('/', [
                 'as' => 'account',
-                'uses' => 'Base\AccountController@index'
+                'uses' => 'Base\AccountController@index',
             ]);
             $router->post('/password', [
-                'uses' => 'Base\AccountController@password'
+                'uses' => 'Base\AccountController@password',
             ]);
             $router->post('/email', [
-                'uses' => 'Base\AccountController@email'
+                'uses' => 'Base\AccountController@email',
             ]);
         });
 
@@ -74,23 +76,23 @@ class BaseRoutes {
             'prefix' => 'account/api',
             'middleware' => [
                 'auth',
-                'csrf'
-            ]
+                'csrf',
+            ],
         ], function () use ($router) {
             $router->get('/', [
                 'as' => 'account.api',
-                'uses' => 'Base\APIController@index'
+                'uses' => 'Base\APIController@index',
             ]);
             $router->get('/new', [
                 'as' => 'account.api.new',
-                'uses' => 'Base\APIController@new'
+                'uses' => 'Base\APIController@new',
             ]);
             $router->post('/new', [
-                'uses' => 'Base\APIController@save'
+                'uses' => 'Base\APIController@save',
             ]);
 
             $router->delete('/revoke/{key}', [
-                'uses' => 'Base\APIController@revoke'
+                'uses' => 'Base\APIController@revoke',
             ]);
         });
 
@@ -99,28 +101,26 @@ class BaseRoutes {
             'prefix' => 'account/security',
             'middleware' => [
                 'auth',
-                'csrf'
-            ]
+                'csrf',
+            ],
         ], function () use ($router) {
             $router->get('/', [
                 'as' => 'account.security',
-                'uses' => 'Base\SecurityController@index'
+                'uses' => 'Base\SecurityController@index',
             ]);
             $router->get('/revoke/{id}', [
                 'as' => 'account.security.revoke',
-                'uses' => 'Base\SecurityController@revoke'
+                'uses' => 'Base\SecurityController@revoke',
             ]);
             $router->put('/totp', [
-                'uses' => 'Base\SecurityController@generateTotp'
+                'uses' => 'Base\SecurityController@generateTotp',
             ]);
             $router->post('/totp', [
-                'uses' => 'Base\SecurityController@setTotp'
+                'uses' => 'Base\SecurityController@setTotp',
             ]);
             $router->delete('/totp', [
-                'uses' => 'Base\SecurityController@disableTotp'
+                'uses' => 'Base\SecurityController@disableTotp',
             ]);
         });
-
     }
-
 }

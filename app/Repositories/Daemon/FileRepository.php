@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,22 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\Daemon;
 
-use \Exception;
-use Log;
-
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Repositories\HelperRepository;
-use Pterodactyl\Exceptions\DisplayException;
-
+use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\HelperRepository;
 
 class FileRepository
 {
-
     /**
      * The Eloquent Model associated with the requested server.
      *
@@ -60,25 +56,23 @@ class FileRepository
 
     /**
      * The Guzzle Client headers associated with the requested server and node.
-     * (non-administrative headers)
+     * (non-administrative headers).
      *
      * @var array
      */
     protected $headers;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string $server The server Short UUID
      */
     public function __construct($uuid)
     {
-
         $this->server = Server::getByUUID($uuid);
         $this->node = Node::getByID($this->server->node);
         $this->client = Node::guzzleRequest($this->server->node);
         $this->headers = Server::getGuzzleHeaders($uuid);
-
     }
 
     /**
@@ -89,7 +83,6 @@ class FileRepository
      */
     public function returnFileContents($file)
     {
-
         if (empty($file)) {
             throw new Exception('Not all parameters were properly passed to the function.');
         }
@@ -98,16 +91,16 @@ class FileRepository
 
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('GET', '/server/file/stat/' . rawurlencode($file->dirname.$file->basename) , [
-            'headers' => $this->headers
+        $res = $this->client->request('GET', '/server/file/stat/' . rawurlencode($file->dirname . $file->basename), [
+            'headers' => $this->headers,
         ]);
 
         $stat = json_decode($res->getBody());
-        if($res->getStatusCode() !== 200 || !isset($stat->size)) {
+        if ($res->getStatusCode() !== 200 || ! isset($stat->size)) {
             throw new DisplayException('The daemon provided a non-200 error code on stat lookup: HTTP\\' . $res->getStatusCode());
         }
 
-        if (!in_array($stat->mime, HelperRepository::editableFiles())) {
+        if (! in_array($stat->mime, HelperRepository::editableFiles())) {
             throw new DisplayException('You cannot edit that type of file (' . $stat->mime . ') through the panel.');
         }
 
@@ -115,20 +108,19 @@ class FileRepository
             throw new DisplayException('That file is too large to open in the browser, consider using a SFTP client.');
         }
 
-        $res = $this->client->request('GET', '/server/file/f/' . rawurlencode($file->dirname.$file->basename) , [
-            'headers' => $this->headers
+        $res = $this->client->request('GET', '/server/file/f/' . rawurlencode($file->dirname . $file->basename), [
+            'headers' => $this->headers,
         ]);
 
         $json = json_decode($res->getBody());
-        if($res->getStatusCode() !== 200 || !isset($json->content)) {
+        if ($res->getStatusCode() !== 200 || ! isset($json->content)) {
             throw new DisplayException('The daemon provided a non-200 error code: HTTP\\' . $res->getStatusCode());
         }
 
         return [
             'file' => $json,
-            'stat' => $stat
+            'stat' => $stat,
         ];
-
     }
 
     /**
@@ -140,7 +132,6 @@ class FileRepository
      */
     public function saveFileContents($file, $content)
     {
-
         if (empty($file)) {
             throw new Exception('A valid file and path must be specified to save a file.');
         }
@@ -152,9 +143,9 @@ class FileRepository
         $res = $this->client->request('POST', '/server/file/save', [
             'headers' => $this->headers,
             'json' => [
-                'path' => rawurlencode($file->dirname.$file->basename),
-                'content' => $content
-            ]
+                'path' => rawurlencode($file->dirname . $file->basename),
+                'content' => $content,
+            ],
         ]);
 
         if ($res->getStatusCode() !== 204) {
@@ -162,7 +153,6 @@ class FileRepository
         }
 
         return true;
-
     }
 
     /**
@@ -173,25 +163,23 @@ class FileRepository
      */
     public function returnDirectoryListing($directory)
     {
-
         if (empty($directory)) {
             throw new Exception('A valid directory must be specified in order to list its contents.');
         }
 
         $res = $this->client->request('GET', '/server/directory/' . rawurlencode($directory), [
-            'headers' => $this->headers
+            'headers' => $this->headers,
         ]);
 
         $json = json_decode($res->getBody());
-        if($res->getStatusCode() !== 200) {
+        if ($res->getStatusCode() !== 200) {
             throw new DisplayException('An error occured while attempting to save this file. ' . $res->getBody());
         }
 
         // Iterate through results
         $files = [];
         $folders = [];
-        foreach($json as &$value) {
-
+        foreach ($json as &$value) {
             if ($value->directory === true) {
 
                 // @TODO Handle Symlinks
@@ -200,29 +188,23 @@ class FileRepository
                     'directory' => trim($directory, '/'),
                     'size' => null,
                     'date' => strtotime($value->modified),
-                    'mime' => $value->mime
+                    'mime' => $value->mime,
                 ]]);
-
-            } else if ($value->file === true) {
-
+            } elseif ($value->file === true) {
                 $files = array_merge($files, [[
                     'entry' => $value->name,
                     'directory' => trim($directory, '/'),
                     'extension' => pathinfo($value->name, PATHINFO_EXTENSION),
                     'size' => HelperRepository::bytesToHuman($value->size),
                     'date' => strtotime($value->modified),
-                    'mime' => $value->mime
+                    'mime' => $value->mime,
                 ]]);
-
             }
-
         }
 
         return (object) [
             'files' => $files,
             'folders' => $folders,
         ];
-
     }
-
 }

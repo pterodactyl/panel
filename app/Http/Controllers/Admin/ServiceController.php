@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
 use DB;
 use Log;
-use Validator;
-
+use Alert;
 use Pterodactyl\Models;
-use Pterodactyl\Repositories\ServiceRepository;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\ServiceRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServiceController extends Controller
 {
-
     public function __construct()
     {
         //
@@ -50,7 +47,7 @@ class ServiceController extends Controller
             'services' => Models\Service::select(
                     'services.*',
                     DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.service = services.id) as c_servers')
-                )->get()
+                )->get(),
         ]);
     }
 
@@ -64,9 +61,10 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Service;
             $id = $repo->create($request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully created new service!')->flash();
+
             return redirect()->route('admin.services.service', $id);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.new')->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -76,6 +74,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occured while attempting to add a new service.')->flash();
         }
+
         return redirect()->route('admin.services.new')->withInput();
     }
 
@@ -86,7 +85,7 @@ class ServiceController extends Controller
             'options' => Models\ServiceOptions::select(
                     'service_options.*',
                     DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.option = service_options.id) as c_servers')
-                )->where('parent_service', $service)->get()
+                )->where('parent_service', $service)->get(),
         ]);
     }
 
@@ -95,7 +94,7 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Service;
             $repo->update($service, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully updated this service.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -106,6 +105,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occurred while attempting to update this service.')->flash();
         }
+
         return redirect()->route('admin.services.service', $service)->withInput();
     }
 
@@ -115,6 +115,7 @@ class ServiceController extends Controller
             $repo = new ServiceRepository\Service;
             $repo->delete($service);
             Alert::success('Successfully deleted that service.')->flash();
+
             return redirect()->route('admin.services');
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -122,12 +123,14 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error was encountered while attempting to delete that service.')->flash();
         }
+
         return redirect()->route('admin.services.service', $service);
     }
 
     public function getOption(Request $request, $service, $option)
     {
         $opt = Models\ServiceOptions::findOrFail($option);
+
         return view('admin.services.options.view', [
             'service' => Models\Service::findOrFail($opt->parent_service),
             'option' => $opt,
@@ -135,7 +138,7 @@ class ServiceController extends Controller
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail')
                 ->join('users', 'users.id', '=', 'servers.owner')
                 ->where('option', $option)
-                ->paginate(10)
+                ->paginate(10),
         ]);
     }
 
@@ -144,7 +147,7 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Option;
             $repo->update($option, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Option settings successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -153,6 +156,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occured while attempting to modify this option.')->flash();
         }
+
         return redirect()->route('admin.services.option', [$service, $option])->withInput();
     }
 
@@ -164,6 +168,7 @@ class ServiceController extends Controller
             $repo->delete($option);
 
             Alert::success('Successfully deleted that option.')->flash();
+
             return redirect()->route('admin.services.service', $service->parent_service);
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -171,6 +176,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error was encountered while attempting to delete this option.')->flash();
         }
+
         return redirect()->route('admin.services.option', [$service, $option]);
     }
 
@@ -184,18 +190,19 @@ class ServiceController extends Controller
             $data = [
                 'user_viewable' => '0',
                 'user_editable' => '0',
-                'required' => '0'
+                'required' => '0',
             ];
-            foreach($request->except(['_token']) as $id => $val) {
-                $data[str_replace($variable.'_', '', $id)] = $val;
+            foreach ($request->except(['_token']) as $id => $val) {
+                $data[str_replace($variable . '_', '', $id)] = $val;
             }
             $repo->update($variable, $data);
             Alert::success('Successfully updated variable.')->flash();
         } catch (DisplayValidationException $ex) {
             $data = [];
-            foreach(json_decode($ex->getMessage(), true) as $id => $val) {
-                $data[$variable.'_'.$id] = $val;
+            foreach (json_decode($ex->getMessage(), true) as $id => $val) {
+                $data[$variable . '_' . $id] = $val;
             }
+
             return redirect()->route('admin.services.option', [$service, $option])->withErrors((object) $data)->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -203,6 +210,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occurred while attempting to update this service.')->flash();
         }
+
         return redirect()->route('admin.services.option', [$service, $option])->withInput();
     }
 
@@ -210,7 +218,7 @@ class ServiceController extends Controller
     {
         return view('admin.services.options.variable', [
             'service' => Models\Service::findOrFail($service),
-            'option' => Models\ServiceOptions::where('parent_service', $service)->where('id', $option)->firstOrFail()
+            'option' => Models\ServiceOptions::where('parent_service', $service)->where('id', $option)->firstOrFail(),
         ]);
     }
 
@@ -219,9 +227,10 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Variable;
             $repo->create($option, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully added new variable to this option.')->flash();
+
             return redirect()->route('admin.services.option', [$service, $option])->withInput();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.variable.new', [$service, $option])->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -231,6 +240,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occurred while attempting to add this variable.')->flash();
         }
+
         return redirect()->route('admin.services.option.variable.new', [$service, $option])->withInput();
     }
 
@@ -246,9 +256,10 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Option;
             $id = $repo->create($service, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully created new service option.')->flash();
+
             return redirect()->route('admin.services.option', [$service, $id]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.new', $service)->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -256,6 +267,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occured while attempting to add this service option.')->flash();
         }
+
         return redirect()->route('admin.services.option.new', $service)->withInput();
     }
 
@@ -271,7 +283,7 @@ class ServiceController extends Controller
             Log::error($ex);
             Alert::danger('An error occured while attempting to delete that variable.')->flash();
         }
+
         return redirect()->route('admin.services.option', [$service, $option]);
     }
-
 }

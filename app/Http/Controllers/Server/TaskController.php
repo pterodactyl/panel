@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Server;
 
-use Alert;
 use Log;
-use Cron;
-
-use Pterodactyl\Repositories;
+use Alert;
 use Pterodactyl\Models;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Pterodactyl\Repositories;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class TaskController extends Controller
 {
@@ -53,8 +51,8 @@ class TaskController extends Controller
             'tasks' => Models\Task::where('server', $server->id)->get(),
             'actions' => [
                 'command' => 'Send Command',
-                'power' => 'Set Power Status'
-            ]
+                'power' => 'Set Power Status',
+            ],
         ]);
     }
 
@@ -65,7 +63,7 @@ class TaskController extends Controller
 
         return view('server.tasks.new', [
             'server' => $server,
-            'node' => Models\Node::findOrFail($server->node)
+            'node' => Models\Node::findOrFail($server->node),
         ]);
     }
 
@@ -77,7 +75,7 @@ class TaskController extends Controller
         try {
             $repo = new Repositories\TaskRepository;
             $repo->create($server->id, $request->except([
-                '_token'
+                '_token',
             ]));
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.tasks', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -87,8 +85,8 @@ class TaskController extends Controller
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to create this task.')->flash();
         }
-        return redirect()->route('server.tasks', $uuid);
 
+        return redirect()->route('server.tasks', $uuid);
     }
 
     public function getView(Request $request, $uuid, $id)
@@ -99,7 +97,7 @@ class TaskController extends Controller
         return view('server.tasks.view', [
             'server' => $server,
             'node' => Models\Node::findOrFail($server->node),
-            'task' => Models\Task::where('id', $id)->where('server', $server->id)->firstOrFail()
+            'task' => Models\Task::where('id', $id)->where('server', $server->id)->firstOrFail(),
         ]);
     }
 
@@ -110,20 +108,22 @@ class TaskController extends Controller
 
         $task = Models\Task::findOrFail($id);
 
-        if (!$task || $server->id !== $task->server) {
+        if (! $task || $server->id !== $task->server) {
             return response()->json([
-                'error' => 'No task by that ID was found associated with this server.'
+                'error' => 'No task by that ID was found associated with this server.',
             ], 404);
         }
 
         try {
             $repo = new Repositories\TaskRepository;
             $repo->delete($id);
+
             return response()->json([], 204);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'A server error occured while attempting to delete this task.'
+                'error' => 'A server error occured while attempting to delete this task.',
             ], 503);
         }
     }
@@ -135,22 +135,24 @@ class TaskController extends Controller
 
         $task = Models\Task::findOrFail($id);
 
-        if (!$task || $server->id !== $task->server) {
+        if (! $task || $server->id !== $task->server) {
             return response()->json([
-                'error' => 'No task by that ID was found associated with this server.'
+                'error' => 'No task by that ID was found associated with this server.',
             ], 404);
         }
 
         try {
             $repo = new Repositories\TaskRepository;
             $resp = $repo->toggle($id);
+
             return response()->json([
-                'status' => $resp
+                'status' => $resp,
             ]);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'A server error occured while attempting to toggle this task.'
+                'error' => 'A server error occured while attempting to toggle this task.',
             ], 503);
         }
     }

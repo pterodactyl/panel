@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Services;
 
 use Cache;
@@ -28,11 +29,10 @@ use GuzzleHttp\Client;
 
 class VersionService
 {
-
     protected static $versions;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -78,7 +78,7 @@ class VersionService
             return true;
         }
 
-        return (version_compare(config('app.version'), self::$versions->panel) >= 0);
+        return version_compare(config('app.version'), self::$versions->panel) >= 0;
     }
 
     public static function isLatestDaemon($daemon)
@@ -87,7 +87,6 @@ class VersionService
             return true;
         }
 
-        return (version_compare($daemon, self::$versions->daemon) >= 0);
+        return version_compare($daemon, self::$versions->daemon) >= 0;
     }
-
 }

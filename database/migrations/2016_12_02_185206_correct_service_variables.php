@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class CorrectServiceVariables extends Migration
@@ -38,7 +36,7 @@ class CorrectServiceVariables extends Migration
                 ['name', 'Server Jar File'],
                 ['env_variable', 'VANILLA_VERSION'],
                 ['default_value', 'latest'],
-                ['regex', '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/']
+                ['regex', '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'],
             ])->update([
                 'name' => 'Server Version',
                 'regex' => '/^(latest|[a-zA-Z0-9_\.-]{3,7})$/',

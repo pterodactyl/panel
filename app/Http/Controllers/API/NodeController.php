@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API;
 
-use Illuminate\Http\Request;
-
 use Pterodactyl\Models;
-use Pterodactyl\Transformers\NodeTransformer;
-use Pterodactyl\Transformers\AllocationTransformer;
-use Pterodactyl\Repositories\NodeRepository;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
-use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\NodeRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
@@ -42,14 +39,13 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
  */
 class NodeController extends BaseController
 {
-
     public function __construct()
     {
         //
     }
 
     /**
-     * List All Nodes
+     * List All Nodes.
      *
      * Lists all nodes currently on the system.
      *
@@ -66,7 +62,7 @@ class NodeController extends BaseController
     }
 
     /**
-     * Create a New Node
+     * Create a New Node.
      *
      * @Post("/nodes")
      * @Versions({"v1"})
@@ -102,7 +98,8 @@ class NodeController extends BaseController
         try {
             $node = new NodeRepository;
             $new = $node->create($request->all());
-            return [ 'id' => $new ];
+
+            return ['id' => $new];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -113,7 +110,7 @@ class NodeController extends BaseController
     }
 
     /**
-     * List Specific Node
+     * List Specific Node.
      *
      * Lists specific fields about a server or all fields pertaining to that node.
      *
@@ -129,16 +126,16 @@ class NodeController extends BaseController
     {
         $node = Models\Node::where('id', $id);
 
-        if (!is_null($request->input('fields'))) {
-            foreach(explode(',', $request->input('fields')) as $field) {
-                if (!empty($field)) {
+        if (! is_null($request->input('fields'))) {
+            foreach (explode(',', $request->input('fields')) as $field) {
+                if (! empty($field)) {
                     $node->addSelect($field);
                 }
             }
         }
 
         try {
-            if (!$node->first()) {
+            if (! $node->first()) {
                 throw new NotFoundHttpException('No node by that ID was found.');
             }
 
@@ -146,8 +143,8 @@ class NodeController extends BaseController
                 'node' => $node->first(),
                 'allocations' => [
                     'assigned' => Models\Allocation::where('node', $id)->whereNotNull('assigned_to')->get(),
-                    'unassigned' => Models\Allocation::where('node', $id)->whereNull('assigned_to')->get()
-                ]
+                    'unassigned' => Models\Allocation::where('node', $id)->whereNull('assigned_to')->get(),
+                ],
             ];
         } catch (NotFoundHttpException $ex) {
             throw $ex;
@@ -158,12 +155,12 @@ class NodeController extends BaseController
 
     public function config(Request $request, $id)
     {
-        if (!$request->secure()) {
+        if (! $request->secure()) {
             throw new BadRequestHttpException('This API route can only be accessed using a secure connection.');
         }
 
         $node = Models\Node::where('id', $id)->first();
-        if (!$node) {
+        if (! $node) {
             throw new NotFoundHttpException('No node by that ID was found.');
         }
 
@@ -174,89 +171,89 @@ class NodeController extends BaseController
                 'ssl' => [
                     'enabled' => ($node->scheme === 'https'),
                     'certificate' => '/etc/certs/' . $node->fqdn . '/fullchain.pem',
-                    'key' => '/etc/certs/' . $node->fqdn . '/privkey.pem'
-                ]
+                    'key' => '/etc/certs/' . $node->fqdn . '/privkey.pem',
+                ],
             ],
             'docker' => [
                 'socket' => '/var/run/docker.sock',
-                'autoupdate_images' => true
+                'autoupdate_images' => true,
             ],
             'sftp' => [
                 'path' => $node->daemonBase,
                 'port' => (int) $node->daemonSFTP,
-                'container' => 'ptdl-sftp'
+                'container' => 'ptdl-sftp',
             ],
             'query' => [
                 'kill_on_fail' => true,
-                'fail_limit' => 5
+                'fail_limit' => 5,
             ],
             'logger' => [
                 'path' => 'logs/',
                 'src' => false,
                 'level' => 'info',
                 'period' => '1d',
-                'count' => 3
+                'count' => 3,
             ],
             'remote' => [
                 'base' => config('app.url'),
                 'download' => route('remote.download'),
-                'installed' => route('remote.install')
+                'installed' => route('remote.install'),
             ],
             'uploads' => [
-                'size_limit' => $node->upload_size
+                'size_limit' => $node->upload_size,
             ],
             'keys' => [
-                $node->daemonSecret
+                $node->daemonSecret,
             ],
         ];
     }
 
-    /**
-     * List all Node Allocations
-     *
-     * Returns a listing of all allocations for every node.
-     *
-     * @Get("/nodes/allocations")
-     * @Versions({"v1"})
-     * @Response(200)
-     */
+     /**
+      * List all Node Allocations.
+      *
+      * Returns a listing of all allocations for every node.
+      *
+      * @Get("/nodes/allocations")
+      * @Versions({"v1"})
+      * @Response(200)
+      */
      public function allocations(Request $request)
      {
          $allocations = Models\Allocation::all();
          if ($allocations->count() < 1) {
              throw new NotFoundHttpException('No allocations have been created.');
          }
+
          return $allocations;
      }
-	 
-    /**
-     * List Node Allocation based on assigned to ID
-     *
-     * Returns a listing of the allocation for the specified server id.
-     *
-     * @Get("/nodes/allocations/{id}")
-     * @Versions({"v1"})
-     * @Response(200)
-     */
+
+     /**
+      * List Node Allocation based on assigned to ID.
+      *
+      * Returns a listing of the allocation for the specified server id.
+      *
+      * @Get("/nodes/allocations/{id}")
+      * @Versions({"v1"})
+      * @Response(200)
+      */
      public function allocationsView(Request $request, $id)
      {
-        $query = Models\Allocation::where('assigned_to', $id)->get();
-        try {
-			
-            if (empty($query)) {
-                throw new NotFoundHttpException('No allocations for that server were found.');
-            }
-    
-            return $query;
-        } catch (NotFoundHttpException $ex) {
-            throw $ex;
-        } catch (\Exception $ex) {
-            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
-        }
-    }
+         $query = Models\Allocation::where('assigned_to', $id)->get();
+         try {
+             if (empty($query)) {
+                 throw new NotFoundHttpException('No allocations for that server were found.');
+             }
+
+             return $query;
+         } catch (NotFoundHttpException $ex) {
+             throw $ex;
+         } catch (\Exception $ex) {
+             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
+         }
+     }
 
     /**
-     * Delete Node
+     * Delete Node.
      *
      * @Delete("/nodes/{id}")
      * @Versions({"v1"})
@@ -270,12 +267,12 @@ class NodeController extends BaseController
         try {
             $node = new NodeRepository;
             $node->delete($id);
+
             return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new ServiceUnavailableHttpException('An error occured while attempting to delete this node.');
         }
     }
-
 }

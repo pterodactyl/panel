@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
 use DB;
 use Log;
-
+use Alert;
 use Pterodactyl\Models;
-use Pterodactyl\Repositories\DatabaseRepository;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\DatabaseRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class DatabaseController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -63,7 +61,7 @@ class DatabaseController extends Controller
                     'nodes.name as a_linkedNode',
                     DB::raw('(SELECT COUNT(*) FROM `databases` WHERE `databases`.`db_server` = database_servers.id) as c_databases')
                 )->leftJoin('nodes', 'nodes.id', '=', 'database_servers.linked_node')
-                ->paginate(20)
+                ->paginate(20),
         ]);
     }
 
@@ -72,7 +70,7 @@ class DatabaseController extends Controller
         return view('admin.databases.new', [
             'nodes' => Models\Node::select('nodes.id', 'nodes.name', 'locations.long as a_location')
                 ->join('locations', 'locations.id', '=', 'nodes.location')
-                ->get()
+                ->get(),
         ]);
     }
 
@@ -81,12 +79,13 @@ class DatabaseController extends Controller
         try {
             $repo = new DatabaseRepository;
             $repo->add($request->except([
-                '_token'
+                '_token',
             ]));
 
             Alert::success('Successfully added a new database server to the system.')->flash();
+
             return redirect()->route('admin.databases', [
-                'tab' => 'tab_dbservers'
+                'tab' => 'tab_dbservers',
             ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.databases.new')->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -97,6 +96,7 @@ class DatabaseController extends Controller
                 Log::error($ex);
                 Alert::danger('An error occurred while attempting to delete this database server from the system.')->flash();
             }
+
             return redirect()->route('admin.databases.new')->withInput();
         }
     }
@@ -108,8 +108,9 @@ class DatabaseController extends Controller
             $repo->drop($id);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database from the system.'
+                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database from the system.',
             ], 500);
         }
     }
@@ -121,10 +122,10 @@ class DatabaseController extends Controller
             $repo->delete($id);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database server from the system.'
+                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database server from the system.',
             ], 500);
         }
     }
-
 }

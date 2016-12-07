@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-namespace Pterodactyl\Http\Controllers\API;
 
-use Illuminate\Http\Request;
+namespace Pterodactyl\Http\Controllers\API;
 
 use Log;
 use Pterodactyl\Models;
-use Pterodactyl\Transformers\ServerTransformer;
-use Pterodactyl\Repositories\ServerRepository;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
-use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\ServerRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
@@ -42,14 +40,13 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
  */
 class ServerController extends BaseController
 {
-
     public function __construct()
     {
         //
     }
 
     /**
-     * List All Servers
+     * List All Servers.
      *
      * Lists all servers currently on the system.
      *
@@ -66,18 +63,19 @@ class ServerController extends BaseController
     }
 
     /**
-    * Create Server
-    *
-    * @Post("/servers")
-    * @Versions({"v1"})
-    * @Response(201)
+     * Create Server.
+     *
+     * @Post("/servers")
+     * @Versions({"v1"})
+     * @Response(201)
      */
     public function create(Request $request)
     {
         try {
             $server = new ServerRepository;
             $new = $server->create($request->all());
-            return [ 'id' => $new ];
+
+            return ['id' => $new];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -89,7 +87,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * List Specific Server
+     * List Specific Server.
      *
      * Lists specific fields about a server or all fields pertaining to that server.
      *
@@ -105,16 +103,16 @@ class ServerController extends BaseController
     {
         $query = Models\Server::where('id', $id);
 
-        if (!is_null($request->input('fields'))) {
-            foreach(explode(',', $request->input('fields')) as $field) {
-                if (!empty($field)) {
+        if (! is_null($request->input('fields'))) {
+            foreach (explode(',', $request->input('fields')) as $field) {
+                if (! empty($field)) {
                     $query->addSelect($field);
                 }
             }
         }
 
         try {
-            if (!$query->first()) {
+            if (! $query->first()) {
                 throw new NotFoundHttpException('No server by that ID was found.');
             }
 
@@ -126,8 +124,8 @@ class ServerController extends BaseController
 
                 $response = $client->request('GET', '/servers', [
                     'headers' => [
-                        'X-Access-Token' => $node->daemonSecret
-                    ]
+                        'X-Access-Token' => $node->daemonSecret,
+                    ],
                 ]);
 
                 // Only return the daemon token if the request is using HTTPS
@@ -140,14 +138,14 @@ class ServerController extends BaseController
             }
 
             return $server->toArray();
-
         } catch (NotFoundHttpException $ex) {
             throw $ex;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             // Couldn't hit the daemon, return what we have though.
             $server->daemon = [
-                'error' => 'There was an error encountered while attempting to connect to the remote daemon.'
+                'error' => 'There was an error encountered while attempting to connect to the remote daemon.',
             ];
+
             return $server->toArray();
         } catch (\Exception $ex) {
             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
@@ -155,7 +153,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * Update Server configuration
+     * Update Server configuration.
      *
      * Updates display information on panel.
      *
@@ -179,6 +177,7 @@ class ServerController extends BaseController
         try {
             $server = new ServerRepository;
             $server->updateDetails($id, $request->all());
+
             return Models\Server::findOrFail($id);
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
@@ -190,7 +189,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * Update Server Build Configuration
+     * Update Server Build Configuration.
      *
      * Updates server build information on panel and on node.
      *
@@ -223,6 +222,7 @@ class ServerController extends BaseController
         try {
             $server = new ServerRepository;
             $server->changeBuild($id, $request->all());
+
             return Models\Server::findOrFail($id);
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
@@ -234,7 +234,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * Suspend Server
+     * Suspend Server.
      *
      * @Post("/servers/{id}/suspend")
      * @Versions({"v1"})
@@ -248,6 +248,7 @@ class ServerController extends BaseController
         try {
             $server = new ServerRepository;
             $server->suspend($id);
+
             return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
@@ -257,7 +258,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * Unsuspend Server
+     * Unsuspend Server.
      *
      * @Post("/servers/{id}/unsuspend")
      * @Versions({"v1"})
@@ -271,6 +272,7 @@ class ServerController extends BaseController
         try {
             $server = new ServerRepository;
             $server->unsuspend($id);
+
             return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
@@ -280,7 +282,7 @@ class ServerController extends BaseController
     }
 
     /**
-     * Delete Server
+     * Delete Server.
      *
      * @Delete("/servers/{id}/{force}")
      * @Versions({"v1"})
@@ -295,12 +297,12 @@ class ServerController extends BaseController
         try {
             $server = new ServerRepository;
             $server->deleteServer($id, $force);
+
             return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new ServiceUnavailableHttpException('An error occured while attempting to delete this server.');
         }
     }
-
 }

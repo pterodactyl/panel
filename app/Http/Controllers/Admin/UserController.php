@@ -2,7 +2,7 @@
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
-use Settings;
-use Mail;
 use Log;
-use Pterodactyl\Models\User;
-use Pterodactyl\Repositories\UserRepository;
-use Pterodactyl\Models\Server;
-
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
+use Alert;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -52,9 +48,9 @@ class UserController extends Controller
     public function getIndex(Request $request)
     {
         $query = User::select('users.*');
-        if ($request->input('filter') && !is_null($request->input('filter'))) {
+        if ($request->input('filter') && ! is_null($request->input('filter'))) {
             preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
-            foreach($matches[0] as $match) {
+            foreach ($matches[0] as $match) {
                 $match = str_replace('"', '', $match);
                 if (strpos($match, ':')) {
                     list($field, $term) = explode(':', $match);
@@ -63,7 +59,7 @@ class UserController extends Controller
                     $query->where('email', 'LIKE', '%' . $match . '%');
                     $query->orWhere([
                         ['uuid', 'LIKE', '%' . $match . '%'],
-                        ['root_admin', 'LIKE', '%' . $match . '%']
+                        ['root_admin', 'LIKE', '%' . $match . '%'],
                     ]);
                 }
             }
@@ -77,7 +73,7 @@ class UserController extends Controller
         }
 
         return view('admin.users.index', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 
@@ -104,13 +100,15 @@ class UserController extends Controller
             $repo = new UserRepository;
             $repo->delete($id);
             Alert::success('Successfully deleted user from system.')->flash();
+
             return redirect()->route('admin.users');
-        } catch(DisplayException $ex) {
+        } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An exception was encountered while attempting to delete this user.')->flash();
         }
+
         return redirect()->route('admin.users.view', $id);
     }
 
@@ -120,12 +118,14 @@ class UserController extends Controller
             $user = new UserRepository;
             $userid = $user->create($request->input('email'), $request->input('password'));
             Alert::success('Account has been successfully created.')->flash();
+
             return redirect()->route('admin.users.view', $userid);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.users.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An error occured while attempting to add a new user.')->flash();
+
             return redirect()->route('admin.users.new');
         }
     }
@@ -152,15 +152,16 @@ class UserController extends Controller
             Log::error($e);
             Alert::danger('An error occured while attempting to update this user.')->flash();
         }
+
         return redirect()->route('admin.users.view', $user);
     }
 
     public function getJson(Request $request)
     {
-        foreach(User::select('email')->get() as $user) {
+        foreach (User::select('email')->get() as $user) {
             $resp[] = $user->email;
         }
+
         return $resp;
     }
-
 }

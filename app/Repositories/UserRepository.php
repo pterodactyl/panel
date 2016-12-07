@@ -2,7 +2,7 @@
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,26 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use DB;
-use Settings;
-use Hash;
-use Validator;
-use Mail;
-use Carbon;
 use Auth;
-
+use Hash;
+use Carbon;
+use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
-use Pterodactyl\Notifications\AccountCreated;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Notifications\AccountCreated;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserRepository
 {
-
     public function __construct()
     {
         //
@@ -54,7 +50,7 @@ class UserRepository
      * @param  string|null  $password An unhashed version of the user's password.
      * @param  bool         $admin    Boolean value if user should be an admin or not.
      * @param  int          $token    A custom user ID.
-     * @return bool|integer
+     * @return bool|int
      */
     public function create($email, $password = null, $admin = false, $token = null)
     {
@@ -83,7 +79,7 @@ class UserRepository
             $uuid = new UuidService;
 
             // Support for API Services
-            if (!is_null($token)) {
+            if (! is_null($token)) {
                 $user->id = $token;
             }
 
@@ -99,12 +95,13 @@ class UserRepository
             DB::table('password_resets')->insert([
                 'email' => $user->email,
                 'token' => $token,
-                'created_at' => Carbon::now()->toDateTimeString()
+                'created_at' => Carbon::now()->toDateTimeString(),
             ]);
 
             $user->notify((new AccountCreated($token)));
 
             DB::commit();
+
             return $user->id;
         } catch (\Exception $ex) {
             DB::rollBack();
@@ -115,9 +112,9 @@ class UserRepository
     /**
      * Updates a user on the panel.
      *
-     * @param  integer $id
+     * @param  int $id
      * @param  array $data An array of columns and their associated values to update for the user.
-     * @return boolean
+     * @return bool
      */
     public function update($id, array $data)
     {
@@ -129,7 +126,7 @@ class UserRepository
             'root_admin' => 'sometimes|required|boolean',
             'language' => 'sometimes|required|string|min:1|max:5',
             'use_totp' => 'sometimes|required|boolean',
-            'totp_secret' => 'sometimes|required|size:16'
+            'totp_secret' => 'sometimes|required|size:16',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -138,7 +135,7 @@ class UserRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        if(array_key_exists('password', $data)) {
+        if (array_key_exists('password', $data)) {
             $data['password'] = Hash::make($data['password']);
         }
 
@@ -153,18 +150,18 @@ class UserRepository
     /**
      * Deletes a user on the panel, returns the number of records deleted.
      *
-     * @param  integer $id
-     * @return integer
+     * @param  int $id
+     * @return int
      */
     public function delete($id)
     {
-        if(Models\Server::where('owner', $id)->count() > 0) {
+        if (Models\Server::where('owner', $id)->count() > 0) {
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
         }
 
         // @TODO: this should probably be checked outside of this method because we won't always have Auth::user()
-        if(!is_null(Auth::user()) && Auth::user()->id === $id) {
-          throw new DisplayException('Cannot delete your own account.');
+        if (! is_null(Auth::user()) && Auth::user()->id === $id) {
+            throw new DisplayException('Cannot delete your own account.');
         }
 
         DB::beginTransaction();
@@ -175,11 +172,11 @@ class UserRepository
             Models\User::destroy($id);
 
             DB::commit();
+
             return true;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
         }
     }
-
 }

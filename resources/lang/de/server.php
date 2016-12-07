@@ -3,7 +3,7 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
  * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
- * Translated by Jakob Schrettenbrunner <dev@schrej.net>
+ * Translated by Jakob Schrettenbrunner <dev@schrej.net>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

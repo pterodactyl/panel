@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\ServiceRepository;
 
 use DB;
-use Validator;
 use Uuid;
-
+use Validator;
 use Pterodactyl\Models;
-use Pterodactyl\Services\UuidService;
-
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class Service
 {
-
     public function __construct()
     {
         //
@@ -48,7 +45,7 @@ class Service
             'description' => 'required|string',
             'file' => 'required|regex:/^[\w.-]{1,50}$/',
             'executable' => 'max:255|regex:/^(.*)$/',
-            'startup' => 'string'
+            'startup' => 'string',
         ]);
 
         if ($validator->fails()) {
@@ -77,7 +74,7 @@ class Service
             'description' => 'sometimes|required|string',
             'file' => 'sometimes|required|regex:/^[\w.-]{1,50}$/',
             'executable' => 'sometimes|max:255|regex:/^(.*)$/',
-            'startup' => 'sometimes|string'
+            'startup' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -109,5 +106,4 @@ class Service
             throw $ex;
         }
     }
-
 }

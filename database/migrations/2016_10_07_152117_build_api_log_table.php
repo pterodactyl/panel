@@ -24,7 +24,6 @@ class BuildApiLogTable extends Migration
             $table->text('user_agent');
             $table->ipAddress('request_ip');
             $table->timestampsTz();
-
         });
     }
 

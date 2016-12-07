@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\Daemon;
 
+use GuzzleHttp\Client;
 use Pterodactyl\Models;
+use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-
-class CommandRepository {
-
+class CommandRepository
+{
     protected $server;
     protected $node;
     protected $client;
@@ -43,9 +43,9 @@ class CommandRepository {
     }
 
     /**
-     * [send description]
+     * [send description].
      * @param  string   $command
-     * @return boolean
+     * @return bool
      * @throws DisplayException
      * @throws RequestException
      */
@@ -59,11 +59,11 @@ class CommandRepository {
             $response = $this->client->request('POST', '/server/command', [
                 'headers' => [
                     'X-Access-Token' => $this->server->daemonSecret,
-                    'X-Access-Server' => $this->server->uuid
+                    'X-Access-Server' => $this->server->uuid,
                 ],
                 'json' => [
-                    'command' => $command
-                ]
+                    'command' => $command,
+                ],
             ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
@@ -75,5 +75,4 @@ class CommandRepository {
             throw $ex;
         }
     }
-
 }

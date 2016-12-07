@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API\User;
 
-use Auth;
 use Log;
+use Auth;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
-
 use Pterodactyl\Http\Controllers\API\BaseController;
 
 class ServerController extends BaseController
 {
-
     public function info(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
@@ -43,28 +42,29 @@ class ServerController extends BaseController
             $response = $client->request('GET', '/server', [
                 'headers' => [
                     'X-Access-Token' => $server->daemonSecret,
-                    'X-Access-Server' => $server->uuid
-                ]
+                    'X-Access-Server' => $server->uuid,
+                ],
             ]);
 
             $json = json_decode($response->getBody());
             $daemon = [
                 'status' => $json->status,
                 'stats' => $json->proc,
-                'query' =>  $json->query
+                'query' =>  $json->query,
             ];
         } catch (\Exception $ex) {
             $daemon = [
-                'error' => 'An error was encountered while trying to connect to the daemon to collece information. It might be offline.'
+                'error' => 'An error was encountered while trying to connect to the daemon to collece information. It might be offline.',
             ];
             Log::error($ex);
         }
 
         $allocations = Models\Allocation::select('id', 'ip', 'port', 'ip_alias as alias')->where('assigned_to', $server->id)->get();
-        foreach($allocations as &$allocation) {
+        foreach ($allocations as &$allocation) {
             $allocation->default = ($allocation->id === $server->allocation);
             unset($allocation->id);
         }
+
         return [
             'uuidShort' => $server->uuidShort,
             'uuid' => $server->uuid,
@@ -76,16 +76,16 @@ class ServerController extends BaseController
                 'disk' => $server->disk,
                 'io' => $server->io,
                 'cpu' => $server->cpu,
-                'oom_disabled' => (bool) $server->oom_disabled
+                'oom_disabled' => (bool) $server->oom_disabled,
             ],
             'allocations' => $allocations,
             'sftp' => [
-                'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null
+                'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null,
             ],
             'daemon' => [
                 'token' => ($request->secure()) ? $server->daemonSecret : false,
-                'response' => $daemon
-            ]
+                'response' => $daemon,
+            ],
         ];
     }
 
@@ -100,12 +100,12 @@ class ServerController extends BaseController
         $res = $client->request('PUT', '/server/power', [
             'headers' => [
                 'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $server->daemonSecret
+                'X-Access-Token' => $server->daemonSecret,
             ],
             'exceptions' => false,
             'json' => [
-                'action' => $request->input('action')
-            ]
+                'action' => $request->input('action'),
+            ],
         ]);
 
         if ($res->getStatusCode() !== 204) {

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
-use Debugbar;
-use Log;
 use DB;
+use Log;
+use Alert;
 use Validator;
-
 use Pterodactyl\Models;
-use Pterodactyl\Repositories\NodeRepository;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\NodeRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class NodesController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -50,7 +47,7 @@ class NodesController extends Controller
 
     public function getScript(Request $request, $id)
     {
-        return response()->view('admin.nodes.remote.deploy', [ 'node' => Models\Node::findOrFail($id) ])->header('Content-Type', 'text/plain');
+        return response()->view('admin.nodes.remote.deploy', ['node' => Models\Node::findOrFail($id)])->header('Content-Type', 'text/plain');
     }
 
     public function getIndex(Request $request)
@@ -66,13 +63,14 @@ class NodesController extends Controller
 
     public function getNew(Request $request)
     {
-        if (!Models\Location::all()->count()) {
+        if (! Models\Location::all()->count()) {
             Alert::warning('You must add a location before you can add a new node.')->flash();
+
             return redirect()->route('admin.locations');
         }
 
         return view('admin.nodes.new', [
-            'locations' => Models\Location::all()
+            'locations' => Models\Location::all(),
         ]);
     }
 
@@ -81,12 +79,13 @@ class NodesController extends Controller
         try {
             $node = new NodeRepository;
             $new = $node->create($request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully created new node. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
+
             return redirect()->route('admin.nodes.view', [
                 'id' => $new,
-                'tab' => 'tab_allocation'
+                'tab' => 'tab_allocation',
             ]);
         } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.new')->withErrors(json_decode($e->getMessage()))->withInput();
@@ -96,6 +95,7 @@ class NodesController extends Controller
             Log::error($e);
             Alert::danger('An unhandled exception occured while attempting to add this node. Please try again.')->flash();
         }
+
         return redirect()->route('admin.nodes.new')->withInput();
     }
 
@@ -129,12 +129,13 @@ class NodesController extends Controller
         try {
             $node = new NodeRepository;
             $node->update($id, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully update this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
+
             return redirect()->route('admin.nodes.view', [
                 'id' => $id,
-                'tab' => 'tab_settings'
+                'tab' => 'tab_settings',
             ]);
         } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.view', $id)->withErrors(json_decode($e->getMessage()))->withInput();
@@ -144,9 +145,10 @@ class NodesController extends Controller
             Log::error($e);
             Alert::danger('An unhandled exception occured while attempting to edit this node. Please try again.')->flash();
         }
+
         return redirect()->route('admin.nodes.view', [
             'id' => $id,
-            'tab' => 'tab_settings'
+            'tab' => 'tab_settings',
         ])->withInput();
     }
 
@@ -155,9 +157,10 @@ class NodesController extends Controller
         $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('id', $allocation)->delete();
         if ((int) $query === 0) {
             return response()->json([
-                'error' => 'Unable to find an allocation matching those details to delete.'
+                'error' => 'Unable to find an allocation matching those details to delete.',
             ], 400);
         }
+
         return response('', 204);
     }
 
@@ -166,21 +169,23 @@ class NodesController extends Controller
         $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('ip', $request->input('ip'))->delete();
         if ((int) $query === 0) {
             Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
+
             return redirect()->route('admin.nodes.view', [
                 'id' => $node,
-                'tab' => 'tab_allocations'
+                'tab' => 'tab_allocations',
             ]);
         }
         Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
+
         return redirect()->route('admin.nodes.view', [
             'id' => $node,
-            'tab' => 'tab_allocation'
+            'tab' => 'tab_allocation',
         ]);
     }
 
     public function setAlias(Request $request, $node)
     {
-        if (!$request->input('allocation')) {
+        if (! $request->input('allocation')) {
             return response('Missing required parameters.', 422);
         }
 
@@ -198,36 +203,36 @@ class NodesController extends Controller
     public function getAllocationsJson(Request $request, $id)
     {
         $allocations = Models\Allocation::select('ip')->where('node', $id)->groupBy('ip')->get();
+
         return response()->json($allocations);
     }
 
     public function postAllocations(Request $request, $id)
     {
-
         $validator = Validator::make($request->all(), [
             'allocate_ip.*' => 'required|string',
-            'allocate_port.*' => 'required'
+            'allocate_port.*' => 'required',
         ]);
 
         if ($validator->fails()) {
             return redirect()->route('admin.nodes.view', [
                 'id' => $id,
-                'tab' => 'tab_allocation'
+                'tab' => 'tab_allocation',
             ])->withErrors($validator->errors())->withInput();
         }
 
         $processedData = [];
-        foreach($request->input('allocate_ip') as $ip) {
-            if (!array_key_exists($ip, $processedData)) {
+        foreach ($request->input('allocate_ip') as $ip) {
+            if (! array_key_exists($ip, $processedData)) {
                 $processedData[$ip] = [];
             }
         }
 
-        foreach($request->input('allocate_port') as $portid => $ports) {
+        foreach ($request->input('allocate_port') as $portid => $ports) {
             if (array_key_exists($portid, $request->input('allocate_ip'))) {
                 $json = json_decode($ports);
-                if (json_last_error() === 0 && !empty($json)) {
-                    foreach($json as &$parsed) {
+                if (json_last_error() === 0 && ! empty($json)) {
+                    foreach ($json as &$parsed) {
                         array_push($processedData[$request->input('allocate_ip')[$portid]], $parsed->value);
                     }
                 }
@@ -246,7 +251,7 @@ class NodesController extends Controller
         } finally {
             return redirect()->route('admin.nodes.view', [
                 'id' => $id,
-                'tab' => 'tab_allocation'
+                'tab' => 'tab_allocation',
             ]);
         }
     }
@@ -257,6 +262,7 @@ class NodesController extends Controller
             $repo = new NodeRepository;
             $repo->delete($id);
             Alert::success('Successfully deleted the requested node from the panel.')->flash();
+
             return redirect()->route('admin.nodes');
         } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
@@ -267,8 +273,7 @@ class NodesController extends Controller
 
         return redirect()->route('admin.nodes.view', [
             'id' => $id,
-            'tab' => 'tab_delete'
+            'tab' => 'tab_delete',
         ]);
     }
-
 }

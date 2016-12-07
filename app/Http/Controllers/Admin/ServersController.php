@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
-use Debugbar;
 use DB;
 use Log;
-
+use Alert;
 use Pterodactyl\Models;
+use Illuminate\Http\Request;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Repositories\DatabaseRepository;
-
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class ServersController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -62,17 +58,17 @@ class ServersController extends Controller
         ->join('users', 'servers.owner', '=', 'users.id')
         ->join('allocations', 'servers.allocation', '=', 'allocations.id');
 
-        if ($request->input('filter') && !is_null($request->input('filter'))) {
+        if ($request->input('filter') && ! is_null($request->input('filter'))) {
             preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
-            foreach($matches[0] as $match) {
+            foreach ($matches[0] as $match) {
                 $match = str_replace('"', '', $match);
                 if (strpos($match, ':')) {
                     list($field, $term) = explode(':', $match);
                     if ($field === 'node') {
                         $field = 'nodes.name';
-                    } else if ($field === 'owner') {
+                    } elseif ($field === 'owner') {
                         $field = 'users.email';
-                    } else if (!strpos($field, '.')) {
+                    } elseif (! strpos($field, '.')) {
                         $field = 'servers.' . $field;
                     }
 
@@ -107,7 +103,7 @@ class ServersController extends Controller
         }
 
         return view('admin.servers.index', [
-            'servers' => $servers
+            'servers' => $servers,
         ]);
     }
 
@@ -115,7 +111,7 @@ class ServersController extends Controller
     {
         return view('admin.servers.new', [
             'locations' => Models\Location::all(),
-            'services' => Models\Service::all()
+            'services' => Models\Service::all(),
         ]);
     }
 
@@ -139,7 +135,7 @@ class ServersController extends Controller
         ->where('servers.id', $id)
         ->first();
 
-        if (!$server) {
+        if (! $server) {
             return abort(404);
         }
 
@@ -162,28 +158,29 @@ class ServersController extends Controller
                 ->where('server_id', $server->id)
                 ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
                 ->get(),
-            'db_servers' => Models\DatabaseServer::all()
+            'db_servers' => Models\DatabaseServer::all(),
         ]);
     }
 
     public function postNewServer(Request $request)
     {
-
         try {
             $server = new ServerRepository;
             $response = $server->create($request->all());
-            return redirect()->route('admin.servers.view', [ 'id' => $response ]);
+
+            return redirect()->route('admin.servers.view', ['id' => $response]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+
             return redirect()->route('admin.servers.new')->withInput();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+
             return redirect()->route('admin.servers.new')->withInput();
         }
-
     }
 
     /**
@@ -194,15 +191,13 @@ class ServersController extends Controller
      */
     public function postNewServerGetNodes(Request $request)
     {
-
-        if(!$request->input('location')) {
+        if (! $request->input('location')) {
             return response()->json([
-                'error' => 'Missing location in request.'
+                'error' => 'Missing location in request.',
             ], 500);
         }
 
         return response()->json(Models\Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
-
     }
 
     /**
@@ -213,25 +208,24 @@ class ServersController extends Controller
      */
     public function postNewServerGetIps(Request $request)
     {
-
-        if(!$request->input('node')) {
+        if (! $request->input('node')) {
             return response()->json([
-                'error' => 'Missing node in request.'
+                'error' => 'Missing node in request.',
             ], 500);
         }
 
         $ips = Models\Allocation::where('node', $request->input('node'))->whereNull('assigned_to')->get();
         $listing = [];
 
-        foreach($ips as &$ip) {
+        foreach ($ips as &$ip) {
             if (array_key_exists($ip->ip, $listing)) {
                 $listing[$ip->ip] = array_merge($listing[$ip->ip], [$ip->port]);
             } else {
                 $listing[$ip->ip] = [$ip->port];
             }
         }
-        return response()->json($listing);
 
+        return response()->json($listing);
     }
 
     /**
@@ -242,16 +236,15 @@ class ServersController extends Controller
      */
     public function postNewServerServiceOptions(Request $request)
     {
-
-        if(!$request->input('service')) {
+        if (! $request->input('service')) {
             return response()->json([
-                'error' => 'Missing service in request.'
+                'error' => 'Missing service in request.',
             ], 500);
         }
 
         $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
-        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
 
+        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
     }
 
     /**
@@ -262,10 +255,9 @@ class ServersController extends Controller
      */
     public function postNewServerServiceVariables(Request $request)
     {
-
-        if(!$request->input('option')) {
+        if (! $request->input('option')) {
             return response()->json([
-                'error' => 'Missing option in request.'
+                'error' => 'Missing option in request.',
             ], 500);
         }
 
@@ -279,28 +271,25 @@ class ServersController extends Controller
         return response()->json([
             'variables' => Models\ServiceVariables::where('option_id', $request->input('option'))->get(),
             'exec' => $option->executable,
-            'startup' => $option->startup
+            'startup' => $option->startup,
         ]);
-
     }
 
     public function postUpdateServerDetails(Request $request, $id)
     {
-
         try {
-
             $server = new ServerRepository;
             $server->updateDetails($id, [
                 'owner' => $request->input('owner'),
                 'name' => $request->input('name'),
-                'reset_token' => ($request->input('reset_token', false) === 'on') ? true : false
+                'reset_token' => ($request->input('reset_token', false) === 'on') ? true : false,
             ]);
 
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_details'
+                'tab' => 'tab_details',
             ])->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -311,21 +300,22 @@ class ServersController extends Controller
 
         return redirect()->route('admin.servers.view', [
             'id' => $id,
-            'tab' => 'tab_details'
+            'tab' => 'tab_details',
         ])->withInput();
     }
 
-    public function postUpdateContainerDetails(Request $request, $id) {
+    public function postUpdateContainerDetails(Request $request, $id)
+    {
         try {
             $server = new ServerRepository;
             $server->updateContainer($id, [
-                'image' => $request->input('docker_image')
+                'image' => $request->input('docker_image'),
             ]);
             Alert::success('Successfully updated this server\'s docker image.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_details'
+                'tab' => 'tab_details',
             ])->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -336,11 +326,12 @@ class ServersController extends Controller
 
         return redirect()->route('admin.servers.view', [
             'id' => $id,
-            'tab' => 'tab_details'
+            'tab' => 'tab_details',
         ]);
     }
 
-    public function postUpdateServerToggleBuild(Request $request, $id) {
+    public function postUpdateServerToggleBuild(Request $request, $id)
+    {
         $server = Models\Server::findOrFail($id);
         $node = Models\Node::findOrFail($server->node);
         $client = Models\Node::guzzleRequest($server->node);
@@ -349,8 +340,8 @@ class ServersController extends Controller
             $res = $client->request('POST', '/server/rebuild', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
-                ]
+                    'X-Access-Token' => $node->daemonSecret,
+                ],
             ]);
             Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
@@ -360,14 +351,13 @@ class ServersController extends Controller
 
         return redirect()->route('admin.servers.view', [
             'id' => $id,
-            'tab' => 'tab_manage'
+            'tab' => 'tab_manage',
         ]);
     }
 
     public function postUpdateServerUpdateBuild(Request $request, $id)
     {
         try {
-
             $server = new ServerRepository;
             $server->changeBuild($id, [
                 'default' => $request->input('default'),
@@ -382,13 +372,14 @@ class ServersController extends Controller
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_build'
+                'tab' => 'tab_build',
             ])->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_build'
+                'tab' => 'tab_build',
             ]);
         } catch (\Exception $ex) {
             Log::error($ex);
@@ -397,7 +388,7 @@ class ServersController extends Controller
 
         return redirect()->route('admin.servers.view', [
             'id' => $id,
-            'tab' => 'tab_build'
+            'tab' => 'tab_build',
         ]);
     }
 
@@ -407,16 +398,18 @@ class ServersController extends Controller
             $server = new ServerRepository;
             $server->deleteServer($id, $force);
             Alert::success('Server has been marked for deletion on the system.')->flash();
+
             return redirect()->route('admin.servers');
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to delete this server. Please try again.')->flash();
         }
+
         return redirect()->route('admin.servers.view', [
             'id' => $id,
-            'tab' => 'tab_delete'
+            'tab' => 'tab_delete',
         ]);
     }
 
@@ -428,13 +421,13 @@ class ServersController extends Controller
             Alert::success('Server status was successfully toggled.')->flash();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to toggle this servers status.')->flash();
         } finally {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_manage'
+                'tab' => 'tab_manage',
             ]);
         }
     }
@@ -444,18 +437,18 @@ class ServersController extends Controller
         try {
             $server = new ServerRepository;
             $server->updateStartup($id, $request->except([
-                '_token'
+                '_token',
             ]), true);
             Alert::success('Server startup variables were successfully updated.')->flash();
         } catch (\Pterodactyl\Exceptions\DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e);
             Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
         } finally {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_startup'
+                'tab' => 'tab_startup',
             ])->withInput();
         }
     }
@@ -465,13 +458,13 @@ class ServersController extends Controller
         try {
             $repo = new DatabaseRepository;
             $repo->create($id, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Added new database to this server.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_database'
+                'tab' => 'tab_database',
             ])->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (\Exception $ex) {
             Log::error($ex);
@@ -480,7 +473,7 @@ class ServersController extends Controller
 
         return redirect()->route('admin.servers.view', [
             'id' => $id,
-            'tab' => 'tab_database'
+            'tab' => 'tab_database',
         ])->withInput();
     }
 
@@ -492,13 +485,13 @@ class ServersController extends Controller
             Alert::success('Server has been suspended on the system. All running processes have been stopped and will not be startable until it is un-suspended.');
         } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e);
             Alert::danger('An unhandled exception occured while attemping to suspend this server. Please try again.')->flash();
         } finally {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_manage'
+                'tab' => 'tab_manage',
             ]);
         }
     }
@@ -511,13 +504,13 @@ class ServersController extends Controller
             Alert::success('Server has been unsuspended on the system. Access has been re-enabled.');
         } catch (DisplayException $e) {
             Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error($e);
             Alert::danger('An unhandled exception occured while attemping to unsuspend this server. Please try again.')->flash();
         } finally {
             return redirect()->route('admin.servers.view', [
                 'id' => $id,
-                'tab' => 'tab_manage'
+                'tab' => 'tab_manage',
             ]);
         }
     }
@@ -526,27 +519,31 @@ class ServersController extends Controller
     {
         try {
             $repo = new ServerRepository;
-            if (!is_null($request->input('cancel'))) {
+            if (! is_null($request->input('cancel'))) {
                 $repo->cancelDeletion($id);
                 Alert::success('Server deletion has been cancelled. This server will remain suspended until you unsuspend it.')->flash();
+
                 return redirect()->route('admin.servers.view', $id);
-            } else if(!is_null($request->input('delete'))) {
+            } elseif (! is_null($request->input('delete'))) {
                 $repo->deleteNow($id);
                 Alert::success('Server was successfully deleted from the system.')->flash();
+
                 return redirect()->route('admin.servers');
-            } else if(!is_null($request->input('force_delete'))) {
+            } elseif (! is_null($request->input('force_delete'))) {
                 $repo->deleteNow($id, true);
                 Alert::success('Server was successfully force deleted from the system.')->flash();
+
                 return redirect()->route('admin.servers');
             }
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+
             return redirect()->route('admin.servers.view', $id);
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled error occured while attempting to perform this action.')->flash();
+
             return redirect()->route('admin.servers.view', $id);
         }
     }
-
 }
