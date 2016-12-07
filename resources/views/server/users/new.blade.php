@@ -120,7 +120,7 @@
                 </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['add-files']))checked="checked"@endif value="add-files"> <strong>Create Files &amp; Folders</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['create-files']))checked="checked"@endif value="create-files"> <strong>Create Files &amp; Folders</strong>
                         <p class="text-muted"><small>Allows user to create a new file within the panel.</small><p>
                     </label>
                 </div>
