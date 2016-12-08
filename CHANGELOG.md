@@ -3,6 +3,13 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.5 (Bodacious Boreopterus)
+### Added
+* New API route to return allocations given a server ID. This adds support for a community-driven WHMCS module :rocket: available [here](https://github.com/hammerdawn/Pterodactyl-WHMCS).
+
+### Fixed
+* Fixes subuser display when trying to edit an existing subuser.
+
 ## v0.5.4 (Bodacious Boreopterus)
 ### Added
 * Changing node configuration values now automatically makes a call to the daemon and updates the configuration there. Changing daemon tokens now does not require any intervention, and takes effect immediately. SSL & Port configurations will still require a daemon reboot.
