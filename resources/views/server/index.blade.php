@@ -27,7 +27,7 @@
     @parent
     {!! Theme::css('css/jquery.terminal.css') !!}
     {!! Theme::js('js/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('js/jquery.terminal-0.11.6.min.js') !!}
+    {!! Theme::js('js/jquery.terminal-0.11.22.min.js') !!}
     {!! Theme::js('js/unix_formatting.js') !!}
     {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
