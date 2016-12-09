@@ -193,6 +193,7 @@ $(window).load(function () {
         height: 400,
         exit: false,
         prompt: '{{ $server->username }}:~$ ',
+        scrollOnEcho: false,
         onBlur: function (terminal) {
             return false;
         }
