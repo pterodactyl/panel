@@ -27,7 +27,7 @@
     @parent
     {!! Theme::css('css/jquery.terminal.css') !!}
     {!! Theme::js('js/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('js/jquery.terminal-0.11.22.min.js') !!}
+    {!! Theme::js('js/jquery.terminal-0.11.23.min.js') !!}
     {!! Theme::js('js/unix_formatting.js') !!}
     {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
@@ -197,6 +197,7 @@ $(window).load(function () {
         exit: false,
         prompt: '{{ $server->username }}:~$ ',
         scrollOnEcho: false,
+        scrollBottomOffset: 5,
         onBlur: function (terminal) {
             return false;
         }
