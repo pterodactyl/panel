@@ -80,15 +80,7 @@ class Subuser extends Model
      */
     public static function accessServers()
     {
-        $access = [];
-
         $union = self::select('server_id')->where('user_id', self::$user->id);
-        $select = Server::select('id')->where('owner', self::$user->id)->union($union)->get();
-
-        foreach ($select as &$select) {
-            $access = array_merge($access, [$select->id]);
-        }
-
-        return $access;
+        return Server::select('id')->where('owner', self::$user->id)->union($union)->pluck('id');
     }
 }
