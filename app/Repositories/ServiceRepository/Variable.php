@@ -71,7 +71,8 @@ class Variable
         $variable = new Models\ServiceVariables;
         $variable->option_id = $option->id;
         $variable->fill($data);
-        $variable->save();
+
+        return $variable->save();
     }
 
     public function delete($id)
@@ -125,6 +126,7 @@ class Variable
         $data['required'] = (isset($data['required']) && in_array((int) $data['required'], [0, 1])) ? $data['required'] : $variable->required;
 
         $variable->fill($data);
-        $variable->save();
+
+        return $variable->save();
     }
 }
