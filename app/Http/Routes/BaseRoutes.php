@@ -85,7 +85,7 @@ class BaseRoutes
             ]);
             $router->get('/new', [
                 'as' => 'account.api.new',
-                'uses' => 'Base\APIController@new',
+                'uses' => 'Base\APIController@create',
             ]);
             $router->post('/new', [
                 'uses' => 'Base\APIController@save',

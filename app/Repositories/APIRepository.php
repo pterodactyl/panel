@@ -116,7 +116,7 @@ class APIRepository
      *
      * @return string Returns the generated secret token.
      */
-    public function new(array $data)
+    public function create(array $data)
     {
         $validator = Validator::make($data, [
             'memo' => 'string|max:500',
