@@ -36,7 +36,7 @@
         <li><a href="{{ route('admin.databases.new') }}"><i class="fa fa-plus"></i></a></li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="tab_databases">
+        <div class="tab-pane {{ Request::input('tab') == 'tab_dbservers' ? '' : 'active' }}" id="tab_databases">
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
@@ -65,12 +65,12 @@
                         </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                        {{ $databases->render() }}
+                        {{ $databases->appends('tab', 'tab_databases')->render() }}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="tab_dbservers">
+        <div class="tab-pane {{ Request::input('tab') == 'tab_dbservers' ? 'active' : '' }}" id="tab_dbservers">
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
@@ -99,7 +99,7 @@
                         </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                        {{ $dbh->render() }}
+                        {{ $dbh->appends('tab', 'tab_dbservers')->render() }}
                     </div>
                 </div>
             </div>
