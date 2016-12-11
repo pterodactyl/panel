@@ -38,7 +38,7 @@ class ServiceController extends BaseController
         //
     }
 
-    public function list(Request $request)
+    public function lists(Request $request)
     {
         return Models\Service::all()->toArray();
     }

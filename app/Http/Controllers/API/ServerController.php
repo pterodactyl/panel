@@ -57,7 +57,7 @@ class ServerController extends BaseController
      * })
      * @Response(200)
      */
-    public function list(Request $request)
+    public function lists(Request $request)
     {
         return Models\Server::all()->toArray();
     }
