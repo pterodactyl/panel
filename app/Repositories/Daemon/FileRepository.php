@@ -181,24 +181,23 @@ class FileRepository
         $folders = [];
         foreach ($json as &$value) {
             if ($value->directory === true) {
-
                 // @TODO Handle Symlinks
-                $folders = array_merge($folders, [[
+                $folders[] = [
                     'entry' => $value->name,
                     'directory' => trim($directory, '/'),
                     'size' => null,
                     'date' => strtotime($value->modified),
                     'mime' => $value->mime,
-                ]]);
+                ];
             } elseif ($value->file === true) {
-                $files = array_merge($files, [[
+                $files[] = [
                     'entry' => $value->name,
                     'directory' => trim($directory, '/'),
                     'extension' => pathinfo($value->name, PATHINFO_EXTENSION),
                     'size' => HelperRepository::bytesToHuman($value->size),
                     'date' => strtotime($value->modified),
                     'mime' => $value->mime,
-                ]]);
+                ];
             }
         }
 
