@@ -225,7 +225,7 @@ class APIRepository
 
         try {
             $model = Models\APIKey::where('public', $key)->where('user', $this->user->id)->firstOrFail();
-            $permissions = Models\APIPermission::where('key_id', $model->id)->delete();
+            Models\APIPermission::where('key_id', $model->id)->delete();
             $model->delete();
 
             DB::commit();
