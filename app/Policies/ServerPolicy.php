@@ -42,8 +42,8 @@ class ServerPolicy
     /**
      * Determine if current user is the owner of a server.
      *
-     * @param  Pterodactyl\Models\User    $user
-     * @param  Pterodactyl\Models\Server  $server
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\Server  $server
      * @return bool
      */
     protected function isOwner(User $user, Server $server)
@@ -54,7 +54,7 @@ class ServerPolicy
     /**
      * Runs before any of the functions are called. Used to determine if user is root admin, if so, ignore permissions.
      *
-     * @param  Pterodactyl\Models\User $user
+     * @param  \Pterodactyl\Models\User $user
      * @param  string $ability
      * @return bool
      */
@@ -68,8 +68,8 @@ class ServerPolicy
     /**
      * Check if user has permission to control power for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function power(User $user, Server $server)
@@ -84,8 +84,8 @@ class ServerPolicy
     /**
      * Check if user has permission to start a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function powerStart(User $user, Server $server)
@@ -100,8 +100,8 @@ class ServerPolicy
     /**
      * Check if user has permission to stop a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function powerStop(User $user, Server $server)
@@ -116,8 +116,8 @@ class ServerPolicy
     /**
      * Check if user has permission to restart a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function powerRestart(User $user, Server $server)
@@ -132,8 +132,8 @@ class ServerPolicy
     /**
      * Check if user has permission to kill a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function powerKill(User $user, Server $server)
@@ -148,8 +148,8 @@ class ServerPolicy
     /**
      * Check if user has permission to run a command on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function sendCommand(User $user, Server $server)
@@ -164,8 +164,8 @@ class ServerPolicy
     /**
      * Check if user has permission to list files on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function listFiles(User $user, Server $server)
@@ -180,8 +180,8 @@ class ServerPolicy
     /**
      * Check if user has permission to edit files on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function editFiles(User $user, Server $server)
@@ -196,8 +196,8 @@ class ServerPolicy
     /**
      * Check if user has permission to save files on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function saveFiles(User $user, Server $server)
@@ -212,8 +212,8 @@ class ServerPolicy
     /**
      * Check if user has permission to move and rename files and folders on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function moveFiles(User $user, Server $server)
@@ -228,8 +228,8 @@ class ServerPolicy
     /**
      * Check if user has permission to copy folders and files on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function copyFiles(User $user, Server $server)
@@ -244,8 +244,8 @@ class ServerPolicy
     /**
      * Check if user has permission to compress files and folders on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function compressFiles(User $user, Server $server)
@@ -260,8 +260,8 @@ class ServerPolicy
     /**
      * Check if user has permission to decompress files on a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function decompressFiles(User $user, Server $server)
@@ -276,8 +276,8 @@ class ServerPolicy
     /**
      * Check if user has permission to add files to a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function addFiles(User $user, Server $server)
@@ -293,8 +293,8 @@ class ServerPolicy
      * Check if user has permission to upload files to a server.
      * This permission relies on the user having the 'add-files' permission as well due to page authorization.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function uploadFiles(User $user, Server $server)
@@ -309,8 +309,8 @@ class ServerPolicy
     /**
      * Check if user has permission to download files from a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function downloadFiles(User $user, Server $server)
@@ -325,8 +325,8 @@ class ServerPolicy
     /**
      * Check if user has permission to delete files from a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function deleteFiles(User $user, Server $server)
@@ -341,8 +341,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view subusers for the server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function listSubusers(User $user, Server $server)
@@ -357,8 +357,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view specific subuser permissions.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function viewSubuser(User $user, Server $server)
@@ -373,8 +373,8 @@ class ServerPolicy
     /**
      * Check if user has permission to edit a subuser.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function editSubuser(User $user, Server $server)
@@ -389,8 +389,8 @@ class ServerPolicy
     /**
      * Check if user has permission to delete a subuser.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function deleteSubuser(User $user, Server $server)
@@ -405,8 +405,8 @@ class ServerPolicy
     /**
      * Check if user has permission to edit a subuser.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function createSubuser(User $user, Server $server)
@@ -421,8 +421,8 @@ class ServerPolicy
     /**
      * Check if user has permission to set the default connection for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function setConnection(User $user, Server $server)
@@ -437,8 +437,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view the startup command used for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function viewStartup(User $user, Server $server)
@@ -453,8 +453,8 @@ class ServerPolicy
     /**
      * Check if user has permission to edit the startup command used for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function editStartup(User $user, Server $server)
@@ -469,8 +469,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view the SFTP information for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function viewSftp(User $user, Server $server)
@@ -485,8 +485,8 @@ class ServerPolicy
     /**
      * Check if user has permission to reset the SFTP password for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function resetSftp(User $user, Server $server)
@@ -501,8 +501,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view the SFTP password for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function viewSftpPassword(User $user, Server $server)
@@ -517,8 +517,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view databases for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function viewDatabases(User $user, Server $server)
@@ -533,8 +533,8 @@ class ServerPolicy
     /**
      * Check if user has permission to reset database passwords.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function resetDbPassword(User $user, Server $server)
@@ -549,8 +549,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view all tasks for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function listTasks(User $user, Server $server)
@@ -565,8 +565,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view a specific task for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function viewTask(User $user, Server $server)
@@ -581,8 +581,8 @@ class ServerPolicy
     /**
      * Check if user has permission to view a toggle a task for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function toggleTask(User $user, Server $server)
@@ -597,8 +597,8 @@ class ServerPolicy
     /**
      * Check if user has permission to queue a task for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function queueTask(User $user, Server $server)
@@ -613,8 +613,8 @@ class ServerPolicy
     /**
      * Check if user has permission to delete a specific task for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function deleteTask(User $user, Server $server)
@@ -629,8 +629,8 @@ class ServerPolicy
     /**
      * Check if user has permission to create a task for a server.
      *
-     * @param  Pterodactyl\Models\User   $user
-     * @param  Pterodactyl\Models\Server $server
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function createTask(User $user, Server $server)
