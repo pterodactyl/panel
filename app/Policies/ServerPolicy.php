@@ -86,7 +86,7 @@ class ServerPolicy
      */
     public function powerStart(User $user, Server $server)
     {
-        return $this->heckPermission($user, $server, 'power-start');
+        return $this->checkPermission($user, $server, 'power-start');
     }
 
     /**
