@@ -219,7 +219,7 @@ class APIRepository
      *
      * @return void
      */
-    public function revoke(string $key)
+    public function revoke($key)
     {
         DB::beginTransaction();
 
