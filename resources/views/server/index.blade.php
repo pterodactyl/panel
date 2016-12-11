@@ -27,7 +27,7 @@
     @parent
     {!! Theme::css('css/jquery.terminal.css') !!}
     {!! Theme::js('js/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('js/jquery.terminal-0.11.6.min.js') !!}
+    {!! Theme::js('js/jquery.terminal-0.11.23.min.js') !!}
     {!! Theme::js('js/unix_formatting.js') !!}
     {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
@@ -49,6 +49,9 @@
                         <div class="col-md-12">
                             <div class="alert alert-info hidden" id="consoleThrottled">
                                 The console is currently being throttled due to the speed at which data is being sent. Messages are being queued and will appear as the queue is worked through.
+                            </div>
+                            <div id="consoleNotify" class="hidden">
+                                <i class="fa fa-bell"></i>
                             </div>
                             <div id="terminal">
                             </div>
@@ -193,10 +196,30 @@ $(window).load(function () {
         height: 400,
         exit: false,
         prompt: '{{ $server->username }}:~$ ',
+        scrollOnEcho: false,
+        scrollBottomOffset: 5,
         onBlur: function (terminal) {
             return false;
         }
     });
+    
+    const $consoleNotify = $('#consoleNotify');
+    $consoleNotify.on('click', function () {
+        terminal.scroll_to_bottom();
+        $consoleNotify.removeClass('hidden');
+    });
+    
+    terminal.on('scroll', function() {
+        if (terminal.is_bottom()) {
+            $consoleNotify.addClass('hidden');
+        }
+    })
+    
+    function terminalNotifyOutput() {
+        if (!terminal.is_bottom()) {
+            $consoleNotify.removeClass('hidden');
+        }
+    }
 
     var ctc = $('#chart_cpu');
     var timeLabels = [];
@@ -326,10 +349,13 @@ $(window).load(function () {
             $('#consoleThrottled').addClass('hidden');
         }
 
-        for (var i = 0; i < {{ env('CONSOLE_PUSH_COUNT', 10) }} && outputQueue.length > 0; i++)
-        {
-            terminal.echo(outputQueue[0]);
-            outputQueue.shift();
+        if (outputQueue.length > 0) {
+          for (var i = 0; i < {{ env('CONSOLE_PUSH_COUNT', 10) }} && outputQueue.length > 0; i++)
+          {
+              terminal.echo(outputQueue[0]);
+              outputQueue.shift();
+          }
+          terminalNotifyOutput();
         }
     }
 
@@ -347,8 +373,10 @@ $(window).load(function () {
                 timeout: 10000
             }).done(function(data) {
                 terminal.echo(data);
+                terminalNotifyOutput();
             }).fail(function() {
                 terminal.error('Unable to load initial server log, try reloading the page.');
+                terminalNotifyOutput();
             });
         }
         updateServerPowerControls(data.status);
