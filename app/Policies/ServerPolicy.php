@@ -74,11 +74,7 @@ class ServerPolicy
      */
     public function power(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('power')->exists();
+        return $this->checkPermission($user, $server, 'power');
     }
 
     /**
@@ -90,11 +86,7 @@ class ServerPolicy
      */
     public function powerStart(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('power-start')->exists();
+        return $this->heckPermission($user, $server, 'power-start');
     }
 
     /**
@@ -106,11 +98,7 @@ class ServerPolicy
      */
     public function powerStop(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('power-stop')->exists();
+        return $this->checkPermission($user, $server, 'power-stop');
     }
 
     /**
@@ -122,11 +110,7 @@ class ServerPolicy
      */
     public function powerRestart(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('power-restart')->exists();
+        return $this->checkPermission($user, $server, 'power-restart');
     }
 
     /**
@@ -138,11 +122,7 @@ class ServerPolicy
      */
     public function powerKill(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('power-kill')->exists();
+        return $this->checkPermission($user, $server, 'power-kill');
     }
 
     /**
@@ -154,11 +134,7 @@ class ServerPolicy
      */
     public function sendCommand(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('send-command')->exists();
+        return $this->checkPermission($user, $server, 'send-command');
     }
 
     /**
@@ -170,11 +146,7 @@ class ServerPolicy
      */
     public function listFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('list-files')->exists();
+        return $this->checkPermission($user, $server, 'list-files');
     }
 
     /**
@@ -186,11 +158,7 @@ class ServerPolicy
      */
     public function editFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('edit-files')->exists();
+        return $this->checkPermission($user, $server, 'edit-files');
     }
 
     /**
@@ -202,11 +170,7 @@ class ServerPolicy
      */
     public function saveFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('save-files')->exists();
+        return $this->checkPermission($user, $server, 'save-files');
     }
 
     /**
@@ -218,11 +182,7 @@ class ServerPolicy
      */
     public function moveFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('move-files')->exists();
+        return $this->checkPermission($user, $server, 'move-files');
     }
 
     /**
@@ -234,11 +194,7 @@ class ServerPolicy
      */
     public function copyFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('copy-files')->exists();
+        return $this->checkPermission($user, $server, 'copy-files');
     }
 
     /**
@@ -250,11 +206,7 @@ class ServerPolicy
      */
     public function compressFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('compress-files')->exists();
+        return $this->checkPermission($user, $server, 'compress-files');
     }
 
     /**
@@ -266,11 +218,7 @@ class ServerPolicy
      */
     public function decompressFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('decompress-files')->exists();
+        return $this->checkPermission($user, $server, 'decompress-files');
     }
 
     /**
@@ -282,11 +230,7 @@ class ServerPolicy
      */
     public function addFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('add-files')->exists();
+        return $this->checkPermission($user, $server, 'add-files');
     }
 
     /**
@@ -299,11 +243,7 @@ class ServerPolicy
      */
     public function uploadFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('upload-files')->exists();
+        return $this->checkPermission($user, $server, 'upload-files');
     }
 
     /**
@@ -315,11 +255,7 @@ class ServerPolicy
      */
     public function downloadFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('download-files')->exists();
+        return $this->checkPermission($user, $server, 'download-files');
     }
 
     /**
@@ -331,11 +267,7 @@ class ServerPolicy
      */
     public function deleteFiles(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('delete-files')->exists();
+        return $this->checkPermission($user, $server, 'delete-files');
     }
 
     /**
@@ -347,11 +279,7 @@ class ServerPolicy
      */
     public function listSubusers(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('list-subusers')->exists();
+        return $this->checkPermission($user, $server, 'list-subusers');
     }
 
     /**
@@ -363,11 +291,7 @@ class ServerPolicy
      */
     public function viewSubuser(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-subuser')->exists();
+        return $this->checkPermission($user, $server, 'view-subuser');
     }
 
     /**
@@ -379,11 +303,7 @@ class ServerPolicy
      */
     public function editSubuser(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('edit-subuser')->exists();
+        return $this->checkPermission($user, $server, 'edit-subuser');
     }
 
     /**
@@ -395,11 +315,7 @@ class ServerPolicy
      */
     public function deleteSubuser(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('delete-subuser')->exists();
+        return $this->checkPermission($user, $server, 'delete-subuser');
     }
 
     /**
@@ -411,11 +327,7 @@ class ServerPolicy
      */
     public function createSubuser(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('create-subuser')->exists();
+        return $this->checkPermission($user, $server, 'create-subuser');
     }
 
     /**
@@ -427,11 +339,7 @@ class ServerPolicy
      */
     public function setConnection(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('set-connection')->exists();
+        return $this->checkPermission($user, $server, 'set-connection');
     }
 
     /**
@@ -443,11 +351,7 @@ class ServerPolicy
      */
     public function viewStartup(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-startup')->exists();
+        return $this->checkPermission($user, $server, 'view-startup');
     }
 
     /**
@@ -459,11 +363,7 @@ class ServerPolicy
      */
     public function editStartup(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('edit-startup')->exists();
+        return $this->checkPermission($user, $server, 'edit-startup');
     }
 
     /**
@@ -475,11 +375,7 @@ class ServerPolicy
      */
     public function viewSftp(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-sftp')->exists();
+        return $this->checkPermission($user, $server, 'view-sftp');
     }
 
     /**
@@ -491,11 +387,7 @@ class ServerPolicy
      */
     public function resetSftp(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('reset-sftp')->exists();
+        return $this->checkPermission($user, $server, 'reset-sftp');
     }
 
     /**
@@ -507,11 +399,7 @@ class ServerPolicy
      */
     public function viewSftpPassword(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-sftp-password')->exists();
+        return $this->checkPermission($user, $server, 'view-sftp-password');
     }
 
     /**
@@ -523,11 +411,7 @@ class ServerPolicy
      */
     public function viewDatabases(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-databases')->exists();
+        return $this->checkPermission($user, $server, 'view-databases');
     }
 
     /**
@@ -539,11 +423,7 @@ class ServerPolicy
      */
     public function resetDbPassword(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('reset-db-password')->exists();
+        return $this->checkPermission($user, $server, 'reset-db-password');
     }
 
     /**
@@ -555,11 +435,7 @@ class ServerPolicy
      */
     public function listTasks(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('list-tasks')->exists();
+        return $this->checkPermission($user, $server, 'list-tasks');
     }
 
     /**
@@ -571,11 +447,7 @@ class ServerPolicy
      */
     public function viewTask(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('view-task')->exists();
+        return $this->checkPermission($user, $server, 'view-task');
     }
 
     /**
@@ -587,11 +459,7 @@ class ServerPolicy
      */
     public function toggleTask(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('toggle-task')->exists();
+        return $this->checkPermission($user, $server, 'toggle-task');
     }
 
     /**
@@ -603,11 +471,7 @@ class ServerPolicy
      */
     public function queueTask(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('queue-task')->exists();
+        return $this->checkPermission($user, $server, 'queue-task');
     }
 
     /**
@@ -619,11 +483,7 @@ class ServerPolicy
      */
     public function deleteTask(User $user, Server $server)
     {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission('delete-task')->exists();
+        return $this->checkPermission($user, $server, 'delete-task');
     }
 
     /**
@@ -635,10 +495,23 @@ class ServerPolicy
      */
     public function createTask(User $user, Server $server)
     {
+        return $this->checkPermission($user, $server, 'create-task');
+    }
+
+    /**
+     * Checks if the user has the given permission on/for the server.
+     *
+     * @param \Pterodactyl\Models\User   $user
+     * @param \Pterodactyl\Models\Server $server
+     * @param $permission
+     * @return bool
+     */
+    private function checkPermission(User $user, Server $server, $permission)
+    {
         if ($this->isOwner($user, $server)) {
             return true;
         }
 
-        return $user->permissions()->server($server)->permission('create-task')->exists();
+        return $user->permissions()->server($server)->permission($permission)->exists();
     }
 }
