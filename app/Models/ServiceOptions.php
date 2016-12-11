@@ -51,11 +51,11 @@ class ServiceOptions extends Model
          'parent_service' => 'integer',
      ];
 
-    /**
-     * Gets all variables associated with this service.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+     /**
+      * Gets all variables associated with this service.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+      */
      public function variables()
      {
          return $this->hasMany(ServiceVariables::class, 'option_id');

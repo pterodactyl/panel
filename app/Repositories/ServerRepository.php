@@ -261,7 +261,7 @@ class ServerRepository
 
             // Add Variables
             $environmentVariables = [
-                'STARTUP' => $data['startup']
+                'STARTUP' => $data['startup'],
             ];
 
             foreach ($variableList as $item) {
@@ -717,7 +717,7 @@ class ServerRepository
 
             // Add Variables
             $environmentVariables = [
-                'STARTUP' => $server->startup
+                'STARTUP' => $server->startup,
             ];
             foreach ($variableList as $item) {
                 $environmentVariables[$item['env']] = $item['val'];

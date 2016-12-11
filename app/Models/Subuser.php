@@ -81,6 +81,7 @@ class Subuser extends Model
     public static function accessServers()
     {
         $union = self::select('server_id')->where('user_id', self::$user->id);
+
         return Server::select('id')->where('owner', self::$user->id)->union($union)->pluck('id');
     }
 }
