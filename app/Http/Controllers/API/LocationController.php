@@ -47,17 +47,13 @@ class LocationController extends BaseController
      * @Versions({"v1"})
      * @Response(200)
      */
-    public function list(Request $request)
+    public function lists(Request $request)
     {
-        $locations = Location::select('locations.*', DB::raw('GROUP_CONCAT(nodes.id) as nodes'))
+        return Location::select('locations.*', DB::raw('GROUP_CONCAT(nodes.id) as nodes'))
             ->join('nodes', 'locations.id', '=', 'nodes.location')
             ->groupBy('locations.id')
-            ->get();
-
-        foreach ($locations as &$location) {
-            $location->nodes = explode(',', $location->nodes);
-        }
-
-        return $locations->toArray();
+            ->get()->each(function ($location) {
+                $location->nodes = explode(',', $location->nodes);
+            })->all();
     }
 }

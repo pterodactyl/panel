@@ -116,7 +116,7 @@ class APIRepository
      *
      * @return string Returns the generated secret token.
      */
-    public function new(array $data)
+    public function create(array $data)
     {
         $validator = Validator::make($data, [
             'memo' => 'string|max:500',
@@ -219,13 +219,13 @@ class APIRepository
      *
      * @return void
      */
-    public function revoke(string $key)
+    public function revoke($key)
     {
         DB::beginTransaction();
 
         try {
             $model = Models\APIKey::where('public', $key)->where('user', $this->user->id)->firstOrFail();
-            $permissions = Models\APIPermission::where('key_id', $model->id)->delete();
+            Models\APIPermission::where('key_id', $model->id)->delete();
             $model->delete();
 
             DB::commit();

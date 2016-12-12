@@ -82,7 +82,8 @@ class Service
         }
 
         $service->fill($data);
-        $service->save();
+
+        return $service->save();
     }
 
     public function delete($id)

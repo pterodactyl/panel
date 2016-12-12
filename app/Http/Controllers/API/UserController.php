@@ -55,7 +55,7 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function list(Request $request)
+    public function lists(Request $request)
     {
         return Models\User::all()->toArray();
     }

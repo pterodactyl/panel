@@ -92,7 +92,6 @@ class ServerController extends BaseController
     public function power(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::getByID($server->node);
         $client = Models\Node::guzzleRequest($server->node);
 
         Auth::user()->can('power-' . $request->input('action'), $server);

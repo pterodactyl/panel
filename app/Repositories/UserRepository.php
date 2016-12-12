@@ -144,7 +144,8 @@ class UserRepository
         }
 
         $user->fill($data);
-        $user->save();
+
+        return $user->save();
     }
 
     /**

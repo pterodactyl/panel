@@ -48,7 +48,7 @@ class APIController extends Controller
         ]);
     }
 
-    public function new(Request $request)
+    public function create(Request $request)
     {
         return view('base.api.new');
     }
@@ -57,7 +57,7 @@ class APIController extends Controller
     {
         try {
             $repo = new APIRepository($request->user());
-            $secret = $repo->new($request->except(['_token']));
+            $secret = $repo->create($request->except(['_token']));
             Alert::success('An API Keypair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br /><code>' . $secret . '</code>')->flash();
 
             return redirect()->route('account.api');

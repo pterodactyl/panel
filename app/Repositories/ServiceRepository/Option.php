@@ -118,6 +118,7 @@ class Option
         }
 
         $option->fill($data);
-        $option->save();
+
+        return $option->save();
     }
 }

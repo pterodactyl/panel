@@ -170,11 +170,11 @@ class ServerRepository
                     if ($variable->required === 1) {
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
-                    $variableList = array_merge($variableList, [[
+                    $variableList[] = [
                         'id' => $variable->id,
                         'env' => $variable->env_variable,
                         'val' => $variable->default_value,
-                    ]]);
+                    ];
                     continue;
                 }
 
@@ -183,11 +183,11 @@ class ServerRepository
                     throw new DisplayException('Failed to validate service option variable field (env_' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
                 }
 
-                $variableList = array_merge($variableList, [[
+                $variableList[] = [
                     'id' => $variable->id,
                     'env' => $variable->env_variable,
                     'val' => $data['env_' . $variable->env_variable],
-                ]]);
+                ];
                 continue;
             }
         }
@@ -260,14 +260,13 @@ class ServerRepository
             $allocation->save();
 
             // Add Variables
-            $environmentVariables = [];
-            $environmentVariables = array_merge($environmentVariables, [
+            $environmentVariables = [
                 'STARTUP' => $data['startup'],
-            ]);
+            ];
+
             foreach ($variableList as $item) {
-                $environmentVariables = array_merge($environmentVariables, [
-                    $item['env'] => $item['val'],
-                ]);
+                $environmentVariables[$item['env']] = $item['val'];
+
                 Models\ServerVariables::create([
                     'server_id' => $server->id,
                     'variable_id' => $item['id'],
@@ -672,21 +671,21 @@ class ServerRepository
                 foreach ($variables as &$variable) {
                     // Move on if the new data wasn't even sent
                     if (! isset($data[$variable->env_variable])) {
-                        $variableList = array_merge($variableList, [[
+                        $variableList[] = [
                             'id' => $variable->id,
                             'env' => $variable->env_variable,
                             'val' => $variable->a_currentValue,
-                        ]]);
+                        ];
                         continue;
                     }
 
                     // Update Empty but skip validation
                     if (empty($data[$variable->env_variable])) {
-                        $variableList = array_merge($variableList, [[
+                        $variableList[] = [
                             'id' => $variable->id,
                             'env' => $variable->env_variable,
                             'val' => null,
-                        ]]);
+                        ];
                         continue;
                     }
 
@@ -708,23 +707,20 @@ class ServerRepository
                         throw new DisplayException('Failed to validate service option variable field (' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
                     }
 
-                    $variableList = array_merge($variableList, [[
+                    $variableList[] = [
                         'id' => $variable->id,
                         'env' => $variable->env_variable,
                         'val' => $data[$variable->env_variable],
-                    ]]);
+                    ];
                 }
             }
 
             // Add Variables
-            $environmentVariables = [];
-            $environmentVariables = array_merge($environmentVariables, [
+            $environmentVariables = [
                 'STARTUP' => $server->startup,
-            ]);
+            ];
             foreach ($variableList as $item) {
-                $environmentVariables = array_merge($environmentVariables, [
-                    $item['env'] => $item['val'],
-                ]);
+                $environmentVariables[$item['env']] = $item['val'];
 
                 // Update model or make a new record if it doesn't exist.
                 $model = Models\ServerVariables::firstOrNew([

@@ -32,11 +32,8 @@ class InfoController extends BaseController
 {
     public function me(Request $request)
     {
-        $servers = Models\Server::getUserServers();
-        $response = [];
-
-        foreach ($servers as &$server) {
-            $response = array_merge($response, [[
+        return Models\Server::getUserServers()->map(function ($server) {
+            return [
                 'id' => $server->uuidShort,
                 'uuid' => $server->uuid,
                 'name' => $server->name,
@@ -48,9 +45,7 @@ class InfoController extends BaseController
                 'port' => $server->port,
                 'service' => $server->a_serviceName,
                 'option' => $server->a_serviceOptionName,
-            ]]);
-        }
-
-        return $response;
+            ];
+        })->all();
     }
 }
