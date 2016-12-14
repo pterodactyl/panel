@@ -268,7 +268,7 @@ $(window).load(function () {
             url: '{{ route('server.files.save', $server->uuidShort) }}',
             headers: { 'X-CSRF-Token': '{{ csrf_token() }}' },
             data: {
-                file: '{{ $directory }}' + $('#file_name').val(),
+                file: $('#file_name').val(),
                 contents: Editor.getValue()
             }
         }).done(function (data) {
