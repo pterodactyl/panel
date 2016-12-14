@@ -52,7 +52,7 @@
                     <h3 class="panel-title">File Path Information</h3>
                 </div>
                 <div class="panel-body">
-                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path.
+                    When configuring any file paths in your server plugins or settings you should use <code>/home/container</code> as your base path. The maximum size for web-based file uploads is currently <code>{{ $node->upload_size }} MB</code>.
                 </div>
             </div>
         </div>
@@ -101,8 +101,6 @@ $(window).load(function () {
 
 
         var siofu = new SocketIOFileUpload(uploadSocket);
-        siofu.chunkDelay = 25;
-
         siofu.listenOnDrop(document.getElementById("upload_box"));
 
         window.addEventListener('dragover', function (event) {
@@ -173,12 +171,13 @@ $(window).load(function () {
         });
 
         siofu.addEventListener('error', function(event){
+            console.error(event);
             $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
             $.notify({
-                message: 'An error was encountered while attempting to upload this file.'
+                message: 'An error was encountered while attempting to upload this file: <strong>' + event.message + '.</strong>',
             }, {
                 type: 'danger',
-                delay: 5000
+                delay: 8000
             });
         });
     @endcan

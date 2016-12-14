@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Pterodactyl\User;
 use Validator;
+use Pterodactyl\User;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
 

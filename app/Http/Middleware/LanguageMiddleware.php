@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Middleware;
 
 use Auth;
 use Closure;
 use Session;
 use Settings;
-
 use Illuminate\Support\Facades\App;
 
 class LanguageMiddleware
 {
-
     public function __construct()
     {
         //
@@ -49,12 +48,13 @@ class LanguageMiddleware
     {
         if (Session::has('applocale')) {
             App::setLocale(Session::get('applocale'));
-        } else if(Auth::check() && isset(Auth::user()->language)) {
+        } elseif (Auth::check() && isset(Auth::user()->language)) {
             Session::set('applocale', Auth::user()->language);
             App::setLocale(Auth::user()->language);
         } else {
             App::setLocale(Settings::get('default_language', 'en'));
         }
+
         return $next($request);
     }
 }

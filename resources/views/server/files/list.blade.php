@@ -21,13 +21,14 @@
     <thead>
         <tr>
             <th style="width:2%;text-align:center;"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files"></i></th>
-            <th style="width:45%">File Name</th>
+            <th style="width:55%">File Name</th>
             <th style="width:15%">Size</th>
             <th style="width:20%">Last Modified</th>
+            <th style="width:8%"></th>
         </tr>
         <tr id="headerTableRow" data-currentdir="{{ $directory['header'] }}">
             <th><i class="fa fa-folder-open"></i></th>
-            <th colspan="3">
+            <th colspan="4">
                 <code>/home/container{{ $directory['header'] }}</code>
                 <small>
                     <a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted">
@@ -44,6 +45,7 @@
                 <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
         @endif
         @if (isset($directory['show']) && $directory['show'] === true)
@@ -52,6 +54,7 @@
                 <td data-name="{{ rawurlencode($directory['link']) }}">
                     <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a>
                 </td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -73,6 +76,7 @@
                         {{ $carbon->diffForHumans() }}
                     @endif
                 </td>
+                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:0px 6px;"><i class="fa fa-ellipsis-h"></i></button></td>
             </tr>
         @endforeach
         @foreach ($files as $file)
@@ -149,6 +153,7 @@
                         {{ $carbon->diffForHumans() }}
                     @endif
                 </td>
+                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:0px 6px;"><i class="fa fa-ellipsis-h"></i></button></td>
             </tr>
         @endforeach
     </tbody>

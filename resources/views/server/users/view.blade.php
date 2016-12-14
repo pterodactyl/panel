@@ -83,32 +83,33 @@
                         <p class="text-muted"><small>Allows user to save modified file contents.</small><p>
                     </label>
                 </div>
-                <label class="checkbox-custom highlight" data-initialize="checkbox">
-                    <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['move-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="move-files"> <strong>Rename &amp; Move Files</strong>
-                    <p class="text-muted"><small>Allows user to move and rename files and folders on the filesystem.</small><p>
-                </label>
-            </div>
-            <div class="checkbox highlight">
-                <label class="checkbox-custom highlight" data-initialize="checkbox">
-                    <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['copy-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="copy-files"> <strong>Copy Files</strong>
-                    <p class="text-muted"><small>Allows user to copy files and folders on the filesystem.</small><p>
-                </label>
-            </div>
-            <div class="checkbox highlight">
-                <label class="checkbox-custom highlight" data-initialize="checkbox">
-                    <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['compress-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="compress-files"> <strong>Compress Files</strong>
-                    <p class="text-muted"><small>Allows user to make archives of files and folders on the system.</small><p>
-                </label>
-            </div>
-            <div class="checkbox highlight">
-                <label class="checkbox-custom highlight" data-initialize="checkbox">
-                    <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($oldInput['decompress-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="decompress-files"> <strong>Decompress Files</strong>
-                    <p class="text-muted"><small>Allows user to decompress <code>.zip</code> and <code>.tar / .tar.gz</code> archives.</small><p>
-                </label>
-            </div>
                 <div class="checkbox highlight">
                     <label class="checkbox-custom highlight" data-initialize="checkbox">
-                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['add-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="add-files"> <strong>Create Files</strong>
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['move-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="move-files"> <strong>Rename &amp; Move Files</strong>
+                        <p class="text-muted"><small>Allows user to move and rename files and folders on the filesystem.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['copy-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="copy-files"> <strong>Copy Files</strong>
+                        <p class="text-muted"><small>Allows user to copy files and folders on the filesystem.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['compress-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="compress-files"> <strong>Compress Files</strong>
+                        <p class="text-muted"><small>Allows user to make archives of files and folders on the system.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['decompress-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="decompress-files"> <strong>Decompress Files</strong>
+                        <p class="text-muted"><small>Allows user to decompress <code>.zip</code> and <code>.tar / .tar.gz</code> archives.</small><p>
+                    </label>
+                </div>
+                <div class="checkbox highlight">
+                    <label class="checkbox-custom highlight" data-initialize="checkbox">
+                        <input class="sr-only" name="permissions[]" type="checkbox" @if(isset($permissions['create-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="create-files"> <strong>Create Files &amp; Folders</strong>
                         <p class="text-muted"><small>Allows user to create a new file within the panel.</small><p>
                     </label>
                 </div>

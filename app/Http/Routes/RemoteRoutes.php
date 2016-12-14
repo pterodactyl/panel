@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Routes;
 
 use Illuminate\Routing\Router;
-use Request;
 
-class RemoteRoutes {
-
-    public function map(Router $router) {
+class RemoteRoutes
+{
+    public function map(Router $router)
+    {
         $router->group(['prefix' => 'remote'], function () use ($router) {
             // Handles Remote Download Authentication Requests
             $router->post('download', [
                 'as' => 'remote.download',
-                'uses' => 'Remote\RemoteController@postDownload'
+                'uses' => 'Remote\RemoteController@postDownload',
             ]);
 
             $router->post('install', [
                 'as' => 'remote.install',
-                'uses' => 'Remote\RemoteController@postInstall'
+                'uses' => 'Remote\RemoteController@postInstall',
             ]);
 
             $router->post('event', [
                 'as' => 'remote.event',
-                'uses' => 'Remote\RemoteController@event'
+                'uses' => 'Remote\RemoteController@event',
             ]);
         });
     }
-
 }

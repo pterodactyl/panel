@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Console\Commands;
 
-use Hash;
 use Illuminate\Console\Command;
-
 use Pterodactyl\Repositories\UserRepository;
 
 class MakeUser extends Command
@@ -77,6 +76,7 @@ class MakeUser extends Command
         try {
             $user = new UserRepository;
             $user->create($email, $password, $admin);
+
             return $this->info('User successfully created.');
         } catch (\Exception $ex) {
             return $this->error($ex->getMessage());

@@ -50,7 +50,7 @@
                     <label for="owner" class="control-label">Owner Email</label>
                     <div>
                         {{-- Hacky workaround to prevent Safari and Chrome from trying to suggest emails here --}}
-                        <input id="fake_user_name" name="fake_user[name]" style="position:absolute; top:-10000px;" type="text" value="Autofill Me">
+                        <input id="fake_user_name" name="fake_user[name]" style="position:absolute; top:-10000px;" tabindex="5" type="text" value="Autofill Me">
                         <input type="text" autocomplete="off" name="owner" class="form-control" value="{{ old('owner', Input::get('email')) }}" />
                     </div>
                 </div>

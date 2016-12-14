@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -59,6 +59,6 @@ return [
         'update_email' => 'Atualizar Email',
         'new_email' => 'Novo Email',
         'new_password' => 'Nova Senha',
-        'update_pass' => 'Atualizar Senha'
-    ]
+        'update_pass' => 'Atualizar Senha',
+    ],
 ];

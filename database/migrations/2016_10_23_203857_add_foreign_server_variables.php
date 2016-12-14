@@ -44,5 +44,4 @@ class AddForeignServerVariables extends Migration
               MODIFY COLUMN variable_id MEDIUMINT(8) UNSIGNED NOT NULL
           ');
       }
-
 }

@@ -52,5 +52,4 @@ class ServerCreated extends Notification implements ShouldQueue
                     ->action('Peel Off the Protective Wrap', route('server.index', $this->server->uuidShort))
                     ->line('Please let us know if you have any additional questions or concerns!');
     }
-
 }

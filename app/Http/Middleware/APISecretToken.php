@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Middleware;
 
 use Auth;
@@ -28,24 +29,20 @@ use Crypt;
 use Config;
 use IPTools\IP;
 use IPTools\Range;
-
+use Dingo\Api\Routing\Route;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
-use Pterodactyl\Models\User;
 use Pterodactyl\Services\APILogService;
-
-use Illuminate\Http\Request;
-use Dingo\Api\Routing\Route;
 use Dingo\Api\Auth\Provider\Authorization;
-
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException; // 400
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException; // 401
+use Symfony\Component\HttpKernel\Exception\HttpException; // 400
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException; // 401
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException; // 403
-use Symfony\Component\HttpKernel\Exception\HttpException; //500
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException; //500
 
 class APISecretToken extends Authorization
 {
-
     protected $algo = 'sha256';
 
     protected $permissionAllowed = false;
@@ -64,7 +61,7 @@ class APISecretToken extends Authorization
 
     public function authenticate(Request $request, Route $route)
     {
-        if (!$request->bearerToken() || empty($request->bearerToken())) {
+        if (! $request->bearerToken() || empty($request->bearerToken())) {
             APILogService::log($request, 'The authentication header was missing or malformed.');
             throw new UnauthorizedHttpException('The authentication header was missing or malformed.');
         }
@@ -72,22 +69,22 @@ class APISecretToken extends Authorization
         list($public, $hashed) = explode('.', $request->bearerToken());
 
         $key = APIKey::where('public', $public)->first();
-        if (!$key) {
+        if (! $key) {
             APILogService::log($request, 'Invalid API Key.');
             throw new AccessDeniedHttpException('Invalid API Key.');
         }
 
         // Check for Resource Permissions
-        if (!empty($request->route()->getName())) {
-            if(!is_null($key->allowed_ips)) {
+        if (! empty($request->route()->getName())) {
+            if (! is_null($key->allowed_ips)) {
                 $inRange = false;
-                foreach(json_decode($key->allowed_ips) as $ip) {
+                foreach (json_decode($key->allowed_ips) as $ip) {
                     if (Range::parse($ip)->contains(new IP($request->ip()))) {
                         $inRange = true;
                         break;
                     }
                 }
-                if (!$inRange) {
+                if (! $inRange) {
                     APILogService::log($request, 'This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                     throw new AccessDeniedHttpException('This IP address <' . $request->ip() . '> does not have permission to use this API key.');
                 }
@@ -98,11 +95,11 @@ class APISecretToken extends Authorization
             // Suport Wildcards
             if (starts_with($request->route()->getName(), 'api.user')) {
                 $permission->orWhere('permission', 'api.user.*');
-            } else if(starts_with($request->route()->getName(), 'api.admin')) {
+            } elseif (starts_with($request->route()->getName(), 'api.admin')) {
                 $permission->orWhere('permission', 'api.admin.*');
             }
 
-            if (!$permission->first()) {
+            if (! $permission->first()) {
                 APILogService::log($request, 'You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
                 throw new AccessDeniedHttpException('You do not have permission to access this resource. This API Key requires the ' . $request->route()->getName() . ' permission node.');
             }
@@ -116,21 +113,21 @@ class APISecretToken extends Authorization
         }
 
         $this->url = urldecode($request->fullUrl());
-        if($this->_generateHMAC($request->getContent(), $decrypted) !== base64_decode($hashed)) {
+        if ($this->_generateHMAC($request->getContent(), $decrypted) !== base64_decode($hashed)) {
             APILogService::log($request, 'The hashed body was not valid. Potential modification of contents in route.');
             throw new BadRequestHttpException('The hashed body was not valid. Potential modification of contents in route.');
         }
 
         // Log the Route Access
         APILogService::log($request, null, true);
-        return Auth::loginUsingId($key->user);
 
+        return Auth::loginUsingId($key->user);
     }
 
     protected function _generateHMAC($body, $key)
     {
         $data = $this->url . $body;
+
         return hash_hmac($this->algo, $data, $key, true);
     }
-
 }

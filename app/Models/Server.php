@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Auth;
-use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-use Pterodactyl\Exceptions\DisplayException;
-
 class Server extends Model
 {
-
     use SoftDeletes;
 
     /**
@@ -63,11 +60,11 @@ class Server extends Model
      */
     protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'node' => 'integer',
          'suspended' => 'integer',
@@ -95,7 +92,7 @@ class Server extends Model
     protected static $user;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -112,7 +109,6 @@ class Server extends Model
      */
     public static function getUserDaemonSecret(Server $server)
     {
-
         if (self::$user->id === $server->owner || self::$user->root_admin === 1) {
             return $server->daemonSecret;
         }
@@ -124,7 +120,6 @@ class Server extends Model
         }
 
         return $subuser->daemonSecret;
-
     }
 
     /**
@@ -135,7 +130,6 @@ class Server extends Model
      */
     public static function getUserServers($paginate = null)
     {
-
         $query = self::select(
             'servers.*',
             'nodes.name as nodeName',
@@ -160,7 +154,6 @@ class Server extends Model
         }
 
         return $query->get();
-
     }
 
     /**
@@ -173,7 +166,6 @@ class Server extends Model
      */
     public static function getByUUID($uuid)
     {
-
         if (array_key_exists($uuid, self::$serverUUIDInstance)) {
             return self::$serverUUIDInstance[$uuid];
         }
@@ -189,33 +181,30 @@ class Server extends Model
 
         $result = $query->first();
 
-        if(!is_null($result)) {
+        if (! is_null($result)) {
             $result->daemonSecret = self::getUserDaemonSecret($result);
         }
 
         self::$serverUUIDInstance[$uuid] = $result;
-        return self::$serverUUIDInstance[$uuid];
 
+        return self::$serverUUIDInstance[$uuid];
     }
 
     /**
-     * Returns non-administrative headers for accessing a server on Scales
+     * Returns non-administrative headers for accessing a server on the daemon.
      *
      * @param  string $uuid
      * @return array
      */
     public static function getGuzzleHeaders($uuid)
     {
-
         if (array_key_exists($uuid, self::$serverUUIDInstance)) {
             return [
                 'X-Access-Server' => self::$serverUUIDInstance[$uuid]->uuid,
-                'X-Access-Token' => self::$serverUUIDInstance[$uuid]->daemonSecret
+                'X-Access-Token' => self::$serverUUIDInstance[$uuid]->daemonSecret,
             ];
         }
 
         return [];
-
     }
-
 }

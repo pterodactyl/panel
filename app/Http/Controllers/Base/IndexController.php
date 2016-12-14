@@ -2,7 +2,7 @@
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,18 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
-
 class IndexController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -62,7 +61,15 @@ class IndexController extends Controller
     public function getPassword(Request $request, $length = 16)
     {
         $length = ($length < 8) ? 8 : $length;
-        return str_random($length);
-    }
 
+        $returnable = false;
+        while (! $returnable) {
+            $generated = str_random($length);
+            if (preg_match('/[A-Z]+[a-z]+[0-9]+/', $generated)) {
+                $returnable = true;
+            }
+        }
+
+        return $generated;
+    }
 }

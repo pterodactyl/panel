@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -66,7 +67,7 @@ class UpdateEmailSettings extends Command
     {
         $variables = [];
         $file = base_path() . '/.env';
-        if (!file_exists($file)) {
+        if (! file_exists($file)) {
             $this->error('Missing environment file! It appears that you have not installed this panel correctly.');
             exit();
         }
@@ -75,35 +76,35 @@ class UpdateEmailSettings extends Command
 
         $this->table([
             'Option',
-            'Description'
+            'Description',
         ], [
             [
                 'smtp',
-                'SMTP Server Email'
+                'SMTP Server Email',
             ],
             [
                 'mail',
-                'PHP\'s Internal Mail Server'
+                'PHP\'s Internal Mail Server',
             ],
             [
                 'mailgun',
-                'Mailgun Email Service'
+                'Mailgun Email Service',
             ],
             [
                 'mandrill',
-                'Mandrill Transactional Email Service'
+                'Mandrill Transactional Email Service',
             ],
             [
                 'postmark',
-                'Postmark Transactional Email Service'
-            ]
+                'Postmark Transactional Email Service',
+            ],
         ]);
         $variables['MAIL_DRIVER'] = is_null($this->option('driver')) ? $this->choice('Which email driver would you like to use?', [
             'smtp',
             'mail',
             'mailgun',
             'mandrill',
-            'postmark'
+            'postmark',
         ]) : $this->option('driver');
 
         switch ($variables['MAIL_DRIVER']) {

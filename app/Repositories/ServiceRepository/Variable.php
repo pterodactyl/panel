@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\ServiceRepository;
 
 use DB;
 use Validator;
-
 use Pterodactyl\Models;
-use Pterodactyl\Services\UuidService;
-
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class Variable
 {
-
     public function __construct()
     {
         //
@@ -52,14 +49,14 @@ class Variable
             'user_viewable' => 'sometimes|required|numeric|size:1',
             'user_editable' => 'sometimes|required|numeric|size:1',
             'required' => 'sometimes|required|numeric|size:1',
-            'regex' => 'required|string|min:1'
+            'regex' => 'required|string|min:1',
         ]);
 
         if ($validator->fails()) {
             throw new DisplayValidationException($validator->errors());
         }
 
-        if ($data['default_value'] !== '' && !preg_match($data['regex'], $data['default_value'])) {
+        if ($data['default_value'] !== '' && ! preg_match($data['regex'], $data['default_value'])) {
             throw new DisplayException('The default value you entered cannot violate the regex requirements.');
         }
 
@@ -74,10 +71,12 @@ class Variable
         $variable = new Models\ServiceVariables;
         $variable->option_id = $option->id;
         $variable->fill($data);
-        $variable->save();
+
+        return $variable->save();
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $variable = Models\ServiceVariables::findOrFail($id);
 
         DB::beginTransaction();
@@ -104,7 +103,7 @@ class Variable
             'user_viewable' => 'sometimes|required|numeric|boolean',
             'user_editable' => 'sometimes|required|numeric|boolean',
             'required' => 'sometimes|required|numeric|boolean',
-            'regex' => 'sometimes|required|string|min:1'
+            'regex' => 'sometimes|required|string|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -114,7 +113,7 @@ class Variable
         $data['default_value'] = (isset($data['default_value'])) ? $data['default_value'] : $variable->default_value;
         $data['regex'] = (isset($data['regex'])) ? $data['regex'] : $variable->regex;
 
-        if ($data['default_value'] !== '' && !preg_match($data['regex'], $data['default_value'])) {
+        if ($data['default_value'] !== '' && ! preg_match($data['regex'], $data['default_value'])) {
             throw new DisplayException('The default value you entered cannot violate the regex requirements.');
         }
 
@@ -127,7 +126,7 @@ class Variable
         $data['required'] = (isset($data['required']) && in_array((int) $data['required'], [0, 1])) ? $data['required'] : $variable->required;
 
         $variable->fill($data);
-        $variable->save();
-    }
 
+        return $variable->save();
+    }
 }

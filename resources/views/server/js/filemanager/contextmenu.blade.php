@@ -56,102 +56,109 @@ class ContextMenuClass {
     }
 
     rightClick() {
-        $('#file_listing > tbody td').on('contextmenu', event => {
-
-            const parent = $(event.target).closest('tr');
-            const menu = $(this.makeMenu(parent));
-
-            if (parent.data('type') === 'disabled') return;
+        $('[data-action="toggleMenu"]').on('mousedown', () => {
             event.preventDefault();
+            this.showMenu(event);
+        });
+        $('#file_listing > tbody td').on('contextmenu', event => {
+            this.showMenu(event);
+        });
+    }
 
-            $(menu).appendTo('body');
-            $(menu).data('invokedOn', $(event.target)).show().css({
-                position: 'absolute',
-                left: event.pageX,
-                top: event.pageY,
-            });
+    showMenu(event) {
+        const parent = $(event.target).closest('tr');
+        const menu = $(this.makeMenu(parent));
 
-            this.activeLine = parent;
-            this.activeLine.addClass('active');
+        if (parent.data('type') === 'disabled') return;
+        event.preventDefault();
 
-            @can('download-files', $server)
-                if (parent.data('type') === 'file') {
-                    $(menu).find('li[data-action="download"]').removeClass('hidden');
-                }
-            @endcan
+        $(menu).appendTo('body');
+        $(menu).data('invokedOn', $(event.target)).show().css({
+            position: 'absolute',
+            left: event.pageX - 150,
+            top: event.pageY,
+        });
 
-            @can('compress-files', $server)
-                if (parent.data('type') === 'folder') {
-                    $(menu).find('li[data-action="compress"]').removeClass('hidden');
-                }
-            @endcan
+        this.activeLine = parent;
+        this.activeLine.addClass('active');
 
-            @can('decompress-files', $server)
-                if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
-                    $(menu).find('li[data-action="decompress"]').removeClass('hidden');
-                }
-            @endcan
+        @can('download-files', $server)
+            if (parent.data('type') === 'file') {
+                $(menu).find('li[data-action="download"]').removeClass('hidden');
+            }
+        @endcan
 
-            // Handle Events
-            const Actions = new ActionsClass(parent, menu);
-            @can('move-files', $server)
-                $(menu).find('li[data-action="move"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.move();
-                });
-            @endcan
+        @can('compress-files', $server)
+            if (parent.data('type') === 'folder') {
+                $(menu).find('li[data-action="compress"]').removeClass('hidden');
+            }
+        @endcan
 
-            @can('copy-files', $server)
-                $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.copy();
-                });
-            @endcan
+        @can('decompress-files', $server)
+            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
+                $(menu).find('li[data-action="decompress"]').removeClass('hidden');
+            }
+        @endcan
 
-            @can('move-files', $server)
-                $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.rename();
-                });
-            @endcan
-
-            @can('compress-files', $server)
-                $(menu).find('li[data-action="compress"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.compress();
-                });
-            @endcan
-
-            @can('decompress-files', $server)
-                $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.decompress();
-                });
-            @endcan
-
-            @can('create-files', $server)
-                $(menu).find('li[data-action="folder"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.folder();
-                });
-            @endcan
-
-            @can('download-files', $server)
-                $(menu).find('li[data-action="download"]').unbind().on('click', e => {
-                    e.preventDefault();
-                    Actions.download();
-                });
-            @endcan
-
-            $(menu).find('li[data-action="delete"]').unbind().on('click', e => {
+        // Handle Events
+        const Actions = new ActionsClass(parent, menu);
+        @can('move-files', $server)
+            $(menu).find('li[data-action="move"]').unbind().on('click', e => {
                 e.preventDefault();
-                Actions.delete();
+                Actions.move();
             });
+        @endcan
 
-            $(window).on('click', () => {
-                $(menu).remove();
-                if(!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
+        @can('copy-files', $server)
+            $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.copy();
             });
+        @endcan
+
+        @can('move-files', $server)
+            $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.rename();
+            });
+        @endcan
+
+        @can('compress-files', $server)
+            $(menu).find('li[data-action="compress"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.compress();
+            });
+        @endcan
+
+        @can('decompress-files', $server)
+            $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.decompress();
+            });
+        @endcan
+
+        @can('create-files', $server)
+            $(menu).find('li[data-action="folder"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.folder();
+            });
+        @endcan
+
+        @can('download-files', $server)
+            $(menu).find('li[data-action="download"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.download();
+            });
+        @endcan
+
+        $(menu).find('li[data-action="delete"]').unbind().on('click', e => {
+            e.preventDefault();
+            Actions.delete();
+        });
+
+        $(window).on('click', () => {
+            $(menu).remove();
+            if(!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
         });
     }
 
