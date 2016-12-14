@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\ServiceRepository;
 
 use DB;
-use Storage;
 use Uuid;
+use Storage;
 use Validator;
-
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Exceptions\DisplayException;
@@ -35,7 +35,6 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class Pack
 {
-
     public function __construct()
     {
         //
@@ -55,7 +54,7 @@ class Pack
             'build_cpu' => 'required|integer|min:0',
             'build_io' => 'required|integer|min:10|max:1000',
             'build_container' => 'required|string',
-            'build_script' => 'sometimes|nullable|string'
+            'build_script' => 'sometimes|nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -63,13 +62,13 @@ class Pack
         }
 
         if (isset($data['file_upload'])) {
-            if (!$data['file_upload']->isValid()) {
+            if (! $data['file_upload']->isValid()) {
                 throw new DisplayException('The file provided does not appear to be valid.');
             }
 
-            if (!in_array($data['file_upload']->getMimeType(), [
+            if (! in_array($data['file_upload']->getMimeType(), [
                 'application/zip',
-                'application/gzip'
+                'application/gzip',
             ])) {
                 throw new DisplayException('The file provided does not meet the required filetypes of application/zip or application/gzip.');
             }
@@ -91,7 +90,7 @@ class Pack
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
                 'selectable' => isset($data['selectable']),
-                'visible' => isset($data['visible'])
+                'visible' => isset($data['visible']),
             ]);
 
             Storage::makeDirectory('packs/' . $pack->uuid);
@@ -111,25 +110,25 @@ class Pack
 
     public function createWithTemplate(array $data)
     {
-        if (!isset($data['file_upload'])) {
+        if (! isset($data['file_upload'])) {
             throw new DisplayException('No template file was found submitted with this request.');
         }
 
-        if (!$data['file_upload']->isValid()) {
+        if (! $data['file_upload']->isValid()) {
             throw new DisplayException('The file provided does not appear to be valid.');
         }
 
-        if (!in_array($data['file_upload']->getMimeType(), [
+        if (! in_array($data['file_upload']->getMimeType(), [
             'application/zip',
             'text/plain',
-            'application/json'
+            'application/json',
         ])) {
             throw new DisplayException('The file provided (' . $data['file_upload']->getMimeType() . ') does not meet the required filetypes of application/zip or application/json.');
         }
 
         if ($data['file_upload']->getMimeType() === 'application/zip') {
             $zip = new \ZipArchive;
-            if (!$zip->open($data['file_upload']->path())) {
+            if (! $zip->open($data['file_upload']->path())) {
                 throw new DisplayException('The uploaded archive was unable to be opened.');
             }
 
@@ -153,19 +152,21 @@ class Pack
                 'build_cpu' => $json->build->cpu,
                 'build_io' => $json->build->io,
                 'build_container' => $json->build->container,
-                'build_script' => $json->build->script
+                'build_script' => $json->build->script,
             ]);
 
             $pack = Models\ServicePack::findOrFail($id);
-            if (!$zip->extractTo(storage_path('app/packs/' . $pack->uuid), ($isZip === false) ? 'archive.tar.gz' : 'archive.zip')) {
+            if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), ($isZip === false) ? 'archive.tar.gz' : 'archive.zip')) {
                 $pack->delete();
                 throw new DisplayException('Unable to extract the archive file to the correct location.');
             }
 
             $zip->close();
+
             return $pack->id;
         } else {
             $json = json_decode(file_get_contents($data['file_upload']->path()));
+
             return $this->create([
                 'name' => $json->name,
                 'version' => $json->version,
@@ -178,10 +179,9 @@ class Pack
                 'build_cpu' => $json->build->cpu,
                 'build_io' => $json->build->io,
                 'build_container' => $json->build->container,
-                'build_script' => $json->build->script
+                'build_script' => $json->build->script,
             ]);
         }
-
     }
 
     public function update($id, array $data)
@@ -198,7 +198,7 @@ class Pack
             'build_cpu' => 'required|integer|min:0',
             'build_io' => 'required|integer|min:10|max:1000',
             'build_container' => 'required|string',
-            'build_script' => 'sometimes|string'
+            'build_script' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -218,14 +218,15 @@ class Pack
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
                 'selectable' => isset($data['selectable']),
-                'visible' => isset($data['visible'])
+                'visible' => isset($data['visible']),
             ]);
 
             return true;
         });
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $pack = Models\ServicePack::findOrFail($id);
         // @TODO Check for linked servers; foreign key should block this.
         DB::transaction(function () use ($pack) {
@@ -233,5 +234,4 @@ class Pack
             Storage::deleteDirectory('packs/' . $pack->uuid);
         });
     }
-
 }

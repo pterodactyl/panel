@@ -162,9 +162,9 @@ class ServerRepository
             $data['pack'] = null;
         }
 
-        if (!is_null($data['pack'])) {
+        if (! is_null($data['pack'])) {
             $pack = Models\ServicePack::where('id', $data['pack'])->where('option', $data['option'])->first();
-            if (!$pack) {
+            if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
         }

@@ -28,7 +28,6 @@ use DB;
 use Log;
 use Alert;
 use Storage;
-use Validator;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -292,12 +291,13 @@ class ServiceController extends Controller
     public function getConfiguration(Request $request, $serviceId)
     {
         $service = Models\Service::findOrFail($serviceId);
+
         return view('admin.services.config', [
             'service' => $service,
             'contents' => [
                 'json' => Storage::get('services/' . $service->file . '/main.json'),
-                'index' => Storage::get('services/' . $service->file . '/index.js')
-            ]
+                'index' => Storage::get('services/' . $service->file . '/index.js'),
+            ],
         ]);
     }
 
@@ -306,17 +306,19 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Service;
             $repo->updateFile($serviceId, $request->except([
-                '_token'
+                '_token',
             ]));
+
             return response('', 204);
         } catch (DisplayException $ex) {
             return response()->json([
-                'error' => $ex->getMessage()
+                'error' => $ex->getMessage(),
             ], 503);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'An error occured while attempting to save the file.'
+                'error' => 'An error occured while attempting to save the file.',
             ], 503);
         }
     }
