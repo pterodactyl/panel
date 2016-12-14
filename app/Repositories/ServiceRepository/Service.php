@@ -125,7 +125,7 @@ class Service
 
         $validator = Validator::make($data, [
             'file' => 'required|in:index,main',
-            'contents' => 'required|string'
+            'contents' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -139,10 +139,9 @@ class Service
         try {
             Storage::move($filepath, $backup);
             Storage::put($filepath, $data['contents']);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             Storage::move($backup, $filepath);
             throw $ex;
         }
-
     }
 }
