@@ -13,8 +13,8 @@
                 "find": {
                     "server-ip": "0.0.0.0",
                     "enable-query": "true",
-                    "server-port": "{{ build.default.port }}",
-                    "query.port": "{{ build.default.port }}"
+                    "server-port": "{{ server.build.default.port }}",
+                    "query.port": "{{ server.build.default.port }}"
                 }
             }
         },
@@ -37,7 +37,10 @@
     },
     "bungeecord": {
         "startup": {
-            "done": "Listening on "
+            "done": "Listening on ",
+            "userInteraction": [
+                "Listening on /0.0.0.0:25577"
+            ]
         },
         "stop": "end",
         "configs": {
@@ -45,8 +48,12 @@
                 "parser": "yaml",
                 "find": {
                     "listeners[0].query_enabled": true,
-                    "listeners[0].query_port": "{{ build.default.port }}",
-                    "listeners[0].host": "0.0.0.0:{{ build.default.port }}"
+                    "listeners[0].query_port": "{{ server.build.default.port }}",
+                    "listeners[0].host": "0.0.0.0:{{ server.build.default.port }}",
+                    "servers.*.address": {
+                        "127.0.0.1": "{{ config.docker.interface }}",
+                        "localhost": "{{ config.docker.interface }}"
+                    }
                 }
             }
         },

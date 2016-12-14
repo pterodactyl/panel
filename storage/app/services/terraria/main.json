@@ -9,8 +9,8 @@
             "tshock/config.json": {
                 "parser": "json",
                 "find": {
-                    "ServerPort": "{{ build.default.port }}",
-                    "MaxSlots": "{{ build.env.MAX_SLOTS }}"
+                    "ServerPort": "{{ server.build.default.port }}",
+                    "MaxSlots": "{{ server.build.env.MAX_SLOTS }}"
                 }
             }
         },

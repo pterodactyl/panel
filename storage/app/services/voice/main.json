@@ -12,9 +12,9 @@
                 "parser": "ini",
                 "find": {
                     "logfile": "murmur.log",
-                    "port": "{{ build.default.port }}",
+                    "port": "{{ server.build.default.port }}",
                     "host": "0.0.0.0",
-                    "users": "{{ build.env.MAX_USERS }}"
+                    "users": "{{ server.build.env.MAX_USERS }}"
                 }
             }
         },
@@ -24,7 +24,7 @@
         },
         "query": "mumbleping"
     },
-    "teamspeak": {
+    "ts3": {
         "startup": {
             "done": "listening on 0.0.0.0:",
             "userInteraction": []
@@ -34,9 +34,9 @@
             "ts3server.ini": {
                 "parser": "ini",
                 "find": {
-                    "default_voice_port": "{{ build.default.port }}",
+                    "default_voice_port": "{{ server.build.default.port }}",
                     "voice_ip": "0.0.0.0",
-                    "query_port": "{{ build.default.port }}",
+                    "query_port": "{{ server.build.default.port }}",
                     "query_ip": "0.0.0.0"
                 }
             }
