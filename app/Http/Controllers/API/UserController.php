@@ -75,7 +75,11 @@ class UserController extends BaseController
      */
     public function view(Request $request, $id)
     {
-        $query = Models\User::where('id', $id);
+        if(is_numeric($id)) {
+            $query = Models\User::where('id', $id);
+        } else {
+            $query = Models\User::where('email', $id);
+        }
 
         if (! is_null($request->input('fields'))) {
             foreach (explode(',', $request->input('fields')) as $field) {
