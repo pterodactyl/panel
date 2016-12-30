@@ -43,7 +43,7 @@
                     <label for="name" class="control-label">Server Name</label>
                     <div>
                         <input type="text" autocomplete="off" name="name" class="form-control" value="{{ old('name') }}" />
-                        <p class="text-muted"><small><em>Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (max 35 characters)</em></small></p>
+                        <p class="text-muted"><small><em>Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code> (max 200 characters).</em></small></p>
                     </div>
                 </div>
                 <div class="form-group col-md-6">
