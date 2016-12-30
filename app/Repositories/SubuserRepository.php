@@ -141,9 +141,9 @@ class SubuserRepository
                 } catch (\Exception $ex) {
                     throw $ex;
                 }
-            } else if ($server->owner === $user->id) {
+            } elseif ($server->owner === $user->id) {
                 throw new DisplayException('You cannot add the owner of a server as a subuser.');
-            } else if (Models\Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
+            } elseif (Models\Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
                 throw new DisplayException('A subuser with that email already exists for this server.');
             }
 
