@@ -33,16 +33,14 @@ use Pterodactyl\Http\Controllers\Controller;
 class LanguageController extends Controller
 {
     protected $languages = [
-        'de' => 'Danish',
+        'de' => 'German',
         'en' => 'English',
-        'es' => 'Spanish',
-        'fr' => 'French',
-        'it' => 'Italian',
-        'pl' => 'Polish',
+        'et' => 'Estonian',
+        'nb' => 'Norwegian',
+        'nl' => 'Dutch',
         'pt' => 'Portuguese',
+        'ro' => 'Romanian',
         'ru' => 'Russian',
-        'se' => 'Swedish',
-        'zh' => 'Chinese',
     ];
 
     /**

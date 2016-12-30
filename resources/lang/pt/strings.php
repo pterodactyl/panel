@@ -1,57 +1,29 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-return [
-    /*
-    |--------------------------------------------------------------------------
-    | Standalone Pterodactyl Language Strings
-    |--------------------------------------------------------------------------
-    */
-    'login' => 'Login',
-    'password' => 'Senha',
-    'email' => 'Email',
-    'whoops' => 'Opa',
-    'success' => 'Sucesso',
-    'location' => 'Localização',
-    'node' => 'Node',
-    'connection' => 'Conexão',
-    'language' => 'Língua',
-    'close' => 'Fechar',
-    'start' => 'Iniciar',
-    'stop' => 'Parar',
-    'restart' => 'Reiniciar',
-    'save' => 'Salvar',
-    'enabled' => 'Ativado',
-    'disabled' => 'Desativado',
-    'submit' => 'Enviar',
-    'current_password' => 'Senha Atual',
-    'again' => 'Novamente',
-    'registered' => 'Registrado',
-    'root_administrator' => 'Administrador Root',
-    'yes' => 'Sim',
-    'no' => 'Não',
-    'memory' => 'Memória',
-    'cpu' => 'CPU',
-    'status' => 'Status',
-    'players' => 'Jogadores',
-];
+return array(
+	"again" => "Novamente",
+	"close" => "Fechar",
+	"connection" => "Conexão",
+	"cpu" => "CPU",
+	"current_password" => "Senha Atual",
+	"disabled" => "Desativado",
+	"email" => "O :attribute precisa ser um endereço de email válido.",
+	"enabled" => "Ativado",
+	"language" => "Língua",
+	"location" => "Localização",
+	"login" => "Login",
+	"memory" => "Memória",
+	"no" => "Não",
+	"node" => "Node",
+	"players" => "Jogadores",
+	"registered" => "Registrado",
+	"restart" => "Reiniciar",
+	"root_administrator" => "Mudar isso para \"Sim\" dará ao usuário permissões completas administrativas ao PufferPanel.",
+	"save" => "Salvar",
+	"start" => "Iniciar",
+	"status" => "Status",
+	"stop" => "Parar",
+	"submit" => "Enviar",
+	"success" => "Sucesso",
+	"whoops" => "Opa",
+	"yes" => "Sim",
+);
