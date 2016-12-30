@@ -166,7 +166,7 @@ class ServerRepository
             foreach ($variables as $variable) {
 
                 // Is the variable required?
-                if (! $data['env_' . $variable->env_variable]) {
+                if (! isset($data['env_' . $variable->env_variable])) {
                     if ($variable->required === 1) {
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
