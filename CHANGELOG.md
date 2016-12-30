@@ -8,6 +8,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes bug where assigning a variable a default value (or valid value) of `0` would cause the panel to reject the value thinking it did not exist.
 * Addresses potential for crash by limiting total ports that can be assigned per-range to 2000.
 * Fixes server names requiring at minimum 4 characters. Name can now be 1 to 200 characters long. :pencil2:
+* Fixes bug that would allow adding the owner of a server as a subuser for that same server.
+* Fixes bug that would allow creating multiple subusers with the same email address.
 
 ## v0.5.5 (Bodacious Boreopterus)
 ### Added
