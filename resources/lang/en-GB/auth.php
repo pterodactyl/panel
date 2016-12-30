@@ -1,4 +1,5 @@
 <?php
-return array(
-	"resetpassword" => "Reset Password",
-);
+
+return [
+    'resetpassword' => 'Reset Password',
+];
