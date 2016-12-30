@@ -3,6 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.6 (Bodacious Boreopterus)
+### Fixed
+* Fixes bug where assigning a variable a default value (or valid value) of `0` would cause the panel to reject the value thinking it did not exist.
+* Addresses potential for crash by limiting total ports that can be assigned per-range to 2000.
+* Fixes server names requiring at minimum 4 characters. Name can now be 1 to 200 characters long. :pencil2:
+
 ## v0.5.5 (Bodacious Boreopterus)
 ### Added
 * New API route to return allocations given a server ID. This adds support for a community-driven WHMCS module :rocket: available [here](https://github.com/hammerdawn/Pterodactyl-WHMCS).
