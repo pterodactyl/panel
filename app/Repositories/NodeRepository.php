@@ -213,7 +213,13 @@ class NodeRepository
                             throw new DisplayException('The mapping for ' . $port . ' is invalid and cannot be processed.');
                         }
                         if (preg_match('/^(\d{1,5})-(\d{1,5})$/', $port, $matches)) {
-                            foreach (range($matches[1], $matches[2]) as $assignPort) {
+                            $portBlock = range($matches[1], $matches[2]);
+
+                            if (count($portBlock) > 2000) {
+                                throw new DisplayException('Adding more than 2000 ports at once is not currently supported. Please consider using a smaller port range.');
+                            }
+
+                            foreach ($portBlock as $assignPort) {
                                 $alloc = Models\Allocation::firstOrNew([
                                     'node' => $node->id,
                                     'ip' => $ip,
@@ -252,7 +258,6 @@ class NodeRepository
             }
 
             DB::commit();
-            // return true;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
