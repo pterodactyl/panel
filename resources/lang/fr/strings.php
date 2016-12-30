@@ -1,6 +1,7 @@
 <?php
-return array(
-	"language" => "Langage",
-	"save" => "Sauvegarder",
-	"status" => "Status",
-);
+
+return [
+    'language' => 'Langage',
+    'save' => 'Sauvegarder',
+    'status' => 'Status',
+];
