@@ -31,7 +31,6 @@ use Alert;
 use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\ServerRepository;
