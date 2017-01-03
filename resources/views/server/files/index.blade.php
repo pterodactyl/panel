@@ -58,9 +58,9 @@
         </div>
     </div>
 </div>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'index.js']) }}"></script>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'contextmenu.js']) }}"></script>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'actions.js']) }}"></script>
+{!! Theme::js('js/files/index.js') !!}
+{!! Theme::js('js/files/contextmenu.js') !!}
+{!! Theme::js('js/files/actions.js') !!}
 <script>
 $(window).load(function () {
     $('.server-files').addClass('active');

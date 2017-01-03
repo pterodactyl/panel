@@ -76,7 +76,7 @@
                         {{ $carbon->diffForHumans() }}
                     @endif
                 </td>
-                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:0px 6px;"><i class="fa fa-ellipsis-h"></i></button></td>
+                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h"></i></button></td>
             </tr>
         @endforeach
         @foreach ($files as $file)
@@ -153,7 +153,7 @@
                         {{ $carbon->diffForHumans() }}
                     @endif
                 </td>
-                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:0px 6px;"><i class="fa fa-ellipsis-h"></i></button></td>
+                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h"></i></button></td>
             </tr>
         @endforeach
     </tbody>

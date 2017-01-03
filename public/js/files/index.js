@@ -32,9 +32,9 @@ class FileManager {
         this.loader(true);
         $.ajax({
             type: 'POST',
-            url: '{{ route('server.files.directory-list', $server->uuidShort) }}',
+            url: Pterodactyl.meta.directoryList,
             headers: {
-                'X-CSRF-Token': '{{ csrf_token() }}',
+                'X-CSRF-Token': Pterodactyl.meta.csrftoken,
             },
             data: {
                 directory: path,
