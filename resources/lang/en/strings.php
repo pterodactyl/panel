@@ -15,6 +15,7 @@ return [
     'memory' => 'Memory',
     'no' => 'No',
     'node' => 'Node',
+    'password' => 'Password',
     'players' => 'Players',
     'registered' => 'Registered',
     'restart' => 'Restart',
