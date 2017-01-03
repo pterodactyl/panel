@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added
 * Added the following languages: Estonian `et`, Dutch `nl`, Norwegian `nb` (partial), Romanian `ro`, and Russian `ru`. Interested in helping us translate the panel into more languages, or improving existing translations? Contact us on Discord and let us know.
+* Added missing `strings.password` to language file for English.
 
 ### Fixed
 * Fixes bug where assigning a variable a default value (or valid value) of `0` would cause the panel to reject the value thinking it did not exist.
@@ -13,6 +14,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes server names requiring at minimum 4 characters. Name can now be 1 to 200 characters long. :pencil2:
 * Fixes bug that would allow adding the owner of a server as a subuser for that same server.
 * Fixes bug that would allow creating multiple subusers with the same email address.
+* Fixes bug where Sponge servers were improperly tagged as a spigot server in the daemon causing issues when booting or modifying configuration files.
 
 ## v0.5.5 (Bodacious Boreopterus)
 ### Added
