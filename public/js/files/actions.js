@@ -139,6 +139,8 @@ class ActionsClass {
         const inputLoader = nameBlock.find('.input-loader');
 
         inputField.focus();
+        inputField.setSelectionRange(inputField.val().length * 2, inputField.val().length * 2);
+
         inputField.on('blur keydown', e => {
             // Save Field
             if (
