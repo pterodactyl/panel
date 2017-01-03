@@ -16,6 +16,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes bug that would allow creating multiple subusers with the same email address.
 * Fixes bug where Sponge servers were improperly tagged as a spigot server in the daemon causing issues when booting or modifying configuration files.
 * Use transpiled ES6 -> ES5 filemanager code in browsers.
+* Fixes service option name displaying the name of a nwly added variable after the variable is added and until the page is refreshed. (see #208)
 
 ### Changed
 * Filemanager and EULA checking javascript is now written in pure ES6 code rather than as a blade-syntax template. This allows the use of babel to transpile into ES5 as a minified version.
