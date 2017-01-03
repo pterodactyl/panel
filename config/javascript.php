@@ -14,7 +14,7 @@ return [
     |
     */
     'bind_js_vars_to_this_view' => [
-        'layouts.master'
+        'layouts.master',
     ],
 
     /*
@@ -27,6 +27,6 @@ return [
     | That way, you can access vars, like "SomeNamespace.someVariable."
     |
     */
-    'js_namespace' => 'Pterodactyl'
+    'js_namespace' => 'Pterodactyl',
 
 ];
