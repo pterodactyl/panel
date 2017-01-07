@@ -117,4 +117,58 @@ class Node extends Model
 
         return self::$guzzle[$node];
     }
+
+    /**
+     * Returns the configuration in JSON format
+     *
+     * @param boolean $pretty Wether to pretty print the JSON or not
+     * @return string The configration in JSON format
+     */
+    public function getConfigurationAsJson($pretty = false) {
+        $config = array(
+            'web' => array(
+                'host' => '0.0.0.0',
+                'listen' => $this->daemonListen,
+                'ssl' => array(
+                    'enabled' => $this->scheme === 'https',
+                    'certificate' => '/etc/letsencrypt/live/localhost/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/localhost/privkey.pem'
+                )
+            ),
+            'docker' => array(
+                'socket' => '/var/run/docker.sock',
+                'autoupdate_images' => true
+            ),
+            'sftp' => array(
+                'path' => $this->daemonBase,
+                'port' => $this->daemonSFTP,
+                'container' => 'ptdl-sftp'
+            ),
+            'query' => array(
+                'kill_on_fail' => true,
+                'fail_limit' => 5
+            ),
+            'logger' => array(
+                'path' => 'logs/',
+                'src' => false,
+                'level' => 'info',
+                'period' => '1d',
+                'count' => 3
+            ),
+            'remote' => array(
+                'base' => config('app.url'),
+                'download' => route('remote.download'),
+                'installed' => route('remote.install')
+            ),
+            'uploads' => array(
+                'size_limit' => $this->upload_size
+            ),
+            'keys' => array($this->daemonSecret)
+        );
+
+        $json_options = JSON_UNESCAPED_SLASHES;
+        if ($pretty) $json_options |= JSON_PRETTY_PRINT;
+
+        return json_encode($config, $json_options);
+    }
 }
