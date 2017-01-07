@@ -29,7 +29,6 @@ use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\NotificationService;
-use Pterodactyl\Models\NodeConfigurationToken;
 
 class RemoteController extends Controller
 {
@@ -110,20 +109,21 @@ class RemoteController extends Controller
         return response('', 201);
     }
 
-    public function getConfiguration(Request $request, $tokenString) {
+    public function getConfiguration(Request $request, $tokenString)
+    {
         // Try to query the token and the node from the database
         try {
             $token = Models\NodeConfigurationToken::where('token', $tokenString)->firstOrFail();
             $node = Models\Node::findOrFail($token->node);
-        } catch(\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response(json_encode(array('error' => 'token_invalid')), 403)
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response(json_encode(['error' => 'token_invalid']), 403)
                 ->header('Content-Type', 'application/json');
         }
 
         // Check if token is expired
         if ($token->expires_at->lt(Carbon::now())) {
             $token->delete();
-            return response(json_encode(array('error' => 'token_expired')), 403)
+            return response(json_encode(['error' => 'token_expired']), 403)
                 ->header('Content-Type', 'application/json');
         }
 

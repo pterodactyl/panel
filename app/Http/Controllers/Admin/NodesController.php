@@ -279,7 +279,8 @@ class NodesController extends Controller
         ]);
     }
 
-    public function getConfigurationToken(Request $request, $id) {
+    public function getConfigurationToken(Request $request, $id)
+    {
         // Check if Node exists. Will lead to 404 if not.
         Models\Node::findOrFail($id);
 
@@ -290,10 +291,10 @@ class NodesController extends Controller
         $token->expires_at = Carbon::now()->addMinutes(5); // Expire in 5 Minutes
         $token->save();
 
-        $token_response = array(
+        $token_response = [
             'token' => $token->token,
-            'expires_at' => $token->expires_at->toDateTimeString()
-        );
+            'expires_at' => $token->expires_at->toDateTimeString(),
+        ];
 
         return response(json_encode($token_response), 200)
             ->header('Content-Type', 'application/json');
