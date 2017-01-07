@@ -509,7 +509,7 @@ $(document).ready(function () {
                     title: 'Token created.',
                     text: 'Here is your token: <code>'+data.token+'</code><br />' +
                           'It will expire at <i>' + data.expires_at + '</i><br /><br />' +
-                          '<p>To auto-configure your node run<br /><small><code>npm run configure -- --panel-url {{ config('app.url') }} --token '+data.token+'</code></small></p>',
+                          '<p>To auto-configure your node run<br /><small><code>npm run configure -- --panel-url '+window.location.protocol+'//{{ config('app.url') }} --token '+data.token+'</code></small></p>',
                     html: true
                 })
             })
