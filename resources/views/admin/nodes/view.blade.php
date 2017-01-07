@@ -287,6 +287,12 @@
                         Below is the configuration file for your daemon on this node. We recommend <strong>not</strong> simply copy and pasting the code below unless you know what you are doing. You should run the <code>auto-installer</code> or <code>auto-updater</code> to setup the daemon.
                     </div>
                     <div class="col-md-12">
+                        <p>You can generate a token for automatic setups. Pressing the button below will generate a token. It can only be used once and is valid for 5 minutes. It will also provide the necessary commands to auto-configure the node.</p>
+                        <p class="text-center">
+                            <button type="button" id="configTokenBtn" class="btn btn-primary">Generate token</button>
+                        </p>
+                    </div>
+                    <div class="col-md-12">
                         <pre><code>{{ $node->getConfigurationAsJson(true) }}</code></pre>
                     </div>
                 </div>
@@ -494,6 +500,27 @@ $(document).ready(function () {
             event.target.submit();
         });
     });
+
+    $('#configTokenBtn').on('click', function (event) {
+        $.getJSON('{{ route('admin.nodes.configurationtoken', $node->id) }}')
+            .done(function (data) {
+                swal({
+                    type: 'success',
+                    title: 'Token created.',
+                    text: 'Here is your token: <code>'+data.token+'</code><br />' +
+                          'It will expire at <i>' + data.expires_at + '</i><br /><br />' +
+                          '<p>To auto-configure your node run<br /><small><code>npm run configure -- --panel-url {{ config('app.url') }} --token '+data.token+'</code></small></p>',
+                    html: true
+                })
+            })
+            .fail(function () {
+                swal({
+                    title: 'Error',
+                    text: 'Something went wrong creating your token.',
+                    type: 'error'
+                });
+            })
+    })
 
     $('.cloneElement').on('click', function (event) {
         event.preventDefault();

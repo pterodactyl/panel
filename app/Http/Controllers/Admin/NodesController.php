@@ -83,6 +83,7 @@ class NodesController extends Controller
                 '_token',
             ]));
             Alert::success('Successfully created new node. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
+            Alert::info('<strong>To simplify the node setup you can generate a token on the configuration tab.</strong>')->flash();
 
             return redirect()->route('admin.nodes.view', [
                 'id' => $new,
