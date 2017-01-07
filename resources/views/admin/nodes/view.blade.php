@@ -287,48 +287,7 @@
                         Below is the configuration file for your daemon on this node. We recommend <strong>not</strong> simply copy and pasting the code below unless you know what you are doing. You should run the <code>auto-installer</code> or <code>auto-updater</code> to setup the daemon.
                     </div>
                     <div class="col-md-12">
-                        <pre><code>{
-    "web": {
-        "host": "0.0.0.0",
-        "listen": {{ $node->daemonListen }},
-        "ssl": {
-            "enabled": {{ $node->scheme === 'https' ? 'true' : 'false' }},
-            "certificate": "/etc/letsencrypt/live/{{ $node->fqdn }}/fullchain.pem",
-            "key": "/etc/letsencrypt/live/{{ $node->fqdn }}/privkey.pem"
-        }
-    },
-    "docker": {
-        "socket": "/var/run/docker.sock",
-        "autoupdate_images": true
-    },
-    "sftp": {
-        "path": "{{ $node->daemonBase }}",
-        "port": {{ $node->daemonSFTP }},
-        "container": "ptdl-sftp"
-    },
-    "query": {
-        "kill_on_fail": true,
-        "fail_limit": 5
-    },
-    "logger": {
-        "path": "logs/",
-        "src": false,
-        "level": "info",
-        "period": "1d",
-        "count": 3
-    },
-    "remote": {
-        "base": "{{ config('app.url') }}",
-        "download": "{{ route('remote.download') }}",
-        "installed": "{{ route('remote.install') }}"
-    },
-    "uploads": {
-        "size_limit": {{ $node->upload_size }}
-    },
-    "keys": [
-        "{{ $node->daemonSecret }}"
-    ]
-}</code></pre>
+                        <pre><code>{{ $node->getConfigurationAsJson(true) }}</code></pre>
                     </div>
                 </div>
             </div>
