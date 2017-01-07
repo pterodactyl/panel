@@ -28,6 +28,7 @@ use DB;
 use Log;
 use Alert;
 use Validator;
+use Carbon\Carbon;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -275,5 +276,25 @@ class NodesController extends Controller
             'id' => $id,
             'tab' => 'tab_delete',
         ]);
+    }
+
+    public function getConfigurationToken(Request $request, $id) {
+        // Check if Node exists. Will lead to 404 if not.
+        Models\Node::findOrFail($id);
+
+        // Create a token
+        $token = new Models\NodeConfigurationToken();
+        $token->node = $id;
+        $token->token = str_random(32);
+        $token->expires_at = Carbon::now()->addMinutes(5); // Expire in 5 Minutes
+        $token->save();
+
+        $token_response = array(
+            'token' => $token->token,
+            'expires_at' => $token->expires_at->toDateTimeString()
+        );
+
+        return response(json_encode($token_response), 200)
+            ->header('Content-Type', 'application/json');
     }
 }
