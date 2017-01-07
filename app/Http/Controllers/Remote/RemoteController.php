@@ -123,6 +123,7 @@ class RemoteController extends Controller
         // Check if token is expired
         if ($token->expires_at->lt(Carbon::now())) {
             $token->delete();
+
             return response(json_encode(['error' => 'token_expired']), 403)
                 ->header('Content-Type', 'application/json');
         }
