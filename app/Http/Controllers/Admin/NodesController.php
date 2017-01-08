@@ -27,8 +27,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use DB;
 use Log;
 use Alert;
+use Carbon;
 use Validator;
-use Carbon\Carbon;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -296,7 +296,6 @@ class NodesController extends Controller
             'expires_at' => $token->expires_at->toDateTimeString(),
         ];
 
-        return response(json_encode($token_response), 200)
-            ->header('Content-Type', 'application/json');
+        return response()->json($token_response, 200);
     }
 }

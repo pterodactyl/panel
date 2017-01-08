@@ -116,21 +116,20 @@ class RemoteController extends Controller
             $token = Models\NodeConfigurationToken::where('token', $tokenString)->firstOrFail();
             $node = Models\Node::findOrFail($token->node);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response(json_encode(['error' => 'token_invalid']), 403)
-                ->header('Content-Type', 'application/json');
+            return response()->json(['error' => 'token_invalid'], 403);
         }
 
         // Check if token is expired
         if ($token->expires_at->lt(Carbon::now())) {
             $token->delete();
 
-            return response(json_encode(['error' => 'token_expired']), 403)
-                ->header('Content-Type', 'application/json');
+            return response()->json(['error' => 'token_expired'], 403);
         }
 
         // Delete the token, it's one-time use
         $token->delete();
 
+        // Manually as getConfigurationAsJson() returns it in correct format already
         return response($node->getConfigurationAsJson(), 200)
             ->header('Content-Type', 'application/json');
     }

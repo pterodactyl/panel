@@ -288,7 +288,7 @@ class AdminRoutes
             ]);
 
             $router->get('/{id}/configurationtoken', [
-                'as' => 'admin.nodes.configurationtoken',
+                'as' => 'admin.nodes.configuration-token',
                 'uses' => 'Admin\NodesController@getConfigurationToken',
             ]);
         });

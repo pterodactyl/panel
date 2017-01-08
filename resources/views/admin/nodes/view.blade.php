@@ -502,7 +502,7 @@ $(document).ready(function () {
     });
 
     $('#configTokenBtn').on('click', function (event) {
-        $.getJSON('{{ route('admin.nodes.configurationtoken', $node->id) }}')
+        $.getJSON('{{ route('admin.nodes.configuration-token', $node->id) }}')
             .done(function (data) {
                 swal({
                     type: 'success',

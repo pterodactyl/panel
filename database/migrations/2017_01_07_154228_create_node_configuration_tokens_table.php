@@ -18,8 +18,7 @@ class CreateNodeConfigurationTokensTable extends Migration
             $table->char('token', 32);
             $table->timestamp('expires_at');
             $table->integer('node')->unsigned();
-            $table->foreign('node')
-                ->references('id')->on('nodes');
+            $table->foreign('node')->references('id')->on('nodes');
             $table->timestamps();
         });
     }
