@@ -286,6 +286,11 @@ class AdminRoutes
                 'as' => 'admin.nodes.delete',
                 'uses' => 'Admin\NodesController@deleteNode',
             ]);
+
+            $router->get('/{id}/configurationtoken', [
+                'as' => 'admin.nodes.configuration-token',
+                'uses' => 'Admin\NodesController@getConfigurationToken',
+            ]);
         });
 
         // Location Routes

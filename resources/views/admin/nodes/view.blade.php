@@ -287,48 +287,13 @@
                         Below is the configuration file for your daemon on this node. We recommend <strong>not</strong> simply copy and pasting the code below unless you know what you are doing. You should run the <code>auto-installer</code> or <code>auto-updater</code> to setup the daemon.
                     </div>
                     <div class="col-md-12">
-                        <pre><code>{
-    "web": {
-        "host": "0.0.0.0",
-        "listen": {{ $node->daemonListen }},
-        "ssl": {
-            "enabled": {{ $node->scheme === 'https' ? 'true' : 'false' }},
-            "certificate": "/etc/letsencrypt/live/{{ $node->fqdn }}/fullchain.pem",
-            "key": "/etc/letsencrypt/live/{{ $node->fqdn }}/privkey.pem"
-        }
-    },
-    "docker": {
-        "socket": "/var/run/docker.sock",
-        "autoupdate_images": true
-    },
-    "sftp": {
-        "path": "{{ $node->daemonBase }}",
-        "port": {{ $node->daemonSFTP }},
-        "container": "ptdl-sftp"
-    },
-    "query": {
-        "kill_on_fail": true,
-        "fail_limit": 5
-    },
-    "logger": {
-        "path": "logs/",
-        "src": false,
-        "level": "info",
-        "period": "1d",
-        "count": 3
-    },
-    "remote": {
-        "base": "{{ config('app.url') }}",
-        "download": "{{ route('remote.download') }}",
-        "installed": "{{ route('remote.install') }}"
-    },
-    "uploads": {
-        "size_limit": {{ $node->upload_size }}
-    },
-    "keys": [
-        "{{ $node->daemonSecret }}"
-    ]
-}</code></pre>
+                        <p>To simplify the configuration of nodes it is possible to fetch the config from the panel. A token is required for this process. The button below will generate a token and provide you with the commands necessary for automatic configuration of the node. Be aware that these tokens are only valid for 5 minutes.</p>
+                        <p class="text-center">
+                            <button type="button" id="configTokenBtn" class="btn btn-primary">Generate token</button>
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <pre><code>{{ $node->getConfigurationAsJson(true) }}</code></pre>
                     </div>
                 </div>
             </div>
@@ -535,6 +500,27 @@ $(document).ready(function () {
             event.target.submit();
         });
     });
+
+    $('#configTokenBtn').on('click', function (event) {
+        $.getJSON('{{ route('admin.nodes.configuration-token', $node->id) }}')
+            .done(function (data) {
+                swal({
+                    type: 'success',
+                    title: 'Token created.',
+                    text: 'Here is your token: <code>'+data.token+'</code><br />' +
+                          'It will expire at <i>' + data.expires_at + '</i><br /><br />' +
+                          '<p>To auto-configure your node run<br /><small><code>npm run configure -- --panel-url '+window.location.protocol+'//{{ config('app.url') }} --token '+data.token+'</code></small></p>',
+                    html: true
+                })
+            })
+            .fail(function () {
+                swal({
+                    title: 'Error',
+                    text: 'Something went wrong creating your token.',
+                    type: 'error'
+                });
+            })
+    })
 
     $('.cloneElement').on('click', function (event) {
         event.preventDefault();

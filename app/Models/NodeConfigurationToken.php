@@ -22,35 +22,30 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Routes;
+namespace Pterodactyl\Models;
 
-use Illuminate\Routing\Router;
+use Illuminate\Database\Eloquent\Model;
 
-class RemoteRoutes
+class NodeConfigurationToken extends Model
 {
-    public function map(Router $router)
-    {
-        $router->group(['prefix' => 'remote'], function () use ($router) {
-            // Handles Remote Download Authentication Requests
-            $router->post('download', [
-                'as' => 'remote.download',
-                'uses' => 'Remote\RemoteController@postDownload',
-            ]);
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'node_configuration_tokens';
 
-            $router->post('install', [
-                'as' => 'remote.install',
-                'uses' => 'Remote\RemoteController@postInstall',
-            ]);
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at'];
 
-            $router->post('event', [
-                'as' => 'remote.event',
-                'uses' => 'Remote\RemoteController@event',
-            ]);
-
-            $router->get('configuration/{token}', [
-                'as' => 'remote.configuration',
-                'uses' => 'Remote\RemoteController@getConfiguration',
-            ]);
-        });
-    }
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at', 'expires_at'];
 }
