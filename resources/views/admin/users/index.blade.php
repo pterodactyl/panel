@@ -42,17 +42,21 @@
     <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
-                <th>Email</th>
-                <th>Account Created</th>
-                <th>Account Updated</th>
+                <th>ID</td>
+                <th>Email</td>
+                <th>Client Name</th>
+                <th>Username</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach ($users as $user)
-                <tr>
-                    <td><a href="/admin/users/view/{{ $user->id }}"><code>{{ $user->email }}</code></a> @if($user->root_admin === 1)<span class="badge">Administrator</span>@endif</td>
-                    <td>{{ $user->created_at }}</td>
-                    <td>{{ $user->updated_at }}</td>
+                <tr class="align-middle">
+                    <td><code>#{{ $user->id }}</code></td>
+                    <td><a href="{{ route('admin.users.view', $user->id) }}">{{ $user->email }}</a></td>
+                    <td>{{ $user->name_last }}, {{ $user->name_first }}</td>
+                    <td><code>{{ $user->username }}</code></td>
+                    <td class="text-center"><img src="https://www.gravatar.com/avatar/{{ md5(strtolower($user->email)) }}?s=20" class="img-circle" /></td>
                 </tr>
             @endforeach
         </tbody>

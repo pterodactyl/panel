@@ -7,10 +7,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
 * Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
+* Users can now have a username as well as client name assigned to thier account.
 
 ### Fixed
+* Bug causing error logs to be spammed if someone timed out on an ajax based page.
 
 ### Changed
+* Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
+* User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
 
 ### Deprecated
 

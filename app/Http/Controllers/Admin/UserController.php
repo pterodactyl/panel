@@ -116,7 +116,13 @@ class UserController extends Controller
     {
         try {
             $user = new UserRepository;
-            $userid = $user->create($request->input('email'), $request->input('password'));
+            $userid = $user->create($request->only([
+                'email',
+                'password',
+                'name_first',
+                'name_last',
+                'username'
+            ]));
             Alert::success('Account has been successfully created.')->flash();
 
             return redirect()->route('admin.users.view', $userid);
@@ -132,19 +138,16 @@ class UserController extends Controller
 
     public function updateUser(Request $request, $user)
     {
-        $data = [
-            'email' => $request->input('email'),
-            'root_admin' => $request->input('root_admin'),
-            'password_confirmation' => $request->input('password_confirmation'),
-        ];
-
-        if ($request->input('password')) {
-            $data['password'] = $request->input('password');
-        }
-
         try {
             $repo = new UserRepository;
-            $repo->update($user, $data);
+            $repo->update($user, $request->only([
+                'email',
+                'password',
+                'name_first',
+                'name_last',
+                'username',
+                'root_admin',
+            ]));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.users.view', $user)->withErrors(json_decode($ex->getMessage()));
