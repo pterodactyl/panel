@@ -33,9 +33,10 @@
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th>Service Type</th>
+                <th class="col-md-3">Service Type</th>
                 <th>Description</th>
                 <th class="text-center">Servers</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -44,9 +45,11 @@
                     <td><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></td>
                     <td>{!! $service->description !!}</td>
                     <td class="text-center">{{ $service->c_servers }}</td>
+                    <td class="text-center align-middle"><a href="{{ route('admin.services.service.config', $service->id) }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-wrench"></i> Configure</button></a></td>
                 </tr>
             @endforeach
             <tr>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td class="text-center"><a href="{{ route('admin.services.new') }}"><i class="fa fa-plus"></i></a></td>
