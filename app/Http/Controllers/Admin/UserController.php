@@ -121,7 +121,7 @@ class UserController extends Controller
                 'password',
                 'name_first',
                 'name_last',
-                'username'
+                'username',
             ]));
             Alert::success('Account has been successfully created.')->flash();
 

@@ -22,7 +22,7 @@ class AddMoreUserData extends Migration
         });
 
         DB::transaction(function () {
-            foreach(User::all() as &$user) {
+            foreach (User::all() as &$user) {
                 $user->username = $user->email;
                 $user->save();
             }
