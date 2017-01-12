@@ -76,5 +76,4 @@ class ServiceController extends Controller
 
         return response()->file(storage_path('app/services/' . $service . '/' . $file));
     }
-
 }
