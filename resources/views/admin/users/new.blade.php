@@ -34,15 +34,38 @@
     <h3>Create New Account</h3><hr />
     <form action="new" method="post">
         <fieldset>
-            <div class="form-group">
-                <label for="email" class="control-label">Email</label>
-                <div>
-                    <input type="text" autocomplete="off" name="email" class="form-control" />
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="email" class="control-label">Email</label>
+                    <div>
+                        <input type="text" autocomplete="off" name="email" value="{{ old('email') }}" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="username" class="control-label">Username</label>
+                    <div>
+                        <input type="text" autocomplete="off" name="username" value="{{ old('username') }}" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="name_first" class="control-label">Client First Name</label>
+                    <div>
+                        <input type="text" autocomplete="off" name="name_first" value="{{ old('name_first') }}" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="name_last" class="control-label">Client Last Name</label>
+                    <div>
+                        <input type="text" autocomplete="off" name="name_last" value="{{ old('name_last') }}" class="form-control" />
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="well well-sm">
+                    <hr />
+                    <div class="alert alert-info">
                         <p>Providing a user password is optional. New user emails prompt users to create a password the first time they login. If a password is provided here you will need to find a different method of providing it to the user.</p>
                     </div>
                 </div>

@@ -31,7 +31,9 @@
         <li><a href="/admin/users">Accounts</a></li>
         <li class="active">{{ $user->email }}</li>
     </ul>
-    <h3>Viewing User: {{ $user->email }}</h3><hr />
+    <h3 style="margin-bottom: 5px;">Viewing User: {{ $user->email }}</h3>
+    <p class="text-muted" style="margin: 0 0 -10.5px !important;"><small>Registered {{ (new Carbon($user->created_at))->toRfc1123String() }}</small></p>
+    <hr />
     <div class="row">
         <form action="{{ route('admin.users.view', $user->id) }}" method="post">
             <div class="col-md-6">
@@ -43,19 +45,21 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="registered" class="control-label">{{ trans('strings.registered') }}</label>
+                        <label for="registered" class="control-label">Username</label>
                         <div>
-                            <input type="text" value="{{ $user->created_at }}" readonly="readonly" class="form-control">
+                            <input type="text" name="username" value="{{ $user->username }}" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="root_admin" class="control-label">{{ trans('strings.root_administrator') }}</label>
+                        <label for="registered" class="control-label">Client First Name</label>
                         <div>
-                            <select name="root_admin" class="form-control">
-                                <option value="0">{{ trans('strings.no') }}</option>
-                                <option value="1" @if($user->root_admin)selected="selected"@endif>{{ trans('strings.yes') }}</option>
-                            </select>
-                            <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
+                            <input type="text" name="name_first" value="{{ $user->name_first }}" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="registered" class="control-label">Client Last Name</label>
+                        <div>
+                            <input type="text" name="name_last" value="{{ $user->name_last }}" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -66,7 +70,6 @@
             </div>
             <div class="col-md-6">
                 <div class="well" style="padding-bottom: 0;">
-                    <h4 class="nopad">{{ trans('base.account.update_pass') }}</h5><hr />
                     <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
                     <div class="form-group">
                         <label for="password" class="control-label">{{ trans('strings.password') }}</label>
@@ -75,13 +78,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password_confirmation" class="control-label">{{ trans('auth.confirmpassword') }}</label>
-                        <div>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <button class="btn btn-default btn-sm" id="gen_pass_bttn" type="button">Generate Password</button>
+                    </div>
+                </div>
+                <div class="well" style="padding-bottom: 0;">
+                    <div class="form-group">
+                        <label for="root_admin" class="control-label">{{ trans('strings.root_administrator') }}</label>
+                        <div>
+                            <select name="root_admin" class="form-control">
+                                <option value="0">{{ trans('strings.no') }}</option>
+                                <option value="1" @if($user->root_admin)selected="selected"@endif>{{ trans('strings.yes') }}</option>
+                            </select>
+                            <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
+                        </div>
                     </div>
                 </div>
             </div>

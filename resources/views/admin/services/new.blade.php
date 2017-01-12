@@ -55,7 +55,7 @@
                     <input type="text" name="file" class="form-control" value="{{ old('file') }}" />
                     <span class="input-group-addon">/index.js</span>
                 </div>
-                <p class="text-muted"><small>This should be the name of the folder on the daemon that contains all of the service logic.</small></p>
+                <p class="text-muted"><small>This should be a unique alpha-numeric <code>(a-z)</code> name used to identify the service.</small></p>
             </div>
             <div class="col-md-6 form-group">
                 <label class="control-label">Display Executable:</label>

@@ -26,6 +26,7 @@ namespace Pterodactyl\Repositories\ServiceRepository;
 
 use DB;
 use Uuid;
+use Storage;
 use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
@@ -43,7 +44,7 @@ class Service
         $validator = Validator::make($data, [
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|string',
-            'file' => 'required|regex:/^[\w.-]{1,50}$/',
+            'file' => 'required|unique:services,file|regex:/^[\w.-]{1,50}$/',
             'executable' => 'max:255|regex:/^(.*)$/',
             'startup' => 'string',
         ]);
@@ -52,15 +53,23 @@ class Service
             throw new DisplayValidationException($validator->errors());
         }
 
-        if (Models\Service::where('file', $data['file'])->first()) {
-            throw new DisplayException('A service using that configuration file already exists on the system.');
-        }
-
         $data['author'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
 
         $service = new Models\Service;
-        $service->fill($data);
-        $service->save();
+        DB::beginTransaction();
+
+        try {
+            $service->fill($data);
+            $service->save();
+
+            Storage::put('services/' . $data['file'] . '/main.json', '{}');
+            Storage::copy('services/.templates/index.js', 'services/' . $data['file'] . '/index.js');
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
 
         return $service->id;
     }
@@ -101,9 +110,37 @@ class Service
             Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
             $options->delete();
             $service->delete();
+
+            Storage::deleteDirectory('services/' . $service->file);
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
+            throw $ex;
+        }
+    }
+
+    public function updateFile($id, array $data)
+    {
+        $service = Models\Service::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'file' => 'required|in:index,main',
+            'contents' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        $filename = ($data['file'] === 'main') ? 'main.json' : 'index.js';
+        $filepath = 'services/' . $service->file . '/' . $filename;
+        $backup = 'services/.bak/' . str_random(12) . '.bak';
+
+        try {
+            Storage::move($filepath, $backup);
+            Storage::put($filepath, $data['contents']);
+        } catch (\Exception $ex) {
+            Storage::move($backup, $filepath);
             throw $ex;
         }
     }

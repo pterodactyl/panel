@@ -20,46 +20,48 @@
 @extends('layouts.admin')
 
 @section('title')
-    Manage Services
+    Service Packs for {{ $service->name }}
 @endsection
 
 @section('content')
 <div class="col-md-12">
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Control</a></li>
-        <li class="active">Services</li>
+        <li><a href="/admin/services">Services</a></li>
+        <li><a href="{{ route('admin.services.packs') }}">Packs</a></li>
+        <li class="active">{{ $service->name }}</li>
     </ul>
-    <h3 class="nopad">Server Services</h3><hr />
+    <h3 class="nopad">Service Packs</h3><hr />
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th class="col-md-3">Service Type</th>
-                <th>Description</th>
-                <th class="text-center">Servers</th>
-                <th></th>
+                <th>Service Option</th>
+                <th>Total Packs</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($services as $service)
+            @foreach ($options as $option)
                 <tr>
-                    <td><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></td>
-                    <td>{!! $service->description !!}</td>
-                    <td class="text-center">{{ $service->c_servers }}</td>
-                    <td class="text-center align-middle"><a href="{{ route('admin.services.service.config', $service->id) }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-wrench"></i> Configure</button></a></td>
+                    <td><a href="{{ route('admin.services.packs.option', $option->id) }}">{{ $option->name }}</a></td>
+                    <td>{{ $option->p_count }}</td>
                 </tr>
             @endforeach
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="text-center"><a href="{{ route('admin.services.new') }}"><i class="fa fa-plus"></i></a></td>
+                <td colspan="2">
+                    <a href="{{ route('admin.services.packs.new') }}">
+                        <button class="pull-right btn btn-xxs btn-primary"><i class="fa fa-plus"></i></button>
+                    </a>
+                    <a href="{{ route('admin.services.packs.new') }}">
+                        <button class="pull-right btn btn-xxs btn-default" style="margin-right:5px;"><i class="fa fa-upload"></i> Install from Template</button>
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
 </div>
 <script>
 $(document).ready(function () {
-    $('#sidebar_links').find("a[href='/admin/services']").addClass('active');
+    $('#sidebar_links').find("a[href='/admin/services/packs']").addClass('active');
 });
 </script>
 @endsection

@@ -35,6 +35,23 @@
         {!! Theme::js('js/vendor/sweetalert/sweetalert.min.js') !!}
         {!! Theme::js('js/vendor/fuelux/fuelux.min.js') !!}
         {!! Theme::js('js/admin.min.js') !!}
+        {!! Theme::js('js/bootstrap-notify.min.js') !!}
+        <script>
+            $(document).ready(function () {
+                $.notifyDefaults({
+                    placement: {
+                        from: 'bottom',
+                        align: 'right'
+                    },
+                    newest_on_top: true,
+                    delay: 2000,
+                    animate: {
+                        enter: 'animated fadeInUp',
+                        exit: 'animated fadeOutDown'
+                    }
+                });
+            });
+        </script>
     @show
     <title>{{ Settings::get('company') }} - @yield('title')</title>
 </head>
@@ -85,6 +102,7 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Services <b class="caret"></b></a>
                             <ul class="dropdown-menu">
+                                <li><a href="/admin/services/packs">Service Packs</a></li>
                                 <li><a href="/admin/services">List Services</a></li>
                                 <li><a href="/admin/services/new">Add Service</a></li>
                             </ul>
@@ -144,6 +162,7 @@
                     </div>
                     <div class="list-group">
                         <a href="#" class="list-group-item list-group-item-heading"><strong>Service Management</strong></a>
+                        <a href="/admin/services/packs" class="list-group-item">Service Packs</a>
                         <a href="/admin/services" class="list-group-item">List Services</a>
                         <a href="/admin/services/new" class="list-group-item">Add Service</a>
                     </div>

@@ -79,8 +79,9 @@ class ServerRepository
             'io' => 'required|numeric|min:10|max:1000',
             'cpu' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:0',
-            'service' => 'bail|required|numeric|min:1|exists:services,id',
-            'option' => 'bail|required|numeric|min:1|exists:service_options,id',
+            'service' => 'required|numeric|min:1|exists:services,id',
+            'option' => 'required|numeric|min:1|exists:service_options,id',
+            'pack' => 'required|numeric|min:0',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
             'auto_deploy' => 'sometimes|boolean',
@@ -154,6 +155,18 @@ class ServerRepository
         $option = Models\ServiceOptions::where('id', $data['option'])->where('parent_service', $data['service'])->first();
         if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
+        }
+
+        // Validate the Pack
+        if ($data['pack'] == 0) {
+            $data['pack'] = null;
+        }
+
+        if (! is_null($data['pack'])) {
+            $pack = Models\ServicePack::where('id', $data['pack'])->where('option', $data['option'])->first();
+            if (! $pack) {
+                throw new DisplayException('The requested service pack does not seem to exist for this combination.');
+            }
         }
 
         // Load up the Service Information
@@ -247,6 +260,7 @@ class ServerRepository
                 'allocation' => $allocation->id,
                 'service' => $data['service'],
                 'option' => $data['option'],
+                'pack' => $data['pack'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
                 'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
@@ -311,6 +325,7 @@ class ServerRepository
                     'service' => [
                         'type' => $service->file,
                         'option' => $option->tag,
+                        'pack' => (isset($pack)) ? $pack->uuid : null,
                     ],
                     'keys' => [
                         (string) $server->daemonSecret => $this->daemonPermissions,

@@ -253,7 +253,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function postNewServerServiceVariables(Request $request)
+    public function postNewServerOptionDetails(Request $request)
     {
         if (! $request->input('option')) {
             return response()->json([
@@ -269,6 +269,7 @@ class ServersController extends Controller
             ->first();
 
         return response()->json([
+            'packs' => Models\ServicePack::select('id', 'name', 'version')->where('option', $request->input('option'))->where('selectable', true)->get(),
             'variables' => Models\ServiceVariables::where('option_id', $request->input('option'))->get(),
             'exec' => $option->executable,
             'startup' => $option->startup,

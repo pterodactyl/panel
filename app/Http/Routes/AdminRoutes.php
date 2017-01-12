@@ -147,8 +147,8 @@ class AdminRoutes
                 'uses' => 'Admin\ServersController@postNewServerServiceOptions',
             ]);
 
-            $router->post('/new/service-variables', [
-                'uses' => 'Admin\ServersController@postNewServerServiceVariables',
+            $router->post('/new/option-details', [
+                'uses' => 'Admin\ServersController@postNewServerOptionDetails',
             ]);
             // End Assorted Page Helpers
 
@@ -383,6 +383,15 @@ class AdminRoutes
                 'uses' => 'Admin\ServiceController@deleteService',
             ]);
 
+            $router->get('/service/{id}/configuration', [
+                'as' => 'admin.services.service.config',
+                'uses' => 'Admin\ServiceController@getConfiguration',
+            ]);
+
+            $router->post('/service/{id}/configuration', [
+                'uses' => 'Admin\ServiceController@postConfiguration',
+            ]);
+
             $router->get('/service/{service}/option/new', [
                 'as' => 'admin.services.option.new',
                 'uses' => 'Admin\ServiceController@newOption',
@@ -422,6 +431,54 @@ class AdminRoutes
             $router->get('/service/{service}/option/{option}/variable/{variable}/delete', [
                 'as' => 'admin.services.option.variable.delete',
                 'uses' => 'Admin\ServiceController@deleteVariable',
+            ]);
+        });
+
+        // Service Packs
+        $router->group([
+            'prefix' => 'admin/services/packs',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf',
+            ],
+        ], function () use ($router) {
+            $router->get('/new/{option?}', [
+                'as' => 'admin.services.packs.new',
+                'uses' => 'Admin\PackController@new',
+            ]);
+            $router->post('/new', [
+                'uses' => 'Admin\PackController@create',
+            ]);
+            $router->get('/upload/{option?}', [
+                'as' => 'admin.services.packs.uploadForm',
+                'uses' => 'Admin\PackController@uploadForm',
+            ]);
+            $router->post('/upload', [
+                'uses' => 'Admin\PackController@postUpload',
+            ]);
+            $router->get('/', [
+                'as' => 'admin.services.packs',
+                'uses' => 'Admin\PackController@listAll',
+            ]);
+            $router->get('/for/option/{option}', [
+                'as' => 'admin.services.packs.option',
+                'uses' => 'Admin\PackController@listByOption',
+            ]);
+            $router->get('/for/service/{service}', [
+                'as' => 'admin.services.packs.service',
+                'uses' => 'Admin\PackController@listByService',
+            ]);
+            $router->get('/edit/{pack}', [
+                'as' => 'admin.services.packs.edit',
+                'uses' => 'Admin\PackController@edit',
+            ]);
+            $router->post('/edit/{pack}', [
+                'uses' => 'Admin\PackController@update',
+            ]);
+            $router->get('/edit/{pack}/export/{archive?}', [
+                'as' => 'admin.services.packs.export',
+                'uses' => 'Admin\PackController@export',
             ]);
         });
     }

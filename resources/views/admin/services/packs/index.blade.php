@@ -20,46 +20,28 @@
 @extends('layouts.admin')
 
 @section('title')
-    Manage Services
+    Service Packs
 @endsection
 
 @section('content')
 <div class="col-md-12">
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Control</a></li>
-        <li class="active">Services</li>
+        <li><a href="/admin/services">Services</a></li>
+        <li class="active">Packs</li>
     </ul>
-    <h3 class="nopad">Server Services</h3><hr />
-    <table class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th class="col-md-3">Service Type</th>
-                <th>Description</th>
-                <th class="text-center">Servers</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($services as $service)
-                <tr>
-                    <td><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></td>
-                    <td>{!! $service->description !!}</td>
-                    <td class="text-center">{{ $service->c_servers }}</td>
-                    <td class="text-center align-middle"><a href="{{ route('admin.services.service.config', $service->id) }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-wrench"></i> Configure</button></a></td>
-                </tr>
-            @endforeach
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="text-center"><a href="{{ route('admin.services.new') }}"><i class="fa fa-plus"></i></a></td>
-            </tr>
-        </tbody>
-    </table>
+    <h3 class="nopad">Service Packs</h3><hr />
+    <div class="row">
+        @foreach ($services as $service)
+            <div class="col-md-6">
+                <a href="{{ route('admin.services.packs.service', $service->id) }}"><button class="btn btn-lg btn-primary" style="width:100%;margin-bottom:25px;">{{ $service->name }}</button></a>
+            </div>
+        @endforeach
+    </div>
 </div>
 <script>
 $(document).ready(function () {
-    $('#sidebar_links').find("a[href='/admin/services']").addClass('active');
+    $('#sidebar_links').find("a[href='/admin/services/packs']").addClass('active');
 });
 </script>
 @endsection

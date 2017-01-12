@@ -29,6 +29,7 @@ use DB;
 use Auth;
 use Hash;
 use Carbon;
+use Settings;
 use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -52,18 +53,16 @@ class UserRepository
      * @param  int          $token    A custom user ID.
      * @return bool|int
      */
-    public function create($email, $password = null, $admin = false, $token = null)
+    public function create(array $data)
     {
-        $validator = Validator::make([
-            'email' => $email,
-            'password' => $password,
-            'root_admin' => $admin,
-            'custom_id' => $token,
-        ], [
+        $validator = Validator::make($data, [
             'email' => 'required|email|unique:users,email',
-            'password' => 'nullable|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'username' => 'required|string|between:1,255|unique:users,username|' . Models\User::USERNAME_RULES,
+            'name_first' => 'required|string|between:1,255',
+            'name_last' => 'required|string|between:1,255',
+            'password' => 'sometimes|nullable|' . Models\User::PASSWORD_RULES,
             'root_admin' => 'required|boolean',
-            'custom_id' => 'nullable|unique:users,id',
+            'custom_id' => 'sometimes|nullable|unique:users,id',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -79,26 +78,36 @@ class UserRepository
             $uuid = new UuidService;
 
             // Support for API Services
-            if (! is_null($token)) {
+            if (isset($data['custom_id']) && ! is_null($data['custom_id'])) {
                 $user->id = $token;
             }
 
+            // UUIDs are not mass-fillable.
             $user->uuid = $uuid->generate('users', 'uuid');
-            $user->email = $email;
-            $user->password = Hash::make((is_null($password)) ? str_random(30) : $password);
-            $user->language = 'en';
-            $user->root_admin = ($admin) ? 1 : 0;
+
+            $user->fill([
+                'email' => $data['email'],
+                'username' => $data['username'],
+                'name_first' => $data['name_first'],
+                'name_last' => $data['name_last'],
+                'password' => Hash::make((empty($data['password'])) ? str_random(30) : $password),
+                'root_admin' => $data['root_admin'],
+                'language' => Settings::get('default_language', 'en'),
+            ]);
             $user->save();
 
             // Setup a Password Reset to use when they set a password.
-            $token = str_random(32);
-            DB::table('password_resets')->insert([
-                'email' => $user->email,
-                'token' => $token,
-                'created_at' => Carbon::now()->toDateTimeString(),
-            ]);
+            // Only used if no password is provided.
+            if (empty($data['password'])) {
+                $token = str_random(32);
+                DB::table('password_resets')->insert([
+                    'email' => $user->email,
+                    'token' => $token,
+                    'created_at' => Carbon::now()->toDateTimeString(),
+                ]);
 
-            $user->notify((new AccountCreated($token)));
+                $user->notify((new AccountCreated($token)));
+            }
 
             DB::commit();
 
@@ -122,7 +131,10 @@ class UserRepository
 
         $validator = Validator::make($data, [
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
-            'password' => 'sometimes|required|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+            'username' => 'sometimes|required|string|between:1,255|unique:users,username,' . $user->id . '|' . Models\User::USERNAME_RULES,
+            'name_first' => 'sometimes|required|string|between:1,255',
+            'name_last' => 'sometimes|required|string|between:1,255',
+            'password' => 'sometimes|nullable|' . Models\User::PASSWORD_RULES,
             'root_admin' => 'sometimes|required|boolean',
             'language' => 'sometimes|required|string|min:1|max:5',
             'use_totp' => 'sometimes|required|boolean',
@@ -135,12 +147,15 @@ class UserRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        if (array_key_exists('password', $data)) {
+        // The password and root_admin fields are not mass assignable.
+        if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
-        if (isset($data['password_confirmation'])) {
-            unset($data['password_confirmation']);
+        if (! empty($data['root_admin'])) {
+            $user->root_admin = $data['root_admin'];
         }
 
         $user->fill($data);

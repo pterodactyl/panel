@@ -122,6 +122,9 @@ class UserController extends BaseController
     {
         try {
             $user = new UserRepository;
+            $create = $user->create($request->only([
+                'email', 'username', 'name_first', 'name_last', 'password', 'root_admin', 'custom_id',
+            ]));
             $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'), $request->input('custom_id'));
 
             return ['id' => $create];
@@ -156,7 +159,9 @@ class UserController extends BaseController
     {
         try {
             $user = new UserRepository;
-            $user->update($id, $request->all());
+            $user->update($id, $request->only([
+                'username', 'email', 'name_first', 'name_last', 'password', 'root_admin', 'language',
+            ]));
 
             return Models\User::findOrFail($id);
         } catch (DisplayValidationException $ex) {

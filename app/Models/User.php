@@ -37,12 +37,23 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-class User extends Model implements
-    AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword, Notifiable;
+
+    /**
+     * The rules for user passwords.
+     *
+     * @var string
+     */
+    const PASSWORD_RULES = 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
+
+    /**
+     * The regex rules for usernames.
+     *
+     * @var string
+     */
+    const USERNAME_RULES = 'regex:/^([\w\d\.\-]{1,255})$/';
 
     /**
      * The table associated with the model.
@@ -52,11 +63,11 @@ class User extends Model implements
     protected $table = 'users';
 
     /**
-     * The attributes that are not mass assignable.
+     * A list of mass-assignable variables.
      *
-     * @var array
+     * @var [type]
      */
-    protected $guarded = ['id', 'remeber_token', 'created_at', 'updated_at'];
+    protected $fillable = ['username', 'email', 'name_first', 'name_last', 'password', 'language', 'use_totp', 'totp_secret', 'gravatar'];
 
      /**
       * Cast values to correct type.
@@ -66,6 +77,7 @@ class User extends Model implements
      protected $casts = [
          'root_admin' => 'integer',
          'use_totp' => 'integer',
+         'gravatar' => 'integer',
      ];
 
     /**
@@ -76,12 +88,10 @@ class User extends Model implements
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
     /**
-     * The rules for user passwords.
+     * Determines if a user has permissions.
      *
-     * @var string
+     * @return bool
      */
-    const PASSWORD_RULES = 'min:8|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
-
     public function permissions()
     {
         return $this->hasMany(Permission::class);

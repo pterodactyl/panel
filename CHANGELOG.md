@@ -3,6 +3,21 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.1
+### Added
+* Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
+* Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
+* Users can now have a username as well as client name assigned to thier account.
+
+### Fixed
+* Bug causing error logs to be spammed if someone timed out on an ajax based page.
+
+### Changed
+* Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
+* User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
+
+### Deprecated
+
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added
 * Added the following languages: Estonian `et`, Dutch `nl`, Norwegian `nb` (partial), Romanian `ro`, and Russian `ru`. Interested in helping us translate the panel into more languages, or improving existing translations? Contact us on Discord and let us know.

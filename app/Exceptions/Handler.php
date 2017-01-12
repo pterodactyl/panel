@@ -46,13 +46,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->isXmlHttpRequest() || $request->ajax() || $request->is('remote/*')) {
+        if ($request->expectsJson()) {
             $response = response()->json([
                 'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.',
-            ], 500);
+            ], ($this->isHttpException($exception)) ? $e->getStatusCode() : 500);
 
-            // parent::render() will log it, we are bypassing it in this case.
-            Log::error($exception);
+            parent::report($exception);
         }
 
         return (isset($response)) ? $response : parent::render($request, $exception);

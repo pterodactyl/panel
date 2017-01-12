@@ -106,6 +106,7 @@
                 <div class="col-md-12">
                     {!! csrf_field() !!}
                     <input type="submit" class="btn btn-sm btn-primary" value="Save Changes" />
+                    <a href="{{ route('admin.services.service.config', $service->id) }}"><button type="button" class="pull-right btn btn-sm btn-default">Manage Configuration</button></a>
                 </div>
             </div>
         </form>
