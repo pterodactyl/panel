@@ -208,14 +208,12 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/language/de">Deutsch</a></li>
                                 <li><a href="/language/en">English</a></li>
-                                <!-- <li><a href="/language/es">Espa&ntilde;ol</a></li>
-                                <li><a href="/language/fr">Fran&ccedil;ais</a></li>
-                                <li><a href="/language/it">Italiano</a></li>
-                                <li><a href="/language/pl">Polski</a></li> -->
+                                <li><a href="/language/et">Eesti</a></li>
+                                <li><a href="/language/nl">Nederlands</a></li>
+                                <li><a href="/language/nb">Norsk (Bokm&#xE5;l)</a></li>
                                 <li><a href="/language/pt">Portugu&ecirc;s</a></li>
-                                <!-- <li><a href="/language/ru">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a></li>
-                                <li><a href="/language/se">Svenska</a></li>
-                                <li><a href="/language/zh">&#20013;&#22269;&#30340;的</a></li> -->
+                                <li><a href="/language/ro">Rom&#xE2;n&#x103;</a></li>
+                                <li><a href="/language/ru">&#1088;&#1091;&#1089;&#1089;&#1082;&#1080;&#1081;</a></li>
                             </ul>
                         </li>
                         @if (null !== Auth::user() && Auth::user()->root_admin == 1)

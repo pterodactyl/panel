@@ -40,19 +40,46 @@ class ContextMenuClass {
             const currentPath = decodeURIComponent(nameBlock.data('path'));
             newFilePath = `${currentPath}${currentName}`;
         }
-        return '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" > \
-                    @can('move-files', $server)<li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-fw fa-arrow-right"></i> Move</a></li>@endcan \
-                    @can('copy-files', $server)<li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-fw fa-clone"></i> Copy</a></li>@endcan \
-                    @can('move-files', $server)<li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-fw fa-pencil-square-o"></i> Rename</a></li>@endcan \
-                    @can('compress-files', $server)<li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-file-archive-o"></i> Compress</a></li>@endcan \
-                    @can('decompress-files', $server)<li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-expand"></i> Decompress</a></li>@endcan \
-                    <li class="divider"></li> \
-                    @can('create-files', $server)<li data-action="file"><a href="/server/{{ $server->uuidShort }}/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
-                    <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-fw fa-folder"></i> New Folder</a></li>@endcan \
-                    <li class="divider"></li> \
-                    @can('download-files', $server)<li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-download"></i> Download</a></li>@endcan \
-                    @can('delete-files', $server)<li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-fw fa-trash-o"></i> Delete</a></li>@endcan \
-                </ul>';
+
+        let buildMenu = '<ul id="fileOptionMenu" class="dropdown-menu" role="menu" style="display:none" >';
+
+        if (Pterodactyl.permissions.moveFiles) {
+            buildMenu += '<li data-action="rename"><a tabindex="-1" href="#"><i class="fa fa-fw fa-pencil-square-o"></i> Rename</a></li> \
+                          <li data-action="move"><a tabindex="-1" href="#"><i class="fa fa-fw fa-arrow-right"></i> Move</a></li>';
+        }
+
+        if (Pterodactyl.permissions.copyFiles) {
+            buildMenu += '<li data-action="copy"><a tabindex="-1" href="#"><i class="fa fa-fw fa-clone"></i> Copy</a></li>';
+        }
+
+        if (Pterodactyl.permissions.compressFiles) {
+            buildMenu += '<li data-action="compress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-file-archive-o"></i> Compress</a></li>';
+        }
+
+        if (Pterodactyl.permissions.decompressFiles) {
+            buildMenu += '<li data-action="decompress" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-expand"></i> Decompress</a></li>';
+        }
+
+        if (Pterodactyl.permissions.createFiles) {
+            buildMenu += '<li class="divider"></li> \
+                          <li data-action="file"><a href="/server/'+ Pterodactyl.server.uuidShort +'/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
+                          <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-fw fa-folder"></i> New Folder</a></li>';
+        }
+
+        if (Pterodactyl.permissions.downloadFiles || Pterodactyl.permissions.deleteFiles) {
+            buildMenu += '<li class="divider"></li>';
+        }
+
+        if (Pterodactyl.permissions.downloadFiles) {
+            buildMenu += '<li data-action="download" class="hidden"><a tabindex="-1" href="#"><i class="fa fa-fw fa-download"></i> Download</a></li>';
+        }
+
+        if (Pterodactyl.permissions.deleteFiles) {
+            buildMenu += '<li data-action="delete" class="bg-danger"><a tabindex="-1" href="#"><i class="fa fa-fw fa-trash-o"></i> Delete</a></li>';
+        }
+
+        buildMenu += '</ul>';
+        return buildMenu;
     }
 
     rightClick() {
@@ -82,79 +109,69 @@ class ContextMenuClass {
         this.activeLine = parent;
         this.activeLine.addClass('active');
 
-        @can('download-files', $server)
-            if (parent.data('type') === 'file') {
-                $(menu).find('li[data-action="download"]').removeClass('hidden');
-            }
-        @endcan
-
-        @can('compress-files', $server)
-            if (parent.data('type') === 'folder') {
-                $(menu).find('li[data-action="compress"]').removeClass('hidden');
-            }
-        @endcan
-
-        @can('decompress-files', $server)
-            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
-                $(menu).find('li[data-action="decompress"]').removeClass('hidden');
-            }
-        @endcan
-
         // Handle Events
         const Actions = new ActionsClass(parent, menu);
-        @can('move-files', $server)
+        if (Pterodactyl.permissions.moveFiles) {
             $(menu).find('li[data-action="move"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.move();
             });
-        @endcan
-
-        @can('copy-files', $server)
-            $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
-                e.preventDefault();
-                Actions.copy();
-            });
-        @endcan
-
-        @can('move-files', $server)
             $(menu).find('li[data-action="rename"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.rename();
             });
-        @endcan
+        }
 
-        @can('compress-files', $server)
+        if (Pterodactyl.permissions.copyFiles) {
+            $(menu).find('li[data-action="copy"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.copy();
+            });
+        }
+
+        if (Pterodactyl.permissions.compressFiles) {
+            if (parent.data('type') === 'folder') {
+                $(menu).find('li[data-action="compress"]').removeClass('hidden');
+            }
             $(menu).find('li[data-action="compress"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.compress();
             });
-        @endcan
+        }
 
-        @can('decompress-files', $server)
+        if (Pterodactyl.permissions.decompressFiles) {
+            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
+                $(menu).find('li[data-action="decompress"]').removeClass('hidden');
+            }
             $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.decompress();
             });
-        @endcan
+        }
 
-        @can('create-files', $server)
+        if (Pterodactyl.permissions.createFiles) {
             $(menu).find('li[data-action="folder"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.folder();
             });
-        @endcan
+        }
 
-        @can('download-files', $server)
+        if (Pterodactyl.permissions.downloadFiles) {
+            if (parent.data('type') === 'file') {
+                $(menu).find('li[data-action="download"]').removeClass('hidden');
+            }
             $(menu).find('li[data-action="download"]').unbind().on('click', e => {
                 e.preventDefault();
                 Actions.download();
             });
-        @endcan
+        }
 
-        $(menu).find('li[data-action="delete"]').unbind().on('click', e => {
-            e.preventDefault();
-            Actions.delete();
-        });
+        if (Pterodactyl.permissions.deleteFiles) {
+            $(menu).find('li[data-action="delete"]').unbind().on('click', e => {
+                e.preventDefault();
+                Actions.delete();
+            });
+        }
 
         $(window).on('click', () => {
             $(menu).remove();

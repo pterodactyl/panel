@@ -232,7 +232,7 @@ class ServiceController extends Controller
             ]));
             Alert::success('Successfully added new variable to this option.')->flash();
 
-            return redirect()->route('admin.services.option', [$service, $option])->withInput();
+            return redirect()->route('admin.services.option', [$service, $option]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.variable.new', [$service, $option])->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {

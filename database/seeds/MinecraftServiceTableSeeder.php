@@ -90,7 +90,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'parent_service' => $this->service->id,
             'name' => 'Sponge (SpongeVanilla)',
             'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
-            'tag' => 'spigot',
+            'tag' => 'sponge',
             'docker_image' => 'quay.io/pterodactyl/minecraft:sponge',
             'executable' => null,
             'startup' => null,

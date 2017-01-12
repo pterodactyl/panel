@@ -73,7 +73,7 @@ class ServerRepository
         // Validate Fields
         $validator = Validator::make($data, [
             'owner' => 'bail|required',
-            'name' => 'required|regex:/^([\w -]{4,35})$/',
+            'name' => 'required|regex:/^([\w .-]{1,200})$/',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
             'io' => 'required|numeric|min:10|max:1000',
@@ -179,7 +179,7 @@ class ServerRepository
             foreach ($variables as $variable) {
 
                 // Is the variable required?
-                if (! $data['env_' . $variable->env_variable]) {
+                if (! isset($data['env_' . $variable->env_variable])) {
                     if ($variable->required === 1) {
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
@@ -360,7 +360,7 @@ class ServerRepository
         // Validate Fields
         $validator = Validator::make($data, [
             'owner' => 'email|exists:users,email',
-            'name' => 'regex:([\w -]{4,35})',
+            'name' => 'regex:([\w .-]{1,200})',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.

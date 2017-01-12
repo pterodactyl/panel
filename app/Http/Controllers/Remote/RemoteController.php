@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Http\Controllers\Remote;
 
+use Carbon\Carbon;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Controller;
@@ -106,5 +107,30 @@ class RemoteController extends Controller
         $notify->pass($request->input('notification'));
 
         return response('', 201);
+    }
+
+    public function getConfiguration(Request $request, $tokenString)
+    {
+        // Try to query the token and the node from the database
+        try {
+            $token = Models\NodeConfigurationToken::where('token', $tokenString)->firstOrFail();
+            $node = Models\Node::findOrFail($token->node);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'token_invalid'], 403);
+        }
+
+        // Check if token is expired
+        if ($token->expires_at->lt(Carbon::now())) {
+            $token->delete();
+
+            return response()->json(['error' => 'token_expired'], 403);
+        }
+
+        // Delete the token, it's one-time use
+        $token->delete();
+
+        // Manually as getConfigurationAsJson() returns it in correct format already
+        return response($node->getConfigurationAsJson(), 200)
+            ->header('Content-Type', 'application/json');
     }
 }

@@ -158,6 +158,7 @@ return [
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
+        Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
 
     ],
 
@@ -198,6 +199,7 @@ return [
         'Hash'      => Illuminate\Support\Facades\Hash::class,
         'Input'     => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,
+        'Javascript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
         'Lang'      => Illuminate\Support\Facades\Lang::class,
         'Log'       => Illuminate\Support\Facades\Log::class,
         'Mail'      => Illuminate\Support\Facades\Mail::class,

@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'account' => [
+        'delete_user' => 'Șterge Utilizatorul',
+        'email_password' => 'Trimite Parola prin Email',
+        'new_email' => 'Email Nou',
+        'new_password' => 'Parola Nouă',
+        'totp_apps' => 'Trebuie să ai o aplicație care suportă TOTP (ex. Google Authentificator, DUO Mobile, Authy, Enpass) să folosești această funcție.',
+        'totp_checkpoint_help' => 'Te rog verifică setările tale TOTP scanând Codul QR cu aplicația ta de autentificare de pe telefon, și după introdu codul de 6 cifre generat de aplicație în spațiul următor. Apasă butonul trimite când ai terminat.',
+        'totp_disable' => 'Dezactivează Autentificarea în 2 Pași',
+        'totp_disable_help' => 'Ca să dezactivezi TOTP pe acest cont, trebuie să introduci un Cod TOTP valid. O dată  validat, protecția TOTP pe acest cont va fi dezactivată.',
+        'totp_enable' => 'Activează Autentificarea prin 2 Pași',
+        'totp_enabled' => 'Verificarea TOTP a fost activată pe contul tău. Te rog apasă să închizi această fereastră pentru a finaliza.',
+        'totp_enabled_error' => 'Codul introdus nu a putut fi verificat. Te rog încearcă iar.',
+        'totp_enable_help' => 'Nu ai Autentificarea prin 2 Pași activată. Această modalitate de autentificare adaugă un plus de protecție contului tău. Dacă ai activat asta, va fi necesar să introduci un Cod generat de aplicația de pe telefonul tău înainte de a te loga.',
+        'totp_header' => 'Autentificare prin 2 Pași',
+        'totp_qr' => 'Codul QR TOTP',
+        'totp_token' => 'Codul TOTP',
+        'update_email' => 'Actualizează Emailul',
+        'update_pass' => 'Actualizează Parola',
+        'update_user' => 'Actualizează Utilizatorul',
+    ],
+    'confirm' => 'Ești sigur?',
+    'form_error' => 'S-au întâmpinat următoarele erori la validarea cererii trimise.',
+    'no_servers' => 'Nu există nici un server atribuit contului tău.',
+    'password_req' => 'Parola trebuie să respecte următoarele cerințe: cel puțin o literă mare, o literă mică, o cifră, și să fie în total din cel puțin 8 caractere.',
+    'server_name' => 'Numele Serverului',
+    'validation_error' => 'S-a întâmpinat o problema la validarea datelor introduse:',
+    'view_as_admin' => 'Vezi acestă listă cu servere deoarece ești admin. De asemenea, vezi toate serverele instalate în sistem. Orice Server la care ești setat proprietar o să apare un punct albastru în fața numelui.',
+];

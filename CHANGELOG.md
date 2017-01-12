@@ -3,6 +3,25 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.6 (Bodacious Boreopterus)
+### Added
+* Added the following languages: Estonian `et`, Dutch `nl`, Norwegian `nb` (partial), Romanian `ro`, and Russian `ru`. Interested in helping us translate the panel into more languages, or improving existing translations? Contact us on Discord and let us know.
+* Added missing `strings.password` to language file for English.
+* Allow listing of users from the API by passing either the user ID or their email.
+
+### Fixed
+* Fixes bug where assigning a variable a default value (or valid value) of `0` would cause the panel to reject the value thinking it did not exist.
+* Addresses potential for crash by limiting total ports that can be assigned per-range to 2000.
+* Fixes server names requiring at minimum 4 characters. Name can now be 1 to 200 characters long. :pencil2:
+* Fixes bug that would allow adding the owner of a server as a subuser for that same server.
+* Fixes bug that would allow creating multiple subusers with the same email address.
+* Fixes bug where Sponge servers were improperly tagged as a spigot server in the daemon causing issues when booting or modifying configuration files.
+* Use transpiled ES6 -> ES5 filemanager code in browsers.
+* Fixes service option name displaying the name of a nwly added variable after the variable is added and until the page is refreshed. (see #208)
+
+### Changed
+* Filemanager and EULA checking javascript is now written in pure ES6 code rather than as a blade-syntax template. This allows the use of babel to transpile into ES5 as a minified version.
+
 ## v0.5.5 (Bodacious Boreopterus)
 ### Added
 * New API route to return allocations given a server ID. This adds support for a community-driven WHMCS module :rocket: available [here](https://github.com/hammerdawn/Pterodactyl-WHMCS).

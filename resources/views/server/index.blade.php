@@ -149,7 +149,7 @@
     </div>
 </div>
 @if($server->a_serviceFile === 'minecraft')
-    <script src="{{ route('server.js', [$server->uuidShort, 'minecraft', 'eula.js']) }}"></script>
+    {!! Theme::js('js/plugins/minecraft/eula.js') !!}
 @endif
 <script>
 $(window).load(function () {
@@ -202,19 +202,19 @@ $(window).load(function () {
             return false;
         }
     });
-    
+
     const $consoleNotify = $('#consoleNotify');
     $consoleNotify.on('click', function () {
         terminal.scroll_to_bottom();
         $consoleNotify.removeClass('hidden');
     });
-    
+
     terminal.on('scroll', function() {
         if (terminal.is_bottom()) {
             $consoleNotify.addClass('hidden');
         }
     })
-    
+
     function terminalNotifyOutput() {
         if (!terminal.is_bottom()) {
             $consoleNotify.removeClass('hidden');

@@ -58,9 +58,13 @@
         </div>
     </div>
 </div>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'index.js']) }}"></script>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'contextmenu.js']) }}"></script>
-<script src="{{ route('server.js', [$server->uuidShort, 'filemanager', 'actions.js']) }}"></script>
+@if(App::environment('production'))
+    {!! Theme::js('js/filemanager.min.js') !!}
+@else
+    {!! Theme::js('js/files/index.js') !!}
+    {!! Theme::js('js/files/contextmenu.js') !!}
+    {!! Theme::js('js/files/actions.js') !!}
+@endif
 <script>
 $(window).load(function () {
     $('.server-files').addClass('active');

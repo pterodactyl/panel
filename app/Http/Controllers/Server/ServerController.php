@@ -28,9 +28,9 @@ use DB;
 use Log;
 use Uuid;
 use Alert;
+use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\ServerRepository;
@@ -49,24 +49,6 @@ class ServerController extends Controller
         //
     }
 
-    public function getJavascript(Request $request, $uuid, $folder, $file)
-    {
-        $server = Models\Server::getByUUID($uuid);
-
-        $info = pathinfo($file);
-        $routeFile = str_replace('/', '.', $info['dirname']) . '.' . $info['filename'];
-        try {
-            return response()->view('server.js.' . $folder . '.' . $routeFile, [
-                'server' => $server,
-                'node' => Models\Node::find($server->node),
-            ])->header('Content-Type', 'application/javascript');
-        } catch (InvalidArgumentException $ex) {
-            return abort(404);
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
-    }
-
     /**
      * Renders server index page for specified server.
      *
@@ -76,6 +58,13 @@ class ServerController extends Controller
     public function getIndex(Request $request)
     {
         $server = Models\Server::getByUUID($request->route()->server);
+
+        Javascript::put([
+            'meta' => [
+                'saveFile' => route('server.files.save', $server->uuidShort),
+                'csrfToken' => csrf_token(),
+            ],
+        ]);
 
         return view('server.index', [
             'server' => $server,
@@ -90,14 +79,34 @@ class ServerController extends Controller
      * @param  Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function getFiles(Request $request)
+    public function getFiles(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($request->route()->server);
+        $server = Models\Server::getByUUID($uuid);
         $this->authorize('list-files', $server);
+
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only('uuid', 'uuidShort', 'daemonSecret'),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+            'meta' => [
+                'directoryList' => route('server.files.directory-list', $server->uuidShort),
+                'csrftoken' => csrf_token(),
+            ],
+            'permissions' => [
+                'moveFiles' => $request->user()->can('move-files', $server),
+                'copyFiles' => $request->user()->can('copy-files', $server),
+                'compressFiles' => $request->user()->can('compress-files', $server),
+                'decompressFiles' => $request->user()->can('decompress-files', $server),
+                'createFiles' => $request->user()->can('create-files', $server),
+                'downloadFiles' => $request->user()->can('download-files', $server),
+                'deleteFiles' => $request->user()->can('delete-files', $server),
+            ],
+        ]);
 
         return view('server.files.index', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
         ]);
     }
 
@@ -107,9 +116,9 @@ class ServerController extends Controller
      * @param  Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function getAddFile(Request $request)
+    public function getAddFile(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($request->route()->server);
+        $server = Models\Server::getByUUID($uuid);
         $this->authorize('add-files', $server);
 
         return view('server.files.add', [

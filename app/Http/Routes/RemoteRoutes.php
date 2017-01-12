@@ -46,6 +46,11 @@ class RemoteRoutes
                 'as' => 'remote.event',
                 'uses' => 'Remote\RemoteController@event',
             ]);
+
+            $router->get('configuration/{token}', [
+                'as' => 'remote.configuration',
+                'uses' => 'Remote\RemoteController@getConfiguration',
+            ]);
         });
     }
 }

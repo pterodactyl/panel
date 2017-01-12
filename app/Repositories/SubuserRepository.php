@@ -117,6 +117,7 @@ class SubuserRepository
     public function create($sid, array $data)
     {
         $server = Models\Server::findOrFail($sid);
+
         $validator = Validator::make($data, [
             'permissions' => 'required|array',
             'email' => 'required|email',
@@ -140,6 +141,10 @@ class SubuserRepository
                 } catch (\Exception $ex) {
                     throw $ex;
                 }
+            } elseif ($server->owner === $user->id) {
+                throw new DisplayException('You cannot add the owner of a server as a subuser.');
+            } elseif (Models\Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
+                throw new DisplayException('A subuser with that email already exists for this server.');
             }
 
             $uuid = new UuidService;
@@ -159,6 +164,7 @@ class SubuserRepository
                     if (! is_null($this->permissions[$permission])) {
                         array_push($daemonPermissions, $this->permissions[$permission]);
                     }
+
                     $model = new Models\Permission;
                     $model->fill([
                         'user_id' => $user->id,
