@@ -52,14 +52,26 @@ class ServerRepository
      * format: mumble_67c7a4b0.
      *
      * @param  string $name
-     * @param  string $uuid
+     * @param  string $identifier
      * @return string
      */
-    protected function generateSFTPUsername($name, $uuid = null)
+    protected function generateSFTPUsername($name, $identifier = null)
     {
-        $uuid = is_null($uuid) ? str_random(8) : $uuid;
+        if (is_null($identifier) || ! ctype_alnum($identifier)) {
+            $unique = str_random(8);
+        } else {
+            if (strlen($identifier) < 8) {
+                $unique = $identifier . str_random((8 - strlen($identifier)));
+            } else {
+                $unique = substr($identifier, 0, 8);
+            }
+        }
 
-        return strtolower(substr(preg_replace('/\s+/', '', $name), 0, 6) . '_' . $uuid);
+        // Filter the Server Name
+        $name = trim(preg_replace('/[^\w]+/', '', $name), '_');
+        $name = (strlen($name) < 1) ? str_random(6) : $name;
+
+        return strtolower(substr($name, 0, 6) . '_' . $unique);
     }
 
     /**
