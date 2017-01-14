@@ -31,11 +31,11 @@ class AddLocation extends Command
 {
     protected $data = [];
 
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+     /**
+      * The name and signature of the console command.
+      *
+      * @var string
+      */
      protected $signature = 'pterodactyl:location
                              {--short= : The shortcode name of this location (ex. us1).}
                              {--long= : A longer description of this location.}';
