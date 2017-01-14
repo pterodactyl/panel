@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         \Pterodactyl\Console\Commands\ClearServices::class,
         \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
         \Pterodactyl\Console\Commands\CleanServiceBackup::class,
+        \Pterodactyl\Console\Commands\AddNode::class,
     ];
 
     /**

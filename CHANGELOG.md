@@ -7,7 +7,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
 * Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
-* Users can now have a username as well as client name assigned to thier account.
+* Users can now have a username as well as client name assigned to their account.
+* Ability to create a node through the CLI using `pterodactyl:node`.
 
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
