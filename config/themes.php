@@ -12,5 +12,10 @@ return [
             'views-path'    => 'default',
             'asset-path'    => 'themes/default',
         ],
+        'pterodactyl' => [
+            'extends'       => null,
+            'views-path'    => 'pterodactyl',
+            'asset-path'    => 'themes/pterodactyl',
+        ],
     ],
 ];
