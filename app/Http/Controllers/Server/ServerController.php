@@ -58,8 +58,19 @@ class ServerController extends Controller
     public function getIndex(Request $request)
     {
         $server = Models\Server::getByUUID($request->route()->server);
+        $node = Models\Node::find($server->node);
 
         Javascript::put([
+            'server' => [
+                'uuid' => $server->uuid,
+                'daemonSecret' => $server->daemonSecret,
+                'username' => $server->username,
+            ],
+            'node' => [
+                'scheme' => $node->scheme,
+                'fqdn' => $node->fqdn,
+                'daemonListen' => $node->daemonListen,
+            ],
             'meta' => [
                 'saveFile' => route('server.files.save', $server->uuidShort),
                 'csrfToken' => csrf_token(),
@@ -69,7 +80,7 @@ class ServerController extends Controller
         return view('server.index', [
             'server' => $server,
             'allocations' => Models\Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
         ]);
     }
 

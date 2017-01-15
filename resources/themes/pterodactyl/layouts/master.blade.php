@@ -101,7 +101,7 @@
                         <div class="user-panel">
                             <div class="info">
                               <p>{{ $server->name }}</p>
-                              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                              <a href="#" id="server_status_icon"><i class="fa fa-circle text-default"></i> Checking...</a>
                             </div>
                         </div>
                     @endif
@@ -129,12 +129,12 @@
                         </li>
                         @if (isset($server->name) && isset($node->name))
                             <li class="header">SERVER MANAGEMENT</li>
-                            <li>
+                            <li class="{{ Route::currentRouteName() !== 'server.index' ?: 'active' }}">
                                 <a href="{{ route('server.index', $server->uuidShort) }}">
                                     <i class="fa fa-terminal"></i> <span>Console</span>
                                 </a>
                             </li>
-                            <li class="treeview">
+                            <li class="treeview {{ Route::currentRouteName() !== 'server.files.index' ?: 'active' }}">
                                 <a href="#">
                                     <i class="fa fa-files-o"></i>
                                     <span>File Management</span>
@@ -248,6 +248,7 @@
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
+            {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
         @show
     </body>
 </html>

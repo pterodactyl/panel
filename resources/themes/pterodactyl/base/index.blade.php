@@ -61,7 +61,7 @@
                         @foreach($servers as $server)
                         <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
                             <td><code>{{ $server->uuidShort }}</code></td>
-                            <td><a href="/server/{{ $server->uuidShort }}">{{ $server->name }}</a></td>
+                            <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
                             <td>{{ $server->nodeName }}</td>
                             <td><code>@if(!is_null($server->ip_alias)){{ $server->ip_alias }}@else{{ $server->ip }}@endif:{{ $server->port }}</code></td>
                             <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
