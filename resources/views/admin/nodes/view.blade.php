@@ -283,14 +283,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <div class="alert alert-info">
-                        Below is the configuration file for your daemon on this node. We recommend <strong>not</strong> simply copy and pasting the code below unless you know what you are doing. You should run the <code>auto-installer</code> or <code>auto-updater</code> to setup the daemon.
+                    <div class="col-md-8">
+                        <p class="text-muted small">To simplify the configuration of nodes it is possible to fetch the config from the panel. A token is required for this process. The button below will generate a token and provide you with the commands necessary for automatic configuration of the node. Be aware that these tokens are only valid for 5 minutes.</p>
                     </div>
-                    <div class="col-md-12">
-                        <p>To simplify the configuration of nodes it is possible to fetch the config from the panel. A token is required for this process. The button below will generate a token and provide you with the commands necessary for automatic configuration of the node. Be aware that these tokens are only valid for 5 minutes.</p>
-                        <p class="text-center">
-                            <button type="button" id="configTokenBtn" class="btn btn-primary">Generate token</button>
-                        </p>
+                    <div class="col-md-4 text-center">
+                        <p><button type="button" id="configTokenBtn" class="btn btn-sm btn-primary" style="width:100%;">Generate Token</button></p>
                     </div>
                     <div class="col-md-12">
                         <pre><code>{{ $node->getConfigurationAsJson(true) }}</code></pre>
@@ -507,9 +504,8 @@ $(document).ready(function () {
                 swal({
                     type: 'success',
                     title: 'Token created.',
-                    text: 'Here is your token: <code>'+data.token+'</code><br />' +
-                          'It will expire at <i>' + data.expires_at + '</i><br /><br />' +
-                          '<p>To auto-configure your node run<br /><small><code>npm run configure -- --panel-url '+window.location.protocol+'//{{ config('app.url') }} --token '+data.token+'</code></small></p>',
+                    text: 'Your token will expire at ' + data.expires_at + '<br /><br />' +
+                          '<p>To auto-configure your node run<br /><small><pre>npm run configure -- --panel-url '+window.location.protocol+'//{{ config('app.url') }} --token '+data.token+'</pre></small></p>',
                     html: true
                 })
             })
