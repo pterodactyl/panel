@@ -153,6 +153,7 @@ class ServerRoutes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status
                 $router->get('status', [
+                    'as' => 'server.ajax.status',
                     'uses' => 'Server\AjaxController@getStatus',
                 ]);
 

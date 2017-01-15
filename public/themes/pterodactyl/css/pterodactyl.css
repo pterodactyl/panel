@@ -36,3 +36,12 @@
 .btn-clear {
     background: transparent;
 }
+
+.user-panel > .info {
+    position: relative;
+    left: 0;
+}
+
+code {
+    font-size: 85%;
+}
