@@ -329,11 +329,6 @@ $(window).load(function () {
         MemoryChart.update();
     });
 
-    // Socket Recieves New Query
-    socket.on('query', function (data){
-        // Disabled.
-    });
-
     // New Console Data Recieved
     var outputQueue = [];
     socket.on('console', function (data) {
