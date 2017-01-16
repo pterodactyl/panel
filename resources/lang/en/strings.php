@@ -24,4 +24,8 @@ return [
     '2fa_token' => 'Authentication Token',
     'submit' => 'Submit',
     'close' => 'Close',
+    'settings' => 'Settings',
+    'configuration' => 'Configuration',
+    'sftp' => 'SFTP',
+    'databases' => 'Databases',
 ];

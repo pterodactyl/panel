@@ -45,3 +45,15 @@
 code {
     font-size: 85%;
 }
+
+.control-sidebar-dark .control-sidebar-menu > li > a.active {
+    background: #1e282c;
+}
+
+.callout-nomargin {
+    margin: 0;
+}
+
+.table {
+    font-size: 14px !important;
+}

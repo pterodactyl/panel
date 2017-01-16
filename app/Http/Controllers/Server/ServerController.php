@@ -61,16 +61,8 @@ class ServerController extends Controller
         $node = Models\Node::find($server->node);
 
         Javascript::put([
-            'server' => [
-                'uuid' => $server->uuid,
-                'daemonSecret' => $server->daemonSecret,
-                'username' => $server->username,
-            ],
-            'node' => [
-                'scheme' => $node->scheme,
-                'fqdn' => $node->fqdn,
-                'daemonListen' => $node->daemonListen,
-            ],
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
             'meta' => [
                 'saveFile' => route('server.files.save', $server->uuidShort),
                 'csrfToken' => csrf_token(),
@@ -255,6 +247,45 @@ class ServerController extends Controller
         ]);
     }
 
+    public function getDatabases(Request $request, $uuid)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('view-databases', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
+
+        return view('server.settings.databases', [
+            'server' => $server,
+            'node' => $node,
+            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
+                ->where('server_id', $server->id)
+                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
+                ->get(),
+        ]);
+
+    }
+
+    public function getSFTP(Request $request, $uuid)
+    {
+        $server = Models\Server::getByUUID($uuid);
+        $this->authorize('view-sftp', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
+
+        return view('server.settings.sftp', [
+            'server' => $server,
+            'node' => $node,
+        ]);
+    }
+
     public function postSettingsSFTP(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
@@ -265,7 +296,7 @@ class ServerController extends Controller
             $repo->updateSFTPPassword($server->id, $request->input('sftp_pass'));
             Alert::success('Successfully updated this servers SFTP password.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('server.settings', $uuid)->withErrors(json_decode($ex->getMessage()));
+            return redirect()->route('server.settings.sftp', $uuid)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
@@ -273,7 +304,7 @@ class ServerController extends Controller
             Alert::danger('An unknown error occured while attempting to update this server\'s SFTP settings.')->flash();
         }
 
-        return redirect()->route('server.settings', $uuid);
+        return redirect()->route('server.settings.sftp', $uuid);
     }
 
     public function postSettingsStartup(Request $request, $uuid)

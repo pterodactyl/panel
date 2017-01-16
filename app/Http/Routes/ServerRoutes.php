@@ -51,8 +51,17 @@ class ServerRoutes
                 'uses' => 'Server\ServerController@getSettings',
             ]);
 
-            $router->post('/settings/sftp', [
+            $router->get('/settings/databases', [
+                'as' => 'server.settings.databases',
+                'uses' => 'Server\ServerController@getDatabases',
+            ]);
+
+            $router->get('/settings/sftp', [
                 'as' => 'server.settings.sftp',
+                'uses' => 'Server\ServerController@getSFTP',
+            ]);
+
+            $router->post('/settings/sftp', [
                 'uses' => 'Server\ServerController@postSettingsSFTP',
             ]);
 

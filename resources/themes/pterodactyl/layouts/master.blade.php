@@ -29,6 +29,7 @@
             {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
             {!! Theme::css('vendor/adminlte/admin.min.css') !!}
             {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css') !!}
+            {!! Theme::css('vendor/sweetalert/sweetalert.min.css') !!}
             {!! Theme::css('css/pterodactyl.css') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
@@ -161,7 +162,11 @@
                                     </span>
                                 </a>
                             </li>
-                            <li class="treeview">
+                            <li class="treeview
+                                @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases']))
+                                    active
+                                @endif
+                            ">
                                 <a href="#">
                                     <i class="fa fa-gears"></i>
                                     <span>Configuration</span>
@@ -170,9 +175,10 @@
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="{{ route('server.settings', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> SFTP Settings</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> Port Allocations</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> SFTP Settings</a></li>
                                     <li><a href=""><i class="fa fa-angle-right"></i> Startup Parameters</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> Databases</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> Databases</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -223,7 +229,13 @@
                         <ul class="control-sidebar-menu">
                             @foreach (Pterodactyl\Models\Server::getUserServers() as $s)
                                 <li>
-                                    <a href="{{ route('server.index', $s->uuidShort) }}">
+                                    <a
+                                        @if(isset($server) && isset($node))
+                                            @if($server->uuidShort === $s->uuidShort)
+                                                class="active"
+                                            @endif
+                                        @endif
+                                    href="{{ route('server.index', $s->uuidShort) }}">
                                         @if($s->owner === Auth::user()->id)
                                             <i class="menu-icon fa fa-user bg-blue"></i>
                                         @else
@@ -231,7 +243,7 @@
                                         @endif
                                         <div class="menu-info">
                                             <h4 class="control-sidebar-subheading">{{ $s->name }}</h4>
-                                            <p>{{ $s->uuidShort }}</p>
+                                            <p>{{ $s->username }}</p>
                                         </div>
                                     </a>
                                 </li>
@@ -245,6 +257,7 @@
         @section('footer-scripts')
             {!! Theme::js('js/laroute.js') !!}
             {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+            {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
