@@ -7,6 +7,14 @@ return [
         'header_sub' => 'Servers you own and have access to.',
         'list' => 'Server List',
     ],
+    'api' => [
+        'index' => [
+            'header' => 'API Access',
+            'header_sub' => 'Manage your API access keys.',
+            'list' => 'API Keys',
+            'create_new' => 'Create new API key'
+        ],
+    ],
     'account' => [
         'header' => 'Your Account',
         'header_sub' => 'Manage your account details.',

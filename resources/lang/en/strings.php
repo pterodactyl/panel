@@ -28,4 +28,9 @@ return [
     'configuration' => 'Configuration',
     'sftp' => 'SFTP',
     'databases' => 'Databases',
+    'memo' => 'Memo',
+    'created' => 'Created',
+    'expires' => 'Expires',
+    'public_key' => 'Public key',
+    'api_access' => 'Api Access'
 ];
