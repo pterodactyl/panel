@@ -266,7 +266,6 @@ class ServerController extends Controller
                 ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
                 ->get(),
         ]);
-
     }
 
     public function getSFTP(Request $request, $uuid)

@@ -35,5 +35,5 @@ return [
     'api_access' => 'Api Access',
     'never' => 'never',
     'sign_out' => 'Sign out',
-    'admin_control' => 'Admin Control'
+    'admin_control' => 'Admin Control',
 ];

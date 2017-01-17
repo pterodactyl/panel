@@ -13,5 +13,5 @@ return [
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'password_requirements' => 'Passwords must contain at least one uppercase, lowecase, and numeric character and must be at least 8 characters in length.',
-    'request_reset' => 'Locate Account'
+    'request_reset' => 'Locate Account',
 ];

@@ -80,7 +80,7 @@ class SecurityController extends Controller
     {
         if (! $request->has('token')) {
             return response()->json([
-                'error' => 'Request is missing token parameter.'
+                'error' => 'Request is missing token parameter.',
             ], 500);
         }
 
