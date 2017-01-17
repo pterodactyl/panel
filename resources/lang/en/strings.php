@@ -33,5 +33,7 @@ return [
     'expires' => 'Expires',
     'public_key' => 'Public key',
     'api_access' => 'Api Access',
-    'never' => 'never'
+    'never' => 'never',
+    'sign_out' => 'Sign out',
+    'admin_control' => 'Admin Control'
 ];

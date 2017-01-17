@@ -55,12 +55,16 @@
                     </a>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <li class="dropdown user user-menu">
+                            <li class="dropdown user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(Auth::user()->email) }}?s=160" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
+                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span> <span class="caret"></span>
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
+                                    <li><a href="{{ route('auth.logout') }}">@lang('strings.sign_out')</a></li>
+                                </ul>
+                                {{-- <ul class="dropdown-menu">
                                     <li class="user-header">
                                         <p>
                                             <small>Member since Nov. 2012</small>
@@ -87,7 +91,7 @@
                                             <a href="{{ route('auth.logout') }}" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
                                     </li>
-                                </ul>
+                                </ul> --}}
                             </li>
                             <li>
                                 <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a>
