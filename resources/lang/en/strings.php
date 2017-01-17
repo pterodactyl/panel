@@ -28,4 +28,12 @@ return [
     'configuration' => 'Configuration',
     'sftp' => 'SFTP',
     'databases' => 'Databases',
+    'memo' => 'Memo',
+    'created' => 'Created',
+    'expires' => 'Expires',
+    'public_key' => 'Public key',
+    'api_access' => 'Api Access',
+    'never' => 'never',
+    'sign_out' => 'Sign out',
+    'admin_control' => 'Admin Control'
 ];

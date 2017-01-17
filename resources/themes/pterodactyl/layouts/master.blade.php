@@ -55,12 +55,16 @@
                     </a>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <li class="dropdown user user-menu">
+                            <li class="dropdown user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(Auth::user()->email) }}?s=160" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
+                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span> <span class="caret"></span>
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
+                                    <li><a href="{{ route('auth.logout') }}">@lang('strings.sign_out')</a></li>
+                                </ul>
+                                {{-- <ul class="dropdown-menu">
                                     <li class="user-header">
                                         <p>
                                             <small>Member since Nov. 2012</small>
@@ -87,7 +91,7 @@
                                             <a href="{{ route('auth.logout') }}" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
                                     </li>
-                                </ul>
+                                </ul> --}}
                             </li>
                             <li>
                                 <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a>
@@ -107,46 +111,46 @@
                         </div>
                     @endif
                     <ul class="sidebar-menu">
-                        <li class="header">ACCOUNT MANAGEMENT</li>
+                        <li class="header">{{ trans('navigation.account.header') }}</li>
                         <li class="{{ Route::currentRouteName() !== 'account' ?: 'active' }}">
                             <a href="{{ route('account')}}">
-                                <i class="fa fa-user"></i> <span>My Account</span>
+                                <i class="fa fa-user"></i> <span>{{ trans('navigation.account.my_account') }}</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'account.security' ?: 'active' }}">
                             <a href="{{ route('account.security')}}">
-                                <i class="fa fa-lock"></i> <span>Security Controls</span>
+                                <i class="fa fa-lock"></i> <span>{{ trans('navigation.account.security_controls') }}</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'account.api' ?: 'active' }}">
                             <a href="{{ route('account.api')}}">
-                                <i class="fa fa-code"></i> <span>API Access</span>
+                                <i class="fa fa-code"></i> <span>{{ trans('navigation.account.api_access') }}</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'index' ?: 'active' }}">
                             <a href="{{ route('index')}}">
-                                <i class="fa fa-server"></i> <span>My Servers</span>
+                                <i class="fa fa-server"></i> <span>{{ trans('navigation.account.my_servers') }}</span>
                             </a>
                         </li>
                         @if (isset($server->name) && isset($node->name))
-                            <li class="header">SERVER MANAGEMENT</li>
+                            <li class="header">{{ trans('navigation.server.header') }}</li>
                             <li class="{{ Route::currentRouteName() !== 'server.index' ?: 'active' }}">
                                 <a href="{{ route('server.index', $server->uuidShort) }}">
-                                    <i class="fa fa-terminal"></i> <span>Console</span>
+                                    <i class="fa fa-terminal"></i> <span>{{ trans('navigation.server.console') }}</span>
                                 </a>
                             </li>
                             <li class="treeview {{ Route::currentRouteName() !== 'server.files.index' ?: 'active' }}">
                                 <a href="#">
                                     <i class="fa fa-files-o"></i>
-                                    <span>File Management</span>
+                                    <span>{{ trans('navigation.server.file_management') }}</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> File Browser</a></li>
-                                    <li><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> Create File</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> Upload Files</a></li>
+                                    <li><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.file_browser') }}</a></li>
+                                    <li><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.create_file') }}</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> {{ trans('navigation.server.upload_files') }}</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -156,7 +160,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('server.tasks', $server->uuidShort)}}">
-                                    <i class="fa fa-clock-o"></i> <span>Task Management</span>
+                                    <i class="fa fa-clock-o"></i> <span>{{ trans('navigation.server.task_management') }}</span>
                                     <span class="pull-right-container">
                                         <span class="label label-primary pull-right">4</span>
                                     </span>
@@ -169,16 +173,16 @@
                             ">
                                 <a href="#">
                                     <i class="fa fa-gears"></i>
-                                    <span>Configuration</span>
+                                    <span>{{ trans('navigation.server.configuration') }}</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> Port Allocations</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> SFTP Settings</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> Startup Parameters</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> Databases</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> {{ trans('navigation.server.port_allocations') }}</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.sftp_settings') }}</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> {{ trans('navigation.server.startup_parameters') }}</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.databases') }}</a></li>
                                 </ul>
                             </li>
                         @endif
