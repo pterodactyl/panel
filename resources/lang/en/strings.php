@@ -32,5 +32,6 @@ return [
     'created' => 'Created',
     'expires' => 'Expires',
     'public_key' => 'Public key',
-    'api_access' => 'Api Access'
+    'api_access' => 'Api Access',
+    'never' => 'never'
 ];

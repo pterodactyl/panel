@@ -57,7 +57,7 @@
                                 </td>
                                 <td class="text-center hidden-sm hidden-xs">
                                     @if(is_null($key->expires_at))
-                                        <span class="label label-default">never</span>
+                                        <span class="label label-default">@lang('strings.never')</span>
                                     @else
                                         {{ (new Carbon($key->expires_at))->toDayDateTimeString() }}
                                     @endif
