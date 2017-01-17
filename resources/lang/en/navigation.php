@@ -7,7 +7,7 @@ return [
         'my_account' => 'My Account',
         'security_controls' => 'Security Controls',
         'api_access' => 'API Access',
-        'my_servers' => 'My Servers'
+        'my_servers' => 'My Servers',
     ],
     'server' => [
         'header' => 'SERVER MANAGEMENT',
@@ -22,6 +22,6 @@ return [
         'port_allocations' => 'Port Allocations',
         'sftp_settings' => 'SFTP Settings',
         'startup_parameters' => 'Startup Parameters',
-        'databases' => 'Databases'
+        'databases' => 'Databases',
     ],
 ];

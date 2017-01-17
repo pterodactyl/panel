@@ -12,7 +12,7 @@ return [
             'header' => 'API Access',
             'header_sub' => 'Manage your API access keys.',
             'list' => 'API Keys',
-            'create_new' => 'Create new API key'
+            'create_new' => 'Create new API key',
         ],
     ],
     'account' => [
