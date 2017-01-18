@@ -20,14 +20,14 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ trans('base.index.header') }}
+    @lang('base.index.header')
 @endsection
 
 @section('content-header')
-    <h1>{{ trans('base.index.header') }}<small>{{ trans('base.index.header_sub')}}</small></h1>
+    <h1>@lang('base.index.header')<small>@lang('base.index.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.home') }}</a></li>
-        <li class="active">{{ trans('strings.servers') }}</li>
+        <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
+        <li class="active">@lang('strings.servers')</li>
     </ol>
 @endsection
 
@@ -36,10 +36,10 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">{{ trans('base.index.list') }}</h3>
+                <h3 class="box-title">@lang('base.index.list')</h3>
                 <div class="box-tools">
                     <div class="input-group input-group-sm" style="width: 150px;">
-                        <input type="text" name="table_search" class="form-control pull-right" placeholder="{{ trans('strings.search') }}">
+                        <input type="text" name="table_search" class="form-control pull-right" placeholder="@lang('strings.search')">
                         <div class="input-group-btn">
                             <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                         </div>
@@ -50,13 +50,13 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>{{ trans('strings.id') }}</th>
-                            <th>{{ trans('strings.name') }}</th>
-                            <th>{{ trans('strings.node') }}</th>
-                            <th>{{ trans('strings.connection') }}</th>
-                            <th class="text-center hidden-sm hidden-xs">{{ trans('strings.memory') }}</th>
-                            <th class="text-center hidden-sm hidden-xs">{{ trans('strings.cpu') }}</th>
-                            <th class="text-center">{{ trans('strings.status') }}</th>
+                            <th>@lang('strings.id')</th>
+                            <th>@lang('strings.name')</th>
+                            <th>@lang('strings.node')</th>
+                            <th>@lang('strings.connection')</th>
+                            <th class="text-center hidden-sm hidden-xs">@lang('strings.memory')</th>
+                            <th class="text-center hidden-sm hidden-xs">@lang('strings.cpu')</th>
+                            <th class="text-center">@lang('strings.status')</th>
                         </tr>
                         @foreach($servers as $server)
                         <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
@@ -68,7 +68,7 @@
                             <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
                             <td class="text-center" data-action="status">
                                 @if($server->suspended === 1)
-                                    <span class="label label-warning">{{ trans('strings.suspended') }}</span>
+                                    <span class="label label-warning">@lang('strings.suspended')</span>
                                 @else
                                     <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
                                 @endif

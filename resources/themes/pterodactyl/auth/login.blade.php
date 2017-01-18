@@ -28,7 +28,7 @@
     @if (count($errors) > 0)
         <div class="callout callout-danger">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{ trans('auth.auth_error') }}<br><br>
+            @lang('auth.auth_error')<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -44,28 +44,28 @@
             </div>
         @endforeach
     @endforeach
-    <p class="login-box-msg">{{ trans('auth.authentication_required') }}</p>
+    <p class="login-box-msg">@lang('auth.authentication_required')</p>
     <form action="{{ route('auth.login') }}" method="POST">
         <div class="form-group has-feedback">
-            <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="{{ trans('strings.email') }}">
+            <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="@lang('strings.email')">
             <span class="fa fa-envelope form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-            <input type="password" name="password" class="form-control" placeholder="{{ trans('strings.password') }}">
+            <input type="password" name="password" class="form-control" placeholder="@lang('strings.password')">
             <span class="fa fa-lock form-control-feedback"></span>
         </div>
         <div class="row">
             <div class="col-xs-8">
                 <div class="form-group has-feedback">
-                    <input type="checkbox" name="remember_me" id="remember_me" /> <label for="remember_me" class="weight-300">{{ trans('auth.remember_me') }}</label>
+                    <input type="checkbox" name="remember_me" id="remember_me" /> <label for="remember_me" class="weight-300">@lang('auth.remember_me')</label>
                 </div>
             </div>
             <div class="col-xs-4">
                 {!! csrf_field() !!}
-                <button type="submit" class="btn btn-primary btn-block btn-flat">{{ trans('auth.sign_in') }}</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('auth.sign_in')</button>
             </div>
         </div>
     </form>
-    <a href="{{ route('auth.password') }}">{{ trans('auth.forgot_password') }}</a><br>
+    <a href="{{ route('auth.password') }}">@lang('auth.forgot_password')</a><br>
 </div>
 @endsection

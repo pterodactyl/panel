@@ -20,15 +20,15 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ trans('base.security.header') }}
+    @lang('base.security.header')
 @endsection
 
 @section('content-header')
-    <h1>{{ trans('base.security.header') }}<small>{{ trans('base.security.header_sub')}}</small></h1>
+    <h1>@lang('base.security.header')<small>@lang('base.security.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.home') }}</a></li>
-        <li><a href="{{ route('account') }}">{{ trans('strings.account') }}</a></li>
-        <li class="active">{{ trans('strings.security') }}</li>
+        <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
+        <li><a href="{{ route('account') }}">@lang('strings.account')</a></li>
+        <li class="active">@lang('strings.security')</li>
     </ol>
 @endsection
 
@@ -37,15 +37,15 @@
     <div class="col-md-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('base.security.sessions') }}</h3>
+                <h3 class="box-title">@lang('base.security.sessions')</h3>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>{{ trans('strings.id') }}</th>
-                            <th>{{ trans('strings.ip') }}</th>
-                            <th>{{ trans('strings.last_activity') }}</th>
+                            <th>@lang('strings.id')</th>
+                            <th>@lang('strings.ip')</th>
+                            <th>@lang('strings.last_activity')</th>
                             <th></th>
                         </tr>
                         @foreach($sessions as $session)
@@ -55,7 +55,7 @@
                                 <td>{{ Carbon::createFromTimestamp($session->last_activity)->diffForHumans() }}</td>
                                 <td>
                                     <a href="{{ route('account.security.revoke', $session->id) }}">
-                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> {{ trans('strings.revoke') }}</button>
+                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> @lang('strings.revoke')</button>
                                     </a>
                                 </td>
                             </tr>
@@ -68,34 +68,34 @@
     <div class="col-md-6">
         <div class="box {{ (Auth::user()->use_totp) ? 'box-success' : 'box-danger' }}">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('base.security.2fa_header') }}</h3>
+                <h3 class="box-title">@lang('base.security.2fa_header')</h3>
             </div>
             @if(Auth::user()->use_totp)
             <form action="{{ route('account.security.totp') }}" method="post">
                 <div class="box-body">
-                    <p>{{ trans('base.security.2fa_enabled') }}</p>
+                    <p>@lang('base.security.2fa_enabled')</p>
                     <div class="form-group">
-                        <label for="new_password_again" class="control-label">{{ trans('strings.2fa_token') }}</label>
+                        <label for="new_password_again" class="control-label">@lang('strings.2fa_token')</label>
                         <div>
                             <input type="text" class="form-control" name="token" />
-                            <p class="text-muted small">{{ trans('base.security.2fa_token_help') }}</p>
+                            <p class="text-muted small">@lang('base.security.2fa_token_help')</p>
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     {{ method_field('DELETE') }}
-                    <button type="submit" class="btn btn-danger btn-sm">{{ trans('base.security.disable_2fa') }}</button>
+                    <button type="submit" class="btn btn-danger btn-sm">@lang('base.security.disable_2fa')</button>
                 </div>
             </form>
             @else
             <form action="#" method="post" id="do_2fa">
                 <div class="box-body">
-                    {{ trans('base.security.2fa_disabled') }}
+                    @lang('base.security.2fa_disabled')
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-success btn-sm">{{ trans('base.security.enable_2fa') }}</button>
+                    <button type="submit" class="btn btn-success btn-sm">@lang('base.security.enable_2fa')</button>
                 </div>
             </form>
             @endif
@@ -107,7 +107,7 @@
         <div class="modal-content">
             <form action="#" method="post" id="2fa_token_verify">
                 <div class="modal-header">
-                    <h4 class="modal-title">{{ trans('base.security.2fa_qr') }}</h4>
+                    <h4 class="modal-title">@lang('base.security.2fa_qr')</h4>
                 </div>
                 <div class="modal-body" id="modal_insert_content">
                     <div class="row">
@@ -118,9 +118,9 @@
                             <center><span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> Loading QR Code...</span><img src="" id="qr_image_insert" style="display:none;"/><br /><code id="2fa_secret_insert"></code></center>
                         </div>
                         <div class="col-md-6">
-                            <div class="alert alert-info">{{ trans('base.security.2fa_checkpoint_help') }}</div>
+                            <div class="alert alert-info">@lang('base.security.2fa_checkpoint_help')</div>
                             <div class="form-group">
-                                <label class="control-label" for="2fa_token">{{ trans('strings.2fa_token') }}</label>
+                                <label class="control-label" for="2fa_token">@lang('strings.2fa_token')</label>
                                 {!! csrf_field() !!}
                                 <input class="form-control" type="text" name="2fa_token" id="2fa_token" />
                             </div>
@@ -128,8 +128,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btn-sm" id="submit_action">{{ trans('strings.submit') }}</button>
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="close_reload">{{ trans('strings.close') }}</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="submit_action">@lang('strings.submit')</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" id="close_reload">@lang('strings.close')</button>
                 </div>
             </form>
         </div>

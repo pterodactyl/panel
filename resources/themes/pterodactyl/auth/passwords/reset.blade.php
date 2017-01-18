@@ -25,12 +25,12 @@
 
 @section('content')
 <div class="login-box-body">
-    <p class="login-box-msg">{{ trans('auth.reset_password_text') }}</p>
+    <p class="login-box-msg">@lang('auth.reset_password_text')</p>
     <form action="{{ route('auth.reset.post') }}" method="POST">
         <div class="form-group">
-            <label for="email" class="control-label">{{ trans('strings.email') }}</label>
+            <label for="email" class="control-label">@lang('strings.email')</label>
             <div>
-                <input type="text" class="form-control" name="email" id="email" value="{{ $email or old('email') }}" required autofocus placeholder="{{ trans('strings.email') }}" />
+                <input type="text" class="form-control" name="email" id="email" value="{{ $email or old('email') }}" required autofocus placeholder="@lang('strings.email')" />
                 @if ($errors->has('email'))
                     <span class="help-block text-red small">
                         {{ $errors->first('email') }}
@@ -39,21 +39,21 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="password" class="control-label">{{ trans('strings.password') }}</label>
+            <label for="password" class="control-label">@lang('strings.password')</label>
             <div>
-                <input type="password" class="form-control" name="password" id="password" required placeholder="{{ trans('strings.password') }}" />
+                <input type="password" class="form-control" name="password" id="password" required placeholder="@lang('strings.password')" />
                 @if ($errors->has('password'))
                     <span class="help-block text-red small">
                         {{ $errors->first('password') }}
                     </span>
                 @endif
-                <p class="text-muted"><small>{{ trans('auth.password_requirements') }}</small></p>
+                <p class="text-muted"><small>@lang('auth.password_requirements')</small></p>
             </div>
         </div>
         <div class="form-group">
-            <label for="password" class="control-label">{{ trans('strings.confirm_password') }}</label>
+            <label for="password" class="control-label">@lang('strings.confirm_password')</label>
             <div>
-                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" required placeholder="{{ trans('strings.confirm_password') }}" />
+                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" required placeholder="@lang('strings.confirm_password')" />
                 @if ($errors->has('password_confirmation'))
                     <span class="help-block text-red small">
                         {{ $errors->first('password_confirmation') }}
@@ -65,7 +65,7 @@
             <div class="col-xs-12">
                 {!! csrf_field() !!}
                 <input type="hidden" name="token" value="{{ $token }}">
-                <button type="submit" class="btn btn-primary btn-block btn-flat">{{ trans('auth.reset_password') }}</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('auth.reset_password')</button>
             </div>
         </div>
     </form>

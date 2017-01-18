@@ -20,14 +20,14 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ trans('base.api.index.header') }}
+    @lang('base.api.index.header')
 @endsection
 
 @section('content-header')
-    <h1>{{ trans('base.api.index.header') }}<small>{{ trans('base.api.index.header_sub')}}</small></h1>
+    <h1>@lang('base.api.index.header')<small>@lang('base.api.index.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.home') }}</a></li>
-        <li class="active">{{ trans('strings.api_access') }}</li>
+        <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
+        <li class="active">@lang('strings.api_access')</li>
     </ol>
 @endsection
 
@@ -36,16 +36,16 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header">
-                <h3 class="box-title">{{ trans('base.api.index.list')}}</h3>
+                <h3 class="box-title">@lang('base.api.index.list')</h3>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>{{ trans('strings.public_key') }}</th>
-                            <th>{{ trans('strings.memo') }}</th>
-                            <th class="text-center hidden-sm hidden-xs">{{ trans('strings.created') }}</th>
-                            <th class="text-center hidden-sm hidden-xs">{{ trans('strings.expires') }}</th>
+                            <th>@lang('strings.public_key')</th>
+                            <th>@lang('strings.memo')</th>
+                            <th class="text-center hidden-sm hidden-xs">@lang('strings.created')</th>
+                            <th class="text-center hidden-sm hidden-xs">@lang('strings.expires')</th>
                             <th></th>
                         </tr>
                         @foreach ($keys as $key)
@@ -72,7 +72,7 @@
             </div>
             <div class="box-footer">
                 <a href="{{ route('account.api.new') }}">
-                    <button class="btn btn-sm btn-success">{{ trans('base.api.index.create_new') }}</button>
+                    <button class="btn btn-sm btn-success">@lang('base.api.index.create_new')</button>
                 </a>
             </div>
         </div>

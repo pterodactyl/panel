@@ -44,16 +44,16 @@
                 <form action="{{ route('server.settings.sftp', $server->uuidShort) }}" method="post">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="sftp_pass" class="control-label">{{ trans('base.account.new_password') }}</label>
+                            <label for="sftp_pass" class="control-label">@lang('base.account.new_password')</label>
                             <div>
                                 <input type="password" class="form-control" name="sftp_pass" />
-                                <p class="text-muted"><small>{{ trans('auth.password_requirements') }}</small></p>
+                                <p class="text-muted"><small>@lang('auth.password_requirements')</small></p>
                             </div>
                         </div>
                     </div>
                     <div class="box-footer">
                         {!! csrf_field() !!}
-                        <input type="submit" class="btn btn-primary btn-sm" value="{{ trans('base.account.update_pass') }}" />
+                        <input type="submit" class="btn btn-primary btn-sm" value="@lang('base.account.update_pass')" />
                     </div>
                 </form>
             @else
@@ -93,7 +93,7 @@
                 </div>
                 @can('view-sftp-password', $server)
                     <div class="form-group">
-                        <label for="password" class="control-label">{{ trans('base.account.current_password') }}</label>
+                        <label for="password" class="control-label">@lang('base.account.current_password')</label>
                         <div>
                             <input type="text" class="form-control" readonly @if(! is_null($server->sftp_password))value="{{ Crypt::decrypt($server->sftp_password) }}"@endif />
                         </div>

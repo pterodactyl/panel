@@ -20,14 +20,14 @@
 @extends('layouts.master')
 
 @section('title')
-    {{ trans('base.account.header') }}
+    @lang('base.account.header')
 @endsection
 
 @section('content-header')
-    <h1>{{ trans('base.account.header') }}<small>{{ trans('base.account.header_sub')}}</small></h1>
+    <h1>@lang('base.account.header')<small>@lang('base.account.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.home') }}</a></li>
-        <li class="active">{{ trans('strings.account') }}</li>
+        <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
+        <li class="active">@lang('strings.account')</li>
     </ol>
 @endsection
 
@@ -36,25 +36,25 @@
     <div class="col-sm-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('base.account.update_pass') }}</h3>
+                <h3 class="box-title">@lang('base.account.update_pass')</h3>
             </div>
             <form action="{{ route('account.password') }}" method="post">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="current_password" class="control-label">{{ trans('base.account.current_password') }}</label>
+                        <label for="current_password" class="control-label">@lang('base.account.current_password')</label>
                         <div>
                             <input type="password" class="form-control" name="current_password" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="new_password" class="control-label">{{ trans('base.account.new_password') }}</label>
+                        <label for="new_password" class="control-label">@lang('base.account.new_password')</label>
                         <div>
                             <input type="password" class="form-control" name="new_password" />
-                            <p class="text-muted"><small>{{ trans('auth.password_requirements') }}</small></p>
+                            <p class="text-muted"><small>@lang('auth.password_requirements')</small></p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="new_password_again" class="control-label">{{ trans('base.account.new_password_again') }}</label>
+                        <label for="new_password_again" class="control-label">@lang('base.account.new_password_again')</label>
                         <div>
                             <input type="password" class="form-control" name="new_password_confirmation" />
                         </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <input type="submit" class="btn btn-primary btn-sm" value="{{ trans('base.account.update_pass') }}" />
+                    <input type="submit" class="btn btn-primary btn-sm" value="@lang('base.account.update_pass')" />
                 </div>
             </form>
         </div>
@@ -70,18 +70,18 @@
     <div class="col-sm-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('base.account.update_email') }}</h3>
+                <h3 class="box-title">@lang('base.account.update_email')</h3>
             </div>
             <form action="{{ route('account.email') }}" method="post">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="new_email" class="control-label">{{ trans('base.account.new_email') }}</label>
+                        <label for="new_email" class="control-label">@lang('base.account.new_email')</label>
                         <div>
                             <input type="text" class="form-control" name="new_email" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password" class="control-label">{{ trans('base.account.current_password') }}</label>
+                        <label for="password" class="control-label">@lang('base.account.current_password')</label>
                         <div>
                             <input type="password" class="form-control" name="password" />
                         </div>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <input type="submit" class="btn btn-primary btn-sm" value="{{ trans('base.account.update_email') }}" />
+                    <input type="submit" class="btn btn-primary btn-sm" value="@lang('base.account.update_email')" />
                 </div>
             </form>
         </div>

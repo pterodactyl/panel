@@ -111,46 +111,46 @@
                         </div>
                     @endif
                     <ul class="sidebar-menu">
-                        <li class="header">{{ trans('navigation.account.header') }}</li>
+                        <li class="header">@lang('navigation.account.header')</li>
                         <li class="{{ Route::currentRouteName() !== 'account' ?: 'active' }}">
                             <a href="{{ route('account')}}">
-                                <i class="fa fa-user"></i> <span>{{ trans('navigation.account.my_account') }}</span>
+                                <i class="fa fa-user"></i> <span>@lang('navigation.account.my_account')</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'account.security' ?: 'active' }}">
                             <a href="{{ route('account.security')}}">
-                                <i class="fa fa-lock"></i> <span>{{ trans('navigation.account.security_controls') }}</span>
+                                <i class="fa fa-lock"></i> <span>@lang('navigation.account.security_controls')</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'account.api' ?: 'active' }}">
                             <a href="{{ route('account.api')}}">
-                                <i class="fa fa-code"></i> <span>{{ trans('navigation.account.api_access') }}</span>
+                                <i class="fa fa-code"></i> <span>@lang('navigation.account.api_access')</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'index' ?: 'active' }}">
                             <a href="{{ route('index')}}">
-                                <i class="fa fa-server"></i> <span>{{ trans('navigation.account.my_servers') }}</span>
+                                <i class="fa fa-server"></i> <span>@lang('navigation.account.my_servers')</span>
                             </a>
                         </li>
                         @if (isset($server->name) && isset($node->name))
-                            <li class="header">{{ trans('navigation.server.header') }}</li>
+                            <li class="header">@lang('navigation.server.header')</li>
                             <li class="{{ Route::currentRouteName() !== 'server.index' ?: 'active' }}">
                                 <a href="{{ route('server.index', $server->uuidShort) }}">
-                                    <i class="fa fa-terminal"></i> <span>{{ trans('navigation.server.console') }}</span>
+                                    <i class="fa fa-terminal"></i> <span>@lang('navigation.server.console')</span>
                                 </a>
                             </li>
                             <li class="treeview {{ Route::currentRouteName() !== 'server.files.index' ?: 'active' }}">
                                 <a href="#">
                                     <i class="fa fa-files-o"></i>
-                                    <span>{{ trans('navigation.server.file_management') }}</span>
+                                    <span>@lang('navigation.server.file_management')</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.file_browser') }}</a></li>
-                                    <li><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.create_file') }}</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> {{ trans('navigation.server.upload_files') }}</a></li>
+                                    <li><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
+                                    <li><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> @lang('navigation.server.upload_files')</a></li>
                                 </ul>
                             </li>
                             <li>
@@ -160,7 +160,7 @@
                             </li>
                             <li>
                                 <a href="{{ route('server.tasks', $server->uuidShort)}}">
-                                    <i class="fa fa-clock-o"></i> <span>{{ trans('navigation.server.task_management') }}</span>
+                                    <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
                                     <span class="pull-right-container">
                                         <span class="label label-primary pull-right">4</span>
                                     </span>
@@ -173,16 +173,16 @@
                             ">
                                 <a href="#">
                                     <i class="fa fa-gears"></i>
-                                    <span>{{ trans('navigation.server.configuration') }}</span>
+                                    <span>@lang('navigation.server.configuration')</span>
                                     <span class="pull-right-container">
                                         <i class="fa fa-angle-left pull-right"></i>
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> {{ trans('navigation.server.port_allocations') }}</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.sftp_settings') }}</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.startup_parameters') }}</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> {{ trans('navigation.server.databases') }}</a></li>
+                                    <li><a href=""><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
                                 </ul>
                             </li>
                         @endif
@@ -198,7 +198,7 @@
                         <div class="col-xs-12">
                             @if (count($errors) > 0)
                                 <div class="callout callout-danger">
-                                    {{ trans('base.validation_error') }}<br><br>
+                                    @lang('base.validation_error')<br><br>
                                     <ul>
                                         @foreach ($errors->all() as $error)
                                             <li>{{ $error }}</li>

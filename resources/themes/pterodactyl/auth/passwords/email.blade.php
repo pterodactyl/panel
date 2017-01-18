@@ -27,13 +27,13 @@
 <div class="login-box-body">
     @if (session('status'))
         <div class="callout callout-success">
-            {{ trans('auth.email_sent') }}
+            @lang('auth.email_sent')
         </div>
     @endif
-    <p class="login-box-msg">{{ trans('auth.request_reset_text') }}</p>
+    <p class="login-box-msg">@lang('auth.request_reset_text')</p>
     <form action="{{ route('auth.password') }}" method="POST">
         <div class="form-group has-feedback">
-            <input type="email" name="email" class="form-control" value="{{ old('email') }}" autofocus placeholder="{{ trans('strings.email') }}">
+            <input type="email" name="email" class="form-control" value="{{ old('email') }}" autofocus placeholder="@lang('strings.email')">
             <span class="fa fa-envelope form-control-feedback"></span>
             @if ($errors->has('email'))
                 <span class="help-block text-red small">
@@ -43,11 +43,11 @@
         </div>
         <div class="row">
             <div class="col-xs-4">
-                <a href="{{ route('auth.login') }}"><button type="button" class="btn btn-clear btn-block btn-flat">{{ trans('strings.login') }}</button></a>
+                <a href="{{ route('auth.login') }}"><button type="button" class="btn btn-clear btn-block btn-flat">@lang('strings.login')</button></a>
             </div>
             <div class="col-xs-8">
                 {!! csrf_field() !!}
-                <button type="submit" class="btn btn-primary btn-block btn-flat">{{ trans('auth.request_reset') }}</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('auth.request_reset')</button>
             </div>
         </div>
     </form>

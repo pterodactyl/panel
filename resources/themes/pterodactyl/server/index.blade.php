@@ -29,9 +29,9 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ trans('server.index.header') }}<small>{{ trans('server.index.header_sub')}}</small></h1>
+    <h1>@lang('server.index.header')<small>@lang('server.index.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.servers') }}</a></li>
+        <li><a href="{{ route('index') }}">@lang('strings.servers')</a></li>
         <li class="active">{{ $server->name }}</li>
     </ol>
 @endsection
