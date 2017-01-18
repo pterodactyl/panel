@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'not_authorized' => 'You are not authorized to perform this action.',
     'auth_error' => 'There was an error while attempting to login.',
     'authentication_required' => 'Authentication is required in order to continue.',
     'remember_me' => 'Remember Me',

@@ -20,16 +20,16 @@
 @extends('layouts.master')
 
 @section('title')
-    SFTP Settings
+    @lang('server.config.sftp.header')
 @endsection
 
 @section('content-header')
-    <h1>SFTP Configuration<small>Account details for SFTP connections.</small></h1>
+    <h1>@lang('server.config.sftp.header')<small>@lang('server.config.sftp.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.home') }}</a></li>
+        <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
         <li><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></li>
-        <li>{{ trans('strings.configuration') }}</li>
-        <li class="active">{{ trans('strings.sftp') }}</li>
+        <li>@lang('navigation.server.configuration')</li>
+        <li class="active">@lang('navigation.server.sftp_settings')</li>
     </ol>
 @endsection
 
@@ -38,7 +38,7 @@
     <div class="col-sm-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Change SFTP Password</h3>
+                <h3 class="box-title">@lang('server.config.sftp.change_pass')</h3>
             </div>
             @can('reset-sftp', $server)
                 <form action="{{ route('server.settings.sftp', $server->uuidShort) }}" method="post">
@@ -59,7 +59,7 @@
             @else
                 <div class="box-body">
                     <div class="callout callout-warning callout-nomargin">
-                        <p>You are not authorized to perform this action.</p>
+                        <p>@lang('auth.not_authorized')</p>
                     </div>
                 </div>
             @endcan
@@ -68,25 +68,25 @@
     <div class="col-sm-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">SFTP Details</h3>
+                <h3 class="box-title">@lang('server.config.sftp.details')</h3>
             </div>
             <div class="box-body">
                 <div class="row">
                     <div class="form-group col-md-8">
-                        <label for="new_email" class="control-label">Connection Address</label>
+                        <label for="new_email" class="control-label">@lang('server.config.sftp.conn_addr')</label>
                         <div>
                             <input type="text" class="form-control" readonly value="{{ $node->fqdn }}" />
                         </div>
                     </div>
                     <div class="form-group col-md-4">
-                        <label for="new_email" class="control-label">Port</label>
+                        <label for="new_email" class="control-label">@lang('strings.port')</label>
                         <div>
                             <input type="text" class="form-control" readonly value="{{ $node->daemonSFTP }}" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password" class="control-label">Username</label>
+                    <label for="password" class="control-label">@lang('strings.username')</label>
                     <div>
                         <input type="text" class="form-control" readonly value="{{ $server->username }}" />
                     </div>
@@ -101,7 +101,7 @@
                 @endcan
             </div>
             <div class="box-footer">
-                <p class="small text-muted">Ensure that your client is set to use <strong>SFTP</strong> and not FTP or FTPS for connections, there is a difference between the protocols.</p>
+                <p class="small text-muted">@lang('server.config.sftp.warning')</p>
             </div>
         </div>
     </div>

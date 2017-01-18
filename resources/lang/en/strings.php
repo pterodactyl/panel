@@ -36,4 +36,7 @@ return [
     'never' => 'never',
     'sign_out' => 'Sign out',
     'admin_control' => 'Admin Control',
+    'required' => 'Required',
+    'port' => 'Port',
+    'username' => 'Username',
 ];

@@ -65,8 +65,12 @@ class ServerRoutes
                 'uses' => 'Server\ServerController@postSettingsSFTP',
             ]);
 
-            $router->post('/settings/startup', [
+            $router->get('/settings/startup', [
                 'as' => 'server.settings.startup',
+                'uses' => 'Server\ServerController@getStartup',
+            ]);
+
+            $router->post('/settings/startup', [
                 'uses' => 'Server\ServerController@postSettingsStartup',
             ]);
 
