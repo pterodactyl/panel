@@ -39,4 +39,5 @@ return [
     'required' => 'Required',
     'port' => 'Port',
     'username' => 'Username',
+    'database' => 'Database',
 ];

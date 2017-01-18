@@ -20,16 +20,16 @@
 @extends('layouts.master')
 
 @section('title')
-    Databases
+    @lang('server.config.database.header')
 @endsection
 
 @section('content-header')
-    <h1>Databases<small>All databases available for this server.</small></h1>
+    <h1>@lang('server.config.database.header')<small>@lang('server.config.database.header_sub')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('index') }}">{{ trans('strings.home') }}</a></li>
+        <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
         <li><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></li>
-        <li>{{ trans('strings.configuration') }}</li>
-        <li class="active">{{ trans('strings.databases') }}</li>
+        <li>@lang('navigation.server.configuration')</li>
+        <li class="active">@lang('navigation.server.databases')</li>
     </ol>
 @endsection
 
@@ -38,17 +38,17 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Your Databases</h3>
+                <h3 class="box-title">@lang('server.config.database.your_dbs')</h3>
             </div>
             @if(count($databases) > 0)
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
                         <tbody>
                             <tr>
-                                <th>Database</th>
-                                <th>Username</th>
-                                <th>Password</th>
-                                <th>MySQL Host</th>
+                                <th>@lang('strings.database')</th>
+                                <th>@lang('strings.username')</th>
+                                <th>@lang('strings.password')</th>
+                                <th>@lang('server.config.database.host')</th>
                             </tr>
                             @foreach($databases as $database)
                                 <tr>
@@ -56,7 +56,7 @@
                                     <td>{{ $database->username }}</td>
                                     <td><code>{{ Crypt::decrypt($database->password) }}</code>
                                         @can('reset-db-password', $server)
-                                            <button class="btn btn-xs btn-primary pull-right" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> Reset Password</button>
+                                            <button class="btn btn-xs btn-primary pull-right" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')</button>
                                         @endcan
                                     </td>
                                     <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
@@ -68,12 +68,12 @@
             @else
                 <div class="box-body">
                     <div class="callout callout-info callout-nomargin">
-                        There are no databases listed for this server.
+                        @lang('server.config.database.no_dbs')
                         @if(Auth::user()->root_admin === 1)
                             <a href="{{ route('admin.servers.view', [
                                 'id' => $server->id,
                                 'tab' => 'tab_database'
-                            ]) }}" target="_blank">Add a new database.</a>
+                            ]) }}" target="_blank">@lang('server.config.database.add_db')</a>
                         @endif
                     </div>
                 </div>
