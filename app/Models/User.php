@@ -146,4 +146,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         $this->notify(new ResetPasswordNotification($token));
     }
+
+    /**
+     * Return true or false depending on wether the user is root admin or not.
+     *
+     * @return boolean the user is root admin
+     */
+    public function isRootAdmin() {
+        return $this->root_admin === 1;
+    }
 }
