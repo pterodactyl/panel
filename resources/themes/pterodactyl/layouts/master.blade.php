@@ -167,7 +167,7 @@
                                 </a>
                             </li>
                             <li class="treeview
-                                @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocations']))
+                                @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
                                     active
                                 @endif
                             ">
@@ -179,7 +179,7 @@
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href=""><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
                                     <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
                                     <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
                                     <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>

@@ -31,5 +31,12 @@ return [
             'no_dbs' => 'There are no databases listed for this server.',
             'add_db' => 'Add a new database.',
         ],
+        'allocation' => [
+            'header' => 'Server Allocations',
+            'header_sub' => 'Control the IPs and ports available on this server.',
+            'available' => 'Available Allocations',
+            'help' => 'Allocation Help',
+            'help_text' => 'The list to the left includes all available IPs and ports that are open for your server to use for incoming connections.'
+        ],
     ],
 ];

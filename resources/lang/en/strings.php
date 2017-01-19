@@ -45,4 +45,8 @@ return [
     'create' => 'Create',
     'select_all' => 'Select All',
     'select_none' => 'Select None',
+    'alias' => 'Alias',
+    'primary' => 'Primary',
+    'make_primary' => 'Make Primary',
+    'none' => 'None',
 ];

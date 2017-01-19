@@ -71,7 +71,6 @@ class ServerController extends Controller
 
         return view('server.index', [
             'server' => $server,
-            'allocations' => Models\Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
             'node' => $node,
         ]);
     }
@@ -196,54 +195,21 @@ class ServerController extends Controller
         return redirect($node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/file/download/' . $download->token);
     }
 
-    /**
-     * Renders server settings page.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function getSettings(Request $request, $uuid)
+    public function getAllocation(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
-        $allocation = Models\Allocation::findOrFail($server->allocation);
+        $this->authorize('view-allocation', $server);
+        $node = Models\Node::find($server->node);
 
-        $variables = Models\ServiceVariables::select(
-                'service_variables.*',
-                DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
-            )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('service_variables.option_id', $server->option)
-            ->where('server_variables.server_id', $server->id)
-            ->get();
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
-        $service = Models\Service::select(
-                DB::raw('IFNULL(service_options.executable, services.executable) as executable')
-            )->leftJoin('service_options', 'service_options.parent_service', '=', 'services.id')
-            ->where('service_options.id', $server->option)
-            ->where('services.id', $server->service)
-            ->first();
-
-        $serverVariables = [
-            '{{SERVER_MEMORY}}' => $server->memory,
-            '{{SERVER_IP}}' => $allocation->ip,
-            '{{SERVER_PORT}}' => $allocation->port,
-        ];
-
-        $processed = str_replace(array_keys($serverVariables), array_values($serverVariables), $server->startup);
-        foreach ($variables as &$variable) {
-            $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '**';
-            $processed = str_replace('{{' . $variable->env_variable . '}}', $replace, $processed);
-        }
-
-        return view('server.settings', [
+        return view('server.settings.allocation', [
             'server' => $server,
-            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
-                ->where('server_id', $server->id)
-                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->get(),
-            'node' => Models\Node::find($server->node),
-            'variables' => $variables->where('user_viewable', 1),
-            'service' => $service,
-            'processedStartup' => $processed,
+            'allocations' => Models\Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'node' => $node,
         ]);
     }
 

@@ -57,3 +57,7 @@ code {
 .table {
     font-size: 14px !important;
 }
+
+.middle {
+    vertical-align: middle !important;
+}

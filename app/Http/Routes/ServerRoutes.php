@@ -74,6 +74,11 @@ class ServerRoutes
                 'uses' => 'Server\ServerController@postSettingsStartup',
             ]);
 
+            $router->get('/settings/allocation', [
+                'as' => 'server.settings.allocation',
+                'uses' => 'Server\ServerController@getAllocation',
+            ]);
+
             // File Manager Routes
             $router->get('/files', [
                 'as' => 'server.files.index',
