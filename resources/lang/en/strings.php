@@ -40,4 +40,9 @@ return [
     'port' => 'Port',
     'username' => 'Username',
     'database' => 'Database',
+    'new' => 'New',
+    'danger' => 'Danger',
+    'create' => 'Create',
+    'select_all' => 'Select All',
+    'select_none' => 'Select None',
 ];

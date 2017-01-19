@@ -26,6 +26,133 @@ return [
             'list' => 'API Keys',
             'create_new' => 'Create new API key',
         ],
+        'new' => [
+            'header' => 'New API Key',
+            'header_sub' => 'Create a new API access key',
+            'form_title' => 'Details',
+            'descriptive_memo' => [
+                'title' => 'Descriptive Memo',
+                'description' => 'Enter a breif description of what this API key will be used for.'
+            ],
+            'allowed_ips' => [
+                'title' => 'Allowed IPs',
+                'description' => 'Enter a line delimitated list of IPs that are allowed to access the API using this key. CIDR notation is allowed. Leave blank to allow any IP.'
+            ],
+            'base' => [
+                'title' => 'Base Information',
+                'information' => [
+                    'title' => 'Base Information',
+                    'description' => 'Returns a listing of all servers that this account has access to.',
+                ],
+            ],
+            'user_management' => [
+                'title' => 'User Management',
+                'list' => [
+                    'title' => 'List Users',
+                    'description' => 'Allows listing of all users currently on the system.',
+                ],
+                'create' => [
+                    'title' => 'Create User',
+                    'description' => 'Allows creating a new user on the system.',
+                ],
+                'view' => [
+                    'title' => 'List Single User',
+                    'description' => 'Allows viewing details about a specific user including active services.',
+                ],
+                'update' => [
+                    'title' => 'Update User',
+                    'description' => 'Allows modifying user details (email, password, TOTP information).',
+                ],
+                'delete' => [
+                    'title' => 'Delete User',
+                    'description' => 'Allows deleting a user.',
+                ],
+            ],
+            'node_management' => [
+                'title' => 'Node Management',
+                'list' => [
+                    'title' => 'List Nodes',
+                    'description' => 'Allows listing of all nodes currently on the system.',
+                ],
+                'create' => [
+                    'title' => 'Create Node',
+                    'description' => 'Allows creating a new node on the system.',
+                ],
+                'view' => [
+                    'title' => 'List Single Node',
+                    'description' => 'Allows viewing details about a specific node including active services.',
+                ],
+                'allocations' => [
+                    'title' => 'List Allocations',
+                    'description' => 'Allows viewing all allocations on the panel for all nodes.',
+                ],
+                'delete' => [
+                    'title' => 'Delete Node',
+                    'description' => 'Allows deleting a node.',
+                ],
+            ],
+            'server_management' => [
+                'title' => 'Server Management',
+                'server' => [
+                    'title' => 'Server Info',
+                    'description' => 'Allows access to viewing information about a single server including current stats and allocations.',
+                ],
+                'power' => [
+                    'title' => 'Server Power',
+                    'description' => 'Allows access to control server power status.',
+                ],
+                'view' => [
+                    'title' => 'Show Single Server',
+                    'description' => 'Allows viewing details about a specific server including the daemon_token as current process information.',
+                ],
+                'list' => [
+                    'title' => 'List Servers',
+                    'description' => 'Allows listing of all servers currently on the system.',
+                ],
+                'create' => [
+                    'title' => 'Create Server',
+                    'description' => 'Allows creating a new server on the system.',
+                ],
+                'config' => [
+                    'title' => 'Update Configuration',
+                    'description' => 'Allows modifying server config (name, owner, and access token).',
+                ],
+                'build' => [
+                    'title' => 'Update Build',
+                    'description' => 'Allows modifying a server\'s build parameters such as memory, CPU, and disk space along with assigned and default IPs.',
+                ],
+                'suspend' => [
+                    'title' => 'Suspend Server',
+                    'description' => 'Allows suspending a server instance.',
+                ],
+                'unsuspend' => [
+                    'title' => 'Unsuspend Server',
+                    'description' => 'Allows unsuspending a server instance.',
+                ],
+                'delete' => [
+                    'title' => 'Delete Server',
+                    'description' => 'Allows deleting a server.',
+                ],
+            ],
+            'service_management' => [
+                'title' => 'Service Management',
+                'list' => [
+                    'title' => 'List Services',
+                    'description' => 'Allows listing of all services configured on the system.',
+                ],
+                'view' => [
+                    'title' => 'List Single Service',
+                    'description' => 'Allows listing details about each service on the system including service options and variables.',
+                ],
+            ],
+            'location_management' => [
+                'title' => 'Location Management',
+                'list' => [
+                    'title' => 'List Locations',
+                    'description' => 'Allows listing all locations and thier associated nodes.',
+                ],
+            ],
+        ],
     ],
     'account' => [
         'header' => 'Your Account',
