@@ -385,6 +385,7 @@
                 </div>
             @endif
         </div>
+        {!! csrf_field() !!}
     </form>
 </div>
 @endsection
