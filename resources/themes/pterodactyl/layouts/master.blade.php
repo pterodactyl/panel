@@ -30,6 +30,7 @@
             {!! Theme::css('vendor/adminlte/admin.min.css') !!}
             {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css') !!}
             {!! Theme::css('vendor/sweetalert/sweetalert.min.css') !!}
+            {!! Theme::css('vendor/animate/animate.min.css') !!}
             {!! Theme::css('css/pterodactyl.css') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
@@ -266,6 +267,7 @@
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
             {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
+            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
         @show
     </body>
 </html>

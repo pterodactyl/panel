@@ -44,10 +44,10 @@
                 <div id="terminal" style="width:100%;"></div>
             </div>
             <div class="box-footer text-center">
-                @can('power-start', $server)<button class="btn btn-success" data-attr="power" data-action="start">Start</button>@endcan
-                @can('power-off', $server)<button class="btn btn-primary" data-attr="power" data-action="restart">Restart</button>@endcan
-                @can('power-restart', $server)<button class="btn btn-danger" data-attr="power" data-action="stop">Stop</button>@endcan
-                @can('power-kill', $server)<button class="btn btn-danger" data-attr="power" data-action="kill">Kill</button>@endcan
+                @can('power-start', $server)<button class="btn btn-success disabled" data-attr="power" data-action="start">Start</button>@endcan
+                @can('power-off', $server)<button class="btn btn-primary disabled" data-attr="power" data-action="restart">Restart</button>@endcan
+                @can('power-restart', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="stop">Stop</button>@endcan
+                @can('power-kill', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="kill">Kill</button>@endcan
             </div>
         </div>
     </div>
