@@ -142,6 +142,7 @@ class ServerController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('edit-files', $server);
+        $node = Models\Node::find($server->node);
 
         $fileInfo = (object) pathinfo($file);
         $controller = new FileRepository($uuid);
@@ -159,9 +160,15 @@ class ServerController extends Controller
             return redirect()->route('server.files.index', $uuid);
         }
 
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+            'stat' => $fileContent['stat'],
+        ]);
+
         return view('server.files.edit', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
             'file' => $file,
             'stat' => $fileContent['stat'],
             'contents' => $fileContent['file']->content,

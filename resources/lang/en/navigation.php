@@ -23,5 +23,6 @@ return [
         'sftp_settings' => 'SFTP Settings',
         'startup_parameters' => 'Startup Parameters',
         'databases' => 'Databases',
+        'edit_file' => 'Edit File',
     ],
 ];

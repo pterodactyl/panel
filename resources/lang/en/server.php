@@ -6,6 +6,23 @@ return [
         'header' => 'Server Console',
         'header_sub' => 'Control your server in real time.',
     ],
+    'files' => [
+        'header' => 'File Manager',
+        'header_sub' => 'Manage all of your files directly from the web.',
+        'loading' => 'Loading initial file structure, this could take a few seconds.',
+        'path' => 'When configuring any file paths in your server plugins or settings you should use :path as your base path. The maximum size for web-based file uploads to this node is :size.',
+        'seconds_ago' => 'seconds ago',
+        'file_name' => 'File Name',
+        'size' => 'Size',
+        'last_modified' => 'Last Modified',
+        'add_new' => 'Add New File',
+        'edit' => [
+            'header' => 'Edit File',
+            'header_sub' => 'Make modifications to a file from the web.',
+            'save' => 'Save File',
+            'return' => 'Return to File Manager',
+        ],
+    ],
     'config' => [
         'startup' => [
             'header' => 'Start Configuration',

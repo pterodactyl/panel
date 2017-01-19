@@ -140,7 +140,11 @@
                                     <i class="fa fa-terminal"></i> <span>@lang('navigation.server.console')</span>
                                 </a>
                             </li>
-                            <li class="treeview {{ Route::currentRouteName() !== 'server.files.index' ?: 'active' }}">
+                            <li class="treeview
+                                @if(in_array(Route::currentRouteName(), ['server.files.index', 'server.files.edit', 'server.files.add']))
+                                    active
+                                @endif
+                            ">
                                 <a href="#">
                                     <i class="fa fa-files-o"></i>
                                     <span>@lang('navigation.server.file_management')</span>
@@ -149,9 +153,8 @@
                                     </span>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
-                                    <li><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
-                                    <li><a href=""><i class="fa fa-angle-right"></i> @lang('navigation.server.upload_files')</a></li>
+                                    <li class="{{ (Route::currentRouteName() !== 'server.files.index' && Route::currentRouteName() !== 'server.files.edit') ?: 'active' }}"><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
+                                    <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
                                 </ul>
                             </li>
                             <li>

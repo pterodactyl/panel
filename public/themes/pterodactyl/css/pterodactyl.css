@@ -61,3 +61,45 @@ code {
 .middle {
     vertical-align: middle !important;
 }
+
+#fileOptionMenu.dropdown-menu > li > a {
+    padding:3px 6px;
+}
+
+.hasFileHover {
+    border: 2px dashed #0087F7;
+    border-top: 0 !important;
+    border-radius: 5px;
+    margin: 0;
+    opacity: 0.5;
+}
+
+.hasFileHover * {
+    pointer-events: none;
+}
+
+td.has-progress {
+    padding: 0px !important;
+    border-top: 0px !important;
+}
+
+.progress.progress-table-bottom {
+    margin: 0 !important;
+    height:5px !important;
+    padding:0;
+    border:0;
+}
+
+.muted {
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+}
+
+.muted-hover:hover {
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+.use-pointer {
+    cursor: pointer !important;
+}
