@@ -51,7 +51,7 @@
     <form action="{{ route('account.api.new') }}" method="POST" id="permsForm">
         <div class="col-xs-12">
             <div class="box">
-                <div class="box-header">
+                <div class="box-header with-border">
                     <div class="box-title">@lang('base.api.new.form_title')</div>
                 </div>
                 <div class="box-body">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
-                            <button class="btn btn-success">@lang('strings.create')</button>
+                            <button class="btn btn-success pull-right">@lang('strings.create') &rarr;</button>
                         </div>
                     </div>
                     <div class="text-right">
@@ -83,10 +83,9 @@
                 </div>
             </div>
         </div>
-
         <div class="col-xs-12 col-lg-6">
             <div class="box">
-                <div class="box-header">
+                <div class="box-header with-border">
                     <div class="box-title">@lang('base.api.new.base.title')</div>
                 </div>
                 <div class="box-body">
@@ -102,10 +101,9 @@
                     </div>
                 </div>
             </div>
-
             @if(Auth::user()->isRootAdmin())
                 <div class="box">
-                    <div class="box-header">
+                    <div class="box-header with-border">
                         <div class="box-title">@lang('base.api.new.user_management.title')</div>
                     </div>
                     <div class="box-body">
@@ -161,9 +159,8 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="box">
-                    <div class="box-header">
+                    <div class="box-header with-border">
                         <div class="box-title">@lang('base.api.new.node_management.title')</div>
                     </div>
                     <div class="box-body">
@@ -221,10 +218,9 @@
                 </div>
             @endif
         </div>
-
         <div class="col-xs-12 col-lg-6">
             <div class="box">
-                <div class="box-header">
+                <div class="box-header with-border">
                     <div class="box-title">@lang('base.api.new.server_management.title')</div>
                 </div>
                 <div class="box-body">
@@ -333,10 +329,9 @@
                     @endif
                 </div>
             </div>
-
             @if(Auth::user()->isRootAdmin())
                 <div class="box">
-                    <div class="box-header">
+                    <div class="box-header with-border">
                         <div class="box-title">@lang('base.api.new.service_management.title')</div>
                     </div>
                     <div class="box-body">
@@ -364,9 +359,8 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="box">
-                    <div class="box-header">
+                    <div class="box-header with-border">
                         <div class="box-title">@lang('base.api.new.location_management.title')</div>
                     </div>
                     <div class="box-body">
