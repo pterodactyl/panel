@@ -27,7 +27,7 @@
     <h1>@lang('base.api.index.header')<small>@lang('base.api.index.header_sub')</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
-        <li class="active">@lang('strings.api_access')</li>
+        <li class="active">@lang('navigation.account.api_access')</li>
     </ol>
 @endsection
 
