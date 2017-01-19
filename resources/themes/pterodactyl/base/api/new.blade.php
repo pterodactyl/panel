@@ -111,7 +111,7 @@
                     <div class="box-body">
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:users.list">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:users.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.user_management.list.title')</strong>
                                 <p class="help-block"><small>
@@ -121,7 +121,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:users.create">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:users.create">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.user_management.create.title')</strong>
                                 <p class="help-block"><small>
@@ -131,7 +131,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:users.view">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:users.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.user_management.view.title')</strong>
                                 <p class="help-block"><small>
@@ -141,7 +141,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:users.update">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:users.update">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.user_management.update.title')</strong>
                                 <p class="help-block"><small>
@@ -151,7 +151,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:users.delete">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:users.delete">
                                 <span class="label label-danger">DELETE</span>
                                 <strong>@lang('base.api.new.user_management.delete.title')</strong>
                                 <p class="help-block"><small>
@@ -169,7 +169,7 @@
                     <div class="box-body">
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:nodes.list">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:nodes.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.node_management.list.title')</strong>
                                 <p class="help-block"><small>
@@ -179,7 +179,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:nodes.create">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:nodes.create">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.node_management.create.title')</strong>
                                 <p class="help-block"><small>
@@ -189,7 +189,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:nodes.view">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:nodes.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.node_management.view.title')</strong>
                                 <p class="help-block"><small>
@@ -199,7 +199,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:nodes.allocations">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:nodes.allocations">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.node_management.allocations.title')</strong>
                                 <p class="help-block"><small>
@@ -209,7 +209,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:nodes.delete">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:nodes.delete">
                                 <span class="label label-danger">DELETE</span>
                                 <strong>@lang('base.api.new.node_management.delete.title')</strong>
                                 <p class="help-block"><small>
@@ -251,7 +251,7 @@
                     @if(Auth::user()->isRootAdmin())
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.view">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.server_management.view.title')</strong>
                                 <p class="help-block"><small>
@@ -262,7 +262,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.list">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.server_management.list.title')</strong>
                                 <p class="help-block"><small>
@@ -272,7 +272,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.create">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.create">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.server_management.create.title')</strong>
                                 <p class="help-block"><small>
@@ -282,7 +282,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.config">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.config">
                                 <span class="label label-default">PATCH</span>
                                 <strong>@lang('base.api.new.server_management.config.title')</strong>
                                 <p class="help-block"><small>
@@ -292,7 +292,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.build">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.build">
                                 <span class="label label-default">PATCH</span>
                                 <strong>@lang('base.api.new.server_management.build.title')</strong>
                                 <p class="help-block"><small>
@@ -302,7 +302,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.suspend">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.suspend">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.server_management.suspend.title')</strong>
                                 <p class="help-block"><small>
@@ -312,7 +312,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.unsuspend">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.unsuspend">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.server_management.unsuspend.title')</strong>
                                 <p class="help-block"><small>
@@ -322,7 +322,7 @@
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:servers.delete">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:servers.delete">
                                 <span class="label label-danger">DELETE</span>
                                 <strong>@lang('base.api.new.server_management.delete.title')</strong>
                                 <p class="help-block"><small>
@@ -342,7 +342,7 @@
                     <div class="box-body">
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:services.list">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:services.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.service_management.list.title')</strong>
                                 <p class="help-block"><small>
@@ -353,7 +353,7 @@
                         </div>
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:services.view">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:services.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.service_management.view.title')</strong>
                                 <p class="help-block"><small>
@@ -372,7 +372,7 @@
                     <div class="box-body">
                         <div class="checkbox highlight">
                             <label>
-                                <input name="permissions[]" type="checkbox" value="admin:locations.list">
+                                <input name="adminPermissions[]" type="checkbox" value="admin:locations.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.location_management.list.title')</strong>
                                 <p class="help-block"><small>
