@@ -18,20 +18,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 $(document).ready(function () {
-    $('.server-files').addClass('active');
     const Editor = ace.edit('editor');
     const Modelist = ace.require('ace/ext/modelist')
 
     Editor.setTheme('ace/theme/chrome');
-    Editor.getSession().setMode(Modelist.getModeForPath(Pterodactyl.stat.name).mode);
     Editor.getSession().setUseWrapMode(true);
     Editor.setShowPrintMargin(false);
+
+    if (typeof Pterodactyl !== 'undefined' && typeof Pterodactyl.stat !== 'undefined') {
+        Editor.getSession().setMode(Modelist.getModeForPath(Pterodactyl.stat.name).mode);
+    }
 
     Editor.commands.addCommand({
         name: 'save',
         bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
         exec: function(editor) {
-            save();
+            if ($('#save_file').length) {
+                save();
+            } else if ($('#create_file').length) {
+                create();
+            }
         },
         readOnly: false
     });
@@ -40,6 +46,51 @@ $(document).ready(function () {
         e.preventDefault();
         save();
     });
+
+    $('#create_file').on('click', function (e) {
+        e.preventDefault();
+        create();
+    });
+
+    $('#aceMode').on('change', event => {
+        Editor.getSession().setMode('ace/mode/' + $('#aceMode').val());
+    });
+
+    function create() {
+        if (_.isEmpty($('#file_name').val())) {
+            $.notify({
+                message: 'No filename was passed.'
+            }, {
+                type: 'danger'
+            });
+            return;
+        }
+        $('#create_file').html('<i class="fa fa-spinner fa fa-spin"></i> Creating File').addClass('disabled');
+        $.ajax({
+            type: 'POST',
+            url: Router.route('server.files.save', { server: Pterodactyl.server.uuidShort }),
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+            },
+            data: {
+                file: $('#file_name').val(),
+                contents: Editor.getValue()
+            }
+        }).done(function (data) {
+            window.location.replace(Router.route('server.files.edit', {
+                server: Pterodactyl.server.uuidShort,
+                file: $('#file_name').val(),
+            }));
+        }).fail(function (jqXHR) {
+            $.notify({
+                message: jqXHR.responseText
+            }, {
+                type: 'danger'
+            });
+        }).always(function () {
+            $('#create_file').html('Create File').removeClass('disabled');
+        });
+    }
 
     function save() {
         var fileName = $('input[name="file"]').val();

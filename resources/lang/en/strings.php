@@ -49,4 +49,5 @@ return [
     'primary' => 'Primary',
     'make_primary' => 'Make Primary',
     'none' => 'None',
+    'cancel' => 'Cancel',
 ];

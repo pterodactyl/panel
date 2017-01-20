@@ -122,10 +122,16 @@ class ServerController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('add-files', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         return view('server.files.add', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
             'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/',
         ]);
     }

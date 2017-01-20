@@ -22,6 +22,12 @@ return [
             'save' => 'Save File',
             'return' => 'Return to File Manager',
         ],
+        'add' => [
+            'header' => 'New File',
+            'header_sub' => 'Create a new file on your server.',
+            'name' => 'File Name',
+            'create' => 'Create File',
+        ],
     ],
     'config' => [
         'startup' => [
