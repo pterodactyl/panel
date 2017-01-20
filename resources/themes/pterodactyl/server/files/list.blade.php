@@ -22,8 +22,8 @@
         <tr>
             <th style="width:2%;text-align:center;" class="middle"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files"></i></th>
             <th style="width:55%">@lang('server.files.file_name')</th>
-            <th style="width:15%">@lang('server.files.size')</th>
-            <th style="width:20%">@lang('server.files.last_modified')</th>
+            <th style="width:15%" class="hidden-xs">@lang('server.files.size')</th>
+            <th style="width:20%" class="hidden-xs">@lang('server.files.last_modified')</th>
             <th style="width:8%">
                 <label class="btn btn-primary btn-xs btn-file">
                     Upload <input type="file" id="files_touch_target" style="display: none;"/>
@@ -47,8 +47,8 @@
             <tr data-type="disabled">
                 <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                 <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
-                <td></td>
-                <td></td>
+                <td class="hidden-xs"></td>
+                <td class="hidden-xs"></td>
                 <td></td>
             </tr>
         @endif
@@ -58,8 +58,8 @@
                 <td data-name="{{ rawurlencode($directory['link']) }}">
                     <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a>
                 </td>
-                <td></td>
-                <td></td>
+                <td class="hidden-xs"></td>
+                <td class="hidden-xs"></td>
                 <td></td>
             </tr>
         @endif
@@ -69,8 +69,8 @@
                 <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
                     <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                 </td>
-                <td data-identifier="size">{{ $folder['size'] }}</td>
-                <td data-identifier="modified">
+                <td data-identifier="size" class="hidden-xs">{{ $folder['size'] }}</td>
+                <td data-identifier="modified" class="hidden-xs">
                     <?php $carbon = Carbon::createFromTimestamp($folder['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
                     @if($carbon->diffInMinutes(Carbon::now()) > 60)
                         {{ $carbon->format('m/d/y H:i:s') }}
@@ -80,7 +80,7 @@
                         {{ $carbon->diffForHumans() }}
                     @endif
                 </td>
-                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h"></i></button></td>
+                <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button></td>
             </tr>
         @endforeach
         @foreach ($files as $file)
@@ -146,8 +146,8 @@
                         {{ $file['entry'] }}
                     @endif
                 </td>
-                <td data-identifier="size">{{ $file['size'] }}</td>
-                <td data-identifier="modified">
+                <td data-identifier="size" class="hidden-xs">{{ $file['size'] }}</td>
+                <td data-identifier="modified" class="hidden-xs">
                     <?php $carbon = Carbon::createFromTimestamp($file['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
                     @if($carbon->diffInMinutes(Carbon::now()) > 60)
                         {{ $carbon->format('m/d/y H:i:s') }}
@@ -157,7 +157,7 @@
                         {{ $carbon->diffForHumans() }}
                     @endif
                 </td>
-                <td><button class="btn btn-xxs btn-default" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h"></i></button></td>
+                <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button></td>
             </tr>
         @endforeach
     </tbody>

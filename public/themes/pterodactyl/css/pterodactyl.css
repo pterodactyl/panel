@@ -75,7 +75,7 @@ code {
 }
 
 .hasFileHover * {
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
 td.has-progress {
@@ -102,4 +102,14 @@ td.has-progress {
 
 .use-pointer {
     cursor: pointer !important;
+}
+
+.input-loader {
+    display: none;
+    position:relative;
+    top: -23px;
+    float: right;
+    right: 5px;
+    color: #cccccc;
+    height: 0;
 }

@@ -83,7 +83,7 @@ class ContextMenuClass {
     }
 
     rightClick() {
-        $('[data-action="toggleMenu"]').on('mousedown', () => {
+        $('[data-action="toggleMenu"]').on('mousedown', event => {
             event.preventDefault();
             this.showMenu(event);
         });
@@ -173,8 +173,12 @@ class ContextMenuClass {
             });
         }
 
-        $(window).on('click', () => {
-            $(menu).remove();
+        $(window).unbind().on('click', event => {
+            if($(event.target).is('.disable-menu-hide')) {
+                event.preventDefault();
+                return;
+            }
+            $(menu).unbind().remove();
             if(!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
         });
     }
