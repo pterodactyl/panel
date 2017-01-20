@@ -18,10 +18,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 (function initUploader() {
+    var uploadInProgress = false;
     var notifyUploadSocketError = false;
     uploadSocket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/upload/' + Pterodactyl.server.uuid, {
         'query': 'token=' + Pterodactyl.server.daemonSecret,
     });
+
+    window.onbeforeunload = function () {
+        if (uploadInProgress) {
+            return "An upload is in progress. Navigating away will abort this upload, are you sure you want to continue?";
+        }
+    }
 
     uploadSocket.io.on('connect_error', function (err) {
         if(typeof notifyUploadSocketError !== 'object') {
@@ -77,6 +84,7 @@
     });
 
     siofu.addEventListener('start', function (event) {
+        uploadInProgress = true;
         event.file.meta.path = $('#headerTableRow').attr('data-currentdir');
         event.file.meta.identifier = Math.random().toString(36).slice(2);
 
@@ -85,7 +93,7 @@
             <td>' + event.file.name + '</td> \
             <td colspan=2">&nbsp;</td> \
         </tr><tr> \
-            <td colspan="4" class="has-progress"> \
+            <td colspan="5" class="has-progress"> \
                 <div class="progress progress-table-bottom active"> \
                     <div class="progress-bar progress-bar-info prog-bar-' + event.file.meta.identifier +'" style="width: 0%"></div> \
                 </div> \
@@ -104,7 +112,8 @@
     });
 
     // Do something when a file is uploaded:
-    siofu.addEventListener('complete', function(event){
+    siofu.addEventListener('complete', function(event) {
+        uploadInProgress = false;
         if (!event.success) {
             $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
             $.notify({
@@ -116,7 +125,8 @@
         }
     });
 
-    siofu.addEventListener('error', function(event){
+    siofu.addEventListener('error', function(event) {
+        uploadInProgress = false;
         console.error(event);
         $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
         $.notify({
