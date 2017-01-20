@@ -24,7 +24,11 @@
             <th style="width:55%">@lang('server.files.file_name')</th>
             <th style="width:15%">@lang('server.files.size')</th>
             <th style="width:20%">@lang('server.files.last_modified')</th>
-            <th style="width:8%"></th>
+            <th style="width:8%">
+                <label class="btn btn-primary btn-xs btn-file">
+                    Upload <input type="file" id="files_touch_target" style="display: none;"/>
+                </label>
+            </th>
         </tr>
         <tr id="headerTableRow" data-currentdir="{{ $directory['header'] }}">
             <th><i class="fa fa-folder-open"></i></th>

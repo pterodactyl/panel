@@ -18,17 +18,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 (function initUploader() {
-    var uploadInProgress = false;
     var notifyUploadSocketError = false;
     uploadSocket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/upload/' + Pterodactyl.server.uuid, {
         'query': 'token=' + Pterodactyl.server.daemonSecret,
     });
-
-    window.onbeforeunload = function () {
-        if (uploadInProgress) {
-            return "An upload is in progress. Navigating away will abort this upload, are you sure you want to continue?";
-        }
-    }
 
     uploadSocket.io.on('connect_error', function (err) {
         if(typeof notifyUploadSocketError !== 'object') {
@@ -42,7 +35,7 @@
     });
 
     uploadSocket.on('error', err => {
-        siofu.destroy();
+        Siofu.destroy();
         console.error(err);
     });
 
@@ -53,8 +46,12 @@
         }
     });
 
-    var siofu = new SocketIOFileUpload(uploadSocket);
-    siofu.listenOnDrop(document.getElementById("load_files"));
+    window.Siofu = new SocketIOFileUpload(uploadSocket);
+    Siofu.listenOnDrop(document.getElementById("load_files"));
+
+    if (document.getElementById("files_touch_target")) {
+        Siofu.listenOnInput(document.getElementById("files_touch_target"));
+    }
 
     window.addEventListener('dragover', function (event) {
         event.preventDefault();
@@ -83,8 +80,10 @@
         }
     });
 
-    siofu.addEventListener('start', function (event) {
-        uploadInProgress = true;
+    Siofu.addEventListener('start', function (event) {
+        window.onbeforeunload = function () {
+            return 'A file upload in in progress, are you sure you want to continue?';
+        };
         event.file.meta.path = $('#headerTableRow').attr('data-currentdir');
         event.file.meta.identifier = Math.random().toString(36).slice(2);
 
@@ -102,7 +101,10 @@
         ');
     });
 
-    siofu.addEventListener('progress', function(event) {
+    Siofu.addEventListener('progress', function(event) {
+        window.onbeforeunload = function () {
+            return 'A file upload in in progress, are you sure you want to continue?';
+        };
         var percent = event.bytesLoaded / event.file.size * 100;
         if (percent >= 100) {
             $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-success').parent().removeClass('active');
@@ -112,8 +114,8 @@
     });
 
     // Do something when a file is uploaded:
-    siofu.addEventListener('complete', function(event) {
-        uploadInProgress = false;
+    Siofu.addEventListener('complete', function(event) {
+        window.onbeforeunload = function () {};
         if (!event.success) {
             $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
             $.notify({
@@ -125,8 +127,8 @@
         }
     });
 
-    siofu.addEventListener('error', function(event) {
-        uploadInProgress = false;
+    Siofu.addEventListener('error', function(event) {
+        window.onbeforeunload = function () {};
         console.error(event);
         $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
         $.notify({

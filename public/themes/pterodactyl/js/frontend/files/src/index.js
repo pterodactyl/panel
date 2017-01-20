@@ -49,6 +49,10 @@ class FileManager {
                 }
             });
             $('#internal_alert').slideUp();
+
+            if (typeof Siofu === 'object') {
+                Siofu.listenOnInput(document.getElementById("files_touch_target"));
+            }
         }).fail(jqXHR => {
             this.loader(false);
             if (_.isFunction(next)) {
