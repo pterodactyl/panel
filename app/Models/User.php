@@ -150,9 +150,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Return true or false depending on wether the user is root admin or not.
      *
-     * @return boolean the user is root admin
+     * @return bool the user is root admin
      */
-    public function isRootAdmin() {
+    public function isRootAdmin()
+    {
         return $this->root_admin === 1;
     }
 }
