@@ -51,14 +51,32 @@ class ServerRoutes
                 'uses' => 'Server\ServerController@getSettings',
             ]);
 
-            $router->post('/settings/sftp', [
+            $router->get('/settings/databases', [
+                'as' => 'server.settings.databases',
+                'uses' => 'Server\ServerController@getDatabases',
+            ]);
+
+            $router->get('/settings/sftp', [
                 'as' => 'server.settings.sftp',
+                'uses' => 'Server\ServerController@getSFTP',
+            ]);
+
+            $router->post('/settings/sftp', [
                 'uses' => 'Server\ServerController@postSettingsSFTP',
             ]);
 
-            $router->post('/settings/startup', [
+            $router->get('/settings/startup', [
                 'as' => 'server.settings.startup',
+                'uses' => 'Server\ServerController@getStartup',
+            ]);
+
+            $router->post('/settings/startup', [
                 'uses' => 'Server\ServerController@postSettingsStartup',
+            ]);
+
+            $router->get('/settings/allocation', [
+                'as' => 'server.settings.allocation',
+                'uses' => 'Server\ServerController@getAllocation',
             ]);
 
             // File Manager Routes
@@ -153,6 +171,7 @@ class ServerRoutes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
                 // Returns Server Status
                 $router->get('status', [
+                    'as' => 'server.ajax.status',
                     'uses' => 'Server\AjaxController@getStatus',
                 ]);
 

@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             $response = response()->json([
                 'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.',
-            ], ($this->isHttpException($exception)) ? $e->getStatusCode() : 500);
+            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500);
 
             parent::report($exception);
         }

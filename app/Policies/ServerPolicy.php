@@ -499,6 +499,30 @@ class ServerPolicy
     }
 
     /**
+     * Check if user has permission to view server allocations.
+     *
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
+     * @return bool
+     */
+    public function viewAllocation(User $user, Server $server)
+    {
+        return $this->checkPermission($user, $server, 'view-allocation');
+    }
+
+    /**
+     * Check if user has permission to set the default allocation.
+     *
+     * @param  \Pterodactyl\Models\User   $user
+     * @param  \Pterodactyl\Models\Server $server
+     * @return bool
+     */
+    public function setAllocation(User $user, Server $server)
+    {
+        return $this->checkPermission($user, $server, 'set-allocation');
+    }
+
+    /**
      * Checks if the user has the given permission on/for the server.
      *
      * @param \Pterodactyl\Models\User   $user

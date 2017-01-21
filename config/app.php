@@ -159,6 +159,7 @@ return [
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
+        Lord\Laroute\LarouteServiceProvider::class,
 
     ],
 

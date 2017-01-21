@@ -75,6 +75,7 @@ class AuthRoutes
 
             // Handle Verification
             $router->post('password/reset', [
+                'as' => 'auth.reset.post',
                 'uses' => 'Auth\ResetPasswordController@reset',
             ]);
         });

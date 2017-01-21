@@ -79,7 +79,9 @@ class SecurityController extends Controller
     public function setTotp(Request $request)
     {
         if (! $request->has('token')) {
-            return response(null, 500);
+            return response()->json([
+                'error' => 'Request is missing token parameter.',
+            ], 500);
         }
 
         $user = $request->user();
@@ -101,7 +103,7 @@ class SecurityController extends Controller
         if (! $request->has('token')) {
             Alert::danger('Missing required `token` field in request.')->flash();
 
-            return redirect()->route('account.totp');
+            return redirect()->route('account.security');
         }
 
         $user = $request->user();

@@ -18,7 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 $(window).load(function () {
-    socket.on('console', function (data) {
+    Socket.on('console', function (data) {
         if (data.line.indexOf('You need to agree to the EULA in order to run the server') > -1) {
             swal({
                 title: 'EULA Acceptance',

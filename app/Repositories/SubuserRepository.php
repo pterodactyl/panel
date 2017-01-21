@@ -133,10 +133,15 @@ class SubuserRepository
             // Determine if this user exists or if we need to make them an account.
             $user = Models\User::where('email', $data['email'])->first();
             if (! $user) {
-                $password = str_random(16);
                 try {
                     $repo = new UserRepository;
-                    $uid = $repo->create($data['email'], $password);
+                    $uid = $repo->create([
+                        'email' => $data['email'],
+                        'username' => substr(str_replace('@', '', $data['email']), 0, 8),
+                        'name_first' => 'John',
+                        'name_last' => 'Doe',
+                        'root_admin' => false,
+                    ]);
                     $user = Models\User::findOrFail($uid);
                 } catch (\Exception $ex) {
                     throw $ex;
