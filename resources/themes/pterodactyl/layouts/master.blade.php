@@ -123,7 +123,7 @@
                                 <i class="fa fa-lock"></i> <span>@lang('navigation.account.security_controls')</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() !== 'account.api' ?: 'active' }}">
+                        <li class="{{ (Route::currentRouteName() !== 'account.api' && Route::currentRouteName() !== 'account.api.new') ?: 'active' }}">
                             <a href="{{ route('account.api')}}">
                                 <i class="fa fa-code"></i> <span>@lang('navigation.account.api_access')</span>
                             </a>
@@ -157,7 +157,11 @@
                                     <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
                                 </ul>
                             </li>
-                            <li>
+                            <li
+                                @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
+                                    class="active"
+                                @endif
+                            >
                                 <a href="{{ route('server.subusers', $server->uuidShort)}}">
                                     <i class="fa fa-users"></i> <span>Subusers</span>
                                 </a>

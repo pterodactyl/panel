@@ -89,14 +89,14 @@
                     <div class="box-title">@lang('base.api.new.base.title')</div>
                 </div>
                 <div class="box-body">
-                    <div class="checkbox highlight">
+                    <div class="checkbox">
                         <label>
                             <input name="permissions[]" type="checkbox" value="user:*">
                             <span class="label label-default">GET</span>
                             <strong>@lang('base.api.new.base.information.title')</strong>
-                            <p class="help-block"><small>
+                            <p class="text-muted small">
                                 @lang('base.api.new.base.information.description')
-                            </small><p>
+                            </p>
                         </label>
                     </div>
                 </div>
@@ -107,54 +107,54 @@
                         <div class="box-title">@lang('base.api.new.user_management.title')</div>
                     </div>
                     <div class="box-body">
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:users.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.user_management.list.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.user_management.list.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:users.create">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.user_management.create.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.user_management.create.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:users.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.user_management.view.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.user_management.view.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:users.update">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.user_management.update.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.user_management.update.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:users.delete">
                                 <span class="label label-danger">DELETE</span>
                                 <strong>@lang('base.api.new.user_management.delete.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.user_management.delete.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                     </div>
@@ -164,54 +164,54 @@
                         <div class="box-title">@lang('base.api.new.node_management.title')</div>
                     </div>
                     <div class="box-body">
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:nodes.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.node_management.list.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.node_management.list.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:nodes.create">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.node_management.create.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.node_management.create.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:nodes.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.node_management.view.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.node_management.view.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:nodes.allocations">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.node_management.allocations.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.node_management.allocations.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:nodes.delete">
                                 <span class="label label-danger">DELETE</span>
                                 <strong>@lang('base.api.new.node_management.delete.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.node_management.delete.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                     </div>
@@ -229,9 +229,9 @@
                             <input name="permissions[]" type="checkbox" value="user:server">
                             <span class="label label-default">GET</span>
                             <strong>@lang('base.api.new.server_management.server.title')</strong>
-                            <p class="help-block"><small>
+                            <p class="text-muted small">
                                 @lang('base.api.new.server_management.server.description')
-                            </small><p>
+                            </p>
                         </label>
                     </div>
                     <div class="checkbox">
@@ -239,9 +239,9 @@
                             <input name="permissions[]" type="checkbox" value="user:server.power">
                             <span class="label label-default">GET</span>
                             <strong>@lang('base.api.new.server_management.power.title')</strong>
-                            <p class="help-block"><small>
+                            <p class="text-muted small">
                                 @lang('base.api.new.server_management.power.description')
-                            </small><p>
+                            </p>
                         </label>
                     </div>
                     @if(Auth::user()->isRootAdmin())
@@ -250,10 +250,10 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.server_management.view.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     @lang('base.api.new.server_management.view.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -261,9 +261,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.server_management.list.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.list.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -271,9 +271,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.create">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.server_management.create.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.create.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -281,9 +281,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.config">
                                 <span class="label label-default">PATCH</span>
                                 <strong>@lang('base.api.new.server_management.config.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.config.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -291,9 +291,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.build">
                                 <span class="label label-default">PATCH</span>
                                 <strong>@lang('base.api.new.server_management.build.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.build.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -301,9 +301,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.suspend">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.server_management.suspend.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.suspend.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -311,9 +311,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.unsuspend">
                                 <span class="label label-default">POST</span>
                                 <strong>@lang('base.api.new.server_management.unsuspend.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.unsuspend.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                         <div class="checkbox">
@@ -321,9 +321,9 @@
                                 <input name="adminPermissions[]" type="checkbox" value="admin:servers.delete">
                                 <span class="label label-danger">DELETE</span>
                                 <strong>@lang('base.api.new.server_management.delete.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     @lang('base.api.new.server_management.delete.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                     @endif
@@ -335,26 +335,26 @@
                         <div class="box-title">@lang('base.api.new.service_management.title')</div>
                     </div>
                     <div class="box-body">
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:services.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.service_management.list.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     @lang('base.api.new.service_management.list.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:services.view">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.service_management.view.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     @lang('base.api.new.service_management.view.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                     </div>
@@ -364,15 +364,15 @@
                         <div class="box-title">@lang('base.api.new.location_management.title')</div>
                     </div>
                     <div class="box-body">
-                        <div class="checkbox highlight">
+                        <div class="checkbox">
                             <label>
                                 <input name="adminPermissions[]" type="checkbox" value="admin:locations.list">
                                 <span class="label label-default">GET</span>
                                 <strong>@lang('base.api.new.location_management.list.title')</strong>
-                                <p class="help-block"><small>
+                                <p class="text-muted small">
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     @lang('base.api.new.location_management.list.description')
-                                </small><p>
+                                </p>
                             </label>
                         </div>
                     </div>

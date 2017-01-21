@@ -24,7 +24,7 @@ return [
             'header' => 'API Access',
             'header_sub' => 'Manage your API access keys.',
             'list' => 'API Keys',
-            'create_new' => 'Create new API key',
+            'create_new' => 'Create New API key',
         ],
         'new' => [
             'header' => 'New API Key',
@@ -32,7 +32,7 @@ return [
             'form_title' => 'Details',
             'descriptive_memo' => [
                 'title' => 'Descriptive Memo',
-                'description' => 'Enter a breif description of what this API key will be used for.'
+                'description' => 'Enter a brief description of what this API key will be used for.'
             ],
             'allowed_ips' => [
                 'title' => 'Allowed IPs',
@@ -103,7 +103,7 @@ return [
                 ],
                 'view' => [
                     'title' => 'Show Single Server',
-                    'description' => 'Allows viewing details about a specific server including the daemon_token as current process information.',
+                    'description' => 'Allows viewing details about a specific server including the daemon_token as well as current process information.',
                 ],
                 'list' => [
                     'title' => 'List Servers',
