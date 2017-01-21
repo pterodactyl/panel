@@ -50,4 +50,5 @@ return [
     'make_primary' => 'Make Primary',
     'none' => 'None',
     'cancel' => 'Cancel',
+    'created_at' => 'Created At',
 ];

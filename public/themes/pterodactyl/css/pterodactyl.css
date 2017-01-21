@@ -113,3 +113,11 @@ td.has-progress {
     color: #cccccc;
     height: 0;
 }
+
+.box-header > .form-group {
+    margin-bottom: 0;
+}
+
+.box-header > .form-group > div > p.small {
+    margin: 0;
+}
