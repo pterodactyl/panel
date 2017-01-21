@@ -12,6 +12,11 @@ return [
         'configure' => 'Configure Permissions',
         'list' => 'Accounts with Access',
         'add' => 'Add New Subuser',
+        'update' => 'Update Subuser',
+        'edit' => [
+            'header' => 'Edit Subuser',
+            'header_sub' => 'Modify user\'s access to server.'
+        ],
         'new' => [
             'header' => 'Add New User',
             'header_sub' => 'Add a new user with permissions to this server.',
@@ -33,11 +38,11 @@ return [
                 'description' => 'Allows user to stop the server.',
             ],
             'restart' => [
-                'title' => 'Stop Server',
+                'title' => 'Restart Server',
                 'description' => 'Allows user to restart the server.',
             ],
             'kill' => [
-                'title' => 'Stop Server',
+                'title' => 'Kill Server',
                 'description' => 'Allows user to kill the server process.',
             ],
             'command' => [

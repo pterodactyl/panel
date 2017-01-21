@@ -24,18 +24,19 @@
 @endsection
 
 @section('content-header')
-    <h1>@lang('server.users.new.header')<small>@lang('server.users.new.header_sub')</small></h1>
+    <h1>@lang('server.users.edit.header')<small>@lang('server.users.edit.header_sub')</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
         <li><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></li>
         <li><a href="{{ route('server.subusers', $server->uuidShort) }}">@lang('navigation.server.subusers')</a></li>
-        <li class="active">@lang('server.users.add')</li>
+        <li class="active">@lang('server.users.update')</li>
     </ol>
 @endsection
 
 @section('content')
-<?php $oldInput = array_flip(is_array(old('permissions')) ? old('permissions') : []) ?>
-<form action="{{ route('server.subusers.new', $server->uuidShort) }}" method="POST">
+@can('edit-subuser', $server)
+<form action="{{ route('server.subusers.view', [ 'uuid' => $server->uuidShort, 'id' => md5($subuser->id) ]) }}" method="POST">
+@endcan
     <div class="row">
         <div class="col-sm-12">
             <div class="box box-primary">
@@ -44,18 +45,19 @@
                         <label class="control-label">@lang('server.users.new.email')</label>
                         <div>
                             {!! csrf_field() !!}
-                            <input type="email" class="form-control" name="email" />
-                            <p class="text-muted small">@lang('server.users.new.email_help')</p>
+                            <input type="email" class="form-control" disabled value="{{ $subuser->a_userEmail }}" />
                         </div>
                     </div>
                 </div>
-                <div class="box-body">
-                    <div class="btn-group pull-left">
-                        <a id="selectAllCheckboxes" class="btn btn-sm btn-default">@lang('strings.select_all')</a>
-                        <a id="unselectAllCheckboxes" class="btn btn-sm btn-default">@lang('strings.select_none')</a>
+                @can('edit-subuser', $server)
+                    <div class="box-body">
+                        <div class="btn-group pull-left">
+                            <a id="selectAllCheckboxes" class="btn btn-sm btn-default">@lang('strings.select_all')</a>
+                            <a id="unselectAllCheckboxes" class="btn btn-sm btn-default">@lang('strings.select_none')</a>
+                        </div>
+                        <input type="submit" name="submit" value="@lang('server.users.update')" class="pull-right btn btn-sm btn-primary" />
                     </div>
-                    <input type="submit" name="submit" value="@lang('server.users.add')" class="pull-right btn btn-sm btn-primary" />
-                </div>
+                @endcan
             </div>
         </div>
     </div>
@@ -71,35 +73,35 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['power-start']))checked="checked"@endif value="power-start" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['power-start']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="power-start" />
                                     <strong>@lang('server.users.new.start.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.start.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['power-stop']))checked="checked"@endif value="power-stop" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['power-stop']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="power-stop" />
                                     <strong>@lang('server.users.new.stop.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.stop.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['power-restart']))checked="checked"@endif value="power-restart" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['power-restart']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="power-restart" />
                                     <strong>@lang('server.users.new.restart.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.restart.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['power-kill']))checked="checked"@endif value="power-kill" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['power-kill']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="power-kill" />
                                     <strong>@lang('server.users.new.kill.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.kill.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['send-command']))checked="checked"@endif value="send-command" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['send-command']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="send-command" />
                                     <strong>@lang('server.users.new.command.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.command.description')</p>
                                 </label>
@@ -117,35 +119,35 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['list-subusers']))checked="checked"@endif value="list-subusers" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['list-subusers']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="list-subusers" />
                                     <strong>@lang('server.users.new.list_subusers.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.list_subusers.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['view-subuser']))checked="checked"@endif value="view-subuser" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['view-subuser']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-subuser" />
                                     <strong>@lang('server.users.new.view_subuser.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.view_subuser.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['edit-subuser']))checked="checked"@endif value="edit-subuser" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['edit-subuser']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="edit-subuser" />
                                     <strong>@lang('server.users.new.edit_subuser.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.edit_subuser.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['create-subuser']))checked="checked"@endif value="create-subuser" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['create-subuser']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="create-subuser" />
                                     <strong>@lang('server.users.new.create_subuser.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.create_subuser.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['delete-subuser']))checked="checked"@endif value="delete-subuser" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['delete-subuser']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="delete-subuser" />
                                     <strong>@lang('server.users.new.delete_subuser.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.delete_subuser.description')</p>
                                 </label>
@@ -163,21 +165,21 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['set-connection']))checked="checked"@endif value="set-connection" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['set-connection']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="set-connection" />
                                     <strong>@lang('server.users.new.set_connection.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.set_connection.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['view-startup']))checked="checked"@endif value="view-startup" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['view-startup']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-startup" />
                                     <strong>@lang('server.users.new.view_startup.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.view_startup.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['edit-startup']))checked="checked"@endif value="edit-startup" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['edit-startup']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="edit-startup" />
                                     <strong>@lang('server.users.new.edit_startup.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.edit_startup.description')</p>
                                 </label>
@@ -195,14 +197,14 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['view-sftp']))checked="checked"@endif value="view-sftp" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['view-sftp']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-sftp" />
                                     <strong>@lang('server.users.new.view_sftp.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.view_sftp.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['view-sftp-password']))checked="checked"@endif value="view-sftp-password" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['view-sftp-password']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-sftp-password" />
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     <strong>@lang('server.users.new.view_sftp_password.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.view_sftp_password.description')</p>
@@ -210,7 +212,7 @@
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['reset-sftp']))checked="checked"@endif value="reset-sftp" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['reset-sftp']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="reset-sftp" />
                                     <strong>@lang('server.users.new.reset_sftp.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.reset_sftp.description')</p>
                                 </label>
@@ -231,70 +233,70 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['list-files']))checked="checked"@endif value="list-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['list-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="list-files" />
                                     <strong>@lang('server.users.new.list_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.list_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['edit-files']))checked="checked"@endif value="edit-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['edit-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="edit-files" />
                                     <strong>@lang('server.users.new.edit_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.edit_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['save-files']))checked="checked"@endif value="save-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['save-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="save-files" />
                                     <strong>@lang('server.users.new.save_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.save_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['move-files']))checked="checked"@endif value="move-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['move-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="move-files" />
                                     <strong>@lang('server.users.new.move_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.move_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['copy-files']))checked="checked"@endif value="copy-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['copy-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="copy-files" />
                                     <strong>@lang('server.users.new.copy_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.copy_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['compress-files']))checked="checked"@endif value="compress-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['compress-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="compress-files" />
                                     <strong>@lang('server.users.new.compress_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.compress_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['decompress-files']))checked="checked"@endif value="decompress-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['decompress-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="decompress-files" />
                                     <strong>@lang('server.users.new.decompress_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.decompress_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['create-files']))checked="checked"@endif value="create-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['create-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="create-files" />
                                     <strong>@lang('server.users.new.create_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.create_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['upload-files']))checked="checked"@endif value="upload-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['upload-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="upload-files" />
                                     <strong>@lang('server.users.new.upload_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.upload_files.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['delete-files']))checked="checked"@endif value="delete-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['delete-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="delete-files" />
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     <strong>@lang('server.users.new.delete_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.delete_files.description')</p>
@@ -302,7 +304,7 @@
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['download-files']))checked="checked"@endif value="download-files" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['download-files']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="download-files" />
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     <strong>@lang('server.users.new.download_files.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.download_files.description')</p>
@@ -321,42 +323,42 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['list-tasks']))checked="checked"@endif value="list-tasks" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['list-tasks']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="list-tasks" />
                                     <strong>@lang('server.users.new.list_tasks.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.list_tasks.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['view-task']))checked="checked"@endif value="view-task" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['view-task']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-task" />
                                     <strong>@lang('server.users.new.view_task.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.view_task.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['toggle-task']))checked="checked"@endif value="toggle-task" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['toggle-task']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="toggle-task" />
                                     <strong>@lang('server.users.new.toggle_task.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.toggle_task.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['queue-task']))checked="checked"@endif value="queue-task" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['queue-task']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="queue-task" />
                                     <strong>@lang('server.users.new.queue_task.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.queue_task.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['create-task']))checked="checked"@endif value="create-task" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['create-task']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="create-task" />
                                     <strong>@lang('server.users.new.create_task.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.create_task.description')</p>
                                 </label>
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['delete-task']))checked="checked"@endif value="delete-task" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['delete-task']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="delete-task" />
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     <strong>@lang('server.users.new.delete_task.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.delete_task.description')</p>
@@ -375,7 +377,7 @@
                         <div class="box-body">
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['view-databases']))checked="checked"@endif value="view-databases" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['view-databases']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="view-databases" />
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     <strong>@lang('server.users.new.view_databases.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.view_databases.description')</p>
@@ -383,7 +385,7 @@
                             </div>
                             <div class="checkbox">
                                 <label>
-                                    <input name="permissions[]" type="checkbox" @if(isset($oldInput['reset-db-password']))checked="checked"@endif value="reset-db-password" />
+                                    <input name="permissions[]" type="checkbox" @if(isset($permissions['reset-db-password']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="reset-db-password" />
                                     <span class="label label-danger">@lang('strings.danger')</span>
                                     <strong>@lang('server.users.new.reset_db_password.title')</strong>
                                     <p class="text-muted small">@lang('server.users.new.reset_db_password.description')</p>
@@ -395,7 +397,9 @@
             </div>
         </div>
     </div>
+@can('edit-subuser', $server)
 </form>
+@endcan
 @endsection
 
 @section('footer-scripts')
