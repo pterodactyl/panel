@@ -66,7 +66,7 @@
                                 @can('delete-subuser', $server)
                                     <td class="text-center middle">
                                         <a href="#/delete/{{ md5($user->id) }}" data-action="delete" data-id="{{ md5($user->id) }}">
-                                            <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button>
+                                            <button class="btn btn-xs btn-danger">@lang('strings.revoke')</button>
                                         </a>
                                     </td>
                                 @endcan
