@@ -84,3 +84,8 @@
     </div>
 </div>
 @endsection
+
+@section('footer-scripts')
+    @parent
+    {!! Theme::js('js/frontend/server.socket.js') !!}
+@endsection

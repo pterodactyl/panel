@@ -28,6 +28,7 @@ use DB;
 use Log;
 use Auth;
 use Alert;
+use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -51,10 +52,16 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('list-subusers', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         return view('server.users.index', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
             'subusers' => Models\Subuser::select('subusers.*', 'users.email', 'users.username')
                 ->join('users', 'users.id', '=', 'subusers.user_id')
                 ->where('server_id', $server->id)
@@ -66,6 +73,12 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('view-subuser', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         $subuser = Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
             ->join('users', 'users.id', '=', 'subusers.user_id')
@@ -87,7 +100,7 @@ class SubuserController extends Controller
 
         return view('server.users.view', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
             'subuser' => $subuser,
             'permissions' => $permissions,
         ]);
@@ -137,10 +150,16 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('create-subuser', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         return view('server.users.new', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
         ]);
     }
 

@@ -400,6 +400,7 @@
 
 @section('footer-scripts')
     @parent
+    {!! Theme::js('js/frontend/server.socket.js') !!}
     <script type="text/javascript">
         $(document).ready(function () {
             $('#selectAllCheckboxes').on('click', function () {
