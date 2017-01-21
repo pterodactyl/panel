@@ -33,6 +33,8 @@ A huge thanks to [PhraseApp](https://phraseapp.com) who provide us the software 
 
 Ace Editor - [license](https://github.com/ajaxorg/ace/blob/master/LICENSE) - [homepage](https://ace.c9.io)
 
+AdminLTE - [license](https://github.com/almasaeed2010/AdminLTE/blob/master/LICENSE) - [homepage](https://almsaeedstudio.com)
+
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
 
 Async.js - [license](https://github.com/caolan/async/blob/master/LICENSE) - [homepage](https://github.com/caolan/async/)
@@ -57,7 +59,11 @@ jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/maste
 
 Lodash - [license](https://github.com/lodash/lodash/blob/master/LICENSE) - [homepage](https://lodash.com/)
 
+Select2 - [license](https://github.com/select2/select2/blob/master/LICENSE.md) - [homepage](https://select2.github.io)
+
 Socket.io - [license](https://github.com/socketio/socket.io/blob/master/LICENSE) - [homepage](http://socket.io)
+
+Socket.io File Upload - [license](https://github.com/vote539/socketio-file-upload/blob/master/server.js#L1-L27) - [homepage](https://github.com/vote539/socketio-file-upload)
 
 SweetAlert - [license](https://github.com/t4t5/sweetalert/blob/master/LICENSE) - [homepage](http://t4t5.github.io/sweetalert/)
 

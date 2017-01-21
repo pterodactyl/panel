@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
 * Users can now have a username as well as client name assigned to their account.
 * Ability to create a node through the CLI using `pterodactyl:node` as well as locations via `pterodactyl:location`.
+* New theme (AdminLTE) for front-end with tweaks to backend files to work properly with it.
 
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
