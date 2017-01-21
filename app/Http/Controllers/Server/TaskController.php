@@ -26,6 +26,7 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
 use Alert;
+use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Repositories;
@@ -44,14 +45,20 @@ class TaskController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('list-tasks', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         return view('server.tasks.index', [
             'server' => $server,
-            'node' => Models\Node::findOrFail($server->node),
+            'node' => $node,
             'tasks' => Models\Task::where('server', $server->id)->get(),
             'actions' => [
-                'command' => 'Send Command',
-                'power' => 'Set Power Status',
+                'command' => trans('server.tasks.actions.command'),
+                'power' => trans('server.tasks.actions.power'),
             ],
         ]);
     }
@@ -60,10 +67,15 @@ class TaskController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('create-task', $server);
+        $node = Models\Node::find($server->node);
 
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
         return view('server.tasks.new', [
             'server' => $server,
-            'node' => Models\Node::findOrFail($server->node),
+            'node' => $node,
         ]);
     }
 
@@ -77,8 +89,9 @@ class TaskController extends Controller
             $repo->create($server->id, $request->except([
                 '_token',
             ]));
+            return redirect()->route('server.tasks', $uuid);
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('server.tasks', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('server.tasks.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
@@ -86,19 +99,7 @@ class TaskController extends Controller
             Alert::danger('An unknown error occured while attempting to create this task.')->flash();
         }
 
-        return redirect()->route('server.tasks', $uuid);
-    }
-
-    public function getView(Request $request, $uuid, $id)
-    {
-        $server = Models\Server::getByUUID($uuid);
-        $this->authorize('view-task', $server);
-
-        return view('server.tasks.view', [
-            'server' => $server,
-            'node' => Models\Node::findOrFail($server->node),
-            'task' => Models\Task::where('id', $id)->where('server', $server->id)->firstOrFail(),
-        ]);
+        return redirect()->route('server.tasks.new', $uuid);
     }
 
     public function deleteTask(Request $request, $uuid, $id)

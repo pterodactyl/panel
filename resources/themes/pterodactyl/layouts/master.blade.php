@@ -166,11 +166,15 @@
                                     <i class="fa fa-users"></i> <span>Subusers</span>
                                 </a>
                             </li>
-                            <li>
+                            <li
+                                @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
+                                    class="active"
+                                @endif
+                            >
                                 <a href="{{ route('server.tasks', $server->uuidShort)}}">
                                     <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
                                     <span class="pull-right-container">
-                                        <span class="label label-primary pull-right">4</span>
+                                        <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Task::select('id')->where('server', $server->id)->where('active', 1)->count() }}</span>
                                     </span>
                                 </a>
                             </li>

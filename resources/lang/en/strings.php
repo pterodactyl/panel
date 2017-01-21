@@ -51,4 +51,12 @@ return [
     'none' => 'None',
     'cancel' => 'Cancel',
     'created_at' => 'Created At',
+    'action' => 'Action',
+    'data' => 'Data',
+    'queued' => 'Queued',
+    'last_run' => 'Last Run',
+    'next_run' => 'Next Run',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'delete' => 'Delete',
 ];
