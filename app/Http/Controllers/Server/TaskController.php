@@ -73,6 +73,7 @@ class TaskController extends Controller
             'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
             'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
         ]);
+
         return view('server.tasks.new', [
             'server' => $server,
             'node' => $node,
@@ -89,6 +90,7 @@ class TaskController extends Controller
             $repo->create($server->id, $request->except([
                 '_token',
             ]));
+
             return redirect()->route('server.tasks', $uuid);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.tasks.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();

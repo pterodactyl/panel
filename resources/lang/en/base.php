@@ -32,11 +32,11 @@ return [
             'form_title' => 'Details',
             'descriptive_memo' => [
                 'title' => 'Descriptive Memo',
-                'description' => 'Enter a brief description of what this API key will be used for.'
+                'description' => 'Enter a brief description of what this API key will be used for.',
             ],
             'allowed_ips' => [
                 'title' => 'Allowed IPs',
-                'description' => 'Enter a line delimitated list of IPs that are allowed to access the API using this key. CIDR notation is allowed. Leave blank to allow any IP.'
+                'description' => 'Enter a line delimitated list of IPs that are allowed to access the API using this key. CIDR notation is allowed. Leave blank to allow any IP.',
             ],
             'base' => [
                 'title' => 'Base Information',

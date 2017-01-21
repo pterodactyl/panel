@@ -71,6 +71,7 @@ class AdminAuthenticate
 
         // @TODO: eventually update admin themes
         Theme::set('default');
+
         return $next($request);
     }
 }

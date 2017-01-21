@@ -46,7 +46,7 @@ return [
         'update' => 'Update Subuser',
         'edit' => [
             'header' => 'Edit Subuser',
-            'header_sub' => 'Modify user\'s access to server.'
+            'header_sub' => 'Modify user\'s access to server.',
         ],
         'new' => [
             'header' => 'Add New User',
@@ -255,7 +255,7 @@ return [
             'header_sub' => 'Control the IPs and ports available on this server.',
             'available' => 'Available Allocations',
             'help' => 'Allocation Help',
-            'help_text' => 'The list to the left includes all available IPs and ports that are open for your server to use for incoming connections.'
+            'help_text' => 'The list to the left includes all available IPs and ports that are open for your server to use for incoming connections.',
         ],
     ],
 ];
