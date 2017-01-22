@@ -90,7 +90,7 @@ class UserRepository
                 'username' => $data['username'],
                 'name_first' => $data['name_first'],
                 'name_last' => $data['name_last'],
-                'password' => Hash::make((empty($data['password'])) ? str_random(30) : $password),
+                'password' => Hash::make((empty($data['password'])) ? str_random(30) : $data['password']),
                 'root_admin' => $data['root_admin'],
                 'language' => Settings::get('default_language', 'en'),
             ]);
