@@ -122,7 +122,7 @@ class UpdateEnvironment extends Command
         }
 
         if (is_null($this->option('url'))) {
-            $variables['APP_URL'] = $this->ask('Panel URL', env('APP_URL'));
+            $variables['APP_URL'] = $this->ask('Panel URL (include http(s)://)', env('APP_URL'));
         } else {
             $variables['APP_URL'] = $this->option('url');
         }
