@@ -163,6 +163,12 @@ return [
         'new_password' => 'New Password',
         'new_password_again' => 'Repeat New Password',
         'new_email' => 'New Email Address',
+        'first_name' => 'First Name',
+        'last_name' => 'Last Name',
+        'update_identitity' => 'Update Identity',
+        'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
+        'invalid_pass' => 'The password provided was not valid for this account.',
+        'exception' => 'An error occurred while attempting to update your account.',
     ],
     'security' => [
         'header' => 'Account Security',

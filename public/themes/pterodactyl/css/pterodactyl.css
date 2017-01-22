@@ -121,3 +121,7 @@ td.has-progress {
 .box-header > .form-group > div > p.small {
     margin: 0;
 }
+
+.no-margin {
+    margin: 0 !important;
+}

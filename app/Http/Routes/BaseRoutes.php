@@ -63,13 +63,8 @@ class BaseRoutes
                 'as' => 'account',
                 'uses' => 'Base\AccountController@index',
             ]);
-            $router->post('/password', [
-                'as' => 'account.password',
-                'uses' => 'Base\AccountController@password',
-            ]);
-            $router->post('/email', [
-                'as' => 'account.email',
-                'uses' => 'Base\AccountController@email',
+            $router->post('/', [
+                'uses' => 'Base\AccountController@update',
             ]);
         });
 

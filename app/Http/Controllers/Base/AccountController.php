@@ -25,11 +25,13 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Log;
 use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AccountController extends Controller
 {
@@ -45,61 +47,54 @@ class AccountController extends Controller
     }
 
     /**
-     * Update an account email.
-     *
+     * Update details for a users account.
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return void
      */
-    public function email(Request $request)
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'new_email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $data = [];
 
-        $user = $request->user();
+        // Request to update account Password
+        if ($request->input('do_action') === 'password') {
+            $this->validate($request, [
+                'current_password' => 'required',
+                'new_password' => 'required|confirmed|' . User::PASSWORD_RULES,
+                'new_password_confirmation' => 'required',
+            ]);
 
-        if (! password_verify($request->input('password'), $user->password)) {
-            Alert::danger('The password provided was not valid for this account.')->flash();
+            $data['password'] = $request->input('new_password');
 
-            return redirect()->route('account');
+        // Request to update account Email
+        } else if ($request->input('do_action') === 'email') {
+            $data['email'] = $request->input('new_email');
+
+        // Request to update account Identity
+        } else if ($request->input('do_action') === 'identity') {
+            $data = $request->only(['name_first', 'name_last', 'username']);
+
+        // Unknown, hit em with a 404
+        } else {
+            return abort(404);
         }
 
-        $user->email = $request->input('new_email');
-        $user->save();
-
-        Alert::success('Your email address has successfully been updated.')->flash();
-
-        return redirect()->route('account');
-    }
-
-    /**
-     * Update an account password.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function password(Request $request)
-    {
-        $this->validate($request, [
-            'current_password' => 'required',
-            'new_password' => 'required|confirmed|different:current_password|' . User::PASSWORD_RULES,
-            'new_password_confirmation' => 'required',
-        ]);
-
-        $user = $request->user();
-
-        if (! password_verify($request->input('current_password'), $user->password)) {
-            Alert::danger('The password provided was not valid for this account.')->flash();
-
+        if (
+            in_array($request->input('do_action'), ['email', 'password'])
+            && ! password_verify($request->input('password'), $request->user()->password)
+        ) {
+            Alert::danger(trans('base.account.invalid_pass'))->flash();
             return redirect()->route('account');
         }
 
         try {
-            $user->setPassword($request->input('new_password'));
-            Alert::success('Your password has successfully been updated.')->flash();
-        } catch (DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
+            $repo = new UserRepository;
+            $repo->update($request->user()->id, $data);
+            Alert::success('Your account details were successfully updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('account')->withErrors(json_decode($ex->getMessage()));
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger(trans('base.account.exception'))->flash();
         }
 
         return redirect()->route('account');

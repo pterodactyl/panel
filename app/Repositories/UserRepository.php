@@ -154,10 +154,6 @@ class UserRepository
             unset($data['password']);
         }
 
-        if (! empty($data['root_admin'])) {
-            $user->root_admin = $data['root_admin'];
-        }
-
         $user->fill($data);
 
         return $user->save();
