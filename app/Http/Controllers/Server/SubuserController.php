@@ -62,7 +62,7 @@ class SubuserController extends Controller
         return view('server.users.index', [
             'server' => $server,
             'node' => $node,
-            'subusers' => Models\Subuser::select('subusers.*', 'users.email', 'users.username')
+            'subusers' => Models\Subuser::select('subusers.*', 'users.email', 'users.username', 'users.use_totp')
                 ->join('users', 'users.id', '=', 'subusers.user_id')
                 ->where('server_id', $server->id)
                 ->get(),

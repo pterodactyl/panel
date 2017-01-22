@@ -46,6 +46,7 @@
                             <th></th>
                             <th>@lang('strings.username')</th>
                             <th>@lang('strings.email')</th>
+                            <th class="text-center">@lang('strings.2fa')</th>
                             <th class="hidden-xs">@lang('strings.created_at')</th>
                             @can('view-subuser', $server)<th></th>@endcan
                             @can('delete-subuser', $server)<th></th>@endcan
@@ -55,6 +56,13 @@
                                 <td class="text-center middle"><img class="img-circle" src="https://www.gravatar.com/avatar/{{ md5($user->email) }}?s=128" style="height:20px;" alt="User Image"></td>
                                 <td class="middle">{{ $user->username }}
                                 <td class="middle"><code>{{ $user->email }}</code></td>
+                                <td class="middle text-center">
+                                    @if($user->use_totp)
+                                        <i class="fa fa-lock text-green"></i>
+                                    @else
+                                        <i class="fa fa-unlock text-red"></i>
+                                    @endif
+                                </td>
                                 <td class="middle hidden-xs">{{ $user->created_at }}</td>
                                 @can('view-subuser', $server)
                                     <td class="text-center middle">

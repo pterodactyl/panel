@@ -59,4 +59,5 @@ return [
     'yes' => 'Yes',
     'no' => 'No',
     'delete' => 'Delete',
+    '2fa' => '2FA',
 ];
