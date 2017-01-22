@@ -62,7 +62,9 @@
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span> <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
+                                    @if(Auth::user()->isRootAdmin())
+                                        <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
+                                    @endif
                                     <li><a href="{{ route('auth.logout') }}">@lang('strings.sign_out')</a></li>
                                 </ul>
                                 {{-- <ul class="dropdown-menu">
