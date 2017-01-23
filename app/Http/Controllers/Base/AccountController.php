@@ -29,8 +29,8 @@ use Log;
 use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AccountController extends Controller
@@ -66,11 +66,11 @@ class AccountController extends Controller
             $data['password'] = $request->input('new_password');
 
         // Request to update account Email
-        } else if ($request->input('do_action') === 'email') {
+        } elseif ($request->input('do_action') === 'email') {
             $data['email'] = $request->input('new_email');
 
         // Request to update account Identity
-        } else if ($request->input('do_action') === 'identity') {
+        } elseif ($request->input('do_action') === 'identity') {
             $data = $request->only(['name_first', 'name_last', 'username']);
 
         // Unknown, hit em with a 404
@@ -83,6 +83,7 @@ class AccountController extends Controller
             && ! password_verify($request->input('password'), $request->user()->password)
         ) {
             Alert::danger(trans('base.account.invalid_pass'))->flash();
+
             return redirect()->route('account');
         }
 
