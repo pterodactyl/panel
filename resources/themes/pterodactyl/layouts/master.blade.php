@@ -58,11 +58,13 @@
                         <ul class="nav navbar-nav">
                             <li class="dropdown user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="https://www.gravatar.com/avatar/{{ md5(Auth::user()->email) }}?s=160" class="user-image" alt="User Image">
+                                    <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span> <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
+                                    @if(Auth::user()->isRootAdmin())
+                                        <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
+                                    @endif
                                     <li><a href="{{ route('auth.logout') }}">@lang('strings.sign_out')</a></li>
                                 </ul>
                                 {{-- <ul class="dropdown-menu">
