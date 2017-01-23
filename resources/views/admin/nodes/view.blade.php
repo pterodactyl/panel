@@ -505,7 +505,7 @@ $(document).ready(function () {
                     type: 'success',
                     title: 'Token created.',
                     text: 'Your token will expire at ' + data.expires_at + '<br /><br />' +
-                          '<p>To auto-configure your node run<br /><small><pre>npm run configure -- --panel-url '+window.location.protocol+'//{{ config('app.url') }} --token '+data.token+'</pre></small></p>',
+                          '<p>To auto-configure your node run<br /><small><pre>npm run configure -- --panel-url {{ config('app.url') }} --token '+data.token+'</pre></small></p>',
                     html: true
                 })
             })
