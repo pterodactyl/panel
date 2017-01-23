@@ -61,6 +61,16 @@
                         <input type="text" autocomplete="off" name="name_last" value="{{ old('name_last') }}" class="form-control" />
                     </div>
                 </div>
+                <div class="form-group col-md-12">
+                    <label for="root_admin" class="control-label">{{ trans('strings.root_administrator') }}</label>
+                    <div>
+                        <select name="root_admin" class="form-control">
+                            <option value="0">{{ trans('strings.no') }}</option>
+                            <option value="1">{{ trans('strings.yes') }}</option>
+                        </select>
+                        <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-12">

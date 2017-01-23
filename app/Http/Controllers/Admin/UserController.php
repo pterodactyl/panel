@@ -122,6 +122,7 @@ class UserController extends Controller
                 'name_first',
                 'name_last',
                 'username',
+                'root_admin',
             ]));
             Alert::success('Account has been successfully created.')->flash();
 
