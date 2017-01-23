@@ -132,8 +132,8 @@ class Node extends Model
                 'listen' => $this->daemonListen,
                 'ssl' => [
                     'enabled' => $this->scheme === 'https',
-                    'certificate' => '/etc/letsencrypt/live/localhost/fullchain.pem',
-                    'key' => '/etc/letsencrypt/live/localhost/privkey.pem',
+                    'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
                 ],
             ],
             'docker' => [
