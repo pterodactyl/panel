@@ -62,8 +62,11 @@ var CONSOLE_PUSH_FREQ = 200;
 
 $(document).ready(function () {
     $('[data-attr="power"]').click(function (event) {
-        Socket.emit('set status', $(this).data('action'));
+        if (! $(this).hasClass('disabled')) {
+            Socket.emit('set status', $(this).data('action'));
+        }
     });
+
     var ctc = $('#chart_cpu');
     var timeLabels = [];
     var cpuData = [];
