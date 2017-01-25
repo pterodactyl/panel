@@ -66,12 +66,12 @@ class ServerCreated extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('A new server as been assigned to your account.')
-                    ->line('Server Name: ' . $this->server->name)
-                    ->line('Memory: ' . $this->server->memory . ' MB')
-                    ->line('Node: ' . $this->server->node)
-                    ->line('Type: ' . $this->server->service . ' - ' . $this->server->option)
-                    ->action('Peel Off the Protective Wrap', route('server.index', $this->server->uuidShort))
-                    ->line('Please let us know if you have any additional questions or concerns!');
+            ->line('A new server as been assigned to your account.')
+            ->line('Server Name: ' . $this->server->name)
+            ->line('Memory: ' . $this->server->memory . ' MB')
+            ->line('Node: ' . $this->server->node)
+            ->line('Type: ' . $this->server->service . ' - ' . $this->server->option)
+            ->action('Peel Off the Protective Wrap', route('server.index', $this->server->uuidShort))
+            ->line('Please let us know if you have any additional questions or concerns!');
     }
 }

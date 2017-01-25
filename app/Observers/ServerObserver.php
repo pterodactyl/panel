@@ -26,9 +26,11 @@ namespace Pterodactyl\Observers;
 
 use Carbon;
 use Pterodactyl\Events;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Jobs\DeleteServer;
 use Pterodactyl\Jobs\SuspendServer;
+use Pterodactyl\Notifications\ServerCreated;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class ServerObserver
@@ -55,6 +57,17 @@ class ServerObserver
     public function created(Server $server)
     {
         event(new Events\Server\Created($server));
+
+        // Queue Notification Email
+        $user = User::findOrFail($server->owner);
+        $user->notify((new ServerCreated([
+            'name' => $server->name,
+            'memory' => $server->memory,
+            'node' => $node->name,
+            'service' => $service->name,
+            'option' => $option->name,
+            'uuidShort' => $server->uuidShort,
+        ])));
     }
 
     /**

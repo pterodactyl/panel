@@ -32,7 +32,6 @@ use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Notifications\ServerCreated;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerRepository
@@ -299,16 +298,6 @@ class ServerRepository
                     'variable_value' => $item['val'],
                 ]);
             }
-
-            // Queue Notification Email
-            $user->notify((new ServerCreated([
-                'name' => $server->name,
-                'memory' => $server->memory,
-                'node' => $node->name,
-                'service' => $service->name,
-                'option' => $option->name,
-                'uuidShort' => $server->uuidShort,
-            ])));
 
             $client = Models\Node::guzzleRequest($node->id);
             $client->request('POST', '/servers', [
