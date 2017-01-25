@@ -175,7 +175,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <p class="text-muted"><small>If you wish to modify or upload a new file it should be uploaded to <code>{{ storage_path('app/packs/' . $pack->uuid) }}</code> as either <code>archive.zip</code> or <code>archive.tar.gz</code>.</small></p>
+                            <p class="text-muted"><small>If you wish to modify or upload a new file it should be uploaded to <code>{{ storage_path('app/packs/' . $pack->uuid) }}</code> as <code>archive.tar.gz</code>.</small></p>
                         </div>
                     </div>
                 </div>

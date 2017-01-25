@@ -66,11 +66,8 @@ class Pack
                 throw new DisplayException('The file provided does not appear to be valid.');
             }
 
-            if (! in_array($data['file_upload']->getMimeType(), [
-                'application/zip',
-                'application/gzip',
-            ])) {
-                throw new DisplayException('The file provided does not meet the required filetypes of application/zip or application/gzip.');
+            if ($data['file_upload']->getMimeType() !== 'application/gzip') {
+                throw new DisplayException('The file provided does not meet the required filetype of application/gzip.');
             }
         }
 
@@ -95,8 +92,7 @@ class Pack
 
             Storage::makeDirectory('packs/' . $pack->uuid);
             if (isset($data['file_upload'])) {
-                $filename = ($data['file_upload']->getMimeType() === 'application/zip') ? 'archive.zip' : 'archive.tar.gz';
-                $data['file_upload']->storeAs('packs/' . $pack->uuid, $filename);
+                $data['file_upload']->storeAs('packs/' . $pack->uuid, 'archive.tar.gz');
             }
 
             DB::commit();
@@ -132,10 +128,9 @@ class Pack
                 throw new DisplayException('The uploaded archive was unable to be opened.');
             }
 
-            $isZip = $zip->locateName('archive.zip');
             $isTar = $zip->locateName('archive.tar.gz');
 
-            if ($zip->locateName('import.json') === false || ($isZip === false && $isTar === false)) {
+            if (! $zip->locateName('import.json') || ! $isTar) {
                 throw new DisplayException('This contents of the provided archive were in an invalid format.');
             }
 
@@ -156,7 +151,7 @@ class Pack
             ]);
 
             $pack = Models\ServicePack::findOrFail($id);
-            if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), ($isZip === false) ? 'archive.tar.gz' : 'archive.zip')) {
+            if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), 'archive.tar.gz')) {
                 $pack->delete();
                 throw new DisplayException('Unable to extract the archive file to the correct location.');
             }

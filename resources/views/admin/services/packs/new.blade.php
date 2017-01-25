@@ -150,8 +150,8 @@
                     <div class="row">
                         <div class="form-group col-md-12">
                             <label class="control-label">Package Archive:</label>
-                            <input name="file_upload" type="file" accept=".zip,.tar.gz, application/zip, application/gzip" />
-                            <p class="text-muted"><small>This package file must either be a <code>.zip</code> or <code>.tar.gz</code> archive of files to use for either building or running this pack.<br /><br />If your file is larger than <code>20MB</code> we recommend uploading it using SFTP. Once you have added this pack to the system, a path will be provided where you should upload the file.
+                            <input name="file_upload" type="file" accept=".tar.gz, application/gzip" />
+                            <p class="text-muted"><small>This package file must be a <code>.tar.gz</code> archive of files to use for either building or running this pack.<br /><br />If your file is larger than <code>20MB</code> we recommend uploading it using SFTP. Once you have added this pack to the system, a path will be provided where you should upload the file.
                             This server is currently configured with the following limits: <code>upload_max_filesize={{ ini_get('upload_max_filesize') }}</code> and <code>post_max_size={{ ini_get('post_max_size') }}</code>. If your file is larger than either of those values this request will fail.</small></p>
                         </div>
                     </div>
