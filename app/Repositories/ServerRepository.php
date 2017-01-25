@@ -29,7 +29,6 @@ use Log;
 use Crypt;
 use Validator;
 use Pterodactyl\Models;
-use Pterodactyl\Events\ServerDeleted;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Exceptions\DisplayException;
@@ -797,9 +796,7 @@ class ServerRepository
             }
 
             $server->delete();
-            DB::commit();
-
-            event(new ServerDeleted($server->id));
+            return DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;

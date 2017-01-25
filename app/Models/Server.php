@@ -26,11 +26,12 @@ namespace Pterodactyl\Models;
 
 use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Server extends Model
 {
-    use SoftDeletes;
+    use Notifiable, SoftDeletes;
 
     /**
      * The table associated with the model.

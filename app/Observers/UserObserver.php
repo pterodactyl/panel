@@ -22,34 +22,54 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Providers;
+namespace Pterodactyl\Observers;
 
+use Pterodactyl\Events;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Observers\UserObserver;
-use Pterodactyl\Observers\ServerObserver;
 
-class AppServiceProvider extends ServiceProvider
+class UserObserver
 {
     /**
-     * Bootstrap any application services.
+     * Listen to the User creating event.
      *
+     * @param  User $user The eloquent User model.
      * @return void
      */
-    public function boot()
+    public function creating(User $user)
     {
-        User::observe(UserObserver::class);
-        Server::observe(ServerObserver::class);
+        event(new Events\User\Creating($user));
     }
 
     /**
-     * Register any application services.
+     * Listen to the User created event.
      *
+     * @param  User $user The eloquent User model.
      * @return void
      */
-    public function register()
+    public function created(User $user)
     {
-        //
+        event(new Events\User\Created($user));
+    }
+
+    /**
+     * Listen to the User deleting event.
+     *
+     * @param  User $user The eloquent User model.
+     * @return void
+     */
+    public function deleting(User $user)
+    {
+        event(new Events\User\Deleting($user));
+    }
+
+    /**
+     * Listen to the User deleted event.
+     *
+     * @param  User $user The eloquent User model.
+     * @return void
+     */
+    public function deleted(User $user)
+    {
+        event(new Events\User\Deleted($user));
     }
 }

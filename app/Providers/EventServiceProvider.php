@@ -12,11 +12,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [
-        'Pterodactyl\Events\ServerDeleted' => [
-            'Pterodactyl\Listeners\DeleteServerListener',
-        ],
-    ];
+    protected $listen = [];
 
     /**
      * Register any other events for your application.

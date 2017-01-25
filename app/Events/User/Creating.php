@@ -22,23 +22,24 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Events;
+namespace Pterodactyl\Events\User;
 
+use Pterodactyl\Models\User;
 use Illuminate\Queue\SerializesModels;
 
-class ServerDeleted
+class Creating
 {
     use SerializesModels;
 
-    public $server;
+    public $user;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($id)
+    public function __construct(User $user)
     {
-        $this->server = $id;
+        $this->user = $user;
     }
 }

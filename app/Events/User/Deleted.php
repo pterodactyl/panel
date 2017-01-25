@@ -22,41 +22,24 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Listeners;
+namespace Pterodactyl\Events\User;
 
-use Carbon;
-use Pterodactyl\Jobs\DeleteServer;
-use Pterodactyl\Jobs\SuspendServer;
-use Pterodactyl\Events\ServerDeleted;
-use Illuminate\Foundation\Bus\DispatchesJobs;
+use Pterodactyl\Models\User;
+use Illuminate\Queue\SerializesModels;
 
-class DeleteServerListener
+class Deleted
 {
-    use DispatchesJobs;
+    use SerializesModels;
+
+    public $user;
 
     /**
-     * Create the event listener.
+     * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(User $user)
     {
-        //
-    }
-
-    /**
-     * Handle the event.
-     *
-     * @param  DeleteServerEvent  $event
-     * @return void
-     */
-    public function handle(ServerDeleted $event)
-    {
-        $this->dispatch((new SuspendServer($event->server))->onQueue(env('QUEUE_HIGH', 'high')));
-        $this->dispatch(
-            (new DeleteServer($event->server))
-            ->delay(Carbon::now()->addMinutes(env('APP_DELETE_MINUTES', 10)))
-            ->onQueue(env('QUEUE_STANDARD', 'standard'))
-        );
+        $this->user = $user;
     }
 }

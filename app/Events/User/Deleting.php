@@ -22,34 +22,24 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Providers;
+namespace Pterodactyl\Events\User;
 
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Observers\UserObserver;
-use Pterodactyl\Observers\ServerObserver;
+use Illuminate\Queue\SerializesModels;
 
-class AppServiceProvider extends ServiceProvider
+class Deleting
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        User::observe(UserObserver::class);
-        Server::observe(ServerObserver::class);
-    }
+    use SerializesModels;
+
+    public $user;
 
     /**
-     * Register any application services.
+     * Create a new event instance.
      *
      * @return void
      */
-    public function register()
+    public function __construct(User $user)
     {
-        //
+        $this->user = $user;
     }
 }
