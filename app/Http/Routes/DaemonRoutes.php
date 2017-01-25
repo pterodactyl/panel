@@ -40,6 +40,15 @@ class DaemonRoutes
                 'as' => 'remote.install',
                 'uses' => 'Daemon\ServiceController@pull',
             ]);
+
+            $router->get('packs/pull/{uuid}', [
+                'as' => 'daemon.pack.pull',
+                'uses' => 'Daemon\PackController@pull',
+            ]);
+            $router->get('packs/pull/{uuid}/hash', [
+                'as' => 'daemon.pack.hash',
+                'uses' => 'Daemon\PackController@hash',
+            ]);
         });
     }
 }
