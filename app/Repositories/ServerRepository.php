@@ -92,6 +92,7 @@ class ServerRepository
             'disk' => 'required|numeric|min:0',
             'service' => 'required|numeric|min:1|exists:services,id',
             'option' => 'required|numeric|min:1|exists:service_options,id',
+            'location' => 'required|numeric|min:1|exists:locations,id',
             'pack' => 'sometimes|nullable|numeric|min:0',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
