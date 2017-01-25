@@ -65,7 +65,7 @@
                     @foreach($services as $service => $options)
                         <option disabled>{{ $service }}</option>
                         @foreach($options as $option)
-                            <option value="{{ $option['id'] }}" @if($pack->id === (int) $option['id'])selected="selected"@endif>&nbsp;&nbsp; -- {{ $option['name'] }}</option>
+                            <option value="{{ $option['id'] }}" @if($pack->option === (int) $option['id'])selected="selected"@endif>&nbsp;&nbsp; -- {{ $option['name'] }}</option>
                         @endforeach
                     @endforeach
                 </select>
