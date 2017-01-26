@@ -10,3 +10,4 @@ Vagrantfile
 Vagrantfile
 
 node_modules
+yarn.lock
