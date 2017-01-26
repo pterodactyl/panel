@@ -17,86 +17,99 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-(function initTaskFunctions() {
-    $('[data-action="delete-task"]').click(function (event) {
-        var self = $(this);
-        swal({
-            type: 'error',
-            title: 'Delete Task?',
-            text: 'Are you sure you want to delete this task? There is no undo.',
-            showCancelButton: true,
-            allowOutsideClick: true,
-            closeOnConfirm: false,
-            confirmButtonText: 'Delete Task',
-            confirmButtonColor: '#d9534f',
-            showLoaderOnConfirm: true
-        }, function () {
-            $.ajax({
-                method: 'DELETE',
-                url: Router.route('server.tasks.delete', {
-                    server: Pterodactyl.server.uuidShort,
-                    id: self.data('id'),
-                }),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
-                }
-            }).done(function (data) {
-                swal({
-                    type: 'success',
-                    title: '',
-                    text: 'Task has been deleted.'
-                });
-                self.parent().parent().slideUp();
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: 'An error occured while attempting to delete this task.'
-                });
-            });
-        });
-    });
-    $('[data-action="toggle-task"]').click(function (event) {
-        var self = $(this);
-        swal({
-            type: 'info',
-            title: 'Toggle Task',
-            text: 'This will toggle the selected task.',
-            showCancelButton: true,
-            allowOutsideClick: true,
-            closeOnConfirm: false,
-            confirmButtonText: 'Continue',
-            showLoaderOnConfirm: true
-        }, function () {
-            $.ajax({
-                method: 'POST',
-                url: Router.route('server.tasks.toggle', {
-                    server: Pterodactyl.server.uuidShort,
-                    id: self.data('id'),
-                }),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
-                }
-            }).done(function (data) {
-                swal({
-                    type: 'success',
-                    title: '',
-                    text: 'Task has been toggled.'
-                });
-                if (data.status !== 1) {
-                    self.parent().parent().addClass('muted muted-hover');
-                } else {
-                    self.parent().parent().removeClass('muted muted-hover');
-                }
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: 'An error occured while attempting to toggle this task.'
+
+var Tasks = (function () {
+
+    function initTaskFunctions() {
+        $('[data-action="delete-task"]').click(function (event) {
+            var self = $(this);
+            swal({
+                type: 'error',
+                title: 'Delete Task?',
+                text: 'Are you sure you want to delete this task? There is no undo.',
+                showCancelButton: true,
+                allowOutsideClick: true,
+                closeOnConfirm: false,
+                confirmButtonText: 'Delete Task',
+                confirmButtonColor: '#d9534f',
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'DELETE',
+                    url: Router.route('server.tasks.delete', {
+                        server: Pterodactyl.server.uuidShort,
+                        id: self.data('id'),
+                    }),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+                    }
+                }).done(function (data) {
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: 'Task has been deleted.'
+                    });
+                    self.parent().parent().slideUp();
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        text: 'An error occured while attempting to delete this task.'
+                    });
                 });
             });
         });
-    });
+        $('[data-action="toggle-task"]').click(function (event) {
+            var self = $(this);
+            swal({
+                type: 'info',
+                title: 'Toggle Task',
+                text: 'This will toggle the selected task.',
+                showCancelButton: true,
+                allowOutsideClick: true,
+                closeOnConfirm: false,
+                confirmButtonText: 'Continue',
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'POST',
+                    url: Router.route('server.tasks.toggle', {
+                        server: Pterodactyl.server.uuidShort,
+                        id: self.data('id'),
+                    }),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+                    }
+                }).done(function (data) {
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: 'Task has been toggled.'
+                    });
+                    if (data.status !== 1) {
+                        self.parent().parent().addClass('muted muted-hover');
+                    } else {
+                        self.parent().parent().removeClass('muted muted-hover');
+                    }
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        text: 'An error occured while attempting to toggle this task.'
+                    });
+                });
+            });
+        });
+    }
+
+    return {
+        init: function () {
+            initTaskFunctions();
+        }
+    }
+
 })();
+
+Tasks.init();
