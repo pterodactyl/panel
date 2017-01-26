@@ -125,3 +125,24 @@ td.has-progress {
 .no-margin {
     margin: 0 !important;
 }
+
+.position-relative {
+    position: relative;
+}
+
+.terminal-notify {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    /* Browsers usually have a 17px scrollbar which is visible in the terminal */
+    padding: 7px 24px 7px 7px;
+    border-top-left-radius: 3px;
+    background: white;
+    color: black;
+    opacity: .5;
+    cursor: pointer;
+}
+
+.terminal-notify:hover {
+    opacity: .9;
+}

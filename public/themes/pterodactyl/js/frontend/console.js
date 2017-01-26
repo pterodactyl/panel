@@ -17,10 +17,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-var CONSOLE_PUSH_COUNT = 50;
-var CONSOLE_PUSH_FREQ = 200;
 
-const Console = (function () {
+var Console = (function () {
+    var CONSOLE_PUSH_COUNT = 50;
+    var CONSOLE_PUSH_FREQ = 200;
 
     var terminalQueue;
     var terminal;
@@ -31,8 +31,10 @@ const Console = (function () {
     var memoryData;
     var timeLabels;
 
+    var $terminalNotify;
+
     function initConsole() {
-        termianlQueue = [];
+        terminalQueue = [];
         terminal = $('#terminal').terminal(function (command, term) {
             Socket.emit('send command', command);
         }, {
@@ -47,13 +49,25 @@ const Console = (function () {
                 return false;
             }
         });
+
+        $terminalNotify = $('#terminalNotify');
+        $terminalNotify.on('click', function () {
+            terminal.scroll_to_bottom();
+            $terminalNotify.addClass('hidden');
+        })
+
+        terminal.on('scroll', function () {
+            if (terminal.is_bottom()) {
+                $terminalNotify.addClass('hidden');
+            }
+        })
     }
 
     function initGraphs() {
         var ctc = $('#chart_cpu');
-        var timeLabels = [];
-        var cpuData = [];
-        var CPUChart = new Chart(ctc, {
+        timeLabels = [];
+        cpuData = [];
+        cpuChart = new Chart(ctc, {
             type: 'line',
             data: {
                 labels: timeLabels,
@@ -62,17 +76,17 @@ const Console = (function () {
                         label: "Percent Use",
                         fill: false,
                         lineTension: 0.03,
-                        backgroundColor: "#00A1CB",
-                        borderColor: "#00A1CB",
+                        backgroundColor: "#3c8dbc",
+                        borderColor: "#3c8dbc",
                         borderCapStyle: 'butt',
                         borderDash: [],
                         borderDashOffset: 0.0,
                         borderJoinStyle: 'miter',
-                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBorderColor: "#3c8dbc",
                         pointBackgroundColor: "#fff",
                         pointBorderWidth: 1,
                         pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBackgroundColor: "#3c8dbc",
                         pointHoverBorderColor: "rgba(220,220,220,1)",
                         pointHoverBorderWidth: 2,
                         pointRadius: 1,
@@ -97,8 +111,8 @@ const Console = (function () {
         });
 
         var ctm = $('#chart_memory');
-        var memoryData = [];
-        var MemoryChart = new Chart(ctm, {
+        memoryData = [];
+        memoryChart = new Chart(ctm, {
             type: 'line',
             data: {
                 labels: timeLabels,
@@ -107,17 +121,17 @@ const Console = (function () {
                         label: "Memory Use",
                         fill: false,
                         lineTension: 0.03,
-                        backgroundColor: "#01A4A4",
-                        borderColor: "#01A4A4",
+                        backgroundColor: "#3c8dbc",
+                        borderColor: "#3c8dbc",
                         borderCapStyle: 'butt',
                         borderDash: [],
                         borderDashOffset: 0.0,
                         borderJoinStyle: 'miter',
-                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBorderColor: "#3c8dbc",
                         pointBackgroundColor: "#fff",
                         pointBorderWidth: 1,
                         pointHoverRadius: 5,
-                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBackgroundColor: "#3c8dbc",
                         pointHoverBorderColor: "rgba(220,220,220,1)",
                         pointHoverBorderWidth: 2,
                         pointRadius: 1,
@@ -158,6 +172,10 @@ const Console = (function () {
             updateServerPowerControls(data.status);
         });
 
+        Socket.on('console', function (data) {
+            terminalQueue.push(data.line);
+        });
+
         Socket.on('proc', function (proc) {
             if (cpuData.length > 10) {
                 cpuData.shift();
@@ -172,20 +190,25 @@ const Console = (function () {
             var m = new Date();
             timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
 
-            CPUChart.update();
-            MemoryChart.update();
+            cpuChart.update();
+            memoryChart.update();
         });
     }
 
     function pushOutputQueue() {
-        if (termianlQueue.length > CONSOLE_PUSH_COUNT) {
+        if (terminalQueue.length > CONSOLE_PUSH_COUNT) {
             // console throttled warning show
         }
 
-        if (termianlQueue.length > 0) {
-            for (var i = 0; i < CONSOLE_PUSH_COUNT && termianlQueue.length > 0; i++) {
-                terminal.echo(termianlQueue[0]);
-                termianlQueue.shift();
+        if (terminalQueue.length > 0) {
+            for (var i = 0; i < CONSOLE_PUSH_COUNT && terminalQueue.length > 0; i++) {
+                terminal.echo(terminalQueue[0]);
+                terminalQueue.shift();
+            }
+
+            // Show
+            if (!terminal.is_bottom()) {
+                $terminalNotify.removeClass('hidden');
             }
         }
 
@@ -226,16 +249,16 @@ const Console = (function () {
             });
         },
 
-        getTerminal: function() {
+        getTerminal: function () {
             return terminal
         },
 
-        getTerminalQueue: function() {
+        getTerminalQueue: function () {
             return terminalQueue
         },
     }
 
-});
+})();
 
 $(document).ready(function () {
     Console.init();

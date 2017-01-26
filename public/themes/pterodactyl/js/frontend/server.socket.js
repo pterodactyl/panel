@@ -73,10 +73,6 @@
     Socket.on('status', function (data) {
         setStatusIcon(data.status);
     });
-
-    Socket.on('console', function (data) {
-        TerminalQueue.push(data.line);
-    });
 })();
 
 function setStatusIcon(status) {
