@@ -25,6 +25,12 @@ const Console = (function () {
     var terminalQueue;
     var terminal;
 
+    var cpuChart;
+    var cpuData;
+    var memoryChart;
+    var memoryData;
+    var timeLabels;
+
     function initConsole() {
         termianlQueue = [];
         terminal = $('#terminal').terminal(function (command, term) {
@@ -41,12 +47,133 @@ const Console = (function () {
                 return false;
             }
         });
+    }
 
+    function initGraphs() {
+        var ctc = $('#chart_cpu');
+        var timeLabels = [];
+        var cpuData = [];
+        var CPUChart = new Chart(ctc, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: "Percent Use",
+                        fill: false,
+                        lineTension: 0.03,
+                        backgroundColor: "#00A1CB",
+                        borderColor: "#00A1CB",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: cpuData,
+                        spanGaps: false,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'CPU Usage (as Percent Total)'
+                },
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 1,
+                }
+            }
+        });
+
+        var ctm = $('#chart_memory');
+        var memoryData = [];
+        var MemoryChart = new Chart(ctm, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: "Memory Use",
+                        fill: false,
+                        lineTension: 0.03,
+                        backgroundColor: "#01A4A4",
+                        borderColor: "#01A4A4",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgba(75,192,192,1)",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: memoryData,
+                        spanGaps: false,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Memory Usage (in Megabytes)'
+                },
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 1,
+                }
+            }
+        });
+    }
+
+    function addSocketListeners() {
+        // Update Listings on Initial Status
         Socket.on('initial status', function (data) {
+            updateServerPowerControls(data.status);
+
             terminal.clear();
             if (data.status === 1 || data.status === 2) {
                 Socket.emit('send server log');
             }
+        });
+
+        // Update Listings on Status
+        Socket.on('status', function (data) {
+            updateServerPowerControls(data.status);
+        });
+
+        Socket.on('proc', function (proc) {
+            if (cpuData.length > 10) {
+                cpuData.shift();
+                memoryData.shift();
+                timeLabels.shift();
+            }
+
+            var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
+            cpuData.push(cpuUse);
+            memoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
+
+            var m = new Date();
+            timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
+
+            CPUChart.update();
+            MemoryChart.update();
         });
     }
 
@@ -65,150 +192,38 @@ const Console = (function () {
         window.setTimeout(pushOutputQueue, CONSOLE_PUSH_FREQ);
     }
 
+    function updateServerPowerControls (data) {
+        // Server is On or Starting
+        if(data == 1 || data == 2) {
+            $('[data-attr="power"][data-action="start"]').addClass('disabled');
+            $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
+        } else {
+            if (data == 0) {
+                $('[data-attr="power"][data-action="start"]').removeClass('disabled');
+            }
+            $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
+        }
+
+        if(data !== 0) {
+            $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
+        } else {
+            $('[data-attr="power"][data-action="kill"]').addClass('disabled');
+        }
+    }
+
     return {
         init: function () {
+
+            initConsole();
+            pushOutputQueue();
+            initGraphs();
+            addSocketListeners();
+
             $('[data-attr="power"]').click(function (event) {
                 if (! $(this).hasClass('disabled')) {
                     Socket.emit('set status', $(this).data('action'));
                 }
             });
-
-            var ctc = $('#chart_cpu');
-            var timeLabels = [];
-            var cpuData = [];
-            var CPUChart = new Chart(ctc, {
-                type: 'line',
-                data: {
-                    labels: timeLabels,
-                    datasets: [
-                        {
-                            label: "Percent Use",
-                            fill: false,
-                            lineTension: 0.03,
-                            backgroundColor: "#00A1CB",
-                            borderColor: "#00A1CB",
-                            borderCapStyle: 'butt',
-                            borderDash: [],
-                            borderDashOffset: 0.0,
-                            borderJoinStyle: 'miter',
-                            pointBorderColor: "rgba(75,192,192,1)",
-                            pointBackgroundColor: "#fff",
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                            pointHoverBorderColor: "rgba(220,220,220,1)",
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 1,
-                            pointHitRadius: 10,
-                            data: cpuData,
-                            spanGaps: false,
-                        }
-                    ]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'CPU Usage (as Percent Total)'
-                    },
-                    legend: {
-                        display: false,
-                    },
-                    animation: {
-                        duration: 1,
-                    }
-                }
-            });
-
-            var ctm = $('#chart_memory');
-            var memoryData = [];
-            var MemoryChart = new Chart(ctm, {
-                type: 'line',
-                data: {
-                    labels: timeLabels,
-                    datasets: [
-                        {
-                            label: "Memory Use",
-                            fill: false,
-                            lineTension: 0.03,
-                            backgroundColor: "#01A4A4",
-                            borderColor: "#01A4A4",
-                            borderCapStyle: 'butt',
-                            borderDash: [],
-                            borderDashOffset: 0.0,
-                            borderJoinStyle: 'miter',
-                            pointBorderColor: "rgba(75,192,192,1)",
-                            pointBackgroundColor: "#fff",
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                            pointHoverBorderColor: "rgba(220,220,220,1)",
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 1,
-                            pointHitRadius: 10,
-                            data: memoryData,
-                            spanGaps: false,
-                        }
-                    ]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: 'Memory Usage (in Megabytes)'
-                    },
-                    legend: {
-                        display: false,
-                    },
-                    animation: {
-                        duration: 1,
-                    }
-                }
-            });
-            Socket.on('proc', function (proc) {
-                if (cpuData.length > 10) {
-                    cpuData.shift();
-                    memoryData.shift();
-                    timeLabels.shift();
-                }
-
-                var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
-                cpuData.push(cpuUse);
-                memoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
-
-                var m = new Date();
-                timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
-
-                CPUChart.update();
-                MemoryChart.update();
-            });
-
-            // Update Listings on Initial Status
-            Socket.on('initial status', function (data) {
-                updateServerPowerControls(data.status);
-            });
-
-            // Update Listings on Status
-            Socket.on('status', function (data) {
-                updateServerPowerControls(data.status);
-            });
-
-            function updateServerPowerControls (data) {
-                // Server is On or Starting
-                if(data == 1 || data == 2) {
-                    $('[data-attr="power"][data-action="start"]').addClass('disabled');
-                    $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
-                } else {
-                    if (data == 0) {
-                        $('[data-attr="power"][data-action="start"]').removeClass('disabled');
-                    }
-                    $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
-                }
-
-                if(data !== 0) {
-                    $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
-                } else {
-                    $('[data-attr="power"][data-action="kill"]').addClass('disabled');
-                }
-            }
         },
 
         getTerminal: function() {
