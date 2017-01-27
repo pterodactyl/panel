@@ -22,33 +22,50 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Routes;
+namespace Pterodactyl\Http\Middleware;
 
-use Illuminate\Routing\Router;
+use Closure;
+use Pterodactyl\Models\Node;
+use Illuminate\Contracts\Auth\Guard;
 
-class DaemonRoutes
+class DaemonAuthenticate
 {
-    public function map(Router $router)
+    /**
+     * The Guard implementation.
+     *
+     * @var Guard
+     */
+    protected $auth;
+
+    /**
+     * Create a new filter instance.
+     *
+     * @param  Guard  $auth
+     * @return void
+     */
+    public function __construct(Guard $auth)
     {
-        $router->group(['prefix' => 'daemon', 'middleware' => 'daemon'], function () use ($router) {
-            $router->get('services', [
-                'as' => 'daemon.services',
-                'uses' => 'Daemon\ServiceController@list',
-            ]);
+        $this->auth = $auth;
+    }
 
-            $router->get('services/pull/{service}/{file}', [
-                'as' => 'remote.install',
-                'uses' => 'Daemon\ServiceController@pull',
-            ]);
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        if (! $request->header('X-Access-Node')) {
+            return abort(403);
+        }
 
-            $router->get('packs/pull/{uuid}', [
-                'as' => 'daemon.pack.pull',
-                'uses' => 'Daemon\PackController@pull',
-            ]);
-            $router->get('packs/pull/{uuid}/hash', [
-                'as' => 'daemon.pack.hash',
-                'uses' => 'Daemon\PackController@hash',
-            ]);
-        });
+        $node = Node::where('daemonSecret', $request->header('X-Access-Node'))->first();
+        if (! $node) {
+            return abort(404);
+        }
+
+        return $next($request);
     }
 }
