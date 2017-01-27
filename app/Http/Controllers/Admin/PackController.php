@@ -183,14 +183,6 @@ class PackController extends Controller
             'description' => $pack->dscription,
             'selectable' => (bool) $pack->selectable,
             'visible' => (bool) $pack->visible,
-            'build' => [
-                'memory' => $pack->build_memory,
-                'swap' => $pack->build_swap,
-                'cpu' => $pack->build_cpu,
-                'io' => $pack->build_io,
-                'container' => $pack->build_container,
-                'script' => $pack->build_script,
-            ],
         ];
 
         $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');

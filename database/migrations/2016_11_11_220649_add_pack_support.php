@@ -17,12 +17,6 @@ class AddPackSupport extends Migration
             $table->increments('id');
             $table->unsignedInteger('option');
             $table->char('uuid', 36)->unique();
-            $table->unsignedInteger('build_memory')->nullable();
-            $table->unsignedInteger('build_swap')->nullable();
-            $table->unsignedInteger('build_cpu')->nullable();
-            $table->unsignedInteger('build_io')->nullable();
-            $table->text('build_script')->nullable();
-            $table->string('build_container')->default('alpine:latest');
             $table->string('name');
             $table->string('version');
             $table->text('description')->nullable();

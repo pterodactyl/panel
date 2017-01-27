@@ -49,12 +49,6 @@ class Pack
             'option' => 'required|exists:service_options,id',
             'selectable' => 'sometimes|boolean',
             'visible' => 'sometimes|boolean',
-            'build_memory' => 'required|integer|min:0',
-            'build_swap' => 'required|integer|min:0',
-            'build_cpu' => 'required|integer|min:0',
-            'build_io' => 'required|integer|min:10|max:1000',
-            'build_container' => 'required|string',
-            'build_script' => 'sometimes|nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -77,12 +71,6 @@ class Pack
             $pack = Models\ServicePack::create([
                 'option' => $data['option'],
                 'uuid' => $uuid->generate('servers', 'uuid'),
-                'build_memory' => $data['build_memory'],
-                'build_swap' => $data['build_swap'],
-                'build_cpu' => $data['build_swap'],
-                'build_io' => $data['build_io'],
-                'build_script' => (empty($data['build_script'])) ? null : $data['build_script'],
-                'build_container' => $data['build_container'],
                 'name' => $data['name'],
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
@@ -142,12 +130,6 @@ class Pack
                 'option' => $data['option'],
                 'selectable' => $json->selectable,
                 'visible' => $json->visible,
-                'build_memory' => $json->build->memory,
-                'build_swap' => $json->build->swap,
-                'build_cpu' => $json->build->cpu,
-                'build_io' => $json->build->io,
-                'build_container' => $json->build->container,
-                'build_script' => $json->build->script,
             ]);
 
             $pack = Models\ServicePack::findOrFail($id);
@@ -169,12 +151,6 @@ class Pack
                 'option' => $data['option'],
                 'selectable' => $json->selectable,
                 'visible' => $json->visible,
-                'build_memory' => $json->build->memory,
-                'build_swap' => $json->build->swap,
-                'build_cpu' => $json->build->cpu,
-                'build_io' => $json->build->io,
-                'build_container' => $json->build->container,
-                'build_script' => $json->build->script,
             ]);
         }
     }
@@ -188,12 +164,6 @@ class Pack
             'option' => 'required|exists:service_options,id',
             'selectable' => 'sometimes|boolean',
             'visible' => 'sometimes|boolean',
-            'build_memory' => 'required|integer|min:0',
-            'build_swap' => 'required|integer|min:0',
-            'build_cpu' => 'required|integer|min:0',
-            'build_io' => 'required|integer|min:10|max:1000',
-            'build_container' => 'required|string',
-            'build_script' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -203,12 +173,6 @@ class Pack
         DB::transaction(function () use ($id, $data) {
             Models\ServicePack::findOrFail($id)->update([
                 'option' => $data['option'],
-                'build_memory' => $data['build_memory'],
-                'build_swap' => $data['build_swap'],
-                'build_cpu' => $data['build_swap'],
-                'build_io' => $data['build_io'],
-                'build_script' => (empty($data['build_script'])) ? null : $data['build_script'],
-                'build_container' => $data['build_container'],
                 'name' => $data['name'],
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
