@@ -60,8 +60,8 @@ class Pack
                 throw new DisplayException('The file provided does not appear to be valid.');
             }
 
-            if ($data['file_upload']->getMimeType() !== 'application/gzip') {
-                throw new DisplayException('The file provided does not meet the required filetype of application/gzip.');
+            if (! in_array($data['file_upload']->getMimeType(), ['application/gzip', 'application/x-gzip'])) {
+                throw new DisplayException('The file provided (' . $data['file_upload']->getMimeType() . ') does not meet the required filetype of application/gzip.');
             }
         }
 
