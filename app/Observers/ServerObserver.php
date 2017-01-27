@@ -26,7 +26,7 @@ namespace Pterodactyl\Observers;
 
 use Carbon;
 use Pterodactyl\Events;
-use Pterodactyl\Models\User;
+use Pterodactyl\Models;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Jobs\DeleteServer;
 use Pterodactyl\Jobs\SuspendServer;
@@ -59,13 +59,20 @@ class ServerObserver
         event(new Events\Server\Created($server));
 
         // Queue Notification Email
-        $user = User::findOrFail($server->owner);
+        $user = Models\User::findOrFail($server->owner);
+        $node = Models\Node::select('name')->where('id', $server->node)->first();
+        $service = Models\Service::select('services.name', 'service_options.name as optionName')
+            ->join('service_options', 'service_options.parent_service', '=', 'services.id')
+            ->where('services.id', $server->service)
+            ->where('service_options.id', $server->option)
+            ->first();
+
         $user->notify((new ServerCreated([
             'name' => $server->name,
             'memory' => $server->memory,
             'node' => $node->name,
             'service' => $service->name,
-            'option' => $option->name,
+            'option' => $service->optionName,
             'uuidShort' => $server->uuidShort,
         ])));
     }
