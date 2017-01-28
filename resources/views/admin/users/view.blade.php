@@ -104,10 +104,9 @@
                     <thead>
                         <tr>
                             <th style="width:2%;"></th>
+                            <th>Name</th>
                             <th>Identifier</th>
-                            <th>Server Name</th>
-                            <th>Node</th>
-                            <th>Username</th>
+                            <th>Access</th>
                             <th style="width:10%;"></th>
                         </tr>
                     </thead>
@@ -115,10 +114,9 @@
                             @foreach($servers as $server)
                                 <tr>
                                     <td><a href="/server/{{ $server->uuidShort }}/"><i class="fa fa-tachometer"></i></a></td>
-                                    <td><code>{{ $server->uuidShort }}</code></td>
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                    <td>{{ $server->nodeName }}</td>
-                                    <td><code>{{ $server->username }}</code></td>
+                                    <td><code>{{ $server->uuidShort }}</code></td>
+                                    <td>{{ $server->owner == $user->id ? trans('strings.owner') : trans('strings.subuser') }}</td>
                                     <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
                                 </td>
                             @endforeach

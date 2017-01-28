@@ -30,6 +30,7 @@ use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\UserRepository;
@@ -86,10 +87,9 @@ class UserController extends Controller
     {
         return view('admin.users.view', [
             'user' => User::findOrFail($id),
-            'servers' => Server::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
-                ->join('nodes', 'servers.node', '=', 'nodes.id')
-                ->join('locations', 'nodes.location', '=', 'locations.id')
-                ->where('owner', $id)
+            'servers' => Server::select('servers.*')
+                ->whereIn('servers.id', Subuser::select('server_id')->where('user_id', $id)->get())
+                ->orWhere('owner', $id)
                 ->get(),
         ]);
     }

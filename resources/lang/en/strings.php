@@ -60,4 +60,6 @@ return [
     'no' => 'No',
     'delete' => 'Delete',
     '2fa' => '2FA',
+    'owner' => 'Owner',
+    'subuser' => 'Subuser'
 ];
