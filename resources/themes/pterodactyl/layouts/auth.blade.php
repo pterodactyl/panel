@@ -47,7 +47,7 @@
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/" target="_blank">Pterodactyl Software &amp; Design</a>.<br />
             </p>
         </div>
-        {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+        {!! Theme::js('vendor/jquery/jquery.min.js') !!}
         {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
     </body>
 </html>

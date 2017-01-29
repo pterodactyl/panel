@@ -17,9 +17,9 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-$(window).load(function () {
+$(document).ready(function () {
     Socket.on('console', function (data) {
-        if (data.line.indexOf('You need to agree to the EULA in order to run the server') > -1) {
+        if (~data.line.indexOf('You need to agree to the EULA in order to run the server')) {
             swal({
                 title: 'EULA Acceptance',
                 text: 'By pressing \'I Accept\' below you are indicating your agreement to the <a href="https://account.mojang.com/documents/minecraft_eula" target="_blank">Mojang EULA</a>.',
