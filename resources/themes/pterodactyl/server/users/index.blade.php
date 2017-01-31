@@ -54,7 +54,13 @@
                         @foreach($subusers as $user)
                             <tr>
                                 <td class="text-center middle"><img class="img-circle" src="https://www.gravatar.com/avatar/{{ md5($user->email) }}?s=128" style="height:20px;" alt="User Image"></td>
-                                <td class="middle">{{ $user->username }}
+                                <td class="middle">
+                                    @if(Auth::user()->isRootAdmin())
+                                        <a href="{{ route('admin.users.view', $user->user_id) }}">{{ $user->username }}</a>
+                                    @else
+                                        {{ $user->username }}
+                                    @endif
+                                </td>
                                 <td class="middle"><code>{{ $user->email }}</code></td>
                                 <td class="middle text-center">
                                     @if($user->use_totp)
