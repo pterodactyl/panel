@@ -40,7 +40,7 @@ class PackController extends Controller
     }
 
     /**
-     * Pulls an install pack archive from the system
+     * Pulls an install pack archive from the system.
      *
      * @param  \Illuminate\Http\Request   $request
      * @return \Illuminate\Http\Response
@@ -49,12 +49,12 @@ class PackController extends Controller
     {
         $pack = Models\ServicePack::where('uuid', $uuid)->first();
 
-        if (!$pack) {
-            return response()->json([ 'error' => 'No such pack.' ], 404);
+        if (! $pack) {
+            return response()->json(['error' => 'No such pack.'], 404);
         }
 
         if (! Storage::exists('packs/' . $pack->uuid . '/archive.tar.gz')) {
-            return response()->json([ 'error' => 'There is no archive available for this pack.' ], 503);
+            return response()->json(['error' => 'There is no archive available for this pack.'], 503);
         }
 
         return response()->download(storage_path('app/packs/' . $pack->uuid . '/archive.tar.gz'));
@@ -70,12 +70,12 @@ class PackController extends Controller
     {
         $pack = Models\ServicePack::where('uuid', $uuid)->first();
 
-        if (!$pack) {
-            return response()->json([ 'error' => 'No such pack.' ], 404);
+        if (! $pack) {
+            return response()->json(['error' => 'No such pack.'], 404);
         }
 
         if (! Storage::exists('packs/' . $pack->uuid . '/archive.tar.gz')) {
-            return response()->json([ 'error' => 'There is no archive available for this pack.' ], 503);
+            return response()->json(['error' => 'There is no archive available for this pack.'], 503);
         }
 
         return response()->json([
@@ -84,13 +84,12 @@ class PackController extends Controller
     }
 
     /**
-     * Pulls an update pack archive from the system
+     * Pulls an update pack archive from the system.
      *
      * @param  \Illuminate\Http\Request   $request
      * @return \Illuminate\Http\Response
      */
     public function pullUpdate(Request $request)
     {
-
     }
 }

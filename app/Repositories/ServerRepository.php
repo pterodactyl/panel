@@ -786,6 +786,7 @@ class ServerRepository
             }
 
             $server->delete();
+
             return DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
