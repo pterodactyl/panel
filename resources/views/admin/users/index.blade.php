@@ -1,4 +1,4 @@
-{{-- Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 {{-- Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
@@ -31,20 +31,32 @@
         <li class="active">Accounts</li>
     </ul>
     <h3>All Registered Users</h3><hr />
+    <form method="GET" style="margin-bottom:20px;">
+        <div class="input-group">
+            <input type="text" name="filter" class="form-control" value="{{ urldecode(Input::get('filter')) }}" placeholder="search term" />
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-sm btn-primary">Filter Users</button>
+            </div>
+        </div>
+    </form>
     <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
-                <th>Email</th>
-                <th>Account Created</th>
-                <th>Account Updated</th>
+                <th>ID</td>
+                <th>Email</td>
+                <th>Client Name</th>
+                <th>Username</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach ($users as $user)
-                <tr>
-                    <td><a href="/admin/users/view/{{ $user->id }}"><code>{{ $user->email }}</code></a> @if($user->root_admin === 1)<span class="badge">Administrator</span>@endif</td>
-                    <td>{{ $user->created_at }}</td>
-                    <td>{{ $user->updated_at }}</td>
+                <tr class="align-middle">
+                    <td><code>#{{ $user->id }}</code></td>
+                    <td><a href="{{ route('admin.users.view', $user->id) }}">{{ $user->email }}</a></td>
+                    <td>{{ $user->name_last }}, {{ $user->name_first }}</td>
+                    <td><code>{{ $user->username }}</code></td>
+                    <td class="text-center"><img src="https://www.gravatar.com/avatar/{{ md5(strtolower($user->email)) }}?s=20" class="img-circle" /></td>
                 </tr>
             @endforeach
         </tbody>

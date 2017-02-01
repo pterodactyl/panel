@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API;
 
-use Illuminate\Http\Request;
-
-use Dingo\Api\Exception\ResourceException;
-
 use Pterodactyl\Models;
-use Pterodactyl\Transformers\UserTransformer;
-use Pterodactyl\Repositories\UserRepository;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Illuminate\Http\Request;
+use Dingo\Api\Exception\ResourceException;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
@@ -42,14 +39,12 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
  */
 class UserController extends BaseController
 {
-
     public function __construct()
     {
-
     }
 
     /**
-     * List All Users
+     * List All Users.
      *
      * Lists all users currently on the system.
      *
@@ -60,13 +55,13 @@ class UserController extends BaseController
      * })
      * @Response(200)
      */
-    public function list(Request $request)
+    public function lists(Request $request)
     {
         return Models\User::all()->toArray();
     }
 
     /**
-     * List Specific User
+     * List Specific User.
      *
      * Lists specific fields about a user or all fields pertaining to that user.
      *
@@ -80,24 +75,24 @@ class UserController extends BaseController
      */
     public function view(Request $request, $id)
     {
-        $query = Models\User::where('id', $id);
+        $query = Models\User::where((is_numeric($id) ? 'id' : 'email'), $id);
 
-        if (!is_null($request->input('fields'))) {
-            foreach(explode(',', $request->input('fields')) as $field) {
-                if (!empty($field)) {
+        if (! is_null($request->input('fields'))) {
+            foreach (explode(',', $request->input('fields')) as $field) {
+                if (! empty($field)) {
                     $query->addSelect($field);
                 }
             }
         }
 
         try {
-            if (!$query->first()) {
+            if (! $query->first()) {
                 throw new NotFoundHttpException('No user by that ID was found.');
             }
 
             $user = $query->first();
             $userArray = $user->toArray();
-            $userArray['servers'] =  Models\Server::select('id', 'uuid', 'node', 'suspended')->where('owner', $user->id)->get();
+            $userArray['servers'] = Models\Server::select('id', 'uuid', 'node', 'suspended')->where('owner', $user->id)->get();
 
             return $userArray;
         } catch (NotFoundHttpException $ex) {
@@ -105,11 +100,10 @@ class UserController extends BaseController
         } catch (\Exception $ex) {
             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
         }
-
     }
 
     /**
-     * Create a New User
+     * Create a New User.
      *
      * @Post("/users")
      * @Versions({"v1"})
@@ -128,8 +122,12 @@ class UserController extends BaseController
     {
         try {
             $user = new UserRepository;
+            $create = $user->create($request->only([
+                'email', 'username', 'name_first', 'name_last', 'password', 'root_admin', 'custom_id',
+            ]));
             $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'), $request->input('custom_id'));
-            return [ 'id' => $create ];
+
+            return ['id' => $create];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -140,7 +138,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Update an Existing User
+     * Update an Existing User.
      *
      * The data sent in the request will be used to update the existing user on the system.
      *
@@ -161,7 +159,10 @@ class UserController extends BaseController
     {
         try {
             $user = new UserRepository;
-            $user->update($id, $request->all());
+            $user->update($id, $request->only([
+                'username', 'email', 'name_first', 'name_last', 'password', 'root_admin', 'language',
+            ]));
+
             return Models\User::findOrFail($id);
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
@@ -173,7 +174,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Delete a User
+     * Delete a User.
      *
      * @Delete("/users/{id}")
      * @Versions({"v1"})
@@ -191,6 +192,7 @@ class UserController extends BaseController
         try {
             $user = new UserRepository;
             $user->delete($id);
+
             return $this->response->noContent();
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
@@ -198,5 +200,4 @@ class UserController extends BaseController
             throw new ServiceUnavailableHttpException('Unable to delete this user due to an error.');
         }
     }
-
 }

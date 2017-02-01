@@ -1,4 +1,4 @@
-{{-- Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
 {{-- of this software and associated documentation files (the "Software"), to deal --}}
@@ -92,7 +92,7 @@
                         <div class="form-group col-md-6 col-xs-6">
                             <label for="memory" class="control-label">Total Memory</label>
                             <div class="input-group">
-                                <input type="text" name="memory" class="form-control" value="{{ old('memory') }}"/>
+                                <input type="text" name="memory" data-multiplicator="true" class="form-control" value="{{ old('memory') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                         <div class="form-group col-md-6 col-xs-6">
                             <label for="disk" class="control-label">Disk Space</label>
                             <div class="input-group">
-                                <input type="text" name="disk" class="form-control" value="{{ old('disk') }}"/>
+                                <input type="text" name="disk" data-multiplicator="true" class="form-control" value="{{ old('disk') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>

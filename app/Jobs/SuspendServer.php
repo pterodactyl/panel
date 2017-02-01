@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,14 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Jobs;
 
-use Debugbar;
-use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
 use Pterodactyl\Repositories\ServerRepository;
 
 class SuspendServer extends Job implements ShouldQueue
@@ -44,7 +42,7 @@ class SuspendServer extends Job implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param  integer  $id
+     * @param  int  $id
      * @return void
      */
     public function __construct($id)

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\ServiceRepository;
 
 use DB;
-use Validator;
 use Uuid;
-
+use Storage;
+use Validator;
 use Pterodactyl\Models;
-use Pterodactyl\Services\UuidService;
-
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class Service
 {
-
     public function __construct()
     {
         //
@@ -46,24 +44,32 @@ class Service
         $validator = Validator::make($data, [
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|string',
-            'file' => 'required|regex:/^[\w.-]{1,50}$/',
+            'file' => 'required|unique:services,file|regex:/^[\w.-]{1,50}$/',
             'executable' => 'max:255|regex:/^(.*)$/',
-            'startup' => 'string'
+            'startup' => 'string',
         ]);
 
         if ($validator->fails()) {
             throw new DisplayValidationException($validator->errors());
         }
 
-        if (Models\Service::where('file', $data['file'])->first()) {
-            throw new DisplayException('A service using that configuration file already exists on the system.');
-        }
-
         $data['author'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
 
         $service = new Models\Service;
-        $service->fill($data);
-        $service->save();
+        DB::beginTransaction();
+
+        try {
+            $service->fill($data);
+            $service->save();
+
+            Storage::put('services/' . $data['file'] . '/main.json', '{}');
+            Storage::copy('services/.templates/index.js', 'services/' . $data['file'] . '/index.js');
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
 
         return $service->id;
     }
@@ -77,7 +83,7 @@ class Service
             'description' => 'sometimes|required|string',
             'file' => 'sometimes|required|regex:/^[\w.-]{1,50}$/',
             'executable' => 'sometimes|max:255|regex:/^(.*)$/',
-            'startup' => 'sometimes|string'
+            'startup' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
@@ -85,7 +91,8 @@ class Service
         }
 
         $service->fill($data);
-        $service->save();
+
+        return $service->save();
     }
 
     public function delete($id)
@@ -103,6 +110,8 @@ class Service
             Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
             $options->delete();
             $service->delete();
+
+            Storage::deleteDirectory('services/' . $service->file);
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
@@ -110,4 +119,29 @@ class Service
         }
     }
 
+    public function updateFile($id, array $data)
+    {
+        $service = Models\Service::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'file' => 'required|in:index,main',
+            'contents' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        $filename = ($data['file'] === 'main') ? 'main.json' : 'index.js';
+        $filepath = 'services/' . $service->file . '/' . $filename;
+        $backup = 'services/.bak/' . str_random(12) . '.bak';
+
+        try {
+            Storage::move($filepath, $backup);
+            Storage::put($filepath, $data['contents']);
+        } catch (\Exception $ex) {
+            Storage::move($backup, $filepath);
+            throw $ex;
+        }
+    }
 }

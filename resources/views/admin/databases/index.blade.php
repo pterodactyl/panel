@@ -1,4 +1,4 @@
-{{-- Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
 {{-- of this software and associated documentation files (the "Software"), to deal --}}
@@ -36,7 +36,7 @@
         <li><a href="{{ route('admin.databases.new') }}"><i class="fa fa-plus"></i></a></li>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane active" id="tab_databases">
+        <div class="tab-pane {{ Request::input('tab') == 'tab_dbservers' ? '' : 'active' }}" id="tab_databases">
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
@@ -65,12 +65,12 @@
                         </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                        {{ $databases->render() }}
+                        {{ $databases->appends('tab', 'tab_databases')->render() }}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="tab_dbservers">
+        <div class="tab-pane {{ Request::input('tab') == 'tab_dbservers' ? 'active' : '' }}" id="tab_dbservers">
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
@@ -88,18 +88,18 @@
                         <tbody>
                             @foreach($dbh as $db)
                                 <tr>
-                                    <td><a href="#">{{ $db->name }}</a></td>
+                                    <td>{{ $db->name }}</td>
                                     <td><code>{{ $db->host }}:{{ $db->port }}</code></td>
                                     <td>{{ $db->username }}</td>
                                     <td class="text-center">{{ $db->c_databases }}</td>
                                     <td>@if(is_null($db->a_linkedNode))<em>unlinked</em>@else{{ $db->a_linkedNode }}@endif</td>
-                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-dbserver" data-attr="{{ $db->id }}"><i class="fa fa-trash-o"></i></a></td>
+                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-server" data-attr="{{ $db->id }}"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                        {{ $dbh->render() }}
+                        {{ $dbh->appends('tab', 'tab_dbservers')->render() }}
                     </div>
                 </div>
             </div>

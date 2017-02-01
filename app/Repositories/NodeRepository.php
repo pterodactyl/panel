@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use DB;
 use Validator;
-
+use IPTools\Network;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
-
-use IPTools\Network;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-class NodeRepository {
-
+class NodeRepository
+{
     public function __construct()
     {
         //
@@ -70,7 +69,7 @@ class NodeRepository {
         }
 
         // Verify FQDN is resolvable, or if not using SSL that the IP is valid.
-        if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
+        if (! filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
             throw new DisplayException('The FQDN (or IP Address) provided does not resolve to a valid IP address.');
         }
 
@@ -88,7 +87,6 @@ class NodeRepository {
         $node->save();
 
         return $node->id;
-
     }
 
     public function update($id, array $data)
@@ -106,6 +104,7 @@ class NodeRepository {
             'memory_overallocate' => 'numeric|min:-1',
             'disk' => 'numeric|min:1',
             'disk_overallocate' => 'numeric|min:-1',
+            'upload_size' => 'numeric|min:0',
             'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
             'daemonSFTP' => 'numeric|between:1,65535',
             'daemonListen' => 'numeric|between:1,65535',
@@ -122,17 +121,16 @@ class NodeRepository {
         if (isset($data['fqdn'])) {
 
             // Verify the FQDN if using SSL
-            if ((isset($data['scheme']) && $data['scheme'] === 'https') || (!isset($data['scheme']) && $node->scheme === 'https')) {
+            if ((isset($data['scheme']) && $data['scheme'] === 'https') || (! isset($data['scheme']) && $node->scheme === 'https')) {
                 if (filter_var($data['fqdn'], FILTER_VALIDATE_IP)) {
                     throw new DisplayException('A fully qualified domain name is required to use secure comunication on this node.');
                 }
             }
 
             // Verify FQDN is resolvable, or if not using SSL that the IP is valid.
-            if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
+            if (! filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
                 throw new DisplayException('The FQDN (or IP Address) provided does not resolve to a valid IP address.');
             }
-
         }
 
         // Should we be nulling the overallocations?
@@ -151,9 +149,43 @@ class NodeRepository {
             unset($data['reset_secret']);
         }
 
-        // Store the Data
-        return $node->update($data);
-
+        $oldDaemonKey = $node->daemonSecret;
+        $node->update($data);
+        try {
+            $client = Models\Node::guzzleRequest($node->id);
+            $client->request('PATCH', '/config', [
+                'headers' => [
+                    'X-Access-Token' => $oldDaemonKey,
+                ],
+                'json' => [
+                    'web' => [
+                        'listen' => $node->daemonListen,
+                        'ssl' => [
+                            'enabled' => ($node->scheme === 'https'),
+                            'certificate' => '/etc/letsencrypt/live/' . $node->fqdn . '/fullchain.pem',
+                            'key' => '/etc/letsencrypt/live/' . $node->fqdn . '/privkey.pem',
+                        ],
+                    ],
+                    'sftp' => [
+                        'path' => $node->daemonBase,
+                        'port' => $node->daemonSFTP,
+                    ],
+                    'remote' => [
+                        'base' => config('app.url'),
+                        'download' => route('remote.download'),
+                        'installed' => route('remote.install'),
+                    ],
+                    'uploads' => [
+                        'size_limit' => $node->upload_size,
+                    ],
+                    'keys' => [
+                        $node->daemonSecret,
+                    ],
+                ],
+            ]);
+        } catch (\Exception $ex) {
+            throw new DisplayException('Failed to update the node configuration, however your changes have been saved to the database. You will need to manually update the configuration file for the node to apply these changes.');
+        }
     }
 
     public function addAllocations($id, array $allocations)
@@ -163,7 +195,7 @@ class NodeRepository {
         DB::beginTransaction();
 
         try {
-            foreach($allocations as $rawIP => $ports) {
+            foreach ($allocations as $rawIP => $ports) {
                 try {
                     $setAlias = null;
                     $parsedIP = Network::parse($rawIP);
@@ -175,25 +207,31 @@ class NodeRepository {
                         throw $ex;
                     }
                 }
-                foreach($parsedIP as $ip) {
-                    foreach($ports as $port) {
-                        if (!is_int($port) && !preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
+                foreach ($parsedIP as $ip) {
+                    foreach ($ports as $port) {
+                        if (! is_int($port) && ! preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
                             throw new DisplayException('The mapping for ' . $port . ' is invalid and cannot be processed.');
                         }
                         if (preg_match('/^(\d{1,5})-(\d{1,5})$/', $port, $matches)) {
-                            foreach(range($matches[1], $matches[2]) as $assignPort) {
+                            $portBlock = range($matches[1], $matches[2]);
+
+                            if (count($portBlock) > 2000) {
+                                throw new DisplayException('Adding more than 2000 ports at once is not currently supported. Please consider using a smaller port range.');
+                            }
+
+                            foreach ($portBlock as $assignPort) {
                                 $alloc = Models\Allocation::firstOrNew([
                                     'node' => $node->id,
                                     'ip' => $ip,
-                                    'port' => $assignPort
+                                    'port' => $assignPort,
                                 ]);
-                                if (!$alloc->exists) {
+                                if (! $alloc->exists) {
                                     $alloc->fill([
                                         'node' => $node->id,
                                         'ip' => $ip,
                                         'port' => $assignPort,
                                         'ip_alias' => $setAlias,
-                                        'assigned_to' => null
+                                        'assigned_to' => null,
                                     ]);
                                     $alloc->save();
                                 }
@@ -202,15 +240,15 @@ class NodeRepository {
                             $alloc = Models\Allocation::firstOrNew([
                                 'node' => $node->id,
                                 'ip' => $ip,
-                                'port' => $port
+                                'port' => $port,
                             ]);
-                            if (!$alloc->exists) {
+                            if (! $alloc->exists) {
                                 $alloc->fill([
                                     'node' => $node->id,
                                     'ip' => $ip,
                                     'port' => $port,
                                     'ip_alias' => $setAlias,
-                                    'assigned_to' => null
+                                    'assigned_to' => null,
                                 ]);
                                 $alloc->save();
                             }
@@ -220,7 +258,6 @@ class NodeRepository {
             }
 
             DB::commit();
-            // return true;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -229,8 +266,32 @@ class NodeRepository {
 
     public function delete($id)
     {
-        // @TODO: add logic;
-        return true;
-    }
+        $node = Models\Node::findOrFail($id);
+        if (Models\Server::where('node', $id)->count() > 0) {
+            throw new DisplayException('You cannot delete a node with servers currently attached to it.');
+        }
 
+        DB::beginTransaction();
+
+        try {
+            // Unlink Database Servers
+            Models\DatabaseServer::where('linked_node', $node->id)->update([
+                'linked_node' => null,
+            ]);
+
+            // Delete Allocations
+            Models\Allocation::where('node', $node->id)->delete();
+
+            // Delete configure tokens
+            Models\NodeConfigurationToken::where('node', $node->id)->delete();
+
+            // Delete Node
+            $node->delete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollback();
+            throw $ex;
+        }
+    }
 }

@@ -1,61 +1,63 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
+
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Standalone Pterodactyl Language Strings
-    |--------------------------------------------------------------------------
-    */
-
-    'login' => 'Login',
-    'password' => 'Password',
     'email' => 'Email',
-    'whoops' => 'Whoops',
-    'success' => 'Success',
-    'location' => 'Location',
+    'password' => 'Password',
+    'confirm_password' => 'Confirm Password',
+    'login' => 'Login',
+    'home' => 'Home',
+    'servers' => 'Servers',
+    'id' => 'ID',
+    'name' => 'Name',
     'node' => 'Node',
     'connection' => 'Connection',
-    'language' => 'Language',
-    'close' => 'Close',
-    'start' => 'Start',
-    'stop' => 'Stop',
-    'restart' => 'Restart',
-    'save' => 'Save',
-    'enabled' => 'Enabled',
-    'disabled' => 'Disabled',
-    'submit' => 'Submit',
-    'current_password' => 'Current Password',
-    'again' => 'Again',
-    'registered' => 'Registered',
-    'root_administrator' => 'Root Administrator',
-    'yes' => 'Yes',
-    'no' => 'No',
     'memory' => 'Memory',
     'cpu' => 'CPU',
     'status' => 'Status',
-    'players' => 'Players',
-
+    'search' => 'Search',
+    'suspended' => 'Suspended',
+    'account' => 'Account',
+    'security' => 'Security',
+    'ip' => 'IP Address',
+    'last_activity' => 'Last Activitiy',
+    'revoke' => 'Revoke',
+    '2fa_token' => 'Authentication Token',
+    'submit' => 'Submit',
+    'close' => 'Close',
+    'settings' => 'Settings',
+    'configuration' => 'Configuration',
+    'sftp' => 'SFTP',
+    'databases' => 'Databases',
+    'memo' => 'Memo',
+    'created' => 'Created',
+    'expires' => 'Expires',
+    'public_key' => 'Public key',
+    'api_access' => 'Api Access',
+    'never' => 'never',
+    'sign_out' => 'Sign out',
+    'admin_control' => 'Admin Control',
+    'required' => 'Required',
+    'port' => 'Port',
+    'username' => 'Username',
+    'database' => 'Database',
+    'new' => 'New',
+    'danger' => 'Danger',
+    'create' => 'Create',
+    'select_all' => 'Select All',
+    'select_none' => 'Select None',
+    'alias' => 'Alias',
+    'primary' => 'Primary',
+    'make_primary' => 'Make Primary',
+    'none' => 'None',
+    'cancel' => 'Cancel',
+    'created_at' => 'Created At',
+    'action' => 'Action',
+    'data' => 'Data',
+    'queued' => 'Queued',
+    'last_run' => 'Last Run',
+    'next_run' => 'Next Run',
+    'yes' => 'Yes',
+    'no' => 'No',
+    'delete' => 'Delete',
+    '2fa' => '2FA',
 ];

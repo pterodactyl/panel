@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use DB;
+use Mail;
 use Settings;
 use Validator;
-use Mail;
-
 use Pterodactyl\Models;
-use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Services\UuidService;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class SubuserRepository
 {
-
     /**
      * Core permissions required for every subuser on the daemon.
      * Without this we cannot connect the websocket or get basic
@@ -46,7 +43,7 @@ class SubuserRepository
      */
     protected $coreDaemonPermissions = [
         's:get',
-        's:console'
+        's:console',
     ];
 
     /**
@@ -101,7 +98,7 @@ class SubuserRepository
 
         // Databases
         'view-databases' => null,
-        'reset-db-password' => null
+        'reset-db-password' => null,
     ];
 
     public function __construct()
@@ -111,18 +108,19 @@ class SubuserRepository
 
     /**
      * Creates a new subuser on the server.
-     * @param  integer $id     The ID of the server to add this subuser to.
+     * @param  int $id     The ID of the server to add this subuser to.
      * @param  array  $data
      * @throws DisplayValidationException
      * @throws DisplayException
-     * @return integer          Returns the ID of the newly created subuser.
+     * @return int          Returns the ID of the newly created subuser.
      */
     public function create($sid, array $data)
     {
         $server = Models\Server::findOrFail($sid);
+
         $validator = Validator::make($data, [
             'permissions' => 'required|array',
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
 
         if ($validator->fails()) {
@@ -134,15 +132,24 @@ class SubuserRepository
         try {
             // Determine if this user exists or if we need to make them an account.
             $user = Models\User::where('email', $data['email'])->first();
-            if (!$user) {
-                $password = str_random(16);
+            if (! $user) {
                 try {
                     $repo = new UserRepository;
-                    $uid = $repo->create($data['email'], $password);
+                    $uid = $repo->create([
+                        'email' => $data['email'],
+                        'username' => substr(str_replace('@', '', $data['email']), 0, 8),
+                        'name_first' => 'John',
+                        'name_last' => 'Doe',
+                        'root_admin' => false,
+                    ]);
                     $user = Models\User::findOrFail($uid);
                 } catch (\Exception $ex) {
                     throw $ex;
                 }
+            } elseif ($server->owner === $user->id) {
+                throw new DisplayException('You cannot add the owner of a server as a subuser.');
+            } elseif (Models\Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
+                throw new DisplayException('A subuser with that email already exists for this server.');
             }
 
             $uuid = new UuidService;
@@ -151,22 +158,23 @@ class SubuserRepository
             $subuser->fill([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
-                'daemonSecret' => (string) $uuid->generate('servers', 'uuid')
+                'daemonSecret' => (string) $uuid->generate('servers', 'uuid'),
             ]);
             $subuser->save();
 
             $daemonPermissions = $this->coreDaemonPermissions;
-            foreach($data['permissions'] as $permission) {
+            foreach ($data['permissions'] as $permission) {
                 if (array_key_exists($permission, $this->permissions)) {
                     // Build the daemon permissions array for sending.
-                    if (!is_null($this->permissions[$permission])) {
+                    if (! is_null($this->permissions[$permission])) {
                         array_push($daemonPermissions, $this->permissions[$permission]);
                     }
+
                     $model = new Models\Permission;
                     $model->fill([
                         'user_id' => $user->id,
                         'server_id' => $server->id,
-                        'permission' => $permission
+                        'permission' => $permission,
                     ]);
                     $model->save();
                 }
@@ -182,13 +190,13 @@ class SubuserRepository
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'json' => [
                     'keys' => [
-                        $subuser->daemonSecret => $daemonPermissions
-                    ]
-                ]
+                        $subuser->daemonSecret => $daemonPermissions,
+                    ],
+                ],
             ]);
 
             $email = $data['email'];
@@ -201,6 +209,7 @@ class SubuserRepository
                 $message->subject(Settings::get('company') . ' - Added to Server');
             });
             DB::commit();
+
             return $subuser->id;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -209,12 +218,13 @@ class SubuserRepository
             DB::rollBack();
             throw $ex;
         }
+
         return false;
     }
 
     /**
      * Revokes a users permissions on a server.
-     * @param  integer  $id  The ID of the subuser row in MySQL.
+     * @param  int  $id  The ID of the subuser row in MySQL.
      * @param  array    $data
      * @throws DisplayValidationException
      * @throws DisplayException
@@ -236,17 +246,18 @@ class SubuserRepository
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'json' => [
                     'keys' => [
-                        $subuser->daemonSecret => []
-                    ]
-                ]
+                        $subuser->daemonSecret => [],
+                    ],
+                ],
             ]);
 
             $subuser->delete();
             DB::commit();
+
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -255,12 +266,13 @@ class SubuserRepository
             DB::rollBack();
             throw $ex;
         }
+
         return false;
     }
 
     /**
      * Updates permissions for a given subuser.
-     * @param  integer $id  The ID of the subuser row in MySQL. (Not the user ID)
+     * @param  int $id  The ID of the subuser row in MySQL. (Not the user ID)
      * @param  array  $data
      * @throws DisplayValidationException
      * @throws DisplayException
@@ -287,17 +299,17 @@ class SubuserRepository
             Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
 
             $daemonPermissions = $this->coreDaemonPermissions;
-            foreach($data['permissions'] as $permission) {
+            foreach ($data['permissions'] as $permission) {
                 if (array_key_exists($permission, $this->permissions)) {
                     // Build the daemon permissions array for sending.
-                    if (!is_null($this->permissions[$permission])) {
+                    if (! is_null($this->permissions[$permission])) {
                         array_push($daemonPermissions, $this->permissions[$permission]);
                     }
                     $model = new Models\Permission;
                     $model->fill([
                         'user_id' => $data['user'],
                         'server_id' => $data['server'],
-                        'permission' => $permission
+                        'permission' => $permission,
                     ]);
                     $model->save();
                 }
@@ -312,16 +324,17 @@ class SubuserRepository
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
                     'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
+                    'X-Access-Token' => $node->daemonSecret,
                 ],
                 'json' => [
                     'keys' => [
-                        $subuser->daemonSecret => $daemonPermissions
-                    ]
-                ]
+                        $subuser->daemonSecret => $daemonPermissions,
+                    ],
+                ],
             ]);
 
             DB::commit();
+
             return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
@@ -330,7 +343,7 @@ class SubuserRepository
             DB::rollBack();
             throw $ex;
         }
+
         return false;
     }
-
 }

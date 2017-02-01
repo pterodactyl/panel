@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use Cron;
 use Validator;
-
 use Pterodactyl\Models;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class TaskRepository
 {
-
     protected $defaults = [
         'year' => '*',
         'day_of_week' => '*',
@@ -64,6 +62,7 @@ class TaskRepository
         $task = Models\Task::findOrFail($id);
         try {
             $task->delete();
+
             return true;
         } catch (\Exception $ex) {
             throw $ex;
@@ -111,20 +110,20 @@ class TaskRepository
             'month' => 'string|sometimes',
             'day_of_month' => 'string|sometimes',
             'hour' => 'string|sometimes',
-            'minute' => 'string|sometimes'
+            'minute' => 'string|sometimes',
         ]);
 
         if ($validator->fails()) {
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        if (!in_array($data['action'], $this->actions)) {
+        if (! in_array($data['action'], $this->actions)) {
             throw new DisplayException('The action provided is not valid.');
         }
 
         $cron = $this->defaults;
         foreach ($this->defaults as $setting => $value) {
-            if (array_key_exists($setting, $data) && !is_null($data[$setting]) && $data[$setting] !== '') {
+            if (array_key_exists($setting, $data) && ! is_null($data[$setting]) && $data[$setting] !== '') {
                 $cron[$setting] = $data[$setting];
             }
         }
@@ -157,11 +156,9 @@ class TaskRepository
             'hour' => $cron['hour'],
             'minute' => $cron['minute'],
             'last_run' => null,
-            'next_run' => $buildCron->getNextRunDate()
+            'next_run' => $buildCron->getNextRunDate(),
         ]);
 
         return $task->save();
-
     }
-
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
-use Crypt;
-use Log;
 use DB;
+use Crypt;
 use Validator;
-
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-
-class DatabaseRepository {
-
+class DatabaseRepository
+{
     /**
      * Adds a new database to a given database server.
      * @param int   $server   Id of the server to add a database for.
@@ -56,16 +54,15 @@ class DatabaseRepository {
         }
 
         DB::beginTransaction();
-
         try {
             $db = new Models\Database;
             $db->fill([
                 'server_id' => $server->id,
                 'db_server' => $options['db_server'],
-                'database' => $server->uuidShort . '_' . $options['database'],
+                'database' => "s{$server->id}_{$options['database']}",
                 'username' => $server->uuidShort . '_' . str_random(7),
                 'remote' => $options['remote'],
-                'password' => Crypt::encrypt(str_random(20))
+                'password' => Crypt::encrypt(str_random(20)),
             ]);
             $db->save();
 
@@ -85,21 +82,33 @@ class DatabaseRepository {
                 'prefix' => '',
                 'options' => [
                     \PDO::ATTR_TIMEOUT => 3,
-                ]
+                ],
             ]);
 
             $capsule->setAsGlobal();
-
-            Capsule::statement('CREATE DATABASE ' . $db->database);
-            Capsule::statement('CREATE USER \'' . $db->username . '\'@\'' . $db->remote . '\' IDENTIFIED BY \'' . Crypt::decrypt($db->password) . '\'');
-            Capsule::statement('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON ' . $db->database . '.* TO \'' . $db->username . '\'@\'' . $db->remote . '\'');
-            Capsule::statement('FLUSH PRIVILEGES');
-
-            DB::commit();
-            return true;
         } catch (\Exception $ex) {
-            DB::rollback();
-            throw $ex;
+            DB::rollBack();
+            throw new DisplayException('There was an error while connecting to the Database Host Server. Please check the error logs.', $ex);
+        }
+
+        try {
+            Capsule::statement('CREATE DATABASE `' . $db->database . '`');
+            Capsule::statement('CREATE USER `' . $db->username . '`@`' . $db->remote . '` IDENTIFIED BY \'' . Crypt::decrypt($db->password) . '\'');
+            Capsule::statement('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `' . $db->database . '`.* TO `' . $db->username . '`@`' . $db->remote . '`');
+            Capsule::statement('FLUSH PRIVILEGES');
+            DB::commit();
+        } catch (\Exception $ex) {
+            try {
+                Capsule::statement('DROP DATABASE `' . $db->database . '`');
+                Capsule::statement('DROP USER `' . $db->username . '`@`' . $db->remote . '`');
+            } catch (\Exception $exi) {
+                // ignore it, if it fails its probably
+                // because we failed to ever make the DB
+                // or the user on the system.
+            } finally {
+                DB::rollBack();
+                throw $ex;
+            }
         }
     }
 
@@ -116,7 +125,6 @@ class DatabaseRepository {
 
         DB::beginTransaction();
         try {
-
             $db->password = Crypt::encrypt($password);
             $db->save();
 
@@ -133,28 +141,28 @@ class DatabaseRepository {
                 'prefix' => '',
                 'options' => [
                     \PDO::ATTR_TIMEOUT => 3,
-                ]
+                ],
             ]);
 
             $capsule->setAsGlobal();
             Capsule::statement(sprintf(
-                'SET PASSWORD FOR \'%s\'@\'%s\' = PASSWORD(\'%s\')',
+                'SET PASSWORD FOR `%s`@`%s` = PASSWORD(\'%s\')',
                 $db->username,
                 $db->remote,
                 $password
             ));
 
             DB::commit();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             DB::rollback();
             throw $ex;
         }
     }
 
     /**
-     * Drops a database from the associated MySQL Server
+     * Drops a database from the associated MySQL Server.
      * @param  int $database The ID of the database to drop.
-     * @return boolean
+     * @return bool
      */
     public function drop($database)
     {
@@ -177,23 +185,23 @@ class DatabaseRepository {
                 'prefix' => '',
                 'options' => [
                     \PDO::ATTR_TIMEOUT => 3,
-                ]
+                ],
             ]);
 
             $capsule->setAsGlobal();
 
-            Capsule::statement('DROP USER \'' . $db->username . '\'@\'' . $db->remote . '\'');
-            Capsule::statement('DROP DATABASE ' . $db->database);
+            Capsule::statement('DROP USER `' . $db->username . '`@`' . $db->remote . '`');
+            Capsule::statement('DROP DATABASE `' . $db->database . '`');
 
             $db->delete();
 
             DB::commit();
+
             return true;
         } catch (\Exception $ex) {
             DB::rollback();
             throw $ex;
         }
-
     }
 
     /**
@@ -219,6 +227,10 @@ class DatabaseRepository {
      */
     public function add(array $data)
     {
+        if (isset($data['host'])) {
+            $data['host'] = gethostbyname($data['host']);
+        }
+
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
             'host' => 'required|ip|unique:database_servers,host',
@@ -248,7 +260,7 @@ class DatabaseRepository {
                 'prefix' => '',
                 'options' => [
                     \PDO::ATTR_TIMEOUT => 3,
-                ]
+                ],
             ]);
 
             $capsule->setAsGlobal();
@@ -263,8 +275,8 @@ class DatabaseRepository {
                 'port' => $data['port'],
                 'username' => $data['username'],
                 'password' => Crypt::encrypt($data['password']),
-                'max_databases' => NULL,
-                'linked_node' => (!empty($data['linked_node']) && $data['linked_node'] > 0) ? $data['linked_node'] : NULL
+                'max_databases' => null,
+                'linked_node' => (! empty($data['linked_node']) && $data['linked_node'] > 0) ? $data['linked_node'] : null,
             ]);
             $dbh->save();
 
@@ -274,5 +286,4 @@ class DatabaseRepository {
             throw $ex;
         }
     }
-
 }

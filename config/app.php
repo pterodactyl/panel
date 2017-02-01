@@ -4,7 +4,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'version' => env('APP_VERSION', 'v0.5.0'),
+    'version' => env('APP_VERSION', 'canary'),
 
     /*
     |--------------------------------------------------------------------------
@@ -159,6 +159,8 @@ return [
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
         Fideloper\Proxy\TrustedProxyServiceProvider::class,
+        Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
+        Lord\Laroute\LarouteServiceProvider::class,
 
     ],
 
@@ -199,6 +201,7 @@ return [
         'Hash'      => Illuminate\Support\Facades\Hash::class,
         'Input'     => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,
+        'Javascript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
         'Lang'      => Illuminate\Support\Facades\Lang::class,
         'Log'       => Illuminate\Support\Facades\Log::class,
         'Mail'      => Illuminate\Support\Facades\Mail::class,
@@ -218,6 +221,7 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Uuid'      => Webpatser\Uuid\Uuid::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
+        'Version'   => Pterodactyl\Facades\Version::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
     ],

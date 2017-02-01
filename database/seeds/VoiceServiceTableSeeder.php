@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use Illuminate\Database\Seeder;
-
 use Pterodactyl\Models;
+use Illuminate\Database\Seeder;
 
 class VoiceServiceTableSeeder extends Seeder
 {
@@ -35,7 +34,7 @@ class VoiceServiceTableSeeder extends Seeder
     protected $service;
 
     /**
-     * Stores all of the option objects
+     * Stores all of the option objects.
      *
      * @var array
      */
@@ -61,7 +60,7 @@ class VoiceServiceTableSeeder extends Seeder
             'description' => 'Voice servers such as Mumble and Teamspeak 3.',
             'file' => 'voice',
             'executable' => '',
-            'startup' => ''
+            'startup' => '',
         ]);
     }
 
@@ -74,7 +73,7 @@ class VoiceServiceTableSeeder extends Seeder
             'tag' => 'mumble',
             'docker_image' => 'quay.io/pterodactyl/voice:mumble',
             'executable' => './murmur.x86',
-            'startup' => '-fg'
+            'startup' => '-fg',
         ]);
 
         $this->option['ts3'] = Models\ServiceOptions::create([
@@ -84,7 +83,7 @@ class VoiceServiceTableSeeder extends Seeder
             'tag' => 'ts3',
             'docker_image' => 'quay.io/pterodactyl/voice:ts3',
             'executable' => './ts3server_minimal_runscript.sh',
-            'startup' => 'default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}'
+            'startup' => 'default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}',
         ]);
     }
 
@@ -99,7 +98,7 @@ class VoiceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(\d){1,6}$/'
+            'regex' => '/^(\d){1,6}$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -111,7 +110,7 @@ class VoiceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([0-9_\.-]{5,8})$/'
+            'regex' => '/^([0-9_\.-]{5,8})$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -123,7 +122,7 @@ class VoiceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([0-9_\.-]{5,10})$/'
+            'regex' => '/^([0-9_\.-]{5,10})$/',
         ]);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
-use Auth;
 use DB;
+use Auth;
 use Crypt;
 use Validator;
 use IPTools\Network;
-
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class APIRepository
 {
-
     /**
      * Valid API permissions.
      * @var array
@@ -97,7 +96,7 @@ class APIRepository
     protected $user;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct(Models\User $user = null)
     {
@@ -117,17 +116,17 @@ class APIRepository
      *
      * @return string Returns the generated secret token.
      */
-    public function new(array $data)
+    public function create(array $data)
     {
         $validator = Validator::make($data, [
             'memo' => 'string|max:500',
             'permissions' => 'sometimes|required|array',
-            'adminPermissions' => 'sometimes|required|array'
+            'adminPermissions' => 'sometimes|required|array',
         ]);
 
-        $validator->after(function($validator) use ($data) {
-            if (array_key_exists('allowed_ips', $data) && !empty($data['allowed_ips'])) {
-                foreach(explode("\n", $data['allowed_ips']) as $ip) {
+        $validator->after(function ($validator) use ($data) {
+            if (array_key_exists('allowed_ips', $data) && ! empty($data['allowed_ips'])) {
+                foreach (explode("\n", $data['allowed_ips']) as $ip) {
                     $ip = trim($ip);
                     try {
                         Network::parse($ip);
@@ -155,14 +154,16 @@ class APIRepository
                 'secret' => Crypt::encrypt($secretKey),
                 'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed),
                 'memo' => $data['memo'],
-                'expires_at' => null
+                'expires_at' => null,
             ]);
             $key->save();
 
             $totalPermissions = 0;
             if (isset($data['permissions'])) {
-                foreach($data['permissions'] as $permNode) {
-                    if (!strpos($permNode, ':')) continue;
+                foreach ($data['permissions'] as $permNode) {
+                    if (! strpos($permNode, ':')) {
+                        continue;
+                    }
 
                     list($toss, $permission) = explode(':', $permNode);
                     if (in_array($permission, $this->permissions['user'])) {
@@ -170,7 +171,7 @@ class APIRepository
                         $model = new Models\APIPermission;
                         $model->fill([
                             'key_id' => $key->id,
-                            'permission' => 'api.user.' . $permission
+                            'permission' => 'api.user.' . $permission,
                         ]);
                         $model->save();
                     }
@@ -178,8 +179,10 @@ class APIRepository
             }
 
             if ($this->user->root_admin === 1 && isset($data['adminPermissions'])) {
-                foreach($data['adminPermissions'] as $permNode) {
-                    if (!strpos($permNode, ':')) continue;
+                foreach ($data['adminPermissions'] as $permNode) {
+                    if (! strpos($permNode, ':')) {
+                        continue;
+                    }
 
                     list($toss, $permission) = explode(':', $permNode);
                     if (in_array($permission, $this->permissions['admin'])) {
@@ -187,7 +190,7 @@ class APIRepository
                         $model = new Models\APIPermission;
                         $model->fill([
                             'key_id' => $key->id,
-                            'permission' => 'api.admin.' . $permission
+                            'permission' => 'api.admin.' . $permission,
                         ]);
                         $model->save();
                     }
@@ -199,12 +202,12 @@ class APIRepository
             }
 
             DB::commit();
+
             return $secretKey;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
         }
-
     }
 
     /**
@@ -216,13 +219,13 @@ class APIRepository
      *
      * @return void
      */
-    public function revoke(string $key)
+    public function revoke($key)
     {
         DB::beginTransaction();
 
         try {
             $model = Models\APIKey::where('public', $key)->where('user', $this->user->id)->firstOrFail();
-            $permissions = Models\APIPermission::where('key_id', $model->id)->delete();
+            Models\APIPermission::where('key_id', $model->id)->delete();
             $model->delete();
 
             DB::commit();
@@ -231,5 +234,4 @@ class APIRepository
             throw $ex;
         }
     }
-
 }

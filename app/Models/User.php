@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Hash;
 use Google2FA;
-use Pterodactyl\Exceptions\AccountNotFoundException;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
-
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-class User extends Model implements AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword, Notifiable;
+
+    /**
+     * The rules for user passwords.
+     *
+     * @var string
+     */
+    const PASSWORD_RULES = 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
+
+    /**
+     * The regex rules for usernames.
+     *
+     * @var string
+     */
+    const USERNAME_RULES = 'regex:/^([\w\d\.\-]{1,255})$/';
 
     /**
      * The table associated with the model.
@@ -53,20 +63,21 @@ class User extends Model implements AuthenticatableContract,
     protected $table = 'users';
 
     /**
-     * The attributes that are not mass assignable.
+     * A list of mass-assignable variables.
      *
-     * @var array
+     * @var [type]
      */
-    protected $guarded = ['id', 'remeber_token', 'created_at', 'updated_at'];
+    protected $fillable = ['username', 'email', 'name_first', 'name_last', 'password', 'language', 'use_totp', 'totp_secret', 'gravatar', 'root_admin'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'root_admin' => 'integer',
          'use_totp' => 'integer',
+         'gravatar' => 'integer',
      ];
 
     /**
@@ -77,12 +88,10 @@ class User extends Model implements AuthenticatableContract,
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
     /**
-    * The rules for user passwords
-    * 
-    * @var string
-    */
-    const PASSWORD_RULES = 'min:8|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
-
+     * Determines if a user has permissions.
+     *
+     * @return bool
+     */
     public function permissions()
     {
         return $this->hasMany(Permission::class);
@@ -92,20 +101,18 @@ class User extends Model implements AuthenticatableContract,
      * Enables or disables TOTP on an account if the token is valid.
      *
      * @param int $token The token that we want to verify.
-     * @return boolean
+     * @return bool
      */
     public function toggleTotp($token)
     {
-
-        if (!Google2FA::verifyKey($this->totp_secret, $token)) {
+        if (! Google2FA::verifyKey($this->totp_secret, $token)) {
             return false;
         }
 
-        $this->use_totp = !$this->use_totp;
+        $this->use_totp = ! $this->use_totp;
         $this->save();
 
         return true;
-
     }
 
     /**
@@ -113,7 +120,7 @@ class User extends Model implements AuthenticatableContract,
      *      - 8 or more characters in length
      *      - at least one uppercase character
      *      - at least one lowercase character
-     *      - at least one number
+     *      - at least one number.
      *
      * @param string $password The raw password to set the account password to.
      * @param string $regex The regex to use when validating the password. Defaults to '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})'.
@@ -121,16 +128,12 @@ class User extends Model implements AuthenticatableContract,
      */
     public function setPassword($password, $regex = '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})')
     {
-
-        if (!preg_match($regex, $password)) {
+        if (! preg_match($regex, $password)) {
             throw new DisplayException('The password passed did not meet the minimum password requirements.');
         }
 
         $this->password = Hash::make($password);
         $this->save();
-
-        return;
-
     }
 
     /**
@@ -144,4 +147,13 @@ class User extends Model implements AuthenticatableContract,
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    /**
+     * Return true or false depending on wether the user is root admin or not.
+     *
+     * @return bool the user is root admin
+     */
+    public function isRootAdmin()
+    {
+        return $this->root_admin === 1;
+    }
 }

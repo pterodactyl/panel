@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Auth;
 use Session;
-
-use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
 
 class LanguageController extends Controller
 {
-
     protected $languages = [
-        'de' => 'Danish',
+        'de' => 'German',
         'en' => 'English',
-        'es' => 'Spanish',
-        'fr' => 'French',
-        'it' => 'Italian',
-        'pl' => 'Polish',
+        'et' => 'Estonian',
+        'nb' => 'Norwegian',
+        'nl' => 'Dutch',
         'pt' => 'Portuguese',
+        'ro' => 'Romanian',
         'ru' => 'Russian',
-        'se' => 'Swedish',
-        'zh' => 'Chinese',
     ];
 
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -64,7 +61,7 @@ class LanguageController extends Controller
             }
             Session::set('applocale', $language);
         }
+
         return redirect()->back();
     }
-
 }

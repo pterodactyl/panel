@@ -27,7 +27,9 @@
         "dingo/api": "1.0.0-beta6",
         "aws/aws-sdk-php": "3.19.20",
         "predis/predis": "1.1.1",
-        "fideloper/proxy": "3.2.0"
+        "fideloper/proxy": "3.2.0",
+        "laracasts/utilities": "2.1.0",
+        "lord/laroute": "2.3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

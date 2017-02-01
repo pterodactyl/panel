@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Services;
 
 use DB;
-
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 
 class DeploymentService
 {
-
     public function __constructor()
     {
         //
@@ -62,12 +61,12 @@ class DeploymentService
     public static function randomNode($location, array $not = [])
     {
         $useLocation = Models\Location::where('id', $location)->first();
-        if (!$useLocation) {
-            throw new DisplayException("The location passed was not valid and could not be found.");
+        if (! $useLocation) {
+            throw new DisplayException('The location passed was not valid and could not be found.');
         }
 
         $node = Models\Node::where('location', $useLocation->id)->where('public', 1)->whereNotIn('id', $not)->inRandomOrder()->first();
-        if (!$node) {
+        if (! $node) {
             throw new DisplayException("Unable to find a node in location {$useLocation->short} (id: {$useLocation->id}) that is available and has space.");
         }
 
@@ -84,18 +83,19 @@ class DeploymentService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public static function smartRandomNode($memory, $disk, $location = null) {
+    public static function smartRandomNode($memory, $disk, $location = null)
+    {
         $node = self::randomNode($location);
         $notIn = [];
         do {
             $return = self::checkNodeAllocation($node, $memory, $disk);
-            if (!$return) {
+            if (! $return) {
                 $notIn = array_merge($notIn, [
-                    $node->id
+                    $node->id,
                 ]);
                 $node = self::randomNode($location, $notIn);
             }
-        } while (!$return);
+        } while (! $return);
 
         return $node;
     }
@@ -108,7 +108,7 @@ class DeploymentService
     public static function randomAllocation($node)
     {
         $allocation = Models\Allocation::where('node', $node)->whereNull('assigned_to')->inRandomOrder()->first();
-        if (!$allocation) {
+        if (! $allocation) {
             throw new DisplayException('No available allocation could be found for the assigned node.');
         }
 
@@ -139,7 +139,7 @@ class DeploymentService
                 $diskLimitReached = (($totals->disk + $disk) > $limit);
             }
 
-            return (!$diskLimitReached && !$memoryLimitReached);
+            return ! $diskLimitReached && ! $memoryLimitReached;
         }
     }
 }

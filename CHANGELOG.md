@@ -3,6 +3,100 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.1
+### Added
+* Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
+* Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
+* Users can now have a username as well as client name assigned to their account.
+* Ability to create a node through the CLI using `pterodactyl:node` as well as locations via `pterodactyl:location`.
+* New theme (AdminLTE) for front-end with tweaks to backend files to work properly with it.
+
+### Fixed
+* Bug causing error logs to be spammed if someone timed out on an ajax based page.
+* Fixes edge case where specific server names could cause daemon errors due to an invalid SFTP username being created by the panel.
+
+### Changed
+* Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
+* User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
+
+### Deprecated
+
+## v0.5.6 (Bodacious Boreopterus)
+### Added
+* Added the following languages: Estonian `et`, Dutch `nl`, Norwegian `nb` (partial), Romanian `ro`, and Russian `ru`. Interested in helping us translate the panel into more languages, or improving existing translations? Contact us on Discord and let us know.
+* Added missing `strings.password` to language file for English.
+* Allow listing of users from the API by passing either the user ID or their email.
+
+### Fixed
+* Fixes bug where assigning a variable a default value (or valid value) of `0` would cause the panel to reject the value thinking it did not exist.
+* Addresses potential for crash by limiting total ports that can be assigned per-range to 2000.
+* Fixes server names requiring at minimum 4 characters. Name can now be 1 to 200 characters long. :pencil2:
+* Fixes bug that would allow adding the owner of a server as a subuser for that same server.
+* Fixes bug that would allow creating multiple subusers with the same email address.
+* Fixes bug where Sponge servers were improperly tagged as a spigot server in the daemon causing issues when booting or modifying configuration files.
+* Use transpiled ES6 -> ES5 filemanager code in browsers.
+* Fixes service option name displaying the name of a nwly added variable after the variable is added and until the page is refreshed. (see #208)
+
+### Changed
+* Filemanager and EULA checking javascript is now written in pure ES6 code rather than as a blade-syntax template. This allows the use of babel to transpile into ES5 as a minified version.
+
+## v0.5.5 (Bodacious Boreopterus)
+### Added
+* New API route to return allocations given a server ID. This adds support for a community-driven WHMCS module :rocket: available [here](https://github.com/hammerdawn/Pterodactyl-WHMCS).
+
+### Fixed
+* Fixes subuser display when trying to edit an existing subuser.
+
+## v0.5.4 (Bodacious Boreopterus)
+### Added
+* Changing node configuration values now automatically makes a call to the daemon and updates the configuration there. Changing daemon tokens now does not require any intervention, and takes effect immediately. SSL & Port configurations will still require a daemon reboot.
+* New button in file manager that triggers the right click menu to enable support on mobile devices and those who cannot right click (blessed be them).
+* Support for filtering users when listing all users on the system.
+* Container ID and User ID on the daemon are now shown when viewing a server in the panel.
+
+### Changed
+* File uploads now account for a maximum file size that is assigned for the daemon, and gives cleaner errors when that limit is reached.
+* File upload limit can now be controlled from the panel.
+* Updates regex and default values for some Minecraft services to reflect current technology.
+
+### Fixed
+* Fixes potential for generated password to not meet own validation requirements.
+* Fixes some regex checking issues with newer versions of Minecraft.
+
+## v0.5.3 (Bodacious Boreopterus)
+### Fixed
+* Fixed an error that occurred when viewing a node listing when no nodes were created yet due to a mis-declared variable. Also fixes a bug that would have all nodes trying to connect to the daemon using the same secret token on the node listing, causing only the last node to display properly.
+* Fixes a bug that displayed the panel version rather than the daemon version when viewing a node.
+* Fixes a multiplicator being applied to an overallocation field rather than a storage space field when adding a node.
+
+### Changed
+* Added a few new configuration variables for nodes to the default config, as well as a variable that will be used in future versions of the daemon.
+
+## v0.5.2 (Bodacious Boreopterus)
+### Fixed
+* Time axis on server graphs is corrected to show the minutes rather than the current month.
+* Node deletion now works correctly and deletes allocations as well.
+* Fixes a bug that would leave orphaned databases on the system if there was an error during creation.
+* Fixes an issue that could occur if a UUID contained `#e#` formatting within it when it comes to creating databases.
+* Fixed node status display to account for updated daemon security changes.
+* Fixes default language being selected as German (defaults to English now).
+* Fixes bug preventing the deletion of database servers.
+
+### Changed
+* Using `node:<name>` when filtering servers now properly filters the servers by node name, rather than looking for the node ID.
+* Using `owner:<email>` when filtering servers now properly filters by the owner's email rather than ID.
+* Added some quick help buttons to the admin index page for getting support or checking the documentation.
+* Panel now displays `Pterodactyl Panel` as the company name if one is not set.
+
+### Added
+* Added basic information about the daemon when viewing a node, including the host OS and version, CPU count, and the daemon version.
+* Added version checking for the daemon and panel that alerts admins when daemons or the panel is out of date.
+* Added multiplicator support to certain memory and disk fields that allow users to enter `10g` and have it converted to MB automatically.
+
+## v0.5.1 (Bodacious Boreopterus)
+### Fixed
+* Fixes a bug that allowed a user to bypass 2FA authentication if using the correct username and password for an account.
+
 ## v0.5.0 (Bodacious Boreopterus)
 After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 

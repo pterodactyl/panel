@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,47 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Remote;
 
+use Carbon\Carbon;
 use Pterodactyl\Models;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\NotificationService;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\NotificationService;
 
 class RemoteController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
         // No middleware for this route.
     }
 
-    public function postDownload(Request $request) {
+    public function postDownload(Request $request)
+    {
         $download = Models\Download::where('token', $request->input('token', '00'))->first();
-        if (!$download) {
+        if (! $download) {
             return response()->json([
-                'error' => 'An invalid request token was recieved with this request.'
+                'error' => 'An invalid request token was recieved with this request.',
             ], 403);
         }
 
         $download->delete();
+
         return response()->json([
             'path' => $download->path,
-            'server' => $download->server
+            'server' => $download->server,
         ]);
     }
 
     public function postInstall(Request $request)
     {
         $server = Models\Server::where('uuid', $request->input('server'))->first();
-        if (!$server) {
+        if (! $server) {
             return response()->json([
-                'error' => 'No server by that ID was found on the system.'
+                'error' => 'No server by that ID was found on the system.',
             ], 422);
         }
 
@@ -71,7 +72,7 @@ class RemoteController extends Controller
 
         if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {
             return response()->json([
-                'error' => 'Signed HMAC was invalid.'
+                'error' => 'Signed HMAC was invalid.',
             ], 403);
         }
 
@@ -79,16 +80,16 @@ class RemoteController extends Controller
         $server->save();
 
         return response()->json([
-            'message' => 'Recieved!'
+            'message' => 'Recieved!',
         ], 200);
     }
 
     public function event(Request $request)
     {
         $server = Models\Server::where('uuid', $request->input('server'))->first();
-        if (!$server) {
+        if (! $server) {
             return response()->json([
-                'error' => 'No server by that ID was found on the system.'
+                'error' => 'No server by that ID was found on the system.',
             ], 422);
         }
 
@@ -97,7 +98,7 @@ class RemoteController extends Controller
         $hmac = $request->input('signed');
         if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {
             return response()->json([
-                'error' => 'Signed HMAC was invalid.'
+                'error' => 'Signed HMAC was invalid.',
             ], 403);
         }
 
@@ -108,4 +109,28 @@ class RemoteController extends Controller
         return response('', 201);
     }
 
+    public function getConfiguration(Request $request, $tokenString)
+    {
+        // Try to query the token and the node from the database
+        try {
+            $token = Models\NodeConfigurationToken::where('token', $tokenString)->firstOrFail();
+            $node = Models\Node::findOrFail($token->node);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'token_invalid'], 403);
+        }
+
+        // Check if token is expired
+        if ($token->expires_at->lt(Carbon::now())) {
+            $token->delete();
+
+            return response()->json(['error' => 'token_expired'], 403);
+        }
+
+        // Delete the token, it's one-time use
+        $token->delete();
+
+        // Manually as getConfigurationAsJson() returns it in correct format already
+        return response($node->getConfigurationAsJson(), 200)
+            ->header('Content-Type', 'application/json');
+    }
 }

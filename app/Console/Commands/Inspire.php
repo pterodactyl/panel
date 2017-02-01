@@ -28,6 +28,6 @@ class Inspire extends Command
      */
     public function handle()
     {
-        $this->comment(PHP_EOL.Inspiring::quote().PHP_EOL);
+        $this->comment(PHP_EOL . Inspiring::quote() . PHP_EOL);
     }
 }

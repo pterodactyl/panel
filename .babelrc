@@ -1,0 +1,8 @@
+{
+  "presets": ["es2015"],
+  "compact": true,
+  "minified": true,
+  "only": "public/themes/pterodactyl/js/frontend/files/src/*.js",
+  "sourceMaps": "inline",
+  "comments": false
+}

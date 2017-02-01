@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Auth;
@@ -28,7 +29,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subuser extends Model
 {
-
     /**
      * The table associated with the model.
      *
@@ -50,11 +50,11 @@ class Subuser extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'user_id' => 'integer',
          'server_id' => 'integer',
@@ -66,7 +66,7 @@ class Subuser extends Model
     protected static $user;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -80,18 +80,8 @@ class Subuser extends Model
      */
     public static function accessServers()
     {
-
-        $access = [];
-
         $union = self::select('server_id')->where('user_id', self::$user->id);
-        $select = Server::select('id')->where('owner', self::$user->id)->union($union)->get();
 
-        foreach($select as &$select) {
-            $access = array_merge($access, [ $select->id ]);
-        }
-
-        return $access;
-
+        return Server::select('id')->where('owner', self::$user->id)->union($union)->pluck('id');
     }
-
 }

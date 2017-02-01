@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
 use Pterodactyl\Models;
-
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Repositories;
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-use GuzzleHttp\Client;
+use Pterodactyl\Repositories;
 use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AjaxController extends Controller
 {
-
     /**
      * @var array
      */
@@ -55,7 +51,7 @@ class AjaxController extends Controller
     protected $directory;
 
     /**
-     * Controller Constructor
+     * Controller Constructor.
      */
     public function __construct()
     {
@@ -73,7 +69,7 @@ class AjaxController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
 
-        if (!$server) {
+        if (! $server) {
             return response()->json([], 404);
         }
 
@@ -81,14 +77,15 @@ class AjaxController extends Controller
 
         try {
             $res = $client->request('GET', '/server', [
-                'headers' => Models\Server::getGuzzleHeaders($uuid)
+                'headers' => Models\Server::getGuzzleHeaders($uuid),
             ]);
-            if($res->getStatusCode() === 200) {
+            if ($res->getStatusCode() === 200) {
                 return response()->json(json_decode($res->getBody()));
             }
         } catch (RequestException $e) {
             //
         }
+
         return response()->json([]);
     }
 
@@ -101,13 +98,12 @@ class AjaxController extends Controller
      */
     public function postDirectoryList(Request $request, $uuid)
     {
-
         $server = Models\Server::getByUUID($uuid);
         $this->directory = '/' . trim(urldecode($request->input('directory', '/')), '/');
         $this->authorize('list-files', $server);
 
         $prevDir = [
-            'header' => ($this->directory !== '/') ? $this->directory : ''
+            'header' => ($this->directory !== '/') ? $this->directory : '',
         ];
         if ($this->directory !== '/') {
             $prevDir['first'] = true;
@@ -116,7 +112,7 @@ class AjaxController extends Controller
         // Determine if we should show back links in the file browser.
         // This code is strange, and could probably be rewritten much better.
         $goBack = explode('/', trim($this->directory, '/'));
-        if (!empty(array_filter($goBack)) && count($goBack) >= 2) {
+        if (! empty(array_filter($goBack)) && count($goBack) >= 2) {
             $prevDir['show'] = true;
             array_pop($goBack);
             $prevDir['link'] = '/' . implode('/', $goBack);
@@ -131,6 +127,7 @@ class AjaxController extends Controller
             return response($ex->getMessage(), 500);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response('An error occured while attempting to load the requested directory, please try again.', 500);
         }
 
@@ -139,9 +136,8 @@ class AjaxController extends Controller
             'files' => $directoryContents->files,
             'folders' => $directoryContents->folders,
             'editableMime' => Repositories\HelperRepository::editableFiles(),
-            'directory' => $prevDir
+            'directory' => $prevDir,
         ]);
-
     }
 
     /**
@@ -153,7 +149,6 @@ class AjaxController extends Controller
      */
     public function postSaveFile(Request $request, $uuid)
     {
-
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('save-files', $server);
 
@@ -161,39 +156,39 @@ class AjaxController extends Controller
 
         try {
             $controller->saveFileContents($request->input('file'), $request->input('contents'));
+
             return response(null, 204);
         } catch (DisplayException $ex) {
             return response($ex->getMessage(), 500);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response('An error occured while attempting to save this file, please try again.', 500);
         }
-
     }
 
     /**
-     * [postSetPrimary description]
+     * [postSetPrimary description].
      * @param  Request $request
      * @param  string  $uuid
      * @return \Illuminate\Http\Response
      */
     public function postSetPrimary(Request $request, $uuid)
     {
-
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('set-connection', $server);
 
         if ((int) $request->input('allocation') === $server->allocation) {
             return response()->json([
-                'error' => 'You are already using this as your default connection.'
+                'error' => 'You are already using this as your default connection.',
             ], 409);
         }
 
         try {
             $allocation = Models\Allocation::where('id', $request->input('allocation'))->where('assigned_to', $server->id)->first();
-            if (!$allocation) {
+            if (! $allocation) {
                 return response()->json([
-                    'error' => 'No allocation matching your request was found in the system.'
+                    'error' => 'No allocation matching your request was found in the system.',
                 ], 422);
             }
 
@@ -201,6 +196,7 @@ class AjaxController extends Controller
             $repo->changeBuild($server->id, [
                 'default' => $allocation->ip . ':' . $allocation->port,
             ]);
+
             return response('The default connection for this server has been updated. Please be aware that you will need to restart your server for this change to go into effect.');
         } catch (DisplayValidationException $ex) {
             return response()->json([
@@ -212,8 +208,9 @@ class AjaxController extends Controller
             ], 503);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'An unhandled exception occured while attemping to modify the default connection for this server.'
+                'error' => 'An unhandled exception occured while attemping to modify the default connection for this server.',
             ], 503);
         }
     }
@@ -225,21 +222,21 @@ class AjaxController extends Controller
 
         $this->authorize('reset-db-password', $server);
         try {
-
             $repo = new Repositories\DatabaseRepository;
             $password = str_random(16);
             $repo->modifyPassword($request->input('database'), $password);
+
             return response($password);
         } catch (\Pterodactyl\Exceptions\DisplayException $ex) {
             return response()->json([
                 'error' => $ex->getMessage(),
             ], 503);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'An unhandled error occured while attempting to modify this database\'s password.'
+                'error' => 'An unhandled error occured while attempting to modify this database\'s password.',
             ], 503);
         }
     }
-
 }

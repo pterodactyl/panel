@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\Daemon;
 
+use GuzzleHttp\Client;
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-
-class PowerRepository {
-
+class PowerRepository
+{
     protected $server;
     protected $node;
     protected $client;
@@ -52,11 +51,11 @@ class PowerRepository {
             $response = $this->client->request('PUT', '/server/power', [
                 'headers' => [
                     'X-Access-Token' => $this->server->daemonSecret,
-                    'X-Access-Server' => $this->server->uuid
+                    'X-Access-Server' => $this->server->uuid,
                 ],
                 'json' => [
-                    'action' => $action
-                ]
+                    'action' => $action,
+                ],
             ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
@@ -88,5 +87,4 @@ class PowerRepository {
     {
         $this->do('kill');
     }
-
 }

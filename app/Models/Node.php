@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Node extends Model
 {
+    use Notifiable;
 
     /**
      * The table associated with the model.
@@ -43,11 +46,11 @@ class Node extends Model
      */
     protected $hidden = ['daemonSecret'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'public' => 'integer',
          'location' => 'integer',
@@ -88,9 +91,9 @@ class Node extends Model
             return self::$nodes[$id];
         }
 
-        self::$nodes[$id] = Node::where('id', $id)->first();
-        return self::$nodes[$id];
+        self::$nodes[$id] = self::where('id', $id)->first();
 
+        return self::$nodes[$id];
     }
 
     /**
@@ -116,7 +119,62 @@ class Node extends Model
         ]);
 
         return self::$guzzle[$node];
-
     }
 
+    /**
+     * Returns the configuration in JSON format.
+     *
+     * @param bool $pretty Wether to pretty print the JSON or not
+     * @return string The configration in JSON format
+     */
+    public function getConfigurationAsJson($pretty = false)
+    {
+        $config = [
+            'web' => [
+                'host' => '0.0.0.0',
+                'listen' => $this->daemonListen,
+                'ssl' => [
+                    'enabled' => $this->scheme === 'https',
+                    'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
+                ],
+            ],
+            'docker' => [
+                'socket' => '/var/run/docker.sock',
+                'autoupdate_images' => true,
+            ],
+            'sftp' => [
+                'path' => $this->daemonBase,
+                'port' => $this->daemonSFTP,
+                'container' => 'ptdl-sftp',
+            ],
+            'query' => [
+                'kill_on_fail' => true,
+                'fail_limit' => 5,
+            ],
+            'logger' => [
+                'path' => 'logs/',
+                'src' => false,
+                'level' => 'info',
+                'period' => '1d',
+                'count' => 3,
+            ],
+            'remote' => [
+                'base' => config('app.url'),
+                'download' => route('remote.download'),
+                'installed' => route('remote.install'),
+            ],
+            'uploads' => [
+                'size_limit' => $this->upload_size,
+            ],
+            'keys' => [$this->daemonSecret],
+        ];
+
+        $json_options = JSON_UNESCAPED_SLASHES;
+        if ($pretty) {
+            $json_options |= JSON_PRETTY_PRINT;
+        }
+
+        return json_encode($config, $json_options);
+    }
 }

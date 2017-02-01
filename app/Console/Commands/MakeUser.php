@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Console\Commands;
 
-use Hash;
 use Illuminate\Console\Command;
-
 use Pterodactyl\Repositories\UserRepository;
 
 class MakeUser extends Command
@@ -36,6 +35,9 @@ class MakeUser extends Command
      * @var string
      */
     protected $signature = 'pterodactyl:user
+                            {--firstname= : First name to use for this account.}
+                            {--lastname= : Last name to use for this account.}
+                            {--username= : Username to use for this account.}
                             {--email= : Email address to use for this account.}
                             {--password= : Password to assign to the user.}
                             {--admin= :  Boolean flag for if user should be an admin.}';
@@ -64,19 +66,23 @@ class MakeUser extends Command
      */
     public function handle()
     {
-        $email = is_null($this->option('email')) ? $this->ask('Email') : $this->option('email');
-        $password = is_null($this->option('password')) ? $this->secret('Password') : $this->option('password');
+        $data['name_first'] = is_null($this->option('firstname')) ? $this->ask('First Name') : $this->option('firstname');
+        $data['name_last'] = is_null($this->option('lastname')) ? $this->ask('Last Name') : $this->option('lastname');
+        $data['username'] = is_null($this->option('username')) ? $this->ask('Username') : $this->option('username');
+        $data['email'] = is_null($this->option('email')) ? $this->ask('Email') : $this->option('email');
+        $data['password'] = is_null($this->option('password')) ? $this->secret('Password') : $this->option('password');
         $password_confirmation = is_null($this->option('password')) ? $this->secret('Confirm Password') : $this->option('password');
 
-        if ($password !== $password_confirmation) {
+        if ($data['password'] !== $password_confirmation) {
             return $this->error('The passwords provided did not match!');
         }
 
-        $admin = is_null($this->option('admin')) ? $this->confirm('Is this user a root administrator?') : $this->option('admin');
+        $data['root_admin'] = is_null($this->option('admin')) ? $this->confirm('Is this user a root administrator?') : $this->option('admin');
 
         try {
             $user = new UserRepository;
-            $user->create($email, $password, $admin);
+            $user->create($data);
+
             return $this->info('User successfully created.');
         } catch (\Exception $ex) {
             return $this->error($ex->getMessage());

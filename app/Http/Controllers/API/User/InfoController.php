@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,38 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API\User;
 
-use Auth;
-use Dingo;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
-
 use Pterodactyl\Http\Controllers\API\BaseController;
 
 class InfoController extends BaseController
 {
     public function me(Request $request)
     {
-        $servers = Models\Server::getUserServers();
-        $response = [];
-
-        foreach($servers as &$server) {
-            $response = array_merge($response, [[
+        return Models\Server::getUserServers()->map(function ($server) {
+            return [
                 'id' => $server->uuidShort,
                 'uuid' => $server->uuid,
                 'name' => $server->name,
                 'node' => $server->nodeName,
                 'ip' => [
                     'set' => $server->ip,
-                    'alias' => $server->ip_alias
+                    'alias' => $server->ip_alias,
                 ],
                 'port' => $server->port,
                 'service' => $server->a_serviceName,
-                'option' => $server->a_serviceOptionName
-            ]]);
-        }
-
-        return $response;
+                'option' => $server->a_serviceOptionName,
+            ];
+        })->all();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Middleware;
 
-use Closure;
 use Auth;
+use Closure;
 use Pterodactyl\Models\Server;
-use Debugbar;
 
 class CheckServer
 {
@@ -39,13 +39,12 @@ class CheckServer
      */
     public function handle($request, Closure $next)
     {
-
-        if (!Auth::user()) {
+        if (! Auth::user()) {
             return redirect()->guest('auth/login');
         }
 
         $server = Server::getByUUID($request->route()->server);
-        if (!$server) {
+        if (! $server) {
             return response()->view('errors.404', [], 404);
         }
 
@@ -58,6 +57,5 @@ class CheckServer
         }
 
         return $next($request);
-
     }
 }

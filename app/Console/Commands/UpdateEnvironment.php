@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Console\Commands;
 
 use Uuid;
@@ -66,10 +67,9 @@ class UpdateEnvironment extends Command
      */
     public function handle()
     {
-
         $variables = [];
         $file = base_path() . '/.env';
-        if (!file_exists($file)) {
+        if (! file_exists($file)) {
             $this->error('Missing environment file! It appears that you have not installed this panel correctly.');
             exit();
         }
@@ -77,12 +77,12 @@ class UpdateEnvironment extends Command
         $envContents = file_get_contents($file);
 
         $this->info('Simply leave blank and press enter to fields that you do not wish to update.');
-        if (!env('SERVICE_AUTHOR', false)) {
+        if (! env('SERVICE_AUTHOR', false)) {
             $this->info('No service author set, setting one now.');
             $variables['SERVICE_AUTHOR'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
         }
 
-        if (!env('QUEUE_STANDARD', false) || !env('QUEUE_DRIVER', false)) {
+        if (! env('QUEUE_STANDARD', false) || ! env('QUEUE_DRIVER', false)) {
             $this->info('Setting default queue settings.');
             $variables['QUEUE_DRIVER'] = env('QUEUE_DRIVER', 'database');
             $variables['QUEUE_HIGH'] = env('QUEUE_HIGH', 'high');
@@ -91,25 +91,25 @@ class UpdateEnvironment extends Command
         }
 
         if (is_null($this->option('dbhost'))) {
-            $variables['DB_HOST'] = $this->anticipate('Database Host', [ 'localhost', '127.0.0.1', env('DB_HOST') ], env('DB_HOST'));
+            $variables['DB_HOST'] = $this->anticipate('Database Host', ['localhost', '127.0.0.1', env('DB_HOST')], env('DB_HOST'));
         } else {
             $variables['DB_HOST'] = $this->option('dbhost');
         }
 
         if (is_null($this->option('dbport'))) {
-            $variables['DB_PORT'] = $this->anticipate('Database Port', [ 3306, env('DB_PORT') ], env('DB_PORT'));
+            $variables['DB_PORT'] = $this->anticipate('Database Port', [3306, env('DB_PORT')], env('DB_PORT'));
         } else {
             $variables['DB_PORT'] = $this->option('dbport');
         }
 
         if (is_null($this->option('dbname'))) {
-            $variables['DB_DATABASE'] = $this->anticipate('Database Name', [ 'pterodactyl', 'homestead', ENV('DB_DATABASE') ], env('DB_DATABASE'));
+            $variables['DB_DATABASE'] = $this->anticipate('Database Name', ['pterodactyl', 'homestead', ENV('DB_DATABASE')], env('DB_DATABASE'));
         } else {
             $variables['DB_DATABASE'] = $this->option('dbname');
         }
 
         if (is_null($this->option('dbuser'))) {
-            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ ENV('DB_DATABASE') ], env('DB_USERNAME'));
+            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ENV('DB_DATABASE')], env('DB_USERNAME'));
         } else {
             $variables['DB_USERNAME'] = $this->option('dbuser');
         }
@@ -122,7 +122,7 @@ class UpdateEnvironment extends Command
         }
 
         if (is_null($this->option('url'))) {
-            $variables['APP_URL'] = $this->ask('Panel URL', env('APP_URL'));
+            $variables['APP_URL'] = $this->ask('Panel URL (include http(s)://)', env('APP_URL'));
         } else {
             $variables['APP_URL'] = $this->option('url');
         }

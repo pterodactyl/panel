@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use Illuminate\Database\Seeder;
-
 use Pterodactyl\Models;
+use Illuminate\Database\Seeder;
 
 class MinecraftServiceTableSeeder extends Seeder
 {
@@ -35,7 +34,7 @@ class MinecraftServiceTableSeeder extends Seeder
     protected $service;
 
     /**
-     * Stores all of the option objects
+     * Stores all of the option objects.
      *
      * @var array
      */
@@ -61,7 +60,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'description' => 'Minecraft - the classic game from Mojang. With support for Vanilla MC, Spigot, and many others!',
             'file' => 'minecraft',
             'executable' => 'java',
-            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
+            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',
         ]);
     }
 
@@ -74,7 +73,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'tag' => 'vanilla',
             'docker_image' => 'quay.io/pterodactyl/minecraft',
             'executable' => null,
-            'startup' => null
+            'startup' => null,
         ]);
 
         $this->option['spigot'] = Models\ServiceOptions::create([
@@ -84,17 +83,17 @@ class MinecraftServiceTableSeeder extends Seeder
             'tag' => 'spigot',
             'docker_image' => 'quay.io/pterodactyl/minecraft:spigot',
             'executable' => null,
-            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -Djline.terminal=jline.UnsupportedTerminal -jar {{SERVER_JARFILE}}'
+            'startup' => '-Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',
         ]);
 
         $this->option['sponge'] = Models\ServiceOptions::create([
             'parent_service' => $this->service->id,
             'name' => 'Sponge (SpongeVanilla)',
             'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
-            'tag' => 'spigot',
+            'tag' => 'sponge',
             'docker_image' => 'quay.io/pterodactyl/minecraft:sponge',
             'executable' => null,
-            'startup' => null
+            'startup' => null,
         ]);
 
         $this->option['bungeecord'] = Models\ServiceOptions::create([
@@ -104,7 +103,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'tag' => 'bungeecord',
             'docker_image' => 'quay.io/pterodactyl/minecraft:bungeecord',
             'executable' => null,
-            'startup' => null
+            'startup' => null,
         ]);
     }
 
@@ -127,19 +126,19 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([\w\d._-]+)(\.jar)$/'
+            'regex' => '/^([\w\d._-]+)(\.jar)$/',
         ]);
 
         Models\ServiceVariables::create([
             'option_id' => $this->option['vanilla']->id,
-            'name' => 'Server Jar File',
+            'name' => 'Server Version',
             'description' => 'The version of Minecraft Vanilla to install. Use "latest" to install the latest version.',
             'env_variable' => 'VANILLA_VERSION',
             'default_value' => 'latest',
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
+            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{3,7})$/',
         ]);
     }
 
@@ -154,7 +153,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([\w\d._-]+)(\.jar)$/'
+            'regex' => '/^([\w\d._-]+)(\.jar)$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -166,7 +165,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{5,6})$/'
+            'regex' => '/^(latest|[a-zA-Z0-9_\.-]{3,7})$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -178,7 +177,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 0,
             'user_editable' => 0,
             'required' => 0,
-            'regex' => '/^(.*)$/'
+            'regex' => '/^(.*)$/',
         ]);
     }
 
@@ -189,11 +188,11 @@ class MinecraftServiceTableSeeder extends Seeder
             'name' => 'Sponge Version',
             'description' => 'The version of SpongeVanilla to download and use.',
             'env_variable' => 'SPONGE_VERSION',
-            'default_value' => '1.8.9-4.2.0-BETA-351',
+            'default_value' => '1.10.2-5.1.0-BETA-359',
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(.*)$/'
+            'regex' => '/^([a-zA-Z0-9.\-_]+)$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -205,7 +204,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([\w\d._-]+)(\.jar)$/'
+            'regex' => '/^([\w\d._-]+)(\.jar)$/',
         ]);
     }
 
@@ -220,7 +219,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(latest|[\d]{3,5})$/'
+            'regex' => '/^(latest|[\d]{1,6})$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -232,7 +231,7 @@ class MinecraftServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^([\w\d._-]+)(\.jar)$/'
+            'regex' => '/^([\w\d._-]+)(\.jar)$/',
         ]);
     }
 }

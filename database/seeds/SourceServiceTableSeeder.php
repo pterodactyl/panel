@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use Illuminate\Database\Seeder;
-
 use Pterodactyl\Models;
+use Illuminate\Database\Seeder;
 
 class SourceServiceTableSeeder extends Seeder
 {
@@ -35,7 +34,7 @@ class SourceServiceTableSeeder extends Seeder
     protected $service;
 
     /**
-     * Stores all of the option objects
+     * Stores all of the option objects.
      *
      * @var array
      */
@@ -61,7 +60,7 @@ class SourceServiceTableSeeder extends Seeder
             'description' => 'Includes support for most Source Dedicated Server games.',
             'file' => 'srcds',
             'executable' => './srcds_run',
-            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} -strictportbind -norestart'
+            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} -strictportbind -norestart',
         ]);
     }
 
@@ -74,7 +73,7 @@ class SourceServiceTableSeeder extends Seeder
             'tag' => 'srcds',
             'docker_image' => 'quay.io/pterodactyl/srcds',
             'executable' => null,
-            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart'
+            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart',
         ]);
 
         $this->option['tf2'] = Models\ServiceOptions::create([
@@ -84,7 +83,7 @@ class SourceServiceTableSeeder extends Seeder
             'tag' => 'srcds',
             'docker_image' => 'quay.io/pterodactyl/srcds',
             'executable' => null,
-            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart'
+            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart',
         ]);
 
         $this->option['ark'] = Models\ServiceOptions::create([
@@ -94,7 +93,7 @@ class SourceServiceTableSeeder extends Seeder
             'tag' => 'ark',
             'docker_image' => 'quay.io/pterodactyl/srcds:ark',
             'executable' => './ShooterGameServer',
-            'startup' => 'TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}'
+            'startup' => 'TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}',
         ]);
 
         $this->option['custom'] = Models\ServiceOptions::create([
@@ -104,7 +103,7 @@ class SourceServiceTableSeeder extends Seeder
             'tag' => 'srcds',
             'docker_image' => 'quay.io/pterodactyl/srcds',
             'executable' => null,
-            'startup' => null
+            'startup' => null,
         ]);
     }
 
@@ -127,7 +126,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(17705)$/'
+            'regex' => '/^(17705)$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -139,7 +138,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(insurgency)$/'
+            'regex' => '/^(insurgency)$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -151,7 +150,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(\w{1,20})$/'
+            'regex' => '/^(\w{1,20})$/',
         ]);
     }
 
@@ -166,7 +165,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(232250)$/'
+            'regex' => '/^(232250)$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -178,7 +177,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(tf)$/'
+            'regex' => '/^(tf)$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -190,7 +189,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(\w{1,20})$/'
+            'regex' => '/^(\w{1,20})$/',
         ]);
     }
 
@@ -205,7 +204,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 0,
-            'regex' => '/^(\w\.*)$/'
+            'regex' => '/^(\w\.*)$/',
         ]);
 
         DB::table('service_variables')->insert([
@@ -217,7 +216,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 0,
-            'regex' => '/^(\w\.*)$/'
+            'regex' => '/^(\w\.*)$/',
         ]);
 
         DB::table('service_variables')->insert([
@@ -229,7 +228,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 1,
             'required' => 1,
-            'regex' => '/^(\d{1,4})$/'
+            'regex' => '/^(\d{1,4})$/',
         ]);
     }
 
@@ -244,7 +243,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(\d){1,6}$/'
+            'regex' => '/^(\d){1,6}$/',
         ]);
 
         Models\ServiceVariables::create([
@@ -256,7 +255,7 @@ class SourceServiceTableSeeder extends Seeder
             'user_viewable' => 1,
             'user_editable' => 0,
             'required' => 1,
-            'regex' => '/^(.*)$/'
+            'regex' => '/^(.*)$/',
         ]);
     }
 }

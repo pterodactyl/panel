@@ -1,4 +1,4 @@
-{{-- Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
 {{-- of this software and associated documentation files (the "Software"), to deal --}}
@@ -69,6 +69,18 @@
                 <div class="panel-body">
                     <table class="table table-striped" style="margin-bottom:0;">
                         <tbody>
+                            <tr>
+                                <td>Daemon Version</td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getDaemon() }}</code>)</td>
+                            </tr>
+                            <tr>
+                                <td>System Information</td>
+                                <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Total CPU Cores</td>
+                                <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
                             <tr>
                                 <td>Total Servers</td>
                                 <td>{{ count($servers) }}</td>
@@ -171,7 +183,7 @@
                             <div class="form-group col-md-3 col-xs-6">
                                 <label for="memory" class="control-label">Total Memory</label>
                                 <div class="input-group">
-                                    <input type="text" name="memory" class="form-control" value="{{ old('memory', $node->memory) }}"/>
+                                    <input type="text" name="memory" class="form-control" data-multiplicator="true" value="{{ old('memory', $node->memory) }}"/>
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </div>
@@ -185,7 +197,7 @@
                             <div class="form-group col-md-3 col-xs-6">
                                 <label for="disk" class="control-label">Disk Space</label>
                                 <div class="input-group">
-                                    <input type="text" name="disk" class="form-control" value="{{ old('disk', $node->disk) }}"/>
+                                    <input type="text" name="disk" class="form-control" data-multiplicator="true" value="{{ old('disk', $node->disk) }}"/>
                                     <span class="input-group-addon">MB</span>
                                 </div>
                             </div>
@@ -200,6 +212,19 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <p class="text-muted"><small>Enter the total amount of disk space and memory avaliable for new servers. If you would like to allow overallocation of disk space or memory enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="disk_overallocate" class="control-label">Maximum Web Upload Filesize</label>
+                                <div class="input-group">
+                                    <input type="text" name="upload_size" class="form-control" value="{{ old('upload_size', $node->upload_size) }}"/>
+                                    <span class="input-group-addon">MB</span>
+                                </div>
+                                <p class="text-muted"><small>Enter the maximum size of files that can be uploaded through the web-based file manager.</small></p>
                             </div>
                         </div>
                     </div>
@@ -230,7 +255,7 @@
                             <div class="col-xs-6">
                                 <div class="row">
                                     <div class="form-group col-md-12">
-                                        <label for="reset_secret" class="control-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Reset Daemon Key</label>
+                                        <label for="reset_secret" class="control-label">Reset Daemon Key</label>
                                         <div style="padding: 7px 0;">
                                             <input type="checkbox" name="reset_secret" id="reset_secret" /> Reset Daemon Master Key
                                         </div>
@@ -258,46 +283,14 @@
             <div class="panel panel-default">
                 <div class="panel-heading"></div>
                 <div class="panel-body">
-                    <div class="alert alert-info">
-                        Below is the configuration file for your daemon on this node. We recommend <strong>not</strong> simply copy and pasting the code below unless you know what you are doing. You should run the <code>auto-installer</code> or <code>auto-updater</code> to setup the daemon.
+                    <div class="col-md-8">
+                        <p class="text-muted small">To simplify the configuration of nodes it is possible to fetch the config from the panel. A token is required for this process. The button below will generate a token and provide you with the commands necessary for automatic configuration of the node. Be aware that these tokens are only valid for 5 minutes.</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <p><button type="button" id="configTokenBtn" class="btn btn-sm btn-primary" style="width:100%;">Generate Token</button></p>
                     </div>
                     <div class="col-md-12">
-                        <pre><code>{
-    "web": {
-        "listen": {{ $node->daemonListen }},
-        "ssl": {
-            "enabled": {{ $node->scheme === 'https' ? 'true' : 'false' }},
-            "certificate": "/etc/letsencrypt/live/{{ $node->fqdn }}/fullchain.pem",
-            "key": "/etc/letsencrypt/live/{{ $node->fqdn }}/privkey.pem"
-        }
-    },
-    "docker": {
-        "socket": "/var/run/docker.sock",
-        "autoupdate_images": true
-    },
-    "sftp": {
-        "path": "{{ $node->daemonBase }}",
-        "port": {{ $node->daemonSFTP }},
-        "container": "ptdl-sftp"
-    },
-    "logger": {
-        "path": "logs/",
-        "src": false,
-        "level": "info",
-        "period": "1d",
-        "count": 3
-    },
-    "remote": {
-        "download": "{{ route('remote.download') }}",
-        "installed": "{{ route('remote.install') }}"
-    },
-    "uploads": {
-        "maximumSize": 100000000
-    },
-    "keys": [
-        "{{ $node->daemonSecret }}"
-    ]
-}</code></pre>
+                        <pre><code>{{ $node->getConfigurationAsJson(true) }}</code></pre>
                     </div>
                 </div>
             </div>
@@ -505,6 +498,26 @@ $(document).ready(function () {
         });
     });
 
+    $('#configTokenBtn').on('click', function (event) {
+        $.getJSON('{{ route('admin.nodes.configuration-token', $node->id) }}')
+            .done(function (data) {
+                swal({
+                    type: 'success',
+                    title: 'Token created.',
+                    text: 'Your token will expire at ' + data.expires_at + '<br /><br />' +
+                          '<p>To auto-configure your node run<br /><small><pre>npm run configure -- --panel-url {{ config('app.url') }} --token '+data.token+'</pre></small></p>',
+                    html: true
+                })
+            })
+            .fail(function () {
+                swal({
+                    title: 'Error',
+                    text: 'Something went wrong creating your token.',
+                    type: 'error'
+                });
+            })
+    })
+
     $('.cloneElement').on('click', function (event) {
         event.preventDefault();
         var rnd = randomKey(10);
@@ -674,7 +687,7 @@ $(document).ready(function () {
         memoryData.push(parseInt(data.stats.memory / (1024 * 1024)));
 
         var m = new Date();
-        timeLabels.push($.format.date(new Date(), 'HH:MM:ss'));
+        timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
 
         CPUChart.update();
         MemoryChart.update();
@@ -777,6 +790,24 @@ $(document).ready(function () {
         element.parent().removeClass('has-error has-success');
     }
 
+    (function getInformation() {
+        $.ajax({
+            method: 'GET',
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}',
+            timeout: 5000,
+            headers: {
+                'X-Access-Token': '{{ $node->daemonSecret }}'
+            },
+        }).done(function (data) {
+            $('[data-attr="info-version"]').html(data.version);
+            $('[data-attr="info-system"]').html(data.system.type + '(' + data.system.arch + ') <code>' + data.system.release + '</code>');
+            $('[data-attr="info-cpus"]').html(data.system.cpus);
+        }).fail(function (jqXHR) {
+
+        }).always(function() {
+            setTimeout(getInformation, 10000);
+        });
+    })();
 });
 </script>
 @endsection

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Middleware;
 
+use Theme;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
@@ -63,9 +65,12 @@ class AdminAuthenticate
             }
         }
 
-        if($this->auth->user()->root_admin !== 1) {
+        if ($this->auth->user()->root_admin !== 1) {
             return abort(403);
         }
+
+        // @TODO: eventually update admin themes
+        Theme::set('default');
 
         return $next($request);
     }

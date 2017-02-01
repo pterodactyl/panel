@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class APIPermission extends Model
 {
-
     /**
      * The table associated with the model.
      *
@@ -42,11 +42,11 @@ class APIPermission extends Model
      */
     protected $guarded = ['id'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'key_id' => 'integer',
      ];
@@ -54,8 +54,7 @@ class APIPermission extends Model
     /**
      * Disable timestamps for this table.
      *
-     * @var boolean
+     * @var bool
      */
     public $timestamps = false;
-
 }

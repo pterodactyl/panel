@@ -1,4 +1,4 @@
-{{-- Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
 {{-- of this software and associated documentation files (the "Software"), to deal --}}
@@ -80,16 +80,24 @@
                                 <td>{{ $server->uuid }}</td>
                             </tr>
                             <tr>
+                                <td>Docker Container ID</td>
+                                <td data-attr="container-id"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Docker User ID</td>
+                                <td data-attr="container-user"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                            </tr>
+                            <tr>
                                 <td>Owner</td>
                                 <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
                             </tr>
                             <tr>
                                 <td>Location</td>
-                                <td><a href="{{ route('admin.locations') }}">{{ $server->a_locationName }}</a></td>
+                                <td><a href="{{ route('admin.locations') }}">{{ $node->a_locationName }}</a></td>
                             </tr>
                             <tr>
                                 <td>Node</td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node) }}">{{ $server->a_nodeName }}</a></td>
+                                <td><a href="{{ route('admin.nodes.view', $server->node) }}">{{ $node->name }}</a></td>
                             </tr>
                             <tr>
                                 <td>Service</td>
@@ -228,14 +236,14 @@
                                 <div class="col-md-6 form-group {{ $errors->has('memory') ? 'has-error' : '' }}">
                                     <label for="memory" class="control-label">Allocated Memory</label>
                                     <div class="input-group">
-                                        <input type="text" name="memory" class="form-control" value="{{ old('memory', $server->memory) }}"/>
+                                        <input type="text" name="memory" data-multiplicator="true" class="form-control" value="{{ old('memory', $server->memory) }}"/>
                                         <span class="input-group-addon">MB</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 form-group {{ $errors->has('swap') ? 'has-error' : '' }}">
                                     <label for="swap" class="control-label">Allocated Swap</label>
                                     <div class="input-group">
-                                        <input type="text" name="swap" class="form-control" value="{{ old('swap', $server->swap) }}"/>
+                                        <input type="text" name="swap" data-multiplicator="true" class="form-control" value="{{ old('swap', $server->swap) }}"/>
                                         <span class="input-group-addon">MB</span>
                                     </div>
                                     <p class="text-muted"><small>Setting this to <code>0</code> will disable swap space on this server.</small></p>
@@ -373,7 +381,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Database Name:</label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">{{ $server->uuidShort }}_</div>
+                                        <div class="input-group-addon">s{{ $server->id }}_</div>
                                         <input type="text" name="database" value="{{ old('database') }}" class="form-control">
                                     </div>
                                 </div>
@@ -553,6 +561,27 @@
 $(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
     $('#sidebar_links').find("a[href='/admin/servers']").addClass('active');
+    (function checkServerInfo() {
+        $.ajax({
+            type: 'GET',
+            headers: {
+                'X-Access-Token': '{{ $server->daemonSecret }}',
+                'X-Access-Server': '{{ $server->uuid }}'
+            },
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server',
+            dataType: 'json',
+            timeout: 5000,
+        }).done(function (data) {
+            $('td[data-attr="container-id"]').html('<code>' + data.container.id + '</code>');
+            $('td[data-attr="container-user"]').html('<code>' + data.user + '</code>');
+        }).fail(function (jqXHR) {
+            $('td[data-attr="container-id"]').html('<code>error</code>');
+            $('td[data-attr="container-user"]').html('<code>error</code>');
+            console.error(jqXHR);
+        }).always(function () {
+            setTimeout(checkServerInfo, 60000);
+        })
+    })();
     $('input[name="default"]').on('change', function (event) {
         $('select[name="remove_additional[]"]').find('option:disabled').prop('disabled', false);
         $('select[name="remove_additional[]"]').find('option[value="' + $(this).val() + '"]').prop('disabled', true).prop('selected', false);

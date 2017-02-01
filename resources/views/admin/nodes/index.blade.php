@@ -1,4 +1,4 @@
-{{-- Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
 {{-- of this software and associated documentation files (the "Software"), to deal --}}
@@ -51,7 +51,7 @@
         <tbody>
             @foreach ($nodes as $node)
                 <tr>
-                    <td class="text-center text-muted left-icon" data-action="ping" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                    <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                     <td><a href="/admin/nodes/view/{{ $node->id }}">{{ $node->name }}</td>
                     <td>{{ $node->a_locationName }}</td>
                     <td class="hidden-xs">{{ $node->memory }} MB</td>
@@ -70,21 +70,27 @@
 <script>
 $(document).ready(function () {
     $('#sidebar_links').find("a[href='/admin/nodes']").addClass('active');
-    pingNodes();
-    setInterval(pingNodes, 10000);
-});
-function pingNodes() {
-    $('td[data-action="ping"]').each(function(i, element) {
-        $.ajax({
-            type: 'GET',
-            url: $(element).data('location'),
-            timeout: 5000
-        }).done(function (data) {
-            $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
-        }).fail(function () {
-            $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
+    (function pingNodes() {
+        $('td[data-action="ping"]').each(function(i, element) {
+            $.ajax({
+                type: 'GET',
+                url: $(element).data('location'),
+                headers: {
+                    'X-Access-Token': $(element).data('secret'),
+                },
+                timeout: 5000
+            }).done(function (data) {
+                $(element).find('i').tooltip({
+                    title: 'v' + data.version,
+                });
+                $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
+            }).fail(function () {
+                $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
+            }).always(function () {
+                setTimeout(pingNodes, 10000);
+            });
         });
-    });
-}
+    })();
+});
 </script>
 @endsection

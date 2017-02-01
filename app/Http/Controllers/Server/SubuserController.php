@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Server;
 
 use DB;
+use Log;
 use Auth;
 use Alert;
-use Log;
-
+use Javascript;
 use Pterodactyl\Models;
-use Pterodactyl\Repositories\SubuserRepository;
-
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
 use Illuminate\Http\Request;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\SubuserRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class SubuserController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Controller Constructor.
      *
      * @return void
      */
@@ -54,29 +52,40 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('list-subusers', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         return view('server.users.index', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
-            'subusers' => Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
+            'node' => $node,
+            'subusers' => Models\Subuser::select('subusers.*', 'users.email', 'users.username', 'users.use_totp')
                 ->join('users', 'users.id', '=', 'subusers.user_id')
                 ->where('server_id', $server->id)
-                ->get()
+                ->get(),
         ]);
-
     }
 
     public function getView(Request $request, $uuid, $id)
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('view-subuser', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         $subuser = Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
             ->join('users', 'users.id', '=', 'subusers.user_id')
             ->where(DB::raw('md5(subusers.id)'), $id)->where('subusers.server_id', $server->id)
             ->first();
 
-        if (!$subuser) {
+        if (! $subuser) {
             abort(404);
         }
 
@@ -85,13 +94,13 @@ class SubuserController extends Controller
             ->where('user_id', $subuser->user_id)->where('server_id', $server->id)
             ->get();
 
-        foreach($modelPermissions as &$perm) {
+        foreach ($modelPermissions as &$perm) {
             $permissions[$perm->permission] = true;
         }
 
         return view('server.users.view', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $node,
             'subuser' => $subuser,
             'permissions' => $permissions,
         ]);
@@ -99,17 +108,15 @@ class SubuserController extends Controller
 
     public function postView(Request $request, $uuid, $id)
     {
-
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('edit-subuser', $server);
 
         $subuser = Models\Subuser::where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
 
         try {
-
-            if (!$subuser) {
+            if (! $subuser) {
                 throw new DisplayException('Unable to locate a subuser by that ID.');
-            } else if ($subuser->user_id === Auth::user()->id) {
+            } elseif ($subuser->user_id === Auth::user()->id) {
                 throw new DisplayException('You are not authorized to edit you own account.');
             }
 
@@ -117,14 +124,14 @@ class SubuserController extends Controller
             $repo->update($subuser->id, [
                 'permissions' => $request->input('permissions'),
                 'server' => $server->id,
-                'user' => $subuser->user_id
+                'user' => $subuser->user_id,
             ]);
 
             Alert::success('Subuser permissions have successfully been updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.subusers.view', [
                 'uuid' => $uuid,
-                'id' => $id
+                'id' => $id,
             ])->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -132,9 +139,10 @@ class SubuserController extends Controller
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to update this subuser.')->flash();
         }
+
         return redirect()->route('server.subusers.view', [
             'uuid' => $uuid,
-            'id' => $id
+            'id' => $id,
         ]);
     }
 
@@ -142,10 +150,16 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('create-subuser', $server);
+        $node = Models\Node::find($server->node);
+
+        Javascript::put([
+            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
+            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        ]);
 
         return view('server.users.new', [
             'server' => $server,
-            'node' => Models\Node::find($server->node)
+            'node' => $node,
         ]);
     }
 
@@ -157,12 +171,13 @@ class SubuserController extends Controller
         try {
             $repo = new SubuserRepository;
             $id = $repo->create($server->id, $request->except([
-                '_token'
+                '_token',
             ]));
             Alert::success('Successfully created new subuser.')->flash();
+
             return redirect()->route('server.subusers.view', [
                 'uuid' => $uuid,
-                'id' => md5($id)
+                'id' => md5($id),
             ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.subusers.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -172,6 +187,7 @@ class SubuserController extends Controller
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to add a new subuser.')->flash();
         }
+
         return redirect()->route('server.subusers.new', $uuid)->withInput();
     }
 
@@ -182,23 +198,23 @@ class SubuserController extends Controller
 
         try {
             $subuser = Models\Subuser::select('id')->where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
-            if (!$subuser) {
+            if (! $subuser) {
                 throw new DisplayException('No subuser by that ID was found on the system.');
             }
 
             $repo = new SubuserRepository;
             $repo->delete($subuser->id);
+
             return response('', 204);
         } catch (DisplayException $ex) {
             response()->json([
-                'error' => $ex->getMessage()
+                'error' => $ex->getMessage(),
             ], 422);
         } catch (\Exception $ex) {
             Log::error($ex);
             response()->json([
-                'error' => 'An unknown error occured while attempting to delete this subuser.'
+                'error' => 'An unknown error occured while attempting to delete this subuser.',
             ], 503);
         }
     }
-
 }
