@@ -105,7 +105,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function toggleTotp($token)
     {
-        if (! Google2FA::verifyKey($this->totp_secret, $token)) {
+        if (! Google2FA::verifyKey($this->totp_secret, $token, 1)) {
             return false;
         }
 
