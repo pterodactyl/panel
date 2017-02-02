@@ -40,6 +40,7 @@ class PhraseAppTranslator extends LaravelTranslator
     public function get($key, array $replace = [], $locale = null, $fallback = true)
     {
         $key = substr($key, strpos($key, '.') + 1);
+
         return "{{__phrase_${key}__}}";
     }
 }

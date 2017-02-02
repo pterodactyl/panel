@@ -28,8 +28,8 @@ use Pterodactyl\Extensions\PhraseAppTranslator;
 use Illuminate\Translation\TranslationServiceProvider;
 use Illuminate\Translation\Translator as IlluminateTranslator;
 
-class PhraseAppTranslationProvider extends TranslationServiceProvider {
-
+class PhraseAppTranslationProvider extends TranslationServiceProvider
+{
     /**
      * Register the service provider.
      *
@@ -58,6 +58,4 @@ class PhraseAppTranslationProvider extends TranslationServiceProvider {
             return $trans;
         });
     }
-
-
 }
