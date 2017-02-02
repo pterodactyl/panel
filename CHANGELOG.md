@@ -10,16 +10,17 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Users can now have a username as well as client name assigned to their account.
 * Ability to create a node through the CLI using `pterodactyl:node` as well as locations via `pterodactyl:location`.
 * New theme (AdminLTE) for front-end with tweaks to backend files to work properly with it.
+* Add support for PhraseApp's in-context editor
 
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
 * Fixes edge case where specific server names could cause daemon errors due to an invalid SFTP username being created by the panel.
+* Fixes sessions being removed on browser close, and set sessions to idle for up to 3 hours before being marked as expired.
 
 ### Changed
 * Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
 * User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
-
-### Deprecated
+* 2FA checkpoint on login is now its own page, and not an AJAX based call. Improves security on that front.
 
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added

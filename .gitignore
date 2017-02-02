@@ -1,12 +1,4 @@
 /vendor
 *.DS_Store*
 .env
-.vagrant/*
-
-composer.lock
-
-Homestead.yaml
-Vagrantfile
-Vagrantfile
-
 node_modules
