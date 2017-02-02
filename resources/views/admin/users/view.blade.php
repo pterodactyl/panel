@@ -117,7 +117,7 @@
                                     <td><a href="/server/{{ $server->uuidShort }}/"><i class="fa fa-tachometer"></i></a></td>
                                     <td><code>{{ $server->uuidShort }}</code></td>
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                    <td>{{ $server->nodeName }}</td>
+                                    <td>{{ $server->node_idName }}</td>
                                     <td><code>{{ $server->username }}</code></td>
                                     <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
                                 </td>

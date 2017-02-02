@@ -146,7 +146,7 @@ class SubuserRepository
                 } catch (\Exception $ex) {
                     throw $ex;
                 }
-            } elseif ($server->owner === $user->id) {
+            } elseif ($server->owner_id === $user->id) {
                 throw new DisplayException('You cannot add the owner of a server as a subuser.');
             } elseif (Models\Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
                 throw new DisplayException('A subuser with that email already exists for this server.');
@@ -184,8 +184,8 @@ class SubuserRepository
             // We contact even if they don't have any daemon permissions to overwrite
             // if they did have them previously.
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
+            $node = Models\Node::getByID($server->node_id);
+            $client = Models\Node::guzzleRequest($server->node_id);
 
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
@@ -240,8 +240,8 @@ class SubuserRepository
         try {
             Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
+            $node = Models\Node::getByID($server->node_id);
+            $client = Models\Node::guzzleRequest($server->node_id);
 
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
@@ -318,8 +318,8 @@ class SubuserRepository
             // Contact Daemon
             // We contact even if they don't have any daemon permissions to overwrite
             // if they did have them previously.
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
+            $node = Models\Node::getByID($server->node_id);
+            $client = Models\Node::guzzleRequest($server->node_id);
 
             $res = $client->request('PATCH', '/server', [
                 'headers' => [

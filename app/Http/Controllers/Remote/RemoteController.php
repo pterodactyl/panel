@@ -66,7 +66,7 @@ class RemoteController extends Controller
             ], 422);
         }
 
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
         $hmac = $request->input('signed');
         $status = $request->input('installed');
 
@@ -93,7 +93,7 @@ class RemoteController extends Controller
             ], 422);
         }
 
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
 
         $hmac = $request->input('signed');
         if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {

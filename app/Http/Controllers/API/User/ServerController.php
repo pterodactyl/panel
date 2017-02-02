@@ -35,7 +35,7 @@ class ServerController extends BaseController
     public function info(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
         $client = Models\Node::guzzleRequest($node->id);
 
         try {
@@ -61,7 +61,7 @@ class ServerController extends BaseController
 
         $allocations = Models\Allocation::select('id', 'ip', 'port', 'ip_alias as alias')->where('assigned_to', $server->id)->get();
         foreach ($allocations as &$allocation) {
-            $allocation->default = ($allocation->id === $server->allocation);
+            $allocation->default = ($allocation->id === $server->allocation_id);
             unset($allocation->id);
         }
 
@@ -92,7 +92,7 @@ class ServerController extends BaseController
     public function power(Request $request, $uuid)
     {
         $server = Models\Server::getByUUID($uuid);
-        $client = Models\Node::guzzleRequest($server->node);
+        $client = Models\Node::guzzleRequest($server->node_id);
 
         Auth::user()->can('power-' . $request->input('action'), $server);
 

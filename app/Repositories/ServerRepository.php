@@ -374,7 +374,7 @@ class ServerRepository
 
         try {
             $server = Models\Server::findOrFail($id);
-            $owner = Models\User::findOrFail($server->owner);
+            $owner = Models\User::findOrFail($server->owner_id);
 
             // Update daemon secret if it was passed.
             if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $owner->email)) {
@@ -386,7 +386,7 @@ class ServerRepository
             // Update Server Owner if it was passed.
             if (isset($data['owner']) && $data['owner'] !== $owner->email) {
                 $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
-                $server->owner = $newOwner->id;
+                $server->owner_id = $newOwner->id;
             }
 
             // Update Server Name if it was passed.
@@ -405,8 +405,8 @@ class ServerRepository
             }
 
             // If we need to update do it here.
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
+            $node = Models\Node::getByID($server->node_id);
+            $client = Models\Node::guzzleRequest($server->node_id);
 
             $res = $client->request('PATCH', '/server', [
                 'headers' => [
@@ -461,8 +461,8 @@ class ServerRepository
             $server->image = $data['image'];
             $server->save();
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
+            $node = Models\Node::getByID($server->node_id);
+            $client = Models\Node::guzzleRequest($server->node_id);
 
             $client->request('PATCH', '/server', [
                 'headers' => [
@@ -520,7 +520,7 @@ class ServerRepository
 
         try {
             $server = Models\Server::findOrFail($id);
-            $allocation = Models\Allocation::findOrFail($server->allocation);
+            $allocation = Models\Allocation::findOrFail($server->allocation_id);
 
             $newBuild = [];
 
@@ -532,14 +532,14 @@ class ServerRepository
                         throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                     }
 
-                    $server->allocation = $selection->id;
+                    $server->allocation_id = $selection->id;
                     $newBuild['default'] = [
                         'ip' => $ip,
                         'port' => (int) $port,
                     ];
 
                     // Re-Run to keep updated for rest of function
-                    $allocation = Models\Allocation::findOrFail($server->allocation);
+                    $allocation = Models\Allocation::findOrFail($server->allocation_id);
                 }
             }
 
@@ -635,8 +635,8 @@ class ServerRepository
             $server->save();
 
             if (! empty($newBuild)) {
-                $node = Models\Node::getByID($server->node);
-                $client = Models\Node::guzzleRequest($server->node);
+                $node = Models\Node::getByID($server->node_id);
+                $client = Models\Node::guzzleRequest($server->node_id);
 
                 $client->request('PATCH', '/server', [
                     'headers' => [
@@ -679,7 +679,7 @@ class ServerRepository
                     'service_variables.*',
                     DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_currentValue')
                 )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-                ->where('option_id', $server->option)
+                ->where('option_id', $server->option_id)
                 ->get();
 
             $variableList = [];
@@ -747,8 +747,8 @@ class ServerRepository
                 $model->save();
             }
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
+            $node = Models\Node::getByID($server->node_id);
+            $client = Models\Node::guzzleRequest($server->node_id);
 
             $client->request('PATCH', '/server', [
                 'headers' => [
@@ -797,7 +797,7 @@ class ServerRepository
     public function deleteNow($id, $force = false)
     {
         $server = Models\Server::withTrashed()->findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
 
         // Handle server being restored previously or
         // an accidental queue.
@@ -835,7 +835,7 @@ class ServerRepository
                 $repository->drop($database->id);
             }
 
-            $client = Models\Node::guzzleRequest($server->node);
+            $client = Models\Node::guzzleRequest($server->node_id);
             $client->request('DELETE', '/servers', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
@@ -888,7 +888,7 @@ class ServerRepository
     public function suspend($id, $deleted = false)
     {
         $server = ($deleted) ? Models\Server::withTrashed()->findOrFail($id) : Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
 
         DB::beginTransaction();
 
@@ -902,7 +902,7 @@ class ServerRepository
             $server->suspended = 1;
             $server->save();
 
-            $client = Models\Node::guzzleRequest($server->node);
+            $client = Models\Node::guzzleRequest($server->node_id);
             $client->request('POST', '/server/suspend', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
@@ -928,7 +928,7 @@ class ServerRepository
     public function unsuspend($id)
     {
         $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
 
         DB::beginTransaction();
 
@@ -942,7 +942,7 @@ class ServerRepository
             $server->suspended = 0;
             $server->save();
 
-            $client = Models\Node::guzzleRequest($server->node);
+            $client = Models\Node::guzzleRequest($server->node_id);
             $client->request('POST', '/server/unsuspend', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,
@@ -963,7 +963,7 @@ class ServerRepository
     public function updateSFTPPassword($id, $password)
     {
         $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
 
         $validator = Validator::make([
             'password' => $password,
@@ -981,7 +981,7 @@ class ServerRepository
         try {
             $server->save();
 
-            $client = Models\Node::guzzleRequest($server->node);
+            $client = Models\Node::guzzleRequest($server->node_id);
             $client->request('POST', '/server/password', [
                 'headers' => [
                     'X-Access-Token' => $node->daemonSecret,

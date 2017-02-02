@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Models;
 
+use Auth;
 use Hash;
 use Google2FA;
 use Illuminate\Auth\Authenticatable;
@@ -155,5 +156,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function isRootAdmin()
     {
         return $this->root_admin === 1;
+    }
+
+    /**
+     * Returns the user's daemon secret for a given server.
+     * @param  Server $server \Pterodactyl\Models\Server
+     * @return null|string
+     */
+    public function daemonToken(Server $server)
+    {
+        if ($this->id === $server->owner_id || $this->isRootAdmin()) {
+            return $server->daemonSecret;
+        }
+
+        $subuser = Subuser::where('server_id', $server->id)->where('user_id', $this->id)->first();
+
+        if (is_null($subuser)) {
+            return null;
+        }
+
+        return $subuser->daemonSecret;
     }
 }

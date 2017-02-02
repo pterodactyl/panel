@@ -21,6 +21,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
 * 2FA checkpoint on login is now its own page, and not an AJAX based call. Improves security on that front.
 
+### Removed
+* `Server::getUserDaemonSecret(Server $server)` was removed and replaced with `User::daemonSecret(Server $server)` in order to clean up models.
+
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added
 * Added the following languages: Estonian `et`, Dutch `nl`, Norwegian `nb` (partial), Romanian `ro`, and Russian `ru`. Interested in helping us translate the panel into more languages, or improving existing translations? Contact us on Discord and let us know.

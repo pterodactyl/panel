@@ -48,7 +48,7 @@ class ServerPolicy
      */
     protected function isOwner(User $user, Server $server)
     {
-        return $server->owner === $user->id;
+        return $server->owner_id === $user->id;
     }
 
     /**

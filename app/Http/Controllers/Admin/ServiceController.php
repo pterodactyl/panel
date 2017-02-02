@@ -137,7 +137,7 @@ class ServiceController extends Controller
             'option' => $opt,
             'variables' => Models\ServiceVariables::where('option_id', $option)->get(),
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail')
-                ->join('users', 'users.id', '=', 'servers.owner')
+                ->join('users', 'users.id', '=', 'servers.owner_id')
                 ->where('option', $option)
                 ->paginate(10),
         ]);

@@ -54,9 +54,9 @@ class ServersController extends Controller
             'allocations.ip',
             'allocations.port',
             'allocations.ip_alias'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
+        )->join('nodes', 'servers.node_id', '=', 'nodes.id')
+        ->join('users', 'servers.owner_id', '=', 'users.id')
+        ->join('allocations', 'servers.allocation_id', '=', 'allocations.id');
 
         if ($request->input('filter') && ! is_null($request->input('filter'))) {
             preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
@@ -96,9 +96,9 @@ class ServersController extends Controller
                 'allocations.ip',
                 'allocations.port',
                 'allocations.ip_alias'
-            )->join('nodes', 'servers.node', '=', 'nodes.id')
-            ->join('users', 'servers.owner', '=', 'users.id')
-            ->join('allocations', 'servers.allocation', '=', 'allocations.id')
+            )->join('nodes', 'servers.node_id', '=', 'nodes.id')
+            ->join('users', 'servers.owner_id', '=', 'users.id')
+            ->join('allocations', 'servers.allocation_id', '=', 'allocations.id')
             ->paginate(20);
         }
 
@@ -127,11 +127,11 @@ class ServersController extends Controller
             'allocations.ip',
             'allocations.port',
             'allocations.ip_alias'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('services', 'servers.service', '=', 'services.id')
-        ->join('service_options', 'servers.option', '=', 'service_options.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id')
+        )->join('nodes', 'servers.node_id', '=', 'nodes.id')
+        ->join('users', 'servers.owner_id', '=', 'users.id')
+        ->join('services', 'servers.service_id', '=', 'services.id')
+        ->join('service_options', 'servers.option_id', '=', 'service_options.id')
+        ->join('allocations', 'servers.allocation_id', '=', 'allocations.id')
         ->where('servers.id', $id)
         ->first();
 
@@ -145,13 +145,13 @@ class ServersController extends Controller
                     'nodes.*',
                     'locations.long as a_locationName'
                 )->join('locations', 'nodes.location', '=', 'locations.id')
-                ->where('nodes.id', $server->node)
+                ->where('nodes.id', $server->node_id)
                 ->first(),
             'assigned' => Models\Allocation::where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'unassigned' => Models\Allocation::where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
+            'unassigned' => Models\Allocation::where('node', $server->node_id)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
             'startup' => Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
                 ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-                ->where('service_variables.option_id', $server->option)
+                ->where('service_variables.option_id', $server->option_id)
                 ->where('server_variables.server_id', $server->id)
                 ->get(),
             'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
@@ -334,8 +334,8 @@ class ServersController extends Controller
     public function postUpdateServerToggleBuild(Request $request, $id)
     {
         $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
-        $client = Models\Node::guzzleRequest($server->node);
+        $node = Models\Node::findOrFail($server->node_id);
+        $client = Models\Node::guzzleRequest($server->node_id);
 
         try {
             $res = $client->request('POST', '/server/rebuild', [

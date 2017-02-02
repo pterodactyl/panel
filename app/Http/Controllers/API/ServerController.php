@@ -122,7 +122,7 @@ class ServerController extends BaseController
                 'pack'
             )->first();
             if ($request->input('daemon') === 'true') {
-                $node = Models\Node::findOrFail($server->node);
+                $node = Models\Node::findOrFail($server->node_id);
                 $client = Models\Node::guzzleRequest($node->id);
 
                 $response = $client->request('GET', '/servers', [

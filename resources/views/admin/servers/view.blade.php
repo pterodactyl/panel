@@ -89,7 +89,7 @@
                             </tr>
                             <tr>
                                 <td>Owner</td>
-                                <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
+                                <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->a_ownerEmail }}</a></td>
                             </tr>
                             <tr>
                                 <td>Location</td>
@@ -97,7 +97,7 @@
                             </tr>
                             <tr>
                                 <td>Node</td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node) }}">{{ $node->name }}</a></td>
+                                <td><a href="{{ route('admin.nodes.view', $server->node_id) }}">{{ $node->name }}</a></td>
                             </tr>
                             <tr>
                                 <td>Service</td>
@@ -304,7 +304,7 @@
                                             <div>
                                                 <select name="remove_additional[]" class="form-control" multiple>
                                                     @foreach ($assigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($server->allocation === $assignment->id)disabled @endif>@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($server->allocation_id === $assignment->id)disabled @endif>@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -398,7 +398,7 @@
                                     <label class="control-label">Database Server:</label>
                                     <select name="db_server" class="form-control">
                                         @foreach($db_servers as $dbs)
-                                            <option value="{{ $dbs->id }}" @if($dbs->linked_node === $server->node)selected="selected"@endif>{{ $dbs->name }} ({{ $dbs->host }}:{{ $dbs->port }})</option>
+                                            <option value="{{ $dbs->id }}" @if($dbs->linked_node === $server->node_id)selected="selected"@endif>{{ $dbs->name }} ({{ $dbs->host }}:{{ $dbs->port }})</option>
                                         @endforeach
                                     </select>
                                 </div>

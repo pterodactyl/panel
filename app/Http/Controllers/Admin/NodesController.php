@@ -108,8 +108,8 @@ class NodesController extends Controller
         return view('admin.nodes.view', [
             'node' => $node,
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
-                ->join('users', 'users.id', '=', 'servers.owner')
-                ->join('services', 'services.id', '=', 'servers.service')
+                ->join('users', 'users.id', '=', 'servers.owner_id')
+                ->join('services', 'services.id', '=', 'servers.service_id')
                 ->where('node', $id)->paginate(10, ['*'], 'servers'),
             'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
             'locations' => Models\Location::all(),

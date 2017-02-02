@@ -405,7 +405,7 @@
                             @foreach($servers as $server)
                                 <tr data-server="{{ $server->uuid }}">
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                    <td><a href="/admin/users/view/{{ $server->owner }}"><code>{{ $server->a_ownerEmail }}</a></a></td>
+                                    <td><a href="/admin/users/view/{{ $server->owner_id }}"><code>{{ $server->a_ownerEmail }}</a></a></td>
                                     <td>{{ $server->a_serviceName }}</td>
                                     <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                                     <td class="text-center">{{ $server->disk }} MB</td>

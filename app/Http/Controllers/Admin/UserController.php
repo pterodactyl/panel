@@ -87,7 +87,7 @@ class UserController extends Controller
         return view('admin.users.view', [
             'user' => User::findOrFail($id),
             'servers' => Server::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
-                ->join('nodes', 'servers.node', '=', 'nodes.id')
+                ->join('nodes', 'servers.node_id', '=', 'nodes.id')
                 ->join('locations', 'nodes.location', '=', 'locations.id')
                 ->where('owner', $id)
                 ->get(),

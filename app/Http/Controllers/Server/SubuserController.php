@@ -52,7 +52,7 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('list-subusers', $server);
-        $node = Models\Node::find($server->node);
+        $node = Models\Node::find($server->node_id);
 
         Javascript::put([
             'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
@@ -73,7 +73,7 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('view-subuser', $server);
-        $node = Models\Node::find($server->node);
+        $node = Models\Node::find($server->node_id);
 
         Javascript::put([
             'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
@@ -150,7 +150,7 @@ class SubuserController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('create-subuser', $server);
-        $node = Models\Node::find($server->node);
+        $node = Models\Node::find($server->node_id);
 
         Javascript::put([
             'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),

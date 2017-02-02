@@ -45,7 +45,7 @@ class TaskController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('list-tasks', $server);
-        $node = Models\Node::find($server->node);
+        $node = Models\Node::find($server->node_id);
 
         Javascript::put([
             'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
@@ -67,7 +67,7 @@ class TaskController extends Controller
     {
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('create-task', $server);
-        $node = Models\Node::find($server->node);
+        $node = Models\Node::find($server->node_id);
 
         Javascript::put([
             'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),

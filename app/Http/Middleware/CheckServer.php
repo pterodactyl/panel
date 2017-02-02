@@ -26,6 +26,7 @@ namespace Pterodactyl\Http\Middleware;
 
 use Auth;
 use Closure;
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 
 class CheckServer
@@ -37,22 +38,22 @@ class CheckServer
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if (! Auth::user()) {
             return redirect()->guest('auth/login');
         }
 
-        $server = Server::getByUUID($request->route()->server);
+        $server = Server::byUuid($request->route()->server);
         if (! $server) {
             return response()->view('errors.404', [], 404);
         }
 
-        if ($server->suspended === 1) {
+        if ($server->suspended) {
             return response()->view('errors.suspended', [], 403);
         }
 
-        if ($server->installed !== 1) {
+        if (! $server->installed) {
             return response()->view('errors.installing', [], 403);
         }
 

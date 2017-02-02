@@ -64,8 +64,8 @@
                             <span class="label label-danger">Pending Deletion</span>
                         @endif
                     </td>
-                    <td><a href="/admin/users/view/{{ $server->owner }}">{{ $server->a_ownerEmail }}</a></td>
-                    <td><a href="/admin/nodes/view/{{ $server->node }}">{{ $server->a_nodeName }}</a></td>
+                    <td><a href="/admin/users/view/{{ $server->owner_id }}">{{ $server->a_ownerEmail }}</a></td>
+                    <td><a href="/admin/nodes/view/{{ $server->node_id }}">{{ $server->a_nodeName }}</a></td>
                     <td class="hidden-xs"><code>{{ $server->username }}</code></td>
                 </tr>
             @endforeach

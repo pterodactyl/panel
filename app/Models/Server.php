@@ -102,28 +102,6 @@ class Server extends Model
     }
 
     /**
-     * Determine if we need to change the server's daemonSecret value to
-     * match that of the user if they are a subuser.
-     *
-     * @param Illuminate\Database\Eloquent\Model\Server $server
-     * @return string
-     */
-    public static function getUserDaemonSecret(Server $server)
-    {
-        if (self::$user->id === $server->owner || self::$user->root_admin === 1) {
-            return $server->daemonSecret;
-        }
-
-        $subuser = Subuser::where('server_id', $server->id)->where('user_id', self::$user->id)->first();
-
-        if (is_null($subuser)) {
-            return null;
-        }
-
-        return $subuser->daemonSecret;
-    }
-
-    /**
      * Returns array of all servers owned by the logged in user.
      * Returns all users servers if user is a root admin.
      *
@@ -140,11 +118,11 @@ class Server extends Model
             'allocations.port',
             'services.name as a_serviceName',
             'service_options.name as a_serviceOptionName'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
+        )->join('nodes', 'servers.node_id', '=', 'nodes.id')
         ->join('locations', 'nodes.location', '=', 'locations.id')
-        ->join('services', 'servers.service', '=', 'services.id')
-        ->join('service_options', 'servers.option', '=', 'service_options.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
+        ->join('services', 'servers.service_id', '=', 'services.id')
+        ->join('service_options', 'servers.option_id', '=', 'service_options.id')
+        ->join('allocations', 'servers.allocation_id', '=', 'allocations.id');
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
@@ -165,30 +143,21 @@ class Server extends Model
      * @param  string $uuid The Short-UUID of the server to return an object about.
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getByUUID($uuid)
+    public static function byUuid($uuid)
     {
-        if (array_key_exists($uuid, self::$serverUUIDInstance)) {
-            return self::$serverUUIDInstance[$uuid];
-        }
+        $query = self::with('service', 'node')->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
 
-        $query = self::select('servers.*', 'services.file as a_serviceFile')
-            ->join('services', 'services.id', '=', 'servers.service')
-            ->where('uuidShort', $uuid)
-            ->orWhere('uuid', $uuid);
-
-        if (self::$user->root_admin !== 1) {
-            $query->whereIn('servers.id', Subuser::accessServers());
+        if (! Auth::user()->isRootAdmin()) {
+            $query->whereIn('id', Subuser::accessServers());
         }
 
         $result = $query->first();
 
         if (! is_null($result)) {
-            $result->daemonSecret = self::getUserDaemonSecret($result);
+            $result->daemonSecret = Auth::user()->daemonToken($result);
         }
 
-        self::$serverUUIDInstance[$uuid] = $result;
-
-        return self::$serverUUIDInstance[$uuid];
+        return $result;
     }
 
     /**
@@ -197,16 +166,12 @@ class Server extends Model
      * @param  string $uuid
      * @return array
      */
-    public static function getGuzzleHeaders($uuid)
+    public function getHeaders()
     {
-        if (array_key_exists($uuid, self::$serverUUIDInstance)) {
-            return [
-                'X-Access-Server' => self::$serverUUIDInstance[$uuid]->uuid,
-                'X-Access-Token' => self::$serverUUIDInstance[$uuid]->daemonSecret,
-            ];
-        }
-
-        return [];
+        return [
+            'X-Access-Server' => $this->uuid,
+            'X-Access-Token' => Auth::user()->daemonToken($this),
+        ];
     }
 
     /**
@@ -226,7 +191,7 @@ class Server extends Model
      */
     public function pack()
     {
-        return $this->hasOne(ServicePack::class, 'id', 'pack');
+        return $this->hasOne(ServicePack::class, 'id', 'pack_id');
     }
 
     /**
@@ -236,7 +201,7 @@ class Server extends Model
      */
     public function service()
     {
-        return $this->hasOne(Service::class, 'id', 'service');
+        return $this->hasOne(Service::class, 'id', 'service_id');
     }
 
     /**
@@ -246,7 +211,7 @@ class Server extends Model
      */
     public function option()
     {
-        return $this->hasOne(ServiceOptions::class, 'id', 'option');
+        return $this->hasOne(ServiceOptions::class, 'id', 'option_id');
     }
 
     /**
@@ -257,5 +222,15 @@ class Server extends Model
     public function variables()
     {
         return $this->hasMany(ServerVariables::class);
+    }
+
+    /**
+     * Gets information for the node associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function node()
+    {
+        return $this->hasOne(Node::class, 'id', 'node_id');
     }
 }

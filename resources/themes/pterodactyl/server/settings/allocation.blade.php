@@ -63,7 +63,7 @@
                                 </td>
                                 <td><code>{{ $allocation->port }}</code></td>
                                 <td class="col-xs-2 middle">
-                                    @if($allocation->id === $server->allocation)
+                                    @if($allocation->id === $server->allocation_id)
                                         <span class="label label-success" data-allocation="{{ $allocation->id }}">@lang('strings.primary')</span>
                                     @else
                                         <span class="label label-default" data-action="set-connection" data-allocation="{{ $allocation->id }}">@lang('strings.make_primary')</span>

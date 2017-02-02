@@ -73,7 +73,7 @@ class AjaxController extends Controller
             return response()->json([], 404);
         }
 
-        $client = Models\Node::guzzleRequest($server->node);
+        $client = Models\Node::guzzleRequest($server->node_id);
 
         try {
             $res = $client->request('GET', '/server', [
@@ -178,7 +178,7 @@ class AjaxController extends Controller
         $server = Models\Server::getByUUID($uuid);
         $this->authorize('set-connection', $server);
 
-        if ((int) $request->input('allocation') === $server->allocation) {
+        if ((int) $request->input('allocation') === $server->allocation_id) {
             return response()->json([
                 'error' => 'You are already using this as your default connection.',
             ], 409);

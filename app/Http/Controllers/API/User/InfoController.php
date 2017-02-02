@@ -37,7 +37,7 @@ class InfoController extends BaseController
                 'id' => $server->uuidShort,
                 'uuid' => $server->uuid,
                 'name' => $server->name,
-                'node' => $server->nodeName,
+                'node' => $server->node_idName,
                 'ip' => [
                     'set' => $server->ip,
                     'alias' => $server->ip_alias,
