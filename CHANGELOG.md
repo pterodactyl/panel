@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Users can now have a username as well as client name assigned to their account.
 * Ability to create a node through the CLI using `pterodactyl:node` as well as locations via `pterodactyl:location`.
 * New theme (AdminLTE) for front-end with tweaks to backend files to work properly with it.
+* Add support for PhraseApp's in-context editor
 
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
