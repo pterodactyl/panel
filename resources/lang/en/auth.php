@@ -15,4 +15,6 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'password_requirements' => 'Passwords must contain at least one uppercase, lowecase, and numeric character and must be at least 8 characters in length.',
     'request_reset' => 'Locate Account',
+    '2fa_required' => '2-Factor Authentication',
+    '2fa_failed' => 'The 2FA token provided was invalid.',
 ];

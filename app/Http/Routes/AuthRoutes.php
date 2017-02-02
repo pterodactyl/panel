@@ -51,9 +51,13 @@ class AuthRoutes
                 'uses' => 'Auth\LoginController@login',
             ]);
 
-            // Determine if we need to ask for a TOTP Token
+            $router->get('login/totp', [
+                'as' => 'auth.totp',
+                'uses' => 'Auth\LoginController@totp',
+            ]);
+
             $router->post('login/totp', [
-                'uses' => 'Auth\LoginController@checkTotp',
+                'uses' => 'Auth\LoginController@totpCheckpoint',
             ]);
 
             // Show Password Reset Form
