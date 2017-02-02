@@ -22,24 +22,42 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Extensions;
+namespace Pterodactyl\Providers;
 
-use Illuminate\Translation\Translator as LaravelTranslator;
+use Pterodactyl\Extensions\PhraseAppTranslator;
+use Illuminate\Translation\TranslationServiceProvider;
+use Illuminate\Translation\Translator as IlluminateTranslator;
 
-class Translator extends LaravelTranslator
-{
+class PhraseAppTranslationProvider extends TranslationServiceProvider {
+
     /**
-     * Get the translation for the given key.
+     * Register the service provider.
      *
-     * @param  string  $key
-     * @param  array   $replace
-     * @param  string|null  $locale
-     * @param  bool  $fallback
-     * @return string|array|null
+     * @return void
      */
-    public function get($key, array $replace = [], $locale = null, $fallback = true)
+    public function register()
     {
-        $key = substr($key, strpos($key, '.') + 1);
-        return "{{__phrase_${key}__}}";
+        $this->registerLoader();
+
+        $this->app->singleton('translator', function ($app) {
+            $loader = $app['translation.loader'];
+
+            // When registering the translator component, we'll need to set the default
+            // locale as well as the fallback locale. So, we'll grab the application
+            // configuration so we can easily get both of these values from there.
+            $locale = $app['config']['app.locale'];
+
+            if ($app['config']['app.phrase_in_context']) {
+                $trans = new PhraseAppTranslator($loader, $locale);
+            } else {
+                $trans = new IlluminateTranslator($loader, $locale);
+            }
+
+            $trans->setFallback($app['config']['app.fallback_locale']);
+
+            return $trans;
+        });
     }
+
+
 }

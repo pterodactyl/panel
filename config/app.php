@@ -151,7 +151,7 @@ return [
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
-        Pterodactyl\Providers\TranslationProvider::class,
+        Pterodactyl\Providers\PhraseAppTranslationProvider::class,
 
         /*
          * Additional Dependencies
