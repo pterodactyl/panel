@@ -20,10 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+ .login-box, .register-box {
+     width: 40%;
+     margin: 7% auto
+ }
 
-.login-box, .register-box {
-    width: 460px;
-}
+ @media (max-width:768px) {
+     .login-box, .register-box {
+         width: 90%;
+         margin-top: 20px
+     }
+ }
 
 .weight-100 {
     font-weight: 100;
