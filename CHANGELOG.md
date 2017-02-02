@@ -14,6 +14,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
 * Fixes edge case where specific server names could cause daemon errors due to an invalid SFTP username being created by the panel.
+* Fixes sessions being removed on browser close, and set sessions to idle for up to 3 hours before being marked as expired.
 
 ### Changed
 * Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
