@@ -50,17 +50,6 @@
         {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
         {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
 
-        @if(config('app.phrase_in_context'))
-            <script>
-                window.PHRASEAPP_CONFIG = {
-                  projectId: '94f8b39450cd749ae9c3cc0ab8cdb61d'
-                };
-                (function() {
-                    var phraseapp = document.createElement('script'); phraseapp.type = 'text/javascript'; phraseapp.async = true;
-                    phraseapp.src = ['https://', 'phraseapp.com/assets/in-context-editor/2.0/app.js?', new Date().getTime()].join('');
-                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(phraseapp, s);
-                })();
-            </script>
-        @endif
+        @if(config('app.phrase_in_context')) {!! Theme::js('js/phraseapp.js') !!} @endif
     </body>
 </html>
