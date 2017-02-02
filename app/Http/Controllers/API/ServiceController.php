@@ -55,6 +55,7 @@ class ServiceController extends BaseController
             'options' => Models\ServiceOptions::select('id', 'name', 'description', 'tag', 'docker_image')
                 ->where('parent_service', $service->id)
                 ->with('variables')
+                ->with('packs')
                 ->get(),
         ];
     }
