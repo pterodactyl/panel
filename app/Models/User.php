@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Models;
 
-use Auth;
 use Hash;
 use Google2FA;
 use Illuminate\Auth\Authenticatable;
