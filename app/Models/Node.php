@@ -97,10 +97,26 @@ class Node extends Model
     }
 
     /**
+     * Return an instance of the Guzzle client for this specific node.
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public function guzzleClient($headers = [])
+    {
+        return new Client([
+            'base_uri' => sprintf('%s://%s:%s/', $this->scheme, $this->fqdn, $this->daemonListen),
+            'timeout' => env('GUZZLE_TIMEOUT', 5.0),
+            'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3.0),
+            'headers' => $headers,
+        ]);
+    }
+
+    /**
      * Returns a Guzzle Client for the node in question.
      *
      * @param  int $node
      * @return \GuzzleHttp\Client
+     * @deprecated
      */
     public static function guzzleRequest($node)
     {

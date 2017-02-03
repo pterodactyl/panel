@@ -50,18 +50,14 @@ class SubuserController extends Controller
 
     public function getIndex(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('list-subusers', $server);
-        $node = Models\Node::find($server->node_id);
 
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.users.index', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
             'subusers' => Models\Subuser::select('subusers.*', 'users.email', 'users.username', 'users.use_totp')
                 ->join('users', 'users.id', '=', 'subusers.user_id')
                 ->where('server_id', $server->id)
@@ -71,14 +67,8 @@ class SubuserController extends Controller
 
     public function getView(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('view-subuser', $server);
-        $node = Models\Node::find($server->node_id);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
 
         $subuser = Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
             ->join('users', 'users.id', '=', 'subusers.user_id')
@@ -98,9 +88,11 @@ class SubuserController extends Controller
             $permissions[$perm->permission] = true;
         }
 
+        $server->js();
+
         return view('server.users.view', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
             'subuser' => $subuser,
             'permissions' => $permissions,
         ]);
@@ -108,7 +100,7 @@ class SubuserController extends Controller
 
     public function postView(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-subuser', $server);
 
         $subuser = Models\Subuser::where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
@@ -148,24 +140,19 @@ class SubuserController extends Controller
 
     public function getNew(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
-        $node = Models\Node::find($server->node_id);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.users.new', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
         ]);
     }
 
     public function postNew(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
 
         try {
@@ -193,7 +180,7 @@ class SubuserController extends Controller
 
     public function deleteSubuser(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('delete-subuser', $server);
 
         try {

@@ -20,9 +20,12 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
 * User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
 * 2FA checkpoint on login is now its own page, and not an AJAX based call. Improves security on that front.
+* Updated Server model code to be more efficient, as well as make life easier for backend changes and work.
 
-### Removed
+### Deprecated
 * `Server::getUserDaemonSecret(Server $server)` was removed and replaced with `User::daemonSecret(Server $server)` in order to clean up models.
+* `Server::getByUUID()` was replaced with `Server::byUuid()` as well as various other functions through-out the Server model.
+* `Server::getHeaders()` was removed and replaced with `Server::getClient()` which returns a Guzzle Client with the correct headers already assigned.
 
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added

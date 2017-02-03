@@ -49,7 +49,7 @@
                             <th>@lang('strings.port')</th>
                             <th></th>
                         </tr>
-                        @foreach ($allocations as $allocation)
+                        @foreach ($server->allocations as $allocation)
                             <tr>
                                 <td>
                                     <code>{{ $allocation->ip }}</code>

@@ -34,17 +34,10 @@ class ServerController extends BaseController
 {
     public function info(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::findOrFail($server->node_id);
-        $client = Models\Node::guzzleRequest($node->id);
+        $server = Models\Server::byUuid($uuid)->load('allocations');
 
         try {
-            $response = $client->request('GET', '/server', [
-                'headers' => [
-                    'X-Access-Token' => $server->daemonSecret,
-                    'X-Access-Server' => $server->uuid,
-                ],
-            ]);
+            $response = $server->guzzleClient()->request('GET', '/server');
 
             $json = json_decode($response->getBody());
             $daemon = [
@@ -59,8 +52,7 @@ class ServerController extends BaseController
             Log::error($ex);
         }
 
-        $allocations = Models\Allocation::select('id', 'ip', 'port', 'ip_alias as alias')->where('assigned_to', $server->id)->get();
-        foreach ($allocations as &$allocation) {
+        foreach ($server->allocations as &$allocation) {
             $allocation->default = ($allocation->id === $server->allocation_id);
             unset($allocation->id);
         }
@@ -69,7 +61,7 @@ class ServerController extends BaseController
             'uuidShort' => $server->uuidShort,
             'uuid' => $server->uuid,
             'name' => $server->name,
-            'node' => $node->name,
+            'node' => $server->node->name,
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,
@@ -78,7 +70,7 @@ class ServerController extends BaseController
                 'cpu' => $server->cpu,
                 'oom_disabled' => (bool) $server->oom_disabled,
             ],
-            'allocations' => $allocations,
+            'allocations' => $server->allocations,
             'sftp' => [
                 'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null,
             ],
@@ -91,16 +83,10 @@ class ServerController extends BaseController
 
     public function power(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $client = Models\Node::guzzleRequest($server->node_id);
-
+        $server = Models\Server::byUuid($uuid);
         Auth::user()->can('power-' . $request->input('action'), $server);
 
-        $res = $client->request('PUT', '/server/power', [
-            'headers' => [
-                'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $server->daemonSecret,
-            ],
+        $res = $server->guzzleClient()->request('PUT', '/server/power', [
             'exceptions' => false,
             'json' => [
                 'action' => $request->input('action'),

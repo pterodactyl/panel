@@ -25,6 +25,7 @@
 namespace Pterodactyl\Models;
 
 use Auth;
+use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -67,18 +68,19 @@ class Server extends Model
       * @var array
       */
      protected $casts = [
-         'node' => 'integer',
+         'node_id' => 'integer',
          'suspended' => 'integer',
-         'owner' => 'integer',
+         'owner_id' => 'integer',
          'memory' => 'integer',
          'swap' => 'integer',
          'disk' => 'integer',
          'io' => 'integer',
          'cpu' => 'integer',
          'oom_disabled' => 'integer',
-         'port' => 'integer',
-         'service' => 'integer',
-         'option' => 'integer',
+         'allocation_id' => 'integer',
+         'service_id' => 'integer',
+         'option_id' => 'integer',
+         'pack_id' => 'integer',
          'installed' => 'integer',
      ];
 
@@ -166,12 +168,54 @@ class Server extends Model
      * @param  string $uuid
      * @return array
      */
-    public function getHeaders()
+    public function guzzleHeaders()
     {
         return [
             'X-Access-Server' => $this->uuid,
             'X-Access-Token' => Auth::user()->daemonToken($this),
         ];
+    }
+
+    /**
+     * Return an instance of the Guzzle client for this specific server using defined access token.
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public function guzzleClient()
+    {
+        return $this->node->guzzleClient($this->guzzleHeaders());
+    }
+
+    /**
+     * Returns javascript object to be embedded on server view pages with relevant information.
+     *
+     * @return \Laracasts\Utilities\JavaScript\JavaScriptFacade
+     */
+    public function js($additional = null, $overwrite = null)
+    {
+        $response = [
+            'server' => collect($this->makeVisible('daemonSecret'))->only([
+                'uuid',
+                'uuidShort',
+                'daemonSecret',
+                'username'
+            ]),
+            'node' => collect($this->node)->only([
+                'fqdn',
+                'scheme',
+                'daemonListen'
+            ]),
+        ];
+
+        if (is_array($additional)) {
+            $response = array_merge($response, $additional);
+        }
+
+        if (is_array($overwrite)) {
+            $response = $overwrite;
+        }
+
+        return Javascript::put($response);
     }
 
     /**
@@ -232,5 +276,16 @@ class Server extends Model
     public function node()
     {
         return $this->hasOne(Node::class, 'id', 'node_id');
+    }
+
+    /**
+     * Gets information for the tasks associated with this server.
+     *
+     * @TODO adjust server column in tasks to be server_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'server', 'id');
     }
 }

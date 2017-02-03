@@ -41,38 +41,13 @@ class FileRepository
     protected $server;
 
     /**
-     * The Eloquent Model for the node corresponding with the requested server.
-     *
-     * @var \Illuminate\Database\Eloquent\Model
-     */
-    protected $node;
-
-    /**
-     * The Guzzle Client associated with the requested server and node.
-     *
-     * @var \GuzzleHttp\Client
-     */
-    protected $client;
-
-    /**
-     * The Guzzle Client headers associated with the requested server and node.
-     * (non-administrative headers).
-     *
-     * @var array
-     */
-    protected $headers;
-
-    /**
      * Constructor.
      *
      * @param string $server The server Short UUID
      */
     public function __construct($uuid)
     {
-        $this->server = Server::getByUUID($uuid);
-        $this->node = Node::getByID($this->server->node);
-        $this->client = Node::guzzleRequest($this->server->node);
-        $this->headers = Server::getGuzzleHeaders($uuid);
+        $this->server = Server::byUuid($uuid);
     }
 
     /**
@@ -88,12 +63,9 @@ class FileRepository
         }
 
         $file = (object) pathinfo($file);
-
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('GET', '/server/file/stat/' . rawurlencode($file->dirname . $file->basename), [
-            'headers' => $this->headers,
-        ]);
+        $res = $this->server->guzzleClient()->request('GET', '/server/file/stat/' . rawurlencode($file->dirname . $file->basename));
 
         $stat = json_decode($res->getBody());
         if ($res->getStatusCode() !== 200 || ! isset($stat->size)) {
@@ -108,9 +80,7 @@ class FileRepository
             throw new DisplayException('That file is too large to open in the browser, consider using a SFTP client.');
         }
 
-        $res = $this->client->request('GET', '/server/file/f/' . rawurlencode($file->dirname . $file->basename), [
-            'headers' => $this->headers,
-        ]);
+        $res = $this->server->guzzleClient()->request('GET', '/server/file/f/' . rawurlencode($file->dirname . $file->basename));
 
         $json = json_decode($res->getBody());
         if ($res->getStatusCode() !== 200 || ! isset($json->content)) {
@@ -137,11 +107,9 @@ class FileRepository
         }
 
         $file = (object) pathinfo($file);
-
         $file->dirname = (in_array($file->dirname, ['.', './', '/'])) ? null : trim($file->dirname, '/') . '/';
 
-        $res = $this->client->request('POST', '/server/file/save', [
-            'headers' => $this->headers,
+        $res = $this->server->guzzleClient()->request('POST', '/server/file/save', [
             'json' => [
                 'path' => rawurlencode($file->dirname . $file->basename),
                 'content' => $content,
@@ -167,9 +135,7 @@ class FileRepository
             throw new Exception('A valid directory must be specified in order to list its contents.');
         }
 
-        $res = $this->client->request('GET', '/server/directory/' . rawurlencode($directory), [
-            'headers' => $this->headers,
-        ]);
+        $res = $this->server->guzzleClient()->request('GET', '/server/directory/' . rawurlencode($directory));
 
         $json = json_decode($res->getBody());
         if ($res->getStatusCode() !== 200) {
@@ -180,7 +146,7 @@ class FileRepository
         $files = [];
         $folders = [];
         foreach ($json as &$value) {
-            if ($value->directory === true) {
+            if ($value->directory) {
                 // @TODO Handle Symlinks
                 $folders[] = [
                     'entry' => $value->name,
@@ -189,7 +155,7 @@ class FileRepository
                     'date' => strtotime($value->modified),
                     'mime' => $value->mime,
                 ];
-            } elseif ($value->file === true) {
+            } elseif ($value->file) {
                 $files[] = [
                     'entry' => $value->name,
                     'directory' => trim($directory, '/'),
