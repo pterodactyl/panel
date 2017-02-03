@@ -46,7 +46,7 @@ class LocationsController extends Controller
             'locations' => Models\Location::select(
                     'locations.*',
                     DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location = locations.id) as a_nodeCount'),
-                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node IN (SELECT nodes.id FROM nodes WHERE nodes.location = locations.id)) as a_serverCount')
+                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location = locations.id)) as a_serverCount')
                 )->paginate(20),
         ]);
     }
@@ -56,7 +56,7 @@ class LocationsController extends Controller
         $model = Models\Location::select(
             'locations.id',
             DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location = locations.id) as a_nodeCount'),
-            DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node IN (SELECT nodes.id FROM nodes WHERE nodes.location = locations.id)) as a_serverCount')
+            DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location = locations.id)) as a_serverCount')
         )->where('id', $id)->first();
 
         if (! $model) {

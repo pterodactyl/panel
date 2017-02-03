@@ -57,7 +57,7 @@ class NodesController extends Controller
             'nodes' => Models\Node::select(
                 'nodes.*',
                 'locations.long as a_locationName',
-                DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node = nodes.id) as a_serverCount')
+                DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id = nodes.id) as a_serverCount')
             )->join('locations', 'nodes.location', '=', 'locations.id')->paginate(20),
         ]);
     }
@@ -110,8 +110,8 @@ class NodesController extends Controller
             'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
                 ->join('users', 'users.id', '=', 'servers.owner_id')
                 ->join('services', 'services.id', '=', 'servers.service_id')
-                ->where('node', $id)->paginate(10, ['*'], 'servers'),
-            'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
+                ->where('node_id', $id)->paginate(10, ['*'], 'servers'),
+            'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first(),
             'locations' => Models\Location::all(),
             'allocations' => Models\Allocation::select('allocations.*', 'servers.name as assigned_to_name')
                 ->where('allocations.node', $node->id)
