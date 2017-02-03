@@ -55,7 +55,27 @@ class Database extends Model
       * @var array
       */
      protected $casts = [
-         'server' => 'integer',
+         'server_id' => 'integer',
          'db_server' => 'integer',
      ];
+
+     /**
+      * Gets the host database server associated with a database.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasOne
+      */
+     public function host()
+     {
+         return $this->hasOne(DatabaseServer::class, 'id', 'db_server');
+     }
+
+     /**
+      * Gets the server associated with a database.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasOne
+      */
+     public function server()
+     {
+         return $this->hasOne(Server::class, 'id', 'server_id');
+     }
 }

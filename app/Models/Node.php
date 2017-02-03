@@ -53,7 +53,7 @@ class Node extends Model
       */
      protected $casts = [
          'public' => 'integer',
-         'location' => 'integer',
+         'location_id' => 'integer',
          'memory' => 'integer',
          'disk' => 'integer',
          'daemonListen' => 'integer',
@@ -61,11 +61,34 @@ class Node extends Model
      ];
 
     /**
-     * Fields that are not mass assignable.
+     * Fields that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'uuid',
+        'uuidShort',
+        'node_id',
+        'name',
+        'suspended',
+        'owner_id',
+        'memory',
+        'swap',
+        'disk',
+        'io',
+        'cpu',
+        'oom_disabled',
+        'allocation_id',
+        'service_id',
+        'option_id',
+        'pack_id',
+        'startup',
+        'daemonSecret',
+        'image',
+        'username',
+        'sftp_password',
+        'installed',
+    ];
 
     /**
      * @var array
@@ -192,5 +215,15 @@ class Node extends Model
         }
 
         return json_encode($config, $json_options);
+    }
+
+    /**
+     * Gets the location associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function location()
+    {
+        return $this->hasOne(Location::class, 'id', 'location_id');
     }
 }

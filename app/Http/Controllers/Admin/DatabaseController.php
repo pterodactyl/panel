@@ -47,30 +47,18 @@ class DatabaseController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.databases.index', [
-            'databases' => Models\Database::select(
-                    'databases.*',
-                    'database_servers.host as a_host',
-                    'database_servers.port as a_port',
-                    'servers.id as a_serverId',
-                    'servers.name as a_serverName'
-                )->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->join('servers', 'databases.server_id', '=', 'servers.id')
-                ->paginate(20),
-            'dbh' => Models\DatabaseServer::select(
+            'databases' => Models\Database::with('server')->paginate(50),
+            'hosts' => Models\DatabaseServer::select(
                     'database_servers.*',
-                    'nodes.name as a_linkedNode',
                     DB::raw('(SELECT COUNT(*) FROM `databases` WHERE `databases`.`db_server` = database_servers.id) as c_databases')
-                )->leftJoin('nodes', 'nodes.id', '=', 'database_servers.linked_node')
-                ->paginate(20),
+                )->with('node')->paginate(20),
         ]);
     }
 
     public function getNew(Request $request)
     {
         return view('admin.databases.new', [
-            'nodes' => Models\Node::select('nodes.id', 'nodes.name', 'locations.long as a_location')
-                ->join('locations', 'locations.id', '=', 'nodes.location')
-                ->get(),
+            'nodes' => Models\Node::all()->load('location'),
         ]);
     }
 
@@ -78,15 +66,17 @@ class DatabaseController extends Controller
     {
         try {
             $repo = new DatabaseRepository;
-            $repo->add($request->except([
-                '_token',
+            $repo->add($request->only([
+                'name',
+                'host',
+                'port',
+                'username',
+                'password',
+                'linked_node',
             ]));
-
             Alert::success('Successfully added a new database server to the system.')->flash();
 
-            return redirect()->route('admin.databases', [
-                'tab' => 'tab_dbservers',
-            ]);
+            return redirect()->route('admin.databases', ['tab' => 'tab_dbservers']);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.databases.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (\Exception $ex) {

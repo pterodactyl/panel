@@ -52,20 +52,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($databases as $db)
+                            @foreach($databases as $database)
                                 <tr>
-                                    <td>{{ $db->a_serverName }}</td>
-                                    <td>{{ $db->database }}</td>
-                                    <td>{{ $db->username }} ({{ $db->remote }})</td>
-                                    <td><code>{{ $db->a_host }}:{{ $db->a_port }}</code></td>
-                                    <td class="text-center"><a href="/admin/servers/view/{{ $db->a_serverId }}?tab=tab_database"><i class="fa fa-search"></i></a></td>
-                                    <td class="text-center"><a href="#" data-action="delete" data-type="delete" data-attr="{{ $db->id }}" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
+                                    <td>{{ $database->server->name }}</td>
+                                    <td>{{ $database->database }}</td>
+                                    <td>{{ $database->username }} ({{ $database->remote }})</td>
+                                    <?php $host = $hosts->where('id', $database->db_server)->first(); ?>
+                                    <td><code>{{ $host->host }}:{{ $host->port }}</code></td>
+                                    <td class="text-center"><a href="/admin/servers/view/{{ $database->server->id }}?tab=tab_database"><i class="fa fa-search"></i></a></td>
+                                    <td class="text-center"><a href="#" data-action="delete" data-type="delete" data-attr="{{ $database->id }}" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                        {{ $databases->appends('tab', 'tab_databases')->render() }}
+                        {{ $databases->appends(['tab' => 'tab_databases'])->links() }}
                     </div>
                 </div>
             </div>
@@ -86,20 +87,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($dbh as $db)
+                            @foreach($hosts as $database)
                                 <tr>
-                                    <td>{{ $db->name }}</td>
-                                    <td><code>{{ $db->host }}:{{ $db->port }}</code></td>
-                                    <td>{{ $db->username }}</td>
-                                    <td class="text-center">{{ $db->c_databases }}</td>
-                                    <td>@if(is_null($db->a_linkedNode))<em>unlinked</em>@else{{ $db->a_linkedNode }}@endif</td>
-                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-server" data-attr="{{ $db->id }}"><i class="fa fa-trash-o"></i></a></td>
+                                    <td>{{ $database->name }}</td>
+                                    <td><code>{{ $database->host }}:{{ $database->port }}</code></td>
+                                    <td>{{ $database->username }}</td>
+                                    <td class="text-center">{{ $database->c_databases }}</td>
+                                    <td>@if(is_null($database->node))<em>unlinked</em>@else{{ $database->node->name }}@endif</td>
+                                    <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-server" data-attr="{{ $database->id }}"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="col-md-12 text-center">
-                        {{ $dbh->appends('tab', 'tab_dbservers')->render() }}
+                        {{ $hosts->appends('tab', 'tab_dbservers')->render() }}
                     </div>
                 </div>
             </div>
