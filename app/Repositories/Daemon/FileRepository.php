@@ -26,7 +26,6 @@ namespace Pterodactyl\Repositories\Daemon;
 
 use Exception;
 use GuzzleHttp\Client;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\HelperRepository;

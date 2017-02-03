@@ -198,12 +198,12 @@ class Server extends Model
                 'uuid',
                 'uuidShort',
                 'daemonSecret',
-                'username'
+                'username',
             ]),
             'node' => collect($this->node)->only([
                 'fqdn',
                 'scheme',
-                'daemonListen'
+                'daemonListen',
             ]),
         ];
 

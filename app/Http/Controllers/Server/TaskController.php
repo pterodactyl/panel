@@ -26,7 +26,6 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
 use Alert;
-use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Repositories;

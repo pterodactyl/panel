@@ -28,7 +28,6 @@ use DB;
 use Log;
 use Uuid;
 use Alert;
-use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
