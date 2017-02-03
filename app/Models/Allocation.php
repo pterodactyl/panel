@@ -48,8 +48,8 @@ class Allocation extends Model
       * @var array
       */
      protected $casts = [
-         'node' => 'integer',
+         'node_id' => 'integer',
          'port' => 'integer',
-         'assigned_to' => 'integer',
+         'server_id' => 'integer',
      ];
 }

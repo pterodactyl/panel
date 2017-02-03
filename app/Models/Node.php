@@ -226,4 +226,24 @@ class Node extends Model
     {
         return $this->hasOne(Location::class, 'id', 'location_id');
     }
+
+    /**
+     * Gets the servers associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
+
+    /**
+     * Gets the allocations associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class);
+    }
 }

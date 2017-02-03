@@ -45,8 +45,8 @@ class LocationsController extends Controller
         return view('admin.locations.index', [
             'locations' => Models\Location::select(
                     'locations.*',
-                    DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location = locations.id) as a_nodeCount'),
-                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location = locations.id)) as a_serverCount')
+                    DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location_id = locations.id) as a_nodeCount'),
+                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location_id = locations.id)) as a_serverCount')
                 )->paginate(20),
         ]);
     }
@@ -55,8 +55,8 @@ class LocationsController extends Controller
     {
         $model = Models\Location::select(
             'locations.id',
-            DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location = locations.id) as a_nodeCount'),
-            DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location = locations.id)) as a_serverCount')
+            DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location_id = locations.id) as a_nodeCount'),
+            DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location_id = locations.id)) as a_serverCount')
         )->where('id', $id)->first();
 
         if (! $model) {
@@ -80,12 +80,12 @@ class LocationsController extends Controller
     {
         try {
             $location = new LocationRepository;
-            $location->edit($id, $request->all());
+            $location->edit($id, $request->only(['long', 'short']));
 
             return response('', 204);
         } catch (DisplayValidationException $ex) {
             return response()->json([
-                'error' => 'There was a validation error while processing this request. Location descriptions must be between 1 and 255 characters, and the location code must be between 1 and 10 characters with no spaces or special characters.',
+                'error' => 'There was a validation error while processing this request. Location descriptions must be between 1 and 255 characters, and the location code must be between 1 and 20 characters with no spaces or special characters.',
             ], 422);
         } catch (\Exception $ex) {
             // This gets caught and processed into JSON anyways.
@@ -97,9 +97,7 @@ class LocationsController extends Controller
     {
         try {
             $location = new LocationRepository;
-            $id = $location->create($request->except([
-                '_token',
-            ]));
+            $id = $location->create($request->only(['long', 'short']));
             Alert::success('New location successfully added.')->flash();
 
             return redirect()->route('admin.locations');

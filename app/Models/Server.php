@@ -121,7 +121,7 @@ class Server extends Model
             'services.name as a_serviceName',
             'service_options.name as a_serviceOptionName'
         )->join('nodes', 'servers.node_id', '=', 'nodes.id')
-        ->join('locations', 'nodes.location', '=', 'locations.id')
+        ->join('locations', 'nodes.location_id', '=', 'locations.id')
         ->join('services', 'servers.service_id', '=', 'services.id')
         ->join('service_options', 'servers.option_id', '=', 'service_options.id')
         ->join('allocations', 'servers.allocation_id', '=', 'allocations.id');
@@ -219,13 +219,23 @@ class Server extends Model
     }
 
     /**
+     * Gets the user who owns the server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'owner_id');
+    }
+
+    /**
      * Gets all allocations associated with this server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function allocations()
     {
-        return $this->hasMany(Allocation::class, 'assigned_to');
+        return $this->hasMany(Allocation::class, 'server_id');
     }
 
     /**

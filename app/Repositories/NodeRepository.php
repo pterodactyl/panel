@@ -65,7 +65,7 @@ class NodeRepository
 
         // Verify the FQDN if using SSL
         if (filter_var($data['fqdn'], FILTER_VALIDATE_IP) && $data['scheme'] === 'https') {
-            throw new DisplayException('A fully qualified domain name is required to use secure comunication on this node.');
+            throw new DisplayException('A fully qualified domain name is required to use a secure comunication method on this node.');
         }
 
         // Verify FQDN is resolvable, or if not using SSL that the IP is valid.
@@ -86,7 +86,7 @@ class NodeRepository
         $node->fill($data);
         $node->save();
 
-        return $node->id;
+        return $node;
     }
 
     public function update($id, array $data)
@@ -152,18 +152,12 @@ class NodeRepository
         $oldDaemonKey = $node->daemonSecret;
         $node->update($data);
         try {
-            $client = Models\Node::guzzleRequest($node->id);
-            $client->request('PATCH', '/config', [
-                'headers' => [
-                    'X-Access-Token' => $oldDaemonKey,
-                ],
+            $node->guzzleClient(['X-Access-Token' => $oldDaemonKey])->request('PATCH', '/config', [
                 'json' => [
                     'web' => [
                         'listen' => $node->daemonListen,
                         'ssl' => [
                             'enabled' => ($node->scheme === 'https'),
-                            'certificate' => '/etc/letsencrypt/live/' . $node->fqdn . '/fullchain.pem',
-                            'key' => '/etc/letsencrypt/live/' . $node->fqdn . '/privkey.pem',
                         ],
                     ],
                     'sftp' => [
