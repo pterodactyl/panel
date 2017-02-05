@@ -63,10 +63,10 @@ class DatabaseServer extends Model
      /**
       * Gets the node associated with a database host.
       *
-      * @return \Illuminate\Database\Eloquent\Relations\HasOne
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
       */
      public function node()
      {
-         return $this->hasOne(Node::class, 'id', 'linked_node');
+         return $this->belongsTo(Node::class, 'linked_node');
      }
 }

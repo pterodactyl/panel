@@ -62,20 +62,20 @@ class Database extends Model
      /**
       * Gets the host database server associated with a database.
       *
-      * @return \Illuminate\Database\Eloquent\Relations\HasOne
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
       */
      public function host()
      {
-         return $this->hasOne(DatabaseServer::class, 'id', 'db_server');
+         return $this->belongsTo(DatabaseServer::class, 'db_server');
      }
 
      /**
       * Gets the server associated with a database.
       *
-      * @return \Illuminate\Database\Eloquent\Relations\HasOne
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
       */
      public function server()
      {
-         return $this->hasOne(Server::class, 'id', 'server_id');
+         return $this->belongsTo(Server::class);
      }
 }

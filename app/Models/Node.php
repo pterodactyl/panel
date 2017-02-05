@@ -220,11 +220,11 @@ class Node extends Model
     /**
      * Gets the location associated with a node.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function location()
     {
-        return $this->hasOne(Location::class, 'id', 'location_id');
+        return $this->belongsTo(Location::class);
     }
 
     /**

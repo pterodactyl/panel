@@ -221,11 +221,11 @@ class Server extends Model
     /**
      * Gets the user who owns the server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'owner_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     /**
@@ -251,21 +251,21 @@ class Server extends Model
     /**
      * Gets information for the service associated with this server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function service()
     {
-        return $this->hasOne(Service::class, 'id', 'service_id');
+        return $this->belongsTo(Service::class);
     }
 
     /**
      * Gets information for the service option associated with this server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function option()
     {
-        return $this->hasOne(ServiceOptions::class, 'id', 'option_id');
+        return $this->belongsTo(ServiceOptions::class);
     }
 
     /**
@@ -281,11 +281,11 @@ class Server extends Model
     /**
      * Gets information for the node associated with this server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function node()
     {
-        return $this->hasOne(Node::class, 'id', 'node_id');
+        return $this->belongsTo(Node::class);
     }
 
     /**
