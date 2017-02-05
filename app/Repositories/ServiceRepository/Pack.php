@@ -69,8 +69,8 @@ class Pack
         try {
             $uuid = new UuidService;
             $pack = Models\ServicePack::create([
-                'option' => $data['option'],
-                'uuid' => $uuid->generate('servers', 'uuid'),
+                'option_id' => $data['option'],
+                'uuid' => $uuid->generate('service_packs', 'uuid'),
                 'name' => $data['name'],
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
@@ -89,7 +89,7 @@ class Pack
             throw $ex;
         }
 
-        return $pack->id;
+        return $pack;
     }
 
     public function createWithTemplate(array $data)
@@ -123,7 +123,7 @@ class Pack
             }
 
             $json = json_decode($zip->getFromName('import.json'));
-            $id = $this->create([
+            $pack = $this->create([
                 'name' => $json->name,
                 'version' => $json->version,
                 'description' => $json->description,
@@ -132,7 +132,6 @@ class Pack
                 'visible' => $json->visible,
             ]);
 
-            $pack = Models\ServicePack::findOrFail($id);
             if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), 'archive.tar.gz')) {
                 $pack->delete();
                 throw new DisplayException('Unable to extract the archive file to the correct location.');
@@ -140,7 +139,7 @@ class Pack
 
             $zip->close();
 
-            return $pack->id;
+            return $pack;
         } else {
             $json = json_decode(file_get_contents($data['file_upload']->path()));
 
@@ -170,18 +169,16 @@ class Pack
             throw new DisplayValidationException($validator->errors());
         }
 
-        DB::transaction(function () use ($id, $data) {
-            Models\ServicePack::findOrFail($id)->update([
-                'option' => $data['option'],
-                'name' => $data['name'],
-                'version' => $data['version'],
-                'description' => (empty($data['description'])) ? null : $data['description'],
-                'selectable' => isset($data['selectable']),
-                'visible' => isset($data['visible']),
-            ]);
+        Models\ServicePack::findOrFail($id)->update([
+            'option_id' => $data['option'],
+            'name' => $data['name'],
+            'version' => $data['version'],
+            'description' => (empty($data['description'])) ? null : $data['description'],
+            'selectable' => isset($data['selectable']),
+            'visible' => isset($data['visible']),
+        ]);
 
-            return true;
-        });
+        return;
     }
 
     public function delete($id)

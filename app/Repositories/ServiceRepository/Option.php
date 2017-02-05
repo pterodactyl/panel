@@ -63,7 +63,7 @@ class Option
         }
 
         $option = new Models\ServiceOptions;
-        $option->parent_service = $service->id;
+        $option->service_id = $service->id;
         $option->fill($data);
         $option->save();
 

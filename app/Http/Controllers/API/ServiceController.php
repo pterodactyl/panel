@@ -53,7 +53,7 @@ class ServiceController extends BaseController
         return [
             'service' => $service,
             'options' => Models\ServiceOptions::select('id', 'name', 'description', 'tag', 'docker_image')
-                ->where('parent_service', $service->id)
+                ->where('service_id', $service->id)
                 ->with('variables')
                 ->with('packs')
                 ->get(),

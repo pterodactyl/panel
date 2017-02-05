@@ -53,4 +53,9 @@ class ServiceVariables extends Model
          'user_editable' => 'integer',
          'required' => 'integer',
      ];
+
+     public function serverVariables()
+     {
+         return $this->hasMany(ServerVariables::class, 'variable_id');
+     }
 }

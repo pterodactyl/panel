@@ -244,7 +244,7 @@ class ServersController extends Controller
 
         $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
 
-        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
+        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('service_id', $request->input('service'))->orderBy('name', 'asc')->get());
     }
 
     /**
@@ -264,7 +264,7 @@ class ServersController extends Controller
         $option = Models\ServiceOptions::select(
                 DB::raw('COALESCE(service_options.executable, services.executable) as executable'),
                 DB::raw('COALESCE(service_options.startup, services.startup) as startup')
-            )->leftJoin('services', 'services.id', '=', 'service_options.parent_service')
+            )->leftJoin('services', 'services.id', '=', 'service_options.service_id')
             ->where('service_options.id', $request->input('option'))
             ->first();
 

@@ -163,7 +163,7 @@ class ServerRepository
         // We know the service and option exists because of the validation.
         // We need to verify that the option exists for the service, and then check for
         // any required variable fields. (fields are labeled env_<env_variable>)
-        $option = Models\ServiceOptions::where('id', $data['option'])->where('parent_service', $data['service'])->first();
+        $option = Models\ServiceOptions::where('id', $data['option'])->where('service_id', $data['service'])->first();
         if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
@@ -181,7 +181,7 @@ class ServerRepository
         }
 
         // Load up the Service Information
-        $service = Models\Service::find($option->parent_service);
+        $service = Models\Service::find($option->service_id);
 
         // Check those Variables
         $variables = Models\ServiceVariables::where('option_id', $data['option'])->get();

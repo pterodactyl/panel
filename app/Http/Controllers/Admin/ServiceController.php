@@ -45,10 +45,7 @@ class ServiceController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.services.index', [
-            'services' => Models\Service::select(
-                    'services.*',
-                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.service = services.id) as c_servers')
-                )->get(),
+            'services' => Models\Service::withCount('servers')->get(),
         ]);
     }
 
@@ -61,12 +58,16 @@ class ServiceController extends Controller
     {
         try {
             $repo = new ServiceRepository\Service;
-            $id = $repo->create($request->except([
-                '_token',
+            $service = $repo->create($request->only([
+                'name',
+                'description',
+                'file',
+                'executable',
+                'startup',
             ]));
             Alert::success('Successfully created new service!')->flash();
 
-            return redirect()->route('admin.services.service', $id);
+            return redirect()->route('admin.services.service', $service->id);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
@@ -82,11 +83,7 @@ class ServiceController extends Controller
     public function getService(Request $request, $service)
     {
         return view('admin.services.view', [
-            'service' => Models\Service::findOrFail($service),
-            'options' => Models\ServiceOptions::select(
-                    'service_options.*',
-                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.option = service_options.id) as c_servers')
-                )->where('parent_service', $service)->get(),
+            'service' => Models\Service::with('options', 'options.servers')->findOrFail($service),
         ]);
     }
 
@@ -94,8 +91,12 @@ class ServiceController extends Controller
     {
         try {
             $repo = new ServiceRepository\Service;
-            $repo->update($service, $request->except([
-                '_token',
+            $repo->update($service, $request->only([
+                'name',
+                'description',
+                'file',
+                'executable',
+                'startup',
             ]));
             Alert::success('Successfully updated this service.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -130,16 +131,11 @@ class ServiceController extends Controller
 
     public function getOption(Request $request, $service, $option)
     {
-        $opt = Models\ServiceOptions::findOrFail($option);
+        $option = Models\ServiceOptions::with('service', 'variables')->findOrFail($option);
+        $option->setRelation('servers', $option->servers()->with('user')->paginate(25));
 
         return view('admin.services.options.view', [
-            'service' => Models\Service::findOrFail($opt->parent_service),
-            'option' => $opt,
-            'variables' => Models\ServiceVariables::where('option_id', $option)->get(),
-            'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail')
-                ->join('users', 'users.id', '=', 'servers.owner_id')
-                ->where('option', $option)
-                ->paginate(10),
+            'option' => $option,
         ]);
     }
 
@@ -147,8 +143,13 @@ class ServiceController extends Controller
     {
         try {
             $repo = new ServiceRepository\Option;
-            $repo->update($option, $request->except([
-                '_token',
+            $repo->update($option, $request->only([
+                'name',
+                'description',
+                'tag',
+                'executable',
+                'docker_image',
+                'startup',
             ]));
             Alert::success('Option settings successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -164,13 +165,12 @@ class ServiceController extends Controller
     public function deleteOption(Request $request, $service, $option)
     {
         try {
-            $service = Models\ServiceOptions::select('parent_service')->where('id', $option)->first();
             $repo = new ServiceRepository\Option;
             $repo->delete($option);
 
             Alert::success('Successfully deleted that option.')->flash();
 
-            return redirect()->route('admin.services.service', $service->parent_service);
+            return redirect()->route('admin.services.service', $service);
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
@@ -218,8 +218,7 @@ class ServiceController extends Controller
     public function getNewVariable(Request $request, $service, $option)
     {
         return view('admin.services.options.variable', [
-            'service' => Models\Service::findOrFail($service),
-            'option' => Models\ServiceOptions::where('parent_service', $service)->where('id', $option)->firstOrFail(),
+            'option' => Models\ServiceOptions::with('service')->findOrFail($option),
         ]);
     }
 
@@ -227,8 +226,15 @@ class ServiceController extends Controller
     {
         try {
             $repo = new ServiceRepository\Variable;
-            $repo->create($option, $request->except([
-                '_token',
+            $repo->create($option, $request->only([
+                'name',
+                'description',
+                'env_variable',
+                'default_value',
+                'user_viewable',
+                'user_editable',
+                'required',
+                'regex',
             ]));
             Alert::success('Successfully added new variable to this option.')->flash();
 
@@ -305,8 +311,9 @@ class ServiceController extends Controller
     {
         try {
             $repo = new ServiceRepository\Service;
-            $repo->updateFile($serviceId, $request->except([
-                '_token',
+            $repo->updateFile($serviceId, $request->only([
+                'file',
+                'contents',
             ]));
 
             return response('', 204);

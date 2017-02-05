@@ -224,7 +224,7 @@ class ServerController extends Controller
 
         $service = Models\Service::select(
                 DB::raw('IFNULL(service_options.executable, services.executable) as executable')
-            )->leftJoin('service_options', 'service_options.parent_service', '=', 'services.id')
+            )->leftJoin('service_options', 'service_options.service_id', '=', 'services.id')
             ->where('service_options.id', $server->option_id)
             ->where('services.id', $server->service_id)
             ->first();

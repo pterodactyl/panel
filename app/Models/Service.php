@@ -40,5 +40,38 @@ class Service extends Model
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'created_at', 'updated_at'];
+
+    /**
+     * Gets all service options associated with this service.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function options()
+    {
+        return $this->hasMany(ServiceOptions::class);
+    }
+
+    /**
+     * Returns all of the packs associated with a service, regardless of the service option.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function packs()
+    {
+        return $this->hasManyThrough(
+            'Pterodactyl\Models\ServicePack', 'Pterodactyl\Models\ServiceOptions',
+            'service_id', 'option_id'
+        );
+    }
+
+    /**
+     * Gets all servers associated with this service.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
 }

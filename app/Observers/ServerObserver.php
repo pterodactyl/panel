@@ -62,7 +62,7 @@ class ServerObserver
         $user = Models\User::findOrFail($server->owner_id);
         $node = Models\Node::select('name')->where('id', $server->node_id)->first();
         $service = Models\Service::select('services.name', 'service_options.name as optionName')
-            ->join('service_options', 'service_options.parent_service', '=', 'services.id')
+            ->join('service_options', 'service_options.service_id', '=', 'services.id')
             ->where('services.id', $server->service_id)
             ->where('service_options.id', $server->option_id)
             ->first();

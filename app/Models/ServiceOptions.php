@@ -48,8 +48,28 @@ class ServiceOptions extends Model
       * @var array
       */
      protected $casts = [
-         'parent_service' => 'integer',
+         'service_id' => 'integer',
      ];
+
+     /**
+      * Gets service associated with a service option.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function service()
+     {
+         return $this->belongsTo(Service::class);
+     }
+
+     /**
+      * Gets all servers associated with this service option.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+      */
+     public function servers()
+     {
+         return $this->hasMany(Server::class, 'option_id');
+     }
 
      /**
       * Gets all variables associated with this service.
@@ -68,6 +88,6 @@ class ServiceOptions extends Model
       */
      public function packs()
      {
-         return $this->hasMany(ServicePack::class, 'option');
+         return $this->hasMany(ServicePack::class, 'option_id');
      }
 }

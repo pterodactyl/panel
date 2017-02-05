@@ -12,10 +12,10 @@
                             <div class="col-md-12">
                                 <label class="control-label">Associated Service Option:</label>
                                 <select name="option" class="form-control">
-                                    @foreach($services as $service => $options)
-                                        <option disabled>{{ $service }}</option>
-                                        @foreach($options as $option)
-                                            <option value="{{ $option['id'] }}" @if((int) $for === (int) $option['id'])selected="selected"@endif>&nbsp;&nbsp; -- {{ $option['name'] }}</option>
+                                    @foreach($services as $service)
+                                        <option disabled>{{ $service->name }}</option>
+                                        @foreach($service->options as $option)
+                                            <option value="{{ $option->id }}" @if((int) request()->option === $option->id)selected="selected"@endif>&nbsp;&nbsp; -- {{ $option->name }}</option>
                                         @endforeach
                                     @endforeach
                                 </select>

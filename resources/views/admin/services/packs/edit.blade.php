@@ -29,8 +29,8 @@
         <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/services">Services</a></li>
         <li><a href="{{ route('admin.services.packs') }}">Packs</a></li>
-        <li><a href="{{ route('admin.services.packs.service', $service->id) }}">{{ $service->name }}</a></li>
-        <li><a href="{{ route('admin.services.packs.option', $option->id) }}">{{ $option->name }}</a></li>
+        <li><a href="{{ route('admin.services.packs.service', $pack->option->service->id) }}">{{ $pack->option->service->name }}</a></li>
+        <li><a href="{{ route('admin.services.packs.option', $pack->option->id) }}">{{ $pack->option->name }}</a></li>
         <li class="active">{{ $pack->name }} ({{ $pack->version }})</li>
     </ul>
     <h3 class="nopad">Manage Service Pack</h3><hr />
@@ -62,10 +62,10 @@
             <div class="col-md-6">
                 <label class="control-label">Associated Service Option:</label>
                 <select name="option" class="form-control">
-                    @foreach($services as $service => $options)
-                        <option disabled>{{ $service }}</option>
-                        @foreach($options as $option)
-                            <option value="{{ $option['id'] }}" @if($pack->option === (int) $option['id'])selected="selected"@endif>&nbsp;&nbsp; -- {{ $option['name'] }}</option>
+                    @foreach($services as $service)
+                        <option disabled>{{ $service->name }}</option>
+                        @foreach($service->options as $option)
+                            <option value="{{ $option->id }}" @if($pack->option_id === $option->id)selected="selected"@endif>&nbsp;&nbsp; -- {{ $option->name }}</option>
                         @endforeach
                     @endforeach
                 </select>
