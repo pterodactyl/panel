@@ -113,7 +113,9 @@ class Server extends Model
      */
     public static function byUuid($uuid)
     {
-        $query = self::with('service', 'node')->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+        $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
+            $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+        });
 
         if (! Auth::user()->isRootAdmin()) {
             $query->whereIn('id', Auth::user()->serverAccessArray());
