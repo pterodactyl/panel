@@ -52,4 +52,15 @@ class Allocation extends Model
          'port' => 'integer',
          'server_id' => 'integer',
      ];
+
+     /**
+      * Accessor to automatically provide the IP alias if defined.
+      *
+      * @param  null|string $value
+      * @return string
+      */
+     public function getAliasAttribute($value)
+     {
+         return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
+     }
 }

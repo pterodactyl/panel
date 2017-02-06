@@ -32,7 +32,7 @@ class InfoController extends BaseController
 {
     public function me(Request $request)
     {
-        return Models\Server::getUserServers()->map(function ($server) {
+        return $request->user()->serverAccessCollection()->map(function ($server) {
             return [
                 'id' => $server->uuidShort,
                 'uuid' => $server->uuid,

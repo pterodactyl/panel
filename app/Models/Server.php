@@ -104,40 +104,6 @@ class Server extends Model
     }
 
     /**
-     * Returns array of all servers owned by the logged in user.
-     * Returns all users servers if user is a root admin.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getUserServers($paginate = null)
-    {
-        $query = self::select(
-            'servers.*',
-            'nodes.name as nodeName',
-            'locations.short as a_locationShort',
-            'allocations.ip',
-            'allocations.ip_alias',
-            'allocations.port',
-            'services.name as a_serviceName',
-            'service_options.name as a_serviceOptionName'
-        )->join('nodes', 'servers.node_id', '=', 'nodes.id')
-        ->join('locations', 'nodes.location_id', '=', 'locations.id')
-        ->join('services', 'servers.service_id', '=', 'services.id')
-        ->join('service_options', 'servers.option_id', '=', 'service_options.id')
-        ->join('allocations', 'servers.allocation_id', '=', 'allocations.id');
-
-        if (self::$user->root_admin !== 1) {
-            $query->whereIn('servers.id', Subuser::accessServers());
-        }
-
-        if (is_numeric($paginate)) {
-            return $query->paginate($paginate);
-        }
-
-        return $query->get();
-    }
-
-    /**
      * Returns a single server specified by UUID.
      * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
      * YOU WILL OVERWRITE THE SECRET KEY AND BREAK THINGS.
@@ -150,7 +116,7 @@ class Server extends Model
         $query = self::with('service', 'node')->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
 
         if (! Auth::user()->isRootAdmin()) {
-            $query->whereIn('id', Subuser::accessServers());
+            $query->whereIn('id', Auth::user()->serverAccessArray());
         }
 
         $result = $query->first();
@@ -226,6 +192,16 @@ class Server extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /**
+     * Gets the default allocation for a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function allocation()
+    {
+        return $this->hasOne(Allocation::class, 'id', 'allocation_id');
     }
 
     /**

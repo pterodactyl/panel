@@ -245,7 +245,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="control-sidebar-servers-tab">
                         <ul class="control-sidebar-menu">
-                            @foreach (Pterodactyl\Models\Server::getUserServers() as $s)
+                            @foreach (Auth::user()->serverAccessCollection() as $s)
                                 <li>
                                     <a
                                         @if(isset($server) && isset($node))
@@ -254,7 +254,7 @@
                                             @endif
                                         @endif
                                     href="{{ route('server.index', $s->uuidShort) }}">
-                                        @if($s->owner === Auth::user()->id)
+                                        @if($s->owner_id === Auth::user()->id)
                                             <i class="menu-icon fa fa-user bg-blue"></i>
                                         @else
                                             <i class="menu-icon fa fa-user-o bg-gray"></i>

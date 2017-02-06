@@ -55,33 +55,8 @@ class Subuser extends Model
       *
       * @var array
       */
-     protected $casts = [
-         'user_id' => 'integer',
-         'server_id' => 'integer',
-     ];
-
-    /**
-     * @var mixed
-     */
-    protected static $user;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        self::$user = Auth::user();
-    }
-
-    /**
-     * Returns an array of each server ID that the user has access to.
-     *
-     * @return array
-     */
-    public static function accessServers()
-    {
-        $union = self::select('server_id')->where('user_id', self::$user->id);
-
-        return Server::select('id')->where('owner', self::$user->id)->union($union)->pluck('id');
-    }
+    protected $casts = [
+        'user_id' => 'integer',
+        'server_id' => 'integer',
+    ];
 }

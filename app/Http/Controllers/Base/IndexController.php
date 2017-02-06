@@ -48,7 +48,7 @@ class IndexController extends Controller
     public function getIndex(Request $request)
     {
         return view('base.index', [
-            'servers' => Server::getUserServers(10),
+            'servers' => $request->user()->serverAccessCollection(10)->load('node', 'allocation'),
         ]);
     }
 

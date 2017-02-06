@@ -88,16 +88,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
     /**
-     * Determines if a user has permissions.
-     *
-     * @return bool
-     */
-    public function permissions()
-    {
-        return $this->hasMany(Permission::class);
-    }
-
-    /**
      * Enables or disables TOTP on an account if the token is valid.
      *
      * @param int $token The token that we want to verify.
@@ -175,5 +165,44 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         return $subuser->daemonSecret;
+    }
+
+    /**
+     * Returns all permissions that a user has.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
+
+    /**
+     * Returns an array of all servers a user is able to access.
+     * Note: does not account for user admin status.
+     *
+     * @return array
+     */
+    public function serverAccessArray()
+    {
+        $union = Subuser::select('server_id')->where('user_id', $this->id);
+
+        return Server::select('id')->where('owner_id', $this->id)->union($union)->pluck('id')->all();
+    }
+
+    /**
+     * Returns an array of all servers a user is able to access.
+     * Note: does not account for user admin status.
+     *
+     * @return Collection
+     */
+    public function serverAccessCollection($paginate = null)
+    {
+        $query = Server::with('service', 'node');
+        if (! $this->isRootAdmin()) {
+            $query->whereIn('id', $this->serverAccessArray());
+        }
+
+        return (is_numeric($paginate)) ? $query->paginate($paginate) : $query->get();
     }
 }
