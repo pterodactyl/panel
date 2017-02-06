@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.5.7 (Bodacious Boreopterus)
+
+### Fixed
+* **[Security Vulnerability]** — Fixed a bug in the Server Model SQL code that was causing server access verification to evaluate to true regardless of a users access permissions.
+
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added
 * Added the following languages: Estonian `et`, Dutch `nl`, Norwegian `nb` (partial), Romanian `ro`, and Russian `ru`. Interested in helping us translate the panel into more languages, or improving existing translations? Contact us on Discord and let us know.

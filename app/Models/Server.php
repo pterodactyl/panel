@@ -172,8 +172,9 @@ class Server extends Model
 
         $query = self::select('servers.*', 'services.file as a_serviceFile')
             ->join('services', 'services.id', '=', 'servers.service')
-            ->where('uuidShort', $uuid)
-            ->orWhere('uuid', $uuid);
+            ->where(function ($q) use ($uuid) {
+                $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+            });
 
         if (self::$user->root_admin !== 1) {
             $query->whereIn('servers.id', Subuser::accessServers());
