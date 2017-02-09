@@ -40,6 +40,23 @@ class ServerPolicy
     }
 
     /**
+     * Checks if the user has the given permission on/for the server.
+     *
+     * @param \Pterodactyl\Models\User   $user
+     * @param \Pterodactyl\Models\Server $server
+     * @param $permission
+     * @return bool
+     */
+    private function checkPermission(User $user, Server $server, $permission)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        return $user->permissions()->server($server)->permission($permission)->exists();
+    }
+
+    /**
      * Determine if current user is the owner of a server.
      *
      * @param  \Pterodactyl\Models\User    $user
@@ -520,22 +537,5 @@ class ServerPolicy
     public function setAllocation(User $user, Server $server)
     {
         return $this->checkPermission($user, $server, 'set-allocation');
-    }
-
-    /**
-     * Checks if the user has the given permission on/for the server.
-     *
-     * @param \Pterodactyl\Models\User   $user
-     * @param \Pterodactyl\Models\Server $server
-     * @param $permission
-     * @return bool
-     */
-    private function checkPermission(User $user, Server $server, $permission)
-    {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission($permission)->exists();
     }
 }

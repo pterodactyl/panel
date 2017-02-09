@@ -79,4 +79,14 @@ class Subuser extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Gets the permissions associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(Pemission::class);
+    }
 }

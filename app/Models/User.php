@@ -199,11 +199,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Returns all permissions that a user has.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function permissions()
     {
-        return $this->hasMany(Permission::class);
+        return $this->hasManyThrough(Permission::class, Subuser::class);
     }
 
     /**

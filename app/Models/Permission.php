@@ -42,22 +42,35 @@ class Permission extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'user_id' => 'integer',
-         'server_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'subuser_id' => 'integer',
+    ];
 
+    /**
+     * Find permission by permission node.
+     *
+     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  string                             $permission
+     * @return \Illuminate\Database\Query\Builder
+     */
     public function scopePermission($query, $permission)
     {
         return $query->where('permission', $permission);
     }
 
-    public function scopeServer($query, $server)
+    /**
+     * Filter permission by server.
+     *
+     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  \Pterodactyl\Models\Server         $server
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeServer($query, Server $server)
     {
         return $query->where('server_id', $server->id);
     }
