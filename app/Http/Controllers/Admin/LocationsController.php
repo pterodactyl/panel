@@ -97,7 +97,7 @@ class LocationsController extends Controller
     {
         try {
             $location = new LocationRepository;
-            $id = $location->create($request->only(['long', 'short']));
+            $location->create($request->only(['long', 'short']));
             Alert::success('New location successfully added.')->flash();
 
             return redirect()->route('admin.locations');

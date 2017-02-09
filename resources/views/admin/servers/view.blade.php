@@ -89,19 +89,19 @@
                             </tr>
                             <tr>
                                 <td>Owner</td>
-                                <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->a_ownerEmail }}</a></td>
+                                <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->email }}</a></td>
                             </tr>
                             <tr>
                                 <td>Location</td>
-                                <td><a href="{{ route('admin.locations') }}">{{ $node->a_locationName }}</a></td>
+                                <td><a href="{{ route('admin.locations') }}">{{ $server->node->location->short }}</a></td>
                             </tr>
                             <tr>
                                 <td>Node</td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node_id) }}">{{ $node->name }}</a></td>
+                                <td><a href="{{ route('admin.nodes.view', $server->node_id) }}">{{ $server->node->name }}</a></td>
                             </tr>
                             <tr>
                                 <td>Service</td>
-                                <td>{{ $server->a_serviceName }} :: {{ $server->a_servceOptionName }}</td>
+                                <td>{{ $server->option->service->name }} :: {{ $server->option->name }}</td>
                             </tr>
                             <tr>
                                 <td>Name</td>
@@ -129,13 +129,13 @@
                             </tr>
                             <tr>
                                 <td>Default Connection</td>
-                                <td><code>{{ $server->ip }}:{{ $server->port }}</code></td>
+                                <td><code>{{ $server->allocation->ip }}:{{ $server->allocation->port }}</code></td>
                             </tr>
                             <tr>
                                 <td>Connection Alias</td>
                                 <td>
-                                    @if(!is_null($server->ip_alias))
-                                        <code>{{ $server->ip_alias }}:{{ $server->port }}</code>
+                                    @if($server->allocation->alias !== $server->allocation->ip)
+                                        <code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code>
                                     @else
                                         <span class="label label-default">No Alias Assigned</span>
                                     @endif
@@ -170,7 +170,7 @@
                             <div class="form-group {{ $errors->has('owner') ? 'has-error' : '' }}">
                                 <label for="name" class="control-label">Server Owner</label>
                                 <div>
-                                    <input type="text" name="owner" value="{{ old('owner', $server->a_ownerEmail) }}" class="form-control" />
+                                    <input type="text" name="owner" value="{{ old('owner', $server->user->email) }}" class="form-control" />
                                     <p class="text-muted"><small>You can change the owner of this server by changing this field to an email matching another use on this system. If you do this a new daemon security token will be generated automatically.</small></p>
                                 </div>
                             </div>
@@ -278,9 +278,15 @@
                                     @foreach ($assigned as $assignment)
                                         <div class="input-group" style="margin:5px auto;">
                                             <span class="input-group-addon">
-                                                <input type="radio" @if($assignment->ip == $server->ip && $assignment->port == $server->port) checked="checked" @endif name="default" value="{{ $assignment->ip }}:{{ $assignment->port }}"/>
+                                                <input type="radio"
+                                                    @if($assignment->id === $server->allocation_id) checked="checked" @endif
+                                                name="default" value="{{ $assignment->ip }}:{{ $assignment->port }}"/>
                                             </span>
-                                            <input type="text" class="form-control" value="@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif" readonly />
+                                            <input type="text" class="form-control" value="{{ $assignment->alias }}:{{ $assignment->port }}"
+                                                @if($assignment->has_alias)
+                                                    data-toggle="tooltip" data-placement="left" title="{{ $assignment->ip }}:{{ $assignment->port }}"
+                                                @endif
+                                            />
                                         </div>
                                     @endforeach
                                 </div>
@@ -291,7 +297,7 @@
                                             <div>
                                                 <select name="add_additional[]" class="form-control" multiple>
                                                     @foreach ($unassigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}">{{ $assignment->alias }}:{{ $assignment->port }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -304,7 +310,7 @@
                                             <div>
                                                 <select name="remove_additional[]" class="form-control" multiple>
                                                     @foreach ($assigned as $assignment)
-                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($server->allocation_id === $assignment->id)disabled @endif>@if(!is_null($assignment->ip_alias)){{ $assignment->ip_alias }}@else{{ $assignment->ip }}@endif:{{ $assignment->port }} @if(!is_null($assignment->ip_alias))(alias of {{ $assignment->ip }})@endif</option>
+                                                        <option value="{{ $assignment->ip }}:{{ $assignment->port }}" @if($server->allocation_id === $assignment->id)disabled @endif>{{ $assignment->alias }}:{{ $assignment->port }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -333,7 +339,7 @@
                                     <div class="alert alert-info">Changing any of the values below will require a restart for them to take effect.</div>
                                     <label class="control-label">Server Startup Command</label>
                                     <div class="input-group">
-                                        <span class="input-group-addon">{{ $server->a_serviceExecutable }}</span>
+                                        <span class="input-group-addon">{{ $server->option->display_executable }}</span>
                                         <input type="text" class="form-control" name="startup" value="{{ old('startup', $server->startup) }}" />
                                     </div>
                                     <p class="text-muted"><small>The following data replacers are avaliable for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server ip, and server port respectively.</small></p>
@@ -343,18 +349,18 @@
                         <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
                         <div class="panel-body">
                             <div class="row">
-                                @foreach($startup as $item)
+                                @foreach($server->option->variables as $variable)
                                     <div class="form-group col-md-6">
                                         <label class="control-label">
-                                            @if($item->required === 1)<span class="label label-primary">Required</span> @endif
-                                            @if($item->user_viewable === 0)<span data-toggle="tooltip" data-placement="top" title="Not Visible to Users" class="label label-danger"><i class="fa fa-eye-slash"></i></span> @endif
-                                            @if($item->user_editable === 0)<span data-toggle="tooltip" data-placement="top" title="Not Editable by Users" class="label label-danger"><i class="fa fa-edit"></i></span> @endif
-                                            {{ $item->name }}
+                                            @if($variable->required)<span class="label label-primary">Required</span> @endif
+                                            @if(! $variable->user_viewable)<span data-toggle="tooltip" data-placement="top" title="Not Visible to Users" class="label label-danger"><i class="fa fa-eye-slash"></i></span> @endif
+                                            @if(! $variable->user_editable)<span data-toggle="tooltip" data-placement="top" title="Not Editable by Users" class="label label-danger"><i class="fa fa-edit"></i></span> @endif
+                                            {{ $variable->name }}
                                         </label>
                                         <div>
-                                            <input type="text" name="{{ $item->env_variable }}" class="form-control" value="{{ old($item->env_variable, $item->a_serverValue) }}" data-action="matchRegex" data-regex="{{ $item->regex }}" />
+                                            <input type="text" name="{{ $variable->env_variable }}" class="form-control" value="{{ old($variable->env_variable, (! $variable->server_value) ? $variable->default_value : $variable->server_value) }}" data-action="matchRegex" data-regex="{{ $variable->regex }}" />
                                         </div>
-                                        <p class="text-muted"><small>{!! $item->description !!}<br />Regex: <code>{{ $item->regex }}</code><br />Access as: <code>&#123;&#123;{{$item->env_variable}}&#125;&#125;</code></small></p>
+                                        <p class="text-muted"><small>{!! $variable->description !!}<br />Regex: <code>{{ $variable->regex }}</code><br />Access as: <code>&#123;&#123;{{ $variable->env_variable }}&#125;&#125;</code></small></p>
                                     </div>
                                 @endforeach
                             </div>
@@ -412,7 +418,7 @@
                             </div>
                         </form>
                     </div>
-                    @if(count($databases) > 0)
+                    @if(count($server->databases) > 0)
                         <div class="panel-heading" style="border-top: 1px solid #ddd;"></div>
                         <div class="panel-body">
                             <table class="table table-bordered table-hover">
@@ -426,12 +432,12 @@
                                     </th>
                                 </thead>
                                 <tbody>
-                                    @foreach($databases as $database)
+                                    @foreach($server->databases as $database)
                                         <tr>
                                             <td>{{ $database->database }}</td>
                                             <td>{{ $database->username }} ({{ $database->remote }})</td>
                                             <td><code>{{ Crypt::decrypt($database->password) }}</code> <a href="#" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-refresh pull-right"></i></a></td>
-                                            <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
+                                            <td><code>{{ $database->host->host }}:{{ $database->host->port }}</code></td>
                                             <td class="text-center"><a href="#delete" data-action="delete_database" data-database="{{ $database->id }}" class="text-danger"><i class="fa fa-trash-o"></i></a></td>
                                         </tr>
                                     @endforeach
@@ -568,7 +574,7 @@ $(document).ready(function () {
                 'X-Access-Token': '{{ $server->daemonSecret }}',
                 'X-Access-Server': '{{ $server->uuid }}'
             },
-            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/server',
+            url: '{{ $server->node->scheme }}://{{ $server->node->fqdn }}:{{ $server->node->daemonListen }}/server',
             dataType: 'json',
             timeout: 5000,
         }).done(function (data) {

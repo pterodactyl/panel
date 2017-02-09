@@ -122,6 +122,7 @@ class Node extends Model
     /**
      * Return an instance of the Guzzle client for this specific node.
      *
+     * @param array $headers
      * @return \GuzzleHttp\Client
      */
     public function guzzleClient($headers = [])

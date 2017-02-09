@@ -51,4 +51,14 @@ class ServerVariables extends Model
          'server_id' => 'integer',
          'variable_id' => 'integer',
      ];
+
+     /**
+      * Returns information about a given variables parent.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function variable()
+     {
+         return $this->belongsTo(ServiceVariables::class, 'variable_id');
+     }
 }

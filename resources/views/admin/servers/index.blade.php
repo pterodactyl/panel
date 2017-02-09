@@ -32,7 +32,7 @@
     <h3>All Servers</h3><hr />
     <form method="GET" style="margin-bottom:20px;">
         <div class="input-group">
-            <input type="text" name="filter" class="form-control" value="{{ urldecode(Input::get('filter')) }}" placeholder="search term" />
+            <input type="text" name="filter" class="form-control" value="{{ urldecode(request()->filter) }}" placeholder="search term" />
             <div class="input-group-btn">
                 <button type="submit" class="btn btn-sm btn-primary">Filter Servers</button>
             </div>
@@ -64,8 +64,8 @@
                             <span class="label label-danger">Pending Deletion</span>
                         @endif
                     </td>
-                    <td><a href="/admin/users/view/{{ $server->owner_id }}">{{ $server->a_ownerEmail }}</a></td>
-                    <td><a href="/admin/nodes/view/{{ $server->node_id }}">{{ $server->a_nodeName }}</a></td>
+                    <td><a href="/admin/users/view/{{ $server->user->id }}">{{ $server->user->email }}</a></td>
+                    <td><a href="/admin/nodes/view/{{ $server->node->id }}">{{ $server->node->name }}</a></td>
                     <td class="hidden-xs"><code>{{ $server->username }}</code></td>
                 </tr>
             @endforeach

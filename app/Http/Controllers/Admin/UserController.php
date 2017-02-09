@@ -45,35 +45,11 @@ class UserController extends Controller
         //
     }
 
+    // @TODO: implement nicolaslopezj/searchable to clean up this disaster.
     public function getIndex(Request $request)
     {
-        $query = User::select('users.*');
-        if ($request->input('filter') && ! is_null($request->input('filter'))) {
-            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
-            foreach ($matches[0] as $match) {
-                $match = str_replace('"', '', $match);
-                if (strpos($match, ':')) {
-                    list($field, $term) = explode(':', $match);
-                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
-                } else {
-                    $query->where('email', 'LIKE', '%' . $match . '%');
-                    $query->orWhere([
-                        ['uuid', 'LIKE', '%' . $match . '%'],
-                        ['root_admin', 'LIKE', '%' . $match . '%'],
-                    ]);
-                }
-            }
-        }
-
-        try {
-            $users = $query->paginate(20);
-        } catch (\Exception $ex) {
-            Alert::warning('There was an error with the search parameters provided.');
-            $users = User::all()->paginate(20);
-        }
-
         return view('admin.users.index', [
-            'users' => $users,
+            'users' => User::paginate(25),
         ]);
     }
 
@@ -85,12 +61,7 @@ class UserController extends Controller
     public function getView(Request $request, $id)
     {
         return view('admin.users.view', [
-            'user' => User::findOrFail($id),
-            'servers' => Server::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
-                ->join('nodes', 'servers.node_id', '=', 'nodes.id')
-                ->join('locations', 'nodes.location', '=', 'locations.id')
-                ->where('owner', $id)
-                ->get(),
+            'user' => User::with('servers.node')->findOrFail($id),
         ]);
     }
 
@@ -162,10 +133,6 @@ class UserController extends Controller
 
     public function getJson(Request $request)
     {
-        foreach (User::select('email')->get() as $user) {
-            $resp[] = $user->email;
-        }
-
-        return $resp;
+        return User::select('email')->get()->pluck('email');
     }
 }

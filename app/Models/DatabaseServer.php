@@ -69,4 +69,14 @@ class DatabaseServer extends Model
      {
          return $this->belongsTo(Node::class, 'linked_node');
      }
+
+     /**
+      * Gets the databases assocaited with this host.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+      */
+     public function databases()
+     {
+         return $this->hasMany(Database::class, 'db_server');
+     }
 }

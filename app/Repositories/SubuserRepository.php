@@ -112,11 +112,11 @@ class SubuserRepository
      * @param  array  $data
      * @throws DisplayValidationException
      * @throws DisplayException
-     * @return int          Returns the ID of the newly created subuser.
+     * @return \Pterodactyl\Models\Subuser
      */
     public function create($sid, array $data)
     {
-        $server = Models\Server::findOrFail($sid);
+        $server = Models\Server::with('node')->findOrFail($sid);
 
         $validator = Validator::make($data, [
             'permissions' => 'required|array',
@@ -135,14 +135,13 @@ class SubuserRepository
             if (! $user) {
                 try {
                     $repo = new UserRepository;
-                    $uid = $repo->create([
+                    $user = $repo->create([
                         'email' => $data['email'],
-                        'username' => substr(str_replace('@', '', $data['email']), 0, 8),
-                        'name_first' => 'John',
-                        'name_last' => 'Doe',
+                        'username' => str_random(8),
+                        'name_first' => 'Unassigned',
+                        'name_last' => 'Name',
                         'root_admin' => false,
                     ]);
-                    $user = Models\User::findOrFail($uid);
                 } catch (\Exception $ex) {
                     throw $ex;
                 }
@@ -153,14 +152,11 @@ class SubuserRepository
             }
 
             $uuid = new UuidService;
-
-            $subuser = new Models\Subuser;
-            $subuser->fill([
+            $subuser = Models\Subuser::create([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
                 'daemonSecret' => (string) $uuid->generate('servers', 'uuid'),
             ]);
-            $subuser->save();
 
             $daemonPermissions = $this->coreDaemonPermissions;
             foreach ($data['permissions'] as $permission) {
@@ -170,13 +166,11 @@ class SubuserRepository
                         array_push($daemonPermissions, $this->permissions[$permission]);
                     }
 
-                    $model = new Models\Permission;
-                    $model->fill([
+                    Models\Permission::create([
                         'user_id' => $user->id,
                         'server_id' => $server->id,
                         'permission' => $permission,
                     ]);
-                    $model->save();
                 }
             }
 
@@ -184,14 +178,10 @@ class SubuserRepository
             // We contact even if they don't have any daemon permissions to overwrite
             // if they did have them previously.
 
-            $node = Models\Node::getByID($server->node_id);
-            $client = Models\Node::guzzleRequest($server->node_id);
-
-            $res = $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $node->daemonSecret,
+            ])->request('PATCH', '/server', [
                 'json' => [
                     'keys' => [
                         $subuser->daemonSecret => $daemonPermissions,
@@ -199,18 +189,9 @@ class SubuserRepository
                 ],
             ]);
 
-            $email = $data['email'];
-            Mail::queue('emails.added-subuser', [
-                'serverName' => $server->name,
-                'url' => route('server.index', $server->uuidShort),
-            ], function ($message) use ($email) {
-                $message->to($email);
-                $message->from(Settings::get('email_from', env('MAIL_FROM')), Settings::get('email_sender_name', env('MAIL_FROM_NAME', 'Pterodactyl Panel')));
-                $message->subject(Settings::get('company') . ' - Added to Server');
-            });
             DB::commit();
 
-            return $subuser->id;
+            return $subuser;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error attempting to connect to the daemon to add this user.', $ex);
@@ -232,22 +213,18 @@ class SubuserRepository
      */
     public function delete($id)
     {
-        $subuser = Models\Subuser::findOrFail($id);
-        $server = Models\Server::findOrFail($subuser->server_id);
+        $subuser = Models\Subuser::with('server.node', 'permissions')->findOrFail($id);
+        $server = $subuser->server;
 
         DB::beginTransaction();
 
         try {
             Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
 
-            $node = Models\Node::getByID($server->node_id);
-            $client = Models\Node::guzzleRequest($server->node_id);
-
-            $res = $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('PATCH', '/server', [
                 'json' => [
                     'keys' => [
                         $subuser->daemonSecret => [],
@@ -290,8 +267,8 @@ class SubuserRepository
             throw new DisplayValidationException(json_encode($validator->all()));
         }
 
-        $subuser = Models\Subuser::findOrFail($id);
-        $server = Models\Server::findOrFail($data['server']);
+        $subuser = Models\Subuser::with('server.node')->findOrFail($id);
+        $server = $subuser->server;
 
         DB::beginTransaction();
 
@@ -318,14 +295,10 @@ class SubuserRepository
             // Contact Daemon
             // We contact even if they don't have any daemon permissions to overwrite
             // if they did have them previously.
-            $node = Models\Node::getByID($server->node_id);
-            $client = Models\Node::guzzleRequest($server->node_id);
-
-            $res = $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('PATCH', '/server', [
                 'json' => [
                     'keys' => [
                         $subuser->daemonSecret => $daemonPermissions,

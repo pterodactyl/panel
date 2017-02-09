@@ -59,4 +59,24 @@ class Subuser extends Model
         'user_id' => 'integer',
         'server_id' => 'integer',
     ];
+
+    /**
+     * Gets the server associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Gets the user associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

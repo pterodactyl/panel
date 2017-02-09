@@ -81,12 +81,7 @@ class NodeRepository
         $uuid = new UuidService;
         $data['daemonSecret'] = (string) $uuid->generate('nodes', 'daemonSecret');
 
-        // Store the Data
-        $node = new Models\Node;
-        $node->fill($data);
-        $node->save();
-
-        return $node;
+        return Models\Node::create($data);
     }
 
     public function update($id, array $data)
@@ -260,8 +255,8 @@ class NodeRepository
 
     public function delete($id)
     {
-        $node = Models\Node::findOrFail($id);
-        if (Models\Server::where('node', $id)->count() > 0) {
+        $node = Models\Node::withCount('servers')->findOrFail($id);
+        if ($node->servers_count > 0) {
             throw new DisplayException('You cannot delete a node with servers currently attached to it.');
         }
 

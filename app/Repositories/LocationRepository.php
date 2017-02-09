@@ -37,9 +37,10 @@ class LocationRepository
 
     /**
      * Creates a new location on the system.
+     *
      * @param  array  $data
-     * @throws Pterodactyl\Exceptions\DisplayValidationException
-     * @return int
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     * @return \Pterodactyl\Models\Location
      */
     public function create(array $data)
     {
@@ -54,14 +55,12 @@ class LocationRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $location = new Models\Location;
-        $location->fill([
+        $location = Models\Location::create([
             'long' => $data['long'],
             'short' => $data['short'],
         ]);
-        $location->save();
 
-        return $location->id;
+        return $location;
     }
 
     /**

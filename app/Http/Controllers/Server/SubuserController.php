@@ -156,14 +156,14 @@ class SubuserController extends Controller
 
         try {
             $repo = new SubuserRepository;
-            $id = $repo->create($server->id, $request->except([
-                '_token',
+            $subuser = $repo->create($server->id, $request->only([
+                'permissions', 'email',
             ]));
             Alert::success('Successfully created new subuser.')->flash();
 
             return redirect()->route('server.subusers.view', [
                 'uuid' => $uuid,
-                'id' => md5($id),
+                'id' => md5($subuser->id),
             ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.subusers.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();

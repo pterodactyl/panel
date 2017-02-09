@@ -168,16 +168,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Returns all permissions that a user has.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions()
-    {
-        return $this->hasMany(Permission::class);
-    }
-
-    /**
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
@@ -204,5 +194,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         return (is_numeric($paginate)) ? $query->paginate($paginate) : $query->get();
+    }
+
+    /**
+     * Returns all permissions that a user has.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
+
+    /**
+     * Returns all servers that a user owns.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class, 'owner_id');
     }
 }

@@ -63,4 +63,15 @@ class Allocation extends Model
      {
          return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
      }
+
+     /**
+      * Accessor to quickly determine if this allocation has an alias.
+      *
+      * @param  null|string $value
+      * @return boolean
+      */
+     public function getHasAliasAttribute($value)
+     {
+         return (! is_null($this->ip_alias));
+     }
 }

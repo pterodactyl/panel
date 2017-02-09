@@ -276,4 +276,14 @@ class Server extends Model
     {
         return $this->hasMany(Task::class, 'server', 'id');
     }
+
+    /**
+     * Gets all databases associated with a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function databases()
+    {
+        return $this->hasMany(Database::class);
+    }
 }
