@@ -149,7 +149,7 @@ class APIRepository
             $secretKey = str_random(16) . '.' . str_random(7) . '.' . str_random(7);
             $key = new Models\APIKey;
             $key->fill([
-                'user' => $this->user->id,
+                'user_id' => $this->user->id,
                 'public' => str_random(16),
                 'secret' => Crypt::encrypt($secretKey),
                 'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed),

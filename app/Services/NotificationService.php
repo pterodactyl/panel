@@ -48,7 +48,6 @@ class NotificationService
     public function __construct(Server $server)
     {
         $this->server = $server;
-        $this->user = User::findOrFail($server->owner_id);
     }
 
     public function pass(array $notification)
