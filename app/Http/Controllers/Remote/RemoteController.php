@@ -28,7 +28,6 @@ use Carbon\Carbon;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\NotificationService;
 
 class RemoteController extends Controller
 {
@@ -42,7 +41,7 @@ class RemoteController extends Controller
 
     public function postDownload(Request $request)
     {
-        $download = Models\Download::where('token', $request->input('token', '00'))->first();
+        $download = Models\Download::where('token', $request->input('token'))->first();
         if (! $download) {
             return response()->json([
                 'error' => 'An invalid request token was recieved with this request.',
@@ -59,18 +58,17 @@ class RemoteController extends Controller
 
     public function postInstall(Request $request)
     {
-        $server = Models\Server::where('uuid', $request->input('server'))->first();
+        $server = Models\Server::where('uuid', $request->input('server'))->with('node')->first();
         if (! $server) {
             return response()->json([
                 'error' => 'No server by that ID was found on the system.',
             ], 422);
         }
 
-        $node = Models\Node::findOrFail($server->node_id);
         $hmac = $request->input('signed');
         $status = $request->input('installed');
 
-        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {
+        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $server->node->daemonSecret, true)) {
             return response()->json([
                 'error' => 'Signed HMAC was invalid.',
             ], 403);
@@ -86,17 +84,15 @@ class RemoteController extends Controller
 
     public function event(Request $request)
     {
-        $server = Models\Server::where('uuid', $request->input('server'))->first();
+        $server = Models\Server::where('uuid', $request->input('server'))->with('node')->first();
         if (! $server) {
             return response()->json([
                 'error' => 'No server by that ID was found on the system.',
             ], 422);
         }
 
-        $node = Models\Node::findOrFail($server->node_id);
-
         $hmac = $request->input('signed');
-        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $node->daemonSecret, true)) {
+        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $server->node->daemonSecret, true)) {
             return response()->json([
                 'error' => 'Signed HMAC was invalid.',
             ], 403);
@@ -130,7 +126,6 @@ class RemoteController extends Controller
         $token->delete();
 
         // Manually as getConfigurationAsJson() returns it in correct format already
-        return response($node->getConfigurationAsJson(), 200)
-            ->header('Content-Type', 'application/json');
+        return response()->json($node->getConfigurationAsJson(), 200);
     }
 }
