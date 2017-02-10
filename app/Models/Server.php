@@ -197,6 +197,16 @@ class Server extends Model
     }
 
     /**
+     * Gets the subusers associated with a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subusers()
+    {
+        return $this->hasMany(Subuser::class);
+    }
+
+    /**
      * Gets the default allocation for a server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

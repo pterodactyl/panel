@@ -87,6 +87,6 @@ class Subuser extends Model
      */
     public function permissions()
     {
-        return $this->hasMany(Pemission::class);
+        return $this->hasMany(Permission::class);
     }
 }

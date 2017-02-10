@@ -35,6 +35,8 @@ class SetupPermissionsPivotTable extends Migration
 
             $table->dropColumn('server_id');
             $table->dropColumn('user_id');
+            $table->dropColumn('created_at');
+            $table->dropColumn('updated_at');
             $table->foreign('subuser_id')->references('id')->on('subusers');
         });
     }
@@ -49,6 +51,7 @@ class SetupPermissionsPivotTable extends Migration
         Schema::table('permissions', function (Blueprint $table) {
             $table->unsignedInteger('server_id')->after('subuser_id');
             $table->unsignedInteger('user_id')->after('server_id');
+            $table->timestamps();
         });
 
         DB::transaction(function () {

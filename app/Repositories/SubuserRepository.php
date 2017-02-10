@@ -167,8 +167,7 @@ class SubuserRepository
                     }
 
                     Models\Permission::create([
-                        'user_id' => $user->id,
-                        'server_id' => $server->id,
+                        'subuser_id' => $subuser->id,
                         'permission' => $permission,
                     ]);
                 }
@@ -213,14 +212,12 @@ class SubuserRepository
      */
     public function delete($id)
     {
-        $subuser = Models\Subuser::with('server.node', 'permissions')->findOrFail($id);
+        $subuser = Models\Subuser::with('server.node')->findOrFail($id);
         $server = $subuser->server;
 
         DB::beginTransaction();
 
         try {
-            Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
-
             $server->node->guzzleClient([
                 'X-Access-Server' => $server->uuid,
                 'X-Access-Token' => $server->node->daemonSecret,
@@ -232,6 +229,9 @@ class SubuserRepository
                 ],
             ]);
 
+            foreach($subuser->permissions as &$permission) {
+                $permission->delete();
+            }
             $subuser->delete();
             DB::commit();
 
@@ -273,7 +273,9 @@ class SubuserRepository
         DB::beginTransaction();
 
         try {
-            Models\Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
+            foreach($subuser->permissions as &$permission) {
+                $permission->delete();
+            }
 
             $daemonPermissions = $this->coreDaemonPermissions;
             foreach ($data['permissions'] as $permission) {
@@ -282,13 +284,10 @@ class SubuserRepository
                     if (! is_null($this->permissions[$permission])) {
                         array_push($daemonPermissions, $this->permissions[$permission]);
                     }
-                    $model = new Models\Permission;
-                    $model->fill([
-                        'user_id' => $data['user'],
-                        'server_id' => $data['server'],
+                    Models\Permission::create([
+                        'subuser_id' => $subuser->id,
                         'permission' => $permission,
                     ]);
-                    $model->save();
                 }
             }
 

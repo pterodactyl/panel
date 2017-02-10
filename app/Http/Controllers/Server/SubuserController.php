@@ -49,7 +49,7 @@ class SubuserController extends Controller
 
     public function getIndex(Request $request, $uuid)
     {
-        $server = Models\Server::byUuid($uuid);
+        $server = Models\Server::byUuid($uuid)->load('subusers.user');
         $this->authorize('list-subusers', $server);
 
         $server->js();
@@ -57,35 +57,17 @@ class SubuserController extends Controller
         return view('server.users.index', [
             'server' => $server,
             'node' => $server->node,
-            'subusers' => Models\Subuser::select('subusers.*', 'users.email', 'users.username', 'users.use_totp')
-                ->join('users', 'users.id', '=', 'subusers.user_id')
-                ->where('server_id', $server->id)
-                ->get(),
+            'subusers' => $server->subusers,
         ]);
     }
 
     public function getView(Request $request, $uuid, $id)
     {
-        $server = Models\Server::byUuid($uuid);
+        $server = Models\Server::byUuid($uuid)->load('node');
         $this->authorize('view-subuser', $server);
 
-        $subuser = Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
-            ->join('users', 'users.id', '=', 'subusers.user_id')
-            ->where(DB::raw('md5(subusers.id)'), $id)->where('subusers.server_id', $server->id)
-            ->first();
-
-        if (! $subuser) {
-            abort(404);
-        }
-
-        $permissions = [];
-        $modelPermissions = Models\Permission::select('permission')
-            ->where('user_id', $subuser->user_id)->where('server_id', $server->id)
-            ->get();
-
-        foreach ($modelPermissions as &$perm) {
-            $permissions[$perm->permission] = true;
-        }
+        $subuser = Models\Subuser::with('permissions', 'user')
+            ->where('server_id', $server->id)->findOrFail($id);
 
         $server->js();
 
@@ -93,7 +75,9 @@ class SubuserController extends Controller
             'server' => $server,
             'node' => $server->node,
             'subuser' => $subuser,
-            'permissions' => $permissions,
+            'permissions' => $subuser->permissions->mapWithKeys(function ($item, $key) {
+                return [$item->permission => true];
+            }),
         ]);
     }
 
@@ -102,12 +86,10 @@ class SubuserController extends Controller
         $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-subuser', $server);
 
-        $subuser = Models\Subuser::where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
+        $subuser = Models\Subuser::where('server_id', $server->id)->findOrFail($id);
 
         try {
-            if (! $subuser) {
-                throw new DisplayException('Unable to locate a subuser by that ID.');
-            } elseif ($subuser->user_id === Auth::user()->id) {
+            if ($subuser->user_id === Auth::user()->id) {
                 throw new DisplayException('You are not authorized to edit you own account.');
             }
 
@@ -163,7 +145,7 @@ class SubuserController extends Controller
 
             return redirect()->route('server.subusers.view', [
                 'uuid' => $uuid,
-                'id' => md5($subuser->id),
+                'id' => $subuser->id,
             ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.subusers.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -183,10 +165,7 @@ class SubuserController extends Controller
         $this->authorize('delete-subuser', $server);
 
         try {
-            $subuser = Models\Subuser::select('id')->where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
-            if (! $subuser) {
-                throw new DisplayException('No subuser by that ID was found on the system.');
-            }
+            $subuser = Models\Subuser::where('server_id', $server->id)->findOrFail($id);
 
             $repo = new SubuserRepository;
             $repo->delete($subuser->id);
