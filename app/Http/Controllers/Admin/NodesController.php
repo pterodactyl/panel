@@ -112,10 +112,8 @@ class NodesController extends Controller
     public function getView(Request $request, $id)
     {
         $node = Models\Node::with(
-            'servers.user',
-            'servers.service',
-            'servers.allocations',
-            'location'
+            'servers.user', 'servers.service',
+            'servers.allocations', 'location'
         )->findOrFail($id);
         $node->setRelation('allocations', $node->allocations()->paginate(40));
 
@@ -131,20 +129,12 @@ class NodesController extends Controller
         try {
             $node = new NodeRepository;
             $node->update($id, $request->only([
-                'name',
-                'location',
-                'public',
-                'fqdn',
-                'scheme',
-                'memory',
-                'memory_overallocate',
-                'disk',
-                'disk_overallocate',
-                'upload_size',
-                'daemonBase',
-                'daemonSFTP',
-                'daemonListen',
-                'reset_secret',
+                'name', 'location', 'public',
+                'fqdn', 'scheme', 'memory',
+                'memory_overallocate', 'disk',
+                'disk_overallocate', 'upload_size',
+                'daemonBase', 'daemonSFTP',
+                'daemonListen', 'reset_secret',
             ]));
             Alert::success('Successfully update this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
 

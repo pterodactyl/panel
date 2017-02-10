@@ -88,12 +88,8 @@ class UserController extends Controller
         try {
             $user = new UserRepository;
             $userid = $user->create($request->only([
-                'email',
-                'password',
-                'name_first',
-                'name_last',
-                'username',
-                'root_admin',
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
             ]));
             Alert::success('Account has been successfully created.')->flash();
 
@@ -113,12 +109,8 @@ class UserController extends Controller
         try {
             $repo = new UserRepository;
             $repo->update($user, $request->only([
-                'email',
-                'password',
-                'name_first',
-                'name_last',
-                'username',
-                'root_admin',
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
             ]));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {

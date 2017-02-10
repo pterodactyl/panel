@@ -279,13 +279,9 @@ class ServersController extends Controller
         try {
             $server = new ServerRepository;
             $server->changeBuild($id, $request->only([
-                'default',
-                'add_additional',
-                'remove_additional',
-                'memory',
-                'swap',
-                'io',
-                'cpu',
+                'default', 'add_additional',
+                'remove_additional', 'memory',
+                'swap', 'io', 'cpu',
             ]));
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -377,9 +373,7 @@ class ServersController extends Controller
         try {
             $repo = new DatabaseRepository;
             $repo->create($id, $request->only([
-                'db_server',
-                'database',
-                'remote',
+                'db_server', 'database', 'remote',
             ]));
             Alert::success('Added new database to this server.')->flash();
         } catch (DisplayValidationException $ex) {

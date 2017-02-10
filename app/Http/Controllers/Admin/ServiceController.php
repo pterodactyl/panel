@@ -59,11 +59,8 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Service;
             $service = $repo->create($request->only([
-                'name',
-                'description',
-                'file',
-                'executable',
-                'startup',
+                'name', 'description', 'file',
+                'executable', 'startup',
             ]));
             Alert::success('Successfully created new service!')->flash();
 
@@ -92,11 +89,8 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Service;
             $repo->update($service, $request->only([
-                'name',
-                'description',
-                'file',
-                'executable',
-                'startup',
+                'name', 'description', 'file',
+                'executable', 'startup',
             ]));
             Alert::success('Successfully updated this service.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -134,9 +128,7 @@ class ServiceController extends Controller
         $option = Models\ServiceOptions::with('service', 'variables')->findOrFail($option);
         $option->setRelation('servers', $option->servers()->with('user')->paginate(25));
 
-        return view('admin.services.options.view', [
-            'option' => $option,
-        ]);
+        return view('admin.services.options.view', ['option' => $option]);
     }
 
     public function postOption(Request $request, $service, $option)
@@ -144,12 +136,8 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Option;
             $repo->update($option, $request->only([
-                'name',
-                'description',
-                'tag',
-                'executable',
-                'docker_image',
-                'startup',
+                'name', 'description', 'tag',
+                'executable', 'docker_image', 'startup',
             ]));
             Alert::success('Option settings successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -227,14 +215,9 @@ class ServiceController extends Controller
         try {
             $repo = new ServiceRepository\Variable;
             $repo->create($option, $request->only([
-                'name',
-                'description',
-                'env_variable',
-                'default_value',
-                'user_viewable',
-                'user_editable',
-                'required',
-                'regex',
+                'name', 'description', 'env_variable',
+                'default_value', 'user_viewable',
+                'user_editable', 'required', 'regex',
             ]));
             Alert::success('Successfully added new variable to this option.')->flash();
 
@@ -311,10 +294,7 @@ class ServiceController extends Controller
     {
         try {
             $repo = new ServiceRepository\Service;
-            $repo->updateFile($serviceId, $request->only([
-                'file',
-                'contents',
-            ]));
+            $repo->updateFile($serviceId, $request->only(['file', 'contents']));
 
             return response('', 204);
         } catch (DisplayException $ex) {

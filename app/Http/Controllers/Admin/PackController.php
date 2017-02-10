@@ -73,12 +73,8 @@ class PackController extends Controller
         try {
             $repo = new Pack;
             $pack = $repo->create($request->only([
-                'name',
-                'version',
-                'description',
-                'option',
-                'selectable',
-                'visible',
+                'name', 'version', 'description',
+                'option', 'selectable', 'visible',
                 'file_upload',
             ]));
             Alert::success('Successfully created new service!')->flash();
@@ -128,12 +124,8 @@ class PackController extends Controller
             try {
                 $repo = new Pack;
                 $repo->update($id, $request->only([
-                    'name',
-                    'version',
-                    'description',
-                    'option',
-                    'selectable',
-                    'visible',
+                    'name', 'version', 'description',
+                    'option', 'selectable', 'visible',
                 ]));
                 Alert::success('Service pack has been successfully updated.')->flash();
             } catch (DisplayValidationException $ex) {
