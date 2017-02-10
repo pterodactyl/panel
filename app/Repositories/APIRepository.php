@@ -102,7 +102,7 @@ class APIRepository
     {
         $this->user = is_null($user) ? Auth::user() : $user;
         if (is_null($this->user)) {
-            throw new \Exception('Cannot access API Repository without passing a user to __construct().');
+            throw new \Exception('Cannot access API Repository without passing a user to constructor.');
         }
     }
 
@@ -178,7 +178,7 @@ class APIRepository
                 }
             }
 
-            if ($this->user->root_admin === 1 && isset($data['adminPermissions'])) {
+            if ($this->user->isRootAdmin() && isset($data['adminPermissions'])) {
                 foreach ($data['adminPermissions'] as $permNode) {
                     if (! strpos($permNode, ':')) {
                         continue;
