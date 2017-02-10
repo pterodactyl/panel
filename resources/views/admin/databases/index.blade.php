@@ -92,7 +92,7 @@
                                     <td>{{ $database->name }}</td>
                                     <td><code>{{ $database->host }}:{{ $database->port }}</code></td>
                                     <td>{{ $database->username }}</td>
-                                    <td class="text-center">{{ $database->c_databases }}</td>
+                                    <td class="text-center">{{ $database->databases_count }}</td>
                                     <td>@if(is_null($database->node))<em>unlinked</em>@else{{ $database->node->name }}@endif</td>
                                     <td class="text-center"><a href="#" class="text-danger" data-action="delete" data-type="delete-server" data-attr="{{ $database->id }}"><i class="fa fa-trash-o"></i></a></td>
                                 </tr>

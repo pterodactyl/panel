@@ -48,10 +48,7 @@ class DatabaseController extends Controller
     {
         return view('admin.databases.index', [
             'databases' => Models\Database::with('server')->paginate(50),
-            'hosts' => Models\DatabaseServer::select(
-                    'database_servers.*',
-                    DB::raw('(SELECT COUNT(*) FROM `databases` WHERE `databases`.`db_server` = database_servers.id) as c_databases')
-                )->with('node')->paginate(20),
+            'hosts' => Models\DatabaseServer::withCount('databases')->with('node')->paginate(20),
         ]);
     }
 
