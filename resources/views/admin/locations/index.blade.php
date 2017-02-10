@@ -46,8 +46,8 @@
                 <tr>
                     <td><code>{{ $location->short }}</code></td>
                     <td>{{ $location->long }}</td>
-                    <td class="text-center">{{ $location->a_nodeCount }}</td>
-                    <td class="text-center">{{ $location->a_serverCount }}</td>
+                    <td class="text-center">{{ $location->nodes_count }}</td>
+                    <td class="text-center">{{ $location->servers_count }}</td>
                     <td class="text-center"><a href="#edit"><i class="fa fa-wrench" data-toggle="modal" data-target="#editModal" data-action="edit" data-id="{{ $location->id }}" data-short="{{ $location->short }}" data-long="{{ $location->long }}"></i></a></td>
                     <td class="text-center"><a href="#delete" class="text-danger" data-action="delete" data-id="{{ $location->id }}"><i class="fa fa-trash-o"></i></a></td>
                 </tr>

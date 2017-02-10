@@ -41,4 +41,24 @@ class Location extends Model
      * @var array
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    /**
+     * Gets the nodes in a specificed location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function nodes()
+    {
+        return $this->hasMany(Node::class);
+    }
+
+    /**
+     * Gets the servers within a given location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function servers()
+    {
+        return $this->hasManyThrough(Server::class, Node::class);
+    }
 }

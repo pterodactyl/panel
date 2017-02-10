@@ -43,35 +43,21 @@ class LocationsController extends Controller
     public function getIndex(Request $request)
     {
         return view('admin.locations.index', [
-            'locations' => Models\Location::select(
-                    'locations.*',
-                    DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location_id = locations.id) as a_nodeCount'),
-                    DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location_id = locations.id)) as a_serverCount')
-                )->paginate(20),
+            'locations' => Models\Location::withCount('nodes', 'servers')->paginate(20),
         ]);
     }
 
     public function deleteLocation(Request $request, $id)
     {
-        $model = Models\Location::select(
-            'locations.id',
-            DB::raw('(SELECT COUNT(*) FROM nodes WHERE nodes.location_id = locations.id) as a_nodeCount'),
-            DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node_id IN (SELECT nodes.id FROM nodes WHERE nodes.location_id = locations.id)) as a_serverCount')
-        )->where('id', $id)->first();
+        $location = Models\Location::withCount('nodes')->findOrFail($id);
 
-        if (! $model) {
+        if ($location->nodes_count > 0) {
             return response()->json([
-                'error' => 'No location with that ID exists on the system.',
-            ], 404);
-        }
-
-        if ($model->a_nodeCount > 0 || $model->a_serverCount > 0) {
-            return response()->json([
-                'error' => 'You cannot remove a location that is currently assigned to a node or server.',
+                'error' => 'You cannot remove a location that is currently assigned to a node.',
             ], 422);
         }
 
-        $model->delete();
+        $location->delete();
 
         return response('', 204);
     }
