@@ -160,6 +160,7 @@ return [
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
+        Fideloper\Proxy\TrustedProxyServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
 
