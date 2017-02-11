@@ -25,7 +25,6 @@
 namespace Pterodactyl\Http\Controllers\API\User;
 
 use Log;
-use Auth;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\API\BaseController;
@@ -43,18 +42,12 @@ class ServerController extends BaseController
             $daemon = [
                 'status' => $json->status,
                 'stats' => $json->proc,
-                'query' =>  $json->query,
             ];
         } catch (\Exception $ex) {
             $daemon = [
-                'error' => 'An error was encountered while trying to connect to the daemon to collece information. It might be offline.',
+                'error' => 'An error was encountered while trying to connect to the daemon to collect information. It might be offline.',
             ];
             Log::error($ex);
-        }
-
-        foreach ($server->allocations as &$allocation) {
-            $allocation->default = ($allocation->id === $server->allocation_id);
-            unset($allocation->id);
         }
 
         return [
@@ -70,12 +63,18 @@ class ServerController extends BaseController
                 'cpu' => $server->cpu,
                 'oom_disabled' => (bool) $server->oom_disabled,
             ],
-            'allocations' => $server->allocations,
+            'allocations' => $server->allocations->map(function ($item) use ($server) {
+                return [
+                    'ip' => $item->alias,
+                    'port' => $item->port,
+                    'default' => ($item->id === $server->allocation_id),
+                ];
+            }),
             'sftp' => [
-                'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null,
+                'username' => ($request->user()->can('view-sftp', $server)) ? $server->username : null,
             ],
             'daemon' => [
-                'token' => ($request->secure()) ? $server->daemonSecret : false,
+                'token' => $server->daemonSecret,
                 'response' => $daemon,
             ],
         ];

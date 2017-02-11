@@ -44,7 +44,7 @@ class NodeRepository
         // Validate Fields
         $validator = Validator::make($data, [
             'name' => 'required|regex:/^([\w .-]{1,100})$/',
-            'location' => 'required|numeric|min:1|exists:locations,id',
+            'location_id' => 'required|numeric|min:1|exists:locations,id',
             'public' => 'required|numeric|between:0,1',
             'fqdn' => 'required|string|unique:nodes,fqdn',
             'scheme' => 'required|regex:/^(http(s)?)$/',
@@ -91,7 +91,7 @@ class NodeRepository
         // Validate Fields
         $validator = $validator = Validator::make($data, [
             'name' => 'regex:/^([\w .-]{1,100})$/',
-            'location' => 'numeric|min:1|exists:locations,id',
+            'location_id' => 'numeric|min:1|exists:locations,id',
             'public' => 'numeric|between:0,1',
             'fqdn' => 'string|unique:nodes,fqdn,' . $id,
             'scheme' => 'regex:/^(http(s)?)$/',
@@ -210,13 +210,13 @@ class NodeRepository
 
                             foreach ($portBlock as $assignPort) {
                                 $alloc = Models\Allocation::firstOrNew([
-                                    'node' => $node->id,
+                                    'node_id' => $node->id,
                                     'ip' => $ip,
                                     'port' => $assignPort,
                                 ]);
                                 if (! $alloc->exists) {
                                     $alloc->fill([
-                                        'node' => $node->id,
+                                        'node_id' => $node->id,
                                         'ip' => $ip,
                                         'port' => $assignPort,
                                         'ip_alias' => $setAlias,
@@ -227,13 +227,13 @@ class NodeRepository
                             }
                         } else {
                             $alloc = Models\Allocation::firstOrNew([
-                                'node' => $node->id,
+                                'node_id' => $node->id,
                                 'ip' => $ip,
                                 'port' => $port,
                             ]);
                             if (! $alloc->exists) {
                                 $alloc->fill([
-                                    'node' => $node->id,
+                                    'node_id' => $node->id,
                                     'ip' => $ip,
                                     'port' => $port,
                                     'ip_alias' => $setAlias,
@@ -269,7 +269,7 @@ class NodeRepository
             ]);
 
             // Delete Allocations
-            Models\Allocation::where('node', $node->id)->delete();
+            Models\Allocation::where('node_id', $node->id)->delete();
 
             // Delete configure tokens
             Models\NodeConfigurationToken::where('node', $node->id)->delete();

@@ -90,17 +90,17 @@ class ServerRepository
             'io' => 'required|numeric|min:10|max:1000',
             'cpu' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:0',
-            'service' => 'required|numeric|min:1|exists:services,id',
-            'option' => 'required|numeric|min:1|exists:service_options,id',
-            'location' => 'required|numeric|min:1|exists:locations,id',
-            'pack' => 'sometimes|nullable|numeric|min:0',
+            'service_id' => 'required|numeric|min:1|exists:services,id',
+            'option_id' => 'required|numeric|min:1|exists:service_options,id',
+            'location_id' => 'required|numeric|min:1|exists:locations,id',
+            'pack_id' => 'sometimes|nullable|numeric|min:0',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
             'auto_deploy' => 'sometimes|boolean',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
         ]);
 
-        $validator->sometimes('node', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
+        $validator->sometimes('node_id', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
             return ! ($input->auto_deploy);
         });
 
@@ -112,7 +112,7 @@ class ServerRepository
             return ! $input->auto_deploy && ! $input->allocation;
         });
 
-        $validator->sometimes('allocation', 'numeric|exists:allocations,id', function ($input) {
+        $validator->sometimes('allocation_id', 'numeric|exists:allocations,id', function ($input) {
             return ! ($input->auto_deploy || ($input->port && $input->ip));
         });
 
@@ -131,19 +131,19 @@ class ServerRepository
         if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, '1'])) {
             // This is an auto-deployment situation
             // Ignore any other passed node data
-            unset($data['node'], $data['ip'], $data['port'], $data['allocation']);
+            unset($data['node_id'], $data['ip'], $data['port'], $data['allocation_id']);
 
             $autoDeployed = true;
-            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location']);
+            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location_id']);
             $allocation = DeploymentService::randomAllocation($node->id);
         } else {
-            $node = Models\Node::findOrFail($data['node']);
+            $node = Models\Node::findOrFail($data['node_id']);
         }
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
         if (! $autoDeployed) {
-            if (! isset($data['allocation'])) {
+            if (! isset($data['allocation_id'])) {
                 $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
             } else {
                 $allocation = Models\Allocation::where('id', $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
@@ -165,12 +165,12 @@ class ServerRepository
         }
 
         // Validate the Pack
-        if ($data['pack'] == 0) {
-            $data['pack'] = null;
+        if ($data['pack_id'] == 0) {
+            $data['pack_id'] = null;
         }
 
-        if (! is_null($data['pack'])) {
-            $pack = Models\ServicePack::where('id', $data['pack'])->where('option', $data['option'])->first();
+        if (! is_null($data['pack_id'])) {
+            $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
@@ -180,7 +180,7 @@ class ServerRepository
         $service = Models\Service::find($option->service_id);
 
         // Check those Variables
-        $variables = Models\ServiceVariables::where('option_id', $data['option'])->get();
+        $variables = Models\ServiceVariables::where('option_id', $data['option_id'])->get();
         $variableList = [];
         if ($variables) {
             foreach ($variables as $variable) {
@@ -254,10 +254,10 @@ class ServerRepository
             $server->fill([
                 'uuid' => $genUuid,
                 'uuidShort' => $genShortUuid,
-                'node' => $node->id,
+                'node_id' => $node->id,
                 'name' => $data['name'],
                 'suspended' => 0,
-                'owner' => $user->id,
+                'owner_id' => $user->id,
                 'memory' => $data['memory'],
                 'swap' => $data['swap'],
                 'disk' => $data['disk'],
@@ -265,9 +265,9 @@ class ServerRepository
                 'cpu' => $data['cpu'],
                 'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
                 'allocation' => $allocation->id,
-                'service' => $data['service'],
-                'option' => $data['option'],
-                'pack' => $data['pack'],
+                'service_id' => $data['service_id'],
+                'option_id' => $data['option_id'],
+                'pack_id' => $data['pack_id'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
                 'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
@@ -277,7 +277,7 @@ class ServerRepository
             $server->save();
 
             // Mark Allocation in Use
-            $allocation->assigned_to = $server->id;
+            $allocation->server_id = $server->id;
             $allocation->save();
 
             // Add Variables
@@ -329,7 +329,7 @@ class ServerRepository
 
             DB::commit();
 
-            return $server->id;
+            return $server;
         } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
@@ -782,8 +782,8 @@ class ServerRepository
         DB::beginTransaction();
         try {
             // Unassign Allocations
-            Models\Allocation::where('assigned_to', $server->id)->update([
-                'assigned_to' => null,
+            Models\Allocation::where('server_id', $server->id)->update([
+                'server_id' => null,
             ]);
 
             // Remove Variables

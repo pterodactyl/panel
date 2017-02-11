@@ -121,7 +121,7 @@ class APISecretToken extends Authorization
         // Log the Route Access
         APILogService::log($request, null, true);
 
-        return Auth::loginUsingId($key->user);
+        return Auth::loginUsingId($key->user_id);
     }
 
     protected function _generateHMAC($body, $key)

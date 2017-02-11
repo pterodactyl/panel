@@ -72,10 +72,10 @@ class ServerController extends BaseController
     public function create(Request $request)
     {
         try {
-            $server = new ServerRepository;
-            $new = $server->create($request->all());
+            $repo = new ServerRepository;
+            $server = $repo->create($request->all());
 
-            return ['id' => $new];
+            return ['id' => $server->id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -101,58 +101,38 @@ class ServerController extends BaseController
      */
     public function view(Request $request, $id)
     {
-        $query = Models\Server::where('id', $id);
+        $server = Models\Server::with('node', 'allocations', 'pack')->where('id', $id)->first();
+        if (! $server) {
+            throw new NotFoundHttpException('No server by that ID was found.');
+        }
 
         if (! is_null($request->input('fields'))) {
-            foreach (explode(',', $request->input('fields')) as $field) {
-                if (! empty($field)) {
-                    $query->addSelect($field);
-                }
+            $fields = explode(',', $request->input('fields'));
+            if (! empty($fields) && is_array($fields)) {
+                return collect($server)->only($fields);
             }
         }
 
-        try {
-            if (! $query->first()) {
-                throw new NotFoundHttpException('No server by that ID was found.');
-            }
+        if ($request->input('daemon') === 'true') {
+            try {
+                $response = $server->node->guzzleClient([
+                    'X-Access-Token' => $server->node->daemonSecret,
+                ])->request('GET', '/servers');
 
-            // Requested Daemon Stats
-            $server = $query->with(
-                'allocations',
-                'pack'
-            )->first();
-            if ($request->input('daemon') === 'true') {
-                $node = Models\Node::findOrFail($server->node_id);
-                $client = Models\Node::guzzleRequest($node->id);
-
-                $response = $client->request('GET', '/servers', [
-                    'headers' => [
-                        'X-Access-Token' => $node->daemonSecret,
-                    ],
-                ]);
-
-                // Only return the daemon token if the request is using HTTPS
-                if ($request->secure()) {
-                    $server->daemon_token = $server->daemonSecret;
-                }
                 $server->daemon = json_decode($response->getBody())->{$server->uuid};
-
-                return $server->toArray();
+            } catch (\GuzzleHttp\Exception\TransferException $ex) {
+                // Couldn't hit the daemon, return what we have though.
+                $server->daemon = [
+                    'error' => 'There was an error encountered while attempting to connect to the remote daemon.',
+                ];
             }
-
-            return $server->toArray();
-        } catch (NotFoundHttpException $ex) {
-            throw $ex;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
-            // Couldn't hit the daemon, return what we have though.
-            $server->daemon = [
-                'error' => 'There was an error encountered while attempting to connect to the remote daemon.',
-            ];
-
-            return $server->toArray();
-        } catch (\Exception $ex) {
-            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
         }
+
+        $server->allocations->transform(function ($item) {
+            return collect($item)->except(['created_at', 'updated_at']);
+        });
+
+        return $server->toArray();
     }
 
     /**
@@ -179,7 +159,9 @@ class ServerController extends BaseController
     {
         try {
             $server = new ServerRepository;
-            $server->updateDetails($id, $request->all());
+            $server->updateDetails($id, $request->only([
+                'owner', 'name', 'reset_token',
+            ]));
 
             return Models\Server::findOrFail($id);
         } catch (DisplayValidationException $ex) {
@@ -224,7 +206,10 @@ class ServerController extends BaseController
     {
         try {
             $server = new ServerRepository;
-            $server->changeBuild($id, $request->all());
+            $server->changeBuild($id, $request->only([
+                'default', 'add_additional', 'remove_additional',
+                'memory', 'swap', 'io', 'cpu', 'disk',
+            ]));
 
             return Models\Server::findOrFail($id);
         } catch (DisplayValidationException $ex) {

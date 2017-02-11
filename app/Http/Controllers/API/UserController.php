@@ -75,31 +75,27 @@ class UserController extends BaseController
      */
     public function view(Request $request, $id)
     {
-        $query = Models\User::where((is_numeric($id) ? 'id' : 'email'), $id);
+        $user = Models\User::with('servers')->where((is_numeric($id) ? 'id' : 'email'), $id)->first();
+        if (! $user->first()) {
+            throw new NotFoundHttpException('No user by that ID was found.');
+        }
+
+        $user->servers->transform(function ($item) {
+            return collect($item)->only([
+                'id', 'node_id', 'uuidShort',
+                'uuid', 'name', 'suspended',
+                'owner_id',
+            ]);
+        });
 
         if (! is_null($request->input('fields'))) {
-            foreach (explode(',', $request->input('fields')) as $field) {
-                if (! empty($field)) {
-                    $query->addSelect($field);
-                }
+            $fields = explode(',', $request->input('fields'));
+            if (! empty($fields) && is_array($fields)) {
+                return collect($user)->only($fields);
             }
         }
 
-        try {
-            if (! $query->first()) {
-                throw new NotFoundHttpException('No user by that ID was found.');
-            }
-
-            $user = $query->first();
-            $userArray = $user->toArray();
-            $userArray['servers'] = Models\Server::select('id', 'uuid', 'node', 'suspended')->where('owner', $user->id)->get();
-
-            return $userArray;
-        } catch (NotFoundHttpException $ex) {
-            throw $ex;
-        } catch (\Exception $ex) {
-            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
-        }
+        return $user->toArray();
     }
 
     /**
@@ -123,7 +119,9 @@ class UserController extends BaseController
         try {
             $user = new UserRepository;
             $create = $user->create($request->only([
-                'email', 'username', 'name_first', 'name_last', 'password', 'root_admin', 'custom_id',
+                'email', 'username', 'name_first',
+                'name_last', 'password',
+                'root_admin', 'custom_id',
             ]));
             $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'), $request->input('custom_id'));
 
@@ -160,7 +158,9 @@ class UserController extends BaseController
         try {
             $user = new UserRepository;
             $user->update($id, $request->only([
-                'username', 'email', 'name_first', 'name_last', 'password', 'root_admin', 'language',
+                'username', 'email', 'name_first',
+                'name_last', 'password',
+                'root_admin', 'language',
             ]));
 
             return Models\User::findOrFail($id);

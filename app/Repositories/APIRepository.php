@@ -62,8 +62,8 @@ class APIRepository
 
             // Node Management Routes
             'nodes.list',
+            'nodes.view',
             'nodes.create',
-            'nodes.list',
             'nodes.allocations',
             'nodes.delete',
 

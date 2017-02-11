@@ -86,16 +86,9 @@ class ServersController extends Controller
     {
         try {
             $server = new ServerRepository;
-            $response = $server->create($request->only([
-                'owner', 'name', 'memory', 'swap',
-                'node', 'ip', 'port', 'allocation',
-                'cpu', 'disk', 'service',
-                'option', 'location', 'pack',
-                'startup', 'custom_image_name',
-                'auto_deploy', 'custom_id',
-            ]));
+            $response = $server->create($request->except('_token'));
 
-            return redirect()->route('admin.servers.view', ['id' => $response]);
+            return redirect()->route('admin.servers.view', ['id' => $response->id]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
@@ -188,7 +181,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        $option = Models\ServiceOptions::with('variables', ['packs' => function ($query) {
+        $option = Models\ServiceOptions::with('variables')->with(['packs' => function ($query) {
             $query->where('selectable', true);
         }])->findOrFail($request->input('option'));
 

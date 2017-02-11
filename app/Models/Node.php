@@ -66,28 +66,12 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'uuid',
-        'uuidShort',
-        'node_id',
-        'name',
-        'suspended',
-        'owner_id',
-        'memory',
-        'swap',
-        'disk',
-        'io',
-        'cpu',
-        'oom_disabled',
-        'allocation_id',
-        'service_id',
-        'option_id',
-        'pack_id',
-        'startup',
-        'daemonSecret',
-        'image',
-        'username',
-        'sftp_password',
-        'installed',
+        'public', 'name', 'location_id',
+        'fqdn', 'scheme', 'memory',
+        'memory_overallocate', 'disk',
+        'disk_overallocate', 'upload_size',
+        'daemonSecret', 'daemonBase',
+        'daemonSFTP', 'daemonListen',
     ];
 
     /**

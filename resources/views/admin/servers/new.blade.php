@@ -63,7 +63,7 @@
                     <div class="form-group col-md-6">
                         <label for="location" class="control-label">Server Location</label>
                         <div>
-                            <select name="location" id="getLocation" class="form-control">
+                            <select name="location_id" id="getLocation" class="form-control">
                                 <option disabled selected> -- Select a Location</option>
                                 @foreach($locations as $location)
                                     <option value="{{ $location->id }}">{{ $location->long }} ({{ $location->short }})</option>
@@ -75,7 +75,7 @@
                     <div class="form-group col-md-6 hidden" id="allocationNode">
                         <label for="node" class="control-label">Server Node</label>
                         <div>
-                            <select name="node" id="getNode" class="form-control">
+                            <select name="node_id" id="getNode" class="form-control">
                                 <option disabled selected> -- Select a Node</option>
                             </select>
                             <p class="text-muted"><small>The node which this server will be deployed to.</small></p>
@@ -181,9 +181,9 @@
                     <div class="row">
                         <div class="ajax_loading_box" style="display:none;"><i class="fa fa-refresh fa-spin ajax_loading_position"></i></div>
                         <div class="form-group col-md-12">
-                            <label for="service" class="control-label">Service Type</label>
+                            <label for="service_id" class="control-label">Service Type</label>
                             <div>
-                                <select name="service" id="getService" class="form-control">
+                                <select name="service_id" id="getService" class="form-control">
                                     <option disabled selected> -- Select a Service</option>
                                     @foreach($services as $service)
                                         <option value="{{ $service->id }}">{{ $service->name }}</option>
@@ -193,18 +193,18 @@
                             </div>
                         </div>
                         <div class="form-group col-md-12 hidden">
-                            <label for="option" class="control-label">Service Option</label>
+                            <label for="option_id" class="control-label">Service Option</label>
                             <div>
-                                <select name="option" id="getOption" class="form-control">
+                                <select name="option_id" id="getOption" class="form-control">
                                     <option disabled selected> -- Select a Service Option</option>
                                 </select>
                                 <p class="text-muted"><small>Select the type of service that this server will be running.</small></p>
                             </div>
                         </div>
                         <div class="form-group col-md-12 hidden">
-                            <label for="option" class="control-label">Service Pack</label>
+                            <label for="pack_id" class="control-label">Service Pack</label>
                             <div>
-                                <select name="pack" id="getPack" class="form-control">
+                                <select name="pack_id" id="getPack" class="form-control">
                                     <option disabled selected> -- Select a Service Pack</option>
                                 </select>
                                 <p class="text-muted"><small>Select the service pack that should be used for this server. This option can be changed later.</small></p>
