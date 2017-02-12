@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Log;
 use Alert;
 use Storage;
@@ -50,7 +49,7 @@ class PackController extends Controller
     public function listByOption(Request $request, $id)
     {
         return view('admin.services.packs.byoption', [
-            'option' => Models\ServiceOptions::with('service', 'packs')->findOrFail($id)
+            'option' => Models\ServiceOptions::with('service', 'packs')->findOrFail($id),
         ]);
     }
 

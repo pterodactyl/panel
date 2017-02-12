@@ -80,7 +80,7 @@ class Variable
 
         DB::beginTransaction();
         try {
-            foreach($variable->serverVariables as $svar) {
+            foreach ($variable->serverVariables as $svar) {
                 $svar->delete();
             }
             $variable->delete();

@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\API\User;
 
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\API\BaseController;
 

@@ -68,10 +68,10 @@ class Allocation extends Model
       * Accessor to quickly determine if this allocation has an alias.
       *
       * @param  null|string $value
-      * @return boolean
+      * @return bool
       */
      public function getHasAliasAttribute($value)
      {
-         return (! is_null($this->ip_alias));
+         return ! is_null($this->ip_alias);
      }
 }

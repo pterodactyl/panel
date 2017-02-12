@@ -26,7 +26,6 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
 
 class IndexController extends Controller

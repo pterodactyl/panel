@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Log;
 use Alert;
 use Pterodactyl\Models;
@@ -62,7 +61,6 @@ class ServersController extends Controller
 
     public function getView(Request $request, $id)
     {
-
         $server = Models\Server::withTrashed()->with(
             'user', 'option.variables', 'variables',
             'node.allocations', 'databases.host'

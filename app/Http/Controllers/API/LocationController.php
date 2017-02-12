@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
-use DB;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Location;
 

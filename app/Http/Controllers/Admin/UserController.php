@@ -29,7 +29,6 @@ use Log;
 use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\UserRepository;

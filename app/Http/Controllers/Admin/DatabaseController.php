@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Log;
 use Alert;
 use Pterodactyl\Models;

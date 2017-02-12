@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Alert;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;

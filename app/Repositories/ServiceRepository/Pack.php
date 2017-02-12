@@ -177,8 +177,6 @@ class Pack
             'selectable' => isset($data['selectable']),
             'visible' => isset($data['visible']),
         ]);
-
-        return;
     }
 
     public function delete($id)

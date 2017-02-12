@@ -138,7 +138,7 @@ class NodeController extends BaseController
 
         $node->allocations->transform(function ($item) {
             return collect($item)->only([
-                'id', 'ip', 'ip_alias', 'port', 'server_id'
+                'id', 'ip', 'ip_alias', 'port', 'server_id',
             ]);
         });
 
