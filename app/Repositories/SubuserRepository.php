@@ -25,8 +25,6 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
-use Mail;
-use Settings;
 use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
@@ -229,7 +227,7 @@ class SubuserRepository
                 ],
             ]);
 
-            foreach($subuser->permissions as &$permission) {
+            foreach ($subuser->permissions as &$permission) {
                 $permission->delete();
             }
             $subuser->delete();
@@ -273,7 +271,7 @@ class SubuserRepository
         DB::beginTransaction();
 
         try {
-            foreach($subuser->permissions as &$permission) {
+            foreach ($subuser->permissions as &$permission) {
                 $permission->delete();
             }
 

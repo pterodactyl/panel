@@ -1,10 +1,10 @@
 <?php
 
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
 
 class SetupPermissionsPivotTable extends Migration
 {
@@ -20,7 +20,7 @@ class SetupPermissionsPivotTable extends Migration
         });
 
         DB::transaction(function () {
-            foreach(Subuser::all() as &$subuser) {
+            foreach (Subuser::all() as &$subuser) {
                 Permission::where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->update([
                     'subuser_id' => $subuser->id,
                 ]);
@@ -55,7 +55,7 @@ class SetupPermissionsPivotTable extends Migration
         });
 
         DB::transaction(function () {
-            foreach(Subuser::all() as &$subuser) {
+            foreach (Subuser::all() as &$subuser) {
                 Permission::where('subuser_id', $subuser->id)->update([
                     'user_id' => $subuser->user_id,
                     'server_id' => $subuser->server_id,

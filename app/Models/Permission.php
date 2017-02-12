@@ -28,11 +28,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {
-
     /**
      * Should timestamps be used on this model.
      *
-     * @var boolean
+     * @var bool
      */
     public $timestamps = false;
 

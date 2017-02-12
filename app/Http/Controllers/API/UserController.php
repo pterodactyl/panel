@@ -31,7 +31,6 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**

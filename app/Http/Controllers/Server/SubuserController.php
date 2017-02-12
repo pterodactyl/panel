@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Server;
 
-use DB;
 use Log;
 use Auth;
 use Alert;

@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Notifications\Daemon;
 

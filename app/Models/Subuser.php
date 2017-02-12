@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Models;
 
-use Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Subuser extends Model
@@ -50,11 +49,11 @@ class Subuser extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
     protected $casts = [
         'user_id' => 'integer',
         'server_id' => 'integer',
