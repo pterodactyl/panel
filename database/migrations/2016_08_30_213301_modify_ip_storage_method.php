@@ -24,7 +24,7 @@ class ModifyIpStorageMethod extends Migration
                 [
                     'ip' => $server->ip,
                     'port' => $server->port,
-                    'node' => $server->node_id,
+                    'node' => $server->node,
                 ]
             );
 
@@ -61,7 +61,7 @@ class ModifyIpStorageMethod extends Migration
         // Find the allocations and reset the servers...
         $servers = DB::select('SELECT id, allocation FROM servers');
         foreach ($servers as $server) {
-            $allocation = DB::select('SELECT * FROM allocations WHERE id = :alocid', ['alocid' => $server->allocation_id]);
+            $allocation = DB::select('SELECT * FROM allocations WHERE id = :alocid', ['alocid' => $server->allocation]);
 
             if (isset($allocation[0])) {
                 DB::update(
