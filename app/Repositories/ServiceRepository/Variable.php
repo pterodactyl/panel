@@ -39,7 +39,7 @@ class Variable
 
     public function create($id, array $data)
     {
-        $option = Models\ServiceOptions::select('id')->findOrFail($id);
+        $option = Models\ServiceOption::select('id')->findOrFail($id);
 
         $validator = Validator::make($data, [
             'name' => 'required|string|min:1|max:255',
@@ -60,7 +60,7 @@ class Variable
             throw new DisplayException('The default value you entered cannot violate the regex requirements.');
         }
 
-        if (Models\ServiceVariables::where('env_variable', $data['env_variable'])->where('option_id', $option->id)->first()) {
+        if (Models\ServiceVariable::where('env_variable', $data['env_variable'])->where('option_id', $option->id)->first()) {
             throw new DisplayException('An environment variable with that name already exists for this option.');
         }
 
@@ -69,14 +69,14 @@ class Variable
         $data['required'] = (isset($data['required']) && in_array((int) $data['required'], [0, 1])) ? $data['required'] : 0;
         $data['option_id'] = $option->id;
 
-        $variable = Models\ServiceVariables::create($data);
+        $variable = Models\ServiceVariable::create($data);
 
         return $variable;
     }
 
     public function delete($id)
     {
-        $variable = Models\ServiceVariables::with('serverVariables')->findOrFail($id);
+        $variable = Models\ServiceVariable::with('serverVariables')->findOrFail($id);
 
         DB::beginTransaction();
         try {
@@ -94,7 +94,7 @@ class Variable
 
     public function update($id, array $data)
     {
-        $variable = Models\ServiceVariables::findOrFail($id);
+        $variable = Models\ServiceVariable::findOrFail($id);
 
         $validator = Validator::make($data, [
             'name' => 'sometimes|required|string|min:1|max:255',
@@ -118,7 +118,7 @@ class Variable
             throw new DisplayException('The default value you entered cannot violate the regex requirements.');
         }
 
-        if (Models\ServiceVariables::where('id', '!=', $variable->id)->where('env_variable', $data['env_variable'])->where('option_id', $variable->option_id)->first()) {
+        if (Models\ServiceVariable::where('id', '!=', $variable->id)->where('env_variable', $data['env_variable'])->where('option_id', $variable->option_id)->first()) {
             throw new DisplayException('An environment variable with that name already exists for this option.');
         }
 

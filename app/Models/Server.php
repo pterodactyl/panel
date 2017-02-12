@@ -253,7 +253,7 @@ class Server extends Model
      */
     public function option()
     {
-        return $this->belongsTo(ServiceOptions::class);
+        return $this->belongsTo(ServiceOption::class);
     }
 
     /**

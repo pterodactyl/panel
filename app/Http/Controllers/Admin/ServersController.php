@@ -152,7 +152,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function postNewServerServiceOptions(Request $request)
+    public function postNewServerServiceOption(Request $request)
     {
         if (! $request->input('service')) {
             return response()->json([
@@ -162,7 +162,7 @@ class ServersController extends Controller
 
         $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
 
-        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('service_id', $request->input('service'))->orderBy('name', 'asc')->get());
+        return response()->json(Models\ServiceOption::select('id', 'name', 'docker_image')->where('service_id', $request->input('service'))->orderBy('name', 'asc')->get());
     }
 
     /**
@@ -179,7 +179,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        $option = Models\ServiceOptions::with('variables')->with(['packs' => function ($query) {
+        $option = Models\ServiceOption::with('variables')->with(['packs' => function ($query) {
             $query->where('selectable', true);
         }])->findOrFail($request->input('option'));
 

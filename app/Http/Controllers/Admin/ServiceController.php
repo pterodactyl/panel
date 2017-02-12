@@ -124,7 +124,7 @@ class ServiceController extends Controller
 
     public function getOption(Request $request, $service, $option)
     {
-        $option = Models\ServiceOptions::with('service', 'variables')->findOrFail($option);
+        $option = Models\ServiceOption::with('service', 'variables')->findOrFail($option);
         $option->setRelation('servers', $option->servers()->with('user')->paginate(25));
 
         return view('admin.services.options.view', ['option' => $option]);
@@ -205,7 +205,7 @@ class ServiceController extends Controller
     public function getNewVariable(Request $request, $service, $option)
     {
         return view('admin.services.options.variable', [
-            'option' => Models\ServiceOptions::with('service')->findOrFail($option),
+            'option' => Models\ServiceOption::with('service')->findOrFail($option),
         ]);
     }
 

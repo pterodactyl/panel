@@ -59,6 +59,6 @@ class ServerVariables extends Model
       */
      public function variable()
      {
-         return $this->belongsTo(ServiceVariables::class, 'variable_id');
+         return $this->belongsTo(ServiceVariable::class, 'variable_id');
      }
 }

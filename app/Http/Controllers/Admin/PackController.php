@@ -49,7 +49,7 @@ class PackController extends Controller
     public function listByOption(Request $request, $id)
     {
         return view('admin.services.packs.byoption', [
-            'option' => Models\ServiceOptions::with('service', 'packs')->findOrFail($id),
+            'option' => Models\ServiceOption::with('service', 'packs')->findOrFail($id),
         ]);
     }
 

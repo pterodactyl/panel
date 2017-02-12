@@ -62,7 +62,7 @@ class Option
             $data['startup'] = null;
         }
 
-        $option = new Models\ServiceOptions;
+        $option = new Models\ServiceOption;
         $option->service_id = $service->id;
         $option->fill($data);
         $option->save();
@@ -72,7 +72,7 @@ class Option
 
     public function delete($id)
     {
-        $option = Models\ServiceOptions::findOrFail($id);
+        $option = Models\ServiceOption::findOrFail($id);
         $servers = Models\Server::where('option', $option->id)->get();
 
         if (count($servers) !== 0) {
@@ -82,7 +82,7 @@ class Option
         DB::beginTransaction();
 
         try {
-            Models\ServiceVariables::where('option_id', $option->id)->delete();
+            Models\ServiceVariable::where('option_id', $option->id)->delete();
             $option->delete();
 
             DB::commit();
@@ -94,7 +94,7 @@ class Option
 
     public function update($id, array $data)
     {
-        $option = Models\ServiceOptions::findOrFail($id);
+        $option = Models\ServiceOption::findOrFail($id);
 
         $validator = Validator::make($data, [
             'name' => 'sometimes|required|string|max:255',

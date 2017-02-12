@@ -214,7 +214,7 @@ class ServerController extends Controller
         }]);
         $this->authorize('view-startup', $server);
 
-        $variables = Models\ServiceVariables::select(
+        $variables = Models\ServiceVariable::select(
                 'service_variables.*',
                 DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
             )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')

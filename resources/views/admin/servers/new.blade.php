@@ -230,7 +230,7 @@
                 </div>
             </div>
         </div>
-        <div class="well" id="serviceOptions" style="display:none;">
+        <div class="well" id="ServiceOption" style="display:none;">
             <div class="row">
                 <div class="form-group col-md-12">
                     <h3 class="nopad">Service Setup &amp; Options</h3>
@@ -399,7 +399,7 @@ $(document).ready(function () {
 
         currentService = $('#getService').val();
         handleLoader('#load_services', true);
-        $('#serviceOptions').slideUp();
+        $('#ServiceOption').slideUp();
         $('#getOption').html('<option disabled selected> -- Select a Service Option</option>');
         $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
 
@@ -430,7 +430,7 @@ $(document).ready(function () {
     $('#getOption').on('change', function (event) {
 
         handleLoader('#load_services', true);
-        handleLoader('#serviceOptions', true);
+        handleLoader('#ServiceOption', true);
         $('#serverVariables').html('');
         $('input[name="custom_image_name"]').val($(this).find(':selected').data('image'));
         $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
@@ -468,12 +468,12 @@ $(document).ready(function () {
                 ';
                 $('#serverVariables').append(dataAppend);
             });
-            $('#serviceOptions').slideDown();
+            $('#ServiceOption').slideDown();
         }).fail(function (jqXHR) {
             console.error(jqXHR);
         }).always(function () {
             handleLoader('#load_services');
-            handleLoader('#serviceOptions');
+            handleLoader('#ServiceOption');
         });
 
     });

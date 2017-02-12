@@ -94,7 +94,7 @@ class Service
     {
         $service = Models\Service::findOrFail($id);
         $servers = Models\Server::where('service', $service->id)->get();
-        $options = Models\ServiceOptions::select('id')->where('service_id', $service->id);
+        $options = Models\ServiceOption::select('id')->where('service_id', $service->id);
 
         if (count($servers) !== 0) {
             throw new DisplayException('You cannot delete a service that has servers associated with it.');
@@ -102,7 +102,7 @@ class Service
 
         DB::beginTransaction();
         try {
-            Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
+            Models\ServiceVariable::whereIn('option_id', $options->get()->toArray())->delete();
             $options->delete();
             $service->delete();
 

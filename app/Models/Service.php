@@ -49,7 +49,7 @@ class Service extends Model
      */
     public function options()
     {
-        return $this->hasMany(ServiceOptions::class);
+        return $this->hasMany(ServiceOption::class);
     }
 
     /**
@@ -60,7 +60,7 @@ class Service extends Model
     public function packs()
     {
         return $this->hasManyThrough(
-            'Pterodactyl\Models\ServicePack', 'Pterodactyl\Models\ServiceOptions',
+            'Pterodactyl\Models\ServicePack', 'Pterodactyl\Models\ServiceOption',
             'service_id', 'option_id'
         );
     }
