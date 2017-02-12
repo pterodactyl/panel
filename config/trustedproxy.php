@@ -24,7 +24,7 @@ return [
      * how many proxies that client's request has
      * subsequently passed through.
      */
-    'proxies' => in_array(env('TRUSTED_PROXIES', ['*', '**'])) ?
+    'proxies' => in_array(env('TRUSTED_PROXIES', []), ['*', '**']) ?
         env('TRUSTED_PROXIES') : explode(',', env('TRUSTED_PROXIES', null)),
 
     /*
