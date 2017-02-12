@@ -248,7 +248,7 @@
                     <div class="alert alert-info">Some service options have additional environment variables that you can define for a given instance. They will show up below when you select a service option. If none show up, chances are that none were defined, and there is nothing to worry about.</div>
                 </div>
             </div>
-            <div class="row" id="serverVariables"></div>
+            <div class="row" id="ServerVariable"></div>
         </div>
         <div class="well">
             <div class="row">
@@ -431,7 +431,7 @@ $(document).ready(function () {
 
         handleLoader('#load_services', true);
         handleLoader('#ServiceOption', true);
-        $('#serverVariables').html('');
+        $('#ServerVariable').html('');
         $('input[name="custom_image_name"]').val($(this).find(':selected').data('image'));
         $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
 
@@ -466,7 +466,7 @@ $(document).ready(function () {
                         </div>\
                     </div>\
                 ';
-                $('#serverVariables').append(dataAppend);
+                $('#ServerVariable').append(dataAppend);
             });
             $('#ServiceOption').slideDown();
         }).fail(function (jqXHR) {

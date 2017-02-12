@@ -288,7 +288,7 @@ class ServerRepository
             foreach ($variableList as $item) {
                 $environmentVariables[$item['env']] = $item['val'];
 
-                Models\ServerVariables::create([
+                Models\ServerVariable::create([
                     'server_id' => $server->id,
                     'variable_id' => $item['id'],
                     'variable_value' => $item['val'],
@@ -718,7 +718,7 @@ class ServerRepository
                 $environmentVariables[$item['env']] = $item['val'];
 
                 // Update model or make a new record if it doesn't exist.
-                $model = Models\ServerVariables::firstOrNew([
+                $model = Models\ServerVariable::firstOrNew([
                     'variable_id' => $item['id'],
                     'server_id' => $server->id,
                 ]);
@@ -787,7 +787,7 @@ class ServerRepository
             ]);
 
             // Remove Variables
-            Models\ServerVariables::where('server_id', $server->id)->delete();
+            Models\ServerVariable::where('server_id', $server->id)->delete();
 
             // Remove Permissions (Foreign Key requires before Subusers)
             Models\Permission::where('server_id', $server->id)->delete();

@@ -230,13 +230,13 @@ class ServerController extends Controller
             ->first();
 
         $allocation = $server->allocations->pop();
-        $serverVariables = [
+        $ServerVariable = [
             '{{SERVER_MEMORY}}' => $server->memory,
             '{{SERVER_IP}}' => $allocation->ip,
             '{{SERVER_PORT}}' => $allocation->port,
         ];
 
-        $processed = str_replace(array_keys($serverVariables), array_values($serverVariables), $server->startup);
+        $processed = str_replace(array_keys($ServerVariable), array_values($ServerVariable), $server->startup);
         foreach ($variables as &$variable) {
             $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '[hidden]';
             $processed = str_replace('{{' . $variable->env_variable . '}}', $replace, $processed);

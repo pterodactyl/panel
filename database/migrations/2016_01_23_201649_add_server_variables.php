@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddServerVariables extends Migration
+class AddServerVariable extends Migration
 {
     /**
      * Run the migrations.

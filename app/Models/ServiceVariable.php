@@ -54,8 +54,8 @@ class ServiceVariable extends Model
          'required' => 'integer',
      ];
 
-    public function serverVariables()
+    public function ServerVariable()
     {
-        return $this->hasMany(ServerVariables::class, 'variable_id');
+        return $this->hasMany(ServerVariable::class, 'variable_id');
     }
 }

@@ -263,7 +263,7 @@ class Server extends Model
      */
     public function variables()
     {
-        return $this->hasMany(ServerVariables::class);
+        return $this->hasMany(ServerVariable::class);
     }
 
     /**
