@@ -156,7 +156,6 @@ class LoginController extends Controller
             return redirect()->route('auth.login');
         }
 
-
         if (! is_null($request->input('2fa_token')) && $G2FA->verifyKey($user->totp_secret, $request->input('2fa_token'), 1)) {
             Auth::login($user, $request->has('remember'));
 
@@ -168,5 +167,4 @@ class LoginController extends Controller
             return redirect()->route('auth.login');
         }
     }
-
 }
