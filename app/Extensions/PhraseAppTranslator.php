@@ -22,41 +22,25 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Extensions;
 
-use Pterodactyl\Models;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Translation\Translator as LaravelTranslator;
 
-/**
- * @Resource("Services")
- */
-class ServiceController extends BaseController
+class PhraseAppTranslator extends LaravelTranslator
 {
-    public function __construct()
+    /**
+     * Get the translation for the given key.
+     *
+     * @param  string  $key
+     * @param  array   $replace
+     * @param  string|null  $locale
+     * @param  bool  $fallback
+     * @return string|array|null
+     */
+    public function get($key, array $replace = [], $locale = null, $fallback = true)
     {
-        //
-    }
+        $key = substr($key, strpos($key, '.') + 1);
 
-    public function lists(Request $request)
-    {
-        return Models\Service::all()->toArray();
-    }
-
-    public function view(Request $request, $id)
-    {
-        $service = Models\Service::find($id);
-        if (! $service) {
-            throw new NotFoundHttpException('No service by that ID was found.');
-        }
-
-        return [
-            'service' => $service,
-            'options' => Models\ServiceOptions::select('id', 'name', 'description', 'tag', 'docker_image')
-                ->where('parent_service', $service->id)
-                ->with('variables')
-                ->with('packs')
-                ->get(),
-        ];
+        return "{{__phrase_${key}__}}";
     }
 }

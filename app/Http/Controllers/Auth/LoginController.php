@@ -27,6 +27,7 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Auth;
 use Alert;
+use Cache;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
@@ -110,33 +111,62 @@ class LoginController extends Controller
         }
 
         // Verify TOTP Token was Valid
-        if (Auth::user()->use_totp === 1) {
-            $G2FA = new Google2FA();
-            if (is_null($request->input('totp_token')) || ! $G2FA->verifyKey(Auth::user()->totp_secret, $request->input('totp_token'))) {
-                if (! $lockedOut) {
-                    $this->incrementLoginAttempts($request);
-                }
+        if (Auth::user()->use_totp) {
+            $verifyKey = str_random(64);
+            Cache::put($verifyKey, Auth::user()->id, 5);
 
-                Alert::danger(trans('auth.totp_failed'))->flash();
+            return redirect()->route('auth.totp')->with('authentication_token', $verifyKey);
+        } else {
+            Auth::login(Auth::user(), $request->has('remember'));
 
-                return $this->sendFailedLoginResponse($request);
-            }
+            return $this->sendLoginResponse($request);
+        }
+    }
+
+    public function totp(Request $request)
+    {
+        $verifyKey = $request->session()->get('authentication_token');
+
+        if (is_null($verifyKey) || Auth::user()) {
+            return redirect()->route('auth.login');
         }
 
-        // Successfully Authenticated.
-        Auth::login(Auth::user(), $request->has('remember'));
-
-        return $this->sendLoginResponse($request);
+        return view('auth.totp', [
+            'verify_key' => $verifyKey,
+            'remember' => $request->has('remember'),
+        ]);
     }
 
-    /**
-     * Check if the provided user has TOTP enabled.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function checkTotp(Request $request)
+    public function totpCheckpoint(Request $request)
     {
-        return response()->json(User::select('id')->where('email', $request->input('email'))->where('use_totp', 1)->first());
+        $G2FA = new Google2FA();
+
+        if (is_null($request->input('verify_token'))) {
+            $this->incrementLoginAttempts($request);
+            Alert::danger(trans('auth.totp_failed'))->flash();
+
+            return redirect()->route('auth.login');
+        }
+
+        $user = User::where('id', Cache::pull($request->input('verify_token')))->first();
+        if (! $user) {
+            $this->incrementLoginAttempts($request);
+            Alert::danger(trans('auth.totp_failed'))->flash();
+
+            return redirect()->route('auth.login');
+        }
+
+
+        if (! is_null($request->input('2fa_token')) && $G2FA->verifyKey($user->totp_secret, $request->input('2fa_token'), 1)) {
+            Auth::login($user, $request->has('remember'));
+
+            return redirect()->intended($this->redirectPath());
+        } else {
+            $this->incrementLoginAttempts($request);
+            Alert::danger(trans('auth.2fa_failed'))->flash();
+
+            return redirect()->route('auth.login');
+        }
     }
+
 }

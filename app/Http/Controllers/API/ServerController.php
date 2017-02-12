@@ -117,7 +117,10 @@ class ServerController extends BaseController
             }
 
             // Requested Daemon Stats
-            $server = $query->first();
+            $server = $query->with(
+                'allocations',
+                'pack'
+            )->first();
             if ($request->input('daemon') === 'true') {
                 $node = Models\Node::findOrFail($server->node);
                 $client = Models\Node::guzzleRequest($node->id);

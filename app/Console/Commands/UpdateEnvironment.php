@@ -150,6 +150,9 @@ class UpdateEnvironment extends Command
 
         file_put_contents($file, $envContents);
         $bar->finish();
+
+        $this->line('Updating evironment configuration cache file.');
+        $this->call('config:cache');
         echo "\n";
     }
 }

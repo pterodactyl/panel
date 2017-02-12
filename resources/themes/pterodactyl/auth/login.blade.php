@@ -57,7 +57,7 @@
         <div class="row">
             <div class="col-xs-8">
                 <div class="form-group has-feedback">
-                    <input type="checkbox" name="remember_me" id="remember_me" /> <label for="remember_me" class="weight-300">@lang('auth.remember_me')</label>
+                    <input type="checkbox" name="remember" id="remember" /> <label for="remember" class="weight-300">@lang('auth.remember_me')</label>
                 </div>
             </div>
             <div class="col-xs-4">

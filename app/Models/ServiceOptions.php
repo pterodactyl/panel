@@ -60,4 +60,14 @@ class ServiceOptions extends Model
      {
          return $this->hasMany(ServiceVariables::class, 'option_id');
      }
+
+     /**
+      * Gets all packs associated with this service.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+      */
+     public function packs()
+     {
+         return $this->hasMany(ServicePack::class, 'option');
+     }
 }

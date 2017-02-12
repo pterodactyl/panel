@@ -22,41 +22,40 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Providers;
 
-use Pterodactyl\Models;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Pterodactyl\Extensions\PhraseAppTranslator;
+use Illuminate\Translation\TranslationServiceProvider;
+use Illuminate\Translation\Translator as IlluminateTranslator;
 
-/**
- * @Resource("Services")
- */
-class ServiceController extends BaseController
+class PhraseAppTranslationProvider extends TranslationServiceProvider
 {
-    public function __construct()
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
     {
-        //
-    }
+        $this->registerLoader();
 
-    public function lists(Request $request)
-    {
-        return Models\Service::all()->toArray();
-    }
+        $this->app->singleton('translator', function ($app) {
+            $loader = $app['translation.loader'];
 
-    public function view(Request $request, $id)
-    {
-        $service = Models\Service::find($id);
-        if (! $service) {
-            throw new NotFoundHttpException('No service by that ID was found.');
-        }
+            // When registering the translator component, we'll need to set the default
+            // locale as well as the fallback locale. So, we'll grab the application
+            // configuration so we can easily get both of these values from there.
+            $locale = $app['config']['app.locale'];
 
-        return [
-            'service' => $service,
-            'options' => Models\ServiceOptions::select('id', 'name', 'description', 'tag', 'docker_image')
-                ->where('parent_service', $service->id)
-                ->with('variables')
-                ->with('packs')
-                ->get(),
-        ];
+            if ($app['config']['app.phrase_in_context']) {
+                $trans = new PhraseAppTranslator($loader, $locale);
+            } else {
+                $trans = new IlluminateTranslator($loader, $locale);
+            }
+
+            $trans->setFallback($app['config']['app.fallback_locale']);
+
+            return $trans;
+        });
     }
 }

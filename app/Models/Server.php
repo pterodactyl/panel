@@ -208,4 +208,54 @@ class Server extends Model
 
         return [];
     }
+
+    /**
+     * Gets all allocations associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class, 'assigned_to');
+    }
+
+    /**
+     * Gets information for the pack associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function pack()
+    {
+        return $this->hasOne(ServicePack::class, 'id', 'pack');
+    }
+
+    /**
+     * Gets information for the service associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function service()
+    {
+        return $this->hasOne(Service::class, 'id', 'service');
+    }
+
+    /**
+     * Gets information for the service option associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function option()
+    {
+        return $this->hasOne(ServiceOptions::class, 'id', 'option');
+    }
+
+    /**
+     * Gets information for the service variables associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function variables()
+    {
+        return $this->hasMany(ServerVariables::class);
+    }
 }
