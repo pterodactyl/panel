@@ -19,12 +19,14 @@ class UpdateColumnNames extends Migration
             $table->dropForeign('servers_allocation_foreign');
             $table->dropForeign('servers_service_foreign');
             $table->dropForeign('servers_option_foreign');
+            $table->dropForeign('servers_pack_foreign');
 
             $table->dropIndex('servers_node_foreign');
             $table->dropIndex('servers_owner_foreign');
             $table->dropIndex('servers_allocation_foreign');
             $table->dropIndex('servers_service_foreign');
             $table->dropIndex('servers_option_foreign');
+            $table->dropIndex('servers_pack_foreign');
 
             $table->renameColumn('node', 'node_id');
             $table->renameColumn('owner', 'owner_id');
@@ -54,12 +56,14 @@ class UpdateColumnNames extends Migration
             $table->dropForeign('servers_allocation_id_foreign');
             $table->dropForeign('servers_service_id_foreign');
             $table->dropForeign('servers_option_id_foreign');
+            $table->dropForeign('servers_pack_id_foreign');
 
             $table->dropIndex('servers_node_id_foreign');
             $table->dropIndex('servers_owner_id_foreign');
             $table->dropIndex('servers_allocation_id_foreign');
             $table->dropIndex('servers_service_id_foreign');
             $table->dropIndex('servers_option_id_foreign');
+            $table->dropIndex('servers_pack_id_foreign');
 
             $table->renameColumn('node_id', 'node');
             $table->renameColumn('owner_id', 'owner');
