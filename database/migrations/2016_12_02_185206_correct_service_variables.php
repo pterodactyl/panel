@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class CorrectServiceVariable extends Migration
+class CorrectServiceVariables extends Migration
 {
     /**
      * Run the migrations.
