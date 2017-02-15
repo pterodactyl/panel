@@ -76,11 +76,11 @@ class Variable
 
     public function delete($id)
     {
-        $variable = Models\ServiceVariable::with('ServerVariable')->findOrFail($id);
+        $variable = Models\ServiceVariable::with('serverVariable')->findOrFail($id);
 
         DB::beginTransaction();
         try {
-            foreach ($variable->ServerVariable as $svar) {
+            foreach ($variable->serverVariable as $svar) {
                 $svar->delete();
             }
             $variable->delete();
