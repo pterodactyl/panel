@@ -1,12 +1,14 @@
+[![Logo Image](https://cdn.pterodactyl.io/logos/Banner%20Logo%20Black@2x.png)](https://pterodactyl.io)
+
 ## Pterodactyl Panel
-Pterodactyl is the free game server management panel designed by users, for users. Featuring support for Vanilla Minecraft, Spigot, Source Dedicated Servers, BungeeCord, and many more. Pterodactyl is built on the `Laravel PHP Framework (v5.3)`.
+Pterodactyl Panel is the free, open-source, game agnostic, self-hosted control panel for users, networks, and game service providers. Pterodactyl supports games and servers such as Minecraft (including Spigot, Bungeecord, and Sponge), ARK: Evolution Evolved, CS:GO, Team Fortress 2, Insurgency, Teamspeak 3, Mumble, and many more. Control all of your games from one unified interface.
 
 ## Support & Documentation
-Support for using Pterodactyl can be found on our [wiki](https://github.com/Pterodactyl/Panel/wiki) or on our [Discord chat](https://discord.gg/0gYt8oU8QOkDhKLS).
+Support for using Pterodactyl can be found on our [Documentation Website](https://docs.pterodactyl.io), our [Discord Chat](https://discord.gg/QRDZvVm), or via our [Forums](https://forums.pterodactyl.io).
 
 ## License
 ```
-Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
+Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +41,6 @@ Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICEN
 
 Async.js - [license](https://github.com/caolan/async/blob/master/LICENSE) - [homepage](https://github.com/caolan/async/)
 
-BinaryJS - [license](https://github.com/binaryjs/binaryjs/blob/master/LICENSE) - [homepage](http://binaryjs.com)
-
 Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [homepage](http://getbootstrap.com)
 
 BootStrap Notify - [license](https://github.com/mouse0270/bootstrap-notify/blob/master/LICENSE) - [homepage](http://bootstrap-notify.remabledesigns.com)
@@ -51,11 +51,11 @@ FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://font
 
 FontAwesome Animations - [license](https://github.com/l-lin/font-awesome-animation#license) - [homepage](https://github.com/l-lin/font-awesome-animation)
 
-FuelUX - [license](https://github.com/ExactTarget/fuelux/blob/master/LICENSE) - [homepage](http://getfuelux.com)
-
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)
 
 jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/master/LICENSE) - [homepage](http://terminal.jcubic.pl)
+
+Laravel Framework - [license](https://github.com/laravel/framework/blob/5.4/LICENSE.md) - [homepage](https://laravel.com)
 
 Lodash - [license](https://github.com/lodash/lodash/blob/master/LICENSE) - [homepage](https://lodash.com/)
 
@@ -74,6 +74,6 @@ Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apac
 
 Some images used within Pterodactyl are Copyright (c) their respective owners.
 
-`/public/images/403.jpg` is licensed under a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
+`/public/themes/default/images/403.jpg` is licensed under a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
 
-`/public/images/404.jpg` is licensed under a [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
+`/public/themes/default/images/404.jpg` is licensed under a [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
