@@ -26,7 +26,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceOptions extends Model
+class ServiceOption extends Model
 {
     /**
      * The table associated with the model.
@@ -48,8 +48,50 @@ class ServiceOptions extends Model
       * @var array
       */
      protected $casts = [
-         'parent_service' => 'integer',
+         'service_id' => 'integer',
      ];
+
+     /**
+      * Returns the display executable for the option and will use the parent
+      * service one if the option does not have one defined.
+      *
+      * @return string
+      */
+     public function getDisplayExecutableAttribute($value)
+     {
+         return (is_null($this->executable)) ? $this->service->executable : $this->executable;
+     }
+
+     /**
+      * Returns the display startup string for the option and will use the parent
+      * service one if the option does not have one defined.
+      *
+      * @return string
+      */
+     public function getDisplayStartupAttribute($value)
+     {
+         return (is_null($this->startup)) ? $this->service->startup : $this->startup;
+     }
+
+     /**
+      * Gets service associated with a service option.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function service()
+     {
+         return $this->belongsTo(Service::class);
+     }
+
+     /**
+      * Gets all servers associated with this service option.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+      */
+     public function servers()
+     {
+         return $this->hasMany(Server::class, 'option_id');
+     }
 
      /**
       * Gets all variables associated with this service.
@@ -58,7 +100,7 @@ class ServiceOptions extends Model
       */
      public function variables()
      {
-         return $this->hasMany(ServiceVariables::class, 'option_id');
+         return $this->hasMany(ServiceVariable::class, 'option_id');
      }
 
      /**
@@ -68,6 +110,6 @@ class ServiceOptions extends Model
       */
      public function packs()
      {
-         return $this->hasMany(ServicePack::class, 'option');
+         return $this->hasMany(ServicePack::class, 'option_id');
      }
 }

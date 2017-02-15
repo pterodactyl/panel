@@ -26,7 +26,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServiceVariables extends Model
+class ServiceVariable extends Model
 {
     /**
      * The table associated with the model.
@@ -53,4 +53,9 @@ class ServiceVariables extends Model
          'user_editable' => 'integer',
          'required' => 'integer',
      ];
+
+    public function serverVariable()
+    {
+        return $this->hasMany(ServerVariable::class, 'variable_id');
+    }
 }

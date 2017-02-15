@@ -26,7 +26,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ServerVariables extends Model
+class ServerVariable extends Model
 {
     /**
      * The table associated with the model.
@@ -51,4 +51,14 @@ class ServerVariables extends Model
          'server_id' => 'integer',
          'variable_id' => 'integer',
      ];
+
+     /**
+      * Returns information about a given variables parent.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function variable()
+     {
+         return $this->belongsTo(ServiceVariable::class, 'variable_id');
+     }
 }

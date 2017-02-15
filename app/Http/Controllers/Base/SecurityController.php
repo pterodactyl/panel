@@ -118,8 +118,7 @@ class SecurityController extends Controller
 
     public function revoke(Request $request, $id)
     {
-        $session = Session::where('id', $id)->where('user_id', $request->user()->id)->firstOrFail();
-        $session->delete();
+        Session::where('user_id', $request->user()->id)->findOrFail($id)->delete();
 
         return redirect()->route('account.security');
     }

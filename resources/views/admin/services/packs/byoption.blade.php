@@ -29,7 +29,7 @@
         <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/services">Services</a></li>
         <li><a href="{{ route('admin.services.packs') }}">Packs</a></li>
-        <li><a href="{{ route('admin.services.packs.service', $service->id) }}">{{ $service->name }}</a></li>
+        <li><a href="{{ route('admin.services.packs.service', $option->service->id) }}">{{ $option->service->name }}</a></li>
         <li class="active">{{ $option->name }}</li>
     </ul>
     <h3 class="nopad">Service Packs</h3><hr />
@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($packs as $pack)
+            @foreach ($option->packs as $pack)
                 <tr>
                     <td><a href="{{ route('admin.services.packs.edit', $pack->id) }}">{{ $pack->name }}</a></td>
                     <td><code>{{ $pack->version }}</code></td>

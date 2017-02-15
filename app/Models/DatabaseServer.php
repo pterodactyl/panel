@@ -59,4 +59,24 @@ class DatabaseServer extends Model
          'server_id' => 'integer',
          'db_server' => 'integer',
      ];
+
+     /**
+      * Gets the node associated with a database host.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function node()
+     {
+         return $this->belongsTo(Node::class, 'linked_node');
+     }
+
+     /**
+      * Gets the databases assocaited with this host.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+      */
+     public function databases()
+     {
+         return $this->hasMany(Database::class, 'db_server');
+     }
 }

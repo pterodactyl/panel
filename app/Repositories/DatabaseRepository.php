@@ -114,28 +114,27 @@ class DatabaseRepository
 
     /**
      * Updates the password for a given database.
-     * @param  int $database The ID of the database to modify.
+     * @param  int $id The ID of the database to modify.
      * @param  string $password The new password to use for the database.
      * @return bool
      */
-    public function modifyPassword($database, $password)
+    public function modifyPassword($id, $password)
     {
-        $db = Models\Database::findOrFail($database);
-        $dbr = Models\DatabaseServer::findOrFail($db->db_server);
+        $database = Models\Database::with('host')->findOrFail($id);
 
         DB::beginTransaction();
         try {
-            $db->password = Crypt::encrypt($password);
-            $db->save();
+            $database->password = Crypt::encrypt($password);
+            $database->save();
 
             $capsule = new Capsule;
             $capsule->addConnection([
                 'driver' => 'mysql',
-                'host' => $dbr->host,
-                'port' => $dbr->port,
+                'host' => $database->host->host,
+                'port' => $database->host->port,
                 'database' => 'mysql',
-                'username' => $dbr->username,
-                'password' => Crypt::decrypt($dbr->password),
+                'username' => $database->host->username,
+                'password' => Crypt::decrypt($database->host->password),
                 'charset' => 'utf8',
                 'collation' => 'utf8_unicode_ci',
                 'prefix' => '',
@@ -147,8 +146,8 @@ class DatabaseRepository
             $capsule->setAsGlobal();
             Capsule::statement(sprintf(
                 'SET PASSWORD FOR `%s`@`%s` = PASSWORD(\'%s\')',
-                $db->username,
-                $db->remote,
+                $database->username,
+                $database->remote,
                 $password
             ));
 
@@ -161,13 +160,12 @@ class DatabaseRepository
 
     /**
      * Drops a database from the associated MySQL Server.
-     * @param  int $database The ID of the database to drop.
+     * @param  int $id The ID of the database to drop.
      * @return bool
      */
-    public function drop($database)
+    public function drop($id)
     {
-        $db = Models\Database::findOrFail($database);
-        $dbr = Models\DatabaseServer::findOrFail($db->db_server);
+        $database = Models\Database::with('host')->findOrFail($id);
 
         DB::beginTransaction();
 
@@ -175,11 +173,11 @@ class DatabaseRepository
             $capsule = new Capsule;
             $capsule->addConnection([
                 'driver' => 'mysql',
-                'host' => $dbr->host,
-                'port' => $dbr->port,
+                'host' => $database->host->host,
+                'port' => $database->host->port,
                 'database' => 'mysql',
-                'username' => $dbr->username,
-                'password' => Crypt::decrypt($dbr->password),
+                'username' => $database->host->username,
+                'password' => Crypt::decrypt($database->host->password),
                 'charset' => 'utf8',
                 'collation' => 'utf8_unicode_ci',
                 'prefix' => '',
@@ -190,10 +188,10 @@ class DatabaseRepository
 
             $capsule->setAsGlobal();
 
-            Capsule::statement('DROP USER `' . $db->username . '`@`' . $db->remote . '`');
-            Capsule::statement('DROP DATABASE `' . $db->database . '`');
+            Capsule::statement('DROP USER `' . $database->username . '`@`' . $database->remote . '`');
+            Capsule::statement('DROP DATABASE `' . $database->database . '`');
 
-            $db->delete();
+            $database->delete();
 
             DB::commit();
 
@@ -206,19 +204,19 @@ class DatabaseRepository
 
     /**
      * Deletes a database server from the system if it is empty.
+     *
      * @param  int $server The ID of the Database Server.
      * @return
      */
     public function delete($server)
     {
-        $dbh = Models\DatabaseServer::findOrFail($server);
-        $databases = Models\Database::where('db_server', $dbh->id)->count();
+        $host = Models\DatabaseServer::withCount('databases')->findOrFail($server);
 
-        if ($databases > 0) {
+        if ($host->databases_count > 0) {
             throw new DisplayException('You cannot delete a database server that has active databases attached to it.');
         }
 
-        return $dbh->delete();
+        return $host->delete();
     }
 
     /**
@@ -268,8 +266,7 @@ class DatabaseRepository
             // Allows us to check that we can connect to things.
             Capsule::select('SELECT 1 FROM dual');
 
-            $dbh = new Models\DatabaseServer;
-            $dbh->fill([
+            Models\DatabaseServer::create([
                 'name' => $data['name'],
                 'host' => $data['host'],
                 'port' => $data['port'],
@@ -278,7 +275,6 @@ class DatabaseRepository
                 'max_databases' => null,
                 'linked_node' => (! empty($data['linked_node']) && $data['linked_node'] > 0) ? $data['linked_node'] : null,
             ]);
-            $dbh->save();
 
             DB::commit();
         } catch (\Exception $ex) {

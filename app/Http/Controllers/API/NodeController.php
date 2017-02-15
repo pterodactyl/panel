@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
+use Log;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
@@ -96,15 +97,21 @@ class NodeController extends BaseController
     public function create(Request $request)
     {
         try {
-            $node = new NodeRepository;
-            $new = $node->create($request->all());
+            $repo = new NodeRepository;
+            $node = $repo->create($request->only([
+                'name', 'location_id', 'public', 'fqdn',
+                'scheme', 'memory', 'memory_overallocate',
+                'disk', 'disk_overallocate', 'daemonBase',
+                'daemonSFTP', 'daemonListen',
+            ]));
 
-            return ['id' => $new];
+            return ['id' => $repo->id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
+            Log::error($ex);
             throw new BadRequestHttpException('There was an error while attempting to add this node to the system.');
         }
     }
@@ -124,88 +131,35 @@ class NodeController extends BaseController
      */
     public function view(Request $request, $id, $fields = null)
     {
-        $node = Models\Node::where('id', $id);
+        $node = Models\Node::with('allocations')->where('id', $id)->first();
+        if (! $node) {
+            throw new NotFoundHttpException('No node by that ID was found.');
+        }
+
+        $node->allocations->transform(function ($item) {
+            return collect($item)->only([
+                'id', 'ip', 'ip_alias', 'port', 'server_id',
+            ]);
+        });
 
         if (! is_null($request->input('fields'))) {
-            foreach (explode(',', $request->input('fields')) as $field) {
-                if (! empty($field)) {
-                    $node->addSelect($field);
-                }
+            $fields = explode(',', $request->input('fields'));
+            if (! empty($fields) && is_array($fields)) {
+                return collect($node)->only($fields);
             }
         }
 
-        try {
-            if (! $node->first()) {
-                throw new NotFoundHttpException('No node by that ID was found.');
-            }
-
-            return [
-                'node' => $node->first(),
-                'allocations' => [
-                    'assigned' => Models\Allocation::where('node', $id)->whereNotNull('assigned_to')->get(),
-                    'unassigned' => Models\Allocation::where('node', $id)->whereNull('assigned_to')->get(),
-                ],
-            ];
-        } catch (NotFoundHttpException $ex) {
-            throw $ex;
-        } catch (\Exception $ex) {
-            throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
-        }
+        return $node;
     }
 
     public function config(Request $request, $id)
     {
-        if (! $request->secure()) {
-            throw new BadRequestHttpException('This API route can only be accessed using a secure connection.');
-        }
-
         $node = Models\Node::where('id', $id)->first();
         if (! $node) {
             throw new NotFoundHttpException('No node by that ID was found.');
         }
 
-        return [
-            'web' => [
-                'listen' => $node->daemonListen,
-                'host' => '0.0.0.0',
-                'ssl' => [
-                    'enabled' => ($node->scheme === 'https'),
-                    'certificate' => '/etc/certs/' . $node->fqdn . '/fullchain.pem',
-                    'key' => '/etc/certs/' . $node->fqdn . '/privkey.pem',
-                ],
-            ],
-            'docker' => [
-                'socket' => '/var/run/docker.sock',
-                'autoupdate_images' => true,
-            ],
-            'sftp' => [
-                'path' => $node->daemonBase,
-                'port' => (int) $node->daemonSFTP,
-                'container' => 'ptdl-sftp',
-            ],
-            'query' => [
-                'kill_on_fail' => true,
-                'fail_limit' => 5,
-            ],
-            'logger' => [
-                'path' => 'logs/',
-                'src' => false,
-                'level' => 'info',
-                'period' => '1d',
-                'count' => 3,
-            ],
-            'remote' => [
-                'base' => config('app.url'),
-                'download' => route('remote.download'),
-                'installed' => route('remote.install'),
-            ],
-            'uploads' => [
-                'size_limit' => $node->upload_size,
-            ],
-            'keys' => [
-                $node->daemonSecret,
-            ],
-        ];
+        return $node->getConfigurationAsJson();
     }
 
      /**
@@ -219,12 +173,7 @@ class NodeController extends BaseController
       */
      public function allocations(Request $request)
      {
-         $allocations = Models\Allocation::all();
-         if ($allocations->count() < 1) {
-             throw new NotFoundHttpException('No allocations have been created.');
-         }
-
-         return $allocations;
+         return Models\Allocation::all()->toArray();
      }
 
      /**
@@ -238,18 +187,7 @@ class NodeController extends BaseController
       */
      public function allocationsView(Request $request, $id)
      {
-         $query = Models\Allocation::where('assigned_to', $id)->get();
-         try {
-             if (empty($query)) {
-                 throw new NotFoundHttpException('No allocations for that server were found.');
-             }
-
-             return $query;
-         } catch (NotFoundHttpException $ex) {
-             throw $ex;
-         } catch (\Exception $ex) {
-             throw new BadRequestHttpException('There was an issue with the fields passed in the request.');
-         }
+         return Models\Allocation::where('assigned_to', $id)->get()->toArray();
      }
 
     /**

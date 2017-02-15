@@ -28,7 +28,6 @@ use DB;
 use Log;
 use Uuid;
 use Alert;
-use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -55,14 +54,11 @@ class ServerController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function getIndex(Request $request)
+    public function getIndex(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($request->route()->server);
-        $node = Models\Node::find($server->node);
+        $server = Models\Server::byUuid($uuid);
 
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        $server->js([
             'meta' => [
                 'saveFile' => route('server.files.save', $server->uuidShort),
                 'csrfToken' => csrf_token(),
@@ -71,7 +67,7 @@ class ServerController extends Controller
 
         return view('server.index', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
         ]);
     }
 
@@ -83,14 +79,10 @@ class ServerController extends Controller
      */
     public function getFiles(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('list-files', $server);
 
-        $node = Models\Node::find($server->node);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only('uuid', 'uuidShort', 'daemonSecret'),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        $server->js([
             'meta' => [
                 'directoryList' => route('server.files.directory-list', $server->uuidShort),
                 'csrftoken' => csrf_token(),
@@ -108,7 +100,7 @@ class ServerController extends Controller
 
         return view('server.files.index', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
         ]);
     }
 
@@ -120,18 +112,14 @@ class ServerController extends Controller
      */
     public function getAddFile(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('add-files', $server);
-        $node = Models\Node::find($server->node);
 
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.files.add', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
             'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/',
         ]);
     }
@@ -146,9 +134,8 @@ class ServerController extends Controller
      */
     public function getEditFile(Request $request, $uuid, $file)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-files', $server);
-        $node = Models\Node::find($server->node);
 
         $fileInfo = (object) pathinfo($file);
         $controller = new FileRepository($uuid);
@@ -166,15 +153,13 @@ class ServerController extends Controller
             return redirect()->route('server.files.index', $uuid);
         }
 
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
+        $server->js([
             'stat' => $fileContent['stat'],
         ]);
 
         return view('server.files.edit', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
             'file' => $file,
             'stat' => $fileContent['stat'],
             'contents' => $fileContent['file']->content,
@@ -192,9 +177,7 @@ class ServerController extends Controller
      */
     public function getDownloadFile(Request $request, $uuid, $file)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::find($server->node);
-
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('download-files', $server);
 
         $download = new Models\Download;
@@ -205,69 +188,65 @@ class ServerController extends Controller
 
         $download->save();
 
-        return redirect($node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/file/download/' . $download->token);
+        return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $download->token);
     }
 
     public function getAllocation(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('view-allocation', $server);
-        $node = Models\Node::find($server->node);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.settings.allocation', [
-            'server' => $server,
-            'allocations' => Models\Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'node' => $node,
+            'server' => $server->load(['allocations' => function ($query) {
+                $query->orderBy('ip', 'asc');
+                $query->orderBy('port', 'asc');
+            }]),
+            'node' => $server->node,
         ]);
     }
 
     public function getStartup(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
+        $server->load(['allocations' => function ($query) use ($server) {
+            $query->where('id', $server->allocation_id);
+        }]);
         $this->authorize('view-startup', $server);
-        $node = Models\Node::find($server->node);
-        $allocation = Models\Allocation::findOrFail($server->allocation);
 
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
-
-        $variables = Models\ServiceVariables::select(
+        $variables = Models\ServiceVariable::select(
                 'service_variables.*',
                 DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
             )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('service_variables.option_id', $server->option)
+            ->where('service_variables.option_id', $server->option_id)
             ->where('server_variables.server_id', $server->id)
             ->get();
 
         $service = Models\Service::select(
                 DB::raw('IFNULL(service_options.executable, services.executable) as executable')
-            )->leftJoin('service_options', 'service_options.parent_service', '=', 'services.id')
-            ->where('service_options.id', $server->option)
-            ->where('services.id', $server->service)
+            )->leftJoin('service_options', 'service_options.service_id', '=', 'services.id')
+            ->where('service_options.id', $server->option_id)
+            ->where('services.id', $server->service_id)
             ->first();
 
-        $serverVariables = [
+        $allocation = $server->allocations->pop();
+        $ServerVariable = [
             '{{SERVER_MEMORY}}' => $server->memory,
             '{{SERVER_IP}}' => $allocation->ip,
             '{{SERVER_PORT}}' => $allocation->port,
         ];
 
-        $processed = str_replace(array_keys($serverVariables), array_values($serverVariables), $server->startup);
+        $processed = str_replace(array_keys($ServerVariable), array_values($ServerVariable), $server->startup);
         foreach ($variables as &$variable) {
-            $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '**';
+            $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '[hidden]';
             $processed = str_replace('{{' . $variable->env_variable . '}}', $replace, $processed);
         }
 
+        $server->js();
+
         return view('server.settings.startup', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $server->node,
             'variables' => $variables->where('user_viewable', 1),
             'service' => $service,
             'processedStartup' => $processed,
@@ -276,18 +255,13 @@ class ServerController extends Controller
 
     public function getDatabases(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('view-databases', $server);
-        $node = Models\Node::find($server->node);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.settings.databases', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
             'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
                 ->where('server_id', $server->id)
                 ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
@@ -297,24 +271,19 @@ class ServerController extends Controller
 
     public function getSFTP(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('view-sftp', $server);
-        $node = Models\Node::find($server->node);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.settings.sftp', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
         ]);
     }
 
     public function postSettingsSFTP(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('reset-sftp', $server);
 
         try {
@@ -335,7 +304,7 @@ class ServerController extends Controller
 
     public function postSettingsStartup(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-startup', $server);
 
         try {

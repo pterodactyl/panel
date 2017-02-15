@@ -45,18 +45,11 @@ class ServiceController extends BaseController
 
     public function view(Request $request, $id)
     {
-        $service = Models\Service::find($id);
+        $service = Models\Service::with('options.variables', 'options.packs')->find($id);
         if (! $service) {
             throw new NotFoundHttpException('No service by that ID was found.');
         }
 
-        return [
-            'service' => $service,
-            'options' => Models\ServiceOptions::select('id', 'name', 'description', 'tag', 'docker_image')
-                ->where('parent_service', $service->id)
-                ->with('variables')
-                ->with('packs')
-                ->get(),
-        ];
+        return $service->toArray();
     }
 }

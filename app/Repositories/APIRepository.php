@@ -62,8 +62,8 @@ class APIRepository
 
             // Node Management Routes
             'nodes.list',
+            'nodes.view',
             'nodes.create',
-            'nodes.list',
             'nodes.allocations',
             'nodes.delete',
 
@@ -102,7 +102,7 @@ class APIRepository
     {
         $this->user = is_null($user) ? Auth::user() : $user;
         if (is_null($this->user)) {
-            throw new \Exception('Cannot access API Repository without passing a user to __construct().');
+            throw new \Exception('Cannot access API Repository without passing a user to constructor.');
         }
     }
 
@@ -149,7 +149,7 @@ class APIRepository
             $secretKey = str_random(16) . '.' . str_random(7) . '.' . str_random(7);
             $key = new Models\APIKey;
             $key->fill([
-                'user' => $this->user->id,
+                'user_id' => $this->user->id,
                 'public' => str_random(16),
                 'secret' => Crypt::encrypt($secretKey),
                 'allowed_ips' => empty($this->allowed) ? null : json_encode($this->allowed),
@@ -178,7 +178,7 @@ class APIRepository
                 }
             }
 
-            if ($this->user->root_admin === 1 && isset($data['adminPermissions'])) {
+            if ($this->user->isRootAdmin() && isset($data['adminPermissions'])) {
                 foreach ($data['adminPermissions'] as $permNode) {
                     if (! strpos($permNode, ':')) {
                         continue;

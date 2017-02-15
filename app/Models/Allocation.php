@@ -48,8 +48,30 @@ class Allocation extends Model
       * @var array
       */
      protected $casts = [
-         'node' => 'integer',
+         'node_id' => 'integer',
          'port' => 'integer',
-         'assigned_to' => 'integer',
+         'server_id' => 'integer',
      ];
+
+     /**
+      * Accessor to automatically provide the IP alias if defined.
+      *
+      * @param  null|string $value
+      * @return string
+      */
+     public function getAliasAttribute($value)
+     {
+         return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
+     }
+
+     /**
+      * Accessor to quickly determine if this allocation has an alias.
+      *
+      * @param  null|string $value
+      * @return bool
+      */
+     public function getHasAliasAttribute($value)
+     {
+         return ! is_null($this->ip_alias);
+     }
 }

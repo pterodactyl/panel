@@ -63,7 +63,7 @@
                     <div class="form-group col-md-6">
                         <label for="location" class="control-label">Server Location</label>
                         <div>
-                            <select name="location" id="getLocation" class="form-control">
+                            <select name="location_id" id="getLocation" class="form-control">
                                 <option disabled selected> -- Select a Location</option>
                                 @foreach($locations as $location)
                                     <option value="{{ $location->id }}">{{ $location->long }} ({{ $location->short }})</option>
@@ -75,7 +75,7 @@
                     <div class="form-group col-md-6 hidden" id="allocationNode">
                         <label for="node" class="control-label">Server Node</label>
                         <div>
-                            <select name="node" id="getNode" class="form-control">
+                            <select name="node_id" id="getNode" class="form-control">
                                 <option disabled selected> -- Select a Node</option>
                             </select>
                             <p class="text-muted"><small>The node which this server will be deployed to.</small></p>
@@ -181,9 +181,9 @@
                     <div class="row">
                         <div class="ajax_loading_box" style="display:none;"><i class="fa fa-refresh fa-spin ajax_loading_position"></i></div>
                         <div class="form-group col-md-12">
-                            <label for="service" class="control-label">Service Type</label>
+                            <label for="service_id" class="control-label">Service Type</label>
                             <div>
-                                <select name="service" id="getService" class="form-control">
+                                <select name="service_id" id="getService" class="form-control">
                                     <option disabled selected> -- Select a Service</option>
                                     @foreach($services as $service)
                                         <option value="{{ $service->id }}">{{ $service->name }}</option>
@@ -193,18 +193,18 @@
                             </div>
                         </div>
                         <div class="form-group col-md-12 hidden">
-                            <label for="option" class="control-label">Service Option</label>
+                            <label for="option_id" class="control-label">Service Option</label>
                             <div>
-                                <select name="option" id="getOption" class="form-control">
+                                <select name="option_id" id="getOption" class="form-control">
                                     <option disabled selected> -- Select a Service Option</option>
                                 </select>
                                 <p class="text-muted"><small>Select the type of service that this server will be running.</small></p>
                             </div>
                         </div>
                         <div class="form-group col-md-12 hidden">
-                            <label for="option" class="control-label">Service Pack</label>
+                            <label for="pack_id" class="control-label">Service Pack</label>
                             <div>
-                                <select name="pack" id="getPack" class="form-control">
+                                <select name="pack_id" id="getPack" class="form-control">
                                     <option disabled selected> -- Select a Service Pack</option>
                                 </select>
                                 <p class="text-muted"><small>Select the service pack that should be used for this server. This option can be changed later.</small></p>
@@ -230,7 +230,7 @@
                 </div>
             </div>
         </div>
-        <div class="well" id="serviceOptions" style="display:none;">
+        <div class="well" id="ServiceOption" style="display:none;">
             <div class="row">
                 <div class="form-group col-md-12">
                     <h3 class="nopad">Service Setup &amp; Options</h3>
@@ -248,7 +248,7 @@
                     <div class="alert alert-info">Some service options have additional environment variables that you can define for a given instance. They will show up below when you select a service option. If none show up, chances are that none were defined, and there is nothing to worry about.</div>
                 </div>
             </div>
-            <div class="row" id="serverVariables"></div>
+            <div class="row" id="ServerVariable"></div>
         </div>
         <div class="well">
             <div class="row">
@@ -399,7 +399,7 @@ $(document).ready(function () {
 
         currentService = $('#getService').val();
         handleLoader('#load_services', true);
-        $('#serviceOptions').slideUp();
+        $('#ServiceOption').slideUp();
         $('#getOption').html('<option disabled selected> -- Select a Service Option</option>');
         $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
 
@@ -430,8 +430,8 @@ $(document).ready(function () {
     $('#getOption').on('change', function (event) {
 
         handleLoader('#load_services', true);
-        handleLoader('#serviceOptions', true);
-        $('#serverVariables').html('');
+        handleLoader('#ServiceOption', true);
+        $('#ServerVariable').html('');
         $('input[name="custom_image_name"]').val($(this).find(':selected').data('image'));
         $('#getPack').html('<option disabled selected> -- Select a Service Pack</option>');
 
@@ -466,14 +466,14 @@ $(document).ready(function () {
                         </div>\
                     </div>\
                 ';
-                $('#serverVariables').append(dataAppend);
+                $('#ServerVariable').append(dataAppend);
             });
-            $('#serviceOptions').slideDown();
+            $('#ServiceOption').slideDown();
         }).fail(function (jqXHR) {
             console.error(jqXHR);
         }).always(function () {
             handleLoader('#load_services');
-            handleLoader('#serviceOptions');
+            handleLoader('#ServiceOption');
         });
 
     });

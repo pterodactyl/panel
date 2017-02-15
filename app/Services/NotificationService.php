@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Notifications\Daemon;
 
@@ -48,7 +47,6 @@ class NotificationService
     public function __construct(Server $server)
     {
         $this->server = $server;
-        $this->user = User::findOrFail($server->owner);
     }
 
     public function pass(array $notification)

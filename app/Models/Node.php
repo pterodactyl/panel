@@ -53,7 +53,7 @@ class Node extends Model
       */
      protected $casts = [
          'public' => 'integer',
-         'location' => 'integer',
+         'location_id' => 'integer',
          'memory' => 'integer',
          'disk' => 'integer',
          'daemonListen' => 'integer',
@@ -61,11 +61,18 @@ class Node extends Model
      ];
 
     /**
-     * Fields that are not mass assignable.
+     * Fields that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'public', 'name', 'location_id',
+        'fqdn', 'scheme', 'memory',
+        'memory_overallocate', 'disk',
+        'disk_overallocate', 'upload_size',
+        'daemonSecret', 'daemonBase',
+        'daemonSFTP', 'daemonListen',
+    ];
 
     /**
      * @var array
@@ -97,10 +104,27 @@ class Node extends Model
     }
 
     /**
+     * Return an instance of the Guzzle client for this specific node.
+     *
+     * @param array $headers
+     * @return \GuzzleHttp\Client
+     */
+    public function guzzleClient($headers = [])
+    {
+        return new Client([
+            'base_uri' => sprintf('%s://%s:%s/', $this->scheme, $this->fqdn, $this->daemonListen),
+            'timeout' => env('GUZZLE_TIMEOUT', 5.0),
+            'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3.0),
+            'headers' => $headers,
+        ]);
+    }
+
+    /**
      * Returns a Guzzle Client for the node in question.
      *
      * @param  int $node
      * @return \GuzzleHttp\Client
+     * @deprecated
      */
     public static function guzzleRequest($node)
     {
@@ -176,5 +200,35 @@ class Node extends Model
         }
 
         return json_encode($config, $json_options);
+    }
+
+    /**
+     * Gets the location associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    /**
+     * Gets the servers associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
+
+    /**
+     * Gets the allocations associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class);
     }
 }

@@ -29,7 +29,6 @@ use Log;
 use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\UserRepository;
@@ -45,35 +44,11 @@ class UserController extends Controller
         //
     }
 
+    // @TODO: implement nicolaslopezj/searchable to clean up this disaster.
     public function getIndex(Request $request)
     {
-        $query = User::select('users.*');
-        if ($request->input('filter') && ! is_null($request->input('filter'))) {
-            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
-            foreach ($matches[0] as $match) {
-                $match = str_replace('"', '', $match);
-                if (strpos($match, ':')) {
-                    list($field, $term) = explode(':', $match);
-                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
-                } else {
-                    $query->where('email', 'LIKE', '%' . $match . '%');
-                    $query->orWhere([
-                        ['uuid', 'LIKE', '%' . $match . '%'],
-                        ['root_admin', 'LIKE', '%' . $match . '%'],
-                    ]);
-                }
-            }
-        }
-
-        try {
-            $users = $query->paginate(20);
-        } catch (\Exception $ex) {
-            Alert::warning('There was an error with the search parameters provided.');
-            $users = User::all()->paginate(20);
-        }
-
         return view('admin.users.index', [
-            'users' => $users,
+            'users' => User::paginate(25),
         ]);
     }
 
@@ -85,12 +60,7 @@ class UserController extends Controller
     public function getView(Request $request, $id)
     {
         return view('admin.users.view', [
-            'user' => User::findOrFail($id),
-            'servers' => Server::select('servers.*', 'nodes.name as nodeName', 'locations.long as location')
-                ->join('nodes', 'servers.node', '=', 'nodes.id')
-                ->join('locations', 'nodes.location', '=', 'locations.id')
-                ->where('owner', $id)
-                ->get(),
+            'user' => User::with('servers.node')->findOrFail($id),
         ]);
     }
 
@@ -117,12 +87,8 @@ class UserController extends Controller
         try {
             $user = new UserRepository;
             $userid = $user->create($request->only([
-                'email',
-                'password',
-                'name_first',
-                'name_last',
-                'username',
-                'root_admin',
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
             ]));
             Alert::success('Account has been successfully created.')->flash();
 
@@ -142,12 +108,8 @@ class UserController extends Controller
         try {
             $repo = new UserRepository;
             $repo->update($user, $request->only([
-                'email',
-                'password',
-                'name_first',
-                'name_last',
-                'username',
-                'root_admin',
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
             ]));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -162,10 +124,6 @@ class UserController extends Controller
 
     public function getJson(Request $request)
     {
-        foreach (User::select('email')->get() as $user) {
-            $resp[] = $user->email;
-        }
-
-        return $resp;
+        return User::select('email')->get()->pluck('email');
     }
 }

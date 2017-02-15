@@ -26,7 +26,6 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
 use Alert;
-use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Repositories;
@@ -43,19 +42,14 @@ class TaskController extends Controller
 
     public function getIndex(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid)->load('tasks');
         $this->authorize('list-tasks', $server);
-        $node = Models\Node::find($server->node);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.tasks.index', [
             'server' => $server,
-            'node' => $node,
-            'tasks' => Models\Task::where('server', $server->id)->get(),
+            'node' => $server->node,
+            'tasks' => $server->tasks,
             'actions' => [
                 'command' => trans('server.tasks.actions.command'),
                 'power' => trans('server.tasks.actions.power'),
@@ -65,24 +59,19 @@ class TaskController extends Controller
 
     public function getNew(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('create-task', $server);
-        $node = Models\Node::find($server->node);
-
-        Javascript::put([
-            'server' => collect($server->makeVisible('daemonSecret'))->only(['uuid', 'uuidShort', 'daemonSecret', 'username']),
-            'node' => collect($node)->only('fqdn', 'scheme', 'daemonListen'),
-        ]);
+        $server->js();
 
         return view('server.tasks.new', [
             'server' => $server,
-            'node' => $node,
+            'node' => $server->node,
         ]);
     }
 
     public function postNew(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('create-task', $server);
 
         try {
@@ -106,12 +95,11 @@ class TaskController extends Controller
 
     public function deleteTask(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid)->load('tasks');
         $this->authorize('delete-task', $server);
 
-        $task = Models\Task::findOrFail($id);
-
-        if (! $task || $server->id !== $task->server) {
+        $task = $server->tasks->where('id', $id)->first();
+        if (! $task) {
             return response()->json([
                 'error' => 'No task by that ID was found associated with this server.',
             ], 404);
@@ -133,12 +121,11 @@ class TaskController extends Controller
 
     public function toggleTask(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid)->load('tasks');
         $this->authorize('toggle-task', $server);
 
-        $task = Models\Task::findOrFail($id);
-
-        if (! $task || $server->id !== $task->server) {
+        $task = $server->tasks->where('id', $id)->first();
+        if (! $task) {
             return response()->json([
                 'error' => 'No task by that ID was found associated with this server.',
             ], 404);

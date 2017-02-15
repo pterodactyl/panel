@@ -111,7 +111,7 @@ class UserRepository
 
             DB::commit();
 
-            return $user->id;
+            return $user;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
