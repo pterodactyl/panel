@@ -846,7 +846,7 @@ class ServerRepository
         if ($server->installed === 2) {
             throw new DisplayException('This server was marked as having a failed install, you cannot override this.');
         }
-        $server->installed = ($server->installed) ? 0 : 1;
+        $server->installed = ! $server->installed;
 
         return $server->save();
     }
