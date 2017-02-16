@@ -52,6 +52,7 @@ class VersionService
                 return (object) [
                     'panel' => 'error',
                     'daemon' => 'error',
+                    'discord' => 'https://pterodactyl.io',
                 ];
             }
         });
@@ -65,6 +66,11 @@ class VersionService
     public static function getDaemon()
     {
         return self::$versions->daemon;
+    }
+
+    public static function getDiscord()
+    {
+        return self::$versions->discord;
     }
 
     public function getCurrentPanel()
