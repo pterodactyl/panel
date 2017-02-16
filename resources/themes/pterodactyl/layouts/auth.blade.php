@@ -44,7 +44,7 @@
             </div>
             @yield('content')
             <p class="small text-muted">
-                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/" target="_blank">Pterodactyl Software &amp; Design</a>.<br />
+                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/" target="_blank">Pterodactyl Software</a>.<br />
             </p>
         </div>
         {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}

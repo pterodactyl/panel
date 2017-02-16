@@ -236,7 +236,7 @@
                 <div class="pull-right hidden-xs small text-gray">
                     <strong>v</strong> {{ config('app.version') }}
                 </div>
-                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software &amp; Design</a>.
+                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
             <aside class="control-sidebar control-sidebar-dark">
                 <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
