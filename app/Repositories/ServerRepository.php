@@ -789,11 +789,13 @@ class ServerRepository
             // Remove Variables
             Models\ServerVariable::where('server_id', $server->id)->delete();
 
-            // Remove Permissions (Foreign Key requires before Subusers)
-            Models\Permission::where('server_id', $server->id)->delete();
-
             // Remove SubUsers
-            Models\Subuser::where('server_id', $server->id)->delete();
+            foreach(Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
+                foreach($subuser->permissions as &$permission) {
+                    $permission->delete();
+                }
+                $subuser->delete();
+            }
 
             // Remove Downloads
             Models\Download::where('server', $server->uuid)->delete();
@@ -809,7 +811,7 @@ class ServerRepository
                 $repository->drop($database->id);
             }
 
-            $server->node->guzzleRequest([
+            $server->node->guzzleClient([
                 'X-Access-Token' => $server->node->daemonSecret,
                 'X-Access-Server' => $server->uuid,
             ])->request('DELETE', '/servers');
