@@ -75,35 +75,6 @@ class Node extends Model
     ];
 
     /**
-     * @var array
-     */
-    protected static $guzzle = [];
-
-    /**
-     * @var array
-     */
-    protected static $nodes = [];
-
-    /**
-     * Returns an instance of the database object for the requested node ID.
-     *
-     * @param  int $id
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public static function getByID($id)
-    {
-
-        // The Node is already cached.
-        if (array_key_exists($id, self::$nodes)) {
-            return self::$nodes[$id];
-        }
-
-        self::$nodes[$id] = self::where('id', $id)->first();
-
-        return self::$nodes[$id];
-    }
-
-    /**
      * Return an instance of the Guzzle client for this specific node.
      *
      * @param array $headers
@@ -117,32 +88,6 @@ class Node extends Model
             'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3.0),
             'headers' => $headers,
         ]);
-    }
-
-    /**
-     * Returns a Guzzle Client for the node in question.
-     *
-     * @param  int $node
-     * @return \GuzzleHttp\Client
-     * @deprecated
-     */
-    public static function guzzleRequest($node)
-    {
-
-        // The Guzzle Client is cached already.
-        if (array_key_exists($node, self::$guzzle)) {
-            return self::$guzzle[$node];
-        }
-
-        $nodeData = self::getByID($node);
-
-        self::$guzzle[$node] = new Client([
-            'base_uri' => sprintf('%s://%s:%s/', $nodeData->scheme, $nodeData->fqdn, $nodeData->daemonListen),
-            'timeout' => 5.0,
-            'connect_timeout' => 3.0,
-        ]);
-
-        return self::$guzzle[$node];
     }
 
     /**
@@ -194,12 +139,7 @@ class Node extends Model
             'keys' => [$this->daemonSecret],
         ];
 
-        $json_options = JSON_UNESCAPED_SLASHES;
-        if ($pretty) {
-            $json_options |= JSON_PRETTY_PRINT;
-        }
-
-        return json_encode($config, $json_options);
+        return json_encode($config, ($pretty) ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
     }
 
     /**
