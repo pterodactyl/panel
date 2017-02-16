@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-pre.1 (Courageous Carniadactylus)
+## v0.6.0-pre.2 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.1]` — Fixes bug with database seeders that prevented correctly installing the panel.
 
