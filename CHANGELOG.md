@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-pre.1
+## v0.6.0-pre.1 (Courageous Carniadactylus)
 ### Added
 * Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
 * Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
