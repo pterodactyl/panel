@@ -47,7 +47,7 @@
     <p class="login-box-msg">@lang('auth.authentication_required')</p>
     <form action="{{ route('auth.login') }}" method="POST">
         <div class="form-group has-feedback">
-            <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="@lang('strings.email')">
+            <input name="user" class="form-control" value="{{ old('user') }}" placeholder="@lang('strings.user_identifier')">
             <span class="fa fa-envelope form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
