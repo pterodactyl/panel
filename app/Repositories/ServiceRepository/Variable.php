@@ -46,9 +46,9 @@ class Variable
             'description' => 'required|string',
             'env_variable' => 'required|regex:/^[\w]{1,255}$/',
             'default_value' => 'string|max:255',
-            'user_viewable' => 'sometimes|required|numeric|size:1',
-            'user_editable' => 'sometimes|required|numeric|size:1',
-            'required' => 'sometimes|required|numeric|size:1',
+            'user_viewable' => 'sometimes|required|nullable|boolean',
+            'user_editable' => 'sometimes|required|nullable|boolean',
+            'required' => 'sometimes|required|nullable|boolean',
             'regex' => 'required|string|min:1',
         ]);
 
@@ -101,9 +101,9 @@ class Variable
             'description' => 'sometimes|required|string',
             'env_variable' => 'sometimes|required|regex:/^[\w]{1,255}$/',
             'default_value' => 'sometimes|string|max:255',
-            'user_viewable' => 'sometimes|required|numeric|boolean',
-            'user_editable' => 'sometimes|required|numeric|boolean',
-            'required' => 'sometimes|required|numeric|boolean',
+            'user_viewable' => 'sometimes|required|nullable|boolean',
+            'user_editable' => 'sometimes|required|nullable|boolean',
+            'required' => 'sometimes|required|nullable|boolean',
             'regex' => 'sometimes|required|string|min:1',
         ]);
 
