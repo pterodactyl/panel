@@ -67,7 +67,7 @@ class VoiceServiceTableSeeder extends Seeder
     private function addCoreOptions()
     {
         $this->option['mumble'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Mumble Server',
             'description' => 'Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.',
             'tag' => 'mumble',
@@ -77,7 +77,7 @@ class VoiceServiceTableSeeder extends Seeder
         ]);
 
         $this->option['ts3'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Teamspeak3 Server',
             'description' => 'VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.',
             'tag' => 'ts3',

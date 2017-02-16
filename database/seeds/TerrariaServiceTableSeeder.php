@@ -67,7 +67,7 @@ class TerrariaServiceTableSeeder extends Seeder
     private function addCoreOptions()
     {
         $this->option['tshock'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Terraria Server (TShock)',
             'description' => 'TShock is a server modification for Terraria, written in C#, and based upon the Terraria Server API. It uses JSON for configuration management, and offers several features not present in the Terraria Server normally.',
             'tag' => 'tshock',

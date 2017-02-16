@@ -67,7 +67,7 @@ class MinecraftServiceTableSeeder extends Seeder
     private function addCoreOptions()
     {
         $this->option['vanilla'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Vanilla Minecraft',
             'description' => 'Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.',
             'tag' => 'vanilla',
@@ -77,7 +77,7 @@ class MinecraftServiceTableSeeder extends Seeder
         ]);
 
         $this->option['spigot'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Spigot',
             'description' => 'Spigot is the most widely-used modded Minecraft server software in the world. It powers many of the top Minecraft server networks around to ensure they can cope with their huge player base and ensure the satisfaction of their players. Spigot works by reducing and eliminating many causes of lag, as well as adding in handy features and settings that help make your job of server administration easier.',
             'tag' => 'spigot',
@@ -87,7 +87,7 @@ class MinecraftServiceTableSeeder extends Seeder
         ]);
 
         $this->option['sponge'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Sponge (SpongeVanilla)',
             'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
             'tag' => 'sponge',
@@ -97,7 +97,7 @@ class MinecraftServiceTableSeeder extends Seeder
         ]);
 
         $this->option['bungeecord'] = Models\ServiceOption::create([
-            'parent_service' => $this->service->id,
+            'service_id' => $this->service->id,
             'name' => 'Bungeecord',
             'description' => 'For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community\'s full potential.',
             'tag' => 'bungeecord',
