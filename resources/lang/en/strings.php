@@ -2,7 +2,7 @@
 
 return [
     'email' => 'Email',
-    'user_identifier' => 'Email or password',
+    'user_identifier' => 'Username or Email',
     'password' => 'Password',
     'confirm_password' => 'Confirm Password',
     'login' => 'Login',
