@@ -57,47 +57,21 @@
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             <li class="dropdown user-menu">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <a href="{{ route('account') }}" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span> <span class="caret"></span>
+                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if(Auth::user()->isRootAdmin())
-                                        <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
-                                    @endif
-                                    <li><a href="{{ route('auth.logout') }}">@lang('strings.sign_out')</a></li>
-                                </ul>
-                                {{-- <ul class="dropdown-menu">
-                                    <li class="user-header">
-                                        <p>
-                                            <small>Member since Nov. 2012</small>
-                                        </p>
-                                    </li>
-                                    <li class="user-body">
-                                        <div class="row">
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Followers</a>
-                                            </div>
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Sales</a>
-                                            </div>
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Friends</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <a href="{{ route('admin.index') }}" class="btn btn-default btn-flat">Admin Control</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <a href="{{ route('auth.logout') }}" class="btn btn-default btn-flat">Sign out</a>
-                                        </div>
-                                    </li>
-                                </ul> --}}
+                            </li>
+                            @if(Auth::user()->isRootAdmin())
+                                <li>
+                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                </li>
+                            @endif
+                            <li>
+                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a>
                             </li>
                             <li>
-                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a>
+                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -116,7 +90,7 @@
                     <ul class="sidebar-menu">
                         <li class="header">@lang('navigation.account.header')</li>
                         <li class="{{ Route::currentRouteName() !== 'account' ?: 'active' }}">
-                            <a href="{{ route('account')}}">
+                            <a href="{{ route('account') }}">
                                 <i class="fa fa-user"></i> <span>@lang('navigation.account.my_account')</span>
                             </a>
                         </li>

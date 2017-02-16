@@ -61,4 +61,6 @@ return [
     'no' => 'No',
     'delete' => 'Delete',
     '2fa' => '2FA',
+    'logout' => 'Logout',
+    'admin_cp' => 'Admin Control Panel',
 ];
