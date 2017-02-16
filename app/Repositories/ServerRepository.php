@@ -649,7 +649,7 @@ class ServerRepository
 
         try {
             // Check the startup
-            if (isset($data['startup'])) {
+            if (isset($data['startup']) && $admin) {
                 $server->startup = $data['startup'];
                 $server->save();
             }
