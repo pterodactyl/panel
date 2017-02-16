@@ -87,11 +87,11 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        // Check wether login is an email address or a username
+        // Check wether the user identifier is an email address or a username
         $isEmail = str_contains($request->input('user'), '@');
 
         $this->validate($request, [
-            'user' => $isEmail ? 'required|email' : 'required',
+            'user' => $isEmail ? 'required|email' : 'required|string',
             'password' => 'required',
         ]);
 
