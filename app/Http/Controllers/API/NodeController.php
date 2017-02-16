@@ -187,7 +187,7 @@ class NodeController extends BaseController
       */
      public function allocationsView(Request $request, $id)
      {
-         return Models\Allocation::where('assigned_to', $id)->get()->toArray();
+         return Models\Allocation::where('server_id', $id)->get()->toArray();
      }
 
     /**

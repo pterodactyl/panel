@@ -144,10 +144,11 @@ class ServerRepository
         // We know the node exists because of 'exists:nodes,id' in the validation
         if (! $autoDeployed) {
             if (! isset($data['allocation_id'])) {
-                $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+                $model = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port']);
             } else {
-                $allocation = Models\Allocation::where('id', $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+                $model = Models\Allocation::where('id', $data['allocation_id']);
             }
+            $allocation = $model->where('node_id', $data['node_id'])->whereNull('server_id')->first();
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
@@ -159,7 +160,7 @@ class ServerRepository
         // We know the service and option exists because of the validation.
         // We need to verify that the option exists for the service, and then check for
         // any required variable fields. (fields are labeled env_<env_variable>)
-        $option = Models\ServiceOption::where('id', $data['option'])->where('service_id', $data['service'])->first();
+        $option = Models\ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
         if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
@@ -170,7 +171,7 @@ class ServerRepository
         }
 
         if (! is_null($data['pack_id'])) {
-            $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option', $data['option_id'])->first();
+            $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
@@ -264,7 +265,7 @@ class ServerRepository
                 'io' => $data['io'],
                 'cpu' => $data['cpu'],
                 'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
-                'allocation' => $allocation->id,
+                'allocation_id' => $allocation->id,
                 'service_id' => $data['service_id'],
                 'option_id' => $data['option_id'],
                 'pack_id' => $data['pack_id'],
@@ -540,7 +541,7 @@ class ServerRepository
 
                     $newPorts = true;
                     $server->allocations->where('ip', $ip)->where('port', $port)->update([
-                        'assigned_to' => null,
+                        'server_id' => null,
                     ]);
                 }
 
@@ -562,8 +563,8 @@ class ServerRepository
                     }
 
                     $newPorts = true;
-                    Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
-                        'assigned_to' => $server->id,
+                    Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('server_id')->update([
+                        'server_id' => $server->id,
                     ]);
                 }
 

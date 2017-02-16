@@ -220,7 +220,7 @@ class NodeRepository
                                         'ip' => $ip,
                                         'port' => $assignPort,
                                         'ip_alias' => $setAlias,
-                                        'assigned_to' => null,
+                                        'server_id' => null,
                                     ]);
                                     $alloc->save();
                                 }
@@ -237,7 +237,7 @@ class NodeRepository
                                     'ip' => $ip,
                                     'port' => $port,
                                     'ip_alias' => $setAlias,
-                                    'assigned_to' => null,
+                                    'server_id' => null,
                                 ]);
                                 $alloc->save();
                             }

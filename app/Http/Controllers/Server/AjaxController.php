@@ -181,7 +181,7 @@ class AjaxController extends Controller
         }
 
         try {
-            $allocation = $server->allocations->where('id', $request->input('allocation'))->where('assigned_to', $server->id)->first();
+            $allocation = $server->allocations->where('id', $request->input('allocation'))->where('server_id', $server->id)->first();
             if (! $allocation) {
                 return response()->json([
                     'error' => 'No allocation matching your request was found in the system.',

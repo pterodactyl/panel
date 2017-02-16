@@ -159,7 +159,7 @@ class NodesController extends Controller
 
     public function deallocateSingle(Request $request, $node, $allocation)
     {
-        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('id', $allocation)->delete();
+        $query = Models\Allocation::where('node', $node)->whereNull('server_id')->where('id', $allocation)->delete();
         if ((int) $query === 0) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.',
@@ -171,7 +171,7 @@ class NodesController extends Controller
 
     public function deallocateBlock(Request $request, $node)
     {
-        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('ip', $request->input('ip'))->delete();
+        $query = Models\Allocation::where('node', $node)->whereNull('server_id')->where('ip', $request->input('ip'))->delete();
         if ((int) $query === 0) {
             Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
 

@@ -37,7 +37,7 @@ class ServerObserver
     use DispatchesJobs;
 
     /**
-     * Listen to the Server deleted event.
+     * Listen to the Server creating event.
      *
      * @param  Server $server [description]
      * @return [type]         [description]
@@ -48,7 +48,7 @@ class ServerObserver
     }
 
     /**
-     * Listen to the Server deleted event.
+     * Listen to the Server created event.
      *
      * @param  Server $server [description]
      * @return [type]         [description]
@@ -58,20 +58,18 @@ class ServerObserver
         event(new Events\Server\Created($server));
 
         // Queue Notification Email
-        $server->load('user', 'node', 'service.option');
-
         $server->user->notify((new ServerCreated([
             'name' => $server->name,
             'memory' => $server->memory,
             'node' => $server->node->name,
             'service' => $server->service->name,
-            'option' => $server->service->option->name,
+            'option' => $server->option->name,
             'uuidShort' => $server->uuidShort,
         ])));
     }
 
     /**
-     * Listen to the Server deleted event.
+     * Listen to the Server deleting event.
      *
      * @param  Server $server [description]
      * @return [type]         [description]

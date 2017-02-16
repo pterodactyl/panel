@@ -115,7 +115,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(Models\Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
+        return response()->json(Models\Node::select('id', 'name', 'public')->where('location_id', $request->input('location'))->get());
     }
 
     /**
@@ -132,7 +132,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        $ips = Models\Allocation::where('node', $request->input('node'))->whereNull('assigned_to')->get();
+        $ips = Models\Allocation::where('node_id', $request->input('node'))->whereNull('server_id')->get();
         $listing = [];
 
         foreach ($ips as &$ip) {

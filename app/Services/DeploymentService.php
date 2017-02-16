@@ -65,7 +65,7 @@ class DeploymentService
             throw new DisplayException('The location passed was not valid and could not be found.');
         }
 
-        $node = Models\Node::where('location', $useLocation->id)->where('public', 1)->whereNotIn('id', $not)->inRandomOrder()->first();
+        $node = Models\Node::where('location_id', $useLocation->id)->where('public', 1)->whereNotIn('id', $not)->inRandomOrder()->first();
         if (! $node) {
             throw new DisplayException("Unable to find a node in location {$useLocation->short} (id: {$useLocation->id}) that is available and has space.");
         }
@@ -107,7 +107,7 @@ class DeploymentService
      */
     public static function randomAllocation($node)
     {
-        $allocation = Models\Allocation::where('node', $node)->whereNull('assigned_to')->inRandomOrder()->first();
+        $allocation = Models\Allocation::where('node_id', $node)->whereNull('server_id')->inRandomOrder()->first();
         if (! $allocation) {
             throw new DisplayException('No available allocation could be found for the assigned node.');
         }
@@ -125,7 +125,7 @@ class DeploymentService
     protected static function checkNodeAllocation(Models\Node $node, $memory, $disk)
     {
         if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
-            $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
+            $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first();
 
             // Check memory limits
             if (is_numeric($node->memory_overallocate)) {
