@@ -126,6 +126,6 @@ class RemoteController extends Controller
         $token->delete();
 
         // Manually as getConfigurationAsJson() returns it in correct format already
-        return response()->json($node->getConfigurationAsJson(), 200);
+        return response($node->getConfigurationAsJson());
     }
 }
