@@ -100,10 +100,10 @@ class NodeRepository
             'disk' => 'numeric|min:1',
             'disk_overallocate' => 'numeric|min:-1',
             'upload_size' => 'numeric|min:0',
-            'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
+            'daemonBase' => 'sometimes|regex:/^([\/][\d\w.\-\/]+)$/',
             'daemonSFTP' => 'numeric|between:1,65535',
             'daemonListen' => 'numeric|between:1,65535',
-            'reset_secret' => 'sometimes|accepted',
+            'reset_secret' => 'sometimes|nullable|accepted',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -138,7 +138,7 @@ class NodeRepository
         }
 
         // Set the Secret
-        if (isset($data['reset_secret'])) {
+        if (isset($data['reset_secret']) && ! is_null($data['reset_secret'])) {
             $uuid = new UuidService;
             $data['daemonSecret'] = (string) $uuid->generate('nodes', 'daemonSecret');
             unset($data['reset_secret']);

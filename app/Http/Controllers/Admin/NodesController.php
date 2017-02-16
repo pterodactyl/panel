@@ -126,8 +126,7 @@ class NodesController extends Controller
                 'fqdn', 'scheme', 'memory',
                 'memory_overallocate', 'disk',
                 'disk_overallocate', 'upload_size',
-                'daemonBase', 'daemonSFTP',
-                'daemonListen', 'reset_secret',
+                'daemonSFTP', 'daemonListen', 'reset_secret',
             ]));
             Alert::success('Successfully update this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
 
