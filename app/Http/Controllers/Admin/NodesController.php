@@ -78,18 +78,11 @@ class NodesController extends Controller
         try {
             $repo = new NodeRepository;
             $node = $repo->create($request->only([
-                'name',
-                'location',
-                'public',
-                'fqdn',
-                'scheme',
-                'memory',
-                'memory_overallocate',
-                'disk',
-                'disk_overallocate',
-                'daemonBase',
-                'daemonSFTP',
-                'daemonListen',
+                'name', 'location_id', 'public',
+                'fqdn', 'scheme', 'memory',
+                'memory_overallocate', 'disk',
+                'disk_overallocate', 'daemonBase',
+                'daemonSFTP', 'daemonListen',
             ]));
             Alert::success('Successfully created new node that can be configured automatically on your remote machine by visiting the configuration tab. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
 
@@ -129,7 +122,7 @@ class NodesController extends Controller
         try {
             $node = new NodeRepository;
             $node->update($id, $request->only([
-                'name', 'location', 'public',
+                'name', 'location_id', 'public',
                 'fqdn', 'scheme', 'memory',
                 'memory_overallocate', 'disk',
                 'disk_overallocate', 'upload_size',
