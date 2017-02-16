@@ -87,8 +87,11 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
+        // Check wether the user identifier is an email address or a username
+        $isEmail = str_contains($request->input('user'), '@');
+
         $this->validate($request, [
-            'email' => 'required|email',
+            'user' => $isEmail ? 'required|email' : 'required|string',
             'password' => 'required',
         ]);
 
@@ -98,9 +101,9 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        // Is the email & password valid?
+        // Is the user (email or username) & password valid?
         if (! Auth::once([
-            'email' => $request->input('email'),
+            $isEmail ? 'email' : 'username' => $request->input('user'),
             'password' => $request->input('password'),
         ], $request->has('remember'))) {
             if (! $lockedOut) {
