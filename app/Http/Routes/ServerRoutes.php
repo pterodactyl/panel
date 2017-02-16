@@ -45,12 +45,6 @@ class ServerRoutes
                 'uses' => 'Server\ServerController@getIndex',
             ]);
 
-            // Settings
-            $router->get('/settings', [
-                'as' => 'server.settings',
-                'uses' => 'Server\ServerController@getSettings',
-            ]);
-
             $router->get('/settings/databases', [
                 'as' => 'server.settings.databases',
                 'uses' => 'Server\ServerController@getDatabases',

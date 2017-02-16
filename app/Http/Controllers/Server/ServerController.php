@@ -320,9 +320,6 @@ class ServerController extends Controller
             Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
         }
 
-        return redirect()->route('server.settings', [
-            'uuid' => $uuid,
-            'tab' => 'tab_startup',
-        ]);
+        return redirect()->route('server.settings.startup', $uuid);
     }
 }
