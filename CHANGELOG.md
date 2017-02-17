@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
 * `[pre.2]` — Fixes inability to edit a server due to owner_id issues.
+* `[pre.2]` — Fixes bug when trying to add new subusers.
 
 ### Changed
 * `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.

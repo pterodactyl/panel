@@ -177,7 +177,7 @@ class SubuserRepository
 
             $server->node->guzzleClient([
                 'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $node->daemonSecret,
+                'X-Access-Token' => $server->node->daemonSecret,
             ])->request('PATCH', '/server', [
                 'json' => [
                     'keys' => [
