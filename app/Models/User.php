@@ -186,9 +186,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @return Collection
      */
-    public function serverAccessCollection($paginate = null)
+    public function serverAccessCollection($paginate = null, $load = ['service', 'node', 'allocation'])
     {
-        $query = Server::with('service', 'node');
+        $query = Server::with($load);
         if (! $this->isRootAdmin()) {
             $query->whereIn('id', $this->serverAccessArray());
         }

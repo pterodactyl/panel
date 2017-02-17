@@ -219,7 +219,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="control-sidebar-servers-tab">
                         <ul class="control-sidebar-menu">
-                            @foreach (Auth::user()->serverAccessCollection() as $s)
+                            @foreach (Auth::user()->serverAccessCollection(null, []) as $s)
                                 <li>
                                     <a
                                         @if(isset($server) && isset($node))

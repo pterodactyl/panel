@@ -6,6 +6,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.6.0-pre.3 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
+* `[pre.2]` — Fixes inability to edit a server due to owner_id issues.
+
+### Changed
+* `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.
+* Reduced the number of database queries being executed when viewing a specific server. This is done by caching the query for up to 60 minutes in memcached.
 
 ## v0.6.0-pre.2 (Courageous Carniadactylus)
 ### Fixed

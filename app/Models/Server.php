@@ -25,6 +25,7 @@
 namespace Pterodactyl\Models;
 
 use Auth;
+use Cache;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -113,15 +114,18 @@ class Server extends Model
      */
     public static function byUuid($uuid)
     {
-        $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
-            $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+        // Results are cached because we call this functions a few times on page load.
+        $result = Cache::remember('Server.byUuid.' . $uuid, 60, function () use ($uuid) {
+            $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
+                $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+            });
+
+            if (! Auth::user()->isRootAdmin()) {
+                $query->whereIn('id', Auth::user()->serverAccessArray());
+            }
+
+            return $query->first();
         });
-
-        if (! Auth::user()->isRootAdmin()) {
-            $query->whereIn('id', Auth::user()->serverAccessArray());
-        }
-
-        $result = $query->first();
 
         if (! is_null($result)) {
             $result->daemonSecret = Auth::user()->daemonToken($result);

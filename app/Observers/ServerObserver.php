@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Observers;
 
+use Cache;
 use Carbon;
 use Pterodactyl\Events;
 use Pterodactyl\Models\Server;
@@ -96,5 +97,53 @@ class ServerObserver
             ->delay(Carbon::now()->addMinutes(env('APP_DELETE_MINUTES', 10)))
             ->onQueue(env('QUEUE_STANDARD', 'standard'))
         );
+    }
+
+    /**
+     * Listen to the Server saving event.
+     *
+     * @param  Server $server [description]
+     * @return [type]         [description]
+     */
+    public function saving(Server $server)
+    {
+        event(new Events\Server\Saving($server));
+    }
+
+    /**
+     * Listen to the Server saved event.
+     *
+     * @param  Server $server [description]
+     * @return [type]         [description]
+     */
+    public function saved(Server $server)
+    {
+        event(new Events\Server\Saved($server));
+    }
+
+    /**
+     * Listen to the Server saving event.
+     *
+     * @param  Server $server [description]
+     * @return [type]         [description]
+     */
+    public function updating(Server $server)
+    {
+        event(new Events\Server\Updating($server));
+    }
+
+    /**
+     * Listen to the Server saved event.
+     *
+     * @param  Server $server [description]
+     * @return [type]         [description]
+     */
+    public function updated(Server $server)
+    {
+        // Clear Caches
+        Cache::forget('Server.byUuid.' . $server->uuid);
+        Cache::forget('Server.byUuid.' . $server->uuidShort);
+
+        event(new Events\Server\Updated($server));
     }
 }
