@@ -216,7 +216,7 @@ class ServerRepository
         // Check Overallocation
         if (! $autoDeployed) {
             if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
-                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
+                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first();
 
                 // Check memory limits
                 if (is_numeric($node->memory_overallocate)) {

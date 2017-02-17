@@ -5,6 +5,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.6.0-pre.2 (Courageous Carniadactylus)
 ### Fixed
+* `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
+
+## v0.6.0-pre.2 (Courageous Carniadactylus)
+### Fixed
 * `[pre.1]` — Fixes bug with database seeders that prevented correctly installing the panel.
 
 ### Changed
