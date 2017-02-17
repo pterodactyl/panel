@@ -376,7 +376,7 @@ class ServerRepository
             }
 
             // Update Server Owner if it was passed.
-            if (isset($data['owner']) && $data['owner'] !== $owner->email) {
+            if (isset($data['owner']) && $data['owner'] !== $server->user->email) {
                 $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
                 $server->owner_id = $newOwner->id;
             }
