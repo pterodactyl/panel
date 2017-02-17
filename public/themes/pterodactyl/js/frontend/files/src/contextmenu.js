@@ -85,6 +85,10 @@ class ContextMenuClass {
     rightClick() {
         $('[data-action="toggleMenu"]').on('mousedown', event => {
             event.preventDefault();
+            if ($(document).find('#fileOptionMenu').is(':visible')) {
+                $('body').trigger('click');
+                return;
+            }
             this.showMenu(event);
         });
         $('#file_listing > tbody td').on('contextmenu', event => {

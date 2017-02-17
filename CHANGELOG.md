@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-pre.2 (Courageous Carniadactylus)
+## v0.6.0-pre.3 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
 

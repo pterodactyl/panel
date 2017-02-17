@@ -22,8 +22,8 @@
         <tr>
             <th style="width:2%;text-align:center;" class="middle"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files"></i></th>
             <th style="width:55%">@lang('server.files.file_name')</th>
-            <th style="width:15%" class="hidden-xs">@lang('server.files.size')</th>
-            <th style="width:20%" class="hidden-xs">@lang('server.files.last_modified')</th>
+            <th style="width:15%">@lang('server.files.size')</th>
+            <th style="width:20%">@lang('server.files.last_modified')</th>
             <th style="width:8%">
                 <label class="btn btn-primary btn-xs btn-file">
                     Upload <input type="file" id="files_touch_target" style="display: none;"/>
@@ -31,8 +31,8 @@
             </th>
         </tr>
         <tr id="headerTableRow" data-currentdir="{{ $directory['header'] }}">
-            <th><i class="fa fa-folder-open"></i></th>
-            <th colspan="4">
+            <th class="middle"><i class="fa fa-folder-open"></i></th>
+            <th colspan="4" class="middle">
                 <code>/home/container{{ $directory['header'] }}</code>
                 <small>
                     <a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif" class="text-muted">
@@ -45,21 +45,21 @@
     <tbody id="append_files_to">
         @if (isset($directory['first']) && $directory['first'] === true)
             <tr data-type="disabled">
-                <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
-                <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
-                <td class="hidden-xs"></td>
-                <td class="hidden-xs"></td>
+                <td class="middle"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></td>
+                <td></td>
+                <td></td>
                 <td></td>
             </tr>
         @endif
         @if (isset($directory['show']) && $directory['show'] === true)
             <tr data-type="disabled">
-                <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                <td class="middle"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                 <td data-name="{{ rawurlencode($directory['link']) }}">
                     <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a>
                 </td>
-                <td class="hidden-xs"></td>
-                <td class="hidden-xs"></td>
+                <td></td>
+                <td></td>
                 <td></td>
             </tr>
         @endif
@@ -69,8 +69,8 @@
                 <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
                     <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                 </td>
-                <td data-identifier="size" class="hidden-xs">{{ $folder['size'] }}</td>
-                <td data-identifier="modified" class="hidden-xs">
+                <td data-identifier="size">{{ $folder['size'] }}</td>
+                <td data-identifier="modified">
                     <?php $carbon = Carbon::createFromTimestamp($folder['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
                     @if($carbon->diffInMinutes(Carbon::now()) > 60)
                         {{ $carbon->format('m/d/y H:i:s') }}
@@ -146,8 +146,8 @@
                         {{ $file['entry'] }}
                     @endif
                 </td>
-                <td data-identifier="size" class="hidden-xs">{{ $file['size'] }}</td>
-                <td data-identifier="modified" class="hidden-xs">
+                <td data-identifier="size">{{ $file['size'] }}</td>
+                <td data-identifier="modified">
                     <?php $carbon = Carbon::createFromTimestamp($file['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
                     @if($carbon->diffInMinutes(Carbon::now()) > 60)
                         {{ $carbon->format('m/d/y H:i:s') }}
