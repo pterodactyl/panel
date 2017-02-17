@@ -105,8 +105,6 @@ class UserRepository
                     'token' => $token,
                     'created_at' => Carbon::now()->toDateTimeString(),
                 ]);
-
-                $user->notify((new AccountCreated($token)));
             }
 
             DB::commit();

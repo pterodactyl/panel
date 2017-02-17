@@ -45,9 +45,9 @@ class AccountCreated extends Notification implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($token)
+    public function __construct(array $user)
     {
-        $this->token = $token;
+        $this->user = $user;
     }
 
     /**
@@ -70,8 +70,10 @@ class AccountCreated extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('You are recieving this email because an account has been created for you on Pterodactyl Panel.')
-                    ->line('Email: ' . $notifiable->email)
-                    ->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . $notifiable->email));
+            ->greeting('Hello ' . $this->user->name . '!')
+            ->line('You are recieving this email because an account has been created for you on Pterodactyl Panel.')
+            ->line('Username: ' . $this->user->username)
+            ->line('Email: ' . $notifiable->email)
+            ->action('Setup Your Account', url('/auth/password/reset/' . $this->user->token . '?email=' . $notifiable->email));
     }
 }

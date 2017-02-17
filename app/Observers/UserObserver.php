@@ -49,6 +49,12 @@ class UserObserver
     public function created(User $user)
     {
         event(new Events\User\Created($user));
+
+        $user->notify((new AccountCreated([
+            'name' => $user->name_first,
+            'username' => $user->username,
+            'token' => DB::table('password_resets')->where('email', $user->email)->orderBy('created_at', 'desc')->first(),
+        ])));
     }
 
     /**

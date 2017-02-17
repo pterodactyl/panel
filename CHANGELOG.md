@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.
 * Reduced the number of database queries being executed when viewing a specific server. This is done by caching the query for up to 60 minutes in memcached.
+* User creation emails include more information and are sent by the event listener rather than the repository.
 
 ## v0.6.0-pre.2 (Courageous Carniadactylus)
 ### Fixed
