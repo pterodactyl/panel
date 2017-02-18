@@ -116,63 +116,81 @@
                                     <i class="fa fa-terminal"></i> <span>@lang('navigation.server.console')</span>
                                 </a>
                             </li>
-                            <li class="treeview
-                                @if(in_array(Route::currentRouteName(), ['server.files.index', 'server.files.edit', 'server.files.add']))
-                                    active
-                                @endif
-                            ">
-                                <a href="#">
-                                    <i class="fa fa-files-o"></i>
-                                    <span>@lang('navigation.server.file_management')</span>
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ (Route::currentRouteName() !== 'server.files.index' && Route::currentRouteName() !== 'server.files.edit') ?: 'active' }}"><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
-                                </ul>
-                            </li>
-                            <li
-                                @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
-                                    class="active"
-                                @endif
-                            >
-                                <a href="{{ route('server.subusers', $server->uuidShort)}}">
-                                    <i class="fa fa-users"></i> <span>Subusers</span>
-                                </a>
-                            </li>
-                            <li
-                                @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
-                                    class="active"
-                                @endif
-                            >
-                                <a href="{{ route('server.tasks', $server->uuidShort)}}">
-                                    <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
-                                    <span class="pull-right-container">
-                                        <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Task::select('id')->where('server', $server->id)->where('active', 1)->count() }}</span>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="treeview
-                                @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
-                                    active
-                                @endif
-                            ">
-                                <a href="#">
-                                    <i class="fa fa-gears"></i>
-                                    <span>@lang('navigation.server.configuration')</span>
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
-                                </ul>
-                            </li>
+                            @can('list-files', $server)
+                                <li class="treeview
+                                    @if(in_array(Route::currentRouteName(), ['server.files.index', 'server.files.edit', 'server.files.add']))
+                                        active
+                                    @endif
+                                ">
+                                    <a href="#">
+                                        <i class="fa fa-files-o"></i>
+                                        <span>@lang('navigation.server.file_management')</span>
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li class="{{ (Route::currentRouteName() !== 'server.files.index' && Route::currentRouteName() !== 'server.files.edit') ?: 'active' }}"><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
+                                        @can('create-files', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcan
+                            @can('list-subusers', $server)
+                                <li
+                                    @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
+                                        class="active"
+                                    @endif
+                                >
+                                    <a href="{{ route('server.subusers', $server->uuidShort)}}">
+                                        <i class="fa fa-users"></i> <span>Subusers</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('list-tasks', $server)
+                                <li
+                                    @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
+                                        class="active"
+                                    @endif
+                                >
+                                    <a href="{{ route('server.tasks', $server->uuidShort)}}">
+                                        <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
+                                        <span class="pull-right-container">
+                                            <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Task::select('id')->where('server', $server->id)->where('active', 1)->count() }}</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
+                                <li class="treeview
+                                    @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
+                                        active
+                                    @endif
+                                ">
+                                    <a href="#">
+                                        <i class="fa fa-gears"></i>
+                                        <span>@lang('navigation.server.configuration')</span>
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        @can('view-allocation', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
+                                        @endcan
+                                        @can('view-sftp', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
+                                        @endcan
+                                        @can('view-startup', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
+                                        @endcan
+                                        @can('view-databases', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endif
                         @endif
                     </ul>
                 </section>
