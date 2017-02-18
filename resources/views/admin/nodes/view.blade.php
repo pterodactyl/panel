@@ -356,16 +356,20 @@
                             </thead>
                             <tbody>
                                 @foreach($node->allocations as $allocation)
-                                        <tr>
+                                    <tr>
                                         <td class="col-sm-3 align-middle">{{ $allocation->ip }}</td>
                                         <td class="col-sm-3 align-middle">
                                             <input class="form-control input-sm" type="text" value="{{ $allocation->ip_alias }}" data-action="set-alias" data-id="{{ $allocation->id }}" placeholder="none" />
                                             <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
                                         </td>
                                         <td class="col-sm-2 align-middle">{{ $allocation->port }}</td>
-                                        <td class="col-sm-3 align-middle">@if(!is_null($allocation->assigned_to))<a href="{{ route('admin.servers.view', $allocation->assigned_to) }}">{{ $allocation->assigned_to_name }}</a>@endif</td>
+                                        <td class="col-sm-3 align-middle">
+                                            @if(! is_null($allocation->server))
+                                                <a href="{{ route('admin.servers.view', $allocation->server_id) }}">{{ $allocation->server->name }}</a>
+                                            @endif
+                                        </td>
                                         <td class="col-sm-1 align-middle">
-                                            @if(is_null($allocation->assigned_to))
+                                            @if(is_null($allocation->server_id))
                                                 <a href="#" data-action="deallocate" data-id="{{ $allocation->id }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                                             @else
                                                 <span class="badge label-default"><i class="fa fa-trash-o"></i></span>

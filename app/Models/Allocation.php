@@ -74,4 +74,14 @@ class Allocation extends Model
      {
          return ! is_null($this->ip_alias);
      }
+
+     /**
+      * Gets information for the server associated with this allocation.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function server()
+     {
+         return $this->belongsTo(Server::class);
+     }
 }

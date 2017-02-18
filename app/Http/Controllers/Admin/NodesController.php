@@ -108,7 +108,7 @@ class NodesController extends Controller
             'servers.user', 'servers.service',
             'servers.allocations', 'location'
         )->findOrFail($id);
-        $node->setRelation('allocations', $node->allocations()->paginate(40));
+        $node->setRelation('allocations', $node->allocations()->with('server')->paginate(40));
 
         return view('admin.nodes.view', [
             'node' => $node,
@@ -151,7 +151,7 @@ class NodesController extends Controller
 
     public function deallocateSingle(Request $request, $node, $allocation)
     {
-        $query = Models\Allocation::where('node', $node)->whereNull('server_id')->where('id', $allocation)->delete();
+        $query = Models\Allocation::where('node_id', $node)->whereNull('server_id')->where('id', $allocation)->delete();
         if ((int) $query === 0) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.',

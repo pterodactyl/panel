@@ -9,11 +9,15 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.2]` — Fixes inability to edit a server due to owner_id issues.
 * `[pre.2]` — Fixes bug when trying to add new subusers.
 * Emails sending with 'Pterodactyl Panel' as the from name. Now configurable by using `php artisan pterodactyl:mail` to update.
+* `[pre.2]` — Fixes inability to delete accounts due to SQL changes.
+* `[pre.2]` — Fixes bug with checking power-permissions that showed the wrong buttons. Also adds check back to sidebar to only show options a user can use.
+* `[pre.2]` — Fixes allocation listing on node allocations tab as well as bug preventing deletion of port.
 
 ### Changed
 * `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.
 * Reduced the number of database queries being executed when viewing a specific server. This is done by caching the query for up to 60 minutes in memcached.
 * User creation emails include more information and are sent by the event listener rather than the repository.
+* Account password reset emails now auto-fill the email when clicking the link.
 
 ### Added
 * Notifications when a user is added or removed as a subuser for a server.
