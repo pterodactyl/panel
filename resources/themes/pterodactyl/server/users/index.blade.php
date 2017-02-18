@@ -96,4 +96,51 @@
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
+    <script>
+    $(document).ready(function () {
+        $('[data-action="delete"]').click(function (event) {
+            event.preventDefault();
+            var self = $(this);
+            swal({
+                type: 'warning',
+                title: 'Delete Subuser',
+                text: 'This will immediately remove this user from this server and revoke all permissions.',
+                showCancelButton: true,
+                showConfirmButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'DELETE',
+                    url: Router.route('server.subusers.delete', {
+                        server: Pterodactyl.server.uuidShort,
+                        id: self.data('id'),
+                    }),
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+                    }
+                }).done(function () {
+                    self.parent().parent().slideUp();
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: 'Subuser was successfully deleted.'
+                    });
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    var error = 'An error occured while trying to process this request.';
+                    if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                        error = jqXHR.responseJSON.error;
+                    }
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        text: error
+                    });
+                });
+            });
+        });
+    });
+    </script>
+
 @endsection

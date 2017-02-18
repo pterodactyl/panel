@@ -25,9 +25,12 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Subuser extends Model
 {
+    use Notifiable;
+
     /**
      * The table associated with the model.
      *

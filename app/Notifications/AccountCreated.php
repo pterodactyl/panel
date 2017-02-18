@@ -47,7 +47,7 @@ class AccountCreated extends Notification implements ShouldQueue
      */
     public function __construct(array $user)
     {
-        $this->user = $user;
+        $this->user = (object) $user;
     }
 
     /**

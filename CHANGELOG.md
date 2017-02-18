@@ -8,11 +8,15 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
 * `[pre.2]` — Fixes inability to edit a server due to owner_id issues.
 * `[pre.2]` — Fixes bug when trying to add new subusers.
+* Emails sending with 'Pterodactyl Panel' as the from name. Now configurable by using `php artisan pterodactyl:mail` to update.
 
 ### Changed
 * `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.
 * Reduced the number of database queries being executed when viewing a specific server. This is done by caching the query for up to 60 minutes in memcached.
 * User creation emails include more information and are sent by the event listener rather than the repository.
+
+### Added
+* Notifications when a user is added or removed as a subuser for a server.
 
 ## v0.6.0-pre.2 (Courageous Carniadactylus)
 ### Fixed

@@ -19,4 +19,4 @@ if (! empty($outroLines)) {
 }
 
 echo 'Regards,', "\n";
-echo Settings::get('company'), "\n";
+echo Settings::get('company', 'Pterodactyl Panel'), "\n";

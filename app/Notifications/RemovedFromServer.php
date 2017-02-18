@@ -22,61 +22,54 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Observers;
+namespace Pterodactyl\Notifications;
 
-use Pterodactyl\Events;
-use Pterodactyl\Models\User;
-use Pterodactyl\Notifications\AccountCreated;
+use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class UserObserver
+class RemovedFromServer extends Notification implements ShouldQueue
 {
+    use Queueable;
+
+    public $server;
+
     /**
-     * Listen to the User creating event.
+     * Create a new notification instance.
      *
-     * @param  User $user The eloquent User model.
+     * @param  array $server
      * @return void
      */
-    public function creating(User $user)
+    public function __construct(array $server)
     {
-        event(new Events\User\Creating($user));
+        $this->server = (object) $server;
     }
 
     /**
-     * Listen to the User created event.
+     * Get the notification's delivery channels.
      *
-     * @param  User $user The eloquent User model.
-     * @return void
+     * @param  mixed  $notifiable
+     * @return array
      */
-    public function created(User $user)
+    public function via($notifiable)
     {
-        event(new Events\User\Created($user));
-
-        $user->notify((new AccountCreated([
-            'name' => $user->name_first,
-            'username' => $user->username,
-            'token' => DB::table('password_resets')->where('email', $user->email)->orderBy('created_at', 'desc')->first(),
-        ])));
+        return ['mail'];
     }
 
     /**
-     * Listen to the User deleting event.
+     * Get the mail representation of the notification.
      *
-     * @param  User $user The eloquent User model.
-     * @return void
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function deleting(User $user)
+    public function toMail($notifiable)
     {
-        event(new Events\User\Deleting($user));
-    }
-
-    /**
-     * Listen to the User deleted event.
-     *
-     * @param  User $user The eloquent User model.
-     * @return void
-     */
-    public function deleted(User $user)
-    {
-        event(new Events\User\Deleted($user));
+        return (new MailMessage)
+            ->error()
+            ->greeting('Hello ' . $this->server->user . '.')
+            ->line('You have been removed as a subuser for the following server.')
+            ->line('Server Name: ' . $this->server->name)
+            ->action('Visit Panel', route('index'));
     }
 }

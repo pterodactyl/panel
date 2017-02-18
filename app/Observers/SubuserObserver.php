@@ -25,58 +25,64 @@
 namespace Pterodactyl\Observers;
 
 use Pterodactyl\Events;
-use Pterodactyl\Models\User;
-use Pterodactyl\Notifications\AccountCreated;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Notifications\AddedToServer;
+use Pterodactyl\Notifications\RemovedFromServer;
 
-class UserObserver
+class SubuserObserver
 {
     /**
-     * Listen to the User creating event.
+     * Listen to the Subuser creating event.
      *
-     * @param  User $user The eloquent User model.
+     * @param  Subuser $subuser The eloquent Subuser model.
      * @return void
      */
-    public function creating(User $user)
+    public function creating(Subuser $subuser)
     {
-        event(new Events\User\Creating($user));
+        event(new Events\Subuser\Creating($subuser));
     }
 
     /**
-     * Listen to the User created event.
+     * Listen to the Subuser created event.
      *
-     * @param  User $user The eloquent User model.
+     * @param  Subuser $subuser The eloquent Subuser model.
      * @return void
      */
-    public function created(User $user)
+    public function created(Subuser $subuser)
     {
-        event(new Events\User\Created($user));
+        event(new Events\Subuser\Created($subuser));
 
-        $user->notify((new AccountCreated([
-            'name' => $user->name_first,
-            'username' => $user->username,
-            'token' => DB::table('password_resets')->where('email', $user->email)->orderBy('created_at', 'desc')->first(),
+        $subuser->user->notify((new AddedToServer([
+            'user' => $subuser->user->name_first,
+            'name' => $subuser->server->name,
+            'uuidShort' => $subuser->server->uuidShort,
         ])));
     }
 
     /**
-     * Listen to the User deleting event.
+     * Listen to the Subuser deleting event.
      *
-     * @param  User $user The eloquent User model.
+     * @param  Subuser $subuser The eloquent Subuser model.
      * @return void
      */
-    public function deleting(User $user)
+    public function deleting(Subuser $subuser)
     {
-        event(new Events\User\Deleting($user));
+        event(new Events\Subuser\Deleting($subuser));
     }
 
     /**
-     * Listen to the User deleted event.
+     * Listen to the Subuser deleted event.
      *
-     * @param  User $user The eloquent User model.
+     * @param  Subuser $subuser The eloquent Subuser model.
      * @return void
      */
-    public function deleted(User $user)
+    public function deleted(Subuser $subuser)
     {
-        event(new Events\User\Deleted($user));
+        event(new Events\Subuser\Deleted($subuser));
+
+        $subuser->user->notify((new RemovedFromServer([
+            'user' => $subuser->user->name_first,
+            'name' => $subuser->server->name,
+        ])));
     }
 }

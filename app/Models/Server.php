@@ -86,25 +86,6 @@ class Server extends Model
      ];
 
     /**
-     * @var array
-     */
-    protected static $serverUUIDInstance = [];
-
-    /**
-     * @var mixed
-     */
-    protected static $user;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        self::$user = Auth::user();
-    }
-
-    /**
      * Returns a single server specified by UUID.
      * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
      * YOU WILL OVERWRITE THE SECRET KEY AND BREAK THINGS.

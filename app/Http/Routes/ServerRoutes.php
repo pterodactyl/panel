@@ -129,6 +129,7 @@ class ServerRoutes
             ]);
 
             $router->delete('users/delete/{id}', [
+                'as' => 'server.subusers.delete',
                 'uses' => 'Server\SubuserController@deleteSubuser',
             ]);
 
