@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.2]` — Fixes inability to delete accounts due to SQL changes.
 * `[pre.2]` — Fixes bug with checking power-permissions that showed the wrong buttons. Also adds check back to sidebar to only show options a user can use.
 * `[pre.2]` — Fixes allocation listing on node allocations tab as well as bug preventing deletion of port.
+* `[pre.2]` — Fixes bug in services that prevented saving updated settings or creating new services.
 
 ### Changed
 * `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.

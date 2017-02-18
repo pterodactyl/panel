@@ -53,11 +53,13 @@ class Service
             throw new DisplayValidationException($validator->errors());
         }
 
-        $data['author'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
-
         DB::beginTransaction();
         try {
-            $service = Models\Service::create($data);
+            $service = new Models\Service;
+            $service->author = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
+            $service->fill($data);
+            $service->save();
+
             Storage::put('services/' . $service->file . '/main.json', '{}');
             Storage::copy('services/.templates/index.js', 'services/' . $service->file . '/index.js');
             DB::commit();

@@ -36,11 +36,13 @@ class Service extends Model
     protected $table = 'services';
 
     /**
-     * Fields that are not mass assignable.
+     * Fields that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'name', 'description', 'file', 'executable', 'startup',
+    ];
 
     /**
      * Gets all service options associated with this service.
