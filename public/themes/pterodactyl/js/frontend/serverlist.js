@@ -28,6 +28,7 @@ var Status = {
     $('.dynamic-update').each(function (index, data) {
         var element = $(this);
         var serverShortUUID = $(this).data('server');
+
         $.ajax({
             type: 'GET',
             url: Router.route('server.ajax.status', { server: serverShortUUID }),
@@ -53,8 +54,14 @@ var Status = {
                 case 3:
                     element.find('[data-action="status"]').html('<span class="label label-info">Stopping</span>');
                     break;
+                case 20:
+                    element.find('[data-action="status"]').html('<span class="label label-warning">Installing</span>');
+                    break;
+                case 30:
+                    element.find('[data-action="status"]').html('<span class="label label-warning">Suspended</span>');
+                    break;
             }
-            if (data.status !== 0) {
+            if (data.status > 0 && data.status < 4) {
                 var cpuMax = element.find('[data-action="cpu"]').data('cpumax');
                 var currentCpu = data.proc.cpu.total;
                 if (cpuMax !== 0) {

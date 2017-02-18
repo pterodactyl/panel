@@ -73,6 +73,14 @@ class AjaxController extends Controller
             return response()->json([], 404);
         }
 
+        if (! $server->installed) {
+            return response()->json(['status' => 20]);
+        }
+
+        if ($server->suspended) {
+            return response()->json(['status' => 30]);
+        }
+
         try {
             $res = $server->guzzleClient()->request('GET', '/server');
             if ($res->getStatusCode() === 200) {
