@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Observers;
 
+use DB;
 use Pterodactyl\Events;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
@@ -51,10 +52,11 @@ class UserObserver
     {
         event(new Events\User\Created($user));
 
+        $token = DB::table('password_resets')->where('email', $user->email)->orderBy('created_at', 'desc')->first();
         $user->notify((new AccountCreated([
             'name' => $user->name_first,
             'username' => $user->username,
-            'token' => DB::table('password_resets')->where('email', $user->email)->orderBy('created_at', 'desc')->first(),
+            'token' => (! is_null($token)) ? $token->token : null,
         ])));
     }
 

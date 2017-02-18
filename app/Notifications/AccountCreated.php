@@ -38,7 +38,7 @@ class AccountCreated extends Notification implements ShouldQueue
      *
      * @var string
      */
-    public $token;
+    public $user;
 
     /**
      * Create a new notification instance.
