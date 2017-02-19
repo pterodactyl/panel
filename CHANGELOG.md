@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[pre.3]` — Fixes bug in cache handler that doesn't cache against the user making the request. Would have allowed for users to access servers not belonging to themselves in production.
 * `[pre.3]` — Fixes misnamed MySQL column that was causing the inability to delete certain port ranges from the database.
+* `[pre.3]` — Fixes bug preventing rebuilding server containers through the Admin CP.
 
 ### Added
 * New cache policy for ServerPolicy to avoid making 15+ queries per page load when confirming if a user has permission to perform an action.

@@ -251,7 +251,7 @@ class ServersController extends Controller
         try {
             $res = $server->node->guzzleClient([
                 'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $node->daemonSecret,
+                'X-Access-Token' => $server->node->daemonSecret,
             ])->request('POST', '/server/rebuild');
             Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
