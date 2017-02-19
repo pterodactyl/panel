@@ -31,7 +31,6 @@ use Pterodactyl\Models\Server;
 
 class ServerPolicy
 {
-
     /**
      * Create a new policy instance.
      *
@@ -62,7 +61,7 @@ class ServerPolicy
             })->values();
         });
 
-        return ($permissions->search($permission, true) !== false);
+        return $permissions->search($permission, true) !== false;
     }
 
     /**

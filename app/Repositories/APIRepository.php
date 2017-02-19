@@ -225,7 +225,7 @@ class APIRepository
 
         try {
             $model = Models\APIKey::with('permissions')->where('public', $key)->where('user_id', $this->user->id)->firstOrFail();
-            foreach($model->permissions as &$permission) {
+            foreach ($model->permissions as &$permission) {
                 $permission->delete();
             }
 

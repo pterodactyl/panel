@@ -791,8 +791,8 @@ class ServerRepository
             Models\ServerVariable::where('server_id', $server->id)->delete();
 
             // Remove SubUsers
-            foreach(Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
-                foreach($subuser->permissions as &$permission) {
+            foreach (Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
+                foreach ($subuser->permissions as &$permission) {
                     $permission->delete();
                 }
                 $subuser->delete();
