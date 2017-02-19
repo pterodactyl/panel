@@ -29,11 +29,12 @@ use Cache;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Server extends Model
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable, SearchableTrait, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -83,6 +84,22 @@ class Server extends Model
          'option_id' => 'integer',
          'pack_id' => 'integer',
          'installed' => 'integer',
+     ];
+
+     protected $searchable = [
+         'columns' => [
+             'servers.name' => 10,
+             'servers.username' => 10,
+             'servers.uuidShort' => 9,
+             'servers.uuid' => 8,
+             'users.email' => 6,
+             'users.username' => 6,
+             'nodes.name' => 2,
+         ],
+         'joins' => [
+            'users' => ['users.id', 'servers.owner_id'],
+            'nodes' => ['nodes.id', 'servers.node_id'],
+         ],
      ];
 
     /**

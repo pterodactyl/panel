@@ -46,8 +46,16 @@ class ServersController extends Controller
 
     public function getIndex(Request $request)
     {
+        $servers = Models\Server::withTrashed()->with(
+            'node', 'user', 'allocation'
+        );
+
+        if (! is_null($request->input('query'))) {
+            $servers->search($request->input('query'));
+        }
+
         return view('admin.servers.index', [
-            'servers' => Models\Server::withTrashed()->with('node', 'user')->paginate(25),
+            'servers' => $servers->paginate(25),
         ]);
     }
 
@@ -109,13 +117,25 @@ class ServersController extends Controller
      */
     public function postNewServerGetNodes(Request $request)
     {
-        if (! $request->input('location')) {
-            return response()->json([
-                'error' => 'Missing location in request.',
-            ], 500);
-        }
+        $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
+        return $nodes->map(function ($item) {
+            $filtered = $item->allocations->map(function($map) {
+                return collect($map)->only(['ip', 'port']);
+            });
 
-        return response()->json(Models\Node::select('id', 'name', 'public')->where('location_id', $request->input('location'))->get());
+            $item->ports = $filtered->unique('ip')->map(function ($map) use ($item) {
+                return [
+                    'ip' => $map['ip'],
+                    'ports' => $item->allocations->where('ip', $map['ip'])->pluck('port')->all(),
+                ];
+            })->values();
+
+            return [
+                'id' => $item->id,
+                'text' => $item->name,
+                'allocations' => $item->ports,
+            ];
+        })->values();
     }
 
     /**
@@ -126,24 +146,7 @@ class ServersController extends Controller
      */
     public function postNewServerGetIps(Request $request)
     {
-        if (! $request->input('node')) {
-            return response()->json([
-                'error' => 'Missing node in request.',
-            ], 500);
-        }
-
-        $ips = Models\Allocation::where('node_id', $request->input('node'))->whereNull('server_id')->get();
-        $listing = [];
-
-        foreach ($ips as &$ip) {
-            if (array_key_exists($ip->ip, $listing)) {
-                $listing[$ip->ip] = array_merge($listing[$ip->ip], [$ip->port]);
-            } else {
-                $listing[$ip->ip] = [$ip->port];
-            }
-        }
-
-        return response()->json($listing);
+        return Models\Allocation::select('id', 'ip')->where('node_id', $request->input('node'))->whereNull('server_id')->get()->unique('ip')->values()->all();
     }
 
     /**

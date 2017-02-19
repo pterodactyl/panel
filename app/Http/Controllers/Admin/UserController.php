@@ -124,6 +124,12 @@ class UserController extends Controller
 
     public function getJson(Request $request)
     {
-        return User::select('email')->get()->pluck('email');
+        return User::select('id', 'email', 'username', 'name_first', 'name_last')
+            ->search($request->input('q'))
+            ->get()->transform(function ($item) {
+                $item->md5 = md5(strtolower($item->email));
+
+                return $item;
+            });
     }
 }

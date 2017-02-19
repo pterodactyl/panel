@@ -132,3 +132,20 @@ td.has-progress {
 .no-margin {
     margin: 0 !important;
 }
+
+li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .username > a {
+    color: #fff;
+}
+
+li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .description {
+    color: #eee;
+}
+
+.img-bordered-xs {
+    border: 1px solid #d2d6de;
+    padding: 1px;
+}
+
+span[aria-labelledby="select2-pOwner-container"] {
+    padding-left: 2px !important;
+}

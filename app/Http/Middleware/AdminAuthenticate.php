@@ -69,9 +69,6 @@ class AdminAuthenticate
             return abort(403);
         }
 
-        // @TODO: eventually update admin themes
-        Theme::set('default');
-
         return $next($request);
     }
 }
