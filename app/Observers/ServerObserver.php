@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Observers;
 
+use Auth;
 use Cache;
 use Carbon;
 use Pterodactyl\Events;
@@ -141,8 +142,8 @@ class ServerObserver
     public function updated(Server $server)
     {
         // Clear Caches
-        Cache::forget('Server.byUuid.' . $server->uuid);
-        Cache::forget('Server.byUuid.' . $server->uuidShort);
+        Cache::forget('Server.byUuid.' . $server->uuid . Auth::user()->uuid);
+        Cache::forget('Server.byUuid.' . $server->uuidShort . Auth::user()->uuid);
 
         event(new Events\Server\Updated($server));
     }

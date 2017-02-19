@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.4 (Courageous Carniadactylus)
+### Fixed
+* `[pre.3]` — Fixes bug in cache handler that doesn't cache against the user making the request. Would have allowed for users to access servers not belonging to themselves in production.
+
 ## v0.6.0-pre.3 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
