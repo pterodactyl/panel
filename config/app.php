@@ -4,7 +4,7 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'version' => env('APP_VERSION', '0.6.0-pre.4'),
+    'version' => env('APP_VERSION', 'canary'),
 
     'phrase_in_context' => env('PHRASE_IN_CONTEXT', false),
 
