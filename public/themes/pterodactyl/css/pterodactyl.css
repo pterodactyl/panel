@@ -141,11 +141,60 @@ li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .
     color: #eee;
 }
 
+.select2-search--inline .select2-search__field:focus {
+    outline: none;
+    border: 0 !important;
+}
+
 .img-bordered-xs {
     border: 1px solid #d2d6de;
     padding: 1px;
 }
 
-span[aria-labelledby="select2-pOwner-container"] {
+span[aria-labelledby="select2-pUserId-container"] {
     padding-left: 2px !important;
+}
+
+.callout-slim a {
+    color: #555 !important;
+}
+
+.callout.callout-info.callout-slim {
+    border: 1px solid #0097bc !important;
+    border-left: 5px solid #0097bc !important;
+    border-right: 5px solid #0097bc !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-danger.callout-slim {
+    border: 1px solid #c23321 !important;
+    border-left: 5px solid #c23321 !important;
+    border-right: 5px solid #c23321 !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-warning.callout-slim {
+    border: 1px solid #c87f0a !important;
+    border-left: 5px solid #c87f0a !important;
+    border-right: 5px solid #c87f0a !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-success.callout-slim {
+    border: 1px solid #00733e !important;
+    border-left: 5px solid #00733e !important;
+    border-right: 5px solid #00733e !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-default.callout-slim {
+    border: 1px solid #eee !important;
+    border-left: 5px solid #eee !important;
+    border-right: 5px solid #eee !important;
+    color: #777 !important;
+    background: transparent !important;
 }

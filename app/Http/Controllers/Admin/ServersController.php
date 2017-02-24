@@ -120,13 +120,13 @@ class ServersController extends Controller
         $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
         return $nodes->map(function ($item) {
             $filtered = $item->allocations->map(function($map) {
-                return collect($map)->only(['ip', 'port']);
+                return collect($map)->only(['id', 'ip', 'port']);
             });
 
-            $item->ports = $filtered->unique('ip')->map(function ($map) use ($item) {
+            $item->ports = $filtered->map(function ($map) use ($item) {
                 return [
-                    'ip' => $map['ip'],
-                    'ports' => $item->allocations->where('ip', $map['ip'])->pluck('port')->all(),
+                    'id' => $map['id'],
+                    'text' => $map['ip'] . ':' . $map['port'],
                 ];
             })->values();
 

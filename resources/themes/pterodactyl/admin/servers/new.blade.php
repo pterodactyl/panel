@@ -36,7 +36,7 @@
 <form action="{{ route('admin.servers.new') }}" method="POST">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-primary">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Core Details</h3>
                 </div>
@@ -62,36 +62,29 @@
                     <h3 class="box-title">Allocation Management</h3>
                 </div>
                 <div class="box-body row">
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-4">
                         <label for="pLocationId">Location</label>
                         <select name="location_id" id="pLocationId" class="form-control">
-                            <option disabled selected>Select a Location</option>
                             @foreach($locations as $location)
                                 <option value="{{ $location->id }}">{{ $location->long }} ({{ $location->short }})</option>
                             @endforeach
                         </select>
                         <p class="small text-muted no-margin">The location in which this server will be deployed.</p>
                     </div>
-                    <div class="form-group col-sm-6">
+                    <div class="form-group col-sm-4">
                         <label for="pNodeId">Node</label>
-                        <select name="node_id" id="pNodeId" class="form-control">
-                            <option disabled selected>Select a Node</option>
-                        </select>
+                        <select name="node_id" id="pNodeId" class="form-control"></select>
                         <p class="small text-muted no-margin">The node which this server will be deployed to.</p>
                     </div>
-                    <div class="form-group col-sm-6">
-                        <label for="pIp">IP Address</label>
-                        <select name="ip" id="pIp" class="form-control">
-                            <option disabled selected>Select an IP</option>
-                        </select>
-                        <p class="small text-muted no-margin">The IP address that this server will be allocated to.</p>
+                    <div class="form-group col-sm-4">
+                        <label for="pAllocation">Default Allocation</label>
+                        <select name="allocation_id" id="pAllocation" class="form-control"></select>
+                        <p class="small text-muted no-margin">The main allocation that will be assigned to this server.</p>
                     </div>
-                    <div class="form-group col-sm-6">
-                        <label for="pPort">Port</label>
-                        <select name="port" id="pPort" class="form-control">
-                            <option disabled selected>Select a Port</option>
-                        </select>
-                        <p class="small text-muted no-margin">The port that this server will be allocated to.</p>
+                    <div class="form-group col-sm-12">
+                        <label for="pAllocationAdditional">Additional Allocation(s)</label>
+                        <select name="allocation_additional" id="pAllocationAdditional" class="form-control" multiple></select>
+                        <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>
                     </div>
                 </div>
                 <div class="box-footer">
@@ -103,6 +96,73 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Resource Management</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-sm-4">
+                        <label for="pMemory">Memory</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="memory" id="pMemory" />
+                            <span class="input-group-addon">MB</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="pSwap">Swap</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="swap" id="pSwap" />
+                            <span class="input-group-addon">MB</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="pOOMDisabled">Out-of-Memory Killer</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <input type="checkbox" id="pOOMDisabled" name="oom_disabled"/>
+                            </span>
+                            <input type="text" class="form-control" readonly style="background:transparent !important;" value="Disable OOM Killer" />
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer no-border" style="padding: 0 10px 10px;">
+                    <div class="callout callout-info callout-slim no-margin">
+                        <p class="small no-margin">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.<p>
+                    </div>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-sm-4">
+                        <label for="pDisk">Disk Space</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="disk" id="pDisk" />
+                            <span class="input-group-addon">GB</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="pCPU">CPU Limit</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="cpu" id="pCPU" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="pIO">Block IO Weight</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="500" name="io" id="pIO" />
+                            <span class="input-group-addon">I/O</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer no-border" style="padding: 0 10px 10px;">
+                    <div class="callout callout-info callout-slim">
+                        <p class="small no-margin">If you do not want to limit CPU usage set the value to <code>0</code>. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/engine/reference/run/#/block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.<p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
 @endsection
 
@@ -110,10 +170,18 @@
     @parent
     <script>
     $(document).ready(function() {
-        $('#pLocationId').select2();
-        $('#pNodeId').select2();
-        $('#pIp').select2();
-        $('#pPort').select2();
+        $('#pLocationId').select2({
+            placeholder: 'Select a Location',
+        }).change();
+        $('#pNodeId').select2({
+            placeholder: 'Select a Node',
+        });
+        $('#pAllocation').select2({
+            placeholder: 'Select a Default Allocation',
+        });
+        $('#pAllocationAdditional').select2({
+            placeholder: 'Select Additional Allocations',
+        });
 
         $('#pUserId').select2({
             ajax: {
@@ -165,16 +233,22 @@
         $('#allocationLoader').show();
     }
 
+    var lastActiveBox = null;
+    $(document).on('click', function (event) {
+        if (lastActiveBox !== null) {
+            lastActiveBox.removeClass('box-primary');
+        }
+
+        lastActiveBox = $(event.target).closest('.box');
+        lastActiveBox.addClass('box-primary');
+    });
+
     var currentLocation = null;
     var curentNode = null;
-    var currentIP = null;
-
-    var NodeDataIdentifier = null;
     var NodeData = [];
-    var AllocationsForNode = null;
 
     $('#pLocationId').on('change', function (event) {
-        showLoader()
+        showLoader();
         currentLocation = $(this).val();
         currentNode = null;
 
@@ -185,8 +259,7 @@
             data: { location: currentLocation },
         }).done(function (data) {
             NodeData = data;
-            console.log(data);
-            $('#pNodeId').select2({data: data});
+            $('#pNodeId').select2({data: data}).change();
         }).fail(function (jqXHR) {
             cosole.error(jqXHR);
             currentLocation = null;
@@ -197,31 +270,13 @@
         currentNode = $(this).val();
         $.each(NodeData, function (i, v) {
             if (v.id == currentNode) {
-                NodeDataIdentifier = i;
-                $('#pIp').select2({
-                    data: $.map(v.allocations, function (item) {
-                        return {
-                            id: item.ip,
-                            text: item.ip,
-                        }
-                    }),
-                })
-            }
-        });
-    });
-
-    $('#pIp').on('change', function (event) {
-        currentIP = $(this).val();
-        $.each(NodeData[NodeDataIdentifier].allocations, function (i, v) {
-            if (v.ip == currentIP) {
-                $('#pPort').val(null);
-                $('#pPort').select2({
-                    data: $.map(v.ports, function (item) {
-                        return {
-                            id: item,
-                            text: item,
-                        }
-                    }),
+                $('#pAllocation').select2({
+                    data: v.allocations,
+                    placeholder: 'Select a Default Allocation',
+                });
+                $('#pAllocationAdditional').select2({
+                    data: v.allocations,
+                    placeholder: 'Select Additional Allocations',
                 })
             }
         });
