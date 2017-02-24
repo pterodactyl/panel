@@ -3,6 +3,17 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.5 (Courageous Carniadactylus)
+### Changed
+* New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
+* New server creation page now makes significantly less AJAX calls and is much quicker to respond.
+
+### Added
+* Ability to assign multiple allocations at once when creating a new server.
+
+### Deprecated
+* Old API calls to `Server::create` will fail due to changed data structure.
+
 ## v0.6.0-pre.4 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.3]` — Fixes bug in cache handler that doesn't cache against the user making the request. Would have allowed for users to access servers not belonging to themselves in production.

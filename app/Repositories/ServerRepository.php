@@ -83,7 +83,7 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner' => 'bail|required',
+            'user_id' => 'required|exists:users,id',
             'name' => 'required|regex:/^([\w .-]{1,200})$/',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
@@ -95,25 +95,20 @@ class ServerRepository
             'location_id' => 'required|numeric|min:1|exists:locations,id',
             'pack_id' => 'sometimes|nullable|numeric|min:0',
             'startup' => 'string',
-            'custom_image_name' => 'required_if:use_custom_image,on',
             'auto_deploy' => 'sometimes|boolean',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
         ]);
 
-        $validator->sometimes('node_id', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
+        $validator->sometimes('node_id', 'required|numeric|min:1|exists:nodes,id', function ($input) {
             return ! ($input->auto_deploy);
         });
 
-        $validator->sometimes('ip', 'required|ip', function ($input) {
-            return ! $input->auto_deploy && ! $input->allocation;
+        $validator->sometimes('allocation_id', 'required|numeric|exists:allocations,id', function ($input) {
+            return ! ($input->auto_deploy);
         });
 
-        $validator->sometimes('port', 'required|numeric|min:1|max:65535', function ($input) {
-            return ! $input->auto_deploy && ! $input->allocation;
-        });
-
-        $validator->sometimes('allocation_id', 'numeric|exists:allocations,id', function ($input) {
-            return ! ($input->auto_deploy || ($input->port && $input->ip));
+        $validator->sometimes('allocation_additional.*', 'sometimes|required|numeric|exists:allocations,id', function ($input) {
+            return ! ($input->auto_deploy);
         });
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -122,16 +117,13 @@ class ServerRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $user = Models\User::select('id', 'email')->where((is_int($data['owner'])) ? 'id' : 'email', $data['owner'])->first();
-        if (! $user) {
-            throw new DisplayException('The user id or email passed to the function was not found on the system.');
-        }
+        $user = Models\User::findOrFail($data['user_id']);
 
         $autoDeployed = false;
-        if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, '1'])) {
+        if (isset($data['auto_deploy']) && $data['auto_deploy']) {
             // This is an auto-deployment situation
             // Ignore any other passed node data
-            unset($data['node_id'], $data['ip'], $data['port'], $data['allocation_id']);
+            unset($data['node_id'], $data['allocation_id']);
 
             $autoDeployed = true;
             $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location_id']);
@@ -143,17 +135,12 @@ class ServerRepository
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
         if (! $autoDeployed) {
-            if (! isset($data['allocation_id'])) {
-                $model = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port']);
-            } else {
-                $model = Models\Allocation::where('id', $data['allocation_id']);
-            }
-            $allocation = $model->where('node_id', $data['node_id'])->whereNull('server_id')->first();
+            $allocation = Models\Allocation::where('id', $data['allocation_id'])->where('node_id', $data['node_id'])->whereNull('server_id')->first();
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
         if (! $allocation) {
-            throw new DisplayException('The selected IP/Port combination or Allocation ID is either already in use, or unavaliable for this node.');
+            throw new DisplayException('The selected Allocation ID is either already in use, or unavaliable for this node.');
         }
 
         // Validate those Service Option Variables
@@ -166,11 +153,9 @@ class ServerRepository
         }
 
         // Validate the Pack
-        if ($data['pack_id'] == 0) {
+        if (! isset($data['pack_id']) || (int) $data['pack_id'] < 1) {
             $data['pack_id'] = null;
-        }
-
-        if (! is_null($data['pack_id'])) {
+        } else {
             $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
@@ -188,7 +173,7 @@ class ServerRepository
 
                 // Is the variable required?
                 if (! isset($data['env_' . $variable->env_variable])) {
-                    if ($variable->required === 1) {
+                    if ($variable->required) {
                         throw new DisplayException('A required service option variable field (env_' . $variable->env_variable . ') was missing from the request.');
                     }
                     $variableList[] = [
@@ -271,7 +256,7 @@ class ServerRepository
                 'pack_id' => $data['pack_id'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
-                'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
+                'image' => (isset($data['custom_container'])) ? $data['custom_container'] : $option->docker_image,
                 'username' => $this->generateSFTPUsername($data['name'], $genShortUuid),
                 'sftp_password' => Crypt::encrypt('not set'),
             ]);
@@ -280,6 +265,19 @@ class ServerRepository
             // Mark Allocation in Use
             $allocation->server_id = $server->id;
             $allocation->save();
+
+            // Add Additional Allocations
+            if (isset($data['allocation_additional']) && is_array($data['allocation_additional'])) {
+                foreach($data['allocation_additional'] as $allocation) {
+                    $model = Models\Allocation::where('id', $allocation)->where('node_id', $data['node_id'])->whereNull('server_id')->first();
+                    if (! $model) {
+                        continue;
+                    }
+
+                    $model->server_id = $server->id;
+                    $model->save();
+                }
+            }
 
             // Add Variables
             $environmentVariables = [
@@ -296,25 +294,26 @@ class ServerRepository
                 ]);
             }
 
+            $server->load('allocation', 'allocations');
             $node->guzzleClient(['X-Access-Token' => $node->daemonSecret])->request('POST', '/servers', [
                 'json' => [
                     'uuid' => (string) $server->uuid,
                     'user' => $server->username,
                     'build' => [
                         'default' => [
-                            'ip' => $allocation->ip,
-                            'port' => (int) $allocation->port,
+                            'ip' => $server->allocation->ip,
+                            'port' => $server->allocation->port,
                         ],
-                        'ports' => [
-                            (string) $allocation->ip => [(int) $allocation->port],
-                        ],
+                        'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
+                            return $item->pluck('port');
+                        })->toArray(),
                         'env' => $environmentVariables,
                         'memory' => (int) $server->memory,
                         'swap' => (int) $server->swap,
                         'io' => (int) $server->io,
                         'cpu' => (int) $server->cpu,
                         'disk' => (int) $server->disk,
-                        'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
+                        'image' => (isset($data['custom_container'])) ? $data['custom_container'] : $option->docker_image,
                     ],
                     'service' => [
                         'type' => $service->file,

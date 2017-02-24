@@ -43,7 +43,7 @@
                 <div class="box-body row">
                     <div class="form-group col-sm-6">
                         <label for="pName">Server Name</label>
-                        <input type="text" class="form-control" id="pName" name="name" placeholder="Server Name">
+                        <input type="text" class="form-control" id="pName" name="name" value="{{ old('name') }}" placeholder="Server Name">
                         <p class="small text-muted no-margin">Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code> (max 200 characters).</p>
                     </div>
                     <div class="form-group col-sm-6">
@@ -66,7 +66,11 @@
                         <label for="pLocationId">Location</label>
                         <select name="location_id" id="pLocationId" class="form-control">
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}">{{ $location->long }} ({{ $location->short }})</option>
+                                <option value="{{ $location->id }}"
+                                    @if($location->id === old('location_id'))
+                                        selected="selected"
+                                    @endif
+                                >{{ $location->long }} ({{ $location->short }})</option>
                             @endforeach
                         </select>
                         <p class="small text-muted no-margin">The location in which this server will be deployed.</p>
@@ -83,13 +87,13 @@
                     </div>
                     <div class="form-group col-sm-12">
                         <label for="pAllocationAdditional">Additional Allocation(s)</label>
-                        <select name="allocation_additional" id="pAllocationAdditional" class="form-control" multiple></select>
+                        <select name="allocation_additional[]" id="pAllocationAdditional" class="form-control" multiple></select>
                         <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>
                     </div>
                 </div>
                 <div class="box-footer">
                     <p class="text-muted small no-margin">
-                        <input type="checkbox" name="auto_deploy" id="pAutoDeploy" />
+                        <input type="checkbox" name="auto_deploy" id="pAutoDeploy" @if(old('auto_deploy'))checked="checked"@endif/>
                         <label for="pAutoDeploy">Check this box if you want the panel to automatically select a node and allocation for this server in the given location.</label>
                     </p>
                 </div>
@@ -106,14 +110,14 @@
                     <div class="form-group col-sm-4">
                         <label for="pMemory">Memory</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="memory" id="pMemory" />
+                            <input type="text" value="{{ old('memory') }}" class="form-control" name="memory" id="pMemory" />
                             <span class="input-group-addon">MB</span>
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="pSwap">Swap</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="swap" id="pSwap" />
+                            <input type="text" value="{{ old('swap') }}" class="form-control" name="swap" id="pSwap" />
                             <span class="input-group-addon">MB</span>
                         </div>
                     </div>
@@ -136,21 +140,21 @@
                     <div class="form-group col-sm-4">
                         <label for="pDisk">Disk Space</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="disk" id="pDisk" />
-                            <span class="input-group-addon">GB</span>
+                            <input type="text" class="form-control" value="{{ old('disk') }}" name="disk" id="pDisk" />
+                            <span class="input-group-addon">MB</span>
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="pCPU">CPU Limit</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" name="cpu" id="pCPU" />
+                            <input type="text" class="form-control" value="{{ old('cpu') }}" name="cpu" id="pCPU" />
                             <span class="input-group-addon">%</span>
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="pIO">Block IO Weight</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="500" name="io" id="pIO" />
+                            <input type="text" class="form-control" value="{{ old('io') }}" value="500" name="io" id="pIO" />
                             <span class="input-group-addon">I/O</span>
                         </div>
                     </div>
@@ -163,123 +167,91 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Service Configuration</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-xs-12">
+                        <label for="pServiceId">Service</label>
+                        <select name="service_id" id="pServiceId" class="form-control">
+                            @foreach($services as $service)
+                                <option value="{{ $service->id }}"
+                                    @if($service->id === old('service_id'))
+                                        selected="selected"
+                                    @endif
+                                >{{ $service->name }}</option>
+                            @endforeach
+                        </select>
+                        <p class="small text-muted no-margin">Select the type of service that this server will be running.</p>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <label for="pOptionId">Option</label>
+                        <select name="option_id" id="pOptionId" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select the type of sub-service that this server will be running.</p>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <label for="pPackId">Service Pack</label>
+                        <select name="pack_id" id="pPackId" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select a service pack to be automatically installed on this server when first created.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Docker Configuration</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-xs-12">
+                        <label for="pDefaultContainer">Default Container</label>
+                        <input type="text" id="pDefaultContainer" readonly class="form-control" />
+                        <p class="small text-muted no-margin">This is the default Docker container that will be used to run this server.</p>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <label for="pCustomContainer">Custom Container</label>
+                        <input type="text" name="custom_container" value="{{ old('custom_container') }}" id="pCustomContainer" class="form-control" />
+                        <p class="small text-muted no-margin">If you would like to use a custom Docker container please enter it here, otherwise leave empty.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Startup Configuration</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-xs-12">
+                        <label for="pStartup">Startup Command</label>
+                        <div class="input-group">
+                            <span class="input-group-addon bg-gray" id="pStartupExecutable"></span>
+                            <input type="text" id="pStartup" value="{{ old('startup') }}" class="form-control" name="startup" />
+                        </div>
+                        <p class="small text-muted no-margin">The following data replacers are avaliable for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server ip, and server port respectively.</p>
+                    </div>
+                </div>
+                <div class="box-header with-border" style="margin-top:-10px;">
+                    <h3 class="box-title">Service Variables</h3>
+                </div>
+                <div class="box-body row" id="appendVariablesTo"></div>
+                <div class="box-footer">
+                    {!! csrf_field() !!}
+                    <input type="submit" class="btn btn-success pull-right" value="Create Server" />
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
 @endsection
 
 @section('footer-scripts')
     @parent
-    <script>
-    $(document).ready(function() {
-        $('#pLocationId').select2({
-            placeholder: 'Select a Location',
-        }).change();
-        $('#pNodeId').select2({
-            placeholder: 'Select a Node',
-        });
-        $('#pAllocation').select2({
-            placeholder: 'Select a Default Allocation',
-        });
-        $('#pAllocationAdditional').select2({
-            placeholder: 'Select Additional Allocations',
-        });
-
-        $('#pUserId').select2({
-            ajax: {
-                url: Router.route('admin.users.json'),
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term, // search term
-                        page: params.page,
-                    };
-                },
-                processResults: function (data, params) {
-                    return { results: data };
-                },
-                cache: true,
-            },
-            escapeMarkup: function (markup) { return markup; },
-            minimumInputLength: 2,
-            templateResult: function (data) {
-                if (data.loading) return data.text;
-
-                return '<div class="user-block"> \
-                    <img class="img-circle img-bordered-xs" src="https://www.gravatar.com/avatar/' + data.md5 + '?s=120" alt="User Image"> \
-                    <span class="username"> \
-                        <a href="#">' + data.name_first + ' ' + data.name_last +'</a> \
-                    </span> \
-                    <span class="description"><strong>' + data.email + '</strong> - ' + data.username + '</span> \
-                </div>';
-            },
-            templateSelection: function (data) {
-                return '<div> \
-                    <span> \
-                        <img class="img-rounded img-bordered-xs" src="https://www.gravatar.com/avatar/' + data.md5 + '?s=120" style="height:28px;margin-top:-4px;" alt="User Image"> \
-                    </span> \
-                    <span style="padding-left:5px;"> \
-                        ' + data.name_first + ' ' + data.name_last + ' (<strong>' + data.email + '</strong>) \
-                    </span> \
-                </div>';
-            }
-        });
-    });
-
-    function hideLoader() {
-        $('#allocationLoader').hide();
-    }
-
-    function showLoader() {
-        $('#allocationLoader').show();
-    }
-
-    var lastActiveBox = null;
-    $(document).on('click', function (event) {
-        if (lastActiveBox !== null) {
-            lastActiveBox.removeClass('box-primary');
-        }
-
-        lastActiveBox = $(event.target).closest('.box');
-        lastActiveBox.addClass('box-primary');
-    });
-
-    var currentLocation = null;
-    var curentNode = null;
-    var NodeData = [];
-
-    $('#pLocationId').on('change', function (event) {
-        showLoader();
-        currentLocation = $(this).val();
-        currentNode = null;
-
-        $.ajax({
-            method: 'POST',
-            url: Router.route('admin.servers.new.get-nodes'),
-            headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
-            data: { location: currentLocation },
-        }).done(function (data) {
-            NodeData = data;
-            $('#pNodeId').select2({data: data}).change();
-        }).fail(function (jqXHR) {
-            cosole.error(jqXHR);
-            currentLocation = null;
-        }).always(hideLoader);
-    });
-
-    $('#pNodeId').on('change', function (event) {
-        currentNode = $(this).val();
-        $.each(NodeData, function (i, v) {
-            if (v.id == currentNode) {
-                $('#pAllocation').select2({
-                    data: v.allocations,
-                    placeholder: 'Select a Default Allocation',
-                });
-                $('#pAllocationAdditional').select2({
-                    data: v.allocations,
-                    placeholder: 'Select Additional Allocations',
-                })
-            }
-        });
-    });
-    </script>
+    {!! Theme::js('vendor/lodash/lodash.js') !!}
+    {!! Theme::js('js/admin/new-server.js') !!}
 @endsection

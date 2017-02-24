@@ -26,6 +26,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Log;
 use Alert;
+use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -61,9 +62,18 @@ class ServersController extends Controller
 
     public function getNew(Request $request)
     {
+        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        Javascript::put([
+            'services' => $services->map(function ($item) {
+                return array_merge($item->toArray(), [
+                    'options' => $item->options->keyBy('id')->toArray(),
+                ]);
+            })->keyBy('id'),
+        ]);
+
         return view('admin.servers.new', [
             'locations' => Models\Location::all(),
-            'services' => Models\Service::all(),
+            'services' => $services,
         ]);
     }
 
@@ -119,7 +129,7 @@ class ServersController extends Controller
     {
         $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
         return $nodes->map(function ($item) {
-            $filtered = $item->allocations->map(function($map) {
+            $filtered = $item->allocations->where('server_id', null)->map(function($map) {
                 return collect($map)->only(['id', 'ip', 'port']);
             });
 
