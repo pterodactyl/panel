@@ -80,6 +80,7 @@ class APIController extends Controller
             return response('', 204);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An error occured while attempting to remove this key.',
             ], 503);

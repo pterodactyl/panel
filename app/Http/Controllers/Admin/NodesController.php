@@ -163,7 +163,7 @@ class NodesController extends Controller
 
     public function deallocateBlock(Request $request, $node)
     {
-        $query = Models\Allocation::where('node', $node)->whereNull('server_id')->where('ip', $request->input('ip'))->delete();
+        $query = Models\Allocation::where('node_id', $node)->whereNull('server_id')->where('ip', $request->input('ip'))->delete();
         if ((int) $query === 0) {
             Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
 
@@ -199,7 +199,7 @@ class NodesController extends Controller
 
     public function getAllocationsJson(Request $request, $id)
     {
-        $allocations = Models\Allocation::select('ip')->where('node', $id)->groupBy('ip')->get();
+        $allocations = Models\Allocation::select('ip')->where('node_id', $id)->groupBy('ip')->get();
 
         return response()->json($allocations);
     }

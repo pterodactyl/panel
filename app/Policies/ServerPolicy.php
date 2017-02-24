@@ -24,6 +24,8 @@
 
 namespace Pterodactyl\Policies;
 
+use Cache;
+use Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 
@@ -53,7 +55,13 @@ class ServerPolicy
             return true;
         }
 
-        return $user->permissions()->server($server)->permission($permission)->exists();
+        $permissions = Cache::remember('ServerPolicy.' . $user->uuid . $server->uuid, Carbon::now()->addSeconds(10), function () use ($user, $server) {
+            return $user->permissions()->server($server)->get()->transform(function ($item) {
+                return $item->permission;
+            })->values();
+        });
+
+        return $permissions->search($permission, true) !== false;
     }
 
     /**

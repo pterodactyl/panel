@@ -34,7 +34,6 @@ use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserRepository
@@ -177,8 +176,8 @@ class UserRepository
         DB::beginTransaction();
 
         try {
-            foreach(Models\Subuser::with('permissions')->where('user_id', $id)->get() as &$subuser) {
-                foreach($subuser->permissions as &$permission) {
+            foreach (Models\Subuser::with('permissions')->where('user_id', $id)->get() as &$subuser) {
+                foreach ($subuser->permissions as &$permission) {
                     $permission->delete();
                 }
 
