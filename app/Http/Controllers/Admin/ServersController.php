@@ -128,8 +128,9 @@ class ServersController extends Controller
     public function postNewServerGetNodes(Request $request)
     {
         $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
+
         return $nodes->map(function ($item) {
-            $filtered = $item->allocations->where('server_id', null)->map(function($map) {
+            $filtered = $item->allocations->where('server_id', null)->map(function ($map) {
                 return collect($map)->only(['id', 'ip', 'port']);
             });
 

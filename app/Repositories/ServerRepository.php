@@ -268,7 +268,7 @@ class ServerRepository
 
             // Add Additional Allocations
             if (isset($data['allocation_additional']) && is_array($data['allocation_additional'])) {
-                foreach($data['allocation_additional'] as $allocation) {
+                foreach ($data['allocation_additional'] as $allocation) {
                     $model = Models\Allocation::where('id', $allocation)->where('node_id', $data['node_id'])->whereNull('server_id')->first();
                     if (! $model) {
                         continue;
