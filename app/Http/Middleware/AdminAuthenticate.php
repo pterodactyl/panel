@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Middleware;
 
-use Theme;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 

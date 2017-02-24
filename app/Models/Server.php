@@ -29,8 +29,8 @@ use Cache;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Server extends Model
 {
@@ -86,7 +86,7 @@ class Server extends Model
          'installed' => 'integer',
      ];
 
-     protected $searchable = [
+    protected $searchable = [
          'columns' => [
              'servers.name' => 10,
              'servers.username' => 10,
