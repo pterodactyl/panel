@@ -193,6 +193,7 @@
             {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
             {!! Theme::js('vendor/select2/select2.full.min.js') !!}
+            {!! Theme::js('js/admin/functions.js') !!}
         @show
     </body>
 </html>

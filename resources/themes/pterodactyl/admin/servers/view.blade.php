@@ -293,13 +293,70 @@
                     {{--  End Database / Start Manage --}}
                     @if($server->installed !== 2)
                         <div class="tab-pane" id="tab_manage">
-                            Manage
+                            <div class="row">
+                                <div class="col-sm-6 col-md-4 text-center">
+                                    <form action="/admin/servers/view/{{ $server->id }}/installed" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-primary">Toggle Install Status</button>
+                                        <p class="text-muted small">This will toggle the install status for the server.</p>
+                                    </form>
+                                </div>
+                                <div class="col-sm-6 col-md-4 text-center">
+                                    <form action="/admin/servers/view/{{ $server->id }}/rebuild" method="POST">
+                                        {!! csrf_field() !!}
+                                        <button type="submit" class="btn btn-primary">Rebuild Server Container</button>
+                                        <p class="text-muted small">This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly.</p>
+                                    </form>
+                                </div>
+                                <div class="col-sm-6 col-md-4 text-center">
+                                    @if(! $server->suspended)
+                                        <form action="/admin/servers/view/{{ $server->id }}/suspend" method="POST">
+                                            {!! csrf_field() !!}
+                                            <button type="submit" class="btn btn-warning">Suspend Server</button>
+                                            <p class="text-muted small">This will suspend the server, stop any running processes, and immediately block the user from being able to access their files or otherwise manage the server through the panel or API.</p>
+                                        </form>
+                                    @else
+                                        <form action="/admin/servers/view/{{ $server->id }}/unsuspend" method="POST">
+                                            {!! csrf_field() !!}
+                                            <button type="submit" class="btn btn-success">Unsuspend Server</button>
+                                            <p class="text-muted small">This will unsuspend the server and restore normal user access.</p>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     @endif
                     {{--  End Manage / Start Delete --}}
                     @if(! $server->trashed())
                         <div class="tab-pane" id="tab_delete">
-                            Delete
+                            <div class="row">
+                                @if($server->installed)
+                                    <div class="col-sm-6">
+                                        <form action="/admin/servers/view/{{ $server->id }}" class="text-center" method="POST" data-attr="deleteServer">
+                                            {!! csrf_field() !!}
+                                            {!! method_field('DELETE') !!}
+                                            <button type="submit" class="btn btn-danger">Delete Server</button>
+                                        </form>
+                                        <p>
+                                            <div class="callout callout-danger">
+                                                Deleting a server is an irreversible action. <strong>All data will be immediately removed relating to this server.</strong>
+                                            </div>
+                                        </p>
+                                    </div>
+                                @endif
+                                <div class="col-sm-6">
+                                    <form action="/admin/servers/view/{{ $server->id }}/force" class="text-center" method="POST" data-attr="deleteServer">
+                                        {!! csrf_field() !!}
+                                        {!! method_field('DELETE') !!}
+                                        <button type="submit" class="btn btn-danger">Force Delete Server</button>
+                                    </form>
+                                    <p>
+                                        <div class="callout callout-danger">
+                                            This is the same as deleting a server, however, if an error is returned by the daemon it is ignored and the server is still removed from the panel.
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     @endif
                     {{--  End Delete --}}
@@ -312,6 +369,20 @@
 @section('footer-scripts')
     @parent
     <script>
+    $('form[data-attr="deleteServer"]').submit(function (event) {
+        event.preventDefault();
+        swal({
+            title: '',
+            type: 'warning',
+            text: 'Are you sure that you want to delete this server? There is no going back, all data will immediately be removed.',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+            closeOnConfirm: false
+        }, function () {
+            event.target.submit();
+        });
+    });
     $('#pAddAllocations').select2();
     $('#pRemoveAllocations').select2();
     $('#pAllocation').select2();
