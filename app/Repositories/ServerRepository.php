@@ -352,8 +352,9 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner' => 'email|exists:users,email',
-            'name' => 'regex:([\w .-]{1,200})',
+            'owner_id' => 'sometimes|required|numeric|exists:users,id',
+            'name' => 'sometimes|required|regex:([\w .-]{1,200})',
+            'reset_token' => 'sometimes|required|accepted'
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -368,16 +369,15 @@ class ServerRepository
             $server = Models\Server::with('user')->findOrFail($id);
 
             // Update daemon secret if it was passed.
-            if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $server->user->email)) {
+            if (isset($data['reset_token']) || (isset($data['owner_id']) && $data['owner_id'] !== $server->user->id)) {
                 $oldDaemonKey = $server->daemonSecret;
                 $server->daemonSecret = $uuid->generate('servers', 'daemonSecret');
                 $resetDaemonKey = true;
             }
 
             // Update Server Owner if it was passed.
-            if (isset($data['owner']) && $data['owner'] !== $server->user->email) {
-                $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
-                $server->owner_id = $newOwner->id;
+            if (isset($data['owner_id']) && $data['owner_id'] !== $server->user->id) {
+                $server->owner_id = $data['owner_id'];
             }
 
             // Update Server Name if it was passed.
@@ -431,7 +431,7 @@ class ServerRepository
     public function updateContainer($id, array $data)
     {
         $validator = Validator::make($data, [
-            'image' => 'required|string',
+            'docker_image' => 'required|string',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -444,7 +444,7 @@ class ServerRepository
         try {
             $server = Models\Server::findOrFail($id);
 
-            $server->image = $data['image'];
+            $server->image = $data['docker_image'];
             $server->save();
 
             $server->node->guzzleClient([
@@ -479,17 +479,14 @@ class ServerRepository
     public function changeBuild($id, array $data)
     {
         $validator = Validator::make($data, [
-            'default' => [
-                'string',
-                'regex:/^(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\.(\d|[1-9]\d|1\d\d|2([0-4]\d|5[0-5])):(\d{1,5})$/',
-            ],
-            'add_additional' => 'nullable|array',
-            'remove_additional' => 'nullable|array',
-            'memory' => 'integer|min:0',
-            'swap' => 'integer|min:-1',
-            'io' => 'integer|min:10|max:1000',
-            'cpu' => 'integer|min:0',
-            'disk' => 'integer|min:0',
+            'allocation_id' => 'sometimes|required|exists:allocations,id',
+            'add_allocations' => 'sometimes|required|array',
+            'remove_allocations' => 'sometimes|required|array',
+            'memory' => 'sometimes|required|integer|min:0',
+            'swap' => 'sometimes|required|integer|min:-1',
+            'io' => 'sometimes|required|integer|min:10|max:1000',
+            'cpu' => 'sometimes|required|integer|min:0',
+            'disk' => 'sometimes|required|integer|min:0',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -503,43 +500,33 @@ class ServerRepository
         try {
             $server = Models\Server::with('allocation', 'allocations')->findOrFail($id);
             $newBuild = [];
+            $newAllocations = [];
 
-            if (isset($data['default'])) {
-                list($ip, $port) = explode(':', $data['default']);
-                if ($ip !== $server->allocation->ip || (int) $port !== $server->allocation->port) {
-                    $selection = $server->allocations->where('ip', $ip)->where('port', $port)->first();
+            if (isset($data['allocation_id'])) {
+                if ((int) $data['allocation_id'] !== $server->allocation_id) {
+                    $selection = $server->allocations->where('id', $data['allocation_id'])->first();
                     if (! $selection) {
-                        throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
+                        throw new DisplayException('The requested default connection is not allocated to this server.');
                     }
 
                     $server->allocation_id = $selection->id;
-                    $newBuild['default'] = [
-                        'ip' => $ip,
-                        'port' => (int) $port,
-                    ];
+                    $newBuild['default'] = ['ip' => $selection->ip, 'port' => $selection->port];
 
-                    // Re-Run to keep updated for rest of function
                     $server->load('allocation');
                 }
             }
 
             $newPorts = false;
             // Remove Assignments
-            if (isset($data['remove_additional'])) {
-                foreach ($data['remove_additional'] as $id => $combo) {
-                    list($ip, $port) = explode(':', $combo);
-                    // Invalid, not worth killing the whole thing, we'll just skip over it.
-                    if (! filter_var($ip, FILTER_VALIDATE_IP) || ! preg_match('/^(\d{1,5})$/', $port)) {
-                        break;
-                    }
-
+            if (isset($data['remove_allocations'])) {
+                foreach ($data['remove_allocations'] as $allocation) {
                     // Can't remove the assigned IP/Port combo
-                    if ($ip === $server->allocation->ip && (int) $port === (int) $server->allocation->port) {
-                        break;
+                    if ((int) $allocation === $server->allocation_id) {
+                        continue;
                     }
 
                     $newPorts = true;
-                    $server->allocations->where('ip', $ip)->where('port', $port)->update([
+                    Models\Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
                         'server_id' => null,
                     ]);
                 }
@@ -548,21 +535,15 @@ class ServerRepository
             }
 
             // Add Assignments
-            if (isset($data['add_additional'])) {
-                foreach ($data['add_additional'] as $id => $combo) {
-                    list($ip, $port) = explode(':', $combo);
-                    // Invalid, not worth killing the whole thing, we'll just skip over it.
-                    if (! filter_var($ip, FILTER_VALIDATE_IP) || ! preg_match('/^(\d{1,5})$/', $port)) {
-                        break;
-                    }
-
-                    // Don't allow double port assignments
-                    if ($server->allocations->where('port', $port)->count() !== 0) {
-                        break;
+            if (isset($data['add_allocations'])) {
+                foreach ($data['add_allocations'] as $allocation) {
+                    $model = Models\Allocation::where('id', $allocation)->whereNull('server_id')->first();
+                    if (! $model) {
+                        continue;
                     }
 
                     $newPorts = true;
-                    Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('server_id')->update([
+                    $model->update([
                         'server_id' => $server->id,
                     ]);
                 }
@@ -570,18 +551,10 @@ class ServerRepository
                 $server->load('allocations');
             }
 
-            // Loop All Assignments
-            $additionalAssignments = [];
-            foreach ($server->allocations as &$assignment) {
-                if (array_key_exists((string) $assignment->ip, $additionalAssignments)) {
-                    array_push($additionalAssignments[(string) $assignment->ip], (int) $assignment->port);
-                } else {
-                    $additionalAssignments[(string) $assignment->ip] = [(int) $assignment->port];
-                }
-            }
-
-            if ($newPorts === true) {
-                $newBuild['ports|overwrite'] = $additionalAssignments;
+            if ($newPorts) {
+                $newBuild['ports|overwrite'] = $server->allocations->groupBy('ip')->map(function ($item) {
+                    return $item->pluck('port');
+                })->toArray();
             }
 
             // @TODO: verify that server can be set to this much memory without
@@ -617,6 +590,7 @@ class ServerRepository
             // This won't be committed unless the HTTP request succeedes anyways
             $server->save();
 
+            dd($newBuild);
             if (! empty($newBuild)) {
                 $server->node->guzzleClient([
                     'X-Access-Server' => $server->uuid,
@@ -630,7 +604,7 @@ class ServerRepository
 
             DB::commit();
 
-            return true;
+            return $server;
         } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to update the configuration.', $ex);

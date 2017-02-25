@@ -67,7 +67,7 @@
                                 <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="Quick Access"><i class="fa fa-fighter-jet" style="margin-top:4px;padding-bottom:2px;"></i></a>
                             </li>
                             <li>
-                                <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
                             </li>
                             <li>
                                 <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>

@@ -198,3 +198,29 @@ span[aria-labelledby="select2-pUserId-container"] {
     color: #777 !important;
     background: transparent !important;
 }
+
+.tab-pane .box-footer {
+    margin: 0 -10px -10px;
+}
+
+.select2-container{ width: 100% !important; }
+
+.nav-tabs-custom > .nav-tabs > li:hover {
+    border-top-color:#3c8dbc;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-danger, .nav-tabs-custom > .nav-tabs > li.tab-danger:hover {
+    border-top-color: #c23321;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-success, .nav-tabs-custom > .nav-tabs > li.tab-success:hover {
+    border-top-color: #00733e;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-info, .nav-tabs-custom > .nav-tabs > li.tab-info:hover {
+    border-top-color: #0097bc;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-warning, .nav-tabs-custom > .nav-tabs > li.tab-warning:hover {
+    border-top-color: #c87f0a;
+}

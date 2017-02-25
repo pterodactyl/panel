@@ -149,71 +149,13 @@ class ServersController extends Controller
         })->values();
     }
 
-    /**
-     * Returns a JSON tree of all avaliable IPs and Ports on a given node.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function postNewServerGetIps(Request $request)
-    {
-        return Models\Allocation::select('id', 'ip')->where('node_id', $request->input('node'))->whereNull('server_id')->get()->unique('ip')->values()->all();
-    }
-
-    /**
-     * Returns a JSON tree of all avaliable options for a given service.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function postNewServerServiceOption(Request $request)
-    {
-        if (! $request->input('service')) {
-            return response()->json([
-                'error' => 'Missing service in request.',
-            ], 500);
-        }
-
-        $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
-
-        return response()->json(Models\ServiceOption::select('id', 'name', 'docker_image')->where('service_id', $request->input('service'))->orderBy('name', 'asc')->get());
-    }
-
-    /**
-     * Returns a JSON tree of all avaliable variables for a given service option.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function postNewServerOptionDetails(Request $request)
-    {
-        if (! $request->input('option')) {
-            return response()->json([
-                'error' => 'Missing option in request.',
-            ], 500);
-        }
-
-        $option = Models\ServiceOption::with('variables')->with(['packs' => function ($query) {
-            $query->where('selectable', true);
-        }])->findOrFail($request->input('option'));
-
-        return response()->json([
-            'packs' => $option->packs,
-            'variables' => $option->variables,
-            'exec' => $option->display_executable,
-            'startup' => $option->display_startup,
-        ]);
-    }
-
     public function postUpdateServerDetails(Request $request, $id)
     {
         try {
             $server = new ServerRepository;
-            $server->updateDetails($id, [
-                'owner' => $request->input('owner'),
-                'name' => $request->input('name'),
-                'reset_token' => ($request->input('reset_token', false) === 'on') ? true : false,
-            ]);
+            $server->updateDetails($id, $request->intersect([
+                'owner_id', 'name', 'reset_token'
+            ]));
 
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
@@ -238,7 +180,7 @@ class ServersController extends Controller
     {
         try {
             $server = new ServerRepository;
-            $server->updateContainer($id, ['image' => $request->input('docker_image')]);
+            $server->updateContainer($id, $request->intersect('docker_image'));
             Alert::success('Successfully updated this server\'s docker image.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
@@ -283,9 +225,9 @@ class ServersController extends Controller
     {
         try {
             $server = new ServerRepository;
-            $server->changeBuild($id, $request->only([
-                'default', 'add_additional',
-                'remove_additional', 'memory',
+            $server->changeBuild($id, $request->intersect([
+                'allocation_id', 'add_allocations',
+                'remove_allocations', 'memory',
                 'swap', 'io', 'cpu',
             ]));
             Alert::success('Server details were successfully updated.')->flash();

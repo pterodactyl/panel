@@ -140,22 +140,6 @@ class AdminRoutes
                 'uses' => 'Admin\ServersController@postNewServerGetNodes',
             ]);
 
-            $router->post('/new/get-ips', [
-                'as' => 'admin.servers.new.get-ips',
-                'uses' => 'Admin\ServersController@postNewServerGetIps',
-            ]);
-
-            $router->post('/new/service-options', [
-                'as' => 'admin.servers.new.service-options',
-                'uses' => 'Admin\ServersController@postNewServerServiceOption',
-            ]);
-
-            $router->post('/new/option-details', [
-                'as' => 'admin.servers.new.option-details',
-                'uses' => 'Admin\ServersController@postNewServerOptionDetails',
-            ]);
-            // End Assorted Page Helpers
-
             // View Specific Server
             $router->get('/view/{id}', [
                 'as' => 'admin.servers.view',
@@ -170,6 +154,7 @@ class AdminRoutes
 
             // Change Server Details
             $router->post('/view/{id}/details', [
+                'as' => 'admin.servers.view.details',
                 'uses' => 'Admin\ServersController@postUpdateServerDetails',
             ]);
 
