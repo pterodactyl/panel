@@ -93,12 +93,17 @@
                         <li class="header">MANAGEMENT</li>
                         <li class="{{ Route::currentRouteName() !== 'admin.servers' ?: 'active' }}">
                             <a href="{{ route('admin.servers') }}">
-                                <i class="fa fa-server"></i> <span>List Servers</span>
+                                <i class="fa fa-server"></i> <span>Servers</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'admin.nodes' ?: 'active' }}">
                             <a href="{{ route('admin.nodes') }}">
-                                <i class="fa fa-sitemap"></i> <span>List Nodes</span>
+                                <i class="fa fa-sitemap"></i> <span>Nodes</span>
+                            </a>
+                        </li>
+                        <li class="{{ Route::currentRouteName() !== 'admin.users' ?: 'active' }}">
+                            <a href="{{ route('admin.users') }}">
+                                <i class="fa fa-users"></i> <span>Users</span>
                             </a>
                         </li>
                     </ul>
