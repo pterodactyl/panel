@@ -17,83 +17,94 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-(function initSocket() {
-    if (typeof $.notifyDefaults !== 'function') {
-        console.error('Notify does not appear to be loaded.');
-        return;
+
+var Server = (function ()  {
+
+    function initSocket() {
+        if (typeof $.notifyDefaults !== 'function') {
+            console.error('Notify does not appear to be loaded.');
+            return;
+        }
+
+        if (typeof io !== 'function') {
+            console.error('Socket.io is reqired to use this panel.');
+            return;
+        }
+
+        $.notifyDefaults({
+            placement: {
+                from: 'bottom',
+                align: 'right'
+            },
+            newest_on_top: true,
+            delay: 2000,
+            animate: {
+                enter: 'animated zoomInDown',
+                exit: 'animated zoomOutDown'
+            }
+        });
+
+        var notifySocketError = false;
+
+        window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/ws/' + Pterodactyl.server.uuid, {
+            'query': 'token=' + Pterodactyl.server.daemonSecret,
+        });
+
+        Socket.io.on('connect_error', function (err) {
+            if(typeof notifySocketError !== 'object') {
+                notifySocketError = $.notify({
+                    message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
+                }, {
+                    type: 'danger',
+                    delay: 0
+                });
+            }
+        });
+
+        // Connected to Socket Successfully
+        Socket.on('connect', function () {
+            if (notifySocketError !== false) {
+                notifySocketError.close();
+                notifySocketError = false;
+            }
+        });
+
+        Socket.on('initial status', function (data) {
+            setStatusIcon(data.status);
+        });
+
+        Socket.on('status', function (data) {
+            setStatusIcon(data.status);
+        });
     }
 
-    if (typeof io !== 'function') {
-        console.error('Socket.io is reqired to use this panel.');
-        return;
+    function setStatusIcon(status) {
+        switch (status) {
+            case 0:
+                $('#server_status_icon').html('<i class="fa fa-circle text-danger"></i> Offline');
+                break;
+            case 1:
+                $('#server_status_icon').html('<i class="fa fa-circle text-success"></i> Online');
+                break;
+            case 2:
+                $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Starting');
+                break;
+            case 3:
+                $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Stopping');
+                break;
+            default:
+                break;
+        }
     }
 
-    $.notifyDefaults({
-        placement: {
-            from: 'bottom',
-            align: 'right'
+    return {
+        init: function () {
+            initSocket();
         },
-        newest_on_top: true,
-        delay: 2000,
-        animate: {
-            enter: 'animated zoomInDown',
-            exit: 'animated zoomOutDown'
-        }
-    });
 
-    var notifySocketError = false;
+        setStatusIcon: setStatusIcon,
+    }
 
-    window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/ws/' + Pterodactyl.server.uuid, {
-        'query': 'token=' + Pterodactyl.server.daemonSecret,
-    });
-
-    Socket.io.on('connect_error', function (err) {
-        if(typeof notifySocketError !== 'object') {
-            notifySocketError = $.notify({
-                message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
-            }, {
-                type: 'danger',
-                delay: 0
-            });
-        }
-    });
-
-    // Connected to Socket Successfully
-    Socket.on('connect', function () {
-        if (notifySocketError !== false) {
-            notifySocketError.close();
-            notifySocketError = false;
-        }
-    });
-
-    Socket.on('initial status', function (data) {
-        setStatusIcon(data.status);
-    });
-
-    Socket.on('status', function (data) {
-        setStatusIcon(data.status);
-    });
-
-    Socket.on('console', function (data) {
-        TerminalQueue.push(data.line);
-    });
 })();
 
-function setStatusIcon(status) {
-    switch (status) {
-        case 0:
-            $('#server_status_icon').html('<i class="fa fa-circle text-danger"></i> Offline');
-            break;
-        case 1:
-            $('#server_status_icon').html('<i class="fa fa-circle text-success"></i> Online');
-            break;
-        case 2:
-            $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Starting');
-            break;
-        case 3:
-            $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Stopping');
-            break;
-        default:
-            break;
-    }
-}
+Server.init();

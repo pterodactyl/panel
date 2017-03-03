@@ -17,173 +17,203 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-var CONSOLE_PUSH_COUNT = 50;
-var CONSOLE_PUSH_FREQ = 200;
 
-(function initConsole() {
-    window.TerminalQueue = [];
-    window.Terminal = $('#terminal').terminal(function (command, term) {
-        Socket.emit('send command', command);
-    }, {
-        greetings: '',
-        name: Pterodactyl.server.uuid,
-        height: 450,
-        exit: false,
-        prompt: Pterodactyl.server.username + ':~$ ',
-        scrollOnEcho: false,
-        scrollBottomOffset: 5,
-        onBlur: function (terminal) {
-            return false;
-        }
-    });
+var Console = (function () {
+    var CONSOLE_PUSH_COUNT = 50;
+    var CONSOLE_PUSH_FREQ = 200;
 
-    Socket.on('initial status', function (data) {
-        Terminal.clear();
-        if (data.status === 1 || data.status === 2) {
-            Socket.emit('send server log');
-        }
-    });
-})();
+    var terminalQueue;
+    var terminal;
 
-(function pushOutputQueue() {
-    if (TerminalQueue.length > CONSOLE_PUSH_COUNT) {
-        // console throttled warning show
+    var cpuChart;
+    var cpuData;
+    var memoryChart;
+    var memoryData;
+    var timeLabels;
+
+    var $terminalNotify;
+
+    function initConsole() {
+        terminalQueue = [];
+        terminal = $('#terminal').terminal(function (command, term) {
+            Socket.emit('send command', command);
+        }, {
+            greetings: '',
+            name: Pterodactyl.server.uuid,
+            height: 450,
+            exit: false,
+            prompt: Pterodactyl.server.username + ':~$ ',
+            scrollOnEcho: false,
+            scrollBottomOffset: 5,
+            onBlur: function (terminal) {
+                return false;
+            }
+        });
+
+        $terminalNotify = $('#terminalNotify');
+        $terminalNotify.on('click', function () {
+            terminal.scroll_to_bottom();
+            $terminalNotify.addClass('hidden');
+        })
+
+        terminal.on('scroll', function () {
+            if (terminal.is_bottom()) {
+                $terminalNotify.addClass('hidden');
+            }
+        })
     }
 
-    if (TerminalQueue.length > 0) {
-        for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
-            Terminal.echo(TerminalQueue[0]);
-            TerminalQueue.shift();
-        }
+    function initGraphs() {
+        var ctc = $('#chart_cpu');
+        timeLabels = [];
+        cpuData = [];
+        cpuChart = new Chart(ctc, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: "Percent Use",
+                        fill: false,
+                        lineTension: 0.03,
+                        backgroundColor: "#3c8dbc",
+                        borderColor: "#3c8dbc",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "#3c8dbc",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#3c8dbc",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: cpuData,
+                        spanGaps: false,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'CPU Usage (as Percent Total)'
+                },
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 1,
+                }
+            }
+        });
+
+        var ctm = $('#chart_memory');
+        memoryData = [];
+        memoryChart = new Chart(ctm, {
+            type: 'line',
+            data: {
+                labels: timeLabels,
+                datasets: [
+                    {
+                        label: "Memory Use",
+                        fill: false,
+                        lineTension: 0.03,
+                        backgroundColor: "#3c8dbc",
+                        borderColor: "#3c8dbc",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "#3c8dbc",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#3c8dbc",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: memoryData,
+                        spanGaps: false,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Memory Usage (in Megabytes)'
+                },
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 1,
+                }
+            }
+        });
     }
 
-    window.setTimeout(pushOutputQueue, CONSOLE_PUSH_FREQ);
-})();
+    function addSocketListeners() {
+        // Update Listings on Initial Status
+        Socket.on('initial status', function (data) {
+            updateServerPowerControls(data.status);
 
-$(document).ready(function () {
-    $('[data-attr="power"]').click(function (event) {
-        if (! $(this).hasClass('disabled')) {
-            Socket.emit('set status', $(this).data('action'));
+            terminal.clear();
+            if (data.status === 1 || data.status === 2) {
+                Socket.emit('send server log');
+            }
+        });
+
+        // Update Listings on Status
+        Socket.on('status', function (data) {
+            updateServerPowerControls(data.status);
+        });
+
+        Socket.on('console', function (data) {
+            terminalQueue.push(data.line);
+        });
+
+        Socket.on('proc', function (proc) {
+            if (cpuData.length > 10) {
+                cpuData.shift();
+                memoryData.shift();
+                timeLabels.shift();
+            }
+
+            var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
+            cpuData.push(cpuUse);
+            memoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
+
+            var m = new Date();
+            timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
+
+            cpuChart.update();
+            memoryChart.update();
+        });
+    }
+
+    function pushOutputQueue() {
+        if (terminalQueue.length > CONSOLE_PUSH_COUNT) {
+            // console throttled warning show
         }
-    });
 
-    var ctc = $('#chart_cpu');
-    var timeLabels = [];
-    var cpuData = [];
-    var CPUChart = new Chart(ctc, {
-        type: 'line',
-        data: {
-            labels: timeLabels,
-            datasets: [
-                {
-                    label: "Percent Use",
-                    fill: false,
-                    lineTension: 0.03,
-                    backgroundColor: "#00A1CB",
-                    borderColor: "#00A1CB",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "rgba(75,192,192,1)",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: cpuData,
-                    spanGaps: false,
-                }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'CPU Usage (as Percent Total)'
-            },
-            legend: {
-                display: false,
-            },
-            animation: {
-                duration: 1,
+        if (terminalQueue.length > 0) {
+            for (var i = 0; i < CONSOLE_PUSH_COUNT && terminalQueue.length > 0; i++) {
+                terminal.echo(terminalQueue[0]);
+                terminalQueue.shift();
+            }
+
+            // Show
+            if (!terminal.is_bottom()) {
+                $terminalNotify.removeClass('hidden');
             }
         }
-    });
 
-    var ctm = $('#chart_memory');
-    var memoryData = [];
-    var MemoryChart = new Chart(ctm, {
-        type: 'line',
-        data: {
-            labels: timeLabels,
-            datasets: [
-                {
-                    label: "Memory Use",
-                    fill: false,
-                    lineTension: 0.03,
-                    backgroundColor: "#01A4A4",
-                    borderColor: "#01A4A4",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "rgba(75,192,192,1)",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: memoryData,
-                    spanGaps: false,
-                }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Memory Usage (in Megabytes)'
-            },
-            legend: {
-                display: false,
-            },
-            animation: {
-                duration: 1,
-            }
-        }
-    });
-    Socket.on('proc', function (proc) {
-        if (cpuData.length > 10) {
-            cpuData.shift();
-            memoryData.shift();
-            timeLabels.shift();
-        }
-
-        var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
-        cpuData.push(cpuUse);
-        memoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
-
-        var m = new Date();
-        timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
-
-        CPUChart.update();
-        MemoryChart.update();
-    });
-
-    // Update Listings on Initial Status
-    Socket.on('initial status', function (data) {
-        updateServerPowerControls(data.status);
-    });
-
-    // Update Listings on Status
-    Socket.on('status', function (data) {
-        updateServerPowerControls(data.status);
-    });
+        window.setTimeout(pushOutputQueue, CONSOLE_PUSH_FREQ);
+    }
 
     function updateServerPowerControls (data) {
         // Server is On or Starting
@@ -203,4 +233,33 @@ $(document).ready(function () {
             $('[data-attr="power"][data-action="kill"]').addClass('disabled');
         }
     }
+
+    return {
+        init: function () {
+
+            initConsole();
+            pushOutputQueue();
+            initGraphs();
+            addSocketListeners();
+
+            $('[data-attr="power"]').click(function (event) {
+                if (! $(this).hasClass('disabled')) {
+                    Socket.emit('set status', $(this).data('action'));
+                }
+            });
+        },
+
+        getTerminal: function () {
+            return terminal
+        },
+
+        getTerminalQueue: function () {
+            return terminalQueue
+        },
+    }
+
+})();
+
+$(document).ready(function () {
+    Console.init();
 });

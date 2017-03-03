@@ -212,6 +212,7 @@ return [
         'size' => 'Size',
         'last_modified' => 'Last Modified',
         'add_new' => 'Add New File',
+        'add_folder' => 'Add New Folder',
         'edit' => [
             'header' => 'Edit File',
             'header_sub' => 'Make modifications to a file from the web.',

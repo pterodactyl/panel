@@ -266,7 +266,7 @@
         </div>
         @section('footer-scripts')
             {!! Theme::js('js/laroute.js') !!}
-            {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+            {!! Theme::js('vendor/jquery/jquery.min.js') !!}
             {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}

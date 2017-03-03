@@ -38,8 +38,10 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="overlay file-overlay"><i class="fa fa-refresh fa-spin"></i></div>
-            <div class="box-body table-responsive no-padding" id="load_files">
-                <div class="callout callout-info" style="margin:10px;">@lang('server.files.loading')</div>
+            <div id="load_files">
+                <div class="box-body table-responsive no-padding">
+                    <div class="callout callout-info" style="margin:10px;">@lang('server.files.loading')</div>
+                </div>
             </div>
             <div class="box-footer with-border">
                 <p class="text-muted small" style="margin: 0 0 2px;">@lang('server.files.path', ['path' => '<code>/home/container</code>', 'size' => '<code>' . $node->upload_size . ' MB</code>'])</p>
