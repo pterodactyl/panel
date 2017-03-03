@@ -29,15 +29,22 @@ class ActionsClass {
         this.element = undefined;
     }
 
-    folder() {
-        const nameBlock = $(this.element).find('td[data-identifier="name"]');
-        const currentName = decodeURIComponent(nameBlock.attr('data-name'));
-        const currentPath = decodeURIComponent(nameBlock.data('path'));
+    folder(path) {
+        let inputValue
+        if (path) {
+            inputValue = path
+        } else {
+            const nameBlock = $(this.element).find('td[data-identifier="name"]');
+            const currentName = decodeURIComponent(nameBlock.data('name'));
+            const currentPath = decodeURIComponent(nameBlock.data('path'));
 
-        let inputValue = `${currentPath}${currentName}/`;
-        if ($(this.element).data('type') === 'file') {
-            inputValue = currentPath;
+            if ($(this.element).data('type') === 'file') {
+                inputValue = currentPath;
+            } else {
+                inputValue = `${currentPath}${currentName}/`;
+            }
         }
+
         swal({
             type: 'input',
             title: 'Create Folder',

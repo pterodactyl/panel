@@ -33,7 +33,7 @@ class ContextMenuClass {
         $(document).find('#fileOptionMenu').remove();
         if (!_.isNull(this.activeLine)) this.activeLine.removeClass('active');
 
-        let newFilePath = $('#headerTableRow').attr('data-currentDir');
+        let newFilePath = $('#file_listing').data('current-dir');
         if (parent.data('type') === 'folder') {
             const nameBlock = parent.find('td[data-identifier="name"]');
             const currentName = decodeURIComponent(nameBlock.attr('data-name'));

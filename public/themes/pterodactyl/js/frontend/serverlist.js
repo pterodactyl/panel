@@ -17,14 +17,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-var Status = {
-    0: 'Offline',
-    1: 'Online',
-    2: 'Starting',
-    3: 'Stopping'
-};
 
-(function updateServerStatus () {
+var ServerList = (function () {
+
+    var Status = {
+        0: 'Offline',
+        1: 'Online',
+        2: 'Starting',
+        3: 'Stopping'
+    };
+
     $('.dynamic-update').each(function (index, data) {
         var element = $(this);
         var serverShortUUID = $(this).data('server');
@@ -67,16 +69,32 @@ var Status = {
                 if (cpuMax !== 0) {
                     currentCpu = parseFloat(((data.proc.cpu.total / cpuMax) * 100).toFixed(2).toString());
                 }
-                element.find('[data-action="memory"]').html(parseInt(data.proc.memory.total / (1024 * 1024)));
-                element.find('[data-action="cpu"]').html(currentCpu);
-            } else {
-                element.find('[data-action="memory"]').html('--');
-                element.find('[data-action="cpu"]').html('--');
-            }
-        }).fail(function (jqXHR) {
-            console.error(jqXHR);
-            element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
+                if (data.status !== 0) {
+                    var cpuMax = element.find('[data-action="cpu"]').data('cpumax');
+                    var currentCpu = data.proc.cpu.total;
+                    if (cpuMax !== 0) {
+                        currentCpu = parseFloat(((data.proc.cpu.total / cpuMax) * 100).toFixed(2).toString());
+                    }
+                    element.find('[data-action="memory"]').html(parseInt(data.proc.memory.total / (1024 * 1024)));
+                    element.find('[data-action="cpu"]').html(currentCpu);
+                } else {
+                    element.find('[data-action="memory"]').html('--');
+                    element.find('[data-action="cpu"]').html('--');
+                }
+            }).fail(function (jqXHR) {
+                console.error(jqXHR);
+                element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
+            });
         });
-    });
-    setTimeout(updateServerStatus, 10000);
+        setTimeout(updateServerStatus, 10000);
+    }
+
+    return {
+        init: function () {
+            updateServerStatus();
+        }
+    };
+
 })();
+
+ServerList.init();

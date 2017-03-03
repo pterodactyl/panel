@@ -84,7 +84,7 @@
         window.onbeforeunload = function () {
             return 'A file upload in in progress, are you sure you want to continue?';
         };
-        event.file.meta.path = $('#headerTableRow').attr('data-currentdir');
+        event.file.meta.path = $('#file_listing').data('current-dir');
         event.file.meta.identifier = Math.random().toString(36).slice(2);
 
         $('#append_files_to').append('<tr id="file-upload-' + event.file.meta.identifier +'"> \

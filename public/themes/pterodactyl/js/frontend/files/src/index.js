@@ -44,6 +44,7 @@ class FileManager {
             $('#load_files').slideUp(10).html(data).slideDown(10, () => {
                 ContextMenu.run();
                 this.reloadFilesButton();
+                this.addFolderButton();
                 if (_.isFunction(next)) {
                     return next();
                 }
@@ -80,6 +81,12 @@ class FileManager {
             $('i[data-action="reload-files"]').addClass('fa-spin');
             this.list();
         });
+    }
+
+    addFolderButton() {
+        $('i[data-action="add-folder"]').unbind().on('click', () => {
+            new ActionsClass().folder($('#file_listing').data('current-dir') || '/');
+        })
     }
 
     decodeHash() {

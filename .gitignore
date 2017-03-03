@@ -1,4 +1,14 @@
 /vendor
 *.DS_Store*
 .env
+.vagrant/*
+
+composer.lock
+
+Homestead.yaml
+Vagrantfile
+Vagrantfile
+
+node_modules
+yarn.lock
 node_modules
