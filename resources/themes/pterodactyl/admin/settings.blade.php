@@ -27,7 +27,7 @@
     <h1>Panel Settings<small>Configure Pterodactyl to your liking.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Index</li>
+        <li class="active">Settings</li>
     </ol>
 @endsection
 
