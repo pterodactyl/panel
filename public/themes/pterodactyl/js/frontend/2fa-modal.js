@@ -37,7 +37,7 @@ var TwoFactorModal = (function () {
                 }).done(function (data) {
                     var image = new Image();
                     image.src = data.qrImage;
-                    $(image).load(function () {
+                    $(image).on('load', function () {
                         $('#hide_img_load').slideUp(function () {
                             $('#qr_image_insert').attr('src', image.src).slideDown();
                         });
@@ -85,7 +85,6 @@ var TwoFactorModal = (function () {
             bindListeners();
         }
     }
-
-});
+})();
 
 TwoFactorModal.init();
