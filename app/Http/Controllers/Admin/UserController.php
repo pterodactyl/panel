@@ -47,8 +47,14 @@ class UserController extends Controller
     // @TODO: implement nicolaslopezj/searchable to clean up this disaster.
     public function getIndex(Request $request)
     {
+        $users = User::withCount('servers');
+
+        if (! is_null($request->input('query'))) {
+            $users->search($request->input('query'));
+        }
+
         return view('admin.users.index', [
-            'users' => User::paginate(25),
+            'users' => $users->paginate(25),
         ]);
     }
 
