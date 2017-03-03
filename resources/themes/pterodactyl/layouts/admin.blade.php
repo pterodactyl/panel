@@ -90,15 +90,15 @@
                                 <i class="fa fa-wrench"></i> <span>Settings</span>
                             </a>
                         </li>
-                        <li class="header">SERVER MANAGEMENT</li>
+                        <li class="header">MANAGEMENT</li>
                         <li class="{{ Route::currentRouteName() !== 'admin.servers' ?: 'active' }}">
                             <a href="{{ route('admin.servers') }}">
                                 <i class="fa fa-server"></i> <span>List Servers</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() !== 'admin.servers.new' ?: 'active' }}">
-                            <a href="{{ route('admin.servers.new') }}">
-                                <i class="fa fa-plus"></i> <span>Create Server</span>
+                        <li class="{{ Route::currentRouteName() !== 'admin.nodes' ?: 'active' }}">
+                            <a href="{{ route('admin.nodes') }}">
+                                <i class="fa fa-sitemap"></i> <span>List Nodes</span>
                             </a>
                         </li>
                     </ul>

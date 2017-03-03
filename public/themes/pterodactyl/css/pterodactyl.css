@@ -114,7 +114,7 @@ td.has-progress {
 .input-loader {
     display: none;
     position:relative;
-    top: -23px;
+    top: -25px;
     float: right;
     right: 5px;
     color: #cccccc;
@@ -139,6 +139,10 @@ li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .
 
 li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .description {
     color: #eee;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    margin: 2.5px;
 }
 
 .select2-search--inline .select2-search__field:focus {
@@ -223,4 +227,21 @@ span[aria-labelledby="select2-pUserId-container"] {
 
 .nav-tabs-custom > .nav-tabs > li.active.tab-warning, .nav-tabs-custom > .nav-tabs > li.tab-warning:hover {
     border-top-color: #c87f0a;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs {
+    border-bottom: 0px !important;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li {
+    margin-bottom: 0px !important;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li:first-child.active,
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li:first-child:hover {
+    border-radius: 3px 0 0 0;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li:first-child.active > a {
+    border-radius: 0 0 0 3px;
 }

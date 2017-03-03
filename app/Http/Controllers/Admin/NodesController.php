@@ -29,6 +29,7 @@ use Log;
 use Alert;
 use Carbon;
 use Validator;
+use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -55,9 +56,13 @@ class NodesController extends Controller
 
     public function getIndex(Request $request)
     {
-        return view('admin.nodes.index', [
-            'nodes' => Models\Node::with('location')->withCount('servers')->paginate(20),
-        ]);
+        $nodes = Models\Node::with('location')->withCount('servers');
+
+        if (! is_null($request->input('query'))) {
+            $nodes->search($request->input('query'));
+        }
+
+        return view('admin.nodes.index', ['nodes' => $nodes->paginate(25)]);
     }
 
     public function getNew(Request $request)
@@ -117,6 +122,105 @@ class NodesController extends Controller
         ]);
     }
 
+    /**
+     * Shows the index overview page for a specific node.
+     *
+     * @param  Request $request
+     * @param  int     $id      The ID of the node to display information for.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function viewIndex(Request $request, $id)
+    {
+        $node = Models\Node::with('location')->withCount('servers')->findOrFail($id);
+        $stats = collect(
+            Models\Server::select(
+                DB::raw('SUM(memory) as memory, SUM(disk) as disk')
+            )->where('node_id', $node->id)->first()
+        )->mapWithKeys(function ($item, $key) use ($node) {
+            $percent = ($item / $node->{$key}) * 100;
+
+            return [$key => [
+                'value' => $item,
+                'percent' => $percent,
+                'css' => ($percent <= 75) ? 'green' : (($percent > 90) ? 'red' : 'yellow'),
+            ]];
+        })->toArray();
+
+        return view('admin.nodes.view.index', ['node' => $node, 'stats' => $stats]);
+    }
+
+    /**
+     * Shows the settings page for a specific node.
+     *
+     * @param  Request $request
+     * @param  int     $id      The ID of the node to display information for.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function viewSettings(Request $request, $id)
+    {
+        return view('admin.nodes.view.settings', [
+            'node' => Models\Node::findOrFail($id),
+            'locations' => Models\Location::all(),
+        ]);
+    }
+
+    /**
+     * Shows the configuration page for a specific node.
+     *
+     * @param  Request $request
+     * @param  int     $id      The ID of the node to display information for.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function viewConfiguration(Request $request, $id)
+    {
+        return view('admin.nodes.view.configuration', [
+            'node' => Models\Node::findOrFail($id),
+        ]);
+    }
+
+    /**
+     * Shows the allocation page for a specific node.
+     *
+     * @param  Request $request
+     * @param  int     $id      The ID of the node to display information for.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function viewAllocation(Request $request, $id)
+    {
+        $node = Models\Node::findOrFail($id);
+        $node->setRelation('allocations', $node->allocations()->orderBy('ip', 'asc')->orderBy('port', 'asc')->with('server')->paginate(50));
+
+        Javascript::put([
+            'node' => collect($node)->only(['id']),
+        ]);
+
+        return view('admin.nodes.view.allocation', ['node' => $node]);
+    }
+
+    /**
+     * Shows the server listing page for a specific node.
+     *
+     * @param  Request $request
+     * @param  int     $id      The ID of the node to display information for.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function viewServers(Request $request, $id)
+    {
+        $node = Models\Node::with('servers.user', 'servers.service', 'servers.allocations')->findOrFail($id);
+        Javascript::put([
+            'node' => collect($node->makeVisible('daemonSecret'))->only(['scheme', 'fqdn', 'daemonListen', 'daemonSecret']),
+        ]);
+
+        return view('admin.nodes.view.servers', [
+            'node' => $node,
+        ]);
+    }
+
     public function postView(Request $request, $id)
     {
         try {
@@ -149,10 +253,18 @@ class NodesController extends Controller
         ])->withInput();
     }
 
-    public function deallocateSingle(Request $request, $node, $allocation)
+    /**
+     * Removes a single allocation from a node.
+     *
+     * @param  Request $request
+     * @param  integer $node
+     * @param  integer $allocation [description]
+     * @return mixed
+     */
+    public function allocationRemoveSingle(Request $request, $node, $allocation)
     {
         $query = Models\Allocation::where('node_id', $node)->whereNull('server_id')->where('id', $allocation)->delete();
-        if ((int) $query === 0) {
+        if ($query < 1) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.',
             ], 400);
@@ -161,33 +273,40 @@ class NodesController extends Controller
         return response('', 204);
     }
 
-    public function deallocateBlock(Request $request, $node)
+    /**
+     * Remove all allocations for a specific IP at once on a node.
+     *
+     * @param  Request $request
+     * @param  integer  $node
+     * @return mixed
+     */
+    public function allocationRemoveBlock(Request $request, $node)
     {
         $query = Models\Allocation::where('node_id', $node)->whereNull('server_id')->where('ip', $request->input('ip'))->delete();
-        if ((int) $query === 0) {
+        if ($query < 1) {
             Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
-
-            return redirect()->route('admin.nodes.view', [
-                'id' => $node,
-                'tab' => 'tab_allocations',
-            ]);
+        } else {
+            Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
         }
-        Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
 
-        return redirect()->route('admin.nodes.view', [
-            'id' => $node,
-            'tab' => 'tab_allocation',
-        ]);
+        return redirect()->route('admin.nodes.view.allocation', $node);
     }
 
-    public function setAlias(Request $request, $node)
+    /**
+     * Sets an alias for a specific allocation on a node.
+     *
+     * @param  Request $request
+     * @param  integer $node
+     * @return mixed
+     */
+    public function allocationSetAlias(Request $request, $node)
     {
-        if (! $request->input('allocation')) {
+        if (! $request->input('allocation_id')) {
             return response('Missing required parameters.', 422);
         }
 
         try {
-            $update = Models\Allocation::findOrFail($request->input('allocation'));
+            $update = Models\Allocation::findOrFail($request->input('allocation_id'));
             $update->ip_alias = (empty($request->input('alias'))) ? null : $request->input('alias');
             $update->save();
 
@@ -197,60 +316,37 @@ class NodesController extends Controller
         }
     }
 
+    /**
+     * Creates new allocations on a node.
+     *
+     * @param  Request $request
+     * @param  integer  $node
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function createAllocation(Request $request, $node)
+    {
+        $repo = new NodeRepository;
+
+        try {
+            $repo->addAllocations($node, $request->intersect(['allocation_ip', 'allocation_alias', 'allocation_ports']));
+            Alert::success('Successfully added new allocations!')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.nodes.view.allocation', $node)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attempting to add allocations this node. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.nodes.view.allocation', $node);
+    }
+
     public function getAllocationsJson(Request $request, $id)
     {
         $allocations = Models\Allocation::select('ip')->where('node_id', $id)->groupBy('ip')->get();
 
         return response()->json($allocations);
-    }
-
-    public function postAllocations(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'allocate_ip.*' => 'required|string',
-            'allocate_port.*' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('admin.nodes.view', [
-                'id' => $id,
-                'tab' => 'tab_allocation',
-            ])->withErrors($validator->errors())->withInput();
-        }
-
-        $processedData = [];
-        foreach ($request->input('allocate_ip') as $ip) {
-            if (! array_key_exists($ip, $processedData)) {
-                $processedData[$ip] = [];
-            }
-        }
-
-        foreach ($request->input('allocate_port') as $portid => $ports) {
-            if (array_key_exists($portid, $request->input('allocate_ip'))) {
-                $json = json_decode($ports);
-                if (json_last_error() === 0 && ! empty($json)) {
-                    foreach ($json as &$parsed) {
-                        array_push($processedData[$request->input('allocate_ip')[$portid]], $parsed->value);
-                    }
-                }
-            }
-        }
-
-        try {
-            $node = new NodeRepository;
-            $node->addAllocations($id, $processedData);
-            Alert::success('Successfully added new allocations to this node.')->flash();
-        } catch (DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch (\Exception $e) {
-            Log::error($e);
-            Alert::danger('An unhandled exception occured while attempting to add allocations this node. Please try again.')->flash();
-        } finally {
-            return redirect()->route('admin.nodes.view', [
-                'id' => $id,
-                'tab' => 'tab_allocation',
-            ]);
-        }
     }
 
     public function deleteNode(Request $request, $id)

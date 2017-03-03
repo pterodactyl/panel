@@ -177,80 +177,70 @@ class NodeRepository
         }
     }
 
-    public function addAllocations($id, array $allocations)
+    /**
+     * Adds allocations to a provided node.
+     * @param integer $id
+     * @param array   $data
+     */
+    public function addAllocations($id, array $data)
     {
         $node = Models\Node::findOrFail($id);
 
-        DB::beginTransaction();
+        $validator = Validator::make($data, [
+            'allocation_ip' => 'required|string',
+            'allocation_alias' => 'sometimes|required|string|max:255',
+            'allocation_ports' => 'required|array',
+        ]);
 
-        try {
-            foreach ($allocations as $rawIP => $ports) {
-                try {
-                    $setAlias = null;
-                    $parsedIP = Network::parse($rawIP);
-                } catch (\Exception $ex) {
-                    try {
-                        $setAlias = $rawIP;
-                        $parsedIP = Network::parse(gethostbyname($rawIP));
-                    } catch (\Exception $ex) {
-                        throw $ex;
+        if ($validator->fails()) {
+            throw new DisplayValidationException($validator->errors());
+        }
+
+        $explode = explode('/', $data['allocation_ip']);
+        if (count($explode) !== 1) {
+            if (! ctype_digit($explode[1]) || ($explode[1] > 32 || $explode[1] < 25)) {
+                throw new DisplayException('CIDR notation only allows masks between /32 and /25.');
+            }
+        }
+
+        DB::transaction(function () use ($parsed, $node, $data) {
+            foreach(Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
+                foreach ($data['allocation_ports'] as $port) {
+                    // Determine if this is a valid single port, or a valid port range.
+                    if (! ctype_digit($port) && ! preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
+                        throw new DisplayException('The mapping for <code>' . $port . '</code> is invalid and cannot be processed.');
                     }
-                }
-                foreach ($parsedIP as $ip) {
-                    foreach ($ports as $port) {
-                        if (! is_int($port) && ! preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
-                            throw new DisplayException('The mapping for ' . $port . ' is invalid and cannot be processed.');
+
+                    if (preg_match('/^(\d{1,5})-(\d{1,5})$/', $port, $matches)) {
+                        $block = range($matches[1], $matches[2]);
+
+                        if (count($block) > 1000) {
+                            throw new DisplayException('Adding more than 1000 ports at once is not supported. Please use a smaller port range.');
                         }
-                        if (preg_match('/^(\d{1,5})-(\d{1,5})$/', $port, $matches)) {
-                            $portBlock = range($matches[1], $matches[2]);
 
-                            if (count($portBlock) > 2000) {
-                                throw new DisplayException('Adding more than 2000 ports at once is not currently supported. Please consider using a smaller port range.');
-                            }
-
-                            foreach ($portBlock as $assignPort) {
-                                $alloc = Models\Allocation::firstOrNew([
-                                    'node_id' => $node->id,
-                                    'ip' => $ip,
-                                    'port' => $assignPort,
-                                ]);
-                                if (! $alloc->exists) {
-                                    $alloc->fill([
-                                        'node_id' => $node->id,
-                                        'ip' => $ip,
-                                        'port' => $assignPort,
-                                        'ip_alias' => $setAlias,
-                                        'server_id' => null,
-                                    ]);
-                                    $alloc->save();
-                                }
-                            }
-                        } else {
-                            $alloc = Models\Allocation::firstOrNew([
+                        foreach ($block as $unit) {
+                            // Insert into Database
+                            Models\Allocation::firstOrCreate([
                                 'node_id' => $node->id,
                                 'ip' => $ip,
-                                'port' => $port,
+                                'port' => $unit,
+                                'ip_alias' => isset($data['allocation_alias']) ? $data['allocation_alias'] : null,
+                                'server_id' => null,
                             ]);
-                            if (! $alloc->exists) {
-                                $alloc->fill([
-                                    'node_id' => $node->id,
-                                    'ip' => $ip,
-                                    'port' => $port,
-                                    'ip_alias' => $setAlias,
-                                    'server_id' => null,
-                                ]);
-                                $alloc->save();
-                            }
                         }
+                    } else {
+                        // Insert into Database
+                        Models\Allocation::firstOrCreate([
+                            'node_id' => $node->id,
+                            'ip' => $ip,
+                            'port' => $port,
+                            'ip_alias' => isset($data['allocation_alias']) ? $data['allocation_alias'] : null,
+                            'server_id' => null,
+                        ]);
                     }
                 }
             }
-
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+        });
     }
 
     public function delete($id)

@@ -27,10 +27,11 @@ namespace Pterodactyl\Models;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Node extends Model
 {
-    use Notifiable;
+    use Notifiable, SearchableTrait;
 
     /**
      * The table associated with the model.
@@ -73,6 +74,18 @@ class Node extends Model
         'daemonSecret', 'daemonBase',
         'daemonSFTP', 'daemonListen',
     ];
+
+    protected $searchable = [
+         'columns' => [
+             'nodes.name' => 10,
+             'nodes.fqdn' => 8,
+             'locations.short' => 4,
+             'locations.long' => 4,
+         ],
+         'joins' => [
+            'locations' => ['locations.id', 'nodes.location_id'],
+         ],
+     ];
 
     /**
      * Return an instance of the Guzzle client for this specific node.
