@@ -20,7 +20,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Administration
+    Settings
 @endsection
 
 @section('content-header')
