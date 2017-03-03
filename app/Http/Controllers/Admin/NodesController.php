@@ -211,7 +211,7 @@ class NodesController extends Controller
      */
     public function viewServers(Request $request, $id)
     {
-        $node = Models\Node::with('servers.user', 'servers.service', 'servers.allocations')->findOrFail($id);
+        $node = Models\Node::with('servers.user', 'servers.service', 'servers.option')->findOrFail($id);
         Javascript::put([
             'node' => collect($node->makeVisible('daemonSecret'))->only(['scheme', 'fqdn', 'daemonListen', 'daemonSecret']),
         ]);

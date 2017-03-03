@@ -70,8 +70,8 @@
                         <tr data-server="{{ $server->uuid }}">
                             <td><code>{{ $server->uuidShort }}</code></td>
                             <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                            <td><a href="{{ route('admin.users.view', $server->owner_id) }}"><code>{{ $server->user->email }}</code></a></td>
-                            <td>{{ $server->service->name }}</td>
+                            <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->username }}</a></td>
+                            <td>{{ $server->service->name }} ({{ $server->option->name }})</td>
                             <td class="text-center"><span data-action="memory">NaN</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                             <td class="text-center">{{ $server->disk }} MB</td>
                             <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">NaN</span> %</td>
