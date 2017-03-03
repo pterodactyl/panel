@@ -3,23 +3,66 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-pre.1
+## v0.6.0-pre.4 (Courageous Carniadactylus)
+### Fixed
+* `[pre.3]` — Fixes bug in cache handler that doesn't cache against the user making the request. Would have allowed for users to access servers not belonging to themselves in production.
+* `[pre.3]` — Fixes misnamed MySQL column that was causing the inability to delete certain port ranges from the database.
+* `[pre.3]` — Fixes bug preventing rebuilding server containers through the Admin CP.
+
+### Added
+* New cache policy for ServerPolicy to avoid making 15+ queries per page load when confirming if a user has permission to perform an action.
+
+## v0.6.0-pre.3 (Courageous Carniadactylus)
+### Fixed
+* `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
+* `[pre.2]` — Fixes inability to edit a server due to owner_id issues.
+* `[pre.2]` — Fixes bug when trying to add new subusers.
+* Emails sending with 'Pterodactyl Panel' as the from name. Now configurable by using `php artisan pterodactyl:mail` to update.
+* `[pre.2]` — Fixes inability to delete accounts due to SQL changes.
+* `[pre.2]` — Fixes bug with checking power-permissions that showed the wrong buttons. Also adds check back to sidebar to only show options a user can use.
+* `[pre.2]` — Fixes allocation listing on node allocations tab as well as bug preventing deletion of port.
+* `[pre.2]` — Fixes bug in services that prevented saving updated settings or creating new services.
+
+### Changed
+* `[pre.2]` — File Manager now displays relevant information on all screen sizes, and includes better button clicking mechanics for dropdown menu.
+* Reduced the number of database queries being executed when viewing a specific server. This is done by caching the query for up to 60 minutes in memcached.
+* User creation emails include more information and are sent by the event listener rather than the repository.
+* Account password reset emails now auto-fill the email when clicking the link.
+
+### Added
+* Notifications when a user is added or removed as a subuser for a server.
+
+## v0.6.0-pre.2 (Courageous Carniadactylus)
+### Fixed
+* `[pre.1]` — Fixes bug with database seeders that prevented correctly installing the panel.
+
+### Changed
+* `[pre.1]` — Moved around navigation bar on fronted to make it more obvious where logout and admin buttons were, as well as use the right icon for server listing.
+
+## v0.6.0-pre.1 (Courageous Carniadactylus)
 ### Added
 * Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
 * Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
 * Users can now have a username as well as client name assigned to their account.
 * Ability to create a node through the CLI using `pterodactyl:node` as well as locations via `pterodactyl:location`.
 * New theme (AdminLTE) for front-end with tweaks to backend files to work properly with it.
+* Add support for PhraseApp's in-context editor
 
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
 * Fixes edge case where specific server names could cause daemon errors due to an invalid SFTP username being created by the panel.
+* Fixes sessions being removed on browser close, and set sessions to idle for up to 3 hours before being marked as expired.
 
 ### Changed
 * Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
 * User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
+* 2FA checkpoint on login is now its own page, and not an AJAX based call. Improves security on that front.
+* Updated Server model code to be more efficient, as well as make life easier for backend changes and work.
 
 ### Deprecated
+* `Server::getUserDaemonSecret(Server $server)` was removed and replaced with `User::daemonSecret(Server $server)` in order to clean up models.
+* `Server::getByUUID()` was replaced with `Server::byUuid()` as well as various other functions through-out the Server model.
+* `Server::getHeaders()` was removed and replaced with `Server::getClient()` which returns a Guzzle Client with the correct headers already assigned.
 
 ## v0.5.6 (Bodacious Boreopterus)
 ### Added

@@ -24,11 +24,13 @@
 
 namespace Pterodactyl\Models;
 
-use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Subuser extends Model
 {
+    use Notifiable;
+
     /**
      * The table associated with the model.
      *
@@ -50,38 +52,43 @@ class Subuser extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'user_id' => 'integer',
-         'server_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'user_id' => 'integer',
+        'server_id' => 'integer',
+    ];
 
     /**
-     * @var mixed
+     * Gets the server associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    protected static $user;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
+    public function server()
     {
-        self::$user = Auth::user();
+        return $this->belongsTo(Server::class);
     }
 
     /**
-     * Returns an array of each server ID that the user has access to.
+     * Gets the user associated with a subuser.
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public static function accessServers()
+    public function user()
     {
-        $union = self::select('server_id')->where('user_id', self::$user->id);
+        return $this->belongsTo(User::class);
+    }
 
-        return Server::select('id')->where('owner', self::$user->id)->union($union)->pluck('id');
+    /**
+     * Gets the permissions associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
     }
 }

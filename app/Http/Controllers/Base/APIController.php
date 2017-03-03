@@ -38,13 +38,8 @@ class APIController extends Controller
 {
     public function index(Request $request)
     {
-        $keys = Models\APIKey::where('user', $request->user()->id)->get();
-        foreach ($keys as &$key) {
-            $key->permissions = Models\APIPermission::where('key_id', $key->id)->get();
-        }
-
         return view('base.api.index', [
-            'keys' => $keys,
+            'keys' => Models\APIKey::where('user_id', $request->user()->id)->get(),
         ]);
     }
 
@@ -57,8 +52,11 @@ class APIController extends Controller
     {
         try {
             $repo = new APIRepository($request->user());
-            $secret = $repo->create($request->except(['_token']));
-            Alert::success('An API Keypair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br /><code>' . $secret . '</code>')->flash();
+            $secret = $repo->create($request->only([
+                'memo', 'allowed_ips',
+                'adminPermissions', 'permissions',
+            ]));
+            Alert::success('An API Key-Pair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br /><code>' . $secret . '</code>')->flash();
 
             return redirect()->route('account.api');
         } catch (DisplayValidationException $ex) {
@@ -81,6 +79,8 @@ class APIController extends Controller
 
             return response('', 204);
         } catch (\Exception $ex) {
+            Log::error($ex);
+
             return response()->json([
                 'error' => 'An error occured while attempting to remove this key.',
             ], 503);

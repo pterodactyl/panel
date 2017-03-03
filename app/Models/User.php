@@ -88,16 +88,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
     /**
-     * Determines if a user has permissions.
-     *
-     * @return bool
-     */
-    public function permissions()
-    {
-        return $this->hasMany(Permission::class);
-    }
-
-    /**
      * Enables or disables TOTP on an account if the token is valid.
      *
      * @param int $token The token that we want to verify.
@@ -105,7 +95,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function toggleTotp($token)
     {
-        if (! Google2FA::verifyKey($this->totp_secret, $token)) {
+        if (! Google2FA::verifyKey($this->totp_secret, $token, 1)) {
             return false;
         }
 
@@ -155,5 +145,74 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function isRootAdmin()
     {
         return $this->root_admin === 1;
+    }
+
+    /**
+     * Returns the user's daemon secret for a given server.
+     * @param  Server $server \Pterodactyl\Models\Server
+     * @return null|string
+     */
+    public function daemonToken(Server $server)
+    {
+        if ($this->id === $server->owner_id || $this->isRootAdmin()) {
+            return $server->daemonSecret;
+        }
+
+        $subuser = Subuser::where('server_id', $server->id)->where('user_id', $this->id)->first();
+
+        if (is_null($subuser)) {
+            return null;
+        }
+
+        return $subuser->daemonSecret;
+    }
+
+    /**
+     * Returns an array of all servers a user is able to access.
+     * Note: does not account for user admin status.
+     *
+     * @return array
+     */
+    public function serverAccessArray()
+    {
+        $union = Subuser::select('server_id')->where('user_id', $this->id);
+
+        return Server::select('id')->where('owner_id', $this->id)->union($union)->pluck('id')->all();
+    }
+
+    /**
+     * Returns an array of all servers a user is able to access.
+     * Note: does not account for user admin status.
+     *
+     * @return Collection
+     */
+    public function serverAccessCollection($paginate = null, $load = ['service', 'node', 'allocation'])
+    {
+        $query = Server::with($load);
+        if (! $this->isRootAdmin()) {
+            $query->whereIn('id', $this->serverAccessArray());
+        }
+
+        return (is_numeric($paginate)) ? $query->paginate($paginate) : $query->get();
+    }
+
+    /**
+     * Returns all permissions that a user has.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function permissions()
+    {
+        return $this->hasManyThrough(Permission::class, Subuser::class);
+    }
+
+    /**
+     * Returns all servers that a user owns.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class, 'owner_id');
     }
 }

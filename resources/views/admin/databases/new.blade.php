@@ -47,7 +47,7 @@
                     <select name="linked_node" class="form-control">
                         <option>None</option>
                         @foreach($nodes as $node)
-                            <option value="{{ $node->id }}" @if((int) old('linked_node') === $node->id) selected="selected" @endif>{{ $node->name }} ({{ $node->a_location }})</option>
+                            <option value="{{ $node->id }}" @if((int) old('linked_node') === $node->id) selected="selected" @endif>{{ $node->name }} ({{ $node->location->short }})</option>
                         @endforeach
                     </select>
                     <p class="text-muted"><small>A linked node implies that this Database Server is running on that node and it will be auto-selected when adding a database to servers on that node.</small></p>

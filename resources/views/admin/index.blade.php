@@ -41,7 +41,7 @@
 </div>
 <div class="row">
     <div class="col-xs-4 text-center">
-        <a href="https://discord.gg/QRDZvVm"><button class="btn btn-sm btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Get Help <small>(via Discord)</small></button></a>
+        <a href="{{ Version::getDiscord() }}"><button class="btn btn-sm btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Get Help <small>(via Discord)</small></button></a>
     </div>
     <div class="col-xs-4 text-center">
         <a href="https://docs.pterodactyl.io"><button class="btn btn-sm btn-default" style="width:100%;"><i class="fa fa-fw fa-link"></i> Documentation</button></a>

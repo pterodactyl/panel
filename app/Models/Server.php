@@ -25,12 +25,15 @@
 namespace Pterodactyl\Models;
 
 use Auth;
+use Cache;
+use Javascript;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Server extends Model
 {
-    use SoftDeletes;
+    use Notifiable, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -66,95 +69,21 @@ class Server extends Model
       * @var array
       */
      protected $casts = [
-         'node' => 'integer',
+         'node_id' => 'integer',
          'suspended' => 'integer',
-         'owner' => 'integer',
+         'owner_id' => 'integer',
          'memory' => 'integer',
          'swap' => 'integer',
          'disk' => 'integer',
          'io' => 'integer',
          'cpu' => 'integer',
          'oom_disabled' => 'integer',
-         'port' => 'integer',
-         'service' => 'integer',
-         'option' => 'integer',
+         'allocation_id' => 'integer',
+         'service_id' => 'integer',
+         'option_id' => 'integer',
+         'pack_id' => 'integer',
          'installed' => 'integer',
      ];
-
-    /**
-     * @var array
-     */
-    protected static $serverUUIDInstance = [];
-
-    /**
-     * @var mixed
-     */
-    protected static $user;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        self::$user = Auth::user();
-    }
-
-    /**
-     * Determine if we need to change the server's daemonSecret value to
-     * match that of the user if they are a subuser.
-     *
-     * @param Illuminate\Database\Eloquent\Model\Server $server
-     * @return string
-     */
-    public static function getUserDaemonSecret(Server $server)
-    {
-        if (self::$user->id === $server->owner || self::$user->root_admin === 1) {
-            return $server->daemonSecret;
-        }
-
-        $subuser = Subuser::where('server_id', $server->id)->where('user_id', self::$user->id)->first();
-
-        if (is_null($subuser)) {
-            return null;
-        }
-
-        return $subuser->daemonSecret;
-    }
-
-    /**
-     * Returns array of all servers owned by the logged in user.
-     * Returns all users servers if user is a root admin.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getUserServers($paginate = null)
-    {
-        $query = self::select(
-            'servers.*',
-            'nodes.name as nodeName',
-            'locations.short as a_locationShort',
-            'allocations.ip',
-            'allocations.ip_alias',
-            'allocations.port',
-            'services.name as a_serviceName',
-            'service_options.name as a_serviceOptionName'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('locations', 'nodes.location', '=', 'locations.id')
-        ->join('services', 'servers.service', '=', 'services.id')
-        ->join('service_options', 'servers.option', '=', 'service_options.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
-
-        if (self::$user->root_admin !== 1) {
-            $query->whereIn('servers.id', Subuser::accessServers());
-        }
-
-        if (is_numeric($paginate)) {
-            return $query->paginate($paginate);
-        }
-
-        return $query->get();
-    }
 
     /**
      * Returns a single server specified by UUID.
@@ -164,30 +93,26 @@ class Server extends Model
      * @param  string $uuid The Short-UUID of the server to return an object about.
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getByUUID($uuid)
+    public static function byUuid($uuid)
     {
-        if (array_key_exists($uuid, self::$serverUUIDInstance)) {
-            return self::$serverUUIDInstance[$uuid];
-        }
+        // Results are cached because we call this functions a few times on page load.
+        $result = Cache::remember('Server.byUuid.' . $uuid . Auth::user()->uuid, 60, function () use ($uuid) {
+            $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
+                $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+            });
 
-        $query = self::select('servers.*', 'services.file as a_serviceFile')
-            ->join('services', 'services.id', '=', 'servers.service')
-            ->where('uuidShort', $uuid)
-            ->orWhere('uuid', $uuid);
+            if (! Auth::user()->isRootAdmin()) {
+                $query->whereIn('id', Auth::user()->serverAccessArray());
+            }
 
-        if (self::$user->root_admin !== 1) {
-            $query->whereIn('servers.id', Subuser::accessServers());
-        }
-
-        $result = $query->first();
+            return $query->first();
+        });
 
         if (! is_null($result)) {
-            $result->daemonSecret = self::getUserDaemonSecret($result);
+            $result->daemonSecret = Auth::user()->daemonToken($result);
         }
 
-        self::$serverUUIDInstance[$uuid] = $result;
-
-        return self::$serverUUIDInstance[$uuid];
+        return $result;
     }
 
     /**
@@ -196,15 +121,164 @@ class Server extends Model
      * @param  string $uuid
      * @return array
      */
-    public static function getGuzzleHeaders($uuid)
+    public function guzzleHeaders()
     {
-        if (array_key_exists($uuid, self::$serverUUIDInstance)) {
-            return [
-                'X-Access-Server' => self::$serverUUIDInstance[$uuid]->uuid,
-                'X-Access-Token' => self::$serverUUIDInstance[$uuid]->daemonSecret,
-            ];
+        return [
+            'X-Access-Server' => $this->uuid,
+            'X-Access-Token' => Auth::user()->daemonToken($this),
+        ];
+    }
+
+    /**
+     * Return an instance of the Guzzle client for this specific server using defined access token.
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public function guzzleClient()
+    {
+        return $this->node->guzzleClient($this->guzzleHeaders());
+    }
+
+    /**
+     * Returns javascript object to be embedded on server view pages with relevant information.
+     *
+     * @return \Laracasts\Utilities\JavaScript\JavaScriptFacade
+     */
+    public function js($additional = null, $overwrite = null)
+    {
+        $response = [
+            'server' => collect($this->makeVisible('daemonSecret'))->only([
+                'uuid',
+                'uuidShort',
+                'daemonSecret',
+                'username',
+            ]),
+            'node' => collect($this->node)->only([
+                'fqdn',
+                'scheme',
+                'daemonListen',
+            ]),
+        ];
+
+        if (is_array($additional)) {
+            $response = array_merge($response, $additional);
         }
 
-        return [];
+        if (is_array($overwrite)) {
+            $response = $overwrite;
+        }
+
+        return Javascript::put($response);
+    }
+
+    /**
+     * Gets the user who owns the server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /**
+     * Gets the subusers associated with a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subusers()
+    {
+        return $this->hasMany(Subuser::class);
+    }
+
+    /**
+     * Gets the default allocation for a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function allocation()
+    {
+        return $this->hasOne(Allocation::class, 'id', 'allocation_id');
+    }
+
+    /**
+     * Gets all allocations associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class, 'server_id');
+    }
+
+    /**
+     * Gets information for the pack associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function pack()
+    {
+        return $this->hasOne(ServicePack::class, 'id', 'pack_id');
+    }
+
+    /**
+     * Gets information for the service associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+
+    /**
+     * Gets information for the service option associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function option()
+    {
+        return $this->belongsTo(ServiceOption::class);
+    }
+
+    /**
+     * Gets information for the service variables associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function variables()
+    {
+        return $this->hasMany(ServerVariable::class);
+    }
+
+    /**
+     * Gets information for the node associated with this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function node()
+    {
+        return $this->belongsTo(Node::class);
+    }
+
+    /**
+     * Gets information for the tasks associated with this server.
+     *
+     * @TODO adjust server column in tasks to be server_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'server', 'id');
+    }
+
+    /**
+     * Gets all databases associated with a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function databases()
+    {
+        return $this->hasMany(Database::class);
     }
 }

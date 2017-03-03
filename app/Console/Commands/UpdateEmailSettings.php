@@ -36,6 +36,7 @@ class UpdateEmailSettings extends Command
     protected $signature = 'pterodactyl:mail
                             {--driver=}
                             {--email=}
+                            {--from-name=}
                             {--host=}
                             {--port=}
                             {--username=}
@@ -137,6 +138,7 @@ class UpdateEmailSettings extends Command
         }
 
         $variables['MAIL_FROM'] = is_null($this->option('email')) ? $this->ask('Email address emails should originate from') : $this->option('email');
+        $variables['MAIL_FROM_NAME'] = is_null($this->option('from-name')) ? $this->ask('Name emails should appear to be from') : $this->option('from-name');
         $variables['MAIL_ENCRYPTION'] = 'tls';
 
         $bar = $this->output->createProgressBar(count($variables));
@@ -155,6 +157,9 @@ class UpdateEmailSettings extends Command
 
         file_put_contents($file, $envContents);
         $bar->finish();
+
+        $this->line('Updating evironment configuration cache file.');
+        $this->call('config:cache');
         echo "\n";
     }
 }

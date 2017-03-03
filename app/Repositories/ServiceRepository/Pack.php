@@ -49,12 +49,6 @@ class Pack
             'option' => 'required|exists:service_options,id',
             'selectable' => 'sometimes|boolean',
             'visible' => 'sometimes|boolean',
-            'build_memory' => 'required|integer|min:0',
-            'build_swap' => 'required|integer|min:0',
-            'build_cpu' => 'required|integer|min:0',
-            'build_io' => 'required|integer|min:10|max:1000',
-            'build_container' => 'required|string',
-            'build_script' => 'sometimes|nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -66,11 +60,8 @@ class Pack
                 throw new DisplayException('The file provided does not appear to be valid.');
             }
 
-            if (! in_array($data['file_upload']->getMimeType(), [
-                'application/zip',
-                'application/gzip',
-            ])) {
-                throw new DisplayException('The file provided does not meet the required filetypes of application/zip or application/gzip.');
+            if (! in_array($data['file_upload']->getMimeType(), ['application/gzip', 'application/x-gzip'])) {
+                throw new DisplayException('The file provided (' . $data['file_upload']->getMimeType() . ') does not meet the required filetype of application/gzip.');
             }
         }
 
@@ -78,14 +69,8 @@ class Pack
         try {
             $uuid = new UuidService;
             $pack = Models\ServicePack::create([
-                'option' => $data['option'],
-                'uuid' => $uuid->generate('servers', 'uuid'),
-                'build_memory' => $data['build_memory'],
-                'build_swap' => $data['build_swap'],
-                'build_cpu' => $data['build_swap'],
-                'build_io' => $data['build_io'],
-                'build_script' => (empty($data['build_script'])) ? null : $data['build_script'],
-                'build_container' => $data['build_container'],
+                'option_id' => $data['option'],
+                'uuid' => $uuid->generate('service_packs', 'uuid'),
                 'name' => $data['name'],
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
@@ -95,8 +80,7 @@ class Pack
 
             Storage::makeDirectory('packs/' . $pack->uuid);
             if (isset($data['file_upload'])) {
-                $filename = ($data['file_upload']->getMimeType() === 'application/zip') ? 'archive.zip' : 'archive.tar.gz';
-                $data['file_upload']->storeAs('packs/' . $pack->uuid, $filename);
+                $data['file_upload']->storeAs('packs/' . $pack->uuid, 'archive.tar.gz');
             }
 
             DB::commit();
@@ -105,7 +89,7 @@ class Pack
             throw $ex;
         }
 
-        return $pack->id;
+        return $pack;
     }
 
     public function createWithTemplate(array $data)
@@ -132,38 +116,30 @@ class Pack
                 throw new DisplayException('The uploaded archive was unable to be opened.');
             }
 
-            $isZip = $zip->locateName('archive.zip');
             $isTar = $zip->locateName('archive.tar.gz');
 
-            if ($zip->locateName('import.json') === false || ($isZip === false && $isTar === false)) {
+            if (! $zip->locateName('import.json') || ! $isTar) {
                 throw new DisplayException('This contents of the provided archive were in an invalid format.');
             }
 
             $json = json_decode($zip->getFromName('import.json'));
-            $id = $this->create([
+            $pack = $this->create([
                 'name' => $json->name,
                 'version' => $json->version,
                 'description' => $json->description,
                 'option' => $data['option'],
                 'selectable' => $json->selectable,
                 'visible' => $json->visible,
-                'build_memory' => $json->build->memory,
-                'build_swap' => $json->build->swap,
-                'build_cpu' => $json->build->cpu,
-                'build_io' => $json->build->io,
-                'build_container' => $json->build->container,
-                'build_script' => $json->build->script,
             ]);
 
-            $pack = Models\ServicePack::findOrFail($id);
-            if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), ($isZip === false) ? 'archive.tar.gz' : 'archive.zip')) {
+            if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), 'archive.tar.gz')) {
                 $pack->delete();
                 throw new DisplayException('Unable to extract the archive file to the correct location.');
             }
 
             $zip->close();
 
-            return $pack->id;
+            return $pack;
         } else {
             $json = json_decode(file_get_contents($data['file_upload']->path()));
 
@@ -174,12 +150,6 @@ class Pack
                 'option' => $data['option'],
                 'selectable' => $json->selectable,
                 'visible' => $json->visible,
-                'build_memory' => $json->build->memory,
-                'build_swap' => $json->build->swap,
-                'build_cpu' => $json->build->cpu,
-                'build_io' => $json->build->io,
-                'build_container' => $json->build->container,
-                'build_script' => $json->build->script,
             ]);
         }
     }
@@ -193,36 +163,20 @@ class Pack
             'option' => 'required|exists:service_options,id',
             'selectable' => 'sometimes|boolean',
             'visible' => 'sometimes|boolean',
-            'build_memory' => 'required|integer|min:0',
-            'build_swap' => 'required|integer|min:0',
-            'build_cpu' => 'required|integer|min:0',
-            'build_io' => 'required|integer|min:10|max:1000',
-            'build_container' => 'required|string',
-            'build_script' => 'sometimes|string',
         ]);
 
         if ($validator->fails()) {
             throw new DisplayValidationException($validator->errors());
         }
 
-        DB::transaction(function () use ($id, $data) {
-            Models\ServicePack::findOrFail($id)->update([
-                'option' => $data['option'],
-                'build_memory' => $data['build_memory'],
-                'build_swap' => $data['build_swap'],
-                'build_cpu' => $data['build_swap'],
-                'build_io' => $data['build_io'],
-                'build_script' => (empty($data['build_script'])) ? null : $data['build_script'],
-                'build_container' => $data['build_container'],
-                'name' => $data['name'],
-                'version' => $data['version'],
-                'description' => (empty($data['description'])) ? null : $data['description'],
-                'selectable' => isset($data['selectable']),
-                'visible' => isset($data['visible']),
-            ]);
-
-            return true;
-        });
+        Models\ServicePack::findOrFail($id)->update([
+            'option_id' => $data['option'],
+            'name' => $data['name'],
+            'version' => $data['version'],
+            'description' => (empty($data['description'])) ? null : $data['description'],
+            'selectable' => isset($data['selectable']),
+            'visible' => isset($data['visible']),
+        ]);
     }
 
     public function delete($id)

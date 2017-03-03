@@ -30,7 +30,7 @@ class DaemonRoutes
 {
     public function map(Router $router)
     {
-        $router->group(['prefix' => 'daemon'], function () use ($router) {
+        $router->group(['prefix' => 'daemon', 'middleware' => 'daemon'], function () use ($router) {
             $router->get('services', [
                 'as' => 'daemon.services',
                 'uses' => 'Daemon\ServiceController@list',
@@ -39,6 +39,15 @@ class DaemonRoutes
             $router->get('services/pull/{service}/{file}', [
                 'as' => 'remote.install',
                 'uses' => 'Daemon\ServiceController@pull',
+            ]);
+
+            $router->get('packs/pull/{uuid}', [
+                'as' => 'daemon.pack.pull',
+                'uses' => 'Daemon\PackController@pull',
+            ]);
+            $router->get('packs/pull/{uuid}/hash', [
+                'as' => 'daemon.pack.hash',
+                'uses' => 'Daemon\PackController@hash',
             ]);
         });
     }

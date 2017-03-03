@@ -17,15 +17,30 @@
 {{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
 {{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
 {{-- SOFTWARE. --}}
-<html>
-    <head>
-        <title>Pterodactyl - New Account</title>
-    </head>
-    <body>
-        <center><h1>Pterodactyl - Account Created</h1></center>
-        <p>You are recieving this email because an account has been created for you on Pterodactyl Panel.</p>
-        <p>Login: <a href="{{ $login }}">{{ $login }}</a></p>
-        <p>Email: {{ $email }}</p>
-        <p>Forgot your password? <a href="{{ $forgot }}">{{ $forgot }}</a></p>
-    </body>
-</html>
+@extends('layouts.auth')
+
+@section('title')
+    2FA Checkpoint
+@endsection
+
+@section('content')
+<div class="login-box-body">
+    <p class="login-box-msg">@lang('auth.2fa_required')</p>
+    <form action="{{ route('auth.totp') }}" method="POST">
+        <div class="form-group">
+            <input type="text" name="2fa_token" class="form-control" placeholder="@lang('strings.2fa_token')">
+            <span class="fa fa-lock form-control-feedback"></span>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                {!! csrf_field() !!}
+                <input type="hidden" name="verify_token" value="{{ $verify_key }}" />
+                @if($remember)
+                    <input type="hidden" name="remember" value="true" />
+                @endif
+                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('strings.submit')</button>
+            </div>
+        </div>
+    </form>
+</div>
+@endsection

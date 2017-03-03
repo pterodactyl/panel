@@ -48,8 +48,8 @@
             </div>
             <div class="box-footer text-center">
                 @can('power-start', $server)<button class="btn btn-success disabled" data-attr="power" data-action="start">Start</button>@endcan
-                @can('power-off', $server)<button class="btn btn-primary disabled" data-attr="power" data-action="restart">Restart</button>@endcan
-                @can('power-restart', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="stop">Stop</button>@endcan
+                @can('power-restart', $server)<button class="btn btn-primary disabled" data-attr="power" data-action="restart">Restart</button>@endcan
+                @can('power-stop', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="stop">Stop</button>@endcan
                 @can('power-kill', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="kill">Kill</button>@endcan
             </div>
         </div>
@@ -88,7 +88,7 @@
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
-    @if($server->a_serviceFile === 'minecraft')
+    @if($server->service->file === 'minecraft')
         {!! Theme::js('js/plugins/minecraft/eula.js') !!}
     @endif
 @endsection

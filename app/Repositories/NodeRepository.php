@@ -44,7 +44,7 @@ class NodeRepository
         // Validate Fields
         $validator = Validator::make($data, [
             'name' => 'required|regex:/^([\w .-]{1,100})$/',
-            'location' => 'required|numeric|min:1|exists:locations,id',
+            'location_id' => 'required|numeric|min:1|exists:locations,id',
             'public' => 'required|numeric|between:0,1',
             'fqdn' => 'required|string|unique:nodes,fqdn',
             'scheme' => 'required|regex:/^(http(s)?)$/',
@@ -65,7 +65,7 @@ class NodeRepository
 
         // Verify the FQDN if using SSL
         if (filter_var($data['fqdn'], FILTER_VALIDATE_IP) && $data['scheme'] === 'https') {
-            throw new DisplayException('A fully qualified domain name is required to use secure comunication on this node.');
+            throw new DisplayException('A fully qualified domain name is required to use a secure comunication method on this node.');
         }
 
         // Verify FQDN is resolvable, or if not using SSL that the IP is valid.
@@ -81,12 +81,7 @@ class NodeRepository
         $uuid = new UuidService;
         $data['daemonSecret'] = (string) $uuid->generate('nodes', 'daemonSecret');
 
-        // Store the Data
-        $node = new Models\Node;
-        $node->fill($data);
-        $node->save();
-
-        return $node->id;
+        return Models\Node::create($data);
     }
 
     public function update($id, array $data)
@@ -96,7 +91,7 @@ class NodeRepository
         // Validate Fields
         $validator = $validator = Validator::make($data, [
             'name' => 'regex:/^([\w .-]{1,100})$/',
-            'location' => 'numeric|min:1|exists:locations,id',
+            'location_id' => 'numeric|min:1|exists:locations,id',
             'public' => 'numeric|between:0,1',
             'fqdn' => 'string|unique:nodes,fqdn,' . $id,
             'scheme' => 'regex:/^(http(s)?)$/',
@@ -105,10 +100,10 @@ class NodeRepository
             'disk' => 'numeric|min:1',
             'disk_overallocate' => 'numeric|min:-1',
             'upload_size' => 'numeric|min:0',
-            'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
+            'daemonBase' => 'sometimes|regex:/^([\/][\d\w.\-\/]+)$/',
             'daemonSFTP' => 'numeric|between:1,65535',
             'daemonListen' => 'numeric|between:1,65535',
-            'reset_secret' => 'sometimes|accepted',
+            'reset_secret' => 'sometimes|nullable|accepted',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -143,7 +138,7 @@ class NodeRepository
         }
 
         // Set the Secret
-        if (isset($data['reset_secret'])) {
+        if (isset($data['reset_secret']) && ! is_null($data['reset_secret'])) {
             $uuid = new UuidService;
             $data['daemonSecret'] = (string) $uuid->generate('nodes', 'daemonSecret');
             unset($data['reset_secret']);
@@ -152,18 +147,12 @@ class NodeRepository
         $oldDaemonKey = $node->daemonSecret;
         $node->update($data);
         try {
-            $client = Models\Node::guzzleRequest($node->id);
-            $client->request('PATCH', '/config', [
-                'headers' => [
-                    'X-Access-Token' => $oldDaemonKey,
-                ],
+            $node->guzzleClient(['X-Access-Token' => $oldDaemonKey])->request('PATCH', '/config', [
                 'json' => [
                     'web' => [
                         'listen' => $node->daemonListen,
                         'ssl' => [
                             'enabled' => ($node->scheme === 'https'),
-                            'certificate' => '/etc/letsencrypt/live/' . $node->fqdn . '/fullchain.pem',
-                            'key' => '/etc/letsencrypt/live/' . $node->fqdn . '/privkey.pem',
                         ],
                     ],
                     'sftp' => [
@@ -221,34 +210,34 @@ class NodeRepository
 
                             foreach ($portBlock as $assignPort) {
                                 $alloc = Models\Allocation::firstOrNew([
-                                    'node' => $node->id,
+                                    'node_id' => $node->id,
                                     'ip' => $ip,
                                     'port' => $assignPort,
                                 ]);
                                 if (! $alloc->exists) {
                                     $alloc->fill([
-                                        'node' => $node->id,
+                                        'node_id' => $node->id,
                                         'ip' => $ip,
                                         'port' => $assignPort,
                                         'ip_alias' => $setAlias,
-                                        'assigned_to' => null,
+                                        'server_id' => null,
                                     ]);
                                     $alloc->save();
                                 }
                             }
                         } else {
                             $alloc = Models\Allocation::firstOrNew([
-                                'node' => $node->id,
+                                'node_id' => $node->id,
                                 'ip' => $ip,
                                 'port' => $port,
                             ]);
                             if (! $alloc->exists) {
                                 $alloc->fill([
-                                    'node' => $node->id,
+                                    'node_id' => $node->id,
                                     'ip' => $ip,
                                     'port' => $port,
                                     'ip_alias' => $setAlias,
-                                    'assigned_to' => null,
+                                    'server_id' => null,
                                 ]);
                                 $alloc->save();
                             }
@@ -266,8 +255,8 @@ class NodeRepository
 
     public function delete($id)
     {
-        $node = Models\Node::findOrFail($id);
-        if (Models\Server::where('node', $id)->count() > 0) {
+        $node = Models\Node::withCount('servers')->findOrFail($id);
+        if ($node->servers_count > 0) {
             throw new DisplayException('You cannot delete a node with servers currently attached to it.');
         }
 
@@ -280,7 +269,7 @@ class NodeRepository
             ]);
 
             // Delete Allocations
-            Models\Allocation::where('node', $node->id)->delete();
+            Models\Allocation::where('node_id', $node->id)->delete();
 
             // Delete configure tokens
             Models\NodeConfigurationToken::where('node', $node->id)->delete();

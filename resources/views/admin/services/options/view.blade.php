@@ -28,12 +28,12 @@
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/services">Services</a></li>
-        <li><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></li>
+        <li><a href="{{ route('admin.services.service', $option->service->id) }}">{{ $option->service->name }}</a></li>
         <li class="active">{{ $option->name }}</li>
     </ul>
     <div class="alert alert-warning"><strong>Warning!</strong> This page contains advanced settings that the panel and daemon use to control servers. Modifying information on this page is not recommended unless you are absolutely sure of what you are doing.</div>
     <h3>Settings</h3><hr />
-    <form action="{{ route('admin.services.option', [$service->id, $option->id]) }}" method="POST">
+    <form action="{{ route('admin.services.option', [$option->service->id, $option->id]) }}" method="POST">
         <div class="row">
             <div class="col-md-6 form-group">
                 <label class="control-label">Name:</label>
@@ -74,7 +74,7 @@
             <div class="col-md-12 form-group">
                 <label class="control-label">Default Startup Command:</label>
                 <div>
-                    <input type="text" name="startup" value="{{ old('startup', $option->startup) }}" class="form-control" />
+                    <input type="text" name="startup" value="{{ old('startup', $option->startup) }}" placeholder="{{ $option->service->startup }}" class="form-control" />
                     <p class="text-muted"><small>To use the default startup of the parent service simply leave this field blank.</small></p>
                 </div>
             </div>
@@ -88,9 +88,9 @@
             </div>
         </div>
     </form>
-    <h3>Variables <small><a href="{{ route('admin.services.option.variable.new', [$service->id, $option->id]) }}"><i class="fa fa-plus"></i></a></small></h3><hr />
-    @foreach($variables as $variable)
-    <form action="{{ route('admin.services.option.variable', [$service->id, $option->id, $variable->id]) }}" method="POST">
+    <h3>Variables <small><a href="{{ route('admin.services.option.variable.new', [$option->service->id, $option->id]) }}"><i class="fa fa-plus"></i></a></small></h3><hr />
+    @foreach($option->variables as $variable)
+    <form action="{{ route('admin.services.option.variable', [$option->service->id, $option->id, $variable->id]) }}" method="POST">
         <div class="well">
             <div class="row">
                 <div class="col-md-6 form-group">
@@ -158,7 +158,7 @@
             <div class="row">
                 <div class="col-md-12">
                     {!! csrf_field() !!}
-                    <a href="{{ route('admin.services.option.variable.delete', [$service->id, $option->id, $variable->id]) }}"><button type="button" class="btn btn-sm btn-danger pull-right"><i class="fa fa-times"></i></button></a>
+                    <a href="{{ route('admin.services.option.variable.delete', [$option->service->id, $option->id, $variable->id]) }}"><button type="button" class="btn btn-sm btn-danger pull-right"><i class="fa fa-times"></i></button></a>
                     <input type="submit" class="btn btn-sm btn-success" value="Update Variable" />
                 </div>
             </div>
@@ -175,16 +175,19 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($servers as $server)
+            @foreach ($option->servers as $server)
                 <tr>
                     <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                    <td><a href="{{ route('admin.users.view', $server->owner) }}">{{ $server->a_ownerEmail }}</a></td>
+                    <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->email }}</a></td>
                     <td>{{ $server->updated_at }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-    <form action="{{ route('admin.services.option', [$service->id, $option->id]) }}" method="POST">
+    <div class="text-center">
+        {!! $option->servers->render() !!}
+    </div>
+    <form action="{{ route('admin.services.option', [$option->service->id, $option->id]) }}" method="POST">
         <div class="row">
             <div class="col-md-12">
                 <div class="alert alert-danger">

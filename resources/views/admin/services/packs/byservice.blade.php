@@ -40,10 +40,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($options as $option)
+            @foreach ($service->options as $option)
                 <tr>
                     <td><a href="{{ route('admin.services.packs.option', $option->id) }}">{{ $option->name }}</a></td>
-                    <td>{{ $option->p_count }}</td>
+                    <td>{{ $option->packs->count() }}</td>
                 </tr>
             @endforeach
             <tr>

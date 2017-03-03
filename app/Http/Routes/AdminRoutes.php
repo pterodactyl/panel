@@ -144,7 +144,7 @@ class AdminRoutes
             ]);
 
             $router->post('/new/service-options', [
-                'uses' => 'Admin\ServersController@postNewServerServiceOptions',
+                'uses' => 'Admin\ServersController@postNewServerServiceOption',
             ]);
 
             $router->post('/new/option-details', [

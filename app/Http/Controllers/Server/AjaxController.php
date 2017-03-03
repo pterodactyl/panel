@@ -67,18 +67,22 @@ class AjaxController extends Controller
      */
     public function getStatus(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
 
         if (! $server) {
             return response()->json([], 404);
         }
 
-        $client = Models\Node::guzzleRequest($server->node);
+        if (! $server->installed) {
+            return response()->json(['status' => 20]);
+        }
+
+        if ($server->suspended) {
+            return response()->json(['status' => 30]);
+        }
 
         try {
-            $res = $client->request('GET', '/server', [
-                'headers' => Models\Server::getGuzzleHeaders($uuid),
-            ]);
+            $res = $server->guzzleClient()->request('GET', '/server');
             if ($res->getStatusCode() === 200) {
                 return response()->json(json_decode($res->getBody()));
             }
@@ -98,10 +102,10 @@ class AjaxController extends Controller
      */
     public function postDirectoryList(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $this->directory = '/' . trim(urldecode($request->input('directory', '/')), '/');
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('list-files', $server);
 
+        $this->directory = '/' . trim(urldecode($request->input('directory', '/')), '/');
         $prevDir = [
             'header' => ($this->directory !== '/') ? $this->directory : '',
         ];
@@ -149,7 +153,7 @@ class AjaxController extends Controller
      */
     public function postSaveFile(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('save-files', $server);
 
         $controller = new Repositories\Daemon\FileRepository($uuid);
@@ -175,17 +179,17 @@ class AjaxController extends Controller
      */
     public function postSetPrimary(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid)->load('allocations');
         $this->authorize('set-connection', $server);
 
-        if ((int) $request->input('allocation') === $server->allocation) {
+        if ((int) $request->input('allocation') === $server->allocation_id) {
             return response()->json([
                 'error' => 'You are already using this as your default connection.',
             ], 409);
         }
 
         try {
-            $allocation = Models\Allocation::where('id', $request->input('allocation'))->where('assigned_to', $server->id)->first();
+            $allocation = $server->allocations->where('id', $request->input('allocation'))->where('server_id', $server->id)->first();
             if (! $allocation) {
                 return response()->json([
                     'error' => 'No allocation matching your request was found in the system.',
@@ -217,10 +221,10 @@ class AjaxController extends Controller
 
     public function postResetDatabasePassword(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $database = Models\Database::where('id', $request->input('database'))->where('server_id', $server->id)->firstOrFail();
-
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('reset-db-password', $server);
+
+        $database = Models\Database::where('id', $request->input('database'))->where('server_id', $server->id)->firstOrFail();
         try {
             $repo = new Repositories\DatabaseRepository;
             $password = str_random(16);

@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\API\User;
 
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\API\BaseController;
 
@@ -32,19 +31,16 @@ class InfoController extends BaseController
 {
     public function me(Request $request)
     {
-        return Models\Server::getUserServers()->map(function ($server) {
+        return $request->user()->serverAccessCollection()->load('allocation', 'option')->map(function ($server) {
             return [
                 'id' => $server->uuidShort,
                 'uuid' => $server->uuid,
                 'name' => $server->name,
-                'node' => $server->nodeName,
-                'ip' => [
-                    'set' => $server->ip,
-                    'alias' => $server->ip_alias,
-                ],
-                'port' => $server->port,
-                'service' => $server->a_serviceName,
-                'option' => $server->a_serviceOptionName,
+                'node' => $server->node->name,
+                'ip' => $server->allocation->alias,
+                'port' => $server->allocation->port,
+                'service' => $server->service->name,
+                'option' => $server->option->name,
             ];
         })->all();
     }

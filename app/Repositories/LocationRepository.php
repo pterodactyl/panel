@@ -37,14 +37,15 @@ class LocationRepository
 
     /**
      * Creates a new location on the system.
+     *
      * @param  array  $data
-     * @throws Pterodactyl\Exceptions\DisplayValidationException
-     * @return int
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     * @return \Pterodactyl\Models\Location
      */
     public function create(array $data)
     {
         $validator = Validator::make($data, [
-            'short' => 'required|regex:/^[a-z0-9_.-]{1,10}$/i|unique:locations,short',
+            'short' => 'required|regex:/^[\w.-]{1,20}$/i|unique:locations,short',
             'long' => 'required|string|min:1|max:255',
         ]);
 
@@ -54,14 +55,12 @@ class LocationRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $location = new Models\Location;
-        $location->fill([
+        $location = Models\Location::create([
             'long' => $data['long'],
             'short' => $data['short'],
         ]);
-        $location->save();
 
-        return $location->id;
+        return $location;
     }
 
     /**
@@ -73,9 +72,11 @@ class LocationRepository
      */
     public function edit($id, array $data)
     {
+        $location = Models\Location::findOrFail($id);
+
         $validator = Validator::make($data, [
-            'short' => 'regex:/^[a-z0-9_.-]{1,10}$/i',
-            'long' => 'string|min:1|max:255',
+            'short' => 'required|regex:/^[\w.-]{1,20}$/i|unique:locations,short,' . $location->id,
+            'long' => 'required|string|min:1|max:255',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
@@ -84,15 +85,7 @@ class LocationRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $location = Models\Location::findOrFail($id);
-
-        if (isset($data['short'])) {
-            $location->short = $data['short'];
-        }
-
-        if (isset($data['long'])) {
-            $location->long = $data['long'];
-        }
+        $location->fill($data);
 
         return $location->save();
     }

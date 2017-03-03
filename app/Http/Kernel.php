@@ -17,7 +17,9 @@ class Kernel extends HttpKernel
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+
         \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
+        \Fideloper\Proxy\TrustProxies::class,
     ];
 
     /**
@@ -51,6 +53,7 @@ class Kernel extends HttpKernel
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
         'server' => \Pterodactyl\Http\Middleware\CheckServer::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
+        'daemon' => \Pterodactyl\Http\Middleware\DaemonAuthenticate::class,
         'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,

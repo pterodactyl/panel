@@ -29,11 +29,10 @@ use Log;
 use Crypt;
 use Validator;
 use Pterodactyl\Models;
-use Pterodactyl\Events\ServerDeleted;
 use Pterodactyl\Services\UuidService;
+use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Notifications\ServerCreated;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerRepository
@@ -91,16 +90,17 @@ class ServerRepository
             'io' => 'required|numeric|min:10|max:1000',
             'cpu' => 'required|numeric|min:0',
             'disk' => 'required|numeric|min:0',
-            'service' => 'required|numeric|min:1|exists:services,id',
-            'option' => 'required|numeric|min:1|exists:service_options,id',
-            'pack' => 'sometimes|nullable|numeric|min:0',
+            'service_id' => 'required|numeric|min:1|exists:services,id',
+            'option_id' => 'required|numeric|min:1|exists:service_options,id',
+            'location_id' => 'required|numeric|min:1|exists:locations,id',
+            'pack_id' => 'sometimes|nullable|numeric|min:0',
             'startup' => 'string',
             'custom_image_name' => 'required_if:use_custom_image,on',
             'auto_deploy' => 'sometimes|boolean',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
         ]);
 
-        $validator->sometimes('node', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
+        $validator->sometimes('node_id', 'bail|required|numeric|min:1|exists:nodes,id', function ($input) {
             return ! ($input->auto_deploy);
         });
 
@@ -112,7 +112,7 @@ class ServerRepository
             return ! $input->auto_deploy && ! $input->allocation;
         });
 
-        $validator->sometimes('allocation', 'numeric|exists:allocations,id', function ($input) {
+        $validator->sometimes('allocation_id', 'numeric|exists:allocations,id', function ($input) {
             return ! ($input->auto_deploy || ($input->port && $input->ip));
         });
 
@@ -122,12 +122,7 @@ class ServerRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        if (is_int($data['owner'])) {
-            $user = Models\User::select('id', 'email')->where('id', $data['owner'])->first();
-        } else {
-            $user = Models\User::select('id', 'email')->where('email', $data['owner'])->first();
-        }
-
+        $user = Models\User::select('id', 'email')->where((is_int($data['owner'])) ? 'id' : 'email', $data['owner'])->first();
         if (! $user) {
             throw new DisplayException('The user id or email passed to the function was not found on the system.');
         }
@@ -136,23 +131,24 @@ class ServerRepository
         if (isset($data['auto_deploy']) && in_array($data['auto_deploy'], [true, 1, '1'])) {
             // This is an auto-deployment situation
             // Ignore any other passed node data
-            unset($data['node'], $data['ip'], $data['port'], $data['allocation']);
+            unset($data['node_id'], $data['ip'], $data['port'], $data['allocation_id']);
 
             $autoDeployed = true;
-            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location']);
+            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location_id']);
             $allocation = DeploymentService::randomAllocation($node->id);
         } else {
-            $node = Models\Node::getByID($data['node']);
+            $node = Models\Node::findOrFail($data['node_id']);
         }
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
         if (! $autoDeployed) {
-            if (! isset($data['allocation'])) {
-                $allocation = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+            if (! isset($data['allocation_id'])) {
+                $model = Models\Allocation::where('ip', $data['ip'])->where('port', $data['port']);
             } else {
-                $allocation = Models\Allocation::where('id', $data['allocation'])->where('node', $data['node'])->whereNull('assigned_to')->first();
+                $model = Models\Allocation::where('id', $data['allocation_id']);
             }
+            $allocation = $model->where('node_id', $data['node_id'])->whereNull('server_id')->first();
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
@@ -164,28 +160,28 @@ class ServerRepository
         // We know the service and option exists because of the validation.
         // We need to verify that the option exists for the service, and then check for
         // any required variable fields. (fields are labeled env_<env_variable>)
-        $option = Models\ServiceOptions::where('id', $data['option'])->where('parent_service', $data['service'])->first();
+        $option = Models\ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
         if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
 
         // Validate the Pack
-        if ($data['pack'] == 0) {
-            $data['pack'] = null;
+        if ($data['pack_id'] == 0) {
+            $data['pack_id'] = null;
         }
 
-        if (! is_null($data['pack'])) {
-            $pack = Models\ServicePack::where('id', $data['pack'])->where('option', $data['option'])->first();
+        if (! is_null($data['pack_id'])) {
+            $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
         }
 
         // Load up the Service Information
-        $service = Models\Service::find($option->parent_service);
+        $service = Models\Service::find($option->service_id);
 
         // Check those Variables
-        $variables = Models\ServiceVariables::where('option_id', $data['option'])->get();
+        $variables = Models\ServiceVariable::where('option_id', $data['option_id'])->get();
         $variableList = [];
         if ($variables) {
             foreach ($variables as $variable) {
@@ -220,7 +216,7 @@ class ServerRepository
         // Check Overallocation
         if (! $autoDeployed) {
             if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
-                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
+                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first();
 
                 // Check memory limits
                 if (is_numeric($node->memory_overallocate)) {
@@ -259,20 +255,20 @@ class ServerRepository
             $server->fill([
                 'uuid' => $genUuid,
                 'uuidShort' => $genShortUuid,
-                'node' => $node->id,
+                'node_id' => $node->id,
                 'name' => $data['name'],
                 'suspended' => 0,
-                'owner' => $user->id,
+                'owner_id' => $user->id,
                 'memory' => $data['memory'],
                 'swap' => $data['swap'],
                 'disk' => $data['disk'],
                 'io' => $data['io'],
                 'cpu' => $data['cpu'],
                 'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
-                'allocation' => $allocation->id,
-                'service' => $data['service'],
-                'option' => $data['option'],
-                'pack' => $data['pack'],
+                'allocation_id' => $allocation->id,
+                'service_id' => $data['service_id'],
+                'option_id' => $data['option_id'],
+                'pack_id' => $data['pack_id'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
                 'image' => (isset($data['custom_image_name'])) ? $data['custom_image_name'] : $option->docker_image,
@@ -282,7 +278,7 @@ class ServerRepository
             $server->save();
 
             // Mark Allocation in Use
-            $allocation->assigned_to = $server->id;
+            $allocation->server_id = $server->id;
             $allocation->save();
 
             // Add Variables
@@ -293,28 +289,14 @@ class ServerRepository
             foreach ($variableList as $item) {
                 $environmentVariables[$item['env']] = $item['val'];
 
-                Models\ServerVariables::create([
+                Models\ServerVariable::create([
                     'server_id' => $server->id,
                     'variable_id' => $item['id'],
                     'variable_value' => $item['val'],
                 ]);
             }
 
-            // Queue Notification Email
-            $user->notify((new ServerCreated([
-                'name' => $server->name,
-                'memory' => $server->memory,
-                'node' => $node->name,
-                'service' => $service->name,
-                'option' => $option->name,
-                'uuidShort' => $server->uuidShort,
-            ])));
-
-            $client = Models\Node::guzzleRequest($node->id);
-            $client->request('POST', '/servers', [
-                'headers' => [
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $node->guzzleClient(['X-Access-Token' => $node->daemonSecret])->request('POST', '/servers', [
                 'json' => [
                     'uuid' => (string) $server->uuid,
                     'user' => $server->username,
@@ -348,8 +330,8 @@ class ServerRepository
 
             DB::commit();
 
-            return $server->id;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+            return $server;
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
         } catch (\Exception $ex) {
@@ -384,20 +366,19 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
-            $server = Models\Server::findOrFail($id);
-            $owner = Models\User::findOrFail($server->owner);
+            $server = Models\Server::with('user')->findOrFail($id);
 
             // Update daemon secret if it was passed.
-            if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $owner->email)) {
+            if ((isset($data['reset_token']) && $data['reset_token'] === true) || (isset($data['owner']) && $data['owner'] !== $server->user->email)) {
                 $oldDaemonKey = $server->daemonSecret;
                 $server->daemonSecret = $uuid->generate('servers', 'daemonSecret');
                 $resetDaemonKey = true;
             }
 
             // Update Server Owner if it was passed.
-            if (isset($data['owner']) && $data['owner'] !== $owner->email) {
+            if (isset($data['owner']) && $data['owner'] !== $server->user->email) {
                 $newOwner = Models\User::select('id')->where('email', $data['owner'])->first();
-                $server->owner = $newOwner->id;
+                $server->owner_id = $newOwner->id;
             }
 
             // Update Server Name if it was passed.
@@ -415,15 +396,10 @@ class ServerRepository
                 return true;
             }
 
-            // If we need to update do it here.
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
-
-            $res = $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $res = $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('PATCH', '/server', [
                 'exceptions' => false,
                 'json' => [
                     'keys' => [
@@ -472,14 +448,10 @@ class ServerRepository
             $server->image = $data['image'];
             $server->save();
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
-
-            $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('PATCH', '/server', [
                 'json' => [
                     'build' => [
                         'image' => $server->image,
@@ -490,7 +462,7 @@ class ServerRepository
             DB::commit();
 
             return true;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to update the container image.', $ex);
         } catch (\Exception $ex) {
@@ -530,27 +502,25 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
-            $server = Models\Server::findOrFail($id);
-            $allocation = Models\Allocation::findOrFail($server->allocation);
-
+            $server = Models\Server::with('allocation', 'allocations')->findOrFail($id);
             $newBuild = [];
 
             if (isset($data['default'])) {
                 list($ip, $port) = explode(':', $data['default']);
-                if ($ip !== $allocation->ip || (int) $port !== $allocation->port) {
-                    $selection = Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->first();
+                if ($ip !== $server->allocation->ip || (int) $port !== $server->allocation->port) {
+                    $selection = $server->allocations->where('ip', $ip)->where('port', $port)->first();
                     if (! $selection) {
                         throw new DisplayException('The requested default connection (' . $ip . ':' . $port . ') is not allocated to this server.');
                     }
 
-                    $server->allocation = $selection->id;
+                    $server->allocation_id = $selection->id;
                     $newBuild['default'] = [
                         'ip' => $ip,
                         'port' => (int) $port,
                     ];
 
                     // Re-Run to keep updated for rest of function
-                    $allocation = Models\Allocation::findOrFail($server->allocation);
+                    $server->load('allocation');
                 }
             }
 
@@ -565,15 +535,17 @@ class ServerRepository
                     }
 
                     // Can't remove the assigned IP/Port combo
-                    if ($ip === $allocation->ip && (int) $port === (int) $allocation->port) {
+                    if ($ip === $server->allocation->ip && (int) $port === (int) $server->allocation->port) {
                         break;
                     }
 
                     $newPorts = true;
-                    Models\Allocation::where('ip', $ip)->where('port', $port)->where('assigned_to', $server->id)->update([
-                        'assigned_to' => null,
+                    $server->allocations->where('ip', $ip)->where('port', $port)->update([
+                        'server_id' => null,
                     ]);
                 }
+
+                $server->load('allocations');
             }
 
             // Add Assignments
@@ -586,21 +558,22 @@ class ServerRepository
                     }
 
                     // Don't allow double port assignments
-                    if (Models\Allocation::where('port', $port)->where('assigned_to', $server->id)->count() !== 0) {
+                    if ($server->allocations->where('port', $port)->count() !== 0) {
                         break;
                     }
 
                     $newPorts = true;
-                    Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('assigned_to')->update([
-                        'assigned_to' => $server->id,
+                    Models\Allocation::where('ip', $ip)->where('port', $port)->whereNull('server_id')->update([
+                        'server_id' => $server->id,
                     ]);
                 }
+
+                $server->load('allocations');
             }
 
             // Loop All Assignments
             $additionalAssignments = [];
-            $assignments = Models\Allocation::where('assigned_to', $server->id)->get();
-            foreach ($assignments as &$assignment) {
+            foreach ($server->allocations as &$assignment) {
                 if (array_key_exists((string) $assignment->ip, $additionalAssignments)) {
                     array_push($additionalAssignments[(string) $assignment->ip], (int) $assignment->port);
                 } else {
@@ -646,14 +619,10 @@ class ServerRepository
             $server->save();
 
             if (! empty($newBuild)) {
-                $node = Models\Node::getByID($server->node);
-                $client = Models\Node::guzzleRequest($server->node);
-
-                $client->request('PATCH', '/server', [
-                    'headers' => [
-                        'X-Access-Server' => $server->uuid,
-                        'X-Access-Token' => $node->daemonSecret,
-                    ],
+                $server->node->guzzleClient([
+                    'X-Access-Server' => $server->uuid,
+                    'X-Access-Token' => $server->node->daemonSecret,
+                ])->request('PATCH', '/server', [
                     'json' => [
                         'build' => $newBuild,
                     ],
@@ -663,7 +632,7 @@ class ServerRepository
             DB::commit();
 
             return true;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to update the configuration.', $ex);
         } catch (\Exception $ex) {
@@ -674,34 +643,34 @@ class ServerRepository
 
     public function updateStartup($id, array $data, $admin = false)
     {
-        $server = Models\Server::findOrFail($id);
+        $server = Models\Server::with('variables', 'option.variables')->findOrFail($id);
 
         DB::beginTransaction();
 
         try {
             // Check the startup
-            if (isset($data['startup'])) {
+            if (isset($data['startup']) && $admin) {
                 $server->startup = $data['startup'];
                 $server->save();
             }
 
             // Check those Variables
-            $variables = Models\ServiceVariables::select(
-                    'service_variables.*',
-                    DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_currentValue')
-                )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-                ->where('option_id', $server->option)
-                ->get();
+            $server->option->variables->transform(function ($item, $key) use ($server) {
+                $displayValue = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+                $item->server_value = (! is_null($displayValue)) ? $displayValue : $item->default_value;
+
+                return $item;
+            });
 
             $variableList = [];
-            if ($variables) {
-                foreach ($variables as &$variable) {
+            if ($server->option->variables) {
+                foreach ($server->option->variables as &$variable) {
                     // Move on if the new data wasn't even sent
                     if (! isset($data[$variable->env_variable])) {
                         $variableList[] = [
                             'id' => $variable->id,
                             'env' => $variable->env_variable,
-                            'val' => $variable->a_currentValue,
+                            'val' => $variable->server_value,
                         ];
                         continue;
                     }
@@ -719,13 +688,13 @@ class ServerRepository
                     // Is the variable required?
                     // @TODO: is this even logical to perform this check?
                     if (isset($data[$variable->env_variable]) && empty($data[$variable->env_variable])) {
-                        if ($variable->required === 1) {
+                        if ($variable->required) {
                             throw new DisplayException('A required service option variable field (' . $variable->env_variable . ') was included in this request but was left blank.');
                         }
                     }
 
                     // Variable hidden and/or not user editable
-                    if (($variable->user_viewable === 0 || $variable->user_editable === 0) && ! $admin) {
+                    if ((! $variable->user_viewable || ! $variable->user_editable) && ! $admin) {
                         throw new DisplayException('A service option variable field (' . $variable->env_variable . ') does not exist or you do not have permission to edit it.');
                     }
 
@@ -750,7 +719,7 @@ class ServerRepository
                 $environmentVariables[$item['env']] = $item['val'];
 
                 // Update model or make a new record if it doesn't exist.
-                $model = Models\ServerVariables::firstOrNew([
+                $model = Models\ServerVariable::firstOrNew([
                     'variable_id' => $item['id'],
                     'server_id' => $server->id,
                 ]);
@@ -758,14 +727,10 @@ class ServerRepository
                 $model->save();
             }
 
-            $node = Models\Node::getByID($server->node);
-            $client = Models\Node::guzzleRequest($server->node);
-
-            $client->request('PATCH', '/server', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
+            $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('PATCH', '/server', [
                 'json' => [
                     'build' => [
                         'env|overwrite' => $environmentVariables,
@@ -776,7 +741,7 @@ class ServerRepository
             DB::commit();
 
             return true;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to update the server configuration.', $ex);
         } catch (\Exception $ex) {
@@ -791,15 +756,14 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
-            if ($force === 'force' || $force === true) {
+            if ($force === 'force' || $force) {
                 $server->installed = 3;
                 $server->save();
             }
 
             $server->delete();
-            DB::commit();
 
-            event(new ServerDeleted($server->id));
+            return DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -808,8 +772,7 @@ class ServerRepository
 
     public function deleteNow($id, $force = false)
     {
-        $server = Models\Server::withTrashed()->findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $server = Models\Server::withTrashed()->with('node')->findOrFail($id);
 
         // Handle server being restored previously or
         // an accidental queue.
@@ -820,18 +783,20 @@ class ServerRepository
         DB::beginTransaction();
         try {
             // Unassign Allocations
-            Models\Allocation::where('assigned_to', $server->id)->update([
-                'assigned_to' => null,
+            Models\Allocation::where('server_id', $server->id)->update([
+                'server_id' => null,
             ]);
 
             // Remove Variables
-            Models\ServerVariables::where('server_id', $server->id)->delete();
-
-            // Remove Permissions (Foreign Key requires before Subusers)
-            Models\Permission::where('server_id', $server->id)->delete();
+            Models\ServerVariable::where('server_id', $server->id)->delete();
 
             // Remove SubUsers
-            Models\Subuser::where('server_id', $server->id)->delete();
+            foreach (Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
+                foreach ($subuser->permissions as &$permission) {
+                    $permission->delete();
+                }
+                $subuser->delete();
+            }
 
             // Remove Downloads
             Models\Download::where('server', $server->uuid)->delete();
@@ -847,17 +812,14 @@ class ServerRepository
                 $repository->drop($database->id);
             }
 
-            $client = Models\Node::guzzleRequest($server->node);
-            $client->request('DELETE', '/servers', [
-                'headers' => [
-                    'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid,
-                ],
-            ]);
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('DELETE', '/servers');
 
             $server->forceDelete();
             DB::commit();
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             // Set installed is set to 3 when force deleting.
             if ($server->installed === 3 || $force) {
                 $server->forceDelete();
@@ -887,7 +849,7 @@ class ServerRepository
         if ($server->installed === 2) {
             throw new DisplayException('This server was marked as having a failed install, you cannot override this.');
         }
-        $server->installed = ($server->installed === 1) ? 0 : 1;
+        $server->installed = ! $server->installed;
 
         return $server->save();
     }
@@ -899,31 +861,27 @@ class ServerRepository
      */
     public function suspend($id, $deleted = false)
     {
-        $server = ($deleted) ? Models\Server::withTrashed()->findOrFail($id) : Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $server = Models\Server::withTrashed()->with('node')->findOrFail($id);
 
         DB::beginTransaction();
 
         try {
 
             // Already suspended, no need to make more requests.
-            if ($server->suspended === 1) {
+            if ($server->suspended) {
                 return true;
             }
 
             $server->suspended = 1;
             $server->save();
 
-            $client = Models\Node::guzzleRequest($server->node);
-            $client->request('POST', '/server/suspend', [
-                'headers' => [
-                    'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid,
-                ],
-            ]);
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('POST', '/server/suspend');
 
             return DB::commit();
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to contact the remote daemon to suspend this server.', $ex);
         } catch (\Exception $ex) {
@@ -939,8 +897,7 @@ class ServerRepository
      */
     public function unsuspend($id)
     {
-        $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $server = Models\Server::with('node')->findOrFail($id);
 
         DB::beginTransaction();
 
@@ -954,16 +911,13 @@ class ServerRepository
             $server->suspended = 0;
             $server->save();
 
-            $client = Models\Node::guzzleRequest($server->node);
-            $client->request('POST', '/server/unsuspend', [
-                'headers' => [
-                    'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid,
-                ],
-            ]);
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('POST', '/server/unsuspend');
 
             return DB::commit();
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('An error occured while attempting to contact the remote daemon to un-suspend this server.', $ex);
         } catch (\Exception $ex) {
@@ -974,12 +928,9 @@ class ServerRepository
 
     public function updateSFTPPassword($id, $password)
     {
-        $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
+        $server = Models\Server::with('node')->findOrFail($id);
 
-        $validator = Validator::make([
-            'password' => $password,
-        ], [
+        $validator = Validator::make(['password' => $password], [
             'password' => 'required|regex:/^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})$/',
         ]);
 
@@ -993,21 +944,17 @@ class ServerRepository
         try {
             $server->save();
 
-            $client = Models\Node::guzzleRequest($server->node);
-            $client->request('POST', '/server/password', [
-                'headers' => [
-                    'X-Access-Token' => $node->daemonSecret,
-                    'X-Access-Server' => $server->uuid,
-                ],
-                'json' => [
-                    'password' => $password,
-                ],
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('POST', '/server/password', [
+                'json' => ['password' => $password],
             ]);
 
             DB::commit();
 
             return true;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error while attmping to contact the remote service to change the password.', $ex);
         } catch (\Exception $ex) {

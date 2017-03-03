@@ -2,6 +2,7 @@
 
 return [
     'email' => 'Email',
+    'user_identifier' => 'Username or Email',
     'password' => 'Password',
     'confirm_password' => 'Confirm Password',
     'login' => 'Login',
@@ -60,4 +61,6 @@ return [
     'no' => 'No',
     'delete' => 'Delete',
     '2fa' => '2FA',
+    'logout' => 'Logout',
+    'admin_cp' => 'Admin Control Panel',
 ];

@@ -48,17 +48,15 @@ class NodesController extends Controller
 
     public function getScript(Request $request, $id)
     {
-        return response()->view('admin.nodes.remote.deploy', ['node' => Models\Node::findOrFail($id)])->header('Content-Type', 'text/plain');
+        return response()->view('admin.nodes.remote.deploy', [
+            'node' => Models\Node::findOrFail($id),
+        ])->header('Content-Type', 'text/plain');
     }
 
     public function getIndex(Request $request)
     {
         return view('admin.nodes.index', [
-            'nodes' => Models\Node::select(
-                'nodes.*',
-                'locations.long as a_locationName',
-                DB::raw('(SELECT COUNT(*) FROM servers WHERE servers.node = nodes.id) as a_serverCount')
-            )->join('locations', 'nodes.location', '=', 'locations.id')->paginate(20),
+            'nodes' => Models\Node::with('location')->withCount('servers')->paginate(20),
         ]);
     }
 
@@ -78,15 +76,18 @@ class NodesController extends Controller
     public function postNew(Request $request)
     {
         try {
-            $node = new NodeRepository;
-            $new = $node->create($request->except([
-                '_token',
+            $repo = new NodeRepository;
+            $node = $repo->create($request->only([
+                'name', 'location_id', 'public',
+                'fqdn', 'scheme', 'memory',
+                'memory_overallocate', 'disk',
+                'disk_overallocate', 'daemonBase',
+                'daemonSFTP', 'daemonListen',
             ]));
-            Alert::success('Successfully created new node. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
-            Alert::info('<strong>To simplify the node setup you can generate a token on the configuration tab.</strong>')->flash();
+            Alert::success('Successfully created new node that can be configured automatically on your remote machine by visiting the configuration tab. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
 
             return redirect()->route('admin.nodes.view', [
-                'id' => $new,
+                'id' => $node->id,
                 'tab' => 'tab_allocation',
             ]);
         } catch (DisplayValidationException $e) {
@@ -103,26 +104,16 @@ class NodesController extends Controller
 
     public function getView(Request $request, $id)
     {
-        $node = Models\Node::findOrFail($id);
+        $node = Models\Node::with(
+            'servers.user', 'servers.service',
+            'servers.allocations', 'location'
+        )->findOrFail($id);
+        $node->setRelation('allocations', $node->allocations()->with('server')->paginate(40));
 
         return view('admin.nodes.view', [
             'node' => $node,
-            'servers' => Models\Server::select('servers.*', 'users.email as a_ownerEmail', 'services.name as a_serviceName')
-                ->join('users', 'users.id', '=', 'servers.owner')
-                ->join('services', 'services.id', '=', 'servers.service')
-                ->where('node', $id)->paginate(10, ['*'], 'servers'),
-            'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first(),
+            'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first(),
             'locations' => Models\Location::all(),
-            'allocations' => Models\Allocation::select('allocations.*', 'servers.name as assigned_to_name')
-                ->where('allocations.node', $node->id)
-                ->leftJoin('servers', 'servers.id', '=', 'allocations.assigned_to')
-                ->orderBy('allocations.ip', 'asc')
-                ->orderBy('allocations.port', 'asc')
-                ->paginate(20, ['*'], 'allocations'),
-            'allocation_ips' => Models\Allocation::select('id', 'ip')
-                ->where('node', $node->id)
-                ->groupBy('ip')
-                ->get(),
         ]);
     }
 
@@ -130,8 +121,12 @@ class NodesController extends Controller
     {
         try {
             $node = new NodeRepository;
-            $node->update($id, $request->except([
-                '_token',
+            $node->update($id, $request->only([
+                'name', 'location_id', 'public',
+                'fqdn', 'scheme', 'memory',
+                'memory_overallocate', 'disk',
+                'disk_overallocate', 'upload_size',
+                'daemonSFTP', 'daemonListen', 'reset_secret',
             ]));
             Alert::success('Successfully update this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
 
@@ -156,7 +151,7 @@ class NodesController extends Controller
 
     public function deallocateSingle(Request $request, $node, $allocation)
     {
-        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('id', $allocation)->delete();
+        $query = Models\Allocation::where('node_id', $node)->whereNull('server_id')->where('id', $allocation)->delete();
         if ((int) $query === 0) {
             return response()->json([
                 'error' => 'Unable to find an allocation matching those details to delete.',
@@ -168,7 +163,7 @@ class NodesController extends Controller
 
     public function deallocateBlock(Request $request, $node)
     {
-        $query = Models\Allocation::where('node', $node)->whereNull('assigned_to')->where('ip', $request->input('ip'))->delete();
+        $query = Models\Allocation::where('node_id', $node)->whereNull('server_id')->where('ip', $request->input('ip'))->delete();
         if ((int) $query === 0) {
             Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
 
@@ -204,7 +199,7 @@ class NodesController extends Controller
 
     public function getAllocationsJson(Request $request, $id)
     {
-        $allocations = Models\Allocation::select('ip')->where('node', $id)->groupBy('ip')->get();
+        $allocations = Models\Allocation::select('ip')->where('node_id', $id)->groupBy('ip')->get();
 
         return response()->json($allocations);
     }

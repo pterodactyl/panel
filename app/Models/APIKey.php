@@ -48,4 +48,14 @@ class APIKey extends Model
      * @var array
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    /**
+     * Gets the permissions associated with a key.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(APIPermission::class, 'key_id');
+    }
 }

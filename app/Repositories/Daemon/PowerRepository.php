@@ -24,21 +24,16 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use GuzzleHttp\Client;
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 
 class PowerRepository
 {
     protected $server;
-    protected $node;
-    protected $client;
 
     public function __construct($server)
     {
         $this->server = ($server instanceof Models\Server) ? $server : Models\Server::findOrFail($server);
-        $this->node = Models\Node::getByID($this->server->node);
-        $this->client = Models\Node::guzzleRequest($this->server->node);
     }
 
     public function do($action)
@@ -48,15 +43,10 @@ class PowerRepository
         // Additionally not all calls to this will be from a logged in user.
         // (e.g. task queue or API)
         try {
-            $response = $this->client->request('PUT', '/server/power', [
-                'headers' => [
-                    'X-Access-Token' => $this->server->daemonSecret,
-                    'X-Access-Server' => $this->server->uuid,
-                ],
-                'json' => [
-                    'action' => $action,
-                ],
-            ]);
+            $response = $this->server->node->guzzleClient([
+                'X-Access-Token' => $this->server->daemonSecret,
+                'X-Access-Server' => $this->server->uuid,
+            ])->request('PUT', '/server/power', ['json' => ['action' => $action]]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
                 throw new DisplayException('Power status responded with a non-200 error code.');

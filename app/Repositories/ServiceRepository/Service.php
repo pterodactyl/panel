@@ -53,25 +53,22 @@ class Service
             throw new DisplayValidationException($validator->errors());
         }
 
-        $data['author'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
-
-        $service = new Models\Service;
         DB::beginTransaction();
-
         try {
+            $service = new Models\Service;
+            $service->author = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
             $service->fill($data);
             $service->save();
 
-            Storage::put('services/' . $data['file'] . '/main.json', '{}');
-            Storage::copy('services/.templates/index.js', 'services/' . $data['file'] . '/index.js');
-
+            Storage::put('services/' . $service->file . '/main.json', '{}');
+            Storage::copy('services/.templates/index.js', 'services/' . $service->file . '/index.js');
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
         }
 
-        return $service->id;
+        return $service;
     }
 
     public function update($id, array $data)
@@ -99,7 +96,7 @@ class Service
     {
         $service = Models\Service::findOrFail($id);
         $servers = Models\Server::where('service', $service->id)->get();
-        $options = Models\ServiceOptions::select('id')->where('parent_service', $service->id);
+        $options = Models\ServiceOption::select('id')->where('service_id', $service->id);
 
         if (count($servers) !== 0) {
             throw new DisplayException('You cannot delete a service that has servers associated with it.');
@@ -107,7 +104,7 @@ class Service
 
         DB::beginTransaction();
         try {
-            Models\ServiceVariables::whereIn('option_id', $options->get()->toArray())->delete();
+            Models\ServiceVariable::whereIn('option_id', $options->get()->toArray())->delete();
             $options->delete();
             $service->delete();
 

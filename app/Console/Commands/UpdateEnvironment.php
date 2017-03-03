@@ -134,6 +134,10 @@ class UpdateEnvironment extends Command
             $variables['APP_TIMEZONE'] = $this->option('timezone');
         }
 
+        $variables['APP_THEME'] = 'pterodactyl';
+        $variables['CACHE_DRIVER'] = 'memcached';
+        $variables['SESSION_DRIVER'] = 'database';
+
         $bar = $this->output->createProgressBar(count($variables));
 
         $this->line('Writing new environment configuration to file.');
@@ -150,6 +154,9 @@ class UpdateEnvironment extends Command
 
         file_put_contents($file, $envContents);
         $bar->finish();
+
+        $this->line('Updating evironment configuration cache file.');
+        $this->call('config:cache');
         echo "\n";
     }
 }

@@ -53,10 +53,10 @@
                 <tr>
                     <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                     <td><a href="/admin/nodes/view/{{ $node->id }}">{{ $node->name }}</td>
-                    <td>{{ $node->a_locationName }}</td>
+                    <td>{{ $node->location->short }}</td>
                     <td class="hidden-xs">{{ $node->memory }} MB</td>
                     <td class="hidden-xs">{{ $node->disk }} MB</td>
-                    <td class="text-center hidden-xs">{{ $node->a_serverCount }}</td>
+                    <td class="text-center hidden-xs">{{ $node->servers_count }}</td>
                     <td class="text-center" style="color:{{ ($node->scheme === 'https') ? '#50af51' : '#d9534f' }}"><i class="fa fa-{{ ($node->scheme === 'https') ? 'lock' : 'unlock' }}"></i></td>
                     <td class="text-center hidden-xs"><i class="fa fa-{{ ($node->public === 1) ? 'eye' : 'eye-slash' }}"></i></td>
                 </tr>

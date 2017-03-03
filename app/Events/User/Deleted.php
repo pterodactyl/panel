@@ -22,42 +22,24 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Events\User;
 
-use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Models\User;
+use Illuminate\Queue\SerializesModels;
 
-class ServiceOptions extends Model
+class Deleted
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'service_options';
+    use SerializesModels;
+
+    public $user;
 
     /**
-     * Fields that are not mass assignable.
+     * Create a new event instance.
      *
-     * @var array
+     * @return void
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'parent_service' => 'integer',
-     ];
-
-     /**
-      * Gets all variables associated with this service.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-      */
-     public function variables()
-     {
-         return $this->hasMany(ServiceVariables::class, 'option_id');
-     }
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
 }

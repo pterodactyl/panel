@@ -57,47 +57,21 @@
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
                             <li class="dropdown user-menu">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <a href="{{ route('account') }}" class="dropdown-toggle" data-toggle="dropdown">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
-                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span> <span class="caret"></span>
+                                    <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if(Auth::user()->isRootAdmin())
-                                        <li><a href="{{ route('admin.index') }}">@lang('strings.admin_control')</a></li>
-                                    @endif
-                                    <li><a href="{{ route('auth.logout') }}">@lang('strings.sign_out')</a></li>
-                                </ul>
-                                {{-- <ul class="dropdown-menu">
-                                    <li class="user-header">
-                                        <p>
-                                            <small>Member since Nov. 2012</small>
-                                        </p>
-                                    </li>
-                                    <li class="user-body">
-                                        <div class="row">
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Followers</a>
-                                            </div>
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Sales</a>
-                                            </div>
-                                            <div class="col-xs-4 text-center">
-                                                <a href="#">Friends</a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li class="user-footer">
-                                        <div class="pull-left">
-                                            <a href="{{ route('admin.index') }}" class="btn btn-default btn-flat">Admin Control</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <a href="{{ route('auth.logout') }}" class="btn btn-default btn-flat">Sign out</a>
-                                        </div>
-                                    </li>
-                                </ul> --}}
+                            </li>
+                            @if(Auth::user()->isRootAdmin())
+                                <li>
+                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                </li>
+                            @endif
+                            <li>
+                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a>
                             </li>
                             <li>
-                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a>
+                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -116,7 +90,7 @@
                     <ul class="sidebar-menu">
                         <li class="header">@lang('navigation.account.header')</li>
                         <li class="{{ Route::currentRouteName() !== 'account' ?: 'active' }}">
-                            <a href="{{ route('account')}}">
+                            <a href="{{ route('account') }}">
                                 <i class="fa fa-user"></i> <span>@lang('navigation.account.my_account')</span>
                             </a>
                         </li>
@@ -142,63 +116,81 @@
                                     <i class="fa fa-terminal"></i> <span>@lang('navigation.server.console')</span>
                                 </a>
                             </li>
-                            <li class="treeview
-                                @if(in_array(Route::currentRouteName(), ['server.files.index', 'server.files.edit', 'server.files.add']))
-                                    active
-                                @endif
-                            ">
-                                <a href="#">
-                                    <i class="fa fa-files-o"></i>
-                                    <span>@lang('navigation.server.file_management')</span>
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ (Route::currentRouteName() !== 'server.files.index' && Route::currentRouteName() !== 'server.files.edit') ?: 'active' }}"><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
-                                </ul>
-                            </li>
-                            <li
-                                @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
-                                    class="active"
-                                @endif
-                            >
-                                <a href="{{ route('server.subusers', $server->uuidShort)}}">
-                                    <i class="fa fa-users"></i> <span>Subusers</span>
-                                </a>
-                            </li>
-                            <li
-                                @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
-                                    class="active"
-                                @endif
-                            >
-                                <a href="{{ route('server.tasks', $server->uuidShort)}}">
-                                    <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
-                                    <span class="pull-right-container">
-                                        <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Task::select('id')->where('server', $server->id)->where('active', 1)->count() }}</span>
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="treeview
-                                @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
-                                    active
-                                @endif
-                            ">
-                                <a href="#">
-                                    <i class="fa fa-gears"></i>
-                                    <span>@lang('navigation.server.configuration')</span>
-                                    <span class="pull-right-container">
-                                        <i class="fa fa-angle-left pull-right"></i>
-                                    </span>
-                                </a>
-                                <ul class="treeview-menu">
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
-                                    <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
-                                </ul>
-                            </li>
+                            @can('list-files', $server)
+                                <li class="treeview
+                                    @if(in_array(Route::currentRouteName(), ['server.files.index', 'server.files.edit', 'server.files.add']))
+                                        active
+                                    @endif
+                                ">
+                                    <a href="#">
+                                        <i class="fa fa-files-o"></i>
+                                        <span>@lang('navigation.server.file_management')</span>
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        <li class="{{ (Route::currentRouteName() !== 'server.files.index' && Route::currentRouteName() !== 'server.files.edit') ?: 'active' }}"><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
+                                        @can('create-files', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endcan
+                            @can('list-subusers', $server)
+                                <li
+                                    @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
+                                        class="active"
+                                    @endif
+                                >
+                                    <a href="{{ route('server.subusers', $server->uuidShort)}}">
+                                        <i class="fa fa-users"></i> <span>Subusers</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('list-tasks', $server)
+                                <li
+                                    @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
+                                        class="active"
+                                    @endif
+                                >
+                                    <a href="{{ route('server.tasks', $server->uuidShort)}}">
+                                        <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
+                                        <span class="pull-right-container">
+                                            <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Task::select('id')->where('server', $server->id)->where('active', 1)->count() }}</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
+                                <li class="treeview
+                                    @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
+                                        active
+                                    @endif
+                                ">
+                                    <a href="#">
+                                        <i class="fa fa-gears"></i>
+                                        <span>@lang('navigation.server.configuration')</span>
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        @can('view-allocation', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
+                                        @endcan
+                                        @can('view-sftp', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
+                                        @endcan
+                                        @can('view-startup', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
+                                        @endcan
+                                        @can('view-databases', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endif
                         @endif
                     </ul>
                 </section>
@@ -236,7 +228,7 @@
                 <div class="pull-right hidden-xs small text-gray">
                     <strong>v</strong> {{ config('app.version') }}
                 </div>
-                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software &amp; Design</a>.
+                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
             <aside class="control-sidebar control-sidebar-dark">
                 <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
@@ -245,7 +237,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="control-sidebar-servers-tab">
                         <ul class="control-sidebar-menu">
-                            @foreach (Pterodactyl\Models\Server::getUserServers() as $s)
+                            @foreach (Auth::user()->serverAccessCollection(null, []) as $s)
                                 <li>
                                     <a
                                         @if(isset($server) && isset($node))
@@ -254,7 +246,7 @@
                                             @endif
                                         @endif
                                     href="{{ route('server.index', $s->uuidShort) }}">
-                                        @if($s->owner === Auth::user()->id)
+                                        @if($s->owner_id === Auth::user()->id)
                                             <i class="menu-icon fa fa-user bg-blue"></i>
                                         @else
                                             <i class="menu-icon fa fa-user-o bg-gray"></i>
@@ -281,6 +273,8 @@
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
             {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
+
+            @if(config('app.phrase_in_context')) {!! Theme::js('js/phraseapp.js') !!} @endif
         @show
     </body>
 </html>

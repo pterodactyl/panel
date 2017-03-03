@@ -35,7 +35,7 @@
 
 @section('content')
 @can('edit-subuser', $server)
-<form action="{{ route('server.subusers.view', [ 'uuid' => $server->uuidShort, 'id' => md5($subuser->id) ]) }}" method="POST">
+<form action="{{ route('server.subusers.view', [ 'uuid' => $server->uuidShort, 'id' => $subuser->id ]) }}" method="POST">
 @endcan
     <div class="row">
         <div class="col-sm-12">
@@ -45,7 +45,7 @@
                         <label class="control-label">@lang('server.users.new.email')</label>
                         <div>
                             {!! csrf_field() !!}
-                            <input type="email" class="form-control" disabled value="{{ $subuser->a_userEmail }}" />
+                            <input type="email" class="form-control" disabled value="{{ $subuser->user->email }}" />
                         </div>
                     </div>
                 </div>

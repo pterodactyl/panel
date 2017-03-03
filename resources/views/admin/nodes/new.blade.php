@@ -44,9 +44,9 @@
                 <div class="form-group col-md-4">
                     <label for="name" class="control-label">Location</label>
                     <div>
-                        <select name="location" class="form-control">
+                        <select name="location_id" class="form-control">
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}" {{ (old('location') === $location->id) ? 'checked' : '' }}>{{ $location->long }} ({{ $location->short }})</option>
+                                <option value="{{ $location->id }}" {{ (old('location_id') === $location->id) ? 'selected' : '' }}>{{ $location->long }} ({{ $location->short }})</option>
                             @endforeach
                         </select>
                     </div>

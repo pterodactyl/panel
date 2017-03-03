@@ -39,7 +39,7 @@
             <div class="col-md-6">
                 <fieldset>
                     <div class="form-group">
-                        <label for="email" class="control-label">{{ trans('strings.email') }}</label>
+                        <label for="email" class="control-label">Email</label>
                         <div>
                             <input type="text" name="email" value="{{ $user->email }}" class="form-control">
                         </div>
@@ -64,7 +64,7 @@
                     </div>
                     <div class="form-group">
                         {!! csrf_field() !!}
-                        <input type="submit" value="{{ trans('base.account.update_user') }}" class="btn btn-primary btn-sm">
+                        <input type="submit" value="Update User" class="btn btn-primary btn-sm">
                     </div>
                 </fieldset>
             </div>
@@ -72,7 +72,7 @@
                 <div class="well" style="padding-bottom: 0;">
                     <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
                     <div class="form-group">
-                        <label for="password" class="control-label">{{ trans('strings.password') }}</label>
+                        <label for="password" class="control-label">Password</label>
                         <div>
                             <input type="password" id="password" name="password" class="form-control">
                         </div>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="well" style="padding-bottom: 0;">
                     <div class="form-group">
-                        <label for="root_admin" class="control-label">{{ trans('strings.root_administrator') }}</label>
+                        <label for="root_admin" class="control-label">Administrator</label>
                         <div>
                             <select name="root_admin" class="form-control">
                                 <option value="0">{{ trans('strings.no') }}</option>
@@ -99,7 +99,7 @@
     <div class="row">
         <div class="col-md-12">
             <h3>Associated Servers</h3><hr>
-            @if($servers)
+            @if($user->servers)
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
@@ -112,12 +112,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                            @foreach($servers as $server)
+                            @foreach($user->servers as $server)
                                 <tr>
                                     <td><a href="/server/{{ $server->uuidShort }}/"><i class="fa fa-tachometer"></i></a></td>
                                     <td><code>{{ $server->uuidShort }}</code></td>
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                    <td>{{ $server->nodeName }}</td>
+                                    <td>{{ $server->node->name }}</td>
                                     <td><code>{{ $server->username }}</code></td>
                                     <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
                                 </td>
@@ -127,7 +127,7 @@
             @else
                 <div class="alert alert-info">There are no servers associated with this account.</div>
             @endif
-            <a href="/admin/servers/new?email={{ $user->email }}"><button type="button" class="btn btn-success btn-sm">{{ trans('server.index.add_new') }}</button></a>
+            <a href="/admin/servers/new?email={{ $user->email }}"><button type="button" class="btn btn-success btn-sm">Add New Server</button></a>
         </div>
     </div>
     <div class="row">

@@ -22,33 +22,24 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Events\Server;
 
-use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Models\Server;
+use Illuminate\Queue\SerializesModels;
 
-class ServerVariables extends Model
+class Saving
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'server_variables';
+    use SerializesModels;
+
+    public $server;
 
     /**
-     * Fields that are not mass assignable.
+     * Create a new event instance.
      *
-     * @var array
+     * @return void
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'server_id' => 'integer',
-         'variable_id' => 'integer',
-     ];
+    public function __construct(Server $server)
+    {
+        $this->server = $server;
+    }
 }

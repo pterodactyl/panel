@@ -89,6 +89,7 @@ class BaseRoutes
             ]);
 
             $router->delete('/revoke/{key}', [
+                'as' => 'account.api.revoke',
                 'uses' => 'Base\APIController@revoke',
             ]);
         });

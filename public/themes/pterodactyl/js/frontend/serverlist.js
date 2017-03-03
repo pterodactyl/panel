@@ -27,35 +27,47 @@ var ServerList = (function () {
         3: 'Stopping'
     };
 
-    function updateServerStatus () {
-        $('.dynamic-update').each(function (index, data) {
-            var element = $(this);
-            var serverShortUUID = $(this).data('server');
-            $.ajax({
-                type: 'GET',
-                url: Router.route('server.ajax.status', { server: serverShortUUID }),
-                timeout: 5000,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
-                }
-            }).done(function (data) {
-                if (typeof data.status === 'undefined') {
-                    element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
-                    return;
-                }
-                switch (data.status) {
-                    case 0:
-                        element.find('[data-action="status"]').html('<span class="label label-danger">Offline</span>');
-                        break;
-                    case 1:
-                        element.find('[data-action="status"]').html('<span class="label label-success">Online</span>');
-                        break;
-                    case 2:
-                        element.find('[data-action="status"]').html('<span class="label label-info">Starting</span>');
-                        break;
-                    case 3:
-                        element.find('[data-action="status"]').html('<span class="label label-info">Stopping</span>');
-                        break;
+    $('.dynamic-update').each(function (index, data) {
+        var element = $(this);
+        var serverShortUUID = $(this).data('server');
+
+        $.ajax({
+            type: 'GET',
+            url: Router.route('server.ajax.status', { server: serverShortUUID }),
+            timeout: 5000,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+            }
+        }).done(function (data) {
+            if (typeof data.status === 'undefined') {
+                element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
+                return;
+            }
+            switch (data.status) {
+                case 0:
+                    element.find('[data-action="status"]').html('<span class="label label-danger">Offline</span>');
+                    break;
+                case 1:
+                    element.find('[data-action="status"]').html('<span class="label label-success">Online</span>');
+                    break;
+                case 2:
+                    element.find('[data-action="status"]').html('<span class="label label-info">Starting</span>');
+                    break;
+                case 3:
+                    element.find('[data-action="status"]').html('<span class="label label-info">Stopping</span>');
+                    break;
+                case 20:
+                    element.find('[data-action="status"]').html('<span class="label label-warning">Installing</span>');
+                    break;
+                case 30:
+                    element.find('[data-action="status"]').html('<span class="label label-warning">Suspended</span>');
+                    break;
+            }
+            if (data.status > 0 && data.status < 4) {
+                var cpuMax = element.find('[data-action="cpu"]').data('cpumax');
+                var currentCpu = data.proc.cpu.total;
+                if (cpuMax !== 0) {
+                    currentCpu = parseFloat(((data.proc.cpu.total / cpuMax) * 100).toFixed(2).toString());
                 }
                 if (data.status !== 0) {
                     var cpuMax = element.find('[data-action="cpu"]').data('cpumax');

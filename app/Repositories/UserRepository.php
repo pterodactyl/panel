@@ -34,7 +34,6 @@ use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserRepository
@@ -105,13 +104,11 @@ class UserRepository
                     'token' => $token,
                     'created_at' => Carbon::now()->toDateTimeString(),
                 ]);
-
-                $user->notify((new AccountCreated($token)));
             }
 
             DB::commit();
 
-            return $user->id;
+            return $user;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -167,7 +164,7 @@ class UserRepository
      */
     public function delete($id)
     {
-        if (Models\Server::where('owner', $id)->count() > 0) {
+        if (Models\Server::where('owner_id', $id)->count() > 0) {
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
         }
 
@@ -179,10 +176,15 @@ class UserRepository
         DB::beginTransaction();
 
         try {
-            Models\Permission::where('user_id', $id)->delete();
-            Models\Subuser::where('user_id', $id)->delete();
-            Models\User::destroy($id);
+            foreach (Models\Subuser::with('permissions')->where('user_id', $id)->get() as &$subuser) {
+                foreach ($subuser->permissions as &$permission) {
+                    $permission->delete();
+                }
 
+                $subuser->delete();
+            }
+
+            Models\User::destroy($id);
             DB::commit();
 
             return true;

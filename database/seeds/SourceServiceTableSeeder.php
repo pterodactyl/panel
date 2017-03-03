@@ -66,8 +66,8 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addCoreOptions()
     {
-        $this->option['insurgency'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['insurgency'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Insurgency',
             'description' => 'Take to the streets for intense close quarters combat, where a team\'s survival depends upon securing crucial strongholds and destroying enemy supply in this multiplayer and cooperative Source Engine based experience.',
             'tag' => 'srcds',
@@ -76,8 +76,8 @@ class SourceServiceTableSeeder extends Seeder
             'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart',
         ]);
 
-        $this->option['tf2'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['tf2'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Team Fortress 2',
             'description' => 'Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.',
             'tag' => 'srcds',
@@ -86,8 +86,8 @@ class SourceServiceTableSeeder extends Seeder
             'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart',
         ]);
 
-        $this->option['ark'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['ark'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Ark: Survival Evolved',
             'description' => 'As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! — Gamepedia: ARK',
             'tag' => 'ark',
@@ -96,8 +96,8 @@ class SourceServiceTableSeeder extends Seeder
             'startup' => 'TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}',
         ]);
 
-        $this->option['custom'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['custom'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Custom Source Engine Game',
             'description' => 'This option allows modifying the startup arguments and other details to run a custo SRCDS based game on the panel.',
             'tag' => 'srcds',
@@ -117,7 +117,7 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addInsurgencyVariables()
     {
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['insurgency']->id,
             'name' => 'Game ID',
             'description' => 'The ID corresponding to the game to download and run using SRCDS.',
@@ -129,7 +129,7 @@ class SourceServiceTableSeeder extends Seeder
             'regex' => '/^(17705)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['insurgency']->id,
             'name' => 'Game Name',
             'description' => 'The name corresponding to the game to download and run using SRCDS.',
@@ -141,7 +141,7 @@ class SourceServiceTableSeeder extends Seeder
             'regex' => '/^(insurgency)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['insurgency']->id,
             'name' => 'Default Map',
             'description' => 'The default map to use when starting the server.',
@@ -156,7 +156,7 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addTF2Variables()
     {
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['tf2']->id,
             'name' => 'Game ID',
             'description' => 'The ID corresponding to the game to download and run using SRCDS.',
@@ -168,7 +168,7 @@ class SourceServiceTableSeeder extends Seeder
             'regex' => '/^(232250)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['tf2']->id,
             'name' => 'Game Name',
             'description' => 'The name corresponding to the game to download and run using SRCDS.',
@@ -180,7 +180,7 @@ class SourceServiceTableSeeder extends Seeder
             'regex' => '/^(tf)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['tf2']->id,
             'name' => 'Default Map',
             'description' => 'The default map to use when starting the server.',
@@ -234,7 +234,7 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addCustomVariables()
     {
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['custom']->id,
             'name' => 'Game ID',
             'description' => 'The ID corresponding to the game to download and run using SRCDS.',
@@ -246,7 +246,7 @@ class SourceServiceTableSeeder extends Seeder
             'regex' => '/^(\d){1,6}$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['custom']->id,
             'name' => 'Game Name',
             'description' => 'The name corresponding to the game to download and run using SRCDS.',

@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use GuzzleHttp\Client;
 use Pterodactyl\Models;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
@@ -32,14 +31,10 @@ use Pterodactyl\Exceptions\DisplayException;
 class CommandRepository
 {
     protected $server;
-    protected $node;
-    protected $client;
 
     public function __construct($server)
     {
         $this->server = ($server instanceof Models\Server) ? $server : Models\Server::findOrFail($server);
-        $this->node = Models\Node::getByID($this->server->node);
-        $this->client = Models\Node::guzzleRequest($this->server->node);
     }
 
     /**
@@ -56,15 +51,10 @@ class CommandRepository
         // Additionally not all calls to this will be from a logged in user.
         // (e.g. task queue or API)
         try {
-            $response = $this->client->request('POST', '/server/command', [
-                'headers' => [
-                    'X-Access-Token' => $this->server->daemonSecret,
-                    'X-Access-Server' => $this->server->uuid,
-                ],
-                'json' => [
-                    'command' => $command,
-                ],
-            ]);
+            $response = $this->server->node->guzzleClient([
+                'X-Access-Token' => $this->server->daemonSecret,
+                'X-Access-Server' => $this->server->uuid,
+            ])->request('POST', '/server/command', ['json' => ['command' => $command]]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
                 throw new DisplayException('Command sending responded with a non-200 error code.');

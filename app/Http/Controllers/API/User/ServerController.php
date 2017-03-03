@@ -25,7 +25,6 @@
 namespace Pterodactyl\Http\Controllers\API\User;
 
 use Log;
-use Auth;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Http\Controllers\API\BaseController;
@@ -34,42 +33,28 @@ class ServerController extends BaseController
 {
     public function info(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::findOrFail($server->node);
-        $client = Models\Node::guzzleRequest($node->id);
+        $server = Models\Server::byUuid($uuid)->load('allocations');
 
         try {
-            $response = $client->request('GET', '/server', [
-                'headers' => [
-                    'X-Access-Token' => $server->daemonSecret,
-                    'X-Access-Server' => $server->uuid,
-                ],
-            ]);
+            $response = $server->guzzleClient()->request('GET', '/server');
 
             $json = json_decode($response->getBody());
             $daemon = [
                 'status' => $json->status,
                 'stats' => $json->proc,
-                'query' =>  $json->query,
             ];
         } catch (\Exception $ex) {
             $daemon = [
-                'error' => 'An error was encountered while trying to connect to the daemon to collece information. It might be offline.',
+                'error' => 'An error was encountered while trying to connect to the daemon to collect information. It might be offline.',
             ];
             Log::error($ex);
-        }
-
-        $allocations = Models\Allocation::select('id', 'ip', 'port', 'ip_alias as alias')->where('assigned_to', $server->id)->get();
-        foreach ($allocations as &$allocation) {
-            $allocation->default = ($allocation->id === $server->allocation);
-            unset($allocation->id);
         }
 
         return [
             'uuidShort' => $server->uuidShort,
             'uuid' => $server->uuid,
             'name' => $server->name,
-            'node' => $node->name,
+            'node' => $server->node->name,
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,
@@ -78,12 +63,18 @@ class ServerController extends BaseController
                 'cpu' => $server->cpu,
                 'oom_disabled' => (bool) $server->oom_disabled,
             ],
-            'allocations' => $allocations,
+            'allocations' => $server->allocations->map(function ($item) use ($server) {
+                return [
+                    'ip' => $item->alias,
+                    'port' => $item->port,
+                    'default' => ($item->id === $server->allocation_id),
+                ];
+            }),
             'sftp' => [
-                'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null,
+                'username' => ($request->user()->can('view-sftp', $server)) ? $server->username : null,
             ],
             'daemon' => [
-                'token' => ($request->secure()) ? $server->daemonSecret : false,
+                'token' => $server->daemonSecret,
                 'response' => $daemon,
             ],
         ];
@@ -91,16 +82,10 @@ class ServerController extends BaseController
 
     public function power(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $client = Models\Node::guzzleRequest($server->node);
-
+        $server = Models\Server::byUuid($uuid);
         Auth::user()->can('power-' . $request->input('action'), $server);
 
-        $res = $client->request('PUT', '/server/power', [
-            'headers' => [
-                'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $server->daemonSecret,
-            ],
+        $res = $server->guzzleClient()->request('PUT', '/server/power', [
             'exceptions' => false,
             'json' => [
                 'action' => $request->input('action'),

@@ -66,8 +66,8 @@ class VoiceServiceTableSeeder extends Seeder
 
     private function addCoreOptions()
     {
-        $this->option['mumble'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['mumble'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Mumble Server',
             'description' => 'Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.',
             'tag' => 'mumble',
@@ -76,8 +76,8 @@ class VoiceServiceTableSeeder extends Seeder
             'startup' => '-fg',
         ]);
 
-        $this->option['ts3'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['ts3'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Teamspeak3 Server',
             'description' => 'VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.',
             'tag' => 'ts3',
@@ -89,7 +89,7 @@ class VoiceServiceTableSeeder extends Seeder
 
     private function addVariables()
     {
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['mumble']->id,
             'name' => 'Maximum Users',
             'description' => 'Maximum concurrent users on the mumble server.',
@@ -101,7 +101,7 @@ class VoiceServiceTableSeeder extends Seeder
             'regex' => '/^(\d){1,6}$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['mumble']->id,
             'name' => 'Server Version',
             'description' => 'Version of Mumble Server to download and use.',
@@ -113,7 +113,7 @@ class VoiceServiceTableSeeder extends Seeder
             'regex' => '/^([0-9_\.-]{5,8})$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['ts3']->id,
             'name' => 'Server Version',
             'description' => 'The version of Teamspeak 3 to use when running the server.',

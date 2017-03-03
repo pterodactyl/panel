@@ -44,7 +44,7 @@
                 <tr>
                     <td><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></td>
                     <td>{!! $service->description !!}</td>
-                    <td class="text-center">{{ $service->c_servers }}</td>
+                    <td class="text-center">{{ $service->servers_count }}</td>
                     <td class="text-center align-middle"><a href="{{ route('admin.services.service.config', $service->id) }}"><button class="btn btn-xxs btn-primary"><i class="fa fa-wrench"></i> Configure</button></a></td>
                 </tr>
             @endforeach

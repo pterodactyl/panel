@@ -56,4 +56,14 @@ class ServicePack extends Model
          'selectable' => 'boolean',
          'visible' => 'boolean',
      ];
+
+     /**
+      * Gets option associated with a service pack.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function option()
+     {
+         return $this->belongsTo(ServiceOption::class);
+     }
 }

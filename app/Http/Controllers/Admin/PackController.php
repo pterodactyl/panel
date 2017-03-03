@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Log;
 use Alert;
 use Storage;
@@ -42,64 +41,29 @@ class PackController extends Controller
         //
     }
 
-    protected function formatServices()
-    {
-        $options = Models\ServiceOptions::select(
-            'services.name AS p_service',
-            'service_options.id',
-            'service_options.name'
-        )->join('services', 'services.id', '=', 'service_options.parent_service')->get();
-
-        $array = [];
-        foreach ($options as &$option) {
-            if (! array_key_exists($option->p_service, $array)) {
-                $array[$option->p_service] = [];
-            }
-
-            $array[$option->p_service] = array_merge($array[$option->p_service], [[
-                'id' => $option->id,
-                'name' => $option->name,
-            ]]);
-        }
-
-        return $array;
-    }
-
     public function listAll(Request $request)
     {
-        return view('admin.services.packs.index', [
-            'services' => Models\Service::all(),
-        ]);
+        return view('admin.services.packs.index', ['services' => Models\Service::all()]);
     }
 
     public function listByOption(Request $request, $id)
     {
-        $option = Models\ServiceOptions::findOrFail($id);
-
         return view('admin.services.packs.byoption', [
-            'packs' => Models\ServicePack::where('option', $option->id)->get(),
-            'service' => Models\Service::findOrFail($option->parent_service),
-            'option' => $option,
+            'option' => Models\ServiceOption::with('service', 'packs')->findOrFail($id),
         ]);
     }
 
     public function listByService(Request $request, $id)
     {
         return view('admin.services.packs.byservice', [
-            'service' => Models\Service::findOrFail($id),
-            'options' => Models\ServiceOptions::select(
-                'service_options.id',
-                'service_options.name',
-                DB::raw('(SELECT COUNT(id) FROM service_packs WHERE service_packs.option = service_options.id) AS p_count')
-            )->where('parent_service', $id)->get(),
+            'service' => Models\Service::with('options', 'options.packs')->findOrFail($id),
         ]);
     }
 
     public function new(Request $request, $opt = null)
     {
         return view('admin.services.packs.new', [
-            'services' => $this->formatServices(),
-            'packFor' => $opt,
+            'services' => Models\Service::with('options')->get(),
         ]);
     }
 
@@ -107,12 +71,14 @@ class PackController extends Controller
     {
         try {
             $repo = new Pack;
-            $id = $repo->create($request->except([
-                '_token',
+            $pack = $repo->create($request->only([
+                'name', 'version', 'description',
+                'option', 'selectable', 'visible',
+                'file_upload',
             ]));
             Alert::success('Successfully created new service!')->flash();
 
-            return redirect()->route('admin.services.packs.edit', $id)->withInput();
+            return redirect()->route('admin.services.packs.edit', $pack->id)->withInput();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.packs.new', $request->input('option'))->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
@@ -127,15 +93,12 @@ class PackController extends Controller
 
     public function edit(Request $request, $id)
     {
-        $pack = Models\ServicePack::findOrFail($id);
-        $option = Models\ServiceOptions::select('id', 'parent_service', 'name')->where('id', $pack->option)->first();
+        $pack = Models\ServicePack::with('option.service')->findOrFail($id);
 
         return view('admin.services.packs.edit', [
             'pack' => $pack,
-            'services' => $this->formatServices(),
+            'services' => Models\Service::all()->load('options'),
             'files' => Storage::files('packs/' . $pack->uuid),
-            'service' => Models\Service::findOrFail($option->parent_service),
-            'option' => $option,
         ]);
     }
 
@@ -159,8 +122,9 @@ class PackController extends Controller
         } else {
             try {
                 $repo = new Pack;
-                $repo->update($id, $request->except([
-                    '_token',
+                $repo->update($id, $request->only([
+                    'name', 'version', 'description',
+                    'option', 'selectable', 'visible',
                 ]));
                 Alert::success('Service pack has been successfully updated.')->flash();
             } catch (DisplayValidationException $ex) {
@@ -183,14 +147,6 @@ class PackController extends Controller
             'description' => $pack->dscription,
             'selectable' => (bool) $pack->selectable,
             'visible' => (bool) $pack->visible,
-            'build' => [
-                'memory' => $pack->build_memory,
-                'swap' => $pack->build_swap,
-                'cpu' => $pack->build_cpu,
-                'io' => $pack->build_io,
-                'container' => $pack->build_container,
-                'script' => $pack->build_script,
-            ],
         ];
 
         $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');
@@ -223,8 +179,7 @@ class PackController extends Controller
     public function uploadForm(Request $request, $for = null)
     {
         return view('admin.services.packs.upload', [
-            'services' => $this->formatServices(),
-            'for' => $for,
+            'services' => Models\Service::all()->load('options'),
         ]);
     }
 
@@ -232,12 +187,10 @@ class PackController extends Controller
     {
         try {
             $repo = new Pack;
-            $id = $repo->createWithTemplate($request->except([
-                '_token',
-            ]));
+            $pack = $repo->createWithTemplate($request->only(['option', 'file_upload']));
             Alert::success('Successfully created new service!')->flash();
 
-            return redirect()->route('admin.services.packs.edit', $id)->withInput();
+            return redirect()->route('admin.services.packs.edit', $pack->id)->withInput();
         } catch (DisplayValidationException $ex) {
             return redirect()->back()->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {

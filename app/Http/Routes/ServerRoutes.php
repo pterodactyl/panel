@@ -30,6 +30,13 @@ class ServerRoutes
 {
     public function map(Router $router)
     {
+        // Returns Server Status
+        $router->get('/server/{server}/ajax/status', [
+            'middleware' => ['auth', 'csrf'],
+            'as' => 'server.ajax.status',
+            'uses' => 'Server\AjaxController@getStatus',
+        ]);
+
         $router->group([
             'prefix' => 'server/{server}',
             'middleware' => [
@@ -43,12 +50,6 @@ class ServerRoutes
             $router->get('/', [
                 'as' => 'server.index',
                 'uses' => 'Server\ServerController@getIndex',
-            ]);
-
-            // Settings
-            $router->get('/settings', [
-                'as' => 'server.settings',
-                'uses' => 'Server\ServerController@getSettings',
             ]);
 
             $router->get('/settings/databases', [
@@ -135,6 +136,7 @@ class ServerRoutes
             ]);
 
             $router->delete('users/delete/{id}', [
+                'as' => 'server.subusers.delete',
                 'uses' => 'Server\SubuserController@deleteSubuser',
             ]);
 
@@ -169,12 +171,6 @@ class ServerRoutes
 
             // Assorted AJAX Routes
             $router->group(['prefix' => 'ajax'], function ($server) use ($router) {
-                // Returns Server Status
-                $router->get('status', [
-                    'as' => 'server.ajax.status',
-                    'uses' => 'Server\AjaxController@getStatus',
-                ]);
-
                 // Sets the Default Connection for the Server
                 $router->post('set-primary', [
                     'uses' => 'Server\AjaxController@postSetPrimary',

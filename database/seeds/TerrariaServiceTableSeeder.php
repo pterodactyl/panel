@@ -66,8 +66,8 @@ class TerrariaServiceTableSeeder extends Seeder
 
     private function addCoreOptions()
     {
-        $this->option['tshock'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $this->option['tshock'] = Models\ServiceOption::create([
+            'service_id' => $this->service->id,
             'name' => 'Terraria Server (TShock)',
             'description' => 'TShock is a server modification for Terraria, written in C#, and based upon the Terraria Server API. It uses JSON for configuration management, and offers several features not present in the Terraria Server normally.',
             'tag' => 'tshock',
@@ -79,7 +79,7 @@ class TerrariaServiceTableSeeder extends Seeder
 
     private function addVariables()
     {
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['tshock']->id,
             'name' => 'TShock Version',
             'description' => 'Which version of TShock to install and use.',
@@ -91,7 +91,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'regex' => '/^([0-9_\.-]{5,10})$/',
         ]);
 
-        Models\ServiceVariables::create([
+        Models\ServiceVariable::create([
             'option_id' => $this->option['tshock']->id,
             'name' => 'Maximum Slots',
             'description' => 'Total number of slots to allow on the server.',

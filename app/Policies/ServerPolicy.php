@@ -24,6 +24,8 @@
 
 namespace Pterodactyl\Policies;
 
+use Cache;
+use Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 
@@ -40,6 +42,29 @@ class ServerPolicy
     }
 
     /**
+     * Checks if the user has the given permission on/for the server.
+     *
+     * @param \Pterodactyl\Models\User   $user
+     * @param \Pterodactyl\Models\Server $server
+     * @param $permission
+     * @return bool
+     */
+    private function checkPermission(User $user, Server $server, $permission)
+    {
+        if ($this->isOwner($user, $server)) {
+            return true;
+        }
+
+        $permissions = Cache::remember('ServerPolicy.' . $user->uuid . $server->uuid, Carbon::now()->addSeconds(10), function () use ($user, $server) {
+            return $user->permissions()->server($server)->get()->transform(function ($item) {
+                return $item->permission;
+            })->values();
+        });
+
+        return $permissions->search($permission, true) !== false;
+    }
+
+    /**
      * Determine if current user is the owner of a server.
      *
      * @param  \Pterodactyl\Models\User    $user
@@ -48,7 +73,7 @@ class ServerPolicy
      */
     protected function isOwner(User $user, Server $server)
     {
-        return $server->owner === $user->id;
+        return $server->owner_id === $user->id;
     }
 
     /**
@@ -520,22 +545,5 @@ class ServerPolicy
     public function setAllocation(User $user, Server $server)
     {
         return $this->checkPermission($user, $server, 'set-allocation');
-    }
-
-    /**
-     * Checks if the user has the given permission on/for the server.
-     *
-     * @param \Pterodactyl\Models\User   $user
-     * @param \Pterodactyl\Models\Server $server
-     * @param $permission
-     * @return bool
-     */
-    private function checkPermission(User $user, Server $server, $permission)
-    {
-        if ($this->isOwner($user, $server)) {
-            return true;
-        }
-
-        return $user->permissions()->server($server)->permission($permission)->exists();
     }
 }

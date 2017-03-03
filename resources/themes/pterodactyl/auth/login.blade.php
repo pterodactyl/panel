@@ -47,7 +47,7 @@
     <p class="login-box-msg">@lang('auth.authentication_required')</p>
     <form action="{{ route('auth.login') }}" method="POST">
         <div class="form-group has-feedback">
-            <input type="email" name="email" class="form-control" value="{{ old('email') }}" placeholder="@lang('strings.email')">
+            <input name="user" class="form-control" value="{{ old('user') }}" placeholder="@lang('strings.user_identifier')">
             <span class="fa fa-envelope form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
@@ -57,7 +57,7 @@
         <div class="row">
             <div class="col-xs-8">
                 <div class="form-group has-feedback">
-                    <input type="checkbox" name="remember_me" id="remember_me" /> <label for="remember_me" class="weight-300">@lang('auth.remember_me')</label>
+                    <input type="checkbox" name="remember" id="remember" /> <label for="remember" class="weight-300">@lang('auth.remember_me')</label>
                 </div>
             </div>
             <div class="col-xs-4">

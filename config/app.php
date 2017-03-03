@@ -6,6 +6,8 @@ return [
 
     'version' => env('APP_VERSION', 'canary'),
 
+    'phrase_in_context' => env('PHRASE_IN_CONTEXT', false),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -137,7 +139,6 @@ return [
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
-        Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
@@ -149,6 +150,7 @@ return [
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
+        Pterodactyl\Providers\PhraseAppTranslationProvider::class,
 
         /*
          * Additional Dependencies
@@ -158,6 +160,7 @@ return [
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
+        Fideloper\Proxy\TrustedProxyServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
 

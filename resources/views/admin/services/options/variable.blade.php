@@ -28,12 +28,12 @@
     <ul class="breadcrumb">
         <li><a href="/admin">Admin Control</a></li>
         <li><a href="/admin/services">Services</a></li>
-        <li><a href="{{ route('admin.services.service', $service->id) }}">{{ $service->name }}</a></li>
-        <li><a href="{{ route('admin.services.option', [$service->id, $option->id]) }}">{{ $option->name }}</a></li>
+        <li><a href="{{ route('admin.services.service', $option->service->id) }}">{{ $option->service->name }}</a></li>
+        <li><a href="{{ route('admin.services.option', [$option->service->id, $option->id]) }}">{{ $option->name }}</a></li>
         <li class="active">New Variable</li>
     </ul>
     <h3>New Option Variable</h3><hr />
-    <form action="{{ route('admin.services.option.variable.new', [$service->id, $option->id]) }}" method="POST">
+    <form action="{{ route('admin.services.option.variable.new', [$option->service->id, $option->id]) }}" method="POST">
         <div class="well">
             <div class="row">
                 <div class="col-md-12 form-group">

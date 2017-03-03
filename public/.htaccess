@@ -8,6 +8,10 @@
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)/$ /$1 [L,R=301]
+    
+    # Prevent stripping authorization headers
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
 
     # Handle Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d

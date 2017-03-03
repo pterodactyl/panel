@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Log;
 use Alert;
 use Pterodactyl\Models;
@@ -47,63 +46,8 @@ class ServersController extends Controller
 
     public function getIndex(Request $request)
     {
-        $query = Models\Server::withTrashed()->select(
-            'servers.*',
-            'nodes.name as a_nodeName',
-            'users.email as a_ownerEmail',
-            'allocations.ip',
-            'allocations.port',
-            'allocations.ip_alias'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
-
-        if ($request->input('filter') && ! is_null($request->input('filter'))) {
-            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
-            foreach ($matches[0] as $match) {
-                $match = str_replace('"', '', $match);
-                if (strpos($match, ':')) {
-                    list($field, $term) = explode(':', $match);
-                    if ($field === 'node') {
-                        $field = 'nodes.name';
-                    } elseif ($field === 'owner') {
-                        $field = 'users.email';
-                    } elseif (! strpos($field, '.')) {
-                        $field = 'servers.' . $field;
-                    }
-
-                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
-                } else {
-                    $query->where('servers.name', 'LIKE', '%' . $match . '%');
-                    $query->orWhere([
-                        ['servers.username', 'LIKE', '%' . $match . '%'],
-                        ['users.email', 'LIKE', '%' . $match . '%'],
-                        ['allocations.port', 'LIKE', '%' . $match . '%'],
-                        ['allocations.ip', 'LIKE', '%' . $match . '%'],
-                    ]);
-                }
-            }
-        }
-
-        try {
-            $servers = $query->paginate(20);
-        } catch (\Exception $ex) {
-            Alert::warning('There was an error with the search parameters provided.');
-            $servers = Models\Server::withTrashed()->select(
-                'servers.*',
-                'nodes.name as a_nodeName',
-                'users.email as a_ownerEmail',
-                'allocations.ip',
-                'allocations.port',
-                'allocations.ip_alias'
-            )->join('nodes', 'servers.node', '=', 'nodes.id')
-            ->join('users', 'servers.owner', '=', 'users.id')
-            ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-            ->paginate(20);
-        }
-
         return view('admin.servers.index', [
-            'servers' => $servers,
+            'servers' => Models\Server::withTrashed()->with('node', 'user')->paginate(25),
         ]);
     }
 
@@ -117,47 +61,21 @@ class ServersController extends Controller
 
     public function getView(Request $request, $id)
     {
-        $server = Models\Server::withTrashed()->select(
-            'servers.*',
-            'users.email as a_ownerEmail',
-            'services.name as a_serviceName',
-            DB::raw('IFNULL(service_options.executable, services.executable) as a_serviceExecutable'),
-            'service_options.docker_image',
-            'service_options.name as a_servceOptionName',
-            'allocations.ip',
-            'allocations.port',
-            'allocations.ip_alias'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('services', 'servers.service', '=', 'services.id')
-        ->join('service_options', 'servers.option', '=', 'service_options.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-        ->where('servers.id', $id)
-        ->first();
+        $server = Models\Server::withTrashed()->with(
+            'user', 'option.variables', 'variables',
+            'node.allocations', 'databases.host'
+        )->findOrFail($id);
 
-        if (! $server) {
-            return abort(404);
-        }
+        $server->option->variables->transform(function ($item, $key) use ($server) {
+            $item->server_value = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+
+            return $item;
+        });
 
         return view('admin.servers.view', [
             'server' => $server,
-            'node' => Models\Node::select(
-                    'nodes.*',
-                    'locations.long as a_locationName'
-                )->join('locations', 'nodes.location', '=', 'locations.id')
-                ->where('nodes.id', $server->node)
-                ->first(),
-            'assigned' => Models\Allocation::where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'unassigned' => Models\Allocation::where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'startup' => Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
-                ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-                ->where('service_variables.option_id', $server->option)
-                ->where('server_variables.server_id', $server->id)
-                ->get(),
-            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
-                ->where('server_id', $server->id)
-                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->get(),
+            'assigned' => $server->node->allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
+            'unassigned' => $server->node->allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
             'db_servers' => Models\DatabaseServer::all(),
         ]);
     }
@@ -166,9 +84,9 @@ class ServersController extends Controller
     {
         try {
             $server = new ServerRepository;
-            $response = $server->create($request->all());
+            $response = $server->create($request->except('_token'));
 
-            return redirect()->route('admin.servers.view', ['id' => $response]);
+            return redirect()->route('admin.servers.view', ['id' => $response->id]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
@@ -197,7 +115,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        return response()->json(Models\Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
+        return response()->json(Models\Node::select('id', 'name', 'public')->where('location_id', $request->input('location'))->get());
     }
 
     /**
@@ -214,7 +132,7 @@ class ServersController extends Controller
             ], 500);
         }
 
-        $ips = Models\Allocation::where('node', $request->input('node'))->whereNull('assigned_to')->get();
+        $ips = Models\Allocation::where('node_id', $request->input('node'))->whereNull('server_id')->get();
         $listing = [];
 
         foreach ($ips as &$ip) {
@@ -234,7 +152,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
-    public function postNewServerServiceOptions(Request $request)
+    public function postNewServerServiceOption(Request $request)
     {
         if (! $request->input('service')) {
             return response()->json([
@@ -244,7 +162,7 @@ class ServersController extends Controller
 
         $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
 
-        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
+        return response()->json(Models\ServiceOption::select('id', 'name', 'docker_image')->where('service_id', $request->input('service'))->orderBy('name', 'asc')->get());
     }
 
     /**
@@ -261,18 +179,15 @@ class ServersController extends Controller
             ], 500);
         }
 
-        $option = Models\ServiceOptions::select(
-                DB::raw('COALESCE(service_options.executable, services.executable) as executable'),
-                DB::raw('COALESCE(service_options.startup, services.startup) as startup')
-            )->leftJoin('services', 'services.id', '=', 'service_options.parent_service')
-            ->where('service_options.id', $request->input('option'))
-            ->first();
+        $option = Models\ServiceOption::with('variables')->with(['packs' => function ($query) {
+            $query->where('selectable', true);
+        }])->findOrFail($request->input('option'));
 
         return response()->json([
-            'packs' => Models\ServicePack::select('id', 'name', 'version')->where('option', $request->input('option'))->where('selectable', true)->get(),
-            'variables' => Models\ServiceVariables::where('option_id', $request->input('option'))->get(),
-            'exec' => $option->executable,
-            'startup' => $option->startup,
+            'packs' => $option->packs,
+            'variables' => $option->variables,
+            'exec' => $option->display_executable,
+            'startup' => $option->display_startup,
         ]);
     }
 
@@ -309,9 +224,7 @@ class ServersController extends Controller
     {
         try {
             $server = new ServerRepository;
-            $server->updateContainer($id, [
-                'image' => $request->input('docker_image'),
-            ]);
+            $server->updateContainer($id, ['image' => $request->input('docker_image')]);
             Alert::success('Successfully updated this server\'s docker image.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
@@ -333,17 +246,13 @@ class ServersController extends Controller
 
     public function postUpdateServerToggleBuild(Request $request, $id)
     {
-        $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
-        $client = Models\Node::guzzleRequest($server->node);
+        $server = Models\Server::with('node')->findOrFail($id);
 
         try {
-            $res = $client->request('POST', '/server/rebuild', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret,
-                ],
-            ]);
+            $res = $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('POST', '/server/rebuild');
             Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             Log::warning($ex);
@@ -360,15 +269,11 @@ class ServersController extends Controller
     {
         try {
             $server = new ServerRepository;
-            $server->changeBuild($id, [
-                'default' => $request->input('default'),
-                'add_additional' => $request->input('add_additional'),
-                'remove_additional' => $request->input('remove_additional'),
-                'memory' => $request->input('memory'),
-                'swap' => $request->input('swap'),
-                'io' => $request->input('io'),
-                'cpu' => $request->input('cpu'),
-            ]);
+            $server->changeBuild($id, $request->only([
+                'default', 'add_additional',
+                'remove_additional', 'memory',
+                'swap', 'io', 'cpu',
+            ]));
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view', [
@@ -458,8 +363,8 @@ class ServersController extends Controller
     {
         try {
             $repo = new DatabaseRepository;
-            $repo->create($id, $request->except([
-                '_token',
+            $repo->create($id, $request->only([
+                'db_server', 'database', 'remote',
             ]));
             Alert::success('Added new database to this server.')->flash();
         } catch (DisplayValidationException $ex) {

@@ -60,7 +60,7 @@
         <li><a href="#tab_configuration" data-toggle="tab">Configuration</a></li>
         <li><a href="#tab_allocation" data-toggle="tab">Allocation</a></li>
         <li><a href="#tab_servers" data-toggle="tab">Servers</a></li>
-        @if(count($servers) === 0)<li><a href="#tab_delete" data-toggle="tab">Delete</a></li>@endif
+        @if(count($node->servers) === 0)<li><a href="#tab_delete" data-toggle="tab">Delete</a></li>@endif
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_about">
@@ -83,7 +83,7 @@
                             </tr>
                             <tr>
                                 <td>Total Servers</td>
-                                <td>{{ count($servers) }}</td>
+                                <td>{{ count($node->servers) }}</td>
                             </tr>
                             <tr>
                                 <td>Memory Allocated</td>
@@ -138,9 +138,9 @@
                             <div class="form-group col-md-4">
                                 <label for="name" class="control-label">Location</label>
                                 <div>
-                                    <select name="location" class="form-control">
+                                    <select name="location_id" class="form-control">
                                         @foreach($locations as $location)
-                                            <option value="{{ $location->id }}" {{ (old('location', $node->location) === $location->id) ? 'checked' : '' }}>{{ $location->long }} ({{ $location->short }})</option>
+                                            <option value="{{ $location->id }}" {{ (old('location_id', $node->location) === $location->id) ? 'selected' : '' }}>{{ $location->long }} ({{ $location->short }})</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -309,7 +309,7 @@
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                         <ul class="dropdown-menu dropdown-menu-right">
-                                            @foreach($allocation_ips as $allocation)
+                                            @foreach($node->allocations->unique('ip')->values()->all() as $allocation)
                                                 <li data-action="alloc_dropdown_val" data-value="{{ $allocation->ip }}"><a href="#">{{ $allocation->ip }}</a></li>
                                             @endforeach
                                         </ul>
@@ -355,17 +355,21 @@
                                 <td></td>
                             </thead>
                             <tbody>
-                                @foreach($allocations as $allocation)
-                                        <tr>
+                                @foreach($node->allocations as $allocation)
+                                    <tr>
                                         <td class="col-sm-3 align-middle">{{ $allocation->ip }}</td>
                                         <td class="col-sm-3 align-middle">
                                             <input class="form-control input-sm" type="text" value="{{ $allocation->ip_alias }}" data-action="set-alias" data-id="{{ $allocation->id }}" placeholder="none" />
                                             <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
                                         </td>
                                         <td class="col-sm-2 align-middle">{{ $allocation->port }}</td>
-                                        <td class="col-sm-3 align-middle">@if(!is_null($allocation->assigned_to))<a href="{{ route('admin.servers.view', $allocation->assigned_to) }}">{{ $allocation->assigned_to_name }}</a>@endif</td>
+                                        <td class="col-sm-3 align-middle">
+                                            @if(! is_null($allocation->server))
+                                                <a href="{{ route('admin.servers.view', $allocation->server_id) }}">{{ $allocation->server->name }}</a>
+                                            @endif
+                                        </td>
                                         <td class="col-sm-1 align-middle">
-                                            @if(is_null($allocation->assigned_to))
+                                            @if(is_null($allocation->server_id))
                                                 <a href="#" data-action="deallocate" data-id="{{ $allocation->id }}"><span class="badge label-danger"><i class="fa fa-trash-o"></i></span></a>
                                             @else
                                                 <span class="badge label-default"><i class="fa fa-trash-o"></i></span>
@@ -376,7 +380,7 @@
                             </tbody>
                         </table>
                         <div class="col-md-12 text-center">
-                            {{ $allocations->appends(['tab' => 'tab_allocation'])->links() }}
+                            {{ $node->allocations->appends(['tab' => 'tab_allocation'])->render() }}
                         </div>
                     </div>
                 </div>
@@ -402,11 +406,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($servers as $server)
+                            @foreach($node->servers as $server)
                                 <tr data-server="{{ $server->uuid }}">
                                     <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                    <td><a href="/admin/users/view/{{ $server->owner }}"><code>{{ $server->a_ownerEmail }}</a></a></td>
-                                    <td>{{ $server->a_serviceName }}</td>
+                                    <td><a href="/admin/users/view/{{ $server->owner_id }}"><code>{{ $server->user->email }}</a></a></td>
+                                    <td>{{ $server->service->name }}</td>
                                     <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                                     <td class="text-center">{{ $server->disk }} MB</td>
                                     <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
@@ -415,13 +419,10 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="row">
-                        <div class="col-md-12 text-center">{!! $servers->appends(['tab' => 'tab_servers'])->render() !!}</div>
-                    </div>
                 </div>
             </div>
         </div>
-        @if(count($servers) === 0)
+        @if(count($node->servers) === 0)
             <div class="tab-pane" id="tab_delete">
                 <div class="panel panel-default">
                     <div class="panel-heading"></div>
@@ -459,7 +460,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <select class="form-control" name="ip">
-                                @foreach($allocation_ips as $allocation)
+                                @foreach($node->allocations->unique('ip')->values()->all() as $allocation)
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
