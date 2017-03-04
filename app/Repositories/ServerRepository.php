@@ -354,7 +354,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'owner_id' => 'sometimes|required|numeric|exists:users,id',
             'name' => 'sometimes|required|regex:([\w .-]{1,200})',
-            'reset_token' => 'sometimes|required|accepted'
+            'reset_token' => 'sometimes|required|accepted',
         ]);
 
         // Run validator, throw catchable and displayable exception if it fails.
