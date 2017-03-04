@@ -26,10 +26,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use DB;
 use Log;
-use Hash;
 use Alert;
 use Carbon;
-use Validator;
 use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
@@ -41,21 +39,12 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class NodesController extends Controller
 {
     /**
-     * Controller Constructor.
+     * Displays the index page listing all nodes on the panel.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
      */
-    public function __construct()
-    {
-        //
-    }
-
-    public function getScript(Request $request, $id)
-    {
-        return response()->view('admin.nodes.remote.deploy', [
-            'node' => Models\Node::findOrFail($id),
-        ])->header('Content-Type', 'text/plain');
-    }
-
-    public function getIndex(Request $request)
+    public function index(Request $request)
     {
         $nodes = Models\Node::with('location')->withCount('servers');
 
@@ -66,36 +55,42 @@ class NodesController extends Controller
         return view('admin.nodes.index', ['nodes' => $nodes->paginate(25)]);
     }
 
-    public function getNew(Request $request)
+    /**
+     * Displays create new node page.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View|\Illuminate\Response\RedirectResponse
+     */
+    public function new(Request $request)
     {
-        if (! Models\Location::all()->count()) {
+        $locations = Models\Location::all();
+        if (! $locations->count()) {
             Alert::warning('You must add a location before you can add a new node.')->flash();
 
             return redirect()->route('admin.locations');
         }
 
-        return view('admin.nodes.new', [
-            'locations' => Models\Location::all(),
-        ]);
+        return view('admin.nodes.new', ['locations' => $locations]);
     }
 
-    public function postNew(Request $request)
+    /**
+     * Post controller to create a new node on the system.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function create(Request $request)
     {
         try {
             $repo = new NodeRepository;
-            $node = $repo->create($request->only([
-                'name', 'location_id', 'public',
-                'fqdn', 'scheme', 'memory',
-                'memory_overallocate', 'disk',
-                'disk_overallocate', 'daemonBase',
-                'daemonSFTP', 'daemonListen',
+            $node = $repo->create($request->intersect([
+                'name', 'location_id', 'public', 'fqdn', 'scheme', 'memory',
+                'memory_overallocate', 'disk', 'disk_overallocate',
+                'daemonBase', 'daemonSFTP', 'daemonListen',
             ]));
             Alert::success('Successfully created new node that can be configured automatically on your remote machine by visiting the configuration tab. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
 
-            return redirect()->route('admin.nodes.view', [
-                'id' => $node->id,
-                'tab' => 'tab_allocation',
-            ]);
+            return redirect()->route('admin.nodes.view', $node->id);
         } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.new')->withErrors(json_decode($e->getMessage()))->withInput();
         } catch (DisplayException $e) {

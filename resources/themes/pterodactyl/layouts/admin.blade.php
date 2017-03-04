@@ -85,23 +85,23 @@
                                 <i class="fa fa-home"></i> <span>Overview</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() !== 'admin.settings' ?: 'active' }}">
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
                             <a href="{{ route('admin.settings')}}">
                                 <i class="fa fa-wrench"></i> <span>Settings</span>
                             </a>
                         </li>
                         <li class="header">MANAGEMENT</li>
-                        <li class="{{ Route::currentRouteName() !== 'admin.servers' ?: 'active' }}">
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.servers') ?: 'active' }}">
                             <a href="{{ route('admin.servers') }}">
                                 <i class="fa fa-server"></i> <span>Servers</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() !== 'admin.nodes' ?: 'active' }}">
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
                             <a href="{{ route('admin.nodes') }}">
                                 <i class="fa fa-sitemap"></i> <span>Nodes</span>
                             </a>
                         </li>
-                        <li class="{{ Route::currentRouteName() !== 'admin.users' ?: 'active' }}">
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.users') ?: 'active' }}">
                             <a href="{{ route('admin.users') }}">
                                 <i class="fa fa-users"></i> <span>Users</span>
                             </a>

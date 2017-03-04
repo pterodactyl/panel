@@ -219,17 +219,17 @@ class AdminRoutes
             // View All Nodes
             $router->get('/', [
                 'as' => 'admin.nodes',
-                'uses' => 'Admin\NodesController@getIndex',
+                'uses' => 'Admin\NodesController@index',
             ]);
 
             // Add New Node
             $router->get('/new', [
                 'as' => 'admin.nodes.new',
-                'uses' => 'Admin\NodesController@getNew',
+                'uses' => 'Admin\NodesController@new',
             ]);
 
             $router->post('/new', [
-                'uses' => 'Admin\NodesController@postNew',
+                'uses' => 'Admin\NodesController@create',
             ]);
 
             $router->get('/view/{id}', [

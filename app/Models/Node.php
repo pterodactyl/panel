@@ -130,10 +130,6 @@ class Node extends Model
                 'port' => $this->daemonSFTP,
                 'container' => 'ptdl-sftp',
             ],
-            'query' => [
-                'kill_on_fail' => true,
-                'fail_limit' => 5,
-            ],
             'logger' => [
                 'path' => 'logs/',
                 'src' => false,
