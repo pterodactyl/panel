@@ -34,12 +34,12 @@
 
 @section('content')
 <div class="row">
-    <div class="col-xs-6">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Identity</h3>
-            </div>
-            <form action="{{ route('admin.users.view', $user->id) }}" method="post">
+    <form action="{{ route('admin.users.view', $user->id) }}" method="post">
+        <div class="col-xs-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Identity</h3>
+                </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label for="email" class="control-label">Email</label>
@@ -68,17 +68,15 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <input type="submit" value="Update Identity" class="btn btn-primary btn-sm">
+                    <input type="submit" value="Update User" class="btn btn-primary btn-sm">
                 </div>
-            </form>
-        </div>
-    </div>
-    <div class="col-xs-6">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Password</h3>
             </div>
-            <form action="{{ route('admin.users.view', $user->id) }}" method="post">
+        </div>
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Password</h3>
+                </div>
                 <div class="box-body">
                     <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
                     <div class="form-group">
@@ -91,19 +89,13 @@
                         <button class="btn btn-default btn-sm" id="gen_pass_bttn" type="button">Generate Password</button>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <input type="submit" value="Update Password" class="btn btn-primary btn-sm">
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="col-xs-6">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Permissions</h3>
             </div>
-            <form action="{{ route('admin.users.view', $user->id) }}" method="post">
+        </div>
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Permissions</h3>
+                </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label for="root_admin" class="control-label">Administrator</label>
@@ -116,13 +108,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <input type="submit" value="Update Permissions" class="btn btn-primary btn-sm">
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
@@ -169,7 +157,6 @@
                     <input id="delete" type="submit" class="btn btn-sm btn-danger" value="Delete User" />
                 </form>
             </div>
-            </form>
         </div>
     </div>
 </div>
