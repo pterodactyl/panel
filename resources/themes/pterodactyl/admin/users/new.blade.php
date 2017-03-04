@@ -41,34 +41,29 @@
                     <h3 class="box-title">Identity</h3>
                 </div>
                 <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="email" class="control-label">Email</label>
-                            <div>
-                                <input type="text" autocomplete="off" name="email" value="{{ old('email') }}" class="form-control" />
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="username" class="control-label">Username</label>
-                            <div>
-                                <input type="text" autocomplete="off" name="username" value="{{ old('username') }}" class="form-control" />
-                            </div>
+                    <div class="form-group">
+                        <label for="email" class="control-label">Email</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="email" value="{{ old('email') }}" class="form-control" />
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="name_first" class="control-label">Client First Name</label>
-                            <div>
-                                <input type="text" autocomplete="off" name="name_first" value="{{ old('name_first') }}" class="form-control" />
-                            </div>
+                    <div class="form-group">
+                        <label for="username" class="control-label">Username</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="username" value="{{ old('username') }}" class="form-control" />
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="name_last" class="control-label">Client Last Name</label>
-                            <div>
-                                <input type="text" autocomplete="off" name="name_last" value="{{ old('name_last') }}" class="form-control" />
-                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name_first" class="control-label">Client First Name</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="name_first" value="{{ old('name_first') }}" class="form-control" />
                         </div>
-
+                    </div>
+                    <div class="form-group">
+                        <label for="name_last" class="control-label">Client Last Name</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="name_last" value="{{ old('name_last') }}" class="form-control" />
+                        </div>
                     </div>
                 </div>
                 <div class="box-footer">
