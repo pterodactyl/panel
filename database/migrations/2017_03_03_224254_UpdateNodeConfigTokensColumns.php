@@ -1,10 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Pterodactyl\Models\NodeConfigurationToken;
 
 class UpdateNodeConfigTokensColumns extends Migration
 {

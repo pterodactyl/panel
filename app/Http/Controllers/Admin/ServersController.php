@@ -154,7 +154,7 @@ class ServersController extends Controller
         try {
             $server = new ServerRepository;
             $server->updateDetails($id, $request->intersect([
-                'owner_id', 'name', 'reset_token'
+                'owner_id', 'name', 'reset_token',
             ]));
 
             Alert::success('Server details were successfully updated.')->flash();

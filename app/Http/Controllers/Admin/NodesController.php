@@ -27,7 +27,6 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use DB;
 use Log;
 use Alert;
-use Carbon;
 use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
@@ -206,7 +205,7 @@ class NodesController extends Controller
      * Updates settings for a node.
      *
      * @param  Request $request
-     * @param  integer $node
+     * @param  int $node
      * @return \Illuminate\Http\RedirectResponse
      */
     public function updateSettings(Request $request, $id)
@@ -237,8 +236,8 @@ class NodesController extends Controller
      * Removes a single allocation from a node.
      *
      * @param  Request $request
-     * @param  integer $node
-     * @param  integer $allocation [description]
+     * @param  int $node
+     * @param  int $allocation [description]
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function allocationRemoveSingle(Request $request, $node, $allocation)
@@ -257,7 +256,7 @@ class NodesController extends Controller
      * Remove all allocations for a specific IP at once on a node.
      *
      * @param  Request $request
-     * @param  integer  $node
+     * @param  int  $node
      * @return \Illuminate\Http\RedirectResponse
      */
     public function allocationRemoveBlock(Request $request, $node)
@@ -276,7 +275,7 @@ class NodesController extends Controller
      * Sets an alias for a specific allocation on a node.
      *
      * @param  Request $request
-     * @param  integer $node
+     * @param  int $node
      * @return \Illuminate\Http\Response
      * @throws \Exception
      */
@@ -301,7 +300,7 @@ class NodesController extends Controller
      * Creates new allocations on a node.
      *
      * @param  Request $request
-     * @param  integer  $node
+     * @param  int  $node
      * @return \Illuminate\Http\RedirectResponse
      */
     public function createAllocation(Request $request, $node)
@@ -327,7 +326,7 @@ class NodesController extends Controller
      * Deletes a node from the system.
      *
      * @param  Request  $request
-     * @param  integer  $id
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete(Request $request, $id)
@@ -353,7 +352,7 @@ class NodesController extends Controller
      * Returns the configuration token to auto-deploy a node.
      *
      * @param  Request  $request
-     * @param  integer  $id
+     * @param  int  $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function setToken(Request $request, $id)

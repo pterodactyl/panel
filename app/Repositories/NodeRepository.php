@@ -179,7 +179,7 @@ class NodeRepository
 
     /**
      * Adds allocations to a provided node.
-     * @param integer $id
+     * @param int $id
      * @param array   $data
      */
     public function addAllocations($id, array $data)
@@ -204,7 +204,7 @@ class NodeRepository
         }
 
         DB::transaction(function () use ($parsed, $node, $data) {
-            foreach(Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
+            foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
                 foreach ($data['allocation_ports'] as $port) {
                     // Determine if this is a valid single port, or a valid port range.
                     if (! ctype_digit($port) && ! preg_match('/^(\d{1,5})-(\d{1,5})$/', $port)) {
