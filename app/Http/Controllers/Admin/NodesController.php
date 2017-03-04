@@ -26,6 +26,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use DB;
 use Log;
+use Hash;
 use Alert;
 use Carbon;
 use Validator;
@@ -105,21 +106,6 @@ class NodesController extends Controller
         }
 
         return redirect()->route('admin.nodes.new')->withInput();
-    }
-
-    public function getView(Request $request, $id)
-    {
-        $node = Models\Node::with(
-            'servers.user', 'servers.service',
-            'servers.allocations', 'location'
-        )->findOrFail($id);
-        $node->setRelation('allocations', $node->allocations()->with('server')->paginate(40));
-
-        return view('admin.nodes.view', [
-            'node' => $node,
-            'stats' => Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first(),
-            'locations' => Models\Location::all(),
-        ]);
     }
 
     /**
@@ -221,36 +207,35 @@ class NodesController extends Controller
         ]);
     }
 
-    public function postView(Request $request, $id)
+    /**
+     * Updates settings for a node.
+     *
+     * @param  Request $request
+     * @param  integer $node
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateSettings(Request $request, $id)
     {
+        $repo = new NodeRepository;
+
         try {
-            $node = new NodeRepository;
-            $node->update($id, $request->only([
-                'name', 'location_id', 'public',
-                'fqdn', 'scheme', 'memory',
-                'memory_overallocate', 'disk',
-                'disk_overallocate', 'upload_size',
+            $repo->update($id, $request->intersect([
+                'name', 'location_id', 'public', 'fqdn', 'scheme', 'memory',
+                'memory_overallocate', 'disk', 'disk_overallocate', 'upload_size',
                 'daemonSFTP', 'daemonListen', 'reset_secret',
             ]));
-            Alert::success('Successfully update this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
 
-            return redirect()->route('admin.nodes.view', [
-                'id' => $id,
-                'tab' => 'tab_settings',
-            ]);
-        } catch (DisplayValidationException $e) {
-            return redirect()->route('admin.nodes.view', $id)->withErrors(json_decode($e->getMessage()))->withInput();
-        } catch (DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch (\Exception $e) {
-            Log::error($e);
+            Alert::success('Successfully updated this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.nodes.view.settings', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An unhandled exception occured while attempting to edit this node. Please try again.')->flash();
         }
 
-        return redirect()->route('admin.nodes.view', [
-            'id' => $id,
-            'tab' => 'tab_settings',
-        ])->withInput();
+        return redirect()->route('admin.nodes.view.settings', $id)->withInput();
     }
 
     /**
@@ -259,7 +244,7 @@ class NodesController extends Controller
      * @param  Request $request
      * @param  integer $node
      * @param  integer $allocation [description]
-     * @return mixed
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function allocationRemoveSingle(Request $request, $node, $allocation)
     {
@@ -278,7 +263,7 @@ class NodesController extends Controller
      *
      * @param  Request $request
      * @param  integer  $node
-     * @return mixed
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function allocationRemoveBlock(Request $request, $node)
     {
@@ -297,7 +282,8 @@ class NodesController extends Controller
      *
      * @param  Request $request
      * @param  integer $node
-     * @return mixed
+     * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function allocationSetAlias(Request $request, $node)
     {
@@ -342,51 +328,48 @@ class NodesController extends Controller
         return redirect()->route('admin.nodes.view.allocation', $node);
     }
 
-    public function getAllocationsJson(Request $request, $id)
+    /**
+     * Deletes a node from the system.
+     *
+     * @param  Request  $request
+     * @param  integer  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete(Request $request, $id)
     {
-        $allocations = Models\Allocation::select('ip')->where('node_id', $id)->groupBy('ip')->get();
+        $repo = new NodeRepository;
 
-        return response()->json($allocations);
-    }
-
-    public function deleteNode(Request $request, $id)
-    {
         try {
-            $repo = new NodeRepository;
             $repo->delete($id);
             Alert::success('Successfully deleted the requested node from the panel.')->flash();
 
             return redirect()->route('admin.nodes');
-        } catch (DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch (\Exception $e) {
-            Log::error($e);
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An unhandled exception occured while attempting to delete this node. Please try again.')->flash();
         }
 
-        return redirect()->route('admin.nodes.view', [
-            'id' => $id,
-            'tab' => 'tab_delete',
-        ]);
+        return redirect()->route('admin.nodes.view', $id);
     }
 
-    public function getConfigurationToken(Request $request, $id)
+    /**
+     * Returns the configuration token to auto-deploy a node.
+     *
+     * @param  Request  $request
+     * @param  integer  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function setToken(Request $request, $id)
     {
-        // Check if Node exists. Will lead to 404 if not.
-        Models\Node::findOrFail($id);
+        $node = Models\Node::findOrFail($id);
 
-        // Create a token
-        $token = new Models\NodeConfigurationToken();
-        $token->node = $id;
-        $token->token = str_random(32);
-        $token->expires_at = Carbon::now()->addMinutes(5); // Expire in 5 Minutes
-        $token->save();
+        $t = Models\NodeConfigurationToken::create([
+            'node_id' => $id,
+            'token' => str_random(32),
+        ]);
 
-        $token_response = [
-            'token' => $token->token,
-            'expires_at' => $token->expires_at->toDateTimeString(),
-        ];
-
-        return response()->json($token_response, 200);
+        return response()->json(['token' => $t->token]);
     }
 }

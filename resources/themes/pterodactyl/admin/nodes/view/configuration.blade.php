@@ -81,7 +81,7 @@
     @parent
     <script>
     $('#configTokenBtn').on('click', function (event) {
-        $.getJSON('{{ route('admin.nodes.configuration-token', $node->id) }}').done(function (data) {
+        $.getJSON('{{ route('admin.nodes.view.configuration.token', $node->id) }}').done(function (data) {
             swal({
                 type: 'success',
                 title: 'Token created.',

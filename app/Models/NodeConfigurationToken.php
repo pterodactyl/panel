@@ -48,4 +48,14 @@ class NodeConfigurationToken extends Model
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'expires_at'];
+
+    /**
+     * Gets the node associated with a configuration token.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function node()
+    {
+        return $this->belongsTo(Node::class);
+    }
 }

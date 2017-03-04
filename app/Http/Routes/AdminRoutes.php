@@ -232,79 +232,62 @@ class AdminRoutes
                 'uses' => 'Admin\NodesController@postNew',
             ]);
 
-            $router->get('/view/{id}/do/index', [
+            $router->get('/view/{id}', [
                 'as' => 'admin.nodes.view',
                 'uses' => 'Admin\NodesController@viewIndex',
             ]);
 
-            $router->get('/view/{id}/do/settings', [
+            $router->get('/view/{id}/settings', [
                 'as' => 'admin.nodes.view.settings',
                 'uses' => 'Admin\NodesController@viewSettings',
             ]);
 
-            $router->get('/view/{id}/do/configuration', [
+            $router->post('/view/{id}/settings', [
+                'uses' => 'Admin\NodesController@updateSettings',
+            ]);
+
+            $router->get('/view/{id}/configuration', [
                 'as' => 'admin.nodes.view.configuration',
                 'uses' => 'Admin\NodesController@viewConfiguration',
             ]);
 
-            $router->get('/view/{id}/do/allocation', [
+            $router->get('/view/{id}/allocation', [
                 'as' => 'admin.nodes.view.allocation',
                 'uses' => 'Admin\NodesController@viewAllocation',
             ]);
 
-            $router->post('/view/{id}/do/allocation', [
+            $router->post('/view/{id}/allocation', [
                 'uses' => 'Admin\NodesController@createAllocation',
             ]);
 
-            $router->get('/view/{id}/do/servers', [
+            $router->get('/view/{id}/servers', [
                 'as' => 'admin.nodes.view.servers',
                 'uses' => 'Admin\NodesController@viewServers',
             ]);
 
-            $router->get('/view/{id}/do/delete', [
+            $router->delete('/view/{id}/delete', [
                 'as' => 'admin.nodes.view.delete',
-                'uses' => 'Admin\NodesController@viewDelete',
+                'uses' => 'Admin\NodesController@delete',
             ]);
 
-            $router->delete('/view/{id}/do/allocation/remove/{allocation}', [
+            $router->delete('/view/{id}/allocation/remove/{allocation}', [
                 'as' => 'admin.nodes.view.allocation.removeSingle',
                 'uses' => 'Admin\NodesController@allocationRemoveSingle',
             ]);
 
-            $router->post('/view/{id}/do/allocation/remove', [
+            $router->post('/view/{id}/allocation/remove', [
                 'as' => 'admin.nodes.view.allocation.removeBlock',
                 'uses' => 'Admin\NodesController@allocationRemoveBlock',
             ]);
 
-            $router->post('/view/{id}/do/allocation/alias', [
+            $router->post('/view/{id}/allocation/alias', [
                 'as' => 'admin.nodes.view.allocation.setAlias',
                 'uses' => 'Admin\NodesController@allocationSetAlias',
             ]);
 
-            $router->get('/view/{id}/allocations.json', [
-                'as' => 'admin.nodes.view.allocations',
-                'uses' => 'Admin\NodesController@getAllocationsJson',
-            ]);
-
-            $router->post('/view/{id}/allocations', [
-                'as' => 'admin.nodes.post.allocations',
-                'uses' => 'Admin\NodesController@postAllocations',
-            ]);
-
-            // View Deploy
-            $router->get('/view/{id}/deploy', [
-                'as' => 'admin.nodes.deply',
-                'uses' => 'Admin\NodesController@getScript',
-            ]);
-
-            $router->delete('/view/{id}', [
-                'as' => 'admin.nodes.delete',
-                'uses' => 'Admin\NodesController@deleteNode',
-            ]);
-
-            $router->get('/{id}/configurationtoken', [
-                'as' => 'admin.nodes.configuration-token',
-                'uses' => 'Admin\NodesController@getConfigurationToken',
+            $router->get('/view/{id}/settings/token', [
+                'as' => 'admin.nodes.view.configuration.token',
+                'uses' => 'Admin\NodesController@setToken',
             ]);
         });
 
