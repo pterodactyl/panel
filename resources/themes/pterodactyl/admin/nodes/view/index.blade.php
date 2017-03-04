@@ -42,32 +42,52 @@
                 <li><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
                 <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
                 <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
-                <li class="tab-danger"><a href="{{ route('admin.nodes.view.delete', $node->id) }}">Delete</a></li>
             </ul>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-sm-8">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Information</h3>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Information</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tr>
+                                <td>Daemon Version</td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getDaemon() }}</code>)</td>
+                            </tr>
+                            <tr>
+                                <td>System Information</td>
+                                <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Total CPU Cores</td>
+                                <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <tr>
-                        <td>Daemon Version</td>
-                        <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getDaemon() }}</code>)</td>
-                    </tr>
-                    <tr>
-                        <td>System Information</td>
-                        <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
-                    </tr>
-                    <tr>
-                        <td>Total CPU Cores</td>
-                        <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
-                    </tr>
-                </table>
+            <div class="col-xs-12">
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Delete Node</h3>
+                    </div>
+                    <div class="box-body">
+                        <p class="no-margin">Deleting a node is a irreversable action and will immediately remove this node from the panel. There must be no servers associated with this node in order to continue.</p>
+                    </div>
+                    <div class="box-footer">
+                        <form action="{{ route('admin.nodes.view.delete', $node->id) }}" method="POST">
+                            {!! csrf_field() !!}
+                            {!! method_field('DELETE') !!}
+                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Yes, Delete This Node</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

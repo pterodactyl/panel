@@ -43,7 +43,6 @@
                 <li><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
                 <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
                 <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
-                <li class="tab-danger"><a href="{{ route('admin.nodes.view.delete', $node->id) }}">Delete</a></li>
             </ul>
         </div>
     </div>
