@@ -121,89 +121,103 @@ class AdminRoutes
             // View All Servers
             $router->get('/', [
                 'as' => 'admin.servers',
-                'uses' => 'Admin\ServersController@getIndex', ]);
+                'uses' => 'Admin\ServersController@index',
+            ]);
 
             // View Create Server Page
             $router->get('/new', [
                 'as' => 'admin.servers.new',
-                'uses' => 'Admin\ServersController@getNew',
+                'uses' => 'Admin\ServersController@new',
             ]);
 
             // Handle POST Request for Creating Server
             $router->post('/new', [
-                'uses' => 'Admin\ServersController@postNewServer',
+                'uses' => 'Admin\ServersController@create',
             ]);
 
             // Assorted Page Helpers
-            $router->post('/new/get-nodes', [
-                'as' => 'admin.servers.new.get-nodes',
-                'uses' => 'Admin\ServersController@postNewServerGetNodes',
+            $router->post('/new/nodes', [
+                'as' => 'admin.servers.new.nodes',
+                'uses' => 'Admin\ServersController@newServerNodes',
             ]);
 
-            // View Specific Server
             $router->get('/view/{id}', [
                 'as' => 'admin.servers.view',
-                'uses' => 'Admin\ServersController@getView',
+                'uses' => 'Admin\ServersController@viewIndex',
             ]);
 
-            // Database Stuffs
-            $router->post('/view/{id}/database', [
-                'as' => 'admin.servers.database',
-                'uses' => 'Admin\ServersController@postDatabase',
-            ]);
-
-            // Change Server Details
-            $router->post('/view/{id}/details', [
+            $router->get('/view/{id}/details', [
                 'as' => 'admin.servers.view.details',
-                'uses' => 'Admin\ServersController@postUpdateServerDetails',
+                'uses' => 'Admin\ServersController@viewDetails',
             ]);
 
-            // Change Server Details
-            $router->post('/view/{id}/container', [
-                'as' => 'admin.servers.post.container',
-                'uses' => 'Admin\ServersController@postUpdateContainerDetails',
+            $router->post('/view/{id}/details', [
+                'uses' => 'Admin\ServersController@setDetails',
             ]);
 
-            // Change Server Details
-            $router->post('/view/{id}/startup', [
-                'as' => 'admin.servers.post.startup',
-                'uses' => 'Admin\ServersController@postUpdateServerStartup',
+            $router->post('/view/{id}/details/container', [
+                'as' => 'admin.servers.view.details.container',
+                'uses' => 'Admin\ServersController@setContainer',
             ]);
 
-            // Rebuild Server
-            $router->post('/view/{id}/rebuild', [
-                'uses' => 'Admin\ServersController@postUpdateServerToggleBuild',
+            $router->get('/view/{id}/build', [
+                'as' => 'admin.servers.view.build',
+                'uses' => 'Admin\ServersController@viewBuild',
             ]);
 
-            // Change Build Details
             $router->post('/view/{id}/build', [
-                'uses' => 'Admin\ServersController@postUpdateServerUpdateBuild',
+                'uses' => 'Admin\ServersController@updateBuild',
             ]);
 
-            // Suspend Server
-            $router->post('/view/{id}/suspend', [
-                'uses' => 'Admin\ServersController@postSuspendServer',
+            $router->get('/view/{id}/startup', [
+                'as' => 'admin.servers.view.startup',
+                'uses' => 'Admin\ServersController@viewStartup',
             ]);
 
-            // Unsuspend Server
-            $router->post('/view/{id}/unsuspend', [
-                'uses' => 'Admin\ServersController@postUnsuspendServer',
+            $router->get('/view/{id}/database', [
+                'as' => 'admin.servers.view.database',
+                'uses' => 'Admin\ServersController@viewDatabase',
             ]);
 
-            // Change Install Status
-            $router->post('/view/{id}/installed', [
-                'uses' => 'Admin\ServersController@postToggleInstall',
+            $router->get('/view/{id}/manage', [
+                'as' => 'admin.servers.view.manage',
+                'uses' => 'Admin\ServersController@viewManage',
             ]);
 
-            // Delete [force delete]
-            $router->delete('/view/{id}/{force?}', [
-                'uses' => 'Admin\ServersController@deleteServer',
+            $router->post('/view/{id}/manage/toggle', [
+                'as' => 'admin.servers.view.manage.toggle',
+                'uses' => 'Admin\ServersController@toggleInstall',
             ]);
 
-            $router->post('/view/{id}/queuedDeletion', [
-                'uses' => 'Admin\ServersController@postQueuedDeletionHandler',
-                'as' => 'admin.servers.post.queuedDeletion',
+            $router->post('/view/{id}/manage/rebuild', [
+                'as' => 'admin.servers.view.manage.rebuild',
+                'uses' => 'Admin\ServersController@rebuildContainer',
             ]);
+
+            $router->post('/view/{id}/manage/suspension', [
+                'as' => 'admin.servers.view.manage.suspension',
+                'uses' => 'Admin\ServersController@manageSuspension',
+            ]);
+
+            $router->get('/view/{id}/delete', [
+                'as' => 'admin.servers.view.delete',
+                'uses' => 'Admin\ServersController@viewDelete',
+            ]);
+
+            $router->post('/view/{id}/delete', [
+                'uses' => 'Admin\ServersController@delete',
+            ]);
+
+            $router->post('/view/{id}/delete/continue/{force?}', [
+                'as' => 'admin.servers.view.delete.continue',
+                'uses' => 'Admin\ServersController@continueDeletion',
+            ]);
+
+            $router->post('/view/{id}/delete/cancel', [
+                'as' => 'admin.servers.view.delete.cancel',
+                'uses' => 'Admin\ServersController@cancelDeletion',
+            ]);
+
         });
 
         // Node Routes

@@ -352,7 +352,7 @@ class ServerRepository
 
         // Validate Fields
         $validator = Validator::make($data, [
-            'owner_id' => 'sometimes|required|numeric|exists:users,id',
+            'owner_id' => 'sometimes|required|integer|exists:users,id',
             'name' => 'sometimes|required|regex:([\w .-]{1,200})',
             'reset_token' => 'sometimes|required|accepted',
         ]);
@@ -369,14 +369,14 @@ class ServerRepository
             $server = Models\Server::with('user')->findOrFail($id);
 
             // Update daemon secret if it was passed.
-            if (isset($data['reset_token']) || (isset($data['owner_id']) && $data['owner_id'] !== $server->user->id)) {
+            if (isset($data['reset_token']) || (isset($data['owner_id']) && (int) $data['owner_id'] !== $server->user->id)) {
                 $oldDaemonKey = $server->daemonSecret;
                 $server->daemonSecret = $uuid->generate('servers', 'daemonSecret');
                 $resetDaemonKey = true;
             }
 
             // Update Server Owner if it was passed.
-            if (isset($data['owner_id']) && $data['owner_id'] !== $server->user->id) {
+            if (isset($data['owner_id']) && (int) $data['owner_id'] !== $server->user->id) {
                 $server->owner_id = $data['owner_id'];
             }
 
@@ -463,7 +463,7 @@ class ServerRepository
             return true;
         } catch (TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to update the container image.', $ex);
+            throw new DisplayException('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -590,7 +590,6 @@ class ServerRepository
             // This won't be committed unless the HTTP request succeedes anyways
             $server->save();
 
-            dd($newBuild);
             if (! empty($newBuild)) {
                 $server->node->guzzleClient([
                     'X-Access-Server' => $server->uuid,
@@ -607,7 +606,7 @@ class ServerRepository
             return $server;
         } catch (TransferException $ex) {
             DB::rollBack();
-            throw new DisplayException('An error occured while attempting to update the configuration.', $ex);
+            throw new DisplayException('A TransferException occured while attempting to update the server configuration, check that the daemon is online. This error has been logged.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -723,13 +722,13 @@ class ServerRepository
         }
     }
 
-    public function deleteServer($id, $force)
+    public function queueDeletion($id, $force = false)
     {
         $server = Models\Server::findOrFail($id);
         DB::beginTransaction();
 
         try {
-            if ($force === 'force' || $force) {
+            if ($force) {
                 $server->installed = 3;
                 $server->save();
             }
@@ -743,7 +742,7 @@ class ServerRepository
         }
     }
 
-    public function deleteNow($id, $force = false)
+    public function delete($id, $force = false)
     {
         $server = Models\Server::withTrashed()->with('node')->findOrFail($id);
 
@@ -819,8 +818,8 @@ class ServerRepository
     public function toggleInstall($id)
     {
         $server = Models\Server::findOrFail($id);
-        if ($server->installed === 2) {
-            throw new DisplayException('This server was marked as having a failed install, you cannot override this.');
+        if ($server->installed > 1) {
+            throw new DisplayException('This server was marked as having a failed install or being deleted, you cannot override this.');
         }
         $server->installed = ! $server->installed;
 

@@ -111,7 +111,7 @@ $('#pLocationId').on('change', function (event) {
 
     $.ajax({
         method: 'POST',
-        url: Router.route('admin.servers.new.get-nodes'),
+        url: Router.route('admin.servers.new.nodes'),
         headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
         data: { location: currentLocation },
     }).done(function (data) {

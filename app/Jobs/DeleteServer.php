@@ -58,6 +58,6 @@ class DeleteServer extends Job implements ShouldQueue
     public function handle()
     {
         $repo = new ServerRepository;
-        $repo->deleteNow($this->id);
+        $repo->delete($this->id);
     }
 }
