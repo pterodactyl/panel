@@ -140,7 +140,7 @@ class ServerObserver
      */
     public function updated(Server $server)
     {
-        /**
+        /*
          * The cached byUuid model calls are tagged with Model:Server:byUuid:<uuid>
          * so that they can be accessed regardless of if there is an Auth::user()
          * defined or not.

@@ -247,7 +247,7 @@ class ServersController extends Controller
      */
     public function setDetails(Request $request, $id)
     {
-        $repo = new ServerRepository;;
+        $repo = new ServerRepository;
         try {
             $repo->updateDetails($id, $request->intersect([
                 'owner_id', 'name', 'reset_token',
