@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Observers;
 
-use Auth;
 use Cache;
 use Carbon;
 use Pterodactyl\Events;
@@ -141,11 +140,15 @@ class ServerObserver
      */
     public function updated(Server $server)
     {
-        // Clear Caches
-        if (Auth::user()) {
-            Cache::forget('Server.byUuid.' . $server->uuid . Auth::user()->uuid);
-            Cache::forget('Server.byUuid.' . $server->uuidShort . Auth::user()->uuid);
-        }
+        /**
+         * The cached byUuid model calls are tagged with Model:Server:byUuid:<uuid>
+         * so that they can be accessed regardless of if there is an Auth::user()
+         * defined or not.
+         *
+         * We can also delete all cached byUuid items using the Model:Server tag.
+         */
+        Cache::tags('Model:Server:byUuid:' . $server->uuid)->flush();
+        Cache::tags('Model:Server:byUuid:' . $server->uuidShort)->flush();
 
         event(new Events\Server\Updated($server));
     }

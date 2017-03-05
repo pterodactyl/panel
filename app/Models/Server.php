@@ -26,6 +26,7 @@ namespace Pterodactyl\Models;
 
 use Auth;
 use Cache;
+use Carbon;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -113,7 +114,7 @@ class Server extends Model
     public static function byUuid($uuid)
     {
         // Results are cached because we call this functions a few times on page load.
-        $result = Cache::remember('Server.byUuid.' . $uuid . Auth::user()->uuid, 60, function () use ($uuid) {
+        $result = Cache::tags(['Model:Server', 'Model:Server:byUuid:' . $uuid])->remember('Model:Server:byUuid:' . $uuid . Auth::user()->uuid, Carbon::now()->addMinutes(15), function () use ($uuid) {
             $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
                 $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
             });

@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
 * `[pre.4]` — Fixes bug preventing server updates from occurring by the system due to undefined `Auth::user()` in the event listener.
+* `[pre.4]` — Fixes `Server::byUuid()` caching to actually clear the cache for *all* users, rather than the logged in user by using cache tags.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.
