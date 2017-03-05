@@ -65,7 +65,7 @@ code {
     font-size: 14px !important;
 }
 
-.middle {
+.middle, .align-middle {
     vertical-align: middle !important;
 }
 
