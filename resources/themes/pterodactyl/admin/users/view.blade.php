@@ -149,12 +149,13 @@
                 <h3 class="box-title">Delete User</h3>
             </div>
             <div class="box-body">
-                <div class="alert alert-danger"><strong>Warning!</strong> There most be no servers associated with this account in order for it to be deleted.</div>
-                <p></p>
-                <form action="{{ route('admin.users.view', $user->id) }}" method="POST" class="text-center">
-                    {!! method_field('DELETE') !!}
+                <p class="no-margin">There most be no servers associated with this account in order for it to be deleted.</p>
+            </div>
+            <div class="box-footer">
+                <form action="{{ route('admin.users.view', $user->id) }}" method="POST">
                     {!! csrf_field() !!}
-                    <input id="delete" type="submit" class="btn btn-sm btn-danger" value="Delete User" />
+                    {!! method_field('DELETE') !!}
+                    <input id="delete" type="submit" class="btn btn-sm btn-danger pull-right" {{ $user->servers->count() < 1 ?: 'disabled' }} value="Delete User" />
                 </form>
             </div>
         </div>
