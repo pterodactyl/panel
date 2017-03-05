@@ -113,6 +113,10 @@ class Server extends Model
      */
     public static function byUuid($uuid)
     {
+        if (! Auth::check()) {
+            throw new \Exception('You must call Server:byUuid as an authenticated user.');
+        }
+
         // Results are cached because we call this functions a few times on page load.
         $result = Cache::tags(['Model:Server', 'Model:Server:byUuid:' . $uuid])->remember('Model:Server:byUuid:' . $uuid . Auth::user()->uuid, Carbon::now()->addMinutes(15), function () use ($uuid) {
             $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
