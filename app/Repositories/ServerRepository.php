@@ -617,87 +617,63 @@ class ServerRepository
     {
         $server = Models\Server::with('variables', 'option.variables')->findOrFail($id);
 
-        DB::beginTransaction();
-
-        try {
-            // Check the startup
+        DB::transaction(function () use ($admin, $data, $server) {
             if (isset($data['startup']) && $admin) {
                 $server->startup = $data['startup'];
                 $server->save();
             }
 
-            // Check those Variables
-            $server->option->variables->transform(function ($item, $key) use ($server) {
-                $displayValue = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
-                $item->server_value = (! is_null($displayValue)) ? $displayValue : $item->default_value;
-
-                return $item;
-            });
-
-            $variableList = [];
             if ($server->option->variables) {
-                foreach ($server->option->variables as &$variable) {
-                    // Move on if the new data wasn't even sent
-                    if (! isset($data[$variable->env_variable])) {
-                        $variableList[] = [
-                            'id' => $variable->id,
-                            'env' => $variable->env_variable,
-                            'val' => $variable->server_value,
-                        ];
+                foreach($server->option->variables as &$variable) {
+                    $set = isset($data['env_' . $variable->id]);
+
+                    // Variable is required but was not passed into the function.
+                    if ($variable->required && ! $set) {
+                        throw new DisplayException('A required variable (' . $variable->env_variable . ') was not passed in the request.');
+                    }
+
+                    // If user is not an admin and are trying to edit a non-editable field
+                    // or an invisible field just silently skip the variable.
+                    if (! $admin && (! $variable->user_editable || ! $variable->user_viewable)) {
                         continue;
                     }
 
-                    // Update Empty but skip validation
-                    if (empty($data[$variable->env_variable])) {
-                        $variableList[] = [
-                            'id' => $variable->id,
-                            'env' => $variable->env_variable,
-                            'val' => null,
-                        ];
-                        continue;
-                    }
-
-                    // Is the variable required?
-                    // @TODO: is this even logical to perform this check?
-                    if (isset($data[$variable->env_variable]) && empty($data[$variable->env_variable])) {
-                        if ($variable->required) {
-                            throw new DisplayException('A required service option variable field (' . $variable->env_variable . ') was included in this request but was left blank.');
+                    // Confirm value is valid when compared aganist regex.
+                    // @TODO: switch to Laravel validation rules.
+                    if ($set && ! is_null($variable->regex)) {
+                        if (! preg_match($variable->regex, $data['env_' . $variable->id])) {
+                            throw new DisplayException('The value passed for a variable (' . $variable->env_variable . ') could not be matched aganist the regex for that field (' . $variable->regex . ').');
                         }
                     }
 
-                    // Variable hidden and/or not user editable
-                    if ((! $variable->user_viewable || ! $variable->user_editable) && ! $admin) {
-                        throw new DisplayException('A service option variable field (' . $variable->env_variable . ') does not exist or you do not have permission to edit it.');
+                    $svar = Models\ServerVariable::firstOrNew([
+                        'server_id' => $server->id,
+                        'variable_id' => $variable->id,
+                    ]);
+
+                    // Set the value; if one was not passed set it to the default value
+                    if ($set) {
+                        $svar->variable_value = $data['env_' . $variable->id];
+
+                    // Not passed, check if this record exists if so keep value, otherwise set default
+                    } else {
+                        $svar->variable_value = ($svar->exists) ? $svar->variable_value : $variable->default_value;
                     }
 
-                    // Check aganist Regex Pattern
-                    if (! is_null($variable->regex) && ! preg_match($variable->regex, $data[$variable->env_variable])) {
-                        throw new DisplayException('Failed to validate service option variable field (' . $variable->env_variable . ') aganist regex (' . $variable->regex . ').');
-                    }
-
-                    $variableList[] = [
-                        'id' => $variable->id,
-                        'env' => $variable->env_variable,
-                        'val' => $data[$variable->env_variable],
-                    ];
+                    $svar->save();
                 }
             }
 
-            // Add Variables
-            $environmentVariables = [
-                'STARTUP' => $server->startup,
-            ];
-            foreach ($variableList as $item) {
-                $environmentVariables[$item['env']] = $item['val'];
+            // Reload Variables
+            $server->load('variables');
+            $environment = $server->option->variables->map(function ($item, $key) use ($server) {
+                $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
 
-                // Update model or make a new record if it doesn't exist.
-                $model = Models\ServerVariable::firstOrNew([
-                    'variable_id' => $item['id'],
-                    'server_id' => $server->id,
-                ]);
-                $model->variable_value = $item['val'];
-                $model->save();
-            }
+                return [
+                    'variable' => $item->env_variable,
+                    'value' => (! is_null($display)) ? $display : $item->default_value,
+                ];
+            });
 
             $server->node->guzzleClient([
                 'X-Access-Server' => $server->uuid,
@@ -705,21 +681,11 @@ class ServerRepository
             ])->request('PATCH', '/server', [
                 'json' => [
                     'build' => [
-                        'env|overwrite' => $environmentVariables,
+                        'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup]),
                     ],
                 ],
             ]);
-
-            DB::commit();
-
-            return true;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('An error occured while attempting to update the server configuration.', $ex);
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+        });
     }
 
     public function queueDeletion($id, $force = false)

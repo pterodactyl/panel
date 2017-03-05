@@ -309,9 +309,7 @@ class ServerController extends Controller
 
         try {
             $repo = new ServerRepository;
-            $repo->updateStartup($server->id, $request->except([
-                '_token',
-            ]));
+            $repo->updateStartup($server->id, $request->except('_token'));
             Alert::success('Server startup variables were successfully updated.')->flash();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();

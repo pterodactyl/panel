@@ -475,27 +475,34 @@ class ServersController extends Controller
         return redirect()->route('admin.servers.view.delete', $id);
     }
 
-    //    //
-    // public function postUpdateServerStartup(Request $request, $id)
-    // {
-    //     try {
-    //         $server = new ServerRepository;
-    //         $server->updateStartup($id, $request->except([
-    //             '_token',
-    //         ]), true);
-    //         Alert::success('Server startup variables were successfully updated.')->flash();
-    //     } catch (\Pterodactyl\Exceptions\DisplayException $e) {
-    //         Alert::danger($e->getMessage())->flash();
-    //     } catch (\Exception $e) {
-    //         Log::error($e);
-    //         Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
-    //     } finally {
-    //         return redirect()->route('admin.servers.view', [
-    //             'id' => $id,
-    //             'tab' => 'tab_startup',
-    //         ])->withInput();
-    //     }
-    // }
+    /**
+     * Update the startup command as well as variables.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function saveStartup(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+
+        try {
+            $repo->updateStartup($id, $request->except('_token'), true);
+
+            Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
+        } catch(DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException occurred while attempting to update the startup for this server, please ensure the daemon is running. This error has been logged.')->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.startup', $id);
+    }
+
     //
     // public function postDatabase(Request $request, $id)
     // {

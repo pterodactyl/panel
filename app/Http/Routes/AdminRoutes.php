@@ -174,6 +174,10 @@ class AdminRoutes
                 'uses' => 'Admin\ServersController@viewStartup',
             ]);
 
+            $router->post('/view/{id}/startup', [
+                'uses' => 'Admin\ServersController@saveStartup',
+            ]);
+
             $router->get('/view/{id}/database', [
                 'as' => 'admin.servers.view.database',
                 'uses' => 'Admin\ServersController@viewDatabase',
