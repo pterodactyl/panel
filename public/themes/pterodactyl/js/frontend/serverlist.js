@@ -17,16 +17,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
-var ServerList = (function () {
-
+(function updateServerStatus() {
     var Status = {
         0: 'Offline',
         1: 'Online',
         2: 'Starting',
         3: 'Stopping'
     };
-
     $('.dynamic-update').each(function (index, data) {
         var element = $(this);
         var serverShortUUID = $(this).data('server');
@@ -81,20 +78,12 @@ var ServerList = (function () {
                     element.find('[data-action="memory"]').html('--');
                     element.find('[data-action="cpu"]').html('--');
                 }
-            }).fail(function (jqXHR) {
-                console.error(jqXHR);
-                element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
-            });
+            }
+        }).fail(function (jqXHR) {
+            console.error(jqXHR);
+            element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
         });
+    }).promise().done(function () {
         setTimeout(updateServerStatus, 10000);
-    }
-
-    return {
-        init: function () {
-            updateServerStatus();
-        }
-    };
-
+    });
 })();
-
-ServerList.init();
