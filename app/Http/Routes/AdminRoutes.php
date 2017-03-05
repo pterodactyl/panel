@@ -217,7 +217,6 @@ class AdminRoutes
                 'as' => 'admin.servers.view.delete.cancel',
                 'uses' => 'Admin\ServersController@cancelDeletion',
             ]);
-
         });
 
         // Node Routes
