@@ -183,6 +183,19 @@ class AdminRoutes
                 'uses' => 'Admin\ServersController@viewDatabase',
             ]);
 
+            $router->post('/view/{id}/database', [
+                'uses' => 'Admin\ServersController@newDatabase',
+            ]);
+
+            $router->patch('/view/{id}/database', [
+                'uses' => 'Admin\ServersController@resetDatabasePassword',
+            ]);
+
+            $router->delete('/view/{id}/database/{database}/delete', [
+                'as' => 'admin.servers.view.database.delete',
+                'uses' => 'Admin\ServersController@deleteDatabase',
+            ]);
+
             $router->get('/view/{id}/manage', [
                 'as' => 'admin.servers.view.manage',
                 'uses' => 'Admin\ServersController@viewManage',

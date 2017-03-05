@@ -26,89 +26,98 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Crypt;
+use Config;
 use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
-use Illuminate\Database\Capsule\Manager as Capsule;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class DatabaseRepository
 {
     /**
-     * Adds a new database to a given database server.
+     * Adds a new database to a specified database host server.
+     *
      * @param int   $server   Id of the server to add a database for.
      * @param array $options  Array of options for creating that database.
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     * @throws \Exception
      * @return void
      */
-    public function create($server, $options)
+    public function create($server, $data)
     {
         $server = Models\Server::findOrFail($server);
-        $validator = Validator::make($options, [
-            'db_server' => 'required|exists:database_servers,id',
+
+        $validator = Validator::make($data, [
+            'host' => 'required|exists:database_servers,id',
             'database' => 'required|regex:/^\w{1,100}$/',
-            'remote' => 'required|regex:/^[0-9%.]{1,15}$/',
+            'connection' => 'required|regex:/^[0-9%.]{1,15}$/',
         ]);
 
         if ($validator->fails()) {
             throw new DisplayValidationException($validator->errors());
         }
 
+        $host = Models\DatabaseServer::findOrFail($data['host']);
         DB::beginTransaction();
+
         try {
-            $db = new Models\Database;
-            $db->fill([
+            $database = Models\Database::firstOrNew([
                 'server_id' => $server->id,
-                'db_server' => $options['db_server'],
-                'database' => "s{$server->id}_{$options['database']}",
-                'username' => $server->uuidShort . '_' . str_random(7),
-                'remote' => $options['remote'],
-                'password' => Crypt::encrypt(str_random(20)),
-            ]);
-            $db->save();
-
-            // Contact Remote
-            $dbr = Models\DatabaseServer::findOrFail($options['db_server']);
-
-            $capsule = new Capsule;
-            $capsule->addConnection([
-                'driver' => 'mysql',
-                'host' => $dbr->host,
-                'port' => $dbr->port,
-                'database' => 'mysql',
-                'username' => $dbr->username,
-                'password' => Crypt::decrypt($dbr->password),
-                'charset' => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ],
+                'db_server' => $data['host'],
+                'database' => sprintf('s%d_%s', $server->id, $data['database']),
             ]);
 
-            $capsule->setAsGlobal();
+            if ($database->exists) {
+                throw new DisplayException('A database with those details already exists in the system.');
+            }
+
+            $database->username = sprintf('s%d_%s', $server->id, str_random(10));
+            $database->remote = $data['connection'];
+            $database->password = Crypt::encrypt(str_random(20));
+
+            $database->save();
         } catch (\Exception $ex) {
             DB::rollBack();
-            throw new DisplayException('There was an error while connecting to the Database Host Server. Please check the error logs.', $ex);
+            throw $ex;
         }
 
+        Config::set('database.connections.dynamic', [
+            'driver' => 'mysql',
+            'host' => $host->host,
+            'port' => $host->port,
+            'database' => 'mysql',
+            'username' => $host->username,
+            'password' => Crypt::decrypt($host->password),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+        ]);
+
         try {
-            Capsule::statement('CREATE DATABASE `' . $db->database . '`');
-            Capsule::statement('CREATE USER `' . $db->username . '`@`' . $db->remote . '` IDENTIFIED BY \'' . Crypt::decrypt($db->password) . '\'');
-            Capsule::statement('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `' . $db->database . '`.* TO `' . $db->username . '`@`' . $db->remote . '`');
-            Capsule::statement('FLUSH PRIVILEGES');
+            DB::connection('dynamic')->statement(sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database->database));
+            DB::connection('dynamic')->statement(sprintf(
+                'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
+                $database->username, $database->remote, Crypt::decrypt($database->password)
+            ));
+            DB::connection('dynamic')->statement(sprintf(
+                'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`',
+                $database->database, $database->username, $database->remote
+            ));
+
+            DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
+
+            // Save Everything
             DB::commit();
         } catch (\Exception $ex) {
             try {
-                Capsule::statement('DROP DATABASE `' . $db->database . '`');
-                Capsule::statement('DROP USER `' . $db->username . '`@`' . $db->remote . '`');
-            } catch (\Exception $exi) {
-                // ignore it, if it fails its probably
-                // because we failed to ever make the DB
-                // or the user on the system.
-            } finally {
-                DB::rollBack();
-                throw $ex;
-            }
+                DB::connection('dynamic')->statement(sprintf('DROP DATABASE IF EXISTS `%s`', $database->database));
+                DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
+                DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
+            } catch (\Exception $ex) {}
+
+            DB::rollBack();
+            throw $ex;
         }
     }
 
@@ -118,7 +127,7 @@ class DatabaseRepository
      * @param  string $password The new password to use for the database.
      * @return bool
      */
-    public function modifyPassword($id, $password)
+    public function password($id, $password)
     {
         $database = Models\Database::with('host')->findOrFail($id);
 
@@ -127,33 +136,25 @@ class DatabaseRepository
             $database->password = Crypt::encrypt($password);
             $database->save();
 
-            $capsule = new Capsule;
-            $capsule->addConnection([
+            Config::set('database.connections.dynamic', [
                 'driver' => 'mysql',
                 'host' => $database->host->host,
                 'port' => $database->host->port,
                 'database' => 'mysql',
                 'username' => $database->host->username,
                 'password' => Crypt::decrypt($database->host->password),
-                'charset' => 'utf8',
+                'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ],
             ]);
 
-            $capsule->setAsGlobal();
-            Capsule::statement(sprintf(
+            DB::connection('dynamic')->statement(sprintf(
                 'SET PASSWORD FOR `%s`@`%s` = PASSWORD(\'%s\')',
-                $database->username,
-                $database->remote,
-                $password
+                $database->username, $database->remote, $password
             ));
 
             DB::commit();
         } catch (\Exception $ex) {
-            DB::rollback();
+            DB::rollBack();
             throw $ex;
         }
     }
@@ -168,34 +169,25 @@ class DatabaseRepository
         $database = Models\Database::with('host')->findOrFail($id);
 
         DB::beginTransaction();
-
         try {
-            $capsule = new Capsule;
-            $capsule->addConnection([
+            Config::set('database.connections.dynamic', [
                 'driver' => 'mysql',
                 'host' => $database->host->host,
                 'port' => $database->host->port,
                 'database' => 'mysql',
                 'username' => $database->host->username,
                 'password' => Crypt::decrypt($database->host->password),
-                'charset' => 'utf8',
+                'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ],
             ]);
 
-            $capsule->setAsGlobal();
-
-            Capsule::statement('DROP USER `' . $database->username . '`@`' . $database->remote . '`');
-            Capsule::statement('DROP DATABASE `' . $database->database . '`');
+            DB::connection('dynamic')->statement(sprintf('DROP DATABASE IF EXISTS `%s`', $database->database));
+            DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
+            DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
 
             $database->delete();
 
             DB::commit();
-
-            return true;
         } catch (\Exception $ex) {
             DB::rollback();
             throw $ex;
@@ -243,28 +235,20 @@ class DatabaseRepository
         }
 
         DB::beginTransaction();
-
         try {
-            $capsule = new Capsule;
-            $capsule->addConnection([
+            Config::set('database.connections.dynamic', [
                 'driver' => 'mysql',
                 'host' => $data['host'],
                 'port' => $data['port'],
                 'database' => 'mysql',
                 'username' => $data['username'],
                 'password' => $data['password'],
-                'charset' => 'utf8',
+                'charset'   => 'utf8',
                 'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ],
             ]);
 
-            $capsule->setAsGlobal();
-
             // Allows us to check that we can connect to things.
-            Capsule::select('SELECT 1 FROM dual');
+            DB::connection('dynamic')->select('SELECT 1 FROM dual');
 
             Models\DatabaseServer::create([
                 'name' => $data['name'],

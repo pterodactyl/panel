@@ -745,10 +745,12 @@ class ServerRepository
             // Delete Databases
             // This is the one un-recoverable point where
             // transactions will not save us.
-            $repository = new DatabaseRepository;
-            foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
-                $repository->drop($database->id);
-            }
+            //
+            // @TODO: move to post-deletion event as a queued task!
+            // $repository = new DatabaseRepository;
+            // foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
+            //     $repository->drop($database->id);
+            // }
 
             $server->node->guzzleClient([
                 'X-Access-Token' => $server->node->daemonSecret,

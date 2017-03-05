@@ -211,7 +211,10 @@ class ServersController extends Controller
     {
         $server = Models\Server::where('installed', 1)->with('databases.host')->findOrFail($id);
 
-        return view('admin.servers.view.build', ['server' => $server]);
+        return view('admin.servers.view.database', [
+            'hosts' => Models\DatabaseServer::all(),
+            'server' => $server
+        ]);
     }
 
     /**
@@ -503,29 +506,73 @@ class ServersController extends Controller
         return redirect()->route('admin.servers.view.startup', $id);
     }
 
-    //
-    // public function postDatabase(Request $request, $id)
-    // {
-    //     try {
-    //         $repo = new DatabaseRepository;
-    //         $repo->create($id, $request->only([
-    //             'db_server', 'database', 'remote',
-    //         ]));
-    //         Alert::success('Added new database to this server.')->flash();
-    //     } catch (DisplayValidationException $ex) {
-    //         return redirect()->route('admin.servers.view', [
-    //             'id' => $id,
-    //             'tab' => 'tab_database',
-    //         ])->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
-    //     } catch (\Exception $ex) {
-    //         Log::error($ex);
-    //         Alert::danger('An exception occured while attempting to add a new database for this server.')->flash();
-    //     }
-    //
-    //     return redirect()->route('admin.servers.view', [
-    //         'id' => $id,
-    //         'tab' => 'tab_database',
-    //     ])->withInput();
-    // }
-    //    //
+    /**
+     * Creates a new database assigned to a specific server.
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function newDatabase(Request $request, $id)
+    {
+        $repo = new DatabaseRepository;
+
+        try {
+            $repo->create($id, $request->only(['host', 'database', 'connection']));
+
+            Alert::success('A new database was assigned to this server successfully.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch(DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An exception occured while attempting to add a new database for this server. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.database', $id)->withInput();
+    }
+
+    /**
+     * Resets the database password for a specific database on this server.
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function resetDatabasePassword(Request $request, $id)
+    {
+        $database = Models\Database::where('server_id', $id)->findOrFail($request->input('database'));
+        $repo = new DatabaseRepository;
+
+        try {
+            $repo->password($database->id, str_random(20));
+
+            return response('', 204);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+
+            return response()->json(['error' => 'A unhandled exception occurred while attempting to reset this password. This error has been logged.'], 503);
+        }
+    }
+
+    /**
+     * Deletes a database from a server.
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function deleteDatabase(Request $request, $id, $database)
+    {
+        $database = Models\Database::where('server_id', $id)->findOrFail($database);
+        $repo = new DatabaseRepository;
+
+        try {
+            $repo->drop($database->id);
+
+            return response('', 204);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+
+            return response()->json(['error' => 'A unhandled exception occurred while attempting to drop this database. This error has been logged.'], 503);
+        }
+    }
 }
