@@ -114,7 +114,8 @@ class DatabaseRepository
                 DB::connection('dynamic')->statement(sprintf('DROP DATABASE IF EXISTS `%s`', $database->database));
                 DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
                 DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
-            } catch (\Exception $ex) {}
+            } catch (\Exception $ex) {
+            }
 
             DB::rollBack();
             throw $ex;

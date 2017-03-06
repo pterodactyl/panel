@@ -213,7 +213,7 @@ class ServersController extends Controller
 
         return view('admin.servers.view.database', [
             'hosts' => Models\DatabaseServer::all(),
-            'server' => $server
+            'server' => $server,
         ]);
     }
 
@@ -493,7 +493,7 @@ class ServersController extends Controller
             $repo->updateStartup($id, $request->except('_token'), true);
 
             Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
-        } catch(DisplayException $ex) {
+        } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (TransferException $ex) {
             Log::warning($ex);
@@ -522,7 +522,7 @@ class ServersController extends Controller
             Alert::success('A new database was assigned to this server successfully.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch(DisplayException $ex) {
+        } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);

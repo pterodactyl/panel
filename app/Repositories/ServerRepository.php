@@ -624,7 +624,7 @@ class ServerRepository
             }
 
             if ($server->option->variables) {
-                foreach($server->option->variables as &$variable) {
+                foreach ($server->option->variables as &$variable) {
                     $set = isset($data['env_' . $variable->id]);
 
                     // Variable is required but was not passed into the function.
