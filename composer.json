@@ -29,7 +29,8 @@
         "predis/predis": "1.1.1",
         "fideloper/proxy": "3.2.0",
         "laracasts/utilities": "2.1.0",
-        "lord/laroute": "2.3.0"
+        "lord/laroute": "2.3.0",
+        "nicolaslopezj/searchable": "1.9.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

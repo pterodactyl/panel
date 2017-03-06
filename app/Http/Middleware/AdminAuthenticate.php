@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Middleware;
 
-use Theme;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
@@ -68,9 +67,6 @@ class AdminAuthenticate
         if ($this->auth->user()->root_admin !== 1) {
             return abort(403);
         }
-
-        // @TODO: eventually update admin themes
-        Theme::set('default');
 
         return $next($request);
     }

@@ -121,99 +121,118 @@ class AdminRoutes
             // View All Servers
             $router->get('/', [
                 'as' => 'admin.servers',
-                'uses' => 'Admin\ServersController@getIndex', ]);
+                'uses' => 'Admin\ServersController@index',
+            ]);
 
             // View Create Server Page
             $router->get('/new', [
                 'as' => 'admin.servers.new',
-                'uses' => 'Admin\ServersController@getNew',
+                'uses' => 'Admin\ServersController@new',
             ]);
 
             // Handle POST Request for Creating Server
             $router->post('/new', [
-                'uses' => 'Admin\ServersController@postNewServer',
+                'uses' => 'Admin\ServersController@create',
             ]);
 
             // Assorted Page Helpers
-            $router->post('/new/get-nodes', [
-                'uses' => 'Admin\ServersController@postNewServerGetNodes',
+            $router->post('/new/nodes', [
+                'as' => 'admin.servers.new.nodes',
+                'uses' => 'Admin\ServersController@newServerNodes',
             ]);
 
-            $router->post('/new/get-ips', [
-                'uses' => 'Admin\ServersController@postNewServerGetIps',
-            ]);
-
-            $router->post('/new/service-options', [
-                'uses' => 'Admin\ServersController@postNewServerServiceOption',
-            ]);
-
-            $router->post('/new/option-details', [
-                'uses' => 'Admin\ServersController@postNewServerOptionDetails',
-            ]);
-            // End Assorted Page Helpers
-
-            // View Specific Server
             $router->get('/view/{id}', [
                 'as' => 'admin.servers.view',
-                'uses' => 'Admin\ServersController@getView',
+                'uses' => 'Admin\ServersController@viewIndex',
             ]);
 
-            // Database Stuffs
-            $router->post('/view/{id}/database', [
-                'as' => 'admin.servers.database',
-                'uses' => 'Admin\ServersController@postDatabase',
+            $router->get('/view/{id}/details', [
+                'as' => 'admin.servers.view.details',
+                'uses' => 'Admin\ServersController@viewDetails',
             ]);
 
-            // Change Server Details
             $router->post('/view/{id}/details', [
-                'uses' => 'Admin\ServersController@postUpdateServerDetails',
+                'uses' => 'Admin\ServersController@setDetails',
             ]);
 
-            // Change Server Details
-            $router->post('/view/{id}/container', [
-                'as' => 'admin.servers.post.container',
-                'uses' => 'Admin\ServersController@postUpdateContainerDetails',
+            $router->post('/view/{id}/details/container', [
+                'as' => 'admin.servers.view.details.container',
+                'uses' => 'Admin\ServersController@setContainer',
             ]);
 
-            // Change Server Details
-            $router->post('/view/{id}/startup', [
-                'as' => 'admin.servers.post.startup',
-                'uses' => 'Admin\ServersController@postUpdateServerStartup',
+            $router->get('/view/{id}/build', [
+                'as' => 'admin.servers.view.build',
+                'uses' => 'Admin\ServersController@viewBuild',
             ]);
 
-            // Rebuild Server
-            $router->post('/view/{id}/rebuild', [
-                'uses' => 'Admin\ServersController@postUpdateServerToggleBuild',
-            ]);
-
-            // Change Build Details
             $router->post('/view/{id}/build', [
-                'uses' => 'Admin\ServersController@postUpdateServerUpdateBuild',
+                'uses' => 'Admin\ServersController@updateBuild',
             ]);
 
-            // Suspend Server
-            $router->post('/view/{id}/suspend', [
-                'uses' => 'Admin\ServersController@postSuspendServer',
+            $router->get('/view/{id}/startup', [
+                'as' => 'admin.servers.view.startup',
+                'uses' => 'Admin\ServersController@viewStartup',
             ]);
 
-            // Unsuspend Server
-            $router->post('/view/{id}/unsuspend', [
-                'uses' => 'Admin\ServersController@postUnsuspendServer',
+            $router->post('/view/{id}/startup', [
+                'uses' => 'Admin\ServersController@saveStartup',
             ]);
 
-            // Change Install Status
-            $router->post('/view/{id}/installed', [
-                'uses' => 'Admin\ServersController@postToggleInstall',
+            $router->get('/view/{id}/database', [
+                'as' => 'admin.servers.view.database',
+                'uses' => 'Admin\ServersController@viewDatabase',
             ]);
 
-            // Delete [force delete]
-            $router->delete('/view/{id}/{force?}', [
-                'uses' => 'Admin\ServersController@deleteServer',
+            $router->post('/view/{id}/database', [
+                'uses' => 'Admin\ServersController@newDatabase',
             ]);
 
-            $router->post('/view/{id}/queuedDeletion', [
-                'uses' => 'Admin\ServersController@postQueuedDeletionHandler',
-                'as' => 'admin.servers.post.queuedDeletion',
+            $router->patch('/view/{id}/database', [
+                'uses' => 'Admin\ServersController@resetDatabasePassword',
+            ]);
+
+            $router->delete('/view/{id}/database/{database}/delete', [
+                'as' => 'admin.servers.view.database.delete',
+                'uses' => 'Admin\ServersController@deleteDatabase',
+            ]);
+
+            $router->get('/view/{id}/manage', [
+                'as' => 'admin.servers.view.manage',
+                'uses' => 'Admin\ServersController@viewManage',
+            ]);
+
+            $router->post('/view/{id}/manage/toggle', [
+                'as' => 'admin.servers.view.manage.toggle',
+                'uses' => 'Admin\ServersController@toggleInstall',
+            ]);
+
+            $router->post('/view/{id}/manage/rebuild', [
+                'as' => 'admin.servers.view.manage.rebuild',
+                'uses' => 'Admin\ServersController@rebuildContainer',
+            ]);
+
+            $router->post('/view/{id}/manage/suspension', [
+                'as' => 'admin.servers.view.manage.suspension',
+                'uses' => 'Admin\ServersController@manageSuspension',
+            ]);
+
+            $router->get('/view/{id}/delete', [
+                'as' => 'admin.servers.view.delete',
+                'uses' => 'Admin\ServersController@viewDelete',
+            ]);
+
+            $router->post('/view/{id}/delete', [
+                'uses' => 'Admin\ServersController@delete',
+            ]);
+
+            $router->post('/view/{id}/delete/continue/{force?}', [
+                'as' => 'admin.servers.view.delete.continue',
+                'uses' => 'Admin\ServersController@continueDeletion',
+            ]);
+
+            $router->post('/view/{id}/delete/cancel', [
+                'as' => 'admin.servers.view.delete.cancel',
+                'uses' => 'Admin\ServersController@cancelDeletion',
             ]);
         });
 
@@ -230,66 +249,75 @@ class AdminRoutes
             // View All Nodes
             $router->get('/', [
                 'as' => 'admin.nodes',
-                'uses' => 'Admin\NodesController@getIndex',
+                'uses' => 'Admin\NodesController@index',
             ]);
 
             // Add New Node
             $router->get('/new', [
                 'as' => 'admin.nodes.new',
-                'uses' => 'Admin\NodesController@getNew',
+                'uses' => 'Admin\NodesController@new',
             ]);
 
             $router->post('/new', [
-                'uses' => 'Admin\NodesController@postNew',
+                'uses' => 'Admin\NodesController@create',
             ]);
 
-            // View Node
             $router->get('/view/{id}', [
                 'as' => 'admin.nodes.view',
-                'uses' => 'Admin\NodesController@getView',
+                'uses' => 'Admin\NodesController@viewIndex',
             ]);
 
-            $router->post('/view/{id}', [
-                'uses' => 'Admin\NodesController@postView',
+            $router->get('/view/{id}/settings', [
+                'as' => 'admin.nodes.view.settings',
+                'uses' => 'Admin\NodesController@viewSettings',
             ]);
 
-            $router->delete('/view/{id}/deallocate/single/{allocation}', [
-                'uses' => 'Admin\NodesController@deallocateSingle',
+            $router->post('/view/{id}/settings', [
+                'uses' => 'Admin\NodesController@updateSettings',
             ]);
 
-            $router->post('/view/{id}/deallocate/block', [
-                'uses' => 'Admin\NodesController@deallocateBlock',
+            $router->get('/view/{id}/configuration', [
+                'as' => 'admin.nodes.view.configuration',
+                'uses' => 'Admin\NodesController@viewConfiguration',
             ]);
 
-            $router->post('/view/{id}/alias', [
-                'as' => 'admin.nodes.alias',
-                'uses' => 'Admin\NodesController@setAlias',
+            $router->get('/view/{id}/allocation', [
+                'as' => 'admin.nodes.view.allocation',
+                'uses' => 'Admin\NodesController@viewAllocation',
             ]);
 
-            $router->get('/view/{id}/allocations.json', [
-                'as' => 'admin.nodes.view.allocations',
-                'uses' => 'Admin\NodesController@getAllocationsJson',
+            $router->post('/view/{id}/allocation', [
+                'uses' => 'Admin\NodesController@createAllocation',
             ]);
 
-            $router->post('/view/{id}/allocations', [
-                'as' => 'admin.nodes.post.allocations',
-                'uses' => 'Admin\NodesController@postAllocations',
+            $router->get('/view/{id}/servers', [
+                'as' => 'admin.nodes.view.servers',
+                'uses' => 'Admin\NodesController@viewServers',
             ]);
 
-            // View Deploy
-            $router->get('/view/{id}/deploy', [
-                'as' => 'admin.nodes.deply',
-                'uses' => 'Admin\NodesController@getScript',
+            $router->delete('/view/{id}/delete', [
+                'as' => 'admin.nodes.view.delete',
+                'uses' => 'Admin\NodesController@delete',
             ]);
 
-            $router->delete('/view/{id}', [
-                'as' => 'admin.nodes.delete',
-                'uses' => 'Admin\NodesController@deleteNode',
+            $router->delete('/view/{id}/allocation/remove/{allocation}', [
+                'as' => 'admin.nodes.view.allocation.removeSingle',
+                'uses' => 'Admin\NodesController@allocationRemoveSingle',
             ]);
 
-            $router->get('/{id}/configurationtoken', [
-                'as' => 'admin.nodes.configuration-token',
-                'uses' => 'Admin\NodesController@getConfigurationToken',
+            $router->post('/view/{id}/allocation/remove', [
+                'as' => 'admin.nodes.view.allocation.removeBlock',
+                'uses' => 'Admin\NodesController@allocationRemoveBlock',
+            ]);
+
+            $router->post('/view/{id}/allocation/alias', [
+                'as' => 'admin.nodes.view.allocation.setAlias',
+                'uses' => 'Admin\NodesController@allocationSetAlias',
+            ]);
+
+            $router->get('/view/{id}/settings/token', [
+                'as' => 'admin.nodes.view.configuration.token',
+                'uses' => 'Admin\NodesController@setToken',
             ]);
         });
 

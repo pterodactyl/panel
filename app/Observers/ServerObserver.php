@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Observers;
 
-use Auth;
 use Cache;
 use Carbon;
 use Pterodactyl\Events;
@@ -41,8 +40,8 @@ class ServerObserver
     /**
      * Listen to the Server creating event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function creating(Server $server)
     {
@@ -52,8 +51,8 @@ class ServerObserver
     /**
      * Listen to the Server created event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function created(Server $server)
     {
@@ -73,8 +72,8 @@ class ServerObserver
     /**
      * Listen to the Server deleting event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function deleting(Server $server)
     {
@@ -86,8 +85,8 @@ class ServerObserver
     /**
      * Listen to the Server deleted event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function deleted(Server $server)
     {
@@ -103,8 +102,8 @@ class ServerObserver
     /**
      * Listen to the Server saving event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function saving(Server $server)
     {
@@ -114,8 +113,8 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function saved(Server $server)
     {
@@ -123,10 +122,10 @@ class ServerObserver
     }
 
     /**
-     * Listen to the Server saving event.
+     * Listen to the Server updating event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function updating(Server $server)
     {
@@ -136,14 +135,20 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param  Server $server [description]
-     * @return [type]         [description]
+     * @param  Server $server The server model.
+     * @return void
      */
     public function updated(Server $server)
     {
-        // Clear Caches
-        Cache::forget('Server.byUuid.' . $server->uuid . Auth::user()->uuid);
-        Cache::forget('Server.byUuid.' . $server->uuidShort . Auth::user()->uuid);
+        /*
+         * The cached byUuid model calls are tagged with Model:Server:byUuid:<uuid>
+         * so that they can be accessed regardless of if there is an Auth::user()
+         * defined or not.
+         *
+         * We can also delete all cached byUuid items using the Model:Server tag.
+         */
+        Cache::tags('Model:Server:byUuid:' . $server->uuid)->flush();
+        Cache::tags('Model:Server:byUuid:' . $server->uuidShort)->flush();
 
         event(new Events\Server\Updated($server));
     }

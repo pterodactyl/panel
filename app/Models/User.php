@@ -30,6 +30,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Exceptions\DisplayException;
+use Nicolaslopezj\Searchable\SearchableTrait;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -39,7 +40,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Notifiable;
+    use Authenticatable, Authorizable, CanResetPassword, Notifiable, SearchableTrait;
 
     /**
      * The rules for user passwords.
@@ -86,6 +87,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
+
+    protected $searchable = [
+        'columns' => [
+            'email' => 10,
+            'username' => 9,
+            'name_first' => 6,
+            'name_last' => 6,
+            'uuid' => 1,
+        ],
+    ];
 
     /**
      * Enables or disables TOTP on an account if the token is valid.

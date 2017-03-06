@@ -1,5 +1,4 @@
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
-{{-- Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com> --}}
 
 {{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
 {{-- of this software and associated documentation files (the "Software"), to deal --}}
@@ -21,23 +20,27 @@
 @extends('layouts.admin')
 
 @section('title')
-    Viewing User
+    Manager User: {{ $user->username }}
+@endsection
+
+@section('content-header')
+    <h1>{{ $user->name_first }} {{ $user->name_last}}<small>{{ $user->username }}</small></h1>
+    <ol class="breadcrumb">
+        <li><a href="{{ route('admin.index') }}">Admin</a></li>
+        <li><a href="{{ route('admin.users') }}">Users</a></li>
+        <li class="active">{{ $user->username }}</li>
+    </ol>
 @endsection
 
 @section('content')
-<div class="col-md-12">
-    <ul class="breadcrumb">
-        <li><a href="/admin">Admin Controls</a></li>
-        <li><a href="/admin/users">Accounts</a></li>
-        <li class="active">{{ $user->email }}</li>
-    </ul>
-    <h3 style="margin-bottom: 5px;">Viewing User: {{ $user->email }}</h3>
-    <p class="text-muted" style="margin: 0 0 -10.5px !important;"><small>Registered {{ (new Carbon($user->created_at))->toRfc1123String() }}</small></p>
-    <hr />
-    <div class="row">
-        <form action="{{ route('admin.users.view', $user->id) }}" method="post">
-            <div class="col-md-6">
-                <fieldset>
+<div class="row">
+    <form action="{{ route('admin.users.view', $user->id) }}" method="post">
+        <div class="col-xs-6">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Identity</h3>
+                </div>
+                <div class="box-body">
                     <div class="form-group">
                         <label for="email" class="control-label">Email</label>
                         <div>
@@ -62,14 +65,19 @@
                             <input type="text" name="name_last" value="{{ $user->name_last }}" class="form-control">
                         </div>
                     </div>
-                    <div class="form-group">
-                        {!! csrf_field() !!}
-                        <input type="submit" value="Update User" class="btn btn-primary btn-sm">
-                    </div>
-                </fieldset>
+                </div>
+                <div class="box-footer">
+                    {!! csrf_field() !!}
+                    <input type="submit" value="Update User" class="btn btn-primary btn-sm">
+                </div>
             </div>
-            <div class="col-md-6">
-                <div class="well" style="padding-bottom: 0;">
+        </div>
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Password</h3>
+                </div>
+                <div class="box-body">
                     <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
                     <div class="form-group">
                         <label for="password" class="control-label">Password</label>
@@ -81,91 +89,97 @@
                         <button class="btn btn-default btn-sm" id="gen_pass_bttn" type="button">Generate Password</button>
                     </div>
                 </div>
-                <div class="well" style="padding-bottom: 0;">
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Permissions</h3>
+                </div>
+                <div class="box-body">
                     <div class="form-group">
                         <label for="root_admin" class="control-label">Administrator</label>
                         <div>
                             <select name="root_admin" class="form-control">
                                 <option value="0">{{ trans('strings.no') }}</option>
-                                <option value="1" @if($user->root_admin)selected="selected"@endif>{{ trans('strings.yes') }}</option>
+                                <option value="1" {{ $user->root_admin ? 'selected="selected"' : '' }}>{{ trans('strings.yes') }}</option>
                             </select>
                             <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Associated Servers</h3><hr>
-            @if($user->servers)
-                <table class="table table-striped table-bordered table-hover">
+        </div>
+    </form>
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Associated Servers</h3>
+            </div>
+            <div class="box-body table-responsive no-padding">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <th style="width:2%;"></th>
                             <th>Identifier</th>
                             <th>Server Name</th>
                             <th>Node</th>
-                            <th>Username</th>
                             <th style="width:10%;"></th>
                         </tr>
                     </thead>
                     <tbody>
-                            @foreach($user->servers as $server)
-                                <tr>
-                                    <td><a href="/server/{{ $server->uuidShort }}/"><i class="fa fa-tachometer"></i></a></td>
-                                    <td><code>{{ $server->uuidShort }}</code></td>
-                                    <td><a href="/admin/servers/view/{{ $server->id }}">{{ $server->name }}</a></td>
-                                    <td>{{ $server->node->name }}</td>
-                                    <td><code>{{ $server->username }}</code></td>
-                                    <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
-                                </td>
-                            @endforeach
+                        @foreach($user->servers as $server)
+                            <tr>
+                                <td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>
+                                <td><code>{{ $server->uuidShort }}</code></td>
+                                <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
+                                <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
+                                <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
+                            </td>
+                        @endforeach
                     </tbody>
                 </table>
-            @else
-                <div class="alert alert-info">There are no servers associated with this account.</div>
-            @endif
-            <a href="/admin/servers/new?email={{ $user->email }}"><button type="button" class="btn btn-success btn-sm">Add New Server</button></a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Delete Account</h3><hr />
-            <div class="alert alert-danger"><strong>Warning!</strong> There most be no servers associated with this account in order for it to be deleted.</div>
-            <form action="{{ route('admin.users.view', $user->id) }}" method="POST">
-                {!! method_field('DELETE') !!}
-                {!! csrf_field() !!}
-                <input type="submit" class="btn btn-sm btn-danger pull-right" value="Delete User" />
+            </div>
             </form>
         </div>
     </div>
+    <div class="col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Delete User</h3>
+            </div>
+            <div class="box-body">
+                <p class="no-margin">There most be no servers associated with this account in order for it to be deleted.</p>
+            </div>
+            <div class="box-footer">
+                <form action="{{ route('admin.users.view', $user->id) }}" method="POST">
+                    {!! csrf_field() !!}
+                    {!! method_field('DELETE') !!}
+                    <input id="delete" type="submit" class="btn btn-sm btn-danger pull-right" {{ $user->servers->count() < 1 ?: 'disabled' }} value="Delete User" />
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-<script>
-$(document).ready(function(){
-    $("#sidebar_links").find("a[href='/admin/users']").addClass('active');
-    $('#delete').click(function() {
-        if(confirm('{{ trans('base.confirm') }}')) {
-            $('#delete').load($(this).attr('href'));
-        }
-    });
-    $("#gen_pass_bttn").click(function (event) {
-        event.preventDefault();
-        $.ajax({
-            type: "GET",
-            url: "/password-gen/12",
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-           },
-            success: function(data) {
-                $("#gen_pass").html('You must click <em>Update User</em> to the left for this password to be applied.<br /><br /><strong>Generated Password:</strong> ' + data).slideDown();
-                $('input[name="password"], input[name="password_confirmation"]').val(data);
-                return false;
-            }
+@endsection
+
+@section('footer-scripts')
+    @parent
+    <script>$("#gen_pass_bttn").click(function (event) {
+            event.preventDefault();
+            $.ajax({
+                type: "GET",
+                url: "/password-gen/12",
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+               },
+                success: function(data) {
+                    $("#gen_pass").html('You must click <em>Update Password</em> below for this password to be applied.<br /><br /><strong>Generated Password:</strong> ' + data).slideDown();
+                    $('input[name="password"], input[name="password_confirmation"]').val(data);
+                    return false;
+                }
+            });
+            return false;
         });
-        return false;
-    });
-});
-</script>
+    </script>
 @endsection

@@ -35,64 +35,76 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-6">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">@lang('server.config.startup.command')</h3>
-            </div>
-            <div class="box-body">
-                <div class="input-group">
-                    <span class="input-group-addon">{{ $service->executable }}</span>
-                    <input type="text" class="form-control" readonly="readonly" value="{{ $processedStartup }}" />
+    <form action="{{ route('server.settings.startup', $server->uuidShort) }}" method="POST">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@lang('server.config.startup.command')</h3>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">@lang('server.config.startup.edit_params')</h3>
-            </div>
-            @can('edit-startup', $server)
-                <form action="{{ route('server.settings.startup', $server->uuidShort) }}" method="POST">
-                    <div class="box-body">
-                        @foreach($variables as $item)
-                            <div class="form-group">
-                                <label class="control-label">
-                                    @if($item->required === 1)<span class="label label-danger">@lang('strings.required')</span> @endif
-                                    {{ $item->name }}
-                                </label>
-                                <div>
-                                    <input type="text"
-                                        @if($item->user_editable === 1)
-                                            name="{{ $item->env_variable }}"
-                                        @else
-                                            readonly="readonly"
-                                        @endif
-                                    class="form-control" value="{{ old($item->env_variable, $item->a_serverValue) }}" data-action="matchRegex" data-regex="{{ $item->regex }}" />
-                                </div>
-                                <p class="text-muted"><small>{!! $item->description !!}</small></p>
-                            </div>
-                        @endforeach
+                <div class="box-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">{{ $service->executable }}</span>
+                        <input type="text" class="form-control" readonly="readonly" value="{{ $processedStartup }}" />
                     </div>
+                </div>
+                @can('edit-startup', $server)
                     <div class="box-footer">
                         {!! csrf_field() !!}
-                        <input type="submit" class="btn btn-primary btn-sm" value="@lang('server.config.startup.update')" />
+                        <input type="submit" class="btn btn-primary btn-sm pull-right" value="@lang('server.config.startup.update')" />
                     </div>
-                </form>
-            @else
-                <div class="box-body">
-                    <div class="callout callout-warning callout-nomargin">
-                        <p>@lang('auth.not_authorized')</p>
+                @endcan
+            </div>
+        </div>
+        @can('edit-startup', $server)
+            @foreach($variables as $variable)
+                <div class="col-xs-12 col-md-4 col-sm-6">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">{{ $variable->name }}</h3>
+                        </div>
+                        <div class="box-body">
+                            <input data-action="match-regex" data-regex="{{ $variable->regex }}"
+                                @if($variable->user_editable)
+                                    name="env_{{ $variable->id }}"
+                                @else
+                                    readonly
+                                @endif
+                            class="form-control" type="text" value="{{ old('env_' . $variable->id, $variable->server_value) }}" />
+                            <p class="small text-muted">{{ $variable->description }}</p>
+                            <p class="no-margin">
+                                @if($variable->required && $variable->user_editable)
+                                    <span class="label label-danger">@lang('strings.required')</span>
+                                @elseif(! $variable->required && $variable->user_editable)
+                                    <span class="label label-default">@lang('strings.optional')</span>
+                                @endif
+                                @if(! $variable->user_editable)
+                                    <span class="label label-warning">@lang('strings.read_only')</span>
+                                @endif
+                            </p>
+                        </div>
+                        <div class="box-footer">
+                            <p class="no-margin text-muted small"><strong>@lang('server.config.startup.startup_var'):</strong> <code>{{ $variable->env_variable }}</code></p>
+                            <p class="no-margin text-muted small"><strong>@lang('server.config.startup.startup_regex'):</strong> <code>{{ $variable->regex }}</code></p>
+                        </div>
                     </div>
                 </div>
-            @endcan
-        </div>
-    </div>
+            @endforeach
+        @endcan
+    </form>
 </div>
 @endsection
 
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
+    <script>
+    $('input[data-action="match-regex"]').on('keyup', function (event) {
+        if (! $(this).data('regex')) return;
+
+        var input = $(this).val();
+        var regex = new RegExp($(this).data('regex').replace(/^\/|\/$/g, ''));
+
+        $(this).parent().parent().removeClass('has-success has-error').addClass((! regex.test(input)) ? 'has-error' : 'has-success');
+    });
+    </script>
 @endsection

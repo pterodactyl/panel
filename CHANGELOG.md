@@ -3,6 +3,24 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.5 (Courageous Carniadactylus)
+### Changed
+* New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
+* New server creation page now makes significantly less AJAX calls and is much quicker to respond.
+* Server and Node view pages wee modified to split tabs into individual pages to make re-themeing and modifications significantly easier, and reduce MySQL query loads on page.
+
+### Fixed
+* Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
+* `[pre.4]` — Fixes bug preventing server updates from occurring by the system due to undefined `Auth::user()` in the event listener.
+* `[pre.4]` — Fixes `Server::byUuid()` caching to actually clear the cache for *all* users, rather than the logged in user by using cache tags.
+
+### Added
+* Ability to assign multiple allocations at once when creating a new server.
+
+### Deprecated
+* Old API calls to `Server::create` will fail due to changed data structure.
+* Many old routes were modified to reflect new standards in panel, and many of the controller functions being called were also modified. This shouldn't really impact anyone unless you have been digging into the code and modifying things.
+
 ## v0.6.0-pre.4 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.3]` — Fixes bug in cache handler that doesn't cache against the user making the request. Would have allowed for users to access servers not belonging to themselves in production.

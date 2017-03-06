@@ -47,8 +47,14 @@ class UserController extends Controller
     // @TODO: implement nicolaslopezj/searchable to clean up this disaster.
     public function getIndex(Request $request)
     {
+        $users = User::withCount('servers');
+
+        if (! is_null($request->input('query'))) {
+            $users->search($request->input('query'));
+        }
+
         return view('admin.users.index', [
-            'users' => User::paginate(25),
+            'users' => $users->paginate(25),
         ]);
     }
 
@@ -124,6 +130,12 @@ class UserController extends Controller
 
     public function getJson(Request $request)
     {
-        return User::select('email')->get()->pluck('email');
+        return User::select('id', 'email', 'username', 'name_first', 'name_last')
+            ->search($request->input('q'))
+            ->get()->transform(function ($item) {
+                $item->md5 = md5(strtolower($item->email));
+
+                return $item;
+            });
     }
 }

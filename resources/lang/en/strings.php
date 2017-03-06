@@ -63,4 +63,6 @@ return [
     '2fa' => '2FA',
     'logout' => 'Logout',
     'admin_cp' => 'Admin Control Panel',
+    'optional' => 'Optional',
+    'read_only' => 'Read Only',
 ];

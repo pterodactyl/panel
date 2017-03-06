@@ -233,6 +233,8 @@ return [
             'command' => 'Startup Command',
             'edit_params' => 'Edit Parameters',
             'update' => 'Update Startup Parameters',
+            'startup_var' => 'Startup Command Variable',
+            'startup_regex' => 'Verification Regex',
         ],
         'sftp' => [
             'header' => 'SFTP Configuration',

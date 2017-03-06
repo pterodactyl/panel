@@ -26,14 +26,16 @@ namespace Pterodactyl\Models;
 
 use Auth;
 use Cache;
+use Carbon;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Server extends Model
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable, SearchableTrait, SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -85,6 +87,22 @@ class Server extends Model
          'installed' => 'integer',
      ];
 
+    protected $searchable = [
+         'columns' => [
+             'servers.name' => 10,
+             'servers.username' => 10,
+             'servers.uuidShort' => 9,
+             'servers.uuid' => 8,
+             'users.email' => 6,
+             'users.username' => 6,
+             'nodes.name' => 2,
+         ],
+         'joins' => [
+            'users' => ['users.id', 'servers.owner_id'],
+            'nodes' => ['nodes.id', 'servers.node_id'],
+         ],
+     ];
+
     /**
      * Returns a single server specified by UUID.
      * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
@@ -95,8 +113,12 @@ class Server extends Model
      */
     public static function byUuid($uuid)
     {
+        if (! Auth::check()) {
+            throw new \Exception('You must call Server:byUuid as an authenticated user.');
+        }
+
         // Results are cached because we call this functions a few times on page load.
-        $result = Cache::remember('Server.byUuid.' . $uuid . Auth::user()->uuid, 60, function () use ($uuid) {
+        $result = Cache::tags(['Model:Server', 'Model:Server:byUuid:' . $uuid])->remember('Model:Server:byUuid:' . $uuid . Auth::user()->uuid, Carbon::now()->addMinutes(15), function () use ($uuid) {
             $query = self::with('service', 'node')->where(function ($q) use ($uuid) {
                 $q->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
             });

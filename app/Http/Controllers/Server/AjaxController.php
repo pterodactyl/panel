@@ -224,17 +224,16 @@ class AjaxController extends Controller
         $server = Models\Server::byUuid($uuid);
         $this->authorize('reset-db-password', $server);
 
-        $database = Models\Database::where('id', $request->input('database'))->where('server_id', $server->id)->firstOrFail();
+        $database = Models\Database::where('server_id', $server->id)->findOrFail($request->input('database'));
+        $repo = new Repositories\DatabaseRepository;
+
         try {
-            $repo = new Repositories\DatabaseRepository;
-            $password = str_random(16);
-            $repo->modifyPassword($request->input('database'), $password);
+            $password = str_random(20);
+            $repo->password($database->id, $password);
 
             return response($password);
-        } catch (\Pterodactyl\Exceptions\DisplayException $ex) {
-            return response()->json([
-                'error' => $ex->getMessage(),
-            ], 503);
+        } catch (DisplayException $ex) {
+            return response()->json(['error' => $ex->getMessage()], 503);
         } catch (\Exception $ex) {
             Log::error($ex);
 

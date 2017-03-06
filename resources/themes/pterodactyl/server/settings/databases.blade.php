@@ -49,17 +49,19 @@
                                 <th>@lang('strings.username')</th>
                                 <th>@lang('strings.password')</th>
                                 <th>@lang('server.config.database.host')</th>
+                                @can('reset-db-password', $server)<td></td>@endcan
                             </tr>
                             @foreach($databases as $database)
                                 <tr>
-                                    <td>{{ $database->database }}</td>
-                                    <td>{{ $database->username }}</td>
-                                    <td><code>{{ Crypt::decrypt($database->password) }}</code>
-                                        @can('reset-db-password', $server)
-                                            <button class="btn btn-xs btn-primary pull-right" data-action="reset-database-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')</button>
-                                        @endcan
-                                    </td>
-                                    <td><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
+                                    <td class="middle">{{ $database->database }}</td>
+                                    <td class="middle">{{ $database->username }}</td>
+                                    <td class="middle"><code data-attr="set-password">{{ Crypt::decrypt($database->password) }}</code></td>
+                                    <td class="middle"><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
+                                    @can('reset-db-password', $server)
+                                        <td>
+                                            <button class="btn btn-xs btn-primary pull-right" data-action="reset-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')</button>
+                                        </td>
+                                    @endcan
                                 </tr>
                             @endforeach
                         </tbody>
@@ -88,10 +90,10 @@
     {!! Theme::js('js/frontend/server.socket.js') !!}
     <script>
     @can('reset-db-password', $server)
-        $('[data-action="reset-database-password"]').click(function (e) {
+        $('[data-action="reset-password"]').click(function (e) {
             e.preventDefault();
             var block = $(this);
-            $(this).find('i').addClass('fa-spin');
+            $(this).addClass('disabled').find('i').addClass('fa-spin');
             $.ajax({
                 type: 'POST',
                 url: Router.route('server.ajax.reset-database-password', { server: Pterodactyl.server.uuidShort }),
@@ -99,10 +101,10 @@
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
                 },
                 data: {
-                    'database': $(this).data('id')
+                    database: $(this).data('id')
                 }
             }).done(function (data) {
-                block.parent().find('code').html(data);
+                block.parent().parent().find('[data-attr="set-password"]').html(data);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error(jqXHR);
                 var error = 'An error occured while trying to process this request.';
@@ -115,7 +117,7 @@
                     text: error
                 });
             }).always(function () {
-                block.find('i').removeClass('fa-spin');
+                block.removeClass('disabled').find('i').removeClass('fa-spin');
             });
         });
     @endcan
