@@ -16,7 +16,7 @@ If you've found what you believe is a security issue please email us at `support
 ### Where to find Us
 You can find us in a couple places online. First and foremost, we're active right here on Github. If you encounter a bug or other problem open an issue on here for us to take a look at it. We also accept feature requests here as well.
 
-You can also find us on [Discord](https://discord.gg/0gYt8oU8QOkDhKLS) or our [community forums](https://community.pterodactyl.io/). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our forums or here.
+You can also find us on [Discord](https://discord.gg/0gYt8oU8QOkDhKLS) or our [community forums](https://forums.pterodactyl.io/). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our forums or here.
 
 ### Code Guidelines
 We honestly haven't gotten around to standardizing our code format, we'll get that happening very soon. In the mean time, try to emulate the current formatting. We try to stick with how Laravel code is formatted.
