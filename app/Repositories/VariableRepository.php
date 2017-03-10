@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\ServiceRepository;
+namespace Pterodactyl\Repositories;
 
 use DB;
 use Validator;
@@ -30,7 +30,7 @@ use Pterodactyl\Models;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-class Variable
+class VariableRepository
 {
     public function __construct()
     {

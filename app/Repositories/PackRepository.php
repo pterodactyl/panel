@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\ServiceRepository;
+namespace Pterodactyl\Repositories;
 
 use DB;
 use Uuid;
@@ -33,7 +33,7 @@ use Pterodactyl\Services\UuidService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-class Pack
+class PackRepository
 {
     public function __construct()
     {

@@ -106,6 +106,17 @@
                                 <i class="fa fa-users"></i> <span>Users</span>
                             </a>
                         </li>
+                        <li class="header">SERVICE MANAGEMENT</li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.services') ?: 'active' }}">
+                            <a href="{{ route('admin.services') }}">
+                                <i class="fa fa-th-large"></i> <span>Services</span>
+                            </a>
+                        </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">
+                            <a href="{{ route('admin.packs') }}">
+                                <i class="fa fa-archive"></i> <span>Packs</span>
+                            </a>
+                        </li>
                     </ul>
                 </section>
             </aside>
