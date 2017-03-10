@@ -149,7 +149,7 @@
                 <h3 class="box-title">Delete User</h3>
             </div>
             <div class="box-body">
-                <p class="no-margin">There most be no servers associated with this account in order for it to be deleted.</p>
+                <p class="no-margin">There must be no servers associated with this account in order for it to be deleted.</p>
             </div>
             <div class="box-footer">
                 <form action="{{ route('admin.users.view', $user->id) }}" method="POST">
