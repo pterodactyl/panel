@@ -79,7 +79,7 @@ class DeploymentService
      * @param  int $memory
      * @param  int $disk
      * @param  int $location
-     * @return \Pterodactyl\Models\Node;
+     * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
@@ -103,7 +103,7 @@ class DeploymentService
     /**
      * Returns a random allocation for a node.
      * @param  int $node
-     * @return \Models\Pterodactyl\Allocation;
+     * @return \Models\Pterodactyl\Allocation
      */
     public static function randomAllocation($node)
     {
