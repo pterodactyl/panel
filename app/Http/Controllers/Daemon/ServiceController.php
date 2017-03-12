@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Daemon;
 
-use Storage;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
@@ -46,7 +45,7 @@ class ServiceController extends Controller
         foreach (Service::all() as $service) {
             $response[$service->folder] = [
                 'main.json' => sha1($this->getConfiguration($service->id)->toJson()),
-                'index.js' => sha1_file(storage_path('app/services/' . $service->folder . '/index.js')),
+                'index.js' => sha1($service->index_file),
             ];
         }
 
@@ -66,7 +65,7 @@ class ServiceController extends Controller
         $service = Service::where('folder', $folder)->firstOrFail();
 
         if ($file === 'index.js') {
-            return response()->file(storage_path('app/services/' . $service->folder . '/index.js'));
+            return response($service->index_file)->header('Content-Type', 'text/plain');
         } else if ($file === 'main.json') {
             return response()->json($this->getConfiguration($service->id));
         }
