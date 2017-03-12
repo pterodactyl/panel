@@ -110,7 +110,6 @@ class VoiceServiceTableSeeder extends Seeder
             'default_value' => 100,
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|numeric|digits_between:1,5',
         ]);
 
@@ -123,7 +122,6 @@ class VoiceServiceTableSeeder extends Seeder
             'default_value' => '1.2.19',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([0-9_\.-]{5,8})$/',
         ]);
 
@@ -136,7 +134,6 @@ class VoiceServiceTableSeeder extends Seeder
             'default_value' => '3.1.1.1',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
         ]);
     }

@@ -95,7 +95,6 @@ class TerrariaServiceTableSeeder extends Seeder
             'default_value' => '4.3.22',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
         ]);
 
@@ -108,7 +107,6 @@ class TerrariaServiceTableSeeder extends Seeder
             'default_value' => 20,
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|numeric|digits_between:1,3',
         ]);
     }

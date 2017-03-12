@@ -190,7 +190,6 @@ EOF;
             'default_value' => 'server.jar',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
 
@@ -203,7 +202,6 @@ EOF;
             'default_value' => 'latest',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|string|between:3,7',
         ]);
     }
@@ -219,7 +217,6 @@ EOF;
             'default_value' => 'server.jar',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
 
@@ -232,7 +229,6 @@ EOF;
             'default_value' => 'latest',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|string|between:3,7',
         ]);
 
@@ -245,7 +241,6 @@ EOF;
             'default_value' => '',
             'user_viewable' => 0,
             'user_editable' => 0,
-            'required' => 0,
             'rules' => 'string',
         ]);
     }
@@ -261,7 +256,6 @@ EOF;
             'default_value' => '1.10.2-5.2.0-BETA-381',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|regex:/^([a-zA-Z0-9.\-_]+)$/',
         ]);
 
@@ -274,7 +268,6 @@ EOF;
             'default_value' => 'server.jar',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
     }
@@ -290,7 +283,6 @@ EOF;
             'default_value' => 'latest',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|alpha_num|between:1,6',
         ]);
 
@@ -303,7 +295,6 @@ EOF;
             'default_value' => 'bungeecord.jar',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
     }

@@ -149,7 +149,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => '17705',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|regex:/^(17705)$/',
         ]);
 
@@ -162,7 +161,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => 'insurgency',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|regex:/^(insurgency)$/',
         ]);
 
@@ -175,7 +173,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => 'sinjar',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^(\w{1,20})$/',
         ]);
     }
@@ -191,7 +188,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => '232250',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|regex:/^(232250)$/',
         ]);
 
@@ -204,7 +200,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => 'tf',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|regex:/^(tf)$/',
         ]);
 
@@ -217,7 +212,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => 'cp_dustbowl',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|regex:/^(\w{1,20})$/',
         ]);
     }
@@ -233,7 +227,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 0,
             'rules' => 'alpha_dash|between:1,100',
         ]);
 
@@ -246,7 +239,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 0,
             'rules' => 'alpha_dash|between:1,100',
         ]);
 
@@ -259,7 +251,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => 20,
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
             'rules' => 'required|numeric|digits_between:1,4',
         ]);
     }
@@ -275,7 +266,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|numeric|digits_between:1,6',
         ]);
 
@@ -288,7 +278,6 @@ class SourceServiceTableSeeder extends Seeder
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
             'rules' => 'required|alpha_dash|between:1,100',
         ]);
     }
