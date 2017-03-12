@@ -24,6 +24,10 @@ class ChangeServiceVariablesValidationRules extends Migration
                 $variable->save();
             }
         });
+
+        Schema::table('service_variables', function (Blueprint $table) {
+            $table->dropColumn('required');
+        });
     }
 
     /**
@@ -35,6 +39,7 @@ class ChangeServiceVariablesValidationRules extends Migration
     {
         Schema::table('service_variables', function (Blueprint $table) {
             $table->renameColumn('rules', 'regex');
+            $table->boolean('required')->default(true)->before('regex');
         });
 
         DB::transaction(function () {

@@ -493,6 +493,8 @@ class ServersController extends Controller
             $repo->updateStartup($id, $request->except('_token'), true);
 
             Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view.startup', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (TransferException $ex) {

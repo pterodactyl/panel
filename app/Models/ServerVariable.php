@@ -53,6 +53,36 @@ class ServerVariable extends Model
      ];
 
      /**
+      * Determine if variable is viewable by users.
+      *
+      * @return bool
+      */
+     public function getUserCanViewAttribute()
+     {
+         return (bool) $this->variable->user_viewable;
+     }
+
+     /**
+      * Determine if variable is editable by users.
+      *
+      * @return bool
+      */
+     public function getUserCanEditAttribute()
+     {
+         return (bool) $this->variable->user_editable;
+     }
+
+     /**
+      * Determine if variable is required.
+      *
+      * @return bool
+      */
+     public function getRequiredAttribute()
+     {
+         return $this->variable->required;
+     }
+
+     /**
       * Returns information about a given variables parent.
       *
       * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

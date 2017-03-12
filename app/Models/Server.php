@@ -111,7 +111,7 @@ class Server extends Model
      * @param  string $uuid The Short-UUID of the server to return an object about.
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function byUuid($uuid)
+    public static function byUuid($uuid, array $with = [], array $withCount = [])
     {
         if (! Auth::check()) {
             throw new \Exception('You must call Server:byUuid as an authenticated user.');

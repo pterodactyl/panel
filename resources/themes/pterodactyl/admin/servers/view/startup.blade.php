@@ -62,10 +62,7 @@
                 </div>
                 <div class="box-body">
                     <label for="pStartup" class="form-label">Startup Command</label>
-                    <div class="input-group">
-                        <span class="input-group-addon bg-gray">{{ $server->option->display_executable }}</span>
-                        <input id="pStartup" name="startup" class="form-control" type="text" value="{{ old('startup', $server->startup) }}" />
-                    </div>
+                    <input id="pStartup" name="startup" class="form-control" type="text" value="{{ old('startup', $server->startup) }}" />
                     <p class="small text-muted">Edit your server's startup command here. The following variables are available by default: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>.</p>
                 </div>
                 <div class="box-footer">
@@ -91,7 +88,7 @@
                     </div>
                     <div class="box-footer">
                         <p class="no-margin text-muted small"><strong>Startup Command Variable:</strong> <code>{{ $variable->env_variable }}</code></p>
-                        <p class="no-margin text-muted small"><strong>Verification Regex:</strong> <code>{{ $variable->regex }}</code></p>
+                        <p class="no-margin text-muted small"><strong>Input Rules:</strong> <code>{{ $variable->rules }}</code></p>
                     </div>
                 </div>
             </div>

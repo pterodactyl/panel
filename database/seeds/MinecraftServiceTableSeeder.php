@@ -246,7 +246,7 @@ EOF;
             'user_viewable' => 0,
             'user_editable' => 0,
             'required' => 0,
-            'rules' => 'required|string',
+            'rules' => 'string',
         ]);
     }
 

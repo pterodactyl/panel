@@ -52,17 +52,6 @@ class ServiceOption extends Model
      ];
 
      /**
-      * Returns the display executable for the option and will use the parent
-      * service one if the option does not have one defined.
-      *
-      * @return string
-      */
-     public function getDisplayExecutableAttribute($value)
-     {
-         return (is_null($this->executable)) ? $this->service->executable : $this->executable;
-     }
-
-     /**
       * Returns the display startup string for the option and will use the parent
       * service one if the option does not have one defined.
       *

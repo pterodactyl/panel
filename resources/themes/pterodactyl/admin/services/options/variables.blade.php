@@ -81,7 +81,6 @@
                             <select name="options[]" class="pOptions form-control" multiple>
                                 <option value="user_viewable" {{ (! $variable->user_viewable) ?: 'selected' }}>Users Can View</option>
                                 <option value="user_editable" {{ (! $variable->user_editable) ?: 'selected' }}>Users Can Edit</option>
-                                <option value="required" {{ (! $variable->required) ?: 'selected' }}>Field Is Required</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -135,7 +134,6 @@
                         <select name="options[]" class="pOptions form-control" multiple>
                             <option value="user_viewable">Users Can View</option>
                             <option value="user_editable">Users Can Edit</option>
-                            <option value="required">Field Is Required</option>
                         </select>
                     </div>
                     <div class="form-group">

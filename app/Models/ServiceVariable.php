@@ -47,13 +47,29 @@ class ServiceVariable extends Model
       *
       * @var array
       */
-     protected $casts = [
-         'option_id' => 'integer',
-         'user_viewable' => 'integer',
-         'user_editable' => 'integer',
-         'required' => 'integer',
-     ];
+    protected $casts = [
+        'option_id' => 'integer',
+        'user_viewable' => 'integer',
+        'user_editable' => 'integer',
+        'required' => 'integer',
+    ];
 
+    /**
+     * Returns the display executable for the option and will use the parent
+     * service one if the option does not have one defined.
+     *
+     * @return string
+     */
+    public function getRequiredAttribute($value)
+    {
+        return ($this->rules === 'required' || str_contains($this->rules, ['required|', '|required']));
+    }
+
+    /**
+     * Return server variables associated with this variable.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function serverVariable()
     {
         return $this->hasMany(ServerVariable::class, 'variable_id');

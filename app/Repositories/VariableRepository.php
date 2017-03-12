@@ -80,7 +80,6 @@ class VariableRepository
         $data['option_id'] = $option->id;
         $data['user_viewable'] = (in_array('user_viewable', $data['options']));
         $data['user_editable'] = (in_array('user_editable', $data['options']));
-        $data['required'] = (in_array('required', $data['options']));
 
         // Remove field that isn't used.
         unset($data['options']);
@@ -156,7 +155,6 @@ class VariableRepository
 
         $data['user_viewable'] = (in_array('user_viewable', $data['options']));
         $data['user_editable'] = (in_array('user_editable', $data['options']));
-        $data['required'] = (in_array('required', $data['options']));
 
         // Remove field that isn't used.
         unset($data['options']);
