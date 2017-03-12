@@ -66,7 +66,7 @@ class ServiceController extends Controller
 
         if ($file === 'index.js') {
             return response($service->index_file)->header('Content-Type', 'text/plain');
-        } else if ($file === 'main.json') {
+        } elseif ($file === 'main.json') {
             return response()->json($this->getConfiguration($service->id));
         }
 

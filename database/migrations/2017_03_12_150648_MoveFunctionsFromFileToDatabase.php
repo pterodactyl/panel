@@ -8,7 +8,7 @@ use Illuminate\Database\Migrations\Migration;
 class MoveFunctionsFromFileToDatabase extends Migration
 {
 
-    private $default = <<<EOF
+    private $default = <<<'EOF'
 'use strict';
 
 /**
@@ -43,7 +43,7 @@ class Service extends Core {}
 module.exports = Service;
 EOF;
 
-    private $default_mc = <<<EOF
+    private $default_mc = <<<'EOF'
 'use strict';
 
 /**

@@ -149,16 +149,4 @@ class ServiceController extends Controller
 
         return redirect()->route($redirectTo, $id);
     }
-
-    /**
-     * Edits function file for a service.
-     *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
-     */
-    public function editFunctions(Request $request, $id)
-    {
-
-    }
 }

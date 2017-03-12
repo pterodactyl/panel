@@ -28,7 +28,6 @@ use DB;
 use Validator;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\VariableRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class OptionRepository

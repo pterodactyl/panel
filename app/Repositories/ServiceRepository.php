@@ -25,12 +25,9 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
-use Uuid;
 use Validator;
 use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\OptionRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServiceRepository
@@ -122,7 +119,7 @@ class ServiceRepository
         }
 
         DB::transaction(function () use ($service) {
-            foreach($service->options as $option) {
+            foreach ($service->options as $option) {
                 (new OptionRepository)->delete($option->id);
             }
 

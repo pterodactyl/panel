@@ -23,8 +23,6 @@
  */
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateToNewServiceSystem extends Migration
@@ -69,7 +67,7 @@ class MigrateToNewServiceSystem extends Migration
         DB::transaction(function () use ($service) {
             $options = ServiceOption::where('service_id', $service->id)->get();
             $options->each(function ($item) use ($options) {
-                switch($item->tag) {
+                switch ($item->tag) {
                     case 'vanilla':
                         $item->config_startup = '{"done": ")! For help, type ", "userInteraction": [ "Go to eula.txt for more info."]}';
                         $item->config_files = '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "enable-query": "true", "server-port": "{{server.build.default.port}}", "query.port": "{{server.build.default.port}}"}}}';
@@ -117,13 +115,13 @@ class MigrateToNewServiceSystem extends Migration
             $options->each(function ($item) use ($options) {
                 if ($item->tag === 'srcds' && $item->name === 'Insurgency') {
                     $item->tag = 'insurgency';
-                } else if ($item->tag === 'srcds' && $item->name === 'Team Fortress 2') {
+                } elseif ($item->tag === 'srcds' && $item->name === 'Team Fortress 2') {
                     $item->tag = 'tf2';
-                } else if ($item->tag === 'srcds' && $item->name === 'Custom Source Engine Game') {
+                } elseif ($item->tag === 'srcds' && $item->name === 'Custom Source Engine Game') {
                     $item->tag = 'source';
                 }
 
-                switch($item->tag) {
+                switch ($item->tag) {
                     case 'source':
                         $item->config_startup = '{"done": "Assigned anonymous gameserver", "userInteraction": []}';
                         $item->config_files = '{}';
@@ -164,7 +162,7 @@ class MigrateToNewServiceSystem extends Migration
         DB::transaction(function () use ($service) {
             $options = ServiceOption::where('service_id', $service->id)->get();
             $options->each(function ($item) use ($options) {
-                switch($item->tag) {
+                switch ($item->tag) {
                     case 'tshock':
                         $item->startup = null;
                         $item->config_startup = '{"done": "Type \'help\' for a list of commands", "userInteraction": []}';
@@ -195,7 +193,7 @@ class MigrateToNewServiceSystem extends Migration
         DB::transaction(function () use ($service) {
             $options = ServiceOption::where('service_id', $service->id)->get();
             $options->each(function ($item) use ($options) {
-                switch($item->tag) {
+                switch ($item->tag) {
                     case 'mumble':
                         $item->startup = './murmur.x86 -fg';
                         $item->config_startup = '{"done": "Server listening on", "userInteraction": [ "Generating new server certificate"]}';

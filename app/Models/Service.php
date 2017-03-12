@@ -51,7 +51,7 @@ class Service extends Model
      */
     public function defaultIndexFile()
     {
-        return <<<EOF
+        return <<<'EOF'
 'use strict';
 
 /**

@@ -26,7 +26,6 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Log;
 use Alert;
-use Storage;
 use Javascript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Service;
@@ -67,7 +66,7 @@ class OptionController extends Controller
             $option = $repo->create($request->intersect([
                 'service_id', 'name', 'description', 'tag',
                 'docker_image', 'startup', 'config_from', 'config_startup',
-                'config_logs', 'config_files', 'config_stop'
+                'config_logs', 'config_files', 'config_stop',
             ]));
             Alert::success('Successfully created new service option.')->flash();
 
@@ -195,7 +194,7 @@ class OptionController extends Controller
                 Alert::success("The service variable '{$variable->name}' has been updated.")->flash();
             } else {
                 $repo->delete($variable);
-                Alert::success("That service variable has been deleted.")->flash();
+                Alert::success('That service variable has been deleted.')->flash();
             }
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.variables', $option)->withErrors(json_decode($ex->getMessage()));

@@ -13,7 +13,7 @@ class AddNewServiceOptionsColumns extends Migration
      */
     public function up()
     {
-        DB::transaction(function() {
+        DB::transaction(function () {
             Schema::table('service_options', function (Blueprint $table) {
                 $table->dropColumn('executable');
 
@@ -35,7 +35,7 @@ class AddNewServiceOptionsColumns extends Migration
      */
     public function down()
     {
-        DB::transaction(function() {
+        DB::transaction(function () {
             Schema::table('service_options', function (Blueprint $table) {
                 $table->dropForeign('config_from');
 
