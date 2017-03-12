@@ -41,7 +41,7 @@ class Service extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'file', 'executable', 'startup',
+        'name', 'description', 'folder', 'startup',
     ];
 
     /**

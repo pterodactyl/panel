@@ -419,19 +419,24 @@ class AdminRoutes
                 'uses' => 'Admin\OptionController@new',
             ]);
 
+            $router->post('/option/new', 'Admin\OptionController@create');
+
             $router->get('/option/{id}', [
                 'as' => 'admin.services.option.view',
                 'uses' => 'Admin\OptionController@viewConfiguration',
             ]);
 
             $router->get('/option/{id}/variables', [
-                'as' => 'admin.services.option.view.variables',
+                'as' => 'admin.services.option.variables',
                 'uses' => 'Admin\OptionController@viewVariables',
             ]);
 
-            $router->post('/option/{id}', [
-                'uses' => 'Admin\OptionController@editConfiguration',
+            $router->post('/option/{id}/variables/{variable}', [
+                'as' => 'admin.services.option.variables.edit',
+                'uses' => 'Admin\OptionController@editVariable',
             ]);
+
+            $router->post('/option/{id}', 'Admin\OptionController@editConfiguration');
 
         });
 

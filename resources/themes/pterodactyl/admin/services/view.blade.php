@@ -74,6 +74,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    <button id="deleteButton" type="input" name="action" value="delete" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
                     <button type="input" class="btn btn-primary btn-sm pull-right">Edit Service</button>
                 </div>
             </div>
@@ -110,4 +111,15 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+    <script>
+        $('#deleteButton').on('mouseenter', function (event) {
+            $(this).find('i').html(' Delete Service');
+        }).on('mouseleave', function (event) {
+            $(this).find('i').html('');
+        });
+    </script>
 @endsection

@@ -26,7 +26,7 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Validator;
-use Pterodactyl\Models;
+use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
@@ -37,108 +37,126 @@ class VariableRepository
         //
     }
 
-    public function create($id, array $data)
+    public function create(array $data)
     {
-        $option = Models\ServiceOption::select('id')->findOrFail($id);
-
         $validator = Validator::make($data, [
+            'option_id' => 'required|numeric|exists:service_options,id',
             'name' => 'required|string|min:1|max:255',
-            'description' => 'required|string',
+            'description' => 'sometimes|nullable|string',
             'env_variable' => 'required|regex:/^[\w]{1,255}$/',
-            'default_value' => 'string|max:255',
-            'user_viewable' => 'sometimes|required|nullable|boolean',
-            'user_editable' => 'sometimes|required|nullable|boolean',
-            'required' => 'sometimes|required|nullable|boolean',
-            'regex' => 'required|string|min:1',
+            'default_value' => 'string',
+            'options' => 'sometimes|required|array',
+            'rules' => 'bail|required|string|min:1',
         ]);
+
+        // Ensure the default value is allowed by the rules provided.
+        $rules = (isset($data['rules'])) ? $data['rules'] : $variable->rules;
+        $validator->sometimes('default_value', $rules, function ($input) {
+            return $input->default_value;
+        });
 
         if ($validator->fails()) {
             throw new DisplayValidationException($validator->errors());
         }
 
-        if ($data['default_value'] !== '' && ! preg_match($data['regex'], $data['default_value'])) {
-            throw new DisplayException('The default value you entered cannot violate the regex requirements.');
+        if (isset($data['env_variable'])) {
+            $search = ServiceVariable::where('env_variable', $data['env_variable'])
+                ->where('option_id', $variable->option_id)
+                ->where('id', '!=', $variable->id);
+            if ($search->first()) {
+                throw new DisplayException('The envionment variable name assigned to this variable must be unique for this service option.');
+            }
         }
 
-        if (Models\ServiceVariable::where('env_variable', $data['env_variable'])->where('option_id', $option->id)->first()) {
-            throw new DisplayException('An environment variable with that name already exists for this option.');
+        if (! isset($data['options']) || ! is_array($data['options'])) {
+            $data['options'] = [];
         }
 
-        $data['user_viewable'] = (isset($data['user_viewable']) && in_array((int) $data['user_viewable'], [0, 1])) ? $data['user_viewable'] : 0;
-        $data['user_editable'] = (isset($data['user_editable']) && in_array((int) $data['user_editable'], [0, 1])) ? $data['user_editable'] : 0;
-        $data['required'] = (isset($data['required']) && in_array((int) $data['required'], [0, 1])) ? $data['required'] : 0;
-        $data['option_id'] = $option->id;
+        $data['user_viewable'] = (in_array('user_viewable', $data['options']));
+        $data['user_editable'] = (in_array('user_editable', $data['options']));
+        $data['required'] = (in_array('required', $data['options']));
 
-        $variable = Models\ServiceVariable::create($data);
+        // Remove field that isn't used.
+        unset($data['options']);
 
-        return $variable;
+        return ServiceVariable::create($data);
     }
 
+    /**
+     * Deletes a specified option variable as well as all server
+     * variables currently assigned.
+     *
+     * @param  int    $id
+     * @return void
+     */
     public function delete($id)
     {
-        $variable = Models\ServiceVariable::with('serverVariable')->findOrFail($id);
+        $variable = ServiceVariable::with('serverVariable')->findOrFail($id);
 
-        DB::beginTransaction();
-        try {
-            foreach ($variable->serverVariable as $svar) {
-                $svar->delete();
+        DB::transaction(function () use ($variable) {
+            foreach ($variable->serverVariable as $v) {
+                $v->delete();
             }
-            $variable->delete();
 
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+            $variable->delete();
+        });
     }
 
+    /**
+     * Updates a given service variable.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\ServiceVariable
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function update($id, array $data)
     {
-        $variable = Models\ServiceVariable::findOrFail($id);
+        $variable = ServiceVariable::findOrFail($id);
 
         $validator = Validator::make($data, [
             'name' => 'sometimes|required|string|min:1|max:255',
-            'description' => 'sometimes|required|string',
+            'description' => 'sometimes|nullable|string',
             'env_variable' => 'sometimes|required|regex:/^[\w]{1,255}$/',
-            'default_value' => 'sometimes|string|max:255',
-            'user_viewable' => 'sometimes|required|nullable|boolean',
-            'user_editable' => 'sometimes|required|nullable|boolean',
-            'required' => 'sometimes|required|nullable|boolean',
-            'regex' => 'sometimes|required|string|min:1',
+            'default_value' => 'string',
+            'options' => 'sometimes|required|array',
+            'rules' => 'bail|sometimes|required|string|min:1',
         ]);
+
+        // Ensure the default value is allowed by the rules provided.
+        $rules = (isset($data['rules'])) ? $data['rules'] : $variable->rules;
+        $validator->sometimes('default_value', $rules, function ($input) {
+            return $input->default_value;
+        });
 
         if ($validator->fails()) {
             throw new DisplayValidationException($validator->errors());
         }
 
-        $data['default_value'] = (isset($data['default_value'])) ? $data['default_value'] : $variable->default_value;
-        $data['regex'] = (isset($data['regex'])) ? $data['regex'] : $variable->regex;
-
-        if ($data['default_value'] !== '' && ! preg_match($data['regex'], $data['default_value'])) {
-            throw new DisplayException('The default value you entered cannot violate the regex requirements.');
+        if (isset($data['env_variable'])) {
+            $search = ServiceVariable::where('env_variable', $data['env_variable'])
+                ->where('option_id', $variable->option_id)
+                ->where('id', '!=', $variable->id);
+            if ($search->first()) {
+                throw new DisplayException('The envionment variable name assigned to this variable must be unique for this service option.');
+            }
         }
 
-        if (Models\ServiceVariable::where('id', '!=', $variable->id)->where('env_variable', $data['env_variable'])->where('option_id', $variable->option_id)->first()) {
-            throw new DisplayException('An environment variable with that name already exists for this option.');
+        if (! isset($data['options']) || ! is_array($data['options'])) {
+            $data['options'] = [];
         }
 
-        $data['user_viewable'] = (isset($data['user_viewable']) && in_array((int) $data['user_viewable'], [0, 1])) ? $data['user_viewable'] : $variable->user_viewable;
-        $data['user_editable'] = (isset($data['user_editable']) && in_array((int) $data['user_editable'], [0, 1])) ? $data['user_editable'] : $variable->user_editable;
-        $data['required'] = (isset($data['required']) && in_array((int) $data['required'], [0, 1])) ? $data['required'] : $variable->required;
+        $data['user_viewable'] = (in_array('user_viewable', $data['options']));
+        $data['user_editable'] = (in_array('user_editable', $data['options']));
+        $data['required'] = (in_array('required', $data['options']));
 
-        // Not using $data because the function that passes into this function
-        // can't do $requst->only() due to the page setup.
-        $variable->fill([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'env_variable' => $data['env_variable'],
-            'default_value' => $data['default_value'],
-            'user_viewable' => $data['user_viewable'],
-            'user_editable' => $data['user_editable'],
-            'required' => $data['required'],
-            'regex' => $data['regex'],
-        ]);
+        // Remove field that isn't used.
+        unset($data['options']);
 
-        return $variable->save();
+        $variable->fill($data)->save();
+
+        return $variable;
     }
 }

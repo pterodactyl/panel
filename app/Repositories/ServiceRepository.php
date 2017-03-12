@@ -31,6 +31,7 @@ use Validator;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\OptionRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServiceRepository
@@ -55,13 +56,14 @@ class ServiceRepository
         }
 
         $service = DB::transaction(function () use ($data) {
-            $service = Service::create([
-                'author' => config('pterodactyl.service.author'),
+            $service = new Service;
+            $service->author = config('pterodactyl.service.author');
+            $service->fill([
                 'name' => $data['name'],
                 'description' => (isset($data['description'])) ? $data['description'] : null,
                 'folder' => $data['folder'],
                 'startup' => (isset($data['startup'])) ? $data['startup'] : null,
-            ]);
+            ])->save();
 
             // It is possible for an event to return false or throw an exception
             // which won't necessarily be detected by this transaction.
@@ -105,8 +107,7 @@ class ServiceRepository
             $moveFiles = (isset($data['folder']) && $data['folder'] !== $service->folder);
             $oldFolder = $service->folder;
 
-            $service->fill($data);
-            $service->save();
+            $service->fill($data)->save();
 
             if ($moveFiles) {
                 Storage::move(sprintf('services/%s/index.js', $oldFolder), sprintf('services/%s/index.js', $service->folder));
@@ -124,18 +125,16 @@ class ServiceRepository
      */
     public function delete($id)
     {
-        $service = Service::withCount('servers', 'options')->findOrFail($id);
+        $service = Service::withCount('servers')->with('options')->findOrFail($id);
 
         if ($service->servers_count > 0) {
             throw new DisplayException('You cannot delete a service that has servers associated with it.');
         }
 
         DB::transaction(function () use ($service) {
-            ServiceVariable::whereIn('option_id', $service->options->pluck('id')->all())->delete();
-
-            $service->options->each(function ($item) {
-                $item->delete();
-            });
+            foreach($service->options as $option) {
+                (new OptionRepository)->delete($option->id);
+            }
 
             $service->delete();
             Storage::deleteDirectory('services/' . $service->folder);

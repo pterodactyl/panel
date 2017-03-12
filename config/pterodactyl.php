@@ -12,6 +12,7 @@ return [
     | standard Pterodactyl shipped services.
     */
    'service' => [
+       'core' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
        'author' => env('SERVICE_AUTHOR'),
    ],
 

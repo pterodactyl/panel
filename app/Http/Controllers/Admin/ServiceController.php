@@ -104,32 +104,6 @@ class ServiceController extends Controller
     }
 
     /**
-     * Delete a service from the system.
-     *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
-     */
-    public function delete(Request $request, $id)
-    {
-        $repo = new ServiceRepository;
-
-        try {
-            $repo->delete($id);
-            Alert::success('Successfully deleted service.')->flash();
-
-            return redirect()->route('admin.services');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error was encountered while attempting to delete that service. This error has been logged')->flash();
-        }
-
-        return redirect()->route('admin.services.view', $id);
-    }
-
-    /**
      * Edits configuration for a specific service.
      *
      * @param  Request $request
@@ -141,10 +115,17 @@ class ServiceController extends Controller
         $repo = new ServiceRepository;
 
         try {
-            $repo->update($id, $request->intersect([
-                'name', 'description', 'folder', 'startup',
-            ]));
-            Alert::success('Service has been updated successfully.')->flash();
+            if ($request->input('action') !== 'delete') {
+                $repo->update($id, $request->intersect([
+                    'name', 'description', 'folder', 'startup',
+                ]));
+                Alert::success('Service has been updated successfully.')->flash();
+            } else {
+                $repo->delete($id);
+                Alert::success('Successfully deleted service from the system.')->flash();
+
+                return redirect()->route('admin.services');
+            }
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.view', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
