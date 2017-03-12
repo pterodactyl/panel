@@ -59,7 +59,7 @@ class ServiceRepository
                 'description' => (isset($data['description'])) ? $data['description'] : null,
                 'folder' => $data['folder'],
                 'startup' => (isset($data['startup'])) ? $data['startup'] : null,
-                'index_file' => $service->defaultIndexFile(),
+                'index_file' => Service::defaultIndexFile(),
             ])->save();
 
             // It is possible for an event to return false or throw an exception

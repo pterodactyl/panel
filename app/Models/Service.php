@@ -49,7 +49,7 @@ class Service extends Model
      *
      * @return string
      */
-    public function defaultIndexFile()
+    public static function defaultIndexFile()
     {
         return <<<'EOF'
 'use strict';
