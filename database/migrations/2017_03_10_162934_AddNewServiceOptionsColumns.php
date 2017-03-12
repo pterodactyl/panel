@@ -13,18 +13,16 @@ class AddNewServiceOptionsColumns extends Migration
      */
     public function up()
     {
-        DB::transaction(function () {
-            Schema::table('service_options', function (Blueprint $table) {
-                $table->dropColumn('executable');
+        Schema::table('service_options', function (Blueprint $table) {
+            $table->dropColumn('executable');
 
-                $table->unsignedInteger('config_from')->nullable()->after('docker_image');
-                $table->string('config_stop')->nullable()->after('docker_image');
-                $table->text('config_logs')->nullable()->after('docker_image');
-                $table->text('config_startup')->nullable()->after('docker_image');
-                $table->text('config_files')->nullable()->after('docker_image');
+            $table->unsignedInteger('config_from')->nullable()->after('docker_image');
+            $table->string('config_stop')->nullable()->after('docker_image');
+            $table->text('config_logs')->nullable()->after('docker_image');
+            $table->text('config_startup')->nullable()->after('docker_image');
+            $table->text('config_files')->nullable()->after('docker_image');
 
-                $table->foreign('config_from')->references('id')->on('service_options');
-            });
+            $table->foreign('config_from')->references('id')->on('service_options');
         });
     }
 
@@ -35,18 +33,16 @@ class AddNewServiceOptionsColumns extends Migration
      */
     public function down()
     {
-        DB::transaction(function () {
-            Schema::table('service_options', function (Blueprint $table) {
-                $table->dropForeign('config_from');
+        Schema::table('service_options', function (Blueprint $table) {
+            $table->dropForeign('config_from');
 
-                $table->dropColumn('config_from');
-                $table->dropColumn('config_stop');
-                $table->dropColumn('config_logs');
-                $table->dropColumn('config_startup');
-                $table->dropColumn('config_files');
+            $table->dropColumn('config_from');
+            $table->dropColumn('config_stop');
+            $table->dropColumn('config_logs');
+            $table->dropColumn('config_startup');
+            $table->dropColumn('config_files');
 
-                $table->string('executable')->after('docker_image')->nullable();
-            });
+            $table->string('executable')->after('docker_image')->nullable();
         });
     }
 }

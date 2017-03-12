@@ -34,20 +34,22 @@ class MigrateToNewServiceSystem extends Migration
      */
     public function up()
     {
-        $service = Service::where('author', config('pterodactyl.service.core'))->where('folder', 'srcds')->first();
-        if (! $service) {
-            return;
-        }
-
-        $options = ServiceOption::where('service_id', $service->id)->get();
-        $options->each(function ($item) use ($options) {
-            if ($item->tag === 'srcds' && $item->name === 'Insurgency') {
-                $item->tag = 'insurgency';
-            } elseif ($item->tag === 'srcds' && $item->name === 'Team Fortress 2') {
-                $item->tag = 'tf2';
-            } elseif ($item->tag === 'srcds' && $item->name === 'Custom Source Engine Game') {
-                $item->tag = 'source';
+        DB::transaction(function () {
+            $service = Service::where('author', config('pterodactyl.service.core'))->where('folder', 'srcds')->first();
+            if (! $service) {
+                return;
             }
+
+            $options = ServiceOption::where('service_id', $service->id)->get();
+            $options->each(function ($item) use ($options) {
+                if ($item->tag === 'srcds' && $item->name === 'Insurgency') {
+                    $item->tag = 'insurgency';
+                } elseif ($item->tag === 'srcds' && $item->name === 'Team Fortress 2') {
+                    $item->tag = 'tf2';
+                } elseif ($item->tag === 'srcds' && $item->name === 'Custom Source Engine Game') {
+                    $item->tag = 'source';
+                }
+            });
         });
     }
 

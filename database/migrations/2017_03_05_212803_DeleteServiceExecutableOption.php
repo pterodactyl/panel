@@ -13,11 +13,29 @@ class DeleteServiceExecutableOption extends Migration
      */
     public function up()
     {
-        Schema::table('services', function (Blueprint $table) {
-            $table->dropColumn('executable');
-            $table->renameColumn('file', 'folder');
-            $table->text('description')->nullable()->change();
-            $table->text('startup')->nullable()->change();
+        DB::transaction(function () {
+            Schema::table('services', function (Blueprint $table) {
+                $table->renameColumn('file', 'folder');
+                $table->text('description')->nullable()->change();
+                $table->text('startup')->nullable()->change();
+            });
+
+            // Attempt to fix any startup commands for servers
+            // that we possibly can.
+            foreach (ServiceOption::with('servers')->get() as $option) {
+                $option->servers->each(function ($s) use ($option) {
+                    $prepend = $option->display_executable;
+                    $prepend = ($prepend === './ShooterGameServer') ? './ShooterGame/Binaries/Linux/ShooterGameServer' : $prepend;
+                    $prepend = ($prepend === 'TerrariaServer.exe') ? 'mono TerrariaServer.exe' : $prepend;
+
+                    $s->startup = $prepend . ' ' . $s->startup;
+                    $s->save();
+                });
+            }
+
+            Schema::table('services', function (Blueprint $table) {
+                $table->dropColumn('executable');
+            });
         });
     }
 
