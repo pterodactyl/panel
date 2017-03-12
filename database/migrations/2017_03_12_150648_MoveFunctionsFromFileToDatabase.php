@@ -7,7 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class MoveFunctionsFromFileToDatabase extends Migration
 {
-
     private $default = <<<'EOF'
 'use strict';
 

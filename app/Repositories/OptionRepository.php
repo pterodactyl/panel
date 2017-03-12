@@ -87,7 +87,7 @@ class OptionRepository
         }
 
         DB::transaction(function () use ($option) {
-            foreach($option->variables as $variable) {
+            foreach ($option->variables as $variable) {
                 (new VariableRepository)->delete($variable->id);
             }
 
