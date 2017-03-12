@@ -41,6 +41,7 @@
             <ul class="nav nav-tabs">
                 <li><a href="{{ route('admin.services.option.view', $option->id) }}">Configuration</a></li>
                 <li class="active"><a href="{{ route('admin.services.option.variables', $option->id) }}">Variables</a></li>
+                <li class="tab-success"><a href="#modal" data-toggle="modal" data-target="#newVariableModal">New Variable</a></li>
             </ul>
         </div>
     </div>
@@ -98,6 +99,59 @@
             </div>
         </div>
     @endforeach
+</div>
+<div class="modal fade" id="newVariableModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Create New Option Variable</h4>
+            </div>
+            <form action="{{ route('admin.services.option.variables', $option->id) }}" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="name" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Environment Variable</label>
+                            <input type="text" name="env_variable" class="form-control" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Default Value</label>
+                            <input type="text" name="default_value" class="form-control" />
+                        </div>
+                        <div class="col-xs-12">
+                            <p class="text-muted small">This variable can be accessed in the statup command by entering <code>@{{environment variable value}}</code>.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Permissions</label>
+                        <select name="options[]" class="pOptions form-control" multiple>
+                            <option value="user_viewable">Users Can View</option>
+                            <option value="user_editable">Users Can Edit</option>
+                            <option value="required">Field Is Required</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Input Rules</label>
+                        <input type="text" name="rules" class="form-control" placeholder="required|string|max:20" />
+                        <p class="text-muted small">These rules are defined using standard Laravel Framework validation rules.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {!! csrf_field() !!}
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Variable</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection
 

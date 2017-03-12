@@ -429,18 +429,19 @@ class AdminRoutes
                 'uses' => 'Admin\OptionController@viewConfiguration',
             ]);
 
+            $router->post('/option/{id}', 'Admin\OptionController@editConfiguration');
+
             $router->get('/option/{id}/variables', [
                 'as' => 'admin.services.option.variables',
                 'uses' => 'Admin\OptionController@viewVariables',
             ]);
 
+            $router->post('/option/{id}/variables', 'Admin\OptionController@createVariable');
+
             $router->post('/option/{id}/variables/{variable}', [
                 'as' => 'admin.services.option.variables.edit',
                 'uses' => 'Admin\OptionController@editVariable',
             ]);
-
-            $router->post('/option/{id}', 'Admin\OptionController@editConfiguration');
-
         });
 
         // Service Packs

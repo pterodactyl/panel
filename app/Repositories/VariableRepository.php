@@ -26,21 +26,28 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Validator;
+use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class VariableRepository
 {
-    public function __construct()
+    /**
+     * Create a new service variable.
+     *
+     * @param  int    $option
+     * @param  array  $data
+     * @return \Pterodactyl\Models\ServiceVariable
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
+    public function create($option, array $data)
     {
-        //
-    }
+        $option = ServiceOption::select('id')->findOrFail($option);
 
-    public function create(array $data)
-    {
         $validator = Validator::make($data, [
-            'option_id' => 'required|numeric|exists:service_options,id',
             'name' => 'required|string|min:1|max:255',
             'description' => 'sometimes|nullable|string',
             'env_variable' => 'required|regex:/^[\w]{1,255}$/',
@@ -60,9 +67,7 @@ class VariableRepository
         }
 
         if (isset($data['env_variable'])) {
-            $search = ServiceVariable::where('env_variable', $data['env_variable'])
-                ->where('option_id', $variable->option_id)
-                ->where('id', '!=', $variable->id);
+            $search = ServiceVariable::where('env_variable', $data['env_variable'])->where('option_id', $option->id);
             if ($search->first()) {
                 throw new DisplayException('The envionment variable name assigned to this variable must be unique for this service option.');
             }
@@ -72,6 +77,7 @@ class VariableRepository
             $data['options'] = [];
         }
 
+        $data['option_id'] = $option->id;
         $data['user_viewable'] = (in_array('user_viewable', $data['options']));
         $data['user_editable'] = (in_array('user_editable', $data['options']));
         $data['required'] = (in_array('required', $data['options']));

@@ -55,7 +55,7 @@ class OptionController extends Controller
 
     /**
      * Handles POST request to create a new option.
-
+     *
      * @param  Request $request
      * @return \Illuminate\Response\RedirectResponse
      */
@@ -82,6 +82,36 @@ class OptionController extends Controller
         }
 
         return redirect()->route('admin.services.option.new')->withInput();
+    }
+
+    /**
+     * Handles POST request to create a new option variable.
+     *
+     * @param  Request $request
+     * @param  int     $id       The ID of the service option to assign this variable to.
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function createVariable(Request $request, $id)
+    {
+        $repo = new VariableRepository;
+
+        try {
+            $variable = $repo->create($id, $request->only([
+                'name', 'description', 'env_variable',
+                'default_value', 'options', 'rules',
+            ]));
+
+            Alert::success('New variable successfully assigned to this service option.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.option.variables', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.services.option.variables', $id);
     }
 
     /**
