@@ -125,7 +125,7 @@ class MigrateToNewServiceSystem extends Migration
 
                 switch($item->tag) {
                     case 'source':
-                        $item->config_startup = '{"done": "Assigned anonymous gameserver Steam ID", "userInteraction": []}';
+                        $item->config_startup = '{"done": "Assigned anonymous gameserver", "userInteraction": []}';
                         $item->config_files = '{}';
                         $item->config_logs = '{"custom": true, "location": "logs/latest.log"}';
                         $item->config_stop = 'quit';
