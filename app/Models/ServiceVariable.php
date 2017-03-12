@@ -42,16 +42,15 @@ class ServiceVariable extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
+    /**
+    * Cast values to correct type.
+    *
+    * @var array
+    */
     protected $casts = [
         'option_id' => 'integer',
         'user_viewable' => 'integer',
         'user_editable' => 'integer',
-        'required' => 'integer',
     ];
 
     /**
@@ -62,7 +61,7 @@ class ServiceVariable extends Model
      */
     public function getRequiredAttribute($value)
     {
-        return ($this->rules === 'required' || str_contains($this->rules, ['required|', '|required']));
+        return $this->rules === 'required' || str_contains($this->rules, ['required|', '|required']);
     }
 
     /**

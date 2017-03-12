@@ -643,7 +643,7 @@ class ServerRepository
                     if ($validator->fails()) {
                         throw new DisplayValidationException(json_encode(
                             collect([
-                                'notice' => ['There was a validation error with the `' . $variable->name . '` variable.']
+                                'notice' => ['There was a validation error with the `' . $variable->name . '` variable.'],
                             ])->merge($validator->errors()->toArray())
                         ));
                     }
