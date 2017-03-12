@@ -130,19 +130,13 @@ class OptionRepository
             'config_from' => 'sometimes|required|numeric|exists:service_options,id',
         ]);
 
-        $validator->sometimes('config_startup', 'required_without:config_from|json', function ($input) use ($option) {
+        $validator->sometimes([
+            'config_startup', 'config_logs', 'config_files',
+        ], 'required_without:config_from|json', function ($input) use ($option) {
             return ! (! $input->config_from && ! is_null($option->config_from));
         });
 
         $validator->sometimes('config_stop', 'required_without:config_from|string|max:255', function ($input) use ($option) {
-            return ! (! $input->config_from && ! is_null($option->config_from));
-        });
-
-        $validator->sometimes('config_logs', 'required_without:config_from|json', function ($input) use ($option) {
-            return ! (! $input->config_from && ! is_null($option->config_from));
-        });
-
-        $validator->sometimes('config_files', 'required_without:config_from|json', function ($input) use ($option) {
             return ! (! $input->config_from && ! is_null($option->config_from));
         });
 
