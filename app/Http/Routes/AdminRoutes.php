@@ -403,8 +403,11 @@ class AdminRoutes
                 'uses' => 'Admin\ServiceController@view',
             ]);
 
-            $router->post('/view/{id}', [
-                'uses' => 'Admin\ServiceController@edit',
+            $router->post('/view/{id}', 'Admin\ServiceController@edit');
+
+            $router->get('/view/{id}/functions', [
+                'as' => 'admin.services.view.functions',
+                'uses' => 'Admin\ServiceController@viewFunctions',
             ]);
 
             $router->delete('/view/{id}', [

@@ -20,7 +20,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services: {{ $service->name }}
+    Services &rarr; {{ $service->name }}
 @endsection
 
 @section('content-header')
@@ -33,6 +33,16 @@
 @endsection
 
 @section('content')
+<div class="row">
+    <div class="col-xs-12">
+        <div class="nav-tabs-custom nav-tabs-floating">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="{{ route('admin.services.view', $service->id) }}">Overview</a></li>
+                <li><a href="{{ route('admin.services.view.functions', $service->id) }}">Functions</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 <form action="{{ route('admin.services.view', $service->id) }}" method="POST">
     <div class="row">
         <div class="col-xs-6">

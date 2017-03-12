@@ -26,7 +26,6 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Uuid;
-use Storage;
 use Validator;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceVariable;
@@ -55,7 +54,7 @@ class ServiceRepository
             throw new DisplayValidationException($validator->errors());
         }
 
-        $service = DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             $service = new Service;
             $service->author = config('pterodactyl.service.author');
             $service->fill([
@@ -63,6 +62,7 @@ class ServiceRepository
                 'description' => (isset($data['description'])) ? $data['description'] : null,
                 'folder' => $data['folder'],
                 'startup' => (isset($data['startup'])) ? $data['startup'] : null,
+                'index_file' => $service->defaultIndexFile(),
             ])->save();
 
             // It is possible for an event to return false or throw an exception
@@ -73,12 +73,8 @@ class ServiceRepository
                 throw new \Exception('Service model was created however the response appears to be invalid. Did an event fire wrongly?');
             }
 
-            Storage::copy('services/.templates/index.js', 'services/' . $service->folder . '/index.js');
-
             return $service;
         });
-
-        return $service;
     }
 
     /**
@@ -97,6 +93,7 @@ class ServiceRepository
             'description' => 'sometimes|required|nullable|string',
             'folder' => 'sometimes|required|regex:/^[\w.-]{1,50}$/',
             'startup' => 'sometimes|required|nullable|string',
+            'index_file' => 'sometimes|required|string',
         ]);
 
         if ($validator->fails()) {
@@ -104,14 +101,7 @@ class ServiceRepository
         }
 
         return DB::transaction(function () use ($data, $service) {
-            $moveFiles = (isset($data['folder']) && $data['folder'] !== $service->folder);
-            $oldFolder = $service->folder;
-
             $service->fill($data)->save();
-
-            if ($moveFiles) {
-                Storage::move(sprintf('services/%s/index.js', $oldFolder), sprintf('services/%s/index.js', $service->folder));
-            }
 
             return $service;
         });
@@ -137,41 +127,6 @@ class ServiceRepository
             }
 
             $service->delete();
-            Storage::deleteDirectory('services/' . $service->folder);
         });
     }
-
-    /**
-     * Updates a service file on the system.
-     *
-     * @param  int   $id
-     * @param  array $data
-     * @return void
-     *
-     * @deprecated
-     */
-    // public function updateFile($id, array $data)
-    // {
-    //     $service = Service::findOrFail($id);
-    //
-    //     $validator = Validator::make($data, [
-    //         'file' => 'required|in:index',
-    //         'contents' => 'required|string',
-    //     ]);
-    //
-    //     if ($validator->fails()) {
-    //         throw new DisplayValidationException($validator->errors());
-    //     }
-    //
-    //     $filepath = 'services/' . $service->folder . '/' . $filename;
-    //     $backup = 'services/.bak/' . str_random(12) . '.bak';
-    //
-    //     try {
-    //         Storage::move($filepath, $backup);
-    //         Storage::put($filepath, $data['contents']);
-    //     } catch (\Exception $ex) {
-    //         Storage::move($backup, $filepath);
-    //         throw $ex;
-    //     }
-    // }
 }
