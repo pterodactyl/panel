@@ -156,7 +156,7 @@ class ServerRepository
         if (! isset($data['pack_id']) || (int) $data['pack_id'] < 1) {
             $data['pack_id'] = null;
         } else {
-            $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
+            $pack = Models\Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }

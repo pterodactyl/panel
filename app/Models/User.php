@@ -88,6 +88,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
+    /**
+     * Parameters for search querying.
+     *
+     * @var array
+     */
     protected $searchable = [
         'columns' => [
             'email' => 10,

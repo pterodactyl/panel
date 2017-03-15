@@ -28,31 +28,36 @@ use DB;
 use Uuid;
 use Storage;
 use Validator;
-use Pterodactyl\Models;
+use Pterodactyl\Models\Pack;
 use Pterodactyl\Services\UuidService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class PackRepository
 {
-    public function __construct()
-    {
-        //
-    }
-
+    /**
+     * Creates a new pack on the system.
+     *
+     * @param  array $data
+     * @return \Pterodactyl\Models\Pack
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function create(array $data)
     {
         $validator = Validator::make($data, [
             'name' => 'required|string',
             'version' => 'required|string',
             'description' => 'sometimes|nullable|string',
-            'option' => 'required|exists:service_options,id',
-            'selectable' => 'sometimes|boolean',
-            'visible' => 'sometimes|boolean',
+            'selectable' => 'sometimes|required|boolean',
+            'visible' => 'sometimes|required|boolean',
+            'locked' => 'sometimes|required|boolean',
+            'option_id' => 'required|exists:service_options,id',
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         if (isset($data['file_upload'])) {
@@ -65,33 +70,42 @@ class PackRepository
             }
         }
 
-        DB::beginTransaction();
-        try {
-            $uuid = new UuidService;
-            $pack = Models\ServicePack::create([
-                'option_id' => $data['option'],
-                'uuid' => $uuid->generate('service_packs', 'uuid'),
+        return DB::transaction(function () use ($data) {
+            $uuid = new UuidService();
+
+            $pack = new Pack;
+            $pack->uuid = $uuid->generate('packs', 'uuid');
+            $pack->fill([
+                'option_id' => $data['option_id'],
                 'name' => $data['name'],
                 'version' => $data['version'],
                 'description' => (empty($data['description'])) ? null : $data['description'],
                 'selectable' => isset($data['selectable']),
                 'visible' => isset($data['visible']),
-            ]);
+                'locked' => isset($data['locked']),
+            ])->save();
+
+            if (! $pack->exists) {
+                throw new DisplayException('Model does not exist after creation. Did an event prevent it from saving?');
+            }
 
             Storage::makeDirectory('packs/' . $pack->uuid);
             if (isset($data['file_upload'])) {
                 $data['file_upload']->storeAs('packs/' . $pack->uuid, 'archive.tar.gz');
             }
 
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
-
-        return $pack;
+            return $pack;
+        });
     }
 
+    /**
+     * Creates a new pack on the system given a template file.
+     *
+     * @param  array $data
+     * @return \Pterodactyl\Models\Pack
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function createWithTemplate(array $data)
     {
         if (! isset($data['file_upload'])) {
@@ -127,9 +141,10 @@ class PackRepository
                 'name' => $json->name,
                 'version' => $json->version,
                 'description' => $json->description,
-                'option' => $data['option'],
+                'option_id' => $data['option_id'],
                 'selectable' => $json->selectable,
                 'visible' => $json->visible,
+                'locked' => $json->locked,
             ]);
 
             if (! $zip->extractTo(storage_path('app/packs/' . $pack->uuid), 'archive.tar.gz')) {
@@ -147,42 +162,67 @@ class PackRepository
                 'name' => $json->name,
                 'version' => $json->version,
                 'description' => $json->description,
-                'option' => $data['option'],
+                'option_id' => $data['option_id'],
                 'selectable' => $json->selectable,
                 'visible' => $json->visible,
+                'locked' => $json->locked,
             ]);
         }
     }
 
+    /**
+     * Updates a pack on the system.
+     *
+     * @param  int   $id
+     * @param  array $data
+     * @return \Pterodactyl\Models\Pack
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function update($id, array $data)
     {
         $validator = Validator::make($data, [
-            'name' => 'required|string',
-            'version' => 'required|string',
-            'description' => 'string',
-            'option' => 'required|exists:service_options,id',
-            'selectable' => 'sometimes|boolean',
-            'visible' => 'sometimes|boolean',
+            'name' => 'sometimes|required|string',
+            'version' => 'sometimes|required|string',
+            'description' => 'sometimes|string',
+            'selectable' => 'sometimes|required|boolean',
+            'visible' => 'sometimes|required|boolean',
+            'locked' => 'sometimes|required|boolean',
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        Models\ServicePack::findOrFail($id)->update([
-            'option_id' => $data['option'],
-            'name' => $data['name'],
-            'version' => $data['version'],
+        $pack = Pack::findOrFail($id);
+        $pack->fill([
+            'name' => isset($data['name']) ? $data['name'] : $pack->name,
+            'version' => isset($data['version']) ? $data['version'] : $pack->version,
             'description' => (empty($data['description'])) ? null : $data['description'],
-            'selectable' => isset($data['selectable']),
-            'visible' => isset($data['visible']),
-        ]);
+            'selectable' => isset($data['selectable']) ? $data['selectable'] : $data->selectable,
+            'visible' => isset($data['visible']) ? $data['visible'] : $data->visible,
+            'locked' => isset($data['locked']) ? $data['locked'] : $data->locked,
+        ])->save();
+
+        return $pack;
     }
 
+    /**
+     * Deletes a pack and files from the system.
+     *
+     * @param  int  $id
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function delete($id)
     {
-        $pack = Models\ServicePack::findOrFail($id);
-        // @TODO Check for linked servers; foreign key should block this.
+        $pack = Models\Pack::withCount('servers')->findOrFail($id);
+
+        if ($pack->servers_count > 0) {
+            throw new DisplayException('Cannot delete a pack from the system if servers are assocaited with it.');
+        }
+
         DB::transaction(function () use ($pack) {
             $pack->delete();
             Storage::deleteDirectory('packs/' . $pack->uuid);

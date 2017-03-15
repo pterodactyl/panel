@@ -47,7 +47,7 @@ class PackController extends Controller
      */
     public function pull(Request $request, $uuid)
     {
-        $pack = Models\ServicePack::where('uuid', $uuid)->first();
+        $pack = Models\Pack::where('uuid', $uuid)->first();
 
         if (! $pack) {
             return response()->json(['error' => 'No such pack.'], 404);
@@ -68,7 +68,7 @@ class PackController extends Controller
      */
     public function hash(Request $request, $uuid)
     {
-        $pack = Models\ServicePack::where('uuid', $uuid)->first();
+        $pack = Models\Pack::where('uuid', $uuid)->first();
 
         if (! $pack) {
             return response()->json(['error' => 'No such pack.'], 404);

@@ -453,43 +453,27 @@ class AdminRoutes
                 'csrf',
             ],
         ], function () use ($router) {
-            // $router->get('/new/{option?}', [
-            //     'as' => 'admin.packs.new',
-            //     'uses' => 'Admin\PackController@new',
-            // ]);
-            // $router->post('/new', [
-            //     'uses' => 'Admin\PackController@create',
-            // ]);
-            // $router->get('/upload/{option?}', [
-            //     'as' => 'admin.packs.uploadForm',
-            //     'uses' => 'Admin\PackController@uploadForm',
-            // ]);
-            // $router->post('/upload', [
-            //     'uses' => 'Admin\PackController@postUpload',
-            // ]);
             $router->get('/', [
                 'as' => 'admin.packs',
-                'uses' => 'Admin\PackController@listAll',
+                'uses' => 'Admin\PackController@index',
             ]);
-            // $router->get('/for/option/{option}', [
-            //     'as' => 'admin.packs.option',
-            //     'uses' => 'Admin\PackController@listByOption',
-            // ]);
-            // $router->get('/for/service/{service}', [
-            //     'as' => 'admin.packs.service',
-            //     'uses' => 'Admin\PackController@listByService',
-            // ]);
-            // $router->get('/edit/{pack}', [
-            //     'as' => 'admin.packs.edit',
-            //     'uses' => 'Admin\PackController@edit',
-            // ]);
-            // $router->post('/edit/{pack}', [
-            //     'uses' => 'Admin\PackController@update',
-            // ]);
-            // $router->get('/edit/{pack}/export/{archive?}', [
-            //     'as' => 'admin.packs.export',
-            //     'uses' => 'Admin\PackController@export',
-            // ]);
+
+            $router->get('/new', [
+                'as' => 'admin.packs.new',
+                'uses' => 'Admin\PackController@new',
+            ]);
+
+            $router->post('/new', 'Admin\PackController@create');
+
+            $router->get('/new/template', [
+                'as' => 'admin.packs.new.template',
+                'uses' => 'Admin\PackController@newTemplate',
+            ]);
+
+            $router->get('/view/{id}', [
+                'as' => 'admin.packs.view',
+                'uses' => 'Admin\PackController@view',
+            ]);
         });
     }
 }

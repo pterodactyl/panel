@@ -99,6 +99,6 @@ class ServiceOption extends Model
       */
      public function packs()
      {
-         return $this->hasMany(ServicePack::class, 'option_id');
+         return $this->hasMany(Pack::class, 'option_id');
      }
 }

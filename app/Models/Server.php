@@ -65,43 +65,50 @@ class Server extends Model
      */
     protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'node_id' => 'integer',
-         'suspended' => 'integer',
-         'owner_id' => 'integer',
-         'memory' => 'integer',
-         'swap' => 'integer',
-         'disk' => 'integer',
-         'io' => 'integer',
-         'cpu' => 'integer',
-         'oom_disabled' => 'integer',
-         'allocation_id' => 'integer',
-         'service_id' => 'integer',
-         'option_id' => 'integer',
-         'pack_id' => 'integer',
-         'installed' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'node_id' => 'integer',
+        'suspended' => 'integer',
+        'owner_id' => 'integer',
+        'memory' => 'integer',
+        'swap' => 'integer',
+        'disk' => 'integer',
+        'io' => 'integer',
+        'cpu' => 'integer',
+        'oom_disabled' => 'integer',
+        'allocation_id' => 'integer',
+        'service_id' => 'integer',
+        'option_id' => 'integer',
+        'pack_id' => 'integer',
+        'installed' => 'integer',
+    ];
 
+    /**
+     * Parameters for search querying.
+     *
+     * @var array
+     */
     protected $searchable = [
-         'columns' => [
-             'servers.name' => 10,
-             'servers.username' => 10,
-             'servers.uuidShort' => 9,
-             'servers.uuid' => 8,
-             'users.email' => 6,
-             'users.username' => 6,
-             'nodes.name' => 2,
-         ],
-         'joins' => [
+        'columns' => [
+            'servers.name' => 10,
+            'servers.username' => 10,
+            'servers.uuidShort' => 9,
+            'servers.uuid' => 8,
+            'packs.name' => 7,
+            'users.email' => 6,
+            'users.username' => 6,
+            'nodes.name' => 2,
+        ],
+        'joins' => [
+            'packs' => ['packs.id', 'servers.pack_id'],
             'users' => ['users.id', 'servers.owner_id'],
             'nodes' => ['nodes.id', 'servers.node_id'],
-         ],
-     ];
+        ],
+    ];
 
     /**
      * Returns a single server specified by UUID.
@@ -236,11 +243,11 @@ class Server extends Model
     /**
      * Gets information for the pack associated with this server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function pack()
     {
-        return $this->hasOne(ServicePack::class, 'id', 'pack_id');
+        return $this->belongsTo(Pack::class);
     }
 
     /**

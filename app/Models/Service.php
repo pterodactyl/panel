@@ -105,7 +105,7 @@ EOF;
     public function packs()
     {
         return $this->hasManyThrough(
-            'Pterodactyl\Models\ServicePack', 'Pterodactyl\Models\ServiceOption',
+            'Pterodactyl\Models\Pack', 'Pterodactyl\Models\ServiceOption',
             'service_id', 'option_id'
         );
     }
