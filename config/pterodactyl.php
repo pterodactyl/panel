@@ -16,4 +16,18 @@ return [
        'author' => env('SERVICE_AUTHOR'),
    ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Pagination
+    |--------------------------------------------------------------------------
+    |
+    | Certain pagination result counts can be configured here and will take
+    | effect globally.
+    */
+   'paginate' => [
+       'frontend' => [
+           'servers' => 15,
+       ],
+   ],
+
 ];

@@ -47,7 +47,7 @@ class IndexController extends Controller
     public function getIndex(Request $request)
     {
         return view('base.index', [
-            'servers' => $request->user()->serverAccessCollection(10),
+            'servers' => $request->user()->serverAccessCollection(config('pterodactyl.paginate.frontend.servers')),
         ]);
     }
 
