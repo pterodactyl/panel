@@ -48,7 +48,7 @@ class ServiceRepository
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         return DB::transaction(function () use ($data) {
@@ -94,7 +94,7 @@ class ServiceRepository
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         return DB::transaction(function () use ($data, $service) {

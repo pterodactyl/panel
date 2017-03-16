@@ -63,7 +63,7 @@ class VariableRepository
         });
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         if (isset($data['env_variable'])) {
@@ -137,7 +137,7 @@ class VariableRepository
         });
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         if (isset($data['env_variable'])) {

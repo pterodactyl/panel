@@ -60,7 +60,7 @@ class NodeRepository
         // Run validator, throw catchable and displayable exception if it fails.
         // Exception includes a JSON result of failed validation rules.
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         // Verify the FQDN if using SSL
@@ -109,7 +109,7 @@ class NodeRepository
         // Run validator, throw catchable and displayable exception if it fails.
         // Exception includes a JSON result of failed validation rules.
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         // Verify the FQDN
@@ -193,7 +193,7 @@ class NodeRepository
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
         $explode = explode('/', $data['allocation_ip']);
