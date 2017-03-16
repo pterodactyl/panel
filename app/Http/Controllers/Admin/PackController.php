@@ -102,7 +102,7 @@ class PackController extends Controller
             Alert::success('Pack successfully created on the system.')->flash();
 
             return redirect()->route('admin.packs.view', $pack->id);
-        } catch(DisplayValidationException $ex) {
+        } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.packs.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -144,7 +144,7 @@ class PackController extends Controller
             if ($request->input('action') !== 'delete') {
                 $pack = $repo->update($id, $request->intersect([
                     'name', 'description', 'version',
-                    'option_id', 'selectable', 'visible', 'locked'
+                    'option_id', 'selectable', 'visible', 'locked',
                 ]));
                 Alert::success('Pack successfully updated.')->flash();
             } else {
@@ -153,7 +153,7 @@ class PackController extends Controller
 
                 return redirect()->route('admin.packs');
             }
-        } catch(DisplayValidationException $ex) {
+        } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.packs.view', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -211,5 +211,4 @@ class PackController extends Controller
             ])->deleteFileAfterSend(true);
         }
     }
-
 }
