@@ -8,6 +8,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
 * New server creation page now makes significantly less AJAX calls and is much quicker to respond.
 * Server and Node view pages wee modified to split tabs into individual pages to make re-themeing and modifications significantly easier, and reduce MySQL query loads on page.
+* `[pre.4]` — Services and Pack magement overhauled to be faster, cleaner, and more extensible in the future.
+* Most of the backend `UnhandledException` display errors now include a clearer error that directs admins to the program's logs.
+* Table seeders for services now can be run during upgrades and will attempt to locate and update, or create new if not found in the database.
+* Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.
+* `[pre.4]` — Service pack files are now stored in the database rather than on the host system to make updates easier.
 
 ### Fixed
 * Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
@@ -16,6 +21,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.
+* New `humanReadable` macro on `File` facade that accepts a file path and returns a human readable size. (`File::humanReadable(path, precision)`)
 
 ### Deprecated
 * Old API calls to `Server::create` will fail due to changed data structure.
