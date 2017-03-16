@@ -386,126 +386,99 @@ class AdminRoutes
         ], function () use ($router) {
             $router->get('/', [
                 'as' => 'admin.services',
-                'uses' => 'Admin\ServiceController@getIndex',
+                'uses' => 'Admin\ServiceController@index',
             ]);
 
             $router->get('/new', [
                 'as' => 'admin.services.new',
-                'uses' => 'Admin\ServiceController@getNew',
+                'uses' => 'Admin\ServiceController@new',
             ]);
 
             $router->post('/new', [
-                'uses' => 'Admin\ServiceController@postNew',
+                'uses' => 'Admin\ServiceController@create',
             ]);
 
-            $router->get('/service/{id}', [
-                'as' => 'admin.services.service',
-                'uses' => 'Admin\ServiceController@getService',
+            $router->get('/view/{id}', [
+                'as' => 'admin.services.view',
+                'uses' => 'Admin\ServiceController@view',
             ]);
 
-            $router->post('/service/{id}', [
-                'uses' => 'Admin\ServiceController@postService',
+            $router->post('/view/{id}', 'Admin\ServiceController@edit');
+
+            $router->get('/view/{id}/functions', [
+                'as' => 'admin.services.view.functions',
+                'uses' => 'Admin\ServiceController@viewFunctions',
             ]);
 
-            $router->delete('/service/{id}', [
-                'uses' => 'Admin\ServiceController@deleteService',
+            $router->delete('/view/{id}', [
+                'uses' => 'Admin\ServiceController@delete',
             ]);
 
-            $router->get('/service/{id}/configuration', [
-                'as' => 'admin.services.service.config',
-                'uses' => 'Admin\ServiceController@getConfiguration',
-            ]);
-
-            $router->post('/service/{id}/configuration', [
-                'uses' => 'Admin\ServiceController@postConfiguration',
-            ]);
-
-            $router->get('/service/{service}/option/new', [
+            // ---------------------
+            // Service Option Routes
+            // ---------------------
+            $router->get('/option/new', [
                 'as' => 'admin.services.option.new',
-                'uses' => 'Admin\ServiceController@newOption',
+                'uses' => 'Admin\OptionController@new',
             ]);
 
-            $router->post('/service/{service}/option/new', [
-                'uses' => 'Admin\ServiceController@postNewOption',
+            $router->post('/option/new', 'Admin\OptionController@create');
+
+            $router->get('/option/{id}', [
+                'as' => 'admin.services.option.view',
+                'uses' => 'Admin\OptionController@viewConfiguration',
             ]);
 
-            $router->get('/service/{service}/option/{option}', [
-                'as' => 'admin.services.option',
-                'uses' => 'Admin\ServiceController@getOption',
+            $router->post('/option/{id}', 'Admin\OptionController@editConfiguration');
+
+            $router->get('/option/{id}/variables', [
+                'as' => 'admin.services.option.variables',
+                'uses' => 'Admin\OptionController@viewVariables',
             ]);
 
-            $router->post('/service/{service}/option/{option}', [
-                'uses' => 'Admin\ServiceController@postOption',
-            ]);
+            $router->post('/option/{id}/variables', 'Admin\OptionController@createVariable');
 
-            $router->delete('/service/{service}/option/{id}', [
-                'uses' => 'Admin\ServiceController@deleteOption',
-            ]);
-
-            $router->get('/service/{service}/option/{option}/variable/new', [
-                'as' => 'admin.services.option.variable.new',
-                'uses' => 'Admin\ServiceController@getNewVariable',
-            ]);
-
-            $router->post('/service/{service}/option/{option}/variable/new', [
-                'uses' => 'Admin\ServiceController@postNewVariable',
-            ]);
-
-            $router->post('/service/{service}/option/{option}/variable/{variable}', [
-                'as' => 'admin.services.option.variable',
-                'uses' => 'Admin\ServiceController@postOptionVariable',
-            ]);
-
-            $router->get('/service/{service}/option/{option}/variable/{variable}/delete', [
-                'as' => 'admin.services.option.variable.delete',
-                'uses' => 'Admin\ServiceController@deleteVariable',
+            $router->post('/option/{id}/variables/{variable}', [
+                'as' => 'admin.services.option.variables.edit',
+                'uses' => 'Admin\OptionController@editVariable',
             ]);
         });
 
         // Service Packs
         $router->group([
-            'prefix' => 'admin/services/packs',
+            'prefix' => 'admin/packs',
             'middleware' => [
                 'auth',
                 'admin',
                 'csrf',
             ],
         ], function () use ($router) {
-            $router->get('/new/{option?}', [
-                'as' => 'admin.services.packs.new',
+            $router->get('/', [
+                'as' => 'admin.packs',
+                'uses' => 'Admin\PackController@index',
+            ]);
+
+            $router->get('/new', [
+                'as' => 'admin.packs.new',
                 'uses' => 'Admin\PackController@new',
             ]);
-            $router->post('/new', [
-                'uses' => 'Admin\PackController@create',
+
+            $router->post('/new', 'Admin\PackController@create');
+
+            $router->get('/new/template', [
+                'as' => 'admin.packs.new.template',
+                'uses' => 'Admin\PackController@newTemplate',
             ]);
-            $router->get('/upload/{option?}', [
-                'as' => 'admin.services.packs.uploadForm',
-                'uses' => 'Admin\PackController@uploadForm',
+
+            $router->get('/view/{id}', [
+                'as' => 'admin.packs.view',
+                'uses' => 'Admin\PackController@view',
             ]);
-            $router->post('/upload', [
-                'uses' => 'Admin\PackController@postUpload',
-            ]);
-            $router->get('/', [
-                'as' => 'admin.services.packs',
-                'uses' => 'Admin\PackController@listAll',
-            ]);
-            $router->get('/for/option/{option}', [
-                'as' => 'admin.services.packs.option',
-                'uses' => 'Admin\PackController@listByOption',
-            ]);
-            $router->get('/for/service/{service}', [
-                'as' => 'admin.services.packs.service',
-                'uses' => 'Admin\PackController@listByService',
-            ]);
-            $router->get('/edit/{pack}', [
-                'as' => 'admin.services.packs.edit',
-                'uses' => 'Admin\PackController@edit',
-            ]);
-            $router->post('/edit/{pack}', [
-                'uses' => 'Admin\PackController@update',
-            ]);
-            $router->get('/edit/{pack}/export/{archive?}', [
-                'as' => 'admin.services.packs.export',
+
+            $router->post('/view/{id}', 'Admin\PackController@update');
+
+            $router->post('/view/{id}/export/{files?}', [
+                'as' => 'admin.packs.view.export',
                 'uses' => 'Admin\PackController@export',
             ]);
         });

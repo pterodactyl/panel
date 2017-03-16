@@ -98,10 +98,6 @@ class RemoteController extends Controller
             ], 403);
         }
 
-        // Passes Validation, Setup Notifications
-        $notify = new NotificationService($server);
-        $notify->pass($request->input('notification'));
-
         return response('', 201);
     }
 

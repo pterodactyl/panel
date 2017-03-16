@@ -22,55 +22,31 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Providers;
 
-use Illuminate\Database\Eloquent\Model;
+use File;
+use Illuminate\Support\ServiceProvider;
 
-class ServiceVariable extends Model
+class MacroServiceProvider extends ServiceProvider
 {
     /**
-     * The table associated with the model.
+     * Bootstrap the application services.
      *
-     * @var string
+     * @return void
      */
-    protected $table = 'service_variables';
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'option_id' => 'integer',
-        'user_viewable' => 'integer',
-        'user_editable' => 'integer',
-    ];
-
-    /**
-     * Returns the display executable for the option and will use the parent
-     * service one if the option does not have one defined.
-     *
-     * @return string
-     */
-    public function getRequiredAttribute($value)
+    public function boot()
     {
-        return $this->rules === 'required' || str_contains($this->rules, ['required|', '|required']);
-    }
+        File::macro('humanReadableSize', function ($path, $precision = 2) {
+            $size = File::size($path);
+            static $units = ['B', 'kB', 'MB', 'GB', 'TB'];
 
-    /**
-     * Return server variables associated with this variable.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function serverVariable()
-    {
-        return $this->hasMany(ServerVariable::class, 'variable_id');
+            $i = 0;
+            while (($size / 1024) > 0.9) {
+                $size = $size / 1024;
+                $i++;
+            }
+
+            return round($size, ($i < 2) ? 0 : $precision) . ' ' . $units[$i];
+        });
     }
 }

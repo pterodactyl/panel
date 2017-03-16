@@ -66,7 +66,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * A list of mass-assignable variables.
      *
-     * @var [type]
+     * @var array
      */
     protected $fillable = ['username', 'email', 'name_first', 'name_last', 'password', 'language', 'use_totp', 'totp_secret', 'gravatar', 'root_admin'];
 
@@ -88,6 +88,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = ['password', 'remember_token', 'totp_secret'];
 
+    /**
+     * Parameters for search querying.
+     *
+     * @var array
+     */
     protected $searchable = [
         'columns' => [
             'email' => 10,

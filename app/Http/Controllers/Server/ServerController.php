@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Http\Controllers\Server;
 
-use DB;
 use Log;
 use Uuid;
 use Alert;
@@ -209,37 +208,20 @@ class ServerController extends Controller
     public function getStartup(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
-        $server->load(['allocations' => function ($query) use ($server) {
-            $query->where('id', $server->allocation_id);
-        }]);
+        $server->load(['node', 'allocation', 'variables.variable']);
+
         $this->authorize('view-startup', $server);
 
-        $variables = Models\ServiceVariable::select(
-                'service_variables.*',
-                DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
-            )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('service_variables.option_id', $server->option_id)
-            ->where('server_variables.server_id', $server->id)
-            ->get();
-
-        $service = Models\Service::select(
-                DB::raw('IFNULL(service_options.executable, services.executable) as executable')
-            )->leftJoin('service_options', 'service_options.service_id', '=', 'services.id')
-            ->where('service_options.id', $server->option_id)
-            ->where('services.id', $server->service_id)
-            ->first();
-
-        $allocation = $server->allocations->pop();
-        $ServerVariable = [
+        $replacements = [
             '{{SERVER_MEMORY}}' => $server->memory,
-            '{{SERVER_IP}}' => $allocation->ip,
-            '{{SERVER_PORT}}' => $allocation->port,
+            '{{SERVER_IP}}' => $server->allocation->ip,
+            '{{SERVER_PORT}}' => $server->allocation->port,
         ];
 
-        $processed = str_replace(array_keys($ServerVariable), array_values($ServerVariable), $server->startup);
-        foreach ($variables as &$variable) {
-            $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '[hidden]';
-            $processed = str_replace('{{' . $variable->env_variable . '}}', $replace, $processed);
+        $processed = str_replace(array_keys($replacements), array_values($replacements), $server->startup);
+        foreach ($server->variables as $v) {
+            $replace = ($v->user_can_view) ? $v->variable_value : '[hidden]';
+            $processed = str_replace('{{' . $v->variable->env_variable . '}}', $replace, $processed);
         }
 
         $server->js();
@@ -247,8 +229,8 @@ class ServerController extends Controller
         return view('server.settings.startup', [
             'server' => $server,
             'node' => $server->node,
-            'variables' => $variables->where('user_viewable', 1),
-            'service' => $service,
+            'variables' => $server->variables->where('user_can_view', true),
+            'service' => $server->service,
             'processedStartup' => $processed,
         ]);
     }
@@ -311,6 +293,8 @@ class ServerController extends Controller
             $repo = new ServerRepository;
             $repo->updateStartup($server->id, $request->except('_token'));
             Alert::success('Server startup variables were successfully updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('server.settings.startup', $uuid)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {

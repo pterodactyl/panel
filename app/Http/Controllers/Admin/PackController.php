@@ -27,130 +27,166 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Log;
 use Alert;
 use Storage;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Pack;
+use Pterodactyl\Models\Service;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\ServiceRepository\Pack;
+use Pterodactyl\Repositories\PackRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class PackController extends Controller
 {
-    public function __construct()
+    /**
+     * Display listing of all packs on the system.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
     {
-        //
+        $packs = Pack::with('option')->withCount('servers');
+
+        if (! is_null($request->input('query'))) {
+            $packs->search($request->input('query'));
+        }
+
+        return view('admin.packs.index', ['packs' => $packs->paginate(50)]);
     }
 
-    public function listAll(Request $request)
+    /**
+     * Display new pack creation form.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function new(Request $request)
     {
-        return view('admin.services.packs.index', ['services' => Models\Service::all()]);
-    }
-
-    public function listByOption(Request $request, $id)
-    {
-        return view('admin.services.packs.byoption', [
-            'option' => Models\ServiceOption::with('service', 'packs')->findOrFail($id),
+        return view('admin.packs.new', [
+            'services' => Service::with('options')->get(),
         ]);
     }
 
-    public function listByService(Request $request, $id)
+    /**
+     * Display new pack creation modal for use with template upload.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function newTemplate(Request $request)
     {
-        return view('admin.services.packs.byservice', [
-            'service' => Models\Service::with('options', 'options.packs')->findOrFail($id),
+        return view('admin.packs.modal', [
+            'services' => Service::with('options')->get(),
         ]);
     }
 
-    public function new(Request $request, $opt = null)
-    {
-        return view('admin.services.packs.new', [
-            'services' => Models\Service::with('options')->get(),
-        ]);
-    }
-
+    /**
+     * Handle create pack request and route user to location.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request)
     {
-        try {
-            $repo = new Pack;
-            $pack = $repo->create($request->only([
-                'name', 'version', 'description',
-                'option', 'selectable', 'visible',
-                'file_upload',
-            ]));
-            Alert::success('Successfully created new service!')->flash();
+        $repo = new PackRepository;
 
-            return redirect()->route('admin.services.packs.edit', $pack->id)->withInput();
+        try {
+            if ($request->input('action') === 'from_template') {
+                $pack = $repo->createWithTemplate($request->intersect(['option_id', 'file_upload']));
+            } else {
+                $pack = $repo->create($request->intersect([
+                    'name', 'description', 'version', 'option_id',
+                    'selectable', 'visible', 'locked', 'file_upload',
+                ]));
+            }
+            Alert::success('Pack successfully created on the system.')->flash();
+
+            return redirect()->route('admin.packs.view', $pack->id);
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.packs.new', $request->input('option'))->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('admin.packs.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new service pack.')->flash();
+            Alert::danger('An error occured while attempting to add a new service pack. This error has been logged.')->flash();
         }
 
-        return redirect()->route('admin.services.packs.new', $request->input('option'))->withInput();
+        return redirect()->route('admin.packs.new')->withInput();
     }
 
-    public function edit(Request $request, $id)
+    /**
+     * Display pack view template to user.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $id)
     {
-        $pack = Models\ServicePack::with('option.service')->findOrFail($id);
-
-        return view('admin.services.packs.edit', [
-            'pack' => $pack,
-            'services' => Models\Service::all()->load('options'),
-            'files' => Storage::files('packs/' . $pack->uuid),
+        return view('admin.packs.view', [
+            'pack' => Pack::with('servers.node', 'servers.user')->findOrFail($id),
+            'services' => Service::with('options')->get(),
         ]);
     }
 
+    /**
+     * Handle updating or deleting pack information.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
     public function update(Request $request, $id)
     {
-        if (! is_null($request->input('action_delete'))) {
-            try {
-                $repo = new Pack;
-                $repo->delete($id);
-                Alert::success('The requested service pack has been deleted from the system.')->flash();
+        $repo = new PackRepository;
 
-                return redirect()->route('admin.services.packs');
-            } catch (DisplayException $ex) {
-                Alert::danger($ex->getMessage())->flash();
-            } catch (\Exception $ex) {
-                Log::error($ex);
-                Alert::danger('An error occured while attempting to delete this pack.')->flash();
-            }
-
-            return redirect()->route('admin.services.packs.edit', $id);
-        } else {
-            try {
-                $repo = new Pack;
-                $repo->update($id, $request->only([
-                    'name', 'version', 'description',
-                    'option', 'selectable', 'visible',
+        try {
+            if ($request->input('action') !== 'delete') {
+                $pack = $repo->update($id, $request->intersect([
+                    'name', 'description', 'version',
+                    'option_id', 'selectable', 'visible', 'locked',
                 ]));
-                Alert::success('Service pack has been successfully updated.')->flash();
-            } catch (DisplayValidationException $ex) {
-                return redirect()->route('admin.services.packs.edit', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-            } catch (\Exception $ex) {
-                Log::error($ex);
-                Alert::danger('An error occured while attempting to add edit this pack.')->flash();
-            }
+                Alert::success('Pack successfully updated.')->flash();
+            } else {
+                $repo->delete($id);
+                Alert::success('Pack was successfully deleted from the system.')->flash();
 
-            return redirect()->route('admin.services.packs.edit', $id);
+                return redirect()->route('admin.packs');
+            }
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.packs.view', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to edit this service pack. This error has been logged.')->flash();
         }
+
+        return redirect()->route('admin.packs.view', $id);
     }
 
+    /**
+     * Creates an archive of the pack and downloads it to the browser.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @param  bool    $files
+     * @return \Illuminate\Response\BinaryFileResponse
+     */
     public function export(Request $request, $id, $files = false)
     {
-        $pack = Models\ServicePack::findOrFail($id);
+        $pack = Pack::findOrFail($id);
         $json = [
             'name' => $pack->name,
             'version' => $pack->version,
-            'description' => $pack->dscription,
-            'selectable' => (bool) $pack->selectable,
-            'visible' => (bool) $pack->visible,
+            'description' => $pack->description,
+            'selectable' => $pack->selectable,
+            'visible' => $pack->visible,
+            'locked' => $pack->locked,
         ];
 
         $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');
-        if ((bool) $files) {
+        if ($files === 'with-files') {
             $zip = new \ZipArchive;
             if (! $zip->open($filename, \ZipArchive::CREATE)) {
                 abort(503, 'Unable to open file for writing.');
@@ -174,32 +210,5 @@ class PackController extends Controller
                 'Content-Type' => 'application/json',
             ])->deleteFileAfterSend(true);
         }
-    }
-
-    public function uploadForm(Request $request, $for = null)
-    {
-        return view('admin.services.packs.upload', [
-            'services' => Models\Service::all()->load('options'),
-        ]);
-    }
-
-    public function postUpload(Request $request)
-    {
-        try {
-            $repo = new Pack;
-            $pack = $repo->createWithTemplate($request->only(['option', 'file_upload']));
-            Alert::success('Successfully created new service!')->flash();
-
-            return redirect()->route('admin.services.packs.edit', $pack->id)->withInput();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->back()->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new service pack.')->flash();
-        }
-
-        return redirect()->back();
     }
 }

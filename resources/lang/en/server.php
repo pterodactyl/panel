@@ -234,7 +234,7 @@ return [
             'edit_params' => 'Edit Parameters',
             'update' => 'Update Startup Parameters',
             'startup_var' => 'Startup Command Variable',
-            'startup_regex' => 'Verification Regex',
+            'startup_regex' => 'Input Rules',
         ],
         'sftp' => [
             'header' => 'SFTP Configuration',

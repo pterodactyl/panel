@@ -21,56 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+use Pterodactyl\Models\Service;
+use Pterodactyl\Models\ServiceOption;
+use Illuminate\Database\Migrations\Migration;
 
-namespace Pterodactyl\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class ServiceVariable extends Model
+class MigrateToNewServiceSystem extends Migration
 {
     /**
-     * The table associated with the model.
+     * Run the migrations.
      *
-     * @var string
+     * @return void
      */
-    protected $table = 'service_variables';
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'option_id' => 'integer',
-        'user_viewable' => 'integer',
-        'user_editable' => 'integer',
-    ];
-
-    /**
-     * Returns the display executable for the option and will use the parent
-     * service one if the option does not have one defined.
-     *
-     * @return string
-     */
-    public function getRequiredAttribute($value)
+    public function up()
     {
-        return $this->rules === 'required' || str_contains($this->rules, ['required|', '|required']);
+        DB::transaction(function () {
+            $service = Service::where('author', config('pterodactyl.service.core'))->where('folder', 'srcds')->first();
+            if (! $service) {
+                return;
+            }
+
+            $options = ServiceOption::where('service_id', $service->id)->get();
+            $options->each(function ($item) use ($options) {
+                if ($item->tag === 'srcds' && $item->name === 'Insurgency') {
+                    $item->tag = 'insurgency';
+                } elseif ($item->tag === 'srcds' && $item->name === 'Team Fortress 2') {
+                    $item->tag = 'tf2';
+                } elseif ($item->tag === 'srcds' && $item->name === 'Custom Source Engine Game') {
+                    $item->tag = 'source';
+                }
+            });
+        });
     }
 
     /**
-     * Return server variables associated with this variable.
+     * Reverse the migrations.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return void
      */
-    public function serverVariable()
+    public function down()
     {
-        return $this->hasMany(ServerVariable::class, 'variable_id');
+        // Not doing reversals right now...
     }
 }

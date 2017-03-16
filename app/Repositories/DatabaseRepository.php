@@ -199,7 +199,7 @@ class DatabaseRepository
      * Deletes a database server from the system if it is empty.
      *
      * @param  int $server The ID of the Database Server.
-     * @return
+     * @return bool
      */
     public function delete($server)
     {

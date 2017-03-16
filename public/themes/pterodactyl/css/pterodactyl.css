@@ -20,6 +20,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+ @import 'checkbox.css';
+
  .login-box, .register-box {
      width: 40%;
      margin: 7% auto
@@ -265,4 +267,8 @@ span[aria-labelledby="select2-pUserId-container"] {
 
 .terminal-notify:hover {
     opacity: .9;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
 }

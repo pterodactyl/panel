@@ -26,7 +26,6 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Log;
 use Alert;
-use Storage;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -36,276 +35,118 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServiceController extends Controller
 {
-    public function __construct()
-    {
-        //
-    }
-
-    public function getIndex(Request $request)
+    /**
+     * Display service overview page.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request)
     {
         return view('admin.services.index', [
-            'services' => Models\Service::withCount('servers')->get(),
+            'services' => Models\Service::withCount('servers', 'options', 'packs')->get(),
         ]);
     }
 
-    public function getNew(Request $request)
+    /**
+     * Display create service page.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
+    public function new(Request $request)
     {
         return view('admin.services.new');
     }
 
-    public function postNew(Request $request)
+    /**
+     * Return base view for a service.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $id)
     {
+        return view('admin.services.view', [
+            'service' => Models\Service::with('options', 'options.servers')->findOrFail($id),
+        ]);
+    }
+
+    /**
+     * Return function editing view for a service.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\View\View
+     */
+    public function viewFunctions(Request $request, $id)
+    {
+        return view('admin.services.functions', ['service' => Models\Service::findOrFail($id)]);
+    }
+
+    /**
+     * Handle post action for new service.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function create(Request $request)
+    {
+        $repo = new ServiceRepository;
+
         try {
-            $repo = new ServiceRepository\Service;
-            $service = $repo->create($request->only([
-                'name', 'description', 'file',
-                'executable', 'startup',
+            $service = $repo->create($request->intersect([
+                'name', 'description', 'folder', 'startup',
             ]));
             Alert::success('Successfully created new service!')->flash();
 
-            return redirect()->route('admin.services.service', $service->id);
+            return redirect()->route('admin.services.view', $service->id);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new service.')->flash();
+            Alert::danger('An error occured while attempting to add a new service. This error has been logged.')->flash();
         }
 
         return redirect()->route('admin.services.new')->withInput();
     }
 
-    public function getService(Request $request, $service)
+    /**
+     * Edits configuration for a specific service.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function edit(Request $request, $id)
     {
-        return view('admin.services.view', [
-            'service' => Models\Service::with('options', 'options.servers')->findOrFail($service),
-        ]);
-    }
+        $repo = new ServiceRepository;
+        $redirectTo = ($request->input('redirect_to')) ? 'admin.services.view.functions' : 'admin.services.view';
 
-    public function postService(Request $request, $service)
-    {
         try {
-            $repo = new ServiceRepository\Service;
-            $repo->update($service, $request->only([
-                'name', 'description', 'file',
-                'executable', 'startup',
-            ]));
-            Alert::success('Successfully updated this service.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.service', $service)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occurred while attempting to update this service.')->flash();
-        }
+            if ($request->input('action') !== 'delete') {
+                $repo->update($id, $request->intersect([
+                    'name', 'description', 'folder', 'startup', 'index_file',
+                ]));
+                Alert::success('Service has been updated successfully.')->flash();
+            } else {
+                $repo->delete($id);
+                Alert::success('Successfully deleted service from the system.')->flash();
 
-        return redirect()->route('admin.services.service', $service)->withInput();
-    }
-
-    public function deleteService(Request $request, $service)
-    {
-        try {
-            $repo = new ServiceRepository\Service;
-            $repo->delete($service);
-            Alert::success('Successfully deleted that service.')->flash();
-
-            return redirect()->route('admin.services');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error was encountered while attempting to delete that service.')->flash();
-        }
-
-        return redirect()->route('admin.services.service', $service);
-    }
-
-    public function getOption(Request $request, $service, $option)
-    {
-        $option = Models\ServiceOption::with('service', 'variables')->findOrFail($option);
-        $option->setRelation('servers', $option->servers()->with('user')->paginate(25));
-
-        return view('admin.services.options.view', ['option' => $option]);
-    }
-
-    public function postOption(Request $request, $service, $option)
-    {
-        try {
-            $repo = new ServiceRepository\Option;
-            $repo->update($option, $request->only([
-                'name', 'description', 'tag',
-                'executable', 'docker_image', 'startup',
-            ]));
-            Alert::success('Option settings successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option', [$service, $option])->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to modify this option.')->flash();
-        }
-
-        return redirect()->route('admin.services.option', [$service, $option])->withInput();
-    }
-
-    public function deleteOption(Request $request, $service, $option)
-    {
-        try {
-            $repo = new ServiceRepository\Option;
-            $repo->delete($option);
-
-            Alert::success('Successfully deleted that option.')->flash();
-
-            return redirect()->route('admin.services.service', $service);
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error was encountered while attempting to delete this option.')->flash();
-        }
-
-        return redirect()->route('admin.services.option', [$service, $option]);
-    }
-
-    public function postOptionVariable(Request $request, $service, $option, $variable)
-    {
-        try {
-            $repo = new ServiceRepository\Variable;
-
-            // Because of the way old() works on the display side we prefix all of the variables with thier ID
-            // We need to remove that prefix here since the repo doesn't want it.
-            $data = [
-                'user_viewable' => '0',
-                'user_editable' => '0',
-                'required' => '0',
-            ];
-            foreach ($request->except(['_token']) as $id => $val) {
-                $data[str_replace($variable . '_', '', $id)] = $val;
+                return redirect()->route('admin.services');
             }
-            $repo->update($variable, $data);
-            Alert::success('Successfully updated variable.')->flash();
         } catch (DisplayValidationException $ex) {
-            $data = [];
-            foreach (json_decode($ex->getMessage(), true) as $id => $val) {
-                $data[$variable . '_' . $id] = $val;
-            }
-
-            return redirect()->route('admin.services.option', [$service, $option])->withErrors((object) $data)->withInput();
+            return redirect()->route($redirectTo, $id)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An error occurred while attempting to update this service.')->flash();
+            Alert::danger('An error occurred while attempting to update this service. This error has been logged.')->flash();
         }
 
-        return redirect()->route('admin.services.option', [$service, $option])->withInput();
-    }
-
-    public function getNewVariable(Request $request, $service, $option)
-    {
-        return view('admin.services.options.variable', [
-            'option' => Models\ServiceOption::with('service')->findOrFail($option),
-        ]);
-    }
-
-    public function postNewVariable(Request $request, $service, $option)
-    {
-        try {
-            $repo = new ServiceRepository\Variable;
-            $repo->create($option, $request->only([
-                'name', 'description', 'env_variable',
-                'default_value', 'user_viewable',
-                'user_editable', 'required', 'regex',
-            ]));
-            Alert::success('Successfully added new variable to this option.')->flash();
-
-            return redirect()->route('admin.services.option', [$service, $option]);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.variable.new', [$service, $option])->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occurred while attempting to add this variable.')->flash();
-        }
-
-        return redirect()->route('admin.services.option.variable.new', [$service, $option])->withInput();
-    }
-
-    public function newOption(Request $request, $service)
-    {
-        return view('admin.services.options.new', [
-            'service' => Models\Service::findOrFail($service),
-        ]);
-    }
-
-    public function postNewOption(Request $request, $service)
-    {
-        try {
-            $repo = new ServiceRepository\Option;
-            $id = $repo->create($service, $request->except([
-                '_token',
-            ]));
-            Alert::success('Successfully created new service option.')->flash();
-
-            return redirect()->route('admin.services.option', [$service, $id]);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.new', $service)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add this service option.')->flash();
-        }
-
-        return redirect()->route('admin.services.option.new', $service)->withInput();
-    }
-
-    public function deleteVariable(Request $request, $service, $option, $variable)
-    {
-        try {
-            $repo = new ServiceRepository\Variable;
-            $repo->delete($variable);
-            Alert::success('Deleted variable.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to delete that variable.')->flash();
-        }
-
-        return redirect()->route('admin.services.option', [$service, $option]);
-    }
-
-    public function getConfiguration(Request $request, $serviceId)
-    {
-        $service = Models\Service::findOrFail($serviceId);
-
-        return view('admin.services.config', [
-            'service' => $service,
-            'contents' => [
-                'json' => Storage::get('services/' . $service->file . '/main.json'),
-                'index' => Storage::get('services/' . $service->file . '/index.js'),
-            ],
-        ]);
-    }
-
-    public function postConfiguration(Request $request, $serviceId)
-    {
-        try {
-            $repo = new ServiceRepository\Service;
-            $repo->updateFile($serviceId, $request->only(['file', 'contents']));
-
-            return response('', 204);
-        } catch (DisplayException $ex) {
-            return response()->json([
-                'error' => $ex->getMessage(),
-            ], 503);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response()->json([
-                'error' => 'An error occured while attempting to save the file.',
-            ], 503);
-        }
+        return redirect()->route($redirectTo, $id);
     }
 }

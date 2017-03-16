@@ -156,7 +156,7 @@ class ServerRepository
         if (! isset($data['pack_id']) || (int) $data['pack_id'] < 1) {
             $data['pack_id'] = null;
         } else {
-            $pack = Models\ServicePack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
+            $pack = Models\Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
@@ -627,23 +627,25 @@ class ServerRepository
                 foreach ($server->option->variables as &$variable) {
                     $set = isset($data['env_' . $variable->id]);
 
-                    // Variable is required but was not passed into the function.
-                    if ($variable->required && ! $set) {
-                        throw new DisplayException('A required variable (' . $variable->env_variable . ') was not passed in the request.');
-                    }
-
                     // If user is not an admin and are trying to edit a non-editable field
                     // or an invisible field just silently skip the variable.
                     if (! $admin && (! $variable->user_editable || ! $variable->user_viewable)) {
                         continue;
                     }
 
-                    // Confirm value is valid when compared aganist regex.
-                    // @TODO: switch to Laravel validation rules.
-                    if ($set && ! is_null($variable->regex)) {
-                        if (! preg_match($variable->regex, $data['env_' . $variable->id])) {
-                            throw new DisplayException('The value passed for a variable (' . $variable->env_variable . ') could not be matched aganist the regex for that field (' . $variable->regex . ').');
-                        }
+                    // Perform Field Validation
+                    $validator = Validator::make([
+                        'variable_value' => ($set) ? $data['env_' . $variable->id] : null,
+                    ], [
+                        'variable_value' => $variable->rules,
+                    ]);
+
+                    if ($validator->fails()) {
+                        throw new DisplayValidationException(json_encode(
+                            collect([
+                                'notice' => ['There was a validation error with the `' . $variable->name . '` variable.'],
+                            ])->merge($validator->errors()->toArray())
+                        ));
                     }
 
                     $svar = Models\ServerVariable::firstOrNew([

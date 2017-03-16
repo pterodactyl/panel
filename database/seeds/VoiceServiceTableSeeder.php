@@ -21,15 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use Pterodactyl\Models;
 use Illuminate\Database\Seeder;
+use Pterodactyl\Models\Service;
+use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\ServiceVariable;
 
 class VoiceServiceTableSeeder extends Seeder
 {
     /**
      * The core service ID.
      *
-     * @var Models\Service
+     * @var Service
      */
     protected $service;
 
@@ -54,75 +56,85 @@ class VoiceServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Models\Service::create([
-            'author' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
+        $this->service = Service::updateOrCreate([
+            'author' => config('pterodactyl.service.core'),
+            'folder' => 'voice',
+        ], [
             'name' => 'Voice Servers',
             'description' => 'Voice servers such as Mumble and Teamspeak 3.',
-            'file' => 'voice',
-            'executable' => '',
             'startup' => '',
         ]);
     }
 
     private function addCoreOptions()
     {
-        $this->option['mumble'] = Models\ServiceOption::create([
+        $this->option['mumble'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
+            'tag' => 'mumble',
+        ], [
             'name' => 'Mumble Server',
             'description' => 'Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.',
-            'tag' => 'mumble',
             'docker_image' => 'quay.io/pterodactyl/voice:mumble',
-            'executable' => './murmur.x86',
-            'startup' => '-fg',
+            'config_startup' => '{"done": "Server listening on", "userInteraction": [ "Generating new server certificate"]}',
+            'config_files' => '{"murmur.ini":{"parser": "ini", "find":{"logfile": "murmur.log", "port": "{{server.build.default.port}}", "host": "0.0.0.0", "users": "{{server.build.env.MAX_USERS}}"}}}',
+            'config_logs' => '{"custom": true, "location": "logs/murmur.log"}',
+            'config_stop' => '^C',
+            'config_from' => null,
+            'startup' => './murmur.x86 -fg',
         ]);
 
-        $this->option['ts3'] = Models\ServiceOption::create([
+        $this->option['ts3'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
+            'tag' => 'ts3',
+        ], [
             'name' => 'Teamspeak3 Server',
             'description' => 'VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.',
-            'tag' => 'ts3',
             'docker_image' => 'quay.io/pterodactyl/voice:ts3',
-            'executable' => './ts3server_minimal_runscript.sh',
-            'startup' => 'default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}',
+            'config_startup' => '{"done": "listening on 0.0.0.0:", "userInteraction": []}',
+            'config_files' => '{"ts3server.ini":{"parser": "ini", "find":{"default_voice_port": "{{server.build.default.port}}", "voice_ip": "0.0.0.0", "query_port": "{{server.build.default.port}}", "query_ip": "0.0.0.0"}}}',
+            'config_logs' => '{"custom": true, "location": "logs/ts3.log"}',
+            'config_stop' => '^C',
+            'config_from' => null,
+            'startup' => './ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}',
         ]);
     }
 
     private function addVariables()
     {
-        Models\ServiceVariable::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['mumble']->id,
+            'env_variable' => 'MAX_USERS',
+        ], [
             'name' => 'Maximum Users',
             'description' => 'Maximum concurrent users on the mumble server.',
-            'env_variable' => 'MAX_USERS',
-            'default_value' => '100',
+            'default_value' => 100,
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(\d){1,6}$/',
+            'rules' => 'required|numeric|digits_between:1,5',
         ]);
 
-        Models\ServiceVariable::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['mumble']->id,
+            'env_variable' => 'MUMBLE_VERSION',
+        ], [
             'name' => 'Server Version',
             'description' => 'Version of Mumble Server to download and use.',
-            'env_variable' => 'MUMBLE_VERSION',
-            'default_value' => '1.2.16',
+            'default_value' => '1.2.19',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
-            'regex' => '/^([0-9_\.-]{5,8})$/',
+            'rules' => 'required|regex:/^([0-9_\.-]{5,8})$/',
         ]);
 
-        Models\ServiceVariable::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['ts3']->id,
+            'env_variable' => 'T_VERSION',
+        ], [
             'name' => 'Server Version',
             'description' => 'The version of Teamspeak 3 to use when running the server.',
-            'env_variable' => 'T_VERSION',
-            'default_value' => '3.0.13.4',
+            'default_value' => '3.1.1.1',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
-            'regex' => '/^([0-9_\.-]{5,10})$/',
+            'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
         ]);
     }
 }
