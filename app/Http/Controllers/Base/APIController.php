@@ -52,7 +52,7 @@ class APIController extends Controller
     {
         try {
             $repo = new APIRepository($request->user());
-            $secret = $repo->create($request->only([
+            $secret = $repo->create($request->intersect([
                 'memo', 'allowed_ips',
                 'adminPermissions', 'permissions',
             ]));
