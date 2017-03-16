@@ -22,41 +22,31 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Pterodactyl\Providers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Notifications\Daemon;
+use File;
+use Illuminate\Support\ServiceProvider;
 
-class NotificationService
+class MacroServiceProvider extends ServiceProvider
 {
-    protected $server;
-
-    protected $user;
-
     /**
-     * Daemon will pass an event name, this matches that event name with the notification to send.
-     * @var array
+     * Bootstrap the application services.
+     *
+     * @return void
      */
-    protected $types = [
-        // 'crashed' => 'CrashNotification',
-        // 'started' => 'StartNotification',
-        // 'stopped' => 'StopNotification',
-        // 'rebuild' => 'RebuildNotification'
-    ];
-
-    public function __construct(Server $server)
+    public function boot()
     {
-        $this->server = $server;
-    }
+        File::macro('humanReadableSize', function ($path, $precision = 2) {
+            $size = File::size($path);
+            static $units = ['B', 'kB', 'MB', 'GB', 'TB'];
 
-    public function pass(array $notification)
-    {
-        if (! $notification->type) {
-            return;
-        }
+            $i = 0;
+            while (($size / 1024) > 0.9) {
+                $size = $size / 1024;
+                $i++;
+            }
 
-        if (class_exists($this->types[$notification->type]::class)) {
-            $user->notify(new $this->types[$notification->type]($notification->payload));
-        }
+            return round($size, ($i < 2) ? 0 : $precision) . ' ' . $units[$i];
+        });
     }
 }

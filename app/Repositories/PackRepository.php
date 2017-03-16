@@ -177,12 +177,14 @@ class PackRepository
      * @param  array $data
      * @return \Pterodactyl\Models\Pack
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function update($id, array $data)
     {
         $validator = Validator::make($data, [
             'name' => 'sometimes|required|string',
+            'option_id' => 'sometimes|required|exists:service_options,id',
             'version' => 'sometimes|required|string',
             'description' => 'sometimes|string',
             'selectable' => 'sometimes|required|boolean',
@@ -194,14 +196,20 @@ class PackRepository
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        $pack = Pack::findOrFail($id);
+        $pack = Pack::withCount('servers')->findOrFail($id);
+
+        if ($pack->servers_count > 0 && (isset($data['option_id']) && (int) $data['option_id'] !== $pack->option_id)) {
+            throw new DisplayException('You cannot modify the associated option if servers are attached to a pack.');
+        }
+
         $pack->fill([
             'name' => isset($data['name']) ? $data['name'] : $pack->name,
+            'option_id' => isset($data['option_id']) ? $data['option_id'] : $pack->option_id,
             'version' => isset($data['version']) ? $data['version'] : $pack->version,
             'description' => (empty($data['description'])) ? null : $data['description'],
-            'selectable' => isset($data['selectable']) ? $data['selectable'] : $data->selectable,
-            'visible' => isset($data['visible']) ? $data['visible'] : $data->visible,
-            'locked' => isset($data['locked']) ? $data['locked'] : $data->locked,
+            'selectable' => isset($data['selectable']),
+            'visible' => isset($data['visible']),
+            'locked' => isset($data['locked']),
         ])->save();
 
         return $pack;

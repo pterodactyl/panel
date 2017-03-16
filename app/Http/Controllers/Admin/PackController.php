@@ -80,6 +80,12 @@ class PackController extends Controller
         ]);
     }
 
+    /**
+     * Handle create pack request and route user to location.
+     *
+     * @param  Request $request
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request)
     {
         $repo = new PackRepository;
@@ -108,43 +114,102 @@ class PackController extends Controller
         return redirect()->route('admin.packs.new')->withInput();
     }
 
+    /**
+     * Display pack view template to user.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $id)
+    {
+        return view('admin.packs.view', [
+            'pack' => Pack::with('servers.node', 'servers.user')->findOrFail($id),
+            'services' => Service::with('options')->get(),
+        ]);
+    }
 
-    // public function export(Request $request, $id, $files = false)
-    // {
-    //     $pack = Models\Pack::findOrFail($id);
-    //     $json = [
-    //         'name' => $pack->name,
-    //         'version' => $pack->version,
-    //         'description' => $pack->dscription,
-    //         'selectable' => (bool) $pack->selectable,
-    //         'visible' => (bool) $pack->visible,
-    //     ];
+    /**
+     * Handle updating or deleting pack information.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $repo = new PackRepository;
 
-    //     $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');
-    //     if ((bool) $files) {
-    //         $zip = new \ZipArchive;
-    //         if (! $zip->open($filename, \ZipArchive::CREATE)) {
-    //             abort(503, 'Unable to open file for writing.');
-    //         }
+        try {
+            if ($request->input('action') !== 'delete') {
+                $pack = $repo->update($id, $request->intersect([
+                    'name', 'description', 'version',
+                    'option_id', 'selectable', 'visible', 'locked'
+                ]));
+                Alert::success('Pack successfully updated.')->flash();
+            } else {
+                $repo->delete($id);
+                Alert::success('Pack was successfully deleted from the system.')->flash();
 
-    //         $files = Storage::files('packs/' . $pack->uuid);
-    //         foreach ($files as $file) {
-    //             $zip->addFile(storage_path('app/' . $file), basename(storage_path('app/' . $file)));
-    //         }
+                return redirect()->route('admin.packs');
+            }
+        } catch(DisplayValidationException $ex) {
+            return redirect()->route('admin.packs.view', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An error occured while attempting to edit this service pack. This error has been logged.')->flash();
+        }
 
-    //         $zip->addFromString('import.json', json_encode($json, JSON_PRETTY_PRINT));
-    //         $zip->close();
+        return redirect()->route('admin.packs.view', $id);
+    }
 
-    //         return response()->download($filename, 'pack-' . $pack->name . '.zip')->deleteFileAfterSend(true);
-    //     } else {
-    //         $fp = fopen($filename, 'a+');
-    //         fwrite($fp, json_encode($json, JSON_PRETTY_PRINT));
-    //         fclose($fp);
+    /**
+     * Creates an archive of the pack and downloads it to the browser.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @param  bool    $files
+     * @return \Illuminate\Response\BinaryFileResponse
+     */
+    public function export(Request $request, $id, $files = false)
+    {
+        $pack = Pack::findOrFail($id);
+        $json = [
+            'name' => $pack->name,
+            'version' => $pack->version,
+            'description' => $pack->description,
+            'selectable' => $pack->selectable,
+            'visible' => $pack->visible,
+            'locked' => $pack->locked,
+        ];
 
-    //         return response()->download($filename, 'pack-' . $pack->name . '.json', [
-    //             'Content-Type' => 'application/json',
-    //         ])->deleteFileAfterSend(true);
-    //     }
-    // }
+        $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');
+        if ($files === 'with-files') {
+            $zip = new \ZipArchive;
+            if (! $zip->open($filename, \ZipArchive::CREATE)) {
+                abort(503, 'Unable to open file for writing.');
+            }
+
+            $files = Storage::files('packs/' . $pack->uuid);
+            foreach ($files as $file) {
+                $zip->addFile(storage_path('app/' . $file), basename(storage_path('app/' . $file)));
+            }
+
+            $zip->addFromString('import.json', json_encode($json, JSON_PRETTY_PRINT));
+            $zip->close();
+
+            return response()->download($filename, 'pack-' . $pack->name . '.zip')->deleteFileAfterSend(true);
+        } else {
+            $fp = fopen($filename, 'a+');
+            fwrite($fp, json_encode($json, JSON_PRETTY_PRINT));
+            fclose($fp);
+
+            return response()->download($filename, 'pack-' . $pack->name . '.json', [
+                'Content-Type' => 'application/json',
+            ])->deleteFileAfterSend(true);
+        }
+    }
 
 }

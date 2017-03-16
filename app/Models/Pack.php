@@ -24,6 +24,8 @@
 
 namespace Pterodactyl\Models;
 
+use File;
+use Storage;
 use Illuminate\Database\Eloquent\Model;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
@@ -77,6 +79,29 @@ class Pack extends Model
             'service_options' => ['packs.option_id', 'service_options.id'],
         ],
     ];
+
+    /**
+     * Returns all of the archived files for a given pack.
+     *
+     * @param  bool   $collection
+     * @return \Illuminate\Support\Collection|object
+     */
+    public function files($collection = false)
+    {
+        $files = collect(Storage::files('packs/' . $this->uuid));
+
+        $files = $files->map(function ($item) {
+            $path = storage_path('app/' . $item);
+
+            return (object) [
+                'name' => basename($item),
+                'hash' => sha1_file($path),
+                'size' => File::humanReadableSize($path),
+            ];
+        });
+
+        return ($collection) ? $files : (object) $files->all();
+    }
 
     /**
      * Gets option associated with a service pack.

@@ -474,6 +474,13 @@ class AdminRoutes
                 'as' => 'admin.packs.view',
                 'uses' => 'Admin\PackController@view',
             ]);
+
+            $router->post('/view/{id}', 'Admin\PackController@update');
+
+            $router->post('/view/{id}/export/{files?}', [
+                'as' => 'admin.packs.view.export',
+                'uses' => 'Admin\PackController@export',
+            ]);
         });
     }
 }
