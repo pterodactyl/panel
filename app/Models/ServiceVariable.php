@@ -43,10 +43,10 @@ class ServiceVariable extends Model
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
-    * Cast values to correct type.
-    *
-    * @var array
-    */
+     * Cast values to correct type.
+     *
+     * @var array
+     */
     protected $casts = [
         'option_id' => 'integer',
         'user_viewable' => 'integer',
