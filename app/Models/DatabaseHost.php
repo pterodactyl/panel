@@ -26,14 +26,14 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DatabaseServer extends Model
+class DatabaseHost extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'database_servers';
+    protected $table = 'database_hosts';
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -43,11 +43,13 @@ class DatabaseServer extends Model
     protected $hidden = ['password'];
 
     /**
-     * Fields that are not mass assignable.
+     * Fields that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'name', 'host', 'port', 'username', 'max_databases', 'node_id',
+    ];
 
      /**
       * Cast values to correct type.
@@ -56,8 +58,8 @@ class DatabaseServer extends Model
       */
      protected $casts = [
          'id' => 'integer',
-         'server_id' => 'integer',
-         'db_server' => 'integer',
+         'max_databases' => 'integer',
+         'node_id' => 'integer',
      ];
 
      /**
@@ -67,7 +69,7 @@ class DatabaseServer extends Model
       */
      public function node()
      {
-         return $this->belongsTo(Node::class, 'linked_node');
+         return $this->belongsTo(Node::class);
      }
 
      /**
@@ -77,6 +79,6 @@ class DatabaseServer extends Model
       */
      public function databases()
      {
-         return $this->hasMany(Database::class, 'db_server');
+         return $this->hasMany(Database::class);
      }
 }

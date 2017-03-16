@@ -44,6 +44,29 @@ class AdminRoutes
         ]);
 
         $router->group([
+            'prefix' => 'admin/databases',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf',
+            ],
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.databases',
+                'uses' => 'Admin\DatabaseController@index',
+            ]);
+
+            $router->post('/', 'Admin\DatabaseController@create');
+
+            $router->get('/view/{id}', [
+                'as' => 'admin.databases.view',
+                'uses' => 'Admin\DatabaseController@view',
+            ]);
+
+            $router->post('/view/{id}', 'Admin\DatabaseController@update');
+        });
+
+        $router->group([
             'prefix' => 'admin/locations',
             'middleware' => [
                 'auth',

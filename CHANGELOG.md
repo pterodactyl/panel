@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Table seeders for services now can be run during upgrades and will attempt to locate and update, or create new if not found in the database.
 * Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.
 * `[pre.4]` — Service pack files are now stored in the database rather than on the host system to make updates easier.
+* Clarified details for database hosts to prevent users entering invalid account details, as well as renamed tables and columns relating to it to keep things clearer.
 
 ### Fixed
 * Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
@@ -22,6 +23,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.
 * New `humanReadable` macro on `File` facade that accepts a file path and returns a human readable size. (`File::humanReadable(path, precision)`)
+* Added ability to edit database host details after creation on the system.
 
 ### Deprecated
 * Old API calls to `Server::create` will fail due to changed data structure.

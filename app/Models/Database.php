@@ -43,11 +43,13 @@ class Database extends Model
     protected $hidden = ['password'];
 
     /**
-     * Fields that are not mass assignable.
+     * Fields that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'server_id', 'database_host_id', 'database', 'username', 'remote',
+    ];
 
      /**
       * Cast values to correct type.
@@ -56,7 +58,7 @@ class Database extends Model
       */
      protected $casts = [
          'server_id' => 'integer',
-         'db_server' => 'integer',
+         'database_host_id' => 'integer',
      ];
 
      /**
@@ -66,7 +68,7 @@ class Database extends Model
       */
      public function host()
      {
-         return $this->belongsTo(DatabaseServer::class, 'db_server');
+         return $this->belongsTo(DatabaseHost::class);
      }
 
      /**

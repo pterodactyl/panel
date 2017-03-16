@@ -212,7 +212,7 @@ class ServersController extends Controller
         $server = Models\Server::where('installed', 1)->with('databases.host')->findOrFail($id);
 
         return view('admin.servers.view.database', [
-            'hosts' => Models\DatabaseServer::all(),
+            'hosts' => Models\DatabaseHost::all(),
             'server' => $server,
         ]);
     }
