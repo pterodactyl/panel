@@ -3,6 +3,7 @@
 .env
 .vagrant/*
 .vscode/*
+storage/framework/*
 
 composer.lock
 
@@ -15,5 +16,4 @@ yarn.lock
 node_modules
 
 _ide_helper_models.php
-
 _ide_helper.php

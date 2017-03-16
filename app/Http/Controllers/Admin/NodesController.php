@@ -82,11 +82,16 @@ class NodesController extends Controller
     {
         try {
             $repo = new NodeRepository;
-            $node = $repo->create($request->intersect([
-                'name', 'location_id', 'public', 'fqdn', 'scheme', 'memory',
-                'memory_overallocate', 'disk', 'disk_overallocate',
-                'daemonBase', 'daemonSFTP', 'daemonListen',
-            ]));
+            $node = $repo->create(array_merge(
+                $request->only([
+                    'public', 'disk_overallocate', 'memory_overallocate',
+                ]),
+                $request->intersect([
+                    'name', 'location_id', 'fqdn',
+                    'scheme', 'memory', 'disk',
+                    'daemonBase', 'daemonSFTP', 'daemonListen',
+                ])
+            ));
             Alert::success('Successfully created new node that can be configured automatically on your remote machine by visiting the configuration tab. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
 
             return redirect()->route('admin.nodes.view', $node->id);
@@ -213,12 +218,16 @@ class NodesController extends Controller
         $repo = new NodeRepository;
 
         try {
-            $repo->update($id, $request->intersect([
-                'name', 'location_id', 'public', 'fqdn', 'scheme', 'memory',
-                'memory_overallocate', 'disk', 'disk_overallocate', 'upload_size',
-                'daemonSFTP', 'daemonListen', 'reset_secret',
-            ]));
-
+            $node = $repo->update($id, array_merge(
+                $request->only([
+                    'public', 'disk_overallocate', 'memory_overallocate',
+                ]),
+                $request->intersect([
+                    'name', 'location_id', 'fqdn',
+                    'scheme', 'memory', 'disk', 'upload_size',
+                    'reset_secret', 'daemonSFTP', 'daemonListen',
+                ])
+            ));
             Alert::success('Successfully updated this node\'s information. If you changed any daemon settings you will need to restart it now.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.nodes.view.settings', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
