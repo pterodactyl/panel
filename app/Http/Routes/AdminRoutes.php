@@ -44,6 +44,29 @@ class AdminRoutes
         ]);
 
         $router->group([
+            'prefix' => 'admin/locations',
+            'middleware' => [
+                'auth',
+                'admin',
+                'csrf',
+            ],
+        ], function () use ($router) {
+            $router->get('/', [
+                'as' => 'admin.locations',
+                'uses' => 'Admin\LocationController@index',
+            ]);
+
+            $router->post('/', 'Admin\LocationController@create');
+
+            $router->get('/view/{id}', [
+                'as' => 'admin.locations.view',
+                'uses' => 'Admin\LocationController@view',
+            ]);
+
+            $router->post('/view/{id}', 'Admin\LocationController@update');
+        });
+
+        $router->group([
             'prefix' => 'admin/settings',
             'middleware' => [
                 'auth',
@@ -318,60 +341,6 @@ class AdminRoutes
             $router->get('/view/{id}/settings/token', [
                 'as' => 'admin.nodes.view.configuration.token',
                 'uses' => 'Admin\NodesController@setToken',
-            ]);
-        });
-
-        // Location Routes
-        $router->group([
-            'prefix' => 'admin/locations',
-            'middleware' => [
-                'auth',
-                'admin',
-                'csrf',
-            ],
-        ], function () use ($router) {
-            $router->get('/', [
-                'as' => 'admin.locations',
-                'uses' => 'Admin\LocationsController@getIndex',
-            ]);
-            $router->delete('/{id}', [
-                'uses' => 'Admin\LocationsController@deleteLocation',
-            ]);
-            $router->patch('/{id}', [
-                'uses' => 'Admin\LocationsController@patchLocation',
-            ]);
-            $router->post('/', [
-                'uses' => 'Admin\LocationsController@postLocation',
-            ]);
-        });
-
-        // Database Routes
-        $router->group([
-            'prefix' => 'admin/databases',
-            'middleware' => [
-                'auth',
-                'admin',
-                'csrf',
-            ],
-        ], function () use ($router) {
-            $router->get('/', [
-                'as' => 'admin.databases',
-                'uses' => 'Admin\DatabaseController@getIndex',
-            ]);
-            $router->get('/new', [
-                'as' => 'admin.databases.new',
-                'uses' => 'Admin\DatabaseController@getNew',
-            ]);
-            $router->post('/new', [
-                'uses' => 'Admin\DatabaseController@postNew',
-            ]);
-            $router->delete('/delete/{id}', [
-                'as' => 'admin.databases.delete',
-                'uses' => 'Admin\DatabaseController@deleteDatabase',
-            ]);
-            $router->delete('/delete-server/{id}', [
-                'as' => 'admin.databases.delete-server',
-                'uses' => 'Admin\DatabaseController@deleteServer',
             ]);
         });
 
