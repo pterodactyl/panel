@@ -21,6 +21,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.4]` — Fixes `Server::byUuid()` caching to actually clear the cache for *all* users, rather than the logged in user by using cache tags.
 * `[pre.4]` — Fixes server listing on frontend not displaying a page selector when more than 10 servers exist.
 * `[pre.4]` — Fixes non-admin users being unable to create personal API keys.
+* Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.

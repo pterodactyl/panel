@@ -76,7 +76,7 @@ class SourceServiceTableSeeder extends Seeder
             'name' => 'Custom Source Engine Game',
             'description' => 'This option allows modifying the startup arguments and other details to run a custo SRCDS based game on the panel.',
             'docker_image' => 'quay.io/pterodactyl/srcds',
-            'config_startup' => '{"done": "Assigned anonymous gameserver", "userInteraction": []}',
+            'config_startup' => '{"done": "gameserver Steam ID", "userInteraction": []}',
             'config_files' => '{}',
             'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
             'config_stop' => 'quit',
