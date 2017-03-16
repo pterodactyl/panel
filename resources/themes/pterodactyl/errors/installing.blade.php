@@ -17,24 +17,30 @@
 {{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
 {{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
 {{-- SOFTWARE. --}}
-@extends('layouts.master')
+@extends('layouts.error')
 
-@section('title', '503: Server Temporarily Unavaliable')
+@section('title')
+    @lang('base.errors.installing.header')
+@endsection
+
+@section('content-header')
+@endsection
 
 @section('content')
-<div class="col-md-12">
-    <div class="panel panel-danger">
-        <div class="panel-heading">
-            <h3 class="panel-title">HTTP 503: Temporarily Unavaliable</h3>
-        </div>
-        <div class="panel-body">
-            <p style="margin-bottom:0;">The requested server is still completing the install process. Please check back in a few minutes, you should recieve an email as soon as this process is completed.</p>
-            <br /><br />
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+        <div class="box box-info">
             <div class="progress progress-striped active">
-                <div class="progress-bar progress-bar-danger" style="width: 75%"></div>
+                <div class="progress-bar progress-bar-info" style="width: 75%"></div>
+            </div>
+            <div class="box-body text-center">
+                <p class="text-muted">@lang('base.errors.installing.desc')</p>
+            </div>
+            <div class="box-footer with-border">
+                <a href="{{ URL::previous() }}"><button class="btn btn-info">&larr; @lang('base.errors.return')</button></a>
+                <a href="/"><button class="btn btn-default">@lang('base.errors.home')</button></a>
             </div>
         </div>
     </div>
-    <p style="text-align:center;"><a href="{{ URL::previous() }}">Take me back</a> or <a href="/">go home</a>.</p>
 </div>
 @endsection
