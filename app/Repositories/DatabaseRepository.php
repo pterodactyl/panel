@@ -48,10 +48,10 @@ class DatabaseRepository
      */
     public function create($id, array $data)
     {
-        $server = Server::findOrFail($server);
+        $server = Server::findOrFail($id);
 
         $validator = Validator::make($data, [
-            'host' => 'required|exists:database_servers,id',
+            'host' => 'required|exists:database_hosts,id',
             'database' => 'required|regex:/^\w{1,100}$/',
             'connection' => 'required|regex:/^[0-9%.]{1,15}$/',
         ]);
@@ -64,7 +64,7 @@ class DatabaseRepository
         DB::beginTransaction();
 
         try {
-            $database = Models\Database::firstOrNew([
+            $database = Database::firstOrNew([
                 'server_id' => $server->id,
                 'database_host_id' => $data['host'],
                 'database' => sprintf('s%d_%s', $server->id, $data['database']),
@@ -131,10 +131,12 @@ class DatabaseRepository
      * @param  int    $id
      * @param  string $password
      * @return void
+     *
+     * @todo   Fix logic behind resetting passwords.
      */
     public function password($id, $password)
     {
-        $database = Models\Database::with('host')->findOrFail($id);
+        $database = Database::with('host')->findOrFail($id);
 
         DB::transaction(function () use ($database, $password) {
             $database->password = Crypt::encrypt($password);
@@ -150,10 +152,20 @@ class DatabaseRepository
                 'collation' => 'utf8_unicode_ci',
             ]);
 
+            // We have to do the whole delete user, create user thing rather than
+            // SET PASSWORD ... because MariaDB and PHP statements ends up inserting
+            // a corrupted password. A way around this is strtoupper(sha1(sha1($password, true)))
+            // but no garuntees that will work correctly with every system.
+            DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
             DB::connection('dynamic')->statement(sprintf(
-                'SET PASSWORD FOR `%s`@`%s` = PASSWORD(\'%s\')',
+                'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
                 $database->username, $database->remote, $password
             ));
+            DB::connection('dynamic')->statement(sprintf(
+                'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`',
+                $database->database, $database->username, $database->remote
+            ));
+            DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
 
             $database->save();
         });

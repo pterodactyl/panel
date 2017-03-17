@@ -68,7 +68,7 @@ class Database extends Model
       */
      public function host()
      {
-         return $this->belongsTo(DatabaseHost::class);
+         return $this->belongsTo(DatabaseHost::class, 'database_host_id');
      }
 
      /**

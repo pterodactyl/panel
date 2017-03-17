@@ -22,6 +22,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.4]` — Fixes server listing on frontend not displaying a page selector when more than 10 servers exist.
 * `[pre.4]` — Fixes non-admin users being unable to create personal API keys.
 * Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
+* Fixes bug causing MySQL user accounts to be corrupted when resetting a password via the panel.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.

@@ -56,7 +56,7 @@
                                     <td class="middle">{{ $database->database }}</td>
                                     <td class="middle">{{ $database->username }}</td>
                                     <td class="middle"><code data-attr="set-password">{{ Crypt::decrypt($database->password) }}</code></td>
-                                    <td class="middle"><code>{{ $database->a_host }}:{{ $database->a_port }}</code></td>
+                                    <td class="middle"><code>{{ $database->host->host }}:{{ $database->host->port }}</code></td>
                                     @can('reset-db-password', $server)
                                         <td>
                                             <button class="btn btn-xs btn-primary pull-right" data-action="reset-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')</button>
