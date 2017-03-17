@@ -282,7 +282,7 @@ class ServerRepository
 
             // Add Variables
             $environmentVariables = [
-                'STARTUP' => $data['startup'],
+                'STARTUP_CMD' => $data['startup'],
             ];
 
             foreach ($variableList as $item) {
@@ -684,7 +684,7 @@ class ServerRepository
             ])->request('PATCH', '/server', [
                 'json' => [
                     'build' => [
-                        'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup]),
+                        'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP_CMD' => $server->startup]),
                     ],
                 ],
             ]);
