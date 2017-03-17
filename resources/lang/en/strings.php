@@ -65,4 +65,8 @@ return [
     'admin_cp' => 'Admin Control Panel',
     'optional' => 'Optional',
     'read_only' => 'Read Only',
+    'relation' => 'Relation',
+    'owner' => 'Owner',
+    'admin' => 'Admin',
+    'subuser' => 'Subuser',
 ];

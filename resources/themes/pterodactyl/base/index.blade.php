@@ -56,6 +56,7 @@
                             <th>@lang('strings.connection')</th>
                             <th class="text-center hidden-sm hidden-xs">@lang('strings.memory')</th>
                             <th class="text-center hidden-sm hidden-xs">@lang('strings.cpu')</th>
+                            <th class="text-center">@lang('strings.relation')</th>
                             <th class="text-center">@lang('strings.status')</th>
                         </tr>
                         @foreach($servers as $server)
@@ -66,6 +67,15 @@
                             <td><code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code></td>
                             <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                             <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
+                            <td class="text-center">
+                                @if($server->user->id === Auth::user()->id)
+                                    <span class="label bg-purple">@lang('strings.owner')</span>
+                                @elseif(Auth::user()->isRootAdmin())
+                                    <span class="label bg-maroon">@lang('strings.admin')</span>
+                                @else
+                                    <span class="label bg-blue">@lang('strings.subuser')</span>
+                                @endif
+                            </td>
                             <td class="text-center" data-action="status">
                                 @if($server->suspended === 1)
                                     <span class="label label-warning">@lang('strings.suspended')</span>
