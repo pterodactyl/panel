@@ -23,6 +23,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.4]` — Fixes non-admin users being unable to create personal API keys.
 * Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
 * Fixes bug causing MySQL user accounts to be corrupted when resetting a password via the panel.
+* `[pre.4]` — Multiple clients refreshing the console no longer clears the console for all parties involved... sorry about that.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.

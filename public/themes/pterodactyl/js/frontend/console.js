@@ -24,6 +24,7 @@ var Console = (function () {
 
     var terminalQueue;
     var terminal;
+    var recievedInitialLog = false;
 
     var cpuChart;
     var cpuData;
@@ -159,17 +160,26 @@ var Console = (function () {
     function addSocketListeners() {
         // Update Listings on Initial Status
         Socket.on('initial status', function (data) {
-            updateServerPowerControls(data.status);
+            if (! recievedInitialLog) {
+                updateServerPowerControls(data.status);
 
-            terminal.clear();
-            if (data.status === 1 || data.status === 2) {
-                Socket.emit('send server log');
+                if (data.status === 1 || data.status === 2) {
+                    Socket.emit('send server log');
+                }
             }
         });
 
         // Update Listings on Status
         Socket.on('status', function (data) {
             updateServerPowerControls(data.status);
+        });
+
+        Socket.on('server log', function (data) {
+            if (! recievedInitialLog) {
+                terminal.clear();
+                terminalQueue.push(data);
+                recievedInitialLog = true;
+            }
         });
 
         Socket.on('console', function (data) {
