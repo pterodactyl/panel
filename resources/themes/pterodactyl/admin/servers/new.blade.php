@@ -147,14 +147,14 @@
                     <div class="form-group col-sm-4">
                         <label for="pCPU">CPU Limit</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ old('cpu') }}" name="cpu" id="pCPU" />
+                            <input type="text" class="form-control" value="{{ old('cpu', 0) }}" name="cpu" id="pCPU" />
                             <span class="input-group-addon">%</span>
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="pIO">Block IO Weight</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" value="{{ old('io') }}" value="500" name="io" id="pIO" />
+                            <input type="text" class="form-control" value="{{ old('io', 500) }}" name="io" id="pIO" />
                             <span class="input-group-addon">I/O</span>
                         </div>
                     </div>
@@ -229,10 +229,7 @@
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
                         <label for="pStartup">Startup Command</label>
-                        <div class="input-group">
-                            <span class="input-group-addon bg-gray" id="pStartupExecutable"></span>
-                            <input type="text" id="pStartup" value="{{ old('startup') }}" class="form-control" name="startup" />
-                        </div>
+                        <input type="text" id="pStartup" value="{{ old('startup') }}" class="form-control" name="startup" />
                         <p class="small text-muted no-margin">The following data replacers are avaliable for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server ip, and server port respectively.</p>
                     </div>
                 </div>

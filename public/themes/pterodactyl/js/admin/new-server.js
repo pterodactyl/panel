@@ -162,11 +162,6 @@ $('#pOptionId').on('change', function (event) {
         $('#pStartup').val(_.get(objectChain, 'startup'));
     }
 
-    if (!_.get(objectChain, 'executable', false)) {
-        $('#pStartupExecutable').html(_.get(parentChain, 'executable', 'ERROR: Exec Not Defined!'));
-    } else {
-        $('#pStartupExecutable').html(_.get(objectChain, 'executable'));
-    }
     $('#pPackId').html('').select2({
         data: [{ id: 0, text: 'No Service Pack' }].concat(
             $.map(_.get(objectChain, 'packs', []), function (item, i) {
@@ -186,8 +181,8 @@ $('#pOptionId').on('change', function (event) {
                 <label for="var_ref_' + item.id + '" class="control-label">' + isRequired + item.name + '</label> \
                 <input type="text" id="var_ref_' + item.id + '" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" /> \
                 <p class="text-muted small">' + item.description + '<br /> \
-                <strong>Access in Startup:</strong> <code>@{{' + item.env_variable + '}}</code><br /> \
-                <strong>Validation Regex:</strong> <code>' + item.regex + '</code></small></p> \
+                <strong>Access in Startup:</strong> <code>{{' + item.env_variable + '}}</code><br /> \
+                <strong>Validation Rules:</strong> <code>' + item.rules + '</code></small></p> \
             </div> \
         ';
         $('#appendVariablesTo').append(dataAppend);
