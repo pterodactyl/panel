@@ -454,9 +454,10 @@ class ServersController extends Controller
      *
      * @param  Request $request
      * @param  int     $id
+     * @param  string  $method
      * @return \Illuminate\Response\RedirectResponse
      */
-    public function continueDeletion(Request $request, $id, $method)
+    public function continueDeletion(Request $request, $id, $method = 'safe')
     {
         $repo = new ServerRepository;
 

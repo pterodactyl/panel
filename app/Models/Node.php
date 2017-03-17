@@ -97,8 +97,8 @@ class Node extends Model
     {
         return new Client([
             'base_uri' => sprintf('%s://%s:%s/', $this->scheme, $this->fqdn, $this->daemonListen),
-            'timeout' => env('GUZZLE_TIMEOUT', 5.0),
-            'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3.0),
+            'timeout' => config('pterodactyl.guzzle.timeout'),
+            'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
             'headers' => $headers,
         ]);
     }

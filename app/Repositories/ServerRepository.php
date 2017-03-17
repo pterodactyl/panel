@@ -314,10 +314,10 @@ class ServerRepository
                         'io' => (int) $server->io,
                         'cpu' => (int) $server->cpu,
                         'disk' => (int) $server->disk,
-                        'image' => (isset($data['custom_container'])) ? $data['custom_container'] : $option->docker_image,
+                        'image' => $server->image,
                     ],
                     'service' => [
-                        'type' => $service->file,
+                        'type' => $service->folder,
                         'option' => $option->tag,
                         'pack' => (isset($pack)) ? $pack->uuid : null,
                     ],
@@ -701,7 +701,6 @@ class ServerRepository
                 $server->installed = 3;
                 $server->save();
             }
-
             $server->delete();
 
             return DB::commit();
@@ -713,7 +712,7 @@ class ServerRepository
 
     public function delete($id, $force = false)
     {
-        $server = Models\Server::withTrashed()->with('node')->findOrFail($id);
+        $server = Models\Server::withTrashed()->with('node', 'allocations', 'variables')->findOrFail($id);
 
         // Handle server being restored previously or
         // an accidental queue.
@@ -721,17 +720,34 @@ class ServerRepository
             return;
         }
 
-        DB::beginTransaction();
+        // Due to MySQL lockouts if the daemon response fails, we need to
+        // delete the server from the daemon first. If it succeedes and then
+        // MySQL fails, users just need to force delete the server.
+        //
+        // If this is a force delete, continue anyways.
         try {
-            // Unassign Allocations
-            Models\Allocation::where('server_id', $server->id)->update([
-                'server_id' => null,
-            ]);
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('DELETE', '/servers');
+        } catch (TransferException $ex) {
+            if ($server->installed !== 3 && ! $force) {
+                throw new DisplayException($ex->getMessage());
+            }
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
 
-            // Remove Variables
-            Models\ServerVariable::where('server_id', $server->id)->delete();
+        DB::transaction(function () use ($server) {
+            $server->allocations->each(function ($item) {
+                $item->server_id = null;
+                $item->save();
+            });
 
-            // Remove SubUsers
+            $server->variables->each(function ($item) {
+                $item->delete();
+            });
+
             foreach (Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
                 foreach ($subuser->permissions as &$permission) {
                     $permission->delete();
@@ -748,33 +764,14 @@ class ServerRepository
             // Delete Databases
             // This is the one un-recoverable point where
             // transactions will not save us.
-            //
-            // @TODO: move to post-deletion event as a queued task!
-            // $repository = new DatabaseRepository;
-            // foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as &$database) {
-            //     $repository->drop($database->id);
-            // }
-
-            $server->node->guzzleClient([
-                'X-Access-Token' => $server->node->daemonSecret,
-                'X-Access-Server' => $server->uuid,
-            ])->request('DELETE', '/servers');
-
-            $server->forceDelete();
-            DB::commit();
-        } catch (TransferException $ex) {
-            // Set installed is set to 3 when force deleting.
-            if ($server->installed === 3 || $force) {
-                $server->forceDelete();
-                DB::commit();
-            } else {
-                DB::rollBack();
-                throw $ex;
+            $repository = new DatabaseRepository;
+            foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as $database) {
+                $repository->drop($database->id);
             }
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+
+            // Fully delete the server.
+            $server->forceDelete();
+        });
     }
 
     public function cancelDeletion($id)
