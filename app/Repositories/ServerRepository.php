@@ -94,6 +94,7 @@ class ServerRepository
             'option_id' => 'required|numeric|min:1|exists:service_options,id',
             'location_id' => 'required|numeric|min:1|exists:locations,id',
             'pack_id' => 'sometimes|nullable|numeric|min:0',
+            'custom_container' => 'string',
             'startup' => 'string',
             'auto_deploy' => 'sometimes|boolean',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
@@ -256,7 +257,7 @@ class ServerRepository
                 'pack_id' => $data['pack_id'],
                 'startup' => $data['startup'],
                 'daemonSecret' => $uuid->generate('servers', 'daemonSecret'),
-                'image' => (isset($data['custom_container'])) ? $data['custom_container'] : $option->docker_image,
+                'image' => (isset($data['custom_container']) && ! empty($data['custom_container'])) ? $data['custom_container'] : $option->docker_image,
                 'username' => $this->generateSFTPUsername($data['name'], $genShortUuid),
                 'sftp_password' => Crypt::encrypt('not set'),
             ]);
