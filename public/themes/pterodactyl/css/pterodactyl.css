@@ -272,3 +272,7 @@ span[aria-labelledby="select2-pUserId-container"] {
 .no-margin-bottom {
     margin-bottom: 0 !important;
 }
+
+.btn-icon > i.fa {
+    line-height: 1.5;
+}

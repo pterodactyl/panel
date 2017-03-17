@@ -84,7 +84,7 @@ class FileManager {
     }
 
     addFolderButton() {
-        $('i[data-action="add-folder"]').unbind().on('click', () => {
+        $('[data-action="add-folder"]').unbind().on('click', () => {
             new ActionsClass().folder($('#file_listing').data('current-dir') || '/');
         })
     }
