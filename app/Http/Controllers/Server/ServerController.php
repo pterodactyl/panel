@@ -112,7 +112,7 @@ class ServerController extends Controller
     public function getAddFile(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
-        $this->authorize('add-files', $server);
+        $this->authorize('create-files', $server);
 
         $server->js();
 

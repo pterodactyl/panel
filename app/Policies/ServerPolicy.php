@@ -253,14 +253,14 @@ class ServerPolicy
      * @param  \Pterodactyl\Models\Server $server
      * @return bool
      */
-    public function addFiles(User $user, Server $server)
+    public function createFiles(User $user, Server $server)
     {
-        return $this->checkPermission($user, $server, 'add-files');
+        return $this->checkPermission($user, $server, 'create-files');
     }
 
     /**
      * Check if user has permission to upload files to a server.
-     * This permission relies on the user having the 'add-files' permission as well due to page authorization.
+     * This permission relies on the user having the 'create-files' permission as well due to page authorization.
      *
      * @param  \Pterodactyl\Models\User   $user
      * @param  \Pterodactyl\Models\Server $server

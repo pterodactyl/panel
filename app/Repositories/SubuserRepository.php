@@ -62,7 +62,7 @@ class SubuserRepository
         'list-files' => 's:files:get',
         'edit-files' => 's:files:read',
         'save-files' => 's:files:post',
-        'create-files' => 's:files:post',
+        'create-files' => 's:files:create',
         'download-files' => null,
         'upload-files' => 's:files:upload',
         'delete-files' => 's:files:delete',
