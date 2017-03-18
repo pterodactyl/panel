@@ -33,7 +33,7 @@ class DeleteServiceExecutableOption extends Migration
                     } elseif (starts_with($container, 'quay.io/pterodactyl/voice')) {
                         $s->container = 'quay.io/pterodactyl/core:glibc';
                     } elseif (starts_with($container, 'quay.io/pterodactyl/terraria')) {
-                        $s->container = 'quay.io/pterodactyl/core:mono'
+                        $s->container = 'quay.io/pterodactyl/core:mono';
                     }
 
                     $s->save();
