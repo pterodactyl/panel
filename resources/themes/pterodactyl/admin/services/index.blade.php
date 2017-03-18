@@ -37,6 +37,9 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Configured Services</h3>
+                <div class="box-tools">
+                    <a href="{{ route('admin.services.new') }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                </div>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -57,9 +60,6 @@
                         </tr>
                     @endforeach
                 </table>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('admin.services.new') }}"><button class="btn btn-primary btn-sm pull-right">Create Service</button></a>
             </div>
         </div>
     </div>
