@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
         \Pterodactyl\Console\Commands\CleanServiceBackup::class,
         \Pterodactyl\Console\Commands\AddNode::class,
         \Pterodactyl\Console\Commands\AddLocation::class,
+        \Pterodactyl\Console\Commands\RebuildServer::class,
     ];
 
     /**
