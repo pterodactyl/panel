@@ -49,6 +49,11 @@ class DaemonRoutes
                 'as' => 'daemon.pack.hash',
                 'uses' => 'Daemon\PackController@hash',
             ]);
+
+            $router->get('details/option/{server}', [
+                'as' => 'daemon.pack.hash',
+                'uses' => 'Daemon\OptionController@details',
+            ]);
         });
     }
 }

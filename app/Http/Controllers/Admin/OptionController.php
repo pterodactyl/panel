@@ -138,6 +138,18 @@ class OptionController extends Controller
     }
 
     /**
+     * Display script management page for an option.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\View\View
+     */
+    public function viewScripts(Request $request, $id)
+    {
+        return view('admin.services.options.scripts', ['option' => ServiceOption::findOrFail($id)]);
+    }
+
+    /**
      * Handles POST when editing a configration for a service option.
      *
      * @param  Request $request
@@ -206,5 +218,31 @@ class OptionController extends Controller
         }
 
         return redirect()->route('admin.services.option.variables', $option);
+    }
+
+    /**
+     * Handles POST when updating scripts for a service option.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function updateScripts(Request $request, $id)
+    {
+        $repo = new OptionRepository;
+
+        try {
+            $repo->scripts($id, $request->only([
+                'script_install', 'script_upgrade',
+            ]));
+            Alert::success('Successfully updated option scripts to be run when servers are installed or updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.option.scripts', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.services.option.scripts', $id);
     }
 }

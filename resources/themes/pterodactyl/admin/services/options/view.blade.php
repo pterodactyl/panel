@@ -40,6 +40,7 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="{{ route('admin.services.option.view', $option->id) }}">Configuration</a></li>
                 <li><a href="{{ route('admin.services.option.variables', $option->id) }}">Variables</a></li>
+                <li><a href="{{ route('admin.services.option.scripts', $option->id) }}">Scripts</a></li>
             </ul>
         </div>
     </div>

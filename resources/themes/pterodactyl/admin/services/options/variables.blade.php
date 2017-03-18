@@ -42,6 +42,7 @@
                 <li><a href="{{ route('admin.services.option.view', $option->id) }}">Configuration</a></li>
                 <li class="active"><a href="{{ route('admin.services.option.variables', $option->id) }}">Variables</a></li>
                 <li class="tab-success"><a href="#modal" data-toggle="modal" data-target="#newVariableModal">New Variable</a></li>
+                <li><a href="{{ route('admin.services.option.scripts', $option->id) }}">Scripts</a></li>
             </ul>
         </div>
     </div>

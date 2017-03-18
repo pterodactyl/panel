@@ -434,6 +434,14 @@ class AdminRoutes
                 'as' => 'admin.services.option.variables.edit',
                 'uses' => 'Admin\OptionController@editVariable',
             ]);
+
+            $router->get('/option/{id}/scripts', [
+                'as' => 'admin.services.option.scripts',
+                'uses' => 'Admin\OptionController@viewScripts',
+            ]);
+
+            $router->post('/option/{id}/scripts', 'Admin\OptionController@updateScripts');
+
         });
 
         // Service Packs

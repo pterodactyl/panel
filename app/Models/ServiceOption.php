@@ -49,6 +49,7 @@ class ServiceOption extends Model
       */
      protected $casts = [
          'service_id' => 'integer',
+         'script_is_privileged' => 'boolean',
      ];
 
      /**
