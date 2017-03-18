@@ -49,6 +49,7 @@ class MigrateToNewServiceSystem extends Migration
                 } elseif ($item->tag === 'srcds' && $item->name === 'Custom Source Engine Game') {
                     $item->tag = 'source';
                 }
+                $item->save();
             });
         });
     }
