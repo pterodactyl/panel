@@ -38,6 +38,9 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.tasks.current')</h3>
+                <div class="box-tools">
+                    <a href="{{ route('server.tasks.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                </div>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -81,11 +84,6 @@
 
                     </tbody>
                 </table>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('server.tasks.new', $server->uuidShort) }}">
-                    <button class="btn btn-sm btn-primary">@lang('server.tasks.new_task')</button>
-                </a>
             </div>
         </div>
     </div>

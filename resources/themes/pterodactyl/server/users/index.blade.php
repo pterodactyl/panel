@@ -38,6 +38,11 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.users.list')</h3>
+                @can('create-subuser', $server)
+                    <div class="box-tools">
+                        <a href="{{ route('server.subusers.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                    </div>
+                @endcan
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -83,11 +88,6 @@
                     </tbody>
                 </table>
             </div>
-            @can('create-subuser', $server)
-                <div class="box-footer with-border">
-                    <a href="{{ route('server.subusers.new', $server->uuidShort) }}"><button class="btn btn-sm btn-success pull-right">@lang('server.users.add')</button></a>
-                </div>
-            @endcan
         </div>
     </div>
 </div>
