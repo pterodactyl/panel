@@ -88,7 +88,7 @@
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
-    @if($server->service->file === 'minecraft')
+    @if($server->service->folder === 'minecraft')
         {!! Theme::js('js/plugins/minecraft/eula.js') !!}
     @endif
 @endsection
