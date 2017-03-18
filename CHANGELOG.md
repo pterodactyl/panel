@@ -14,6 +14,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.
 * `[pre.4]` — Service pack files are now stored in the database rather than on the host system to make updates easier.
 * Clarified details for database hosts to prevent users entering invalid account details, as well as renamed tables and columns relating to it to keep things clearer.
+* Updated all code to be Laravel compliant when using `env()` and moved to using `config()` throughout non `config/*.php` files.
 
 ### Fixed
 * Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
@@ -24,6 +25,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
 * Fixes bug causing MySQL user accounts to be corrupted when resetting a password via the panel.
 * `[pre.4]` — Multiple clients refreshing the console no longer clears the console for all parties involved... sorry about that.
+* `[pre.4]` — Fixes bug in environment setting script that would not remeber defaults and try to re-assign values.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.
