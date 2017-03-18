@@ -77,39 +77,31 @@ class UpdateEnvironment extends Command
         $envContents = file_get_contents($file);
 
         $this->info('Simply leave blank and press enter to fields that you do not wish to update.');
-        if (! env('SERVICE_AUTHOR', false)) {
+        if (is_null(config('pterodactyl.service.author', null))) {
             $this->info('No service author set, setting one now.');
-            $variables['SERVICE_AUTHOR'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
-        }
-
-        if (! env('QUEUE_STANDARD', false) || ! env('QUEUE_DRIVER', false)) {
-            $this->info('Setting default queue settings.');
-            $variables['QUEUE_DRIVER'] = env('QUEUE_DRIVER', 'database');
-            $variables['QUEUE_HIGH'] = env('QUEUE_HIGH', 'high');
-            $variables['QUEUE_STANDARD'] = env('QUEUE_STANDARD', 'standard');
-            $variables['QUEUE_LOW'] = env('QUEUE_LOW', 'low');
+            $variables['SERVICE_AUTHOR'] = (string) Uuid::generate(4);
         }
 
         if (is_null($this->option('dbhost'))) {
-            $variables['DB_HOST'] = $this->anticipate('Database Host', ['localhost', '127.0.0.1', env('DB_HOST')], env('DB_HOST'));
+            $variables['DB_HOST'] = $this->anticipate('Database Host', ['localhost', '127.0.0.1', config('database.connections.mysql.host')], config('database.connections.mysql.host'));
         } else {
             $variables['DB_HOST'] = $this->option('dbhost');
         }
 
         if (is_null($this->option('dbport'))) {
-            $variables['DB_PORT'] = $this->anticipate('Database Port', [3306, env('DB_PORT')], env('DB_PORT'));
+            $variables['DB_PORT'] = $this->anticipate('Database Port', [3306, config('database.connections.mysql.port')], config('database.connections.mysql.port'));
         } else {
             $variables['DB_PORT'] = $this->option('dbport');
         }
 
         if (is_null($this->option('dbname'))) {
-            $variables['DB_DATABASE'] = $this->anticipate('Database Name', ['pterodactyl', 'homestead', ENV('DB_DATABASE')], env('DB_DATABASE'));
+            $variables['DB_DATABASE'] = $this->anticipate('Database Name', ['pterodactyl', 'homestead', config('database.connections.mysql.database')], config('database.connections.mysql.database'));
         } else {
             $variables['DB_DATABASE'] = $this->option('dbname');
         }
 
         if (is_null($this->option('dbuser'))) {
-            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ENV('DB_DATABASE')], env('DB_USERNAME'));
+            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [config('database.connections.mysql.username')], config('database.connections.mysql.username'));
         } else {
             $variables['DB_USERNAME'] = $this->option('dbuser');
         }
@@ -122,25 +114,23 @@ class UpdateEnvironment extends Command
         }
 
         if (is_null($this->option('url'))) {
-            $variables['APP_URL'] = $this->ask('Panel URL (include http(s)://)', env('APP_URL'));
+            $variables['APP_URL'] = $this->ask('Panel URL (include http(s)://)', config('app.url'));
         } else {
             $variables['APP_URL'] = $this->option('url');
         }
 
         if (is_null($this->option('timezone'))) {
             $this->line('The timezone should match one of the supported timezones according to http://php.net/manual/en/timezones.php');
-            $variables['APP_TIMEZONE'] = $this->anticipate('Panel Timezone', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL), env('APP_TIMEZONE'));
+            $variables['APP_TIMEZONE'] = $this->anticipate('Panel Timezone', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL), config('app.timezone'));
         } else {
             $variables['APP_TIMEZONE'] = $this->option('timezone');
         }
 
-        $variables['APP_THEME'] = 'pterodactyl';
         $variables['CACHE_DRIVER'] = 'memcached';
         $variables['SESSION_DRIVER'] = 'database';
 
         $bar = $this->output->createProgressBar(count($variables));
 
-        $this->line('Writing new environment configuration to file.');
         foreach ($variables as $key => $value) {
             $newValue = $key . '=' . $value;
 
@@ -155,8 +145,7 @@ class UpdateEnvironment extends Command
         file_put_contents($file, $envContents);
         $bar->finish();
 
-        $this->line('Updating evironment configuration cache file.');
         $this->call('config:cache');
-        echo "\n";
+        $this->line("\n");
     }
 }

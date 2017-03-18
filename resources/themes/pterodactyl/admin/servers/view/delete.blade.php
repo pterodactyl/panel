@@ -61,7 +61,7 @@
                     <h3 class="box-title">Marked for Deletion</h3>
                 </div>
                 <div class="box-body">
-                    <p>This server is currently marked for deletion by the system <strong>{{ Carbon::parse($server->deleted_at)->addMinutes(env('APP_DELETE_MINUTES', 10))->diffForHumans() }}</strong>.</p>
+                    <p>This server is currently marked for deletion by the system <strong>{{ Carbon::parse($server->deleted_at)->addMinutes(config('pterodactyl.tasks.delete_server'))->diffForHumans() }}</strong>.</p>
                     <p class="text-danger small">Deleting a server is an irreversible action. <strong>All server data</strong> (including files and users) will be removed from the system.</p>
                 </div>
                 <div class="box-footer">

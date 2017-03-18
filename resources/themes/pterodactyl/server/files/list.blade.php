@@ -76,7 +76,7 @@
                     </td>
                     <td data-identifier="size" class="hidden-xs">{{ $folder['size'] }}</td>
                     <td data-identifier="modified" class="hidden-xs">
-                        <?php $carbon = Carbon::createFromTimestamp($folder['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
+                        <?php $carbon = Carbon::createFromTimestamp($folder['date'])->timezone(config('app.timezone')); ?>
                         @if($carbon->diffInMinutes(Carbon::now()) > 60)
                             {{ $carbon->format('m/d/y H:i:s') }}
                         @elseif($carbon->diffInSeconds(Carbon::now()) < 5 || $carbon->isFuture())
@@ -153,7 +153,7 @@
                     </td>
                     <td data-identifier="size" class="hidden-xs">{{ $file['size'] }}</td>
                     <td data-identifier="modified" class="hidden-xs">
-                        <?php $carbon = Carbon::createFromTimestamp($file['date'])->timezone(env('APP_TIMEZONE', 'America/New_York')); ?>
+                        <?php $carbon = Carbon::createFromTimestamp($file['date'])->timezone(config('app.timezone')); ?>
                         @if($carbon->diffInMinutes(Carbon::now()) > 60)
                             {{ $carbon->format('m/d/y H:i:s') }}
                         @elseif($carbon->diffInSeconds(Carbon::now()) < 5 || $carbon->isFuture())

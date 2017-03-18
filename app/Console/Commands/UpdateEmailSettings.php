@@ -100,6 +100,7 @@ class UpdateEmailSettings extends Command
                 'Postmark Transactional Email Service',
             ],
         ]);
+
         $variables['MAIL_DRIVER'] = is_null($this->option('driver')) ? $this->choice('Which email driver would you like to use?', [
             'smtp',
             'mail',
@@ -110,9 +111,9 @@ class UpdateEmailSettings extends Command
 
         switch ($variables['MAIL_DRIVER']) {
             case 'smtp':
-                $variables['MAIL_HOST'] = is_null($this->option('host')) ? $this->ask('SMTP Host (e.g smtp.google.com)') : $this->option('host');
-                $variables['MAIL_PORT'] = is_null($this->option('port')) ? $this->anticipate('SMTP Host Port (e.g 587)', ['587']) : $this->option('port');
-                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('SMTP Username') : $this->option('password');
+                $variables['MAIL_HOST'] = is_null($this->option('host')) ? $this->ask('SMTP Host (e.g smtp.google.com)', config('mail.host')) : $this->option('host');
+                $variables['MAIL_PORT'] = is_null($this->option('port')) ? $this->anticipate('SMTP Host Port (e.g 587)', ['587', config('mail.port')], config('mail.port')) : $this->option('port');
+                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('SMTP Username', config('mail.username')) : $this->option('password');
                 $variables['MAIL_PASSWORD'] = is_null($this->option('password')) ? $this->secret('SMTP Password') : $this->option('password');
                 break;
             case 'mail':
@@ -128,7 +129,7 @@ class UpdateEmailSettings extends Command
                 $variables['MAIL_DRIVER'] = 'smtp';
                 $variables['MAIL_HOST'] = 'smtp.postmarkapp.com';
                 $variables['MAIL_PORT'] = 587;
-                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('Postmark API Token') : $this->option('username');
+                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('Postmark API Token', config('mail.username')) : $this->option('username');
                 $variables['MAIL_PASSWORD'] = $variables['MAIL_USERNAME'];
                 break;
             default:
@@ -137,8 +138,9 @@ class UpdateEmailSettings extends Command
                 break;
         }
 
-        $variables['MAIL_FROM'] = is_null($this->option('email')) ? $this->ask('Email address emails should originate from') : $this->option('email');
-        $variables['MAIL_FROM_NAME'] = is_null($this->option('from-name')) ? $this->ask('Name emails should appear to be from') : $this->option('from-name');
+        $variables['MAIL_FROM'] = is_null($this->option('email')) ? $this->ask('Email address emails should originate from', config('mail.from.address')) : $this->option('email');
+        $variables['MAIL_FROM_NAME'] = is_null($this->option('from-name')) ? $this->ask('Name emails should appear to be from', config('mail.from.name')) : $this->option('from-name');
+        $variables['MAIL_FROM_NAME'] = '"' . $variables['MAIL_FROM_NAME'] . '"';
         $variables['MAIL_ENCRYPTION'] = 'tls';
 
         $bar = $this->output->createProgressBar(count($variables));

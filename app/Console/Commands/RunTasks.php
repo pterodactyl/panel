@@ -72,7 +72,7 @@ class RunTasks extends Command
 
         foreach ($tasks as &$task) {
             $bar->advance();
-            $this->dispatch((new SendScheduledTask(Models\Server::findOrFail($task->server), $task))->onQueue(env('QUEUE_LOW', 'low')));
+            $this->dispatch((new SendScheduledTask(Models\Server::findOrFail($task->server), $task))->onQueue(config('pterodactyl.queues.low')));
         }
 
         $bar->finish();

@@ -36,11 +36,11 @@ class VersionService
      */
     public function __construct()
     {
-        self::$versions = Cache::remember('versions', env('VERSION_CACHE_TIME', 60), function () {
+        self::$versions = Cache::remember('versions', config('pterodactyl.cdn.cache'), function () {
             $client = new Client();
 
             try {
-                $response = $client->request('GET', env('VERSION_CHECK_URL', 'https://cdn.pterodactyl.io/releases/latest.json'));
+                $response = $client->request('GET', config('pterodactyl.cdn.url'));
 
                 if ($response->getStatusCode() === 200) {
                     return json_decode($response->getBody());
@@ -52,7 +52,7 @@ class VersionService
                 return (object) [
                     'panel' => 'error',
                     'daemon' => 'error',
-                    'discord' => 'https://pterodactyl.io',
+                    'discord' => 'https://pterodactyl.io/discord',
                 ];
             }
         });

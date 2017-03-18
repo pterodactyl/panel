@@ -42,4 +42,41 @@ return [
         'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Queue Names
+    |--------------------------------------------------------------------------
+    |
+    | Configure the names of queues to be used in the database.
+    */
+    'queues' => [
+        'low' => env('QUEUE_LOW', 'low'),
+        'standard' => env('QUEUE_STANDARD', 'standard'),
+        'high' => env('QUEUE_HIGH', 'high'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Task Timers
+    |--------------------------------------------------------------------------
+    |
+    | The amount of time in minutes before performing certain actions on the system.
+    */
+    'tasks' => [
+        'clear_log' => env('PTERODACTYL_CLEAR_TASKLOG', 720),
+        'delete_server' => env('PTERODACTYL_DELETE_MINUTES', 10),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | CDN
+    |--------------------------------------------------------------------------
+    |
+    | Information for the panel to use when contacting the CDN to confirm
+    | if panel is up to date.
+    */
+    'cdn' => [
+        'cache' => 60,
+        'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
+    ],
 ];

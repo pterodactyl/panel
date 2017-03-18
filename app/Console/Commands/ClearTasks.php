@@ -64,7 +64,7 @@ class ClearTasks extends Command
      */
     public function handle()
     {
-        $entries = Models\TaskLog::where('run_time', '<=', Carbon::now()->subHours(env('APP_CLEAR_TASKLOG', 720))->toAtomString())->get();
+        $entries = Models\TaskLog::where('run_time', '<=', Carbon::now()->subHours(config('pterodactyl.tasks.clear_log'))->toAtomString())->get();
 
         $this->info(sprintf('Preparing to delete %d old task log entries.', count($entries)));
         $bar = $this->output->createProgressBar(count($entries));
