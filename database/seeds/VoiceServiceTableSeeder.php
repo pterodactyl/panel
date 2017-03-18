@@ -74,7 +74,7 @@ class VoiceServiceTableSeeder extends Seeder
         ], [
             'name' => 'Mumble Server',
             'description' => 'Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.',
-            'docker_image' => 'quay.io/pterodactyl/voice:mumble',
+            'docker_image' => 'quay.io/pterodactyl/core:glibc',
             'config_startup' => '{"done": "Server listening on", "userInteraction": [ "Generating new server certificate"]}',
             'config_files' => '{"murmur.ini":{"parser": "ini", "find":{"logfile": "murmur.log", "port": "{{server.build.default.port}}", "host": "0.0.0.0", "users": "{{server.build.env.MAX_USERS}}"}}}',
             'config_logs' => '{"custom": true, "location": "logs/murmur.log"}',
@@ -89,7 +89,7 @@ class VoiceServiceTableSeeder extends Seeder
         ], [
             'name' => 'Teamspeak3 Server',
             'description' => 'VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.',
-            'docker_image' => 'quay.io/pterodactyl/voice:ts3',
+            'docker_image' => 'quay.io/pterodactyl/core:glibc',
             'config_startup' => '{"done": "listening on 0.0.0.0:", "userInteraction": []}',
             'config_files' => '{"ts3server.ini":{"parser": "ini", "find":{"default_voice_port": "{{server.build.default.port}}", "voice_ip": "0.0.0.0", "query_port": "{{server.build.default.port}}", "query_ip": "0.0.0.0"}}}',
             'config_logs' => '{"custom": true, "location": "logs/ts3.log"}',

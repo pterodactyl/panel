@@ -16,7 +16,7 @@ class DeleteServiceExecutableOption extends Migration
     {
         DB::transaction(function () {
             // Attempt to fix any startup commands for servers
-            // that we possibly can.
+            // that we possibly can. Also set new containers.
             foreach (ServiceOption::with('servers')->get() as $option) {
                 $option->servers->each(function ($s) use ($option) {
                     $prepend = $option->display_executable;
@@ -24,6 +24,18 @@ class DeleteServiceExecutableOption extends Migration
                     $prepend = ($prepend === 'TerrariaServer.exe') ? 'mono TerrariaServer.exe' : $prepend;
 
                     $s->startup = $prepend . ' ' . $s->startup;
+
+                    $container = $s->container;
+                    if (starts_with($container, 'quay.io/pterodactyl/minecraft')) {
+                        $s->container = 'quay.io/pterodactyl/core:java';
+                    } elseif (starts_with($container, 'quay.io/pterodactyl/srcds')) {
+                        $s->container = 'quay.io/pterodactyl/core:source';
+                    } elseif (starts_with($container, 'quay.io/pterodactyl/voice')) {
+                        $s->container = 'quay.io/pterodactyl/core:glibc';
+                    } elseif (starts_with($container, 'quay.io/pterodactyl/terraria')) {
+                        $s->container = 'quay.io/pterodactyl/core:mono'
+                    }
+
                     $s->save();
                 });
             }
