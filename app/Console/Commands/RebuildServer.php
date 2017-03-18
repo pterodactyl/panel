@@ -65,11 +65,11 @@ class RebuildServer extends Command
     public function handle()
     {
         if ($this->option('all')) {
-            $servers = Server::with('node')->get();
+            $servers = Server::with('node', 'option.variables')->get();
         } elseif ($this->option('node')) {
-            $servers = Server::with('node')->where('node_id', $this->option('node'))->get();
+            $servers = Server::with('node', 'option.variables')->where('node_id', $this->option('node'))->get();
         } elseif ($this->option('server')) {
-            $servers = Server::with('node')->where('id', $this->option('server'))->get();
+            $servers = Server::with('node', 'option.variables')->where('id', $this->option('server'))->get();
         } else {
             $this->error('You must pass a flag to determine which server(s) to rebuild.');
             return;
@@ -80,10 +80,26 @@ class RebuildServer extends Command
         $results = collect([]);
         foreach($servers as $server) {
             try {
+                $environment = $server->option->variables->map(function ($item, $key) use ($server) {
+                    $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+
+                    return [
+                        'variable' => $item->env_variable,
+                        'value' => (! is_null($display)) ? $display : $item->default_value,
+                    ];
+                });
+
                 $server->node->guzzleClient([
                     'X-Access-Server' => $server->uuid,
                     'X-Access-Token' => $server->node->daemonSecret,
-                ])->request('POST', '/server/rebuild');
+                ])->request('PATCH', '/server', [
+                    'json' => [
+                        'build' => [
+                            'image' => $server->image,
+                            'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup]),
+                        ],
+                    ],
+                ]);
 
                 $results = $results->merge([
                     $server->uuid => [
