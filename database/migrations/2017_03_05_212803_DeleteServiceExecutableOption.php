@@ -1,5 +1,6 @@
 <?php
 
+use Pterodactyl\Models\ServiceOption;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -14,12 +15,6 @@ class DeleteServiceExecutableOption extends Migration
     public function up()
     {
         DB::transaction(function () {
-            Schema::table('services', function (Blueprint $table) {
-                $table->renameColumn('file', 'folder');
-                $table->text('description')->nullable()->change();
-                $table->text('startup')->nullable()->change();
-            });
-
             // Attempt to fix any startup commands for servers
             // that we possibly can.
             foreach (ServiceOption::with('servers')->get() as $option) {
@@ -34,7 +29,10 @@ class DeleteServiceExecutableOption extends Migration
             }
 
             Schema::table('services', function (Blueprint $table) {
+                $table->renameColumn('file', 'folder');
                 $table->dropColumn('executable');
+                $table->text('description')->nullable()->change();
+                $table->text('startup')->nullable()->change();
             });
         });
     }
