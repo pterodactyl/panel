@@ -37,6 +37,9 @@
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Host List</h3>
+                <div class="box-tools">
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newHostModal">Create New</button>
+                </div>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -69,9 +72,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-            <div class="box-footer">
-                <button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#newHostModal">New Host</button>
             </div>
         </div>
     </div>
