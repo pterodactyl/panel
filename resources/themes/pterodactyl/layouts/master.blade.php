@@ -231,35 +231,30 @@
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
             <aside class="control-sidebar control-sidebar-dark">
-                <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                    <li><a href="#control-sidebar-servers-tab" data-toggle="tab"><i class="fa fa-server"></i></a></li>
-                </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="control-sidebar-servers-tab">
-                        <ul class="control-sidebar-menu">
-                            @foreach (Auth::user()->serverAccessCollection(null, []) as $s)
-                                <li>
-                                    <a
-                                        @if(isset($server) && isset($node))
-                                            @if($server->uuidShort === $s->uuidShort)
-                                                class="active"
-                                            @endif
+                    <ul class="control-sidebar-menu">
+                        @foreach (Auth::user()->serverAccessCollection(null, []) as $s)
+                            <li>
+                                <a
+                                    @if(isset($server) && isset($node))
+                                        @if($server->uuidShort === $s->uuidShort)
+                                            class="active"
                                         @endif
-                                    href="{{ route('server.index', $s->uuidShort) }}">
-                                        @if($s->owner_id === Auth::user()->id)
-                                            <i class="menu-icon fa fa-user bg-blue"></i>
-                                        @else
-                                            <i class="menu-icon fa fa-user-o bg-gray"></i>
-                                        @endif
-                                        <div class="menu-info">
-                                            <h4 class="control-sidebar-subheading">{{ $s->name }}</h4>
-                                            <p>{{ $s->username }}</p>
-                                        </div>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                                    @endif
+                                href="{{ route('server.index', $s->uuidShort) }}">
+                                    @if($s->owner_id === Auth::user()->id)
+                                        <i class="menu-icon fa fa-user bg-blue"></i>
+                                    @else
+                                        <i class="menu-icon fa fa-user-o bg-gray"></i>
+                                    @endif
+                                    <div class="menu-info">
+                                        <h4 class="control-sidebar-subheading">{{ $s->name }}</h4>
+                                        <p>{{ $s->username }}</p>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
             </aside>
             <div class="control-sidebar-bg"></div>
