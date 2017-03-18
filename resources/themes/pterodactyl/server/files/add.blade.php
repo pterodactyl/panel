@@ -97,9 +97,9 @@
     @parent
     {!! Theme::js('vendor/select2/select2.full.min.js') !!}
     {!! Theme::js('js/frontend/server.socket.js') !!}
-    {!! Theme::js('js/vendor/ace/ace.js') !!}
-    {!! Theme::js('js/vendor/ace/ext-modelist.js') !!}
-    {!! Theme::js('js/vendor/lodash/lodash.js') !!}
+    {!! Theme::js('vendor/ace/ace.js') !!}
+    {!! Theme::js('vendor/ace/ext-modelist.js') !!}
+    {!! Theme::js('vendor/lodash/lodash.js') !!}
     {!! Theme::js('js/frontend/files/editor.js') !!}
     <script>
         $(document).ready(function() {

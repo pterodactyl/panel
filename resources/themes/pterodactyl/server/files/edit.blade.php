@@ -57,7 +57,7 @@
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
-    {!! Theme::js('js/vendor/ace/ace.js') !!}
-    {!! Theme::js('js/vendor/ace/ext-modelist.js') !!}
+    {!! Theme::js('vendor/ace/ace.js') !!}
+    {!! Theme::js('vendor/ace/ext-modelist.js') !!}
     {!! Theme::js('js/frontend/files/editor.js') !!}
 @endsection

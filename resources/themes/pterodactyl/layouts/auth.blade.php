@@ -60,6 +60,6 @@
         {!! Theme::js('vendor/jquery/jquery.min.js') !!}
         {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
 
-        @if(config('app.phrase_in_context')) {!! Theme::js('js/phraseapp.js') !!} @endif
+        @if(config('app.phrase_in_context')) {!! Theme::js('vendor/phraseapp/phraseapp.js') !!} @endif
     </body>
 </html>

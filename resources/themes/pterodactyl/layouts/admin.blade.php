@@ -222,12 +222,12 @@
         </div>
         @section('footer-scripts')
             {!! Theme::js('js/laroute.js') !!}
-            {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+            {!! Theme::js('vendor/jquery/jquery.min.js') !!}
             {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
-            {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
+            {!! Theme::js('vendor/socketio/socket.io.min.js') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
             {!! Theme::js('vendor/select2/select2.full.min.js') !!}
             {!! Theme::js('js/admin/functions.js') !!}

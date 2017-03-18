@@ -25,7 +25,7 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('css/jquery.terminal.css') !!}
+    {!! Theme::css('vendor/terminal/jquery.terminal.css') !!}
 @endsection
 
 @section('content-header')
@@ -82,12 +82,12 @@
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
-    {!! Theme::js('js/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('js/jquery.terminal-0.11.23.min.js') !!}
-    {!! Theme::js('js/unix_formatting.js') !!}
+    {!! Theme::js('vendor/mousewheel/jquery.mousewheel-min.js') !!}
+    {!! Theme::js('vendor/terminal/jquery.terminal-0.11.23.min.js') !!}
+    {!! Theme::js('vendor/terminal/unix_formatting.js') !!}
     {!! Theme::js('js/frontend/console.js') !!}
-    {!! Theme::js('js/vendor/chartjs/chart.min.js') !!}
-    {!! Theme::js('js/vendor/jquery/jquery-dateFormat.min.js') !!}
+    {!! Theme::js('vendor/chartjs/chart.min.js') !!}
+    {!! Theme::js('vendor/jquery/date-format.min.js') !!}
     @if($server->service->folder === 'minecraft')
         {!! Theme::js('js/plugins/minecraft/eula.js') !!}
     @endif
