@@ -212,9 +212,10 @@ var Console = (function () {
 
         if (terminalQueue.length > 0) {
             for (var i = 0; i < CONSOLE_PUSH_COUNT && terminalQueue.length > 0; i++) {
-                terminal.echo(terminalQueue[0]);
+                terminal.echo(terminalQueue[0], {flush: false});
                 terminalQueue.shift();
             }
+            terminal.flush()
 
             // Show
             if (!terminal.is_bottom()) {
