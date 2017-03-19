@@ -278,8 +278,9 @@
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
             {!! Theme::js('vendor/socketio/socket.io.min.js') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
-
-            @if(config('app.phrase_in_context')) {!! Theme::js('js/phraseapp.js') !!} @endif
+            @if(config('pterodactyl.lang.in_context'))
+                {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
+            @endif
         @show
     </body>
 </html>

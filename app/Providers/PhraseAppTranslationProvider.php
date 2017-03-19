@@ -47,7 +47,7 @@ class PhraseAppTranslationProvider extends TranslationServiceProvider
             // configuration so we can easily get both of these values from there.
             $locale = $app['config']['app.locale'];
 
-            if ($app['config']['app.phrase_in_context']) {
+            if ($app['config']['pterodactyl.lang.in_context']) {
                 $trans = new PhraseAppTranslator($loader, $locale);
             } else {
                 $trans = new IlluminateTranslator($loader, $locale);

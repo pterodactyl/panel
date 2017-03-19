@@ -6,8 +6,6 @@ return [
 
     'version' => env('APP_VERSION', 'canary'),
 
-    'phrase_in_context' => env('PHRASE_IN_CONTEXT', false),
-
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
