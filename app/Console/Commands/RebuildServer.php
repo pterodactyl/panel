@@ -72,6 +72,7 @@ class RebuildServer extends Command
             $servers = Server::where('id', $this->option('server'))->get();
         } else {
             $this->error('You must pass a flag to determine which server(s) to rebuild.');
+
             return;
         }
 
@@ -80,7 +81,7 @@ class RebuildServer extends Command
         $this->line('Beginning processing, do not exit this script.');
         $bar = $this->output->createProgressBar(count($servers));
         $results = collect([]);
-        foreach($servers as $server) {
+        foreach ($servers as $server) {
             try {
                 $environment = $server->option->variables->map(function ($item, $key) use ($server) {
                     $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
@@ -136,7 +137,7 @@ class RebuildServer extends Command
 
         $this->line("\n");
         $results->each(function ($item, $key) use ($console) {
-            foreach($item['messages'] as $line) {
+            foreach ($item['messages'] as $line) {
                 $console->{$item['status']}($line);
             }
         });

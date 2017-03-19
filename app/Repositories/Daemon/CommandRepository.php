@@ -25,7 +25,6 @@
 namespace Pterodactyl\Repositories\Daemon;
 
 use Pterodactyl\Models;
-use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 
 class CommandRepository
