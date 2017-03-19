@@ -93,7 +93,7 @@
                 </div>
                 <div class="box-footer">
                     <p class="text-muted small no-margin">
-                        <input type="checkbox" name="auto_deploy" id="pAutoDeploy" @if(old('auto_deploy'))checked="checked"@endif/>
+                        <input type="checkbox" name="auto_deploy" value="yes" id="pAutoDeploy" @if(old('auto_deploy'))checked="checked"@endif/>
                         <label for="pAutoDeploy">Check this box if you want the panel to automatically select a node and allocation for this server in the given location.</label>
                     </p>
                 </div>

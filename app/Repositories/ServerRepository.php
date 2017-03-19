@@ -96,7 +96,7 @@ class ServerRepository
             'pack_id' => 'sometimes|nullable|numeric|min:0',
             'custom_container' => 'string',
             'startup' => 'string',
-            'auto_deploy' => 'sometimes|boolean',
+            'auto_deploy' => 'sometimes|required|accepted',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
         ]);
 

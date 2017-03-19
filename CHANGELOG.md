@@ -8,6 +8,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.6]` — Addresses misconfigured console queue that was still sending data way to quickly thus causing the console to explode on some devices when large amounts of data were sent.
 * `[pre.6]` — Fixes bug in allocation parsing for a node that prevented adding new allocations.
 * `[pre.6]` — Fixes typo in migrations that wouldn't save custom regex for non-required variables.
+* `[pre.6]` — Fixes auto-deploy checkbox on server creation causing validation error.
 
 ## v0.6.0-pre.6 (Courageous Carniadactylus)
 ### Fixed
