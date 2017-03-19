@@ -62,6 +62,10 @@ class ServerController extends Controller
                 'saveFile' => route('server.files.save', $server->uuidShort),
                 'csrfToken' => csrf_token(),
             ],
+            'config' => [
+                'console_count' => config('pterodactyl.console.count'),
+                'console_freq' => config('pterodactyl.console.freq'),
+            ],
         ]);
 
         return view('server.index', [

@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.7 (Courageous Carniadactylus)
+### Fixed
+* `[pre.6]` — Addresses misconfigured console queue that was still sending data way to quickly thus causing the console to explode on some devices when large amounts of data were sent.
+
 ## v0.6.0-pre.6 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.5]` — Console based server rebuild tool now actually rebuilds the servers with the correct information.

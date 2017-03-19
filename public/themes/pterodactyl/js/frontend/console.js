@@ -19,8 +19,8 @@
 // SOFTWARE.
 
 var Console = (function () {
-    var CONSOLE_PUSH_COUNT = 50;
-    var CONSOLE_PUSH_FREQ = 200;
+    var CONSOLE_PUSH_COUNT = Pterodactyl.config.console_count;
+    var CONSOLE_PUSH_FREQ = Pterodactyl.config.console_freq;
 
     var terminalQueue;
     var terminal;
