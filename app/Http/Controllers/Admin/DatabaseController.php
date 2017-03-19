@@ -40,7 +40,7 @@ class DatabaseController extends Controller
     /**
      * Display database host index.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -54,8 +54,8 @@ class DatabaseController extends Controller
     /**
      * Display database host to user.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function view(Request $request, $id)
@@ -69,8 +69,8 @@ class DatabaseController extends Controller
     /**
      * Handle post request to create database host.
      *
-     * @param  Request $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function create(Request $request)
     {
@@ -99,9 +99,9 @@ class DatabaseController extends Controller
     /**
      * Handle post request to update a database host.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {

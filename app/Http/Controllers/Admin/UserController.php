@@ -37,14 +37,11 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class UserController extends Controller
 {
     /**
-     * Controller Constructor.
+     * Display user index page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
-    public function __construct()
-    {
-        //
-    }
-
-    // @TODO: implement nicolaslopezj/searchable to clean up this disaster.
     public function getIndex(Request $request)
     {
         $users = User::withCount('servers');
@@ -58,11 +55,24 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Display new user page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function getNew(Request $request)
     {
         return view('admin.users.new');
     }
 
+    /**
+     * Display user view page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
     public function getView(Request $request, $id)
     {
         return view('admin.users.view', [
@@ -70,6 +80,13 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Delete a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function deleteUser(Request $request, $id)
     {
         try {
@@ -88,6 +105,12 @@ class UserController extends Controller
         return redirect()->route('admin.users.view', $id);
     }
 
+    /**
+     * Create a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postNew(Request $request)
     {
         try {
@@ -109,6 +132,13 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Update a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updateUser(Request $request, $user)
     {
         try {
@@ -128,6 +158,12 @@ class UserController extends Controller
         return redirect()->route('admin.users.view', $user);
     }
 
+    /**
+     * Get a JSON response of users on the system.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Pterodactyl\Models\User
+     */
     public function getJson(Request $request)
     {
         return User::select('id', 'email', 'username', 'name_first', 'name_last')

@@ -35,7 +35,8 @@ class SuspendServer extends Job implements ShouldQueue
 
     /**
      * ID of associated server model.
-     * @var object
+     *
+     * @var int
      */
     protected $id;
 

@@ -29,10 +29,17 @@ use GuzzleHttp\Client;
 
 class VersionService
 {
+    /**
+     * The cached CDN response.
+     *
+     * @var object
+     */
     protected static $versions;
 
     /**
-     * Constructor.
+     * Version constructor.
+     *
+     * @return void
      */
     public function __construct()
     {
@@ -58,26 +65,51 @@ class VersionService
         });
     }
 
+    /**
+     * Return current panel version from CDN.
+     *
+     * @return string
+     */
     public static function getPanel()
     {
         return self::$versions->panel;
     }
 
+    /**
+     * Return current daemon version from CDN.
+     *
+     * @return string
+     */
     public static function getDaemon()
     {
         return self::$versions->daemon;
     }
 
+    /**
+     * Return Discord link from CDN.
+     *
+     * @return string
+     */
     public static function getDiscord()
     {
         return self::$versions->discord;
     }
 
+    /**
+     * Return current panel version.
+     *
+     * @return null|string
+     */
     public function getCurrentPanel()
     {
         return config('app.version');
     }
 
+    /**
+     * Determine if panel is latest version.
+     *
+     * @return bool
+     */
     public static function isLatestPanel()
     {
         if (config('app.version') === 'canary') {
@@ -87,6 +119,11 @@ class VersionService
         return version_compare(config('app.version'), self::$versions->panel) >= 0;
     }
 
+    /**
+     * Determine if daemon is latest version.
+     *
+     * @return bool
+     */
     public static function isLatestDaemon($daemon)
     {
         if ($daemon === '0.0.0-canary') {

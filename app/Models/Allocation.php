@@ -56,7 +56,7 @@ class Allocation extends Model
      /**
       * Accessor to automatically provide the IP alias if defined.
       *
-      * @param  null|string $value
+      * @param  null|string  $value
       * @return string
       */
      public function getAliasAttribute($value)
@@ -67,7 +67,7 @@ class Allocation extends Model
      /**
       * Accessor to quickly determine if this allocation has an alias.
       *
-      * @param  null|string $value
+      * @param  null|string  $value
       * @return bool
       */
      public function getHasAliasAttribute($value)

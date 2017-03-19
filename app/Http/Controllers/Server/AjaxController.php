@@ -51,19 +51,11 @@ class AjaxController extends Controller
     protected $directory;
 
     /**
-     * Controller Constructor.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Returns true or false depending on the power status of the requested server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $uuid
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getStatus(Request $request, $uuid)
     {
@@ -96,9 +88,9 @@ class AjaxController extends Controller
     /**
      * Returns a listing of files in a given directory for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  string $uuid`
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View|\Illuminate\Http\Response
      */
     public function postDirectoryList(Request $request, $uuid)
     {
@@ -147,8 +139,8 @@ class AjaxController extends Controller
     /**
      * Handles a POST request to save a file.
      *
-     * @param  Request $request
-     * @param  string  $uuid
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
      * @return \Illuminate\Http\Response
      */
     public function postSaveFile(Request $request, $uuid)
@@ -172,10 +164,12 @@ class AjaxController extends Controller
     }
 
     /**
-     * [postSetPrimary description].
-     * @param  Request $request
-     * @param  string  $uuid
-     * @return \Illuminate\Http\Response
+     * Sets the primary allocation for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\JsonResponse
+     * @deprecated
      */
     public function postSetPrimary(Request $request, $uuid)
     {
@@ -219,6 +213,14 @@ class AjaxController extends Controller
         }
     }
 
+    /**
+     * Resets a database password for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\JsonResponse
+     * @deprecated
+     */
     public function postResetDatabasePassword(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);

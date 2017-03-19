@@ -28,20 +28,19 @@ use Log;
 
 class DisplayException extends \Exception
 {
-    private $_logging = null;
-
+    /**
+     * Exception constructor.
+     *
+     * @param  string  $message
+     * @param  mixed   $log
+     * @return void
+     */
     public function __construct($message, $log = null)
     {
-        $this->_logging = $log;
-        if ($this->_logging !== null) {
+        if (! is_null($log)) {
             Log::error($log);
         }
 
         parent::__construct($message);
-    }
-
-    public function getLogging()
-    {
-        return $this->_logging;
     }
 }

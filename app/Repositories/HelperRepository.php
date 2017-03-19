@@ -28,6 +28,7 @@ class HelperRepository
 {
     /**
      * Listing of editable files in the control panel.
+     *
      * @var array
      */
     protected static $editable = [
@@ -44,17 +45,13 @@ class HelperRepository
         'inode/x-empty',
     ];
 
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Converts from bytes to the largest possible size that is still readable.
      *
-     * @param  int $bytes
-     * @param  int $decimals
+     * @param  int  $bytes
+     * @param  int  $decimals
      * @return string
+     * @deprecated
      */
     public static function bytesToHuman($bytes, $decimals = 2)
     {
@@ -64,6 +61,11 @@ class HelperRepository
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . $sz[$factor];
     }
 
+    /**
+     * Returns array of editable files.
+     *
+     * @return array
+     */
     public static function editableFiles()
     {
         return self::$editable;

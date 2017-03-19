@@ -73,7 +73,7 @@ class OptionRepository
     /**
      * Deletes a service option from the system.
      *
-     * @param  int    $id
+     * @param  int  $id
      * @return void
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

@@ -28,6 +28,12 @@ use Illuminate\Routing\Router;
 
 class DaemonRoutes
 {
+    /**
+     * Daemon routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
         $router->group(['prefix' => 'daemon', 'middleware' => 'daemon'], function () use ($router) {

@@ -115,8 +115,11 @@ class Server extends Model
      * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
      * YOU WILL OVERWRITE THE SECRET KEY AND BREAK THINGS.
      *
-     * @param  string $uuid The Short-UUID of the server to return an object about.
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  string  $uuid
+     * @param  array   $with
+     * @param  array   $withCount
+     * @return \Pterodactyl\Models\Server
+     * @todo   Remove $with and $withCount due to cache issues, they aren't used anyways.
      */
     public static function byUuid($uuid, array $with = [], array $withCount = [])
     {
@@ -147,7 +150,6 @@ class Server extends Model
     /**
      * Returns non-administrative headers for accessing a server on the daemon.
      *
-     * @param  string $uuid
      * @return array
      */
     public function guzzleHeaders()
@@ -171,6 +173,8 @@ class Server extends Model
     /**
      * Returns javascript object to be embedded on server view pages with relevant information.
      *
+     * @param  array|null  $additional
+     * @param  array|null  $overwrite
      * @return \Laracasts\Utilities\JavaScript\JavaScriptFacade
      */
     public function js($additional = null, $overwrite = null)

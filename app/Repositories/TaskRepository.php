@@ -32,6 +32,11 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class TaskRepository
 {
+    /**
+     * The default values to use for new tasks.
+     *
+     * @var array
+     */
     protected $defaults = [
         'year' => '*',
         'day_of_week' => '*',
@@ -41,20 +46,20 @@ class TaskRepository
         'minute' => '*/30',
     ];
 
+    /**
+     * Task action types.
+     *
+     * @var array
+     */
     protected $actions = [
         'command',
         'power',
     ];
 
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Deletes a given task.
-     * @param  int      $id
      *
+     * @param  int      $id
      * @return bool
      */
     public function delete($id)
@@ -71,8 +76,8 @@ class TaskRepository
 
     /**
      * Toggles a task active or inactive.
-     * @param  int      $id
      *
+     * @param  int  $id
      * @return int
      */
     public function toggle($id)
@@ -91,12 +96,13 @@ class TaskRepository
 
     /**
      * Create a new scheduled task for a given server.
-     * @param  int      $id
-     * @param  array    $data
      *
-     * @throws DisplayException
-     * @throws DisplayValidationException
-     * @return void
+     * @param  int    $id
+     * @param  array  $data
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create($id, $data)
     {

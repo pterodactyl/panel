@@ -42,14 +42,14 @@ class APIPermission extends Model
      */
     protected $guarded = ['id'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'key_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'key_id' => 'integer',
+    ];
 
     /**
      * Disable timestamps for this table.

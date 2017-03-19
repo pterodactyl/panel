@@ -41,7 +41,7 @@ class OptionController extends Controller
     /**
      * Handles request to view page for adding new option.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function new(Request $request)
@@ -55,7 +55,7 @@ class OptionController extends Controller
     /**
      * Handles POST request to create a new option.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Response\RedirectResponse
      */
     public function create(Request $request)
@@ -86,9 +86,9 @@ class OptionController extends Controller
     /**
      * Handles POST request to create a new option variable.
      *
-     * @param  Request $request
-     * @param  int     $id       The ID of the service option to assign this variable to.
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function createVariable(Request $request, $id)
     {
@@ -116,8 +116,8 @@ class OptionController extends Controller
     /**
      * Display option overview page.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewConfiguration(Request $request, $id)
@@ -128,8 +128,8 @@ class OptionController extends Controller
     /**
      * Display variable overview page for a service option.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewVariables(Request $request, $id)
@@ -140,8 +140,9 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  Request $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function editConfiguration(Request $request, $id)
     {
@@ -176,10 +177,10 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  Request $request
-     * @param  int     $option
-     * @param  int     $variable
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $option
+     * @param  int                       $variable
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function editVariable(Request $request, $option, $variable)
     {

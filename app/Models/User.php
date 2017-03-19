@@ -70,16 +70,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $fillable = ['username', 'email', 'name_first', 'name_last', 'password', 'language', 'use_totp', 'totp_secret', 'gravatar', 'root_admin'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'root_admin' => 'integer',
-         'use_totp' => 'integer',
-         'gravatar' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'root_admin' => 'integer',
+        'use_totp' => 'integer',
+        'gravatar' => 'integer',
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -106,7 +106,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Enables or disables TOTP on an account if the token is valid.
      *
-     * @param int $token The token that we want to verify.
+     * @param  int  $token
      * @return bool
      */
     public function toggleTotp($token)
@@ -116,9 +116,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         $this->use_totp = ! $this->use_totp;
-        $this->save();
-
-        return true;
+        return $this->save();
     }
 
     /**
@@ -128,8 +126,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *      - at least one lowercase character
      *      - at least one number.
      *
-     * @param string $password The raw password to set the account password to.
-     * @param string $regex The regex to use when validating the password. Defaults to '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})'.
+     * @param  string  $password
+     * @param  string  $regex
      * @return void
      */
     public function setPassword($password, $regex = '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})')
@@ -156,7 +154,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Return true or false depending on wether the user is root admin or not.
      *
-     * @return bool the user is root admin
+     * @return bool
      */
     public function isRootAdmin()
     {
@@ -165,7 +163,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Returns the user's daemon secret for a given server.
-     * @param  Server $server \Pterodactyl\Models\Server
+     *
+     * @param  \Pterodactyl\Models\Server  $server
      * @return null|string
      */
     public function daemonToken(Server $server)
@@ -200,7 +199,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
-     * @return Collection
+     * @param  int|null  $paginate
+     * @param  array     $load
+     * @return \Illuminate\Pagination\LengthAwarePagination|\Illuiminate\Database\Eloquent\Collection
      */
     public function serverAccessCollection($paginate = null, $load = ['service', 'node', 'allocation'])
     {

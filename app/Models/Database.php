@@ -51,33 +51,33 @@ class Database extends Model
         'server_id', 'database_host_id', 'database', 'username', 'remote',
     ];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'server_id' => 'integer',
-         'database_host_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'server_id' => 'integer',
+        'database_host_id' => 'integer',
+    ];
 
-     /**
-      * Gets the host database server associated with a database.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-      */
-     public function host()
-     {
-         return $this->belongsTo(DatabaseHost::class, 'database_host_id');
-     }
+    /**
+     * Gets the host database server associated with a database.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function host()
+    {
+        return $this->belongsTo(DatabaseHost::class, 'database_host_id');
+    }
 
-     /**
-      * Gets the server associated with a database.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-      */
-     public function server()
-     {
-         return $this->belongsTo(Server::class);
-     }
+    /**
+     * Gets the server associated with a database.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class);
+    }
 }

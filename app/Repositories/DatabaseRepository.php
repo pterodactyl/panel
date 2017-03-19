@@ -39,8 +39,8 @@ class DatabaseRepository
     /**
      * Adds a new database to a specified database host server.
      *
-     * @param  int   $id
-     * @param  array $data
+     * @param  int    $id
+     * @param  array  $data
      * @return \Pterodactyl\Models\Database
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -128,8 +128,8 @@ class DatabaseRepository
     /**
      * Updates the password for a given database.
      *
-     * @param  int    $id
-     * @param  string $password
+     * @param  int     $id
+     * @param  string  $password
      * @return void
      *
      * @todo   Fix logic behind resetting passwords.
@@ -174,7 +174,7 @@ class DatabaseRepository
     /**
      * Drops a database from the associated database host.
      *
-     * @param  int $id
+     * @param  int  $id
      * @return void
      */
     public function drop($id)
@@ -204,7 +204,7 @@ class DatabaseRepository
     /**
      * Deletes a database host from the system if it has no associated databases.
      *
-     * @param  int $server
+     * @param  int  $id
      * @return void
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -223,7 +223,7 @@ class DatabaseRepository
     /**
      * Adds a new Database Host to the system.
      *
-     * @param  array $data
+     * @param  array  $data
      * @return \Pterodactyl\Models\DatabaseHost
      *
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
@@ -281,8 +281,8 @@ class DatabaseRepository
     /**
      * Updates a Database Host on the system.
      *
-     * @param  int   $id
-     * @param  array $data
+     * @param  int    $id
+     * @param  array  $data
      * @return \Pterodactyl\Models\DatabaseHost
      *
      * @throws \Pterodactyl\Exceptions\DisplayValidationException

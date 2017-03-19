@@ -31,11 +31,17 @@ class Creating
 {
     use SerializesModels;
 
+    /**
+     * The Eloquent model of the server.
+     *
+     * @var \Pterodactyl\Models\User
+     */
     public $user;
 
     /**
      * Create a new event instance.
      *
+     * @param  \Pterodactyl\Models\User  $user
      * @return void
      */
     public function __construct(User $user)

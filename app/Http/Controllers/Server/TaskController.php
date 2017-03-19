@@ -35,11 +35,13 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class TaskController extends Controller
 {
-    public function __constructor()
-    {
-        //
-    }
-
+    /**
+     * Display task index page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getIndex(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid)->load('tasks');
@@ -57,6 +59,13 @@ class TaskController extends Controller
         ]);
     }
 
+    /**
+     * Display new task page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getNew(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -69,6 +78,13 @@ class TaskController extends Controller
         ]);
     }
 
+    /**
+     * Handle creation of new task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postNew(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -93,6 +109,14 @@ class TaskController extends Controller
         return redirect()->route('server.tasks.new', $uuid);
     }
 
+    /**
+     * Handle deletion of a task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteTask(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('tasks');
@@ -119,6 +143,14 @@ class TaskController extends Controller
         }
     }
 
+    /**
+     * Toggle the status of a task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function toggleTask(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('tasks');

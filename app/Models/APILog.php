@@ -49,12 +49,12 @@ class APILog extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'authorized' => 'boolean',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'authorized' => 'boolean',
+    ];
 }

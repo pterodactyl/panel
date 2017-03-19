@@ -37,21 +37,21 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerRepository
 {
+    /**
+     * An array of daemon permission to assign to this server.
+     *
+     * @var array
+     */
     protected $daemonPermissions = [
         's:*',
     ];
-
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * Generates a SFTP username for a server given a server name.
      * format: mumble_67c7a4b0.
      *
-     * @param  string $name
-     * @param  string $identifier
+     * @param  string       $name
+     * @param  null|string  $identifier
      * @return string
      */
     protected function generateSFTPUsername($name, $identifier = null)
@@ -75,8 +75,12 @@ class ServerRepository
 
     /**
      * Adds a new server to the system.
-     * @param   array  $data  An array of data descriptors for creating the server. These should align to the columns in the database.
-     * @return  int
+     *
+     * @param   array  $data
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
@@ -341,10 +345,14 @@ class ServerRepository
     }
 
     /**
-     * [updateDetails description].
-     * @param  int  $id
-     * @param  array    $data
+     * Update the details for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
      * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function updateDetails($id, array $data)
     {
@@ -424,10 +432,14 @@ class ServerRepository
     }
 
     /**
-     * [updateContainer description].
-     * @param  int      $id
-     * @param  array    $data
+     * Update the container for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
      * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function updateContainer($id, array $data)
     {
@@ -472,10 +484,14 @@ class ServerRepository
     }
 
     /**
-     * [changeBuild description].
-     * @param  int  $id
-     * @param  array    $data
-     * @return bool
+     * Update the build details for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function changeBuild($id, array $data)
     {
@@ -614,6 +630,18 @@ class ServerRepository
         }
     }
 
+    /**
+     * Update the startup details for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @param  bool   $admin
+     * @return void
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function updateStartup($id, array $data, $admin = false)
     {
         $server = Models\Server::with('variables', 'option.variables')->findOrFail($id);
@@ -691,25 +719,34 @@ class ServerRepository
         });
     }
 
+    /**
+     * Queue a server for deletion
+     *
+     * @param  int   $id
+     * @param  bool  $force
+     * @return void
+     */
     public function queueDeletion($id, $force = false)
     {
         $server = Models\Server::findOrFail($id);
-        DB::beginTransaction();
 
-        try {
-            if ($force) {
-                $server->installed = 3;
-                $server->save();
-            }
+        DB::transaction(function () use ($force, $server) {
+            $server->installed = $force ? 3 : $server->installed;
+            $server->save();
+
             $server->delete();
-
-            return DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+        });
     }
 
+    /**
+     * Delete a server from the system permanetly.
+     *
+     * @param  int   $id
+     * @param  bool  $force
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function delete($id, $force = false)
     {
         $server = Models\Server::withTrashed()->with('node', 'allocations', 'variables')->findOrFail($id);
@@ -774,6 +811,12 @@ class ServerRepository
         });
     }
 
+    /**
+     * Cancel the deletion of a server.
+     *
+     * @param  int  $id
+     * @return void
+     */
     public function cancelDeletion($id)
     {
         $server = Models\Server::withTrashed()->findOrFail($id);
@@ -783,6 +826,14 @@ class ServerRepository
         $server->save();
     }
 
+    /**
+     * Toggle the install status of a serve.
+     *
+     * @param  int    $id
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function toggleInstall($id)
     {
         $server = Models\Server::findOrFail($id);
@@ -795,9 +846,13 @@ class ServerRepository
     }
 
     /**
-     * Suspends a server instance making it unable to be booted or used by a user.
-     * @param  int $id
-     * @return bool
+     * Suspends a server.
+     *
+     * @param  int   $id
+     * @param  bool  $deleted
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function suspend($id, $deleted = false)
     {
@@ -831,9 +886,12 @@ class ServerRepository
     }
 
     /**
-     * Unsuspends a server instance.
-     * @param  int $id
-     * @return bool
+     * Unsuspends a server.
+     *
+     * @param  int   $id
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function unsuspend($id)
     {
@@ -866,6 +924,16 @@ class ServerRepository
         }
     }
 
+    /**
+     * Updates the SFTP password for a server.
+     *
+     * @param  int     $id
+     * @param  string  $password
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function updateSFTPPassword($id, $password)
     {
         $server = Models\Server::with('node')->findOrFail($id);

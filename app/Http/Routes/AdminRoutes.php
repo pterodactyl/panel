@@ -29,6 +29,12 @@ use Illuminate\Routing\Router;
 
 class AdminRoutes
 {
+    /**
+     * Admin routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
 

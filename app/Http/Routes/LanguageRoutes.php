@@ -28,6 +28,12 @@ use Illuminate\Routing\Router;
 
 class LanguageRoutes
 {
+    /**
+     * Language controller routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
         $router->get('language/{lang}', [

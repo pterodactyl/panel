@@ -41,7 +41,7 @@ class ServersController extends Controller
     /**
      * Display the index page with all servers currently on the system.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -62,7 +62,7 @@ class ServersController extends Controller
     /**
      * Display create new server page.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function new(Request $request)
@@ -85,7 +85,7 @@ class ServersController extends Controller
     /**
      * Create server controller method.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Response\RedirectResponse
      */
     public function create(Request $request)
@@ -110,7 +110,7 @@ class ServersController extends Controller
     /**
      * Returns a tree of all avaliable nodes in a given location.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function newServerNodes(Request $request)
@@ -140,8 +140,8 @@ class ServersController extends Controller
     /**
      * Display the index when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewIndex(Request $request, $id)
@@ -152,8 +152,8 @@ class ServersController extends Controller
     /**
      * Display the details page when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewDetails(Request $request, $id)
@@ -166,8 +166,8 @@ class ServersController extends Controller
     /**
      * Display the build details page when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewBuild(Request $request, $id)
@@ -184,8 +184,8 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewStartup(Request $request, $id)
@@ -203,8 +203,8 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewDatabase(Request $request, $id)
@@ -220,8 +220,8 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewManage(Request $request, $id)
@@ -232,8 +232,8 @@ class ServersController extends Controller
     /**
      * Display the deletion page for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewDelete(Request $request, $id)
@@ -244,9 +244,9 @@ class ServersController extends Controller
     /**
      * Update the details for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function setDetails(Request $request, $id)
     {
@@ -272,9 +272,9 @@ class ServersController extends Controller
     /**
      * Set the new docker container for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function setContainer(Request $request, $id)
     {
@@ -299,9 +299,9 @@ class ServersController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function toggleInstall(Request $request, $id)
     {
@@ -323,9 +323,9 @@ class ServersController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function rebuildContainer(Request $request, $id)
     {
@@ -349,9 +349,9 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function manageSuspension(Request $request, $id)
     {
@@ -381,9 +381,9 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function updateBuild(Request $request, $id)
     {
@@ -411,9 +411,9 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function delete(Request $request, $id)
     {
@@ -435,9 +435,9 @@ class ServersController extends Controller
     /**
      * Cancels a pending server deletion request.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function cancelDeletion(Request $request, $id)
     {
@@ -452,10 +452,10 @@ class ServersController extends Controller
     /**
      * Skips the queue and continues the server deletion process.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @param  string  $method
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @param  string                    $method
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function continueDeletion(Request $request, $id, $method = 'safe')
     {
@@ -482,9 +482,9 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function saveStartup(Request $request, $id)
     {
@@ -511,9 +511,10 @@ class ServersController extends Controller
 
     /**
      * Creates a new database assigned to a specific server.
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function newDatabase(Request $request, $id)
     {
@@ -537,9 +538,10 @@ class ServersController extends Controller
 
     /**
      * Resets the database password for a specific database on this server.
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function resetDatabasePassword(Request $request, $id)
     {
@@ -559,9 +561,11 @@ class ServersController extends Controller
 
     /**
      * Deletes a database from a server.
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @param  int                       $database
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function deleteDatabase(Request $request, $id, $database)
     {

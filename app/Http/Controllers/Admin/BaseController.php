@@ -32,16 +32,34 @@ use Pterodactyl\Http\Controllers\Controller;
 
 class BaseController extends Controller
 {
+    /**
+     * Return the admin index view.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function getIndex(Request $request)
     {
         return view('admin.index');
     }
 
+    /**
+     * Return the admin settings view.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function getSettings(Request $request)
     {
         return view('admin.settings');
     }
 
+    /**
+     * Handle settings post request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSettings(Request $request)
     {
         $validator = Validator::make($request->all(), [

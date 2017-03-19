@@ -42,16 +42,16 @@ class Task extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'id' => 'integer',
-         'server' => 'integer',
-         'queued' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'server' => 'integer',
+        'queued' => 'integer',
+    ];
 
     /**
      * The attributes that should be mutated to dates.

@@ -40,7 +40,7 @@ class PackController extends Controller
     /**
      * Display listing of all packs on the system.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -57,7 +57,7 @@ class PackController extends Controller
     /**
      * Display new pack creation form.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function new(Request $request)
@@ -70,7 +70,7 @@ class PackController extends Controller
     /**
      * Display new pack creation modal for use with template upload.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function newTemplate(Request $request)
@@ -83,7 +83,7 @@ class PackController extends Controller
     /**
      * Handle create pack request and route user to location.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function create(Request $request)
@@ -117,8 +117,8 @@ class PackController extends Controller
     /**
      * Display pack view template to user.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function view(Request $request, $id)
@@ -132,9 +132,9 @@ class PackController extends Controller
     /**
      * Handle updating or deleting pack information.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
@@ -168,10 +168,10 @@ class PackController extends Controller
     /**
      * Creates an archive of the pack and downloads it to the browser.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @param  bool    $files
-     * @return \Illuminate\Response\BinaryFileResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @param  bool                      $files
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function export(Request $request, $id, $files = false)
     {
@@ -202,6 +202,7 @@ class PackController extends Controller
 
             return response()->download($filename, 'pack-' . $pack->name . '.zip')->deleteFileAfterSend(true);
         } else {
+
             $fp = fopen($filename, 'a+');
             fwrite($fp, json_encode($json, JSON_PRETTY_PRINT));
             fclose($fp);

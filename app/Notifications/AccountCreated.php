@@ -36,13 +36,14 @@ class AccountCreated extends Notification implements ShouldQueue
     /**
      * The password reset token to send.
      *
-     * @var string
+     * @var object
      */
     public $user;
 
     /**
      * Create a new notification instance.
      *
+     * @param  aray  $user
      * @return void
      */
     public function __construct(array $user)

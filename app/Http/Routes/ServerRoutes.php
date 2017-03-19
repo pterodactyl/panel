@@ -28,6 +28,12 @@ use Illuminate\Routing\Router;
 
 class ServerRoutes
 {
+    /**
+     * Server routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
         // Returns Server Status

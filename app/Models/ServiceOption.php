@@ -42,63 +42,63 @@ class ServiceOption extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'service_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'service_id' => 'integer',
+    ];
 
-     /**
-      * Returns the display startup string for the option and will use the parent
-      * service one if the option does not have one defined.
-      *
-      * @return string
-      */
-     public function getDisplayStartupAttribute($value)
-     {
-         return (is_null($this->startup)) ? $this->service->startup : $this->startup;
-     }
+    /**
+     * Returns the display startup string for the option and will use the parent
+     * service one if the option does not have one defined.
+     *
+     * @return string
+     */
+    public function getDisplayStartupAttribute($value)
+    {
+        return (is_null($this->startup)) ? $this->service->startup : $this->startup;
+    }
 
-     /**
-      * Gets service associated with a service option.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-      */
-     public function service()
-     {
-         return $this->belongsTo(Service::class);
-     }
+    /**
+     * Gets service associated with a service option.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 
-     /**
-      * Gets all servers associated with this service option.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-      */
-     public function servers()
-     {
-         return $this->hasMany(Server::class, 'option_id');
-     }
+    /**
+     * Gets all servers associated with this service option.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class, 'option_id');
+    }
 
-     /**
-      * Gets all variables associated with this service.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-      */
-     public function variables()
-     {
-         return $this->hasMany(ServiceVariable::class, 'option_id');
-     }
+    /**
+     * Gets all variables associated with this service.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function variables()
+    {
+        return $this->hasMany(ServiceVariable::class, 'option_id');
+    }
 
-     /**
-      * Gets all packs associated with this service.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-      */
-     public function packs()
-     {
-         return $this->hasMany(Pack::class, 'option_id');
-     }
+    /**
+     * Gets all packs associated with this service.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function packs()
+    {
+        return $this->hasMany(Pack::class, 'option_id');
+    }
 }

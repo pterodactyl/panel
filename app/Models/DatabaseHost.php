@@ -51,34 +51,34 @@ class DatabaseHost extends Model
         'name', 'host', 'port', 'username', 'max_databases', 'node_id',
     ];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'id' => 'integer',
-         'max_databases' => 'integer',
-         'node_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'max_databases' => 'integer',
+        'node_id' => 'integer',
+    ];
 
-     /**
-      * Gets the node associated with a database host.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-      */
-     public function node()
-     {
-         return $this->belongsTo(Node::class);
-     }
+    /**
+     * Gets the node associated with a database host.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function node()
+    {
+        return $this->belongsTo(Node::class);
+    }
 
-     /**
-      * Gets the databases assocaited with this host.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\HasMany
-      */
-     public function databases()
-     {
-         return $this->hasMany(Database::class);
-     }
+    /**
+     * Gets the databases assocaited with this host.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function databases()
+    {
+        return $this->hasMany(Database::class);
+    }
 }

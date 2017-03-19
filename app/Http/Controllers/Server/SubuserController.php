@@ -37,15 +37,12 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class SubuserController extends Controller
 {
     /**
-     * Controller Constructor.
+     * Displays the subuser overview index.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function __construct()
-    {
-        //
-    }
-
     public function getIndex(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid)->load('subusers.user');
@@ -60,6 +57,14 @@ class SubuserController extends Controller
         ]);
     }
 
+    /**
+     * Displays the a single subuser overview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
     public function getView(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('node');
@@ -80,6 +85,14 @@ class SubuserController extends Controller
         ]);
     }
 
+    /**
+     * Handles editing a subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postView(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid);
@@ -118,6 +131,13 @@ class SubuserController extends Controller
         ]);
     }
 
+    /**
+     * Display new subuser creation page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getNew(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -130,6 +150,13 @@ class SubuserController extends Controller
         ]);
     }
 
+    /**
+     * Handles creating a new subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postNew(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -158,6 +185,14 @@ class SubuserController extends Controller
         return redirect()->route('server.subusers.new', $uuid)->withInput();
     }
 
+    /**
+     * Handles deleting a subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
     public function deleteSubuser(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid);

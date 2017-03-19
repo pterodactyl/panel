@@ -30,19 +30,32 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class CommandRepository
 {
+    /**
+     * The Eloquent Model associated with the requested server.
+     *
+     * @var \Pterodactyl\Models\Server
+     */
     protected $server;
 
+    /**
+     * Constuctor for repository.
+     *
+     * @param  int|\Pterodactyl\Models\Server  $server
+     * @return void
+     */
     public function __construct($server)
     {
         $this->server = ($server instanceof Models\Server) ? $server : Models\Server::findOrFail($server);
     }
 
     /**
-     * [send description].
-     * @param  string   $command
-     * @return bool
-     * @throws DisplayException
-     * @throws RequestException
+     * Sends a command to the daemon.
+     *
+     * @param  string  $command
+     * @return string
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \GuzzleHttp\Exception\RequestException
      */
     public function send($command)
     {

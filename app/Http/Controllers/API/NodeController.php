@@ -142,6 +142,7 @@ class NodeController extends BaseController
       * Returns a listing of the allocation for the specified server id.
       *
       * @param  Request $request
+      * @param  int     $id
       * @return array
       */
      public function allocationsView(Request $request, $id)

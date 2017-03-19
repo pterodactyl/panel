@@ -28,6 +28,12 @@ use Illuminate\Routing\Router;
 
 class RemoteRoutes
 {
+    /**
+     * Remote daemon routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
         $router->group(['prefix' => 'remote'], function () use ($router) {

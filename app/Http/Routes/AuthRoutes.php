@@ -30,6 +30,12 @@ use Illuminate\Routing\Router;
 
 class AuthRoutes
 {
+    /**
+     * Authentication routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
         $router->group([

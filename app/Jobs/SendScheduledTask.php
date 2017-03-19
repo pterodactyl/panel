@@ -37,8 +37,14 @@ class SendScheduledTask extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
+    /**
+     * @var \Pterodactyl\Models\Server
+     */
     protected $server;
 
+    /**
+     * @var \Pterodactyl\Models\Task
+     */
     protected $task;
 
     /**

@@ -29,6 +29,12 @@ use Illuminate\Routing\Router;
 
 class BaseRoutes
 {
+    /**
+     * Base routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
 

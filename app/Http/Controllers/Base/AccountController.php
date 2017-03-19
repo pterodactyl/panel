@@ -38,8 +38,8 @@ class AccountController extends Controller
     /**
      * Display base account information page.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -48,8 +48,10 @@ class AccountController extends Controller
 
     /**
      * Update details for a users account.
-     * @param  \Illuminate\Http\Request $request
-     * @return void
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function update(Request $request)
     {

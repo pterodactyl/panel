@@ -36,6 +36,12 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class APIController extends Controller
 {
+    /**
+     * Display base API index page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         return view('base.api.index', [
@@ -43,11 +49,23 @@ class APIController extends Controller
         ]);
     }
 
+    /**
+     * Display API key creation page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request)
     {
         return view('base.api.new');
     }
 
+    /**
+     * Handle saving new API key.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function save(Request $request)
     {
         try {
@@ -71,6 +89,13 @@ class APIController extends Controller
         return redirect()->route('account.api.new')->withInput();
     }
 
+    /**
+     * Handle revoking API key.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $key
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
     public function revoke(Request $request, $key)
     {
         try {

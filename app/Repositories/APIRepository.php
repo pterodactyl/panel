@@ -37,6 +37,7 @@ class APIRepository
 {
     /**
      * Valid API permissions.
+     *
      * @var array
      */
     protected $permissions = [
@@ -89,14 +90,23 @@ class APIRepository
 
     /**
      * Holder for listing of allowed IPs when creating a new key.
+     *
      * @var array
      */
     protected $allowed = [];
 
+    /**
+     * The eloquent model for a user.
+     *
+     * @var \Pterodactyl\Models\User
+     */
     protected $user;
 
     /**
-     * Constructor.
+     * Constructor for API Repository.
+     *
+     * @param  null|\Pterodactyl\Models\User  $user
+     * @return void
      */
     public function __construct(Models\User $user = null)
     {
@@ -109,12 +119,11 @@ class APIRepository
     /**
      * Create a New API Keypair on the system.
      *
-     * @param  array $data An array with a permissions and allowed_ips key.
+     * @param  array  $data
+     * @return string
      *
-     * @throws Pterodactyl\Exceptions\DisplayException if there was an error that can be safely displayed to end-users.
-     * @throws Pterodactyl\Exceptions\DisplayValidationException if there was a validation error.
-     *
-     * @return string Returns the generated secret token.
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
@@ -213,11 +222,10 @@ class APIRepository
     /**
      * Revokes an API key and associated permissions.
      *
-     * @param  string $key The public key.
-     *
-     * @throws Illuminate\Database\Eloquent\ModelNotFoundException
-     *
+     * @param  string  $key
      * @return void
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function revoke($key)
     {

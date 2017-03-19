@@ -29,13 +29,33 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class PowerRepository
 {
+    /**
+     * The Eloquent Model associated with the requested server.
+     *
+     * @var \Pterodactyl\Models\Server
+     */
     protected $server;
 
+    /**
+     * Constuctor for repository.
+     *
+     * @param  int|\Pterodactyl\Models\Server  $server
+     * @return void
+     */
     public function __construct($server)
     {
         $this->server = ($server instanceof Models\Server) ? $server : Models\Server::findOrFail($server);
     }
 
+    /**
+     * Sends a power option to the daemon.
+     *
+     * @param  string  $action
+     * @return string
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function do($action)
     {
         // We don't use the user's specific daemon secret here since we
@@ -58,21 +78,41 @@ class PowerRepository
         }
     }
 
+    /**
+     * Starts a server.
+     *
+     * @return void
+     */
     public function start()
     {
         $this->do('start');
     }
 
+    /**
+     * Stops a server.
+     *
+     * @return void
+     */
     public function stop()
     {
         $this->do('stop');
     }
 
+    /**
+     * Restarts a server.
+     *
+     * @return void
+     */
     public function restart()
     {
         $this->do('restart');
     }
 
+    /**
+     * Kills a server.
+     *
+     * @return void
+     */
     public function kill()
     {
         $this->do('kill');

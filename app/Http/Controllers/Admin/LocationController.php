@@ -38,7 +38,7 @@ class LocationController extends Controller
     /**
      * Return the location overview page.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -51,8 +51,8 @@ class LocationController extends Controller
     /**
      * Return the location view page.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function view(Request $request, $id)
@@ -63,8 +63,8 @@ class LocationController extends Controller
     /**
      * Handle request to create new location.
      *
-     * @param  Request $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function create(Request $request)
     {
@@ -88,9 +88,9 @@ class LocationController extends Controller
     /**
      * Handle request to update or delete location.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {

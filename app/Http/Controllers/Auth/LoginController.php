@@ -83,7 +83,7 @@ class LoginController extends Controller
      * Handle a login request to the application.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Illuminate\Response\RedirectResponse
      */
     public function login(Request $request)
     {
@@ -126,6 +126,12 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * Handle a TOTP implementation page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function totp(Request $request)
     {
         $verifyKey = $request->session()->get('authentication_token');
@@ -140,6 +146,12 @@ class LoginController extends Controller
         ]);
     }
 
+    /**
+     * Handle a TOTP input.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function totpCheckpoint(Request $request)
     {
         $G2FA = new Google2FA();

@@ -34,15 +34,16 @@ class DeleteServer extends Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     /**
-     * Id of server to be deleted.
-     * @var object
+     * ID of server to be deleted.
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * Create a new job instance.
      *
-     * @param  int  $server
+     * @param  int  $id
      * @return void
      */
     public function __construct($id)

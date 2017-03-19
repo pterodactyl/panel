@@ -31,11 +31,17 @@ class Saved
 {
     use SerializesModels;
 
+    /**
+     * The Eloquent model of the server.
+     *
+     * @var \Pterodactyl\Models\Server
+     */
     public $server;
 
     /**
      * Create a new event instance.
      *
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function __construct(Server $server)

@@ -38,7 +38,7 @@ class ServiceController extends Controller
     /**
      * Display service overview page.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -51,7 +51,7 @@ class ServiceController extends Controller
     /**
      * Display create service page.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function new(Request $request)
@@ -62,8 +62,8 @@ class ServiceController extends Controller
     /**
      * Return base view for a service.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function view(Request $request, $id)
@@ -76,8 +76,8 @@ class ServiceController extends Controller
     /**
      * Return function editing view for a service.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewFunctions(Request $request, $id)
@@ -88,8 +88,8 @@ class ServiceController extends Controller
     /**
      * Handle post action for new service.
      *
-     * @param  Request $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function create(Request $request)
     {
@@ -117,9 +117,9 @@ class ServiceController extends Controller
     /**
      * Edits configuration for a specific service.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function edit(Request $request, $id)
     {

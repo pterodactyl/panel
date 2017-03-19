@@ -57,7 +57,7 @@ class ServiceVariable extends Model
      * Returns the display executable for the option and will use the parent
      * service one if the option does not have one defined.
      *
-     * @return string
+     * @return bool
      */
     public function getRequiredAttribute($value)
     {

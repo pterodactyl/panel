@@ -28,6 +28,12 @@ use Illuminate\Routing\Router;
 
 class APIRoutes
 {
+    /**
+     * API routes.
+     *
+     * @param  \Illuminate\Routing\Router  $router
+     * @return void
+     */
     public function map(Router $router)
     {
         $api = app('Dingo\Api\Routing\Router');

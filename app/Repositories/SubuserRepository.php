@@ -37,6 +37,7 @@ class SubuserRepository
      * Core permissions required for every subuser on the daemon.
      * Without this we cannot connect the websocket or get basic
      * information about the server.
+     *
      * @var array
      */
     protected $coreDaemonPermissions = [
@@ -46,6 +47,7 @@ class SubuserRepository
 
     /**
      * Allowed permissions and their related daemon permission.
+     *
      * @var array
      */
     protected $permissions = [
@@ -99,18 +101,15 @@ class SubuserRepository
         'reset-db-password' => null,
     ];
 
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Creates a new subuser on the server.
-     * @param  int $id     The ID of the server to add this subuser to.
+     *
+     * @param  int    $sid
      * @param  array  $data
-     * @throws DisplayValidationException
-     * @throws DisplayException
      * @return \Pterodactyl\Models\Subuser
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create($sid, array $data)
     {
@@ -202,11 +201,11 @@ class SubuserRepository
 
     /**
      * Revokes a users permissions on a server.
-     * @param  int  $id  The ID of the subuser row in MySQL.
-     * @param  array    $data
-     * @throws DisplayValidationException
-     * @throws DisplayException
+     *
+     * @param  int    $id
      * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete($id)
     {
@@ -232,8 +231,6 @@ class SubuserRepository
             }
             $subuser->delete();
             DB::commit();
-
-            return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error attempting to connect to the daemon to delete this subuser.', $ex);
@@ -241,17 +238,17 @@ class SubuserRepository
             DB::rollBack();
             throw $ex;
         }
-
-        return false;
     }
 
     /**
      * Updates permissions for a given subuser.
-     * @param  int $id  The ID of the subuser row in MySQL. (Not the user ID)
+     *
+     * @param  int    $id
      * @param  array  $data
-     * @throws DisplayValidationException
-     * @throws DisplayException
      * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function update($id, array $data)
     {
@@ -304,8 +301,6 @@ class SubuserRepository
             ]);
 
             DB::commit();
-
-            return true;
         } catch (\GuzzleHttp\Exception\TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error attempting to connect to the daemon to update permissions.', $ex);
@@ -313,7 +308,5 @@ class SubuserRepository
             DB::rollBack();
             throw $ex;
         }
-
-        return false;
     }
 }

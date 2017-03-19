@@ -31,18 +31,10 @@ use Pterodactyl\Http\Controllers\Controller;
 class IndexController extends Controller
 {
     /**
-     * Controller Constructor.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Returns listing of user's servers.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function getIndex(Request $request)
     {
@@ -54,8 +46,10 @@ class IndexController extends Controller
     /**
      * Generate a random string.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $length
      * @return string
+     * @deprecated
      */
     public function getPassword(Request $request, $length = 16)
     {

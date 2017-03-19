@@ -34,11 +34,15 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class NodeRepository
 {
-    public function __construct()
-    {
-        //
-    }
-
+    /**
+     * Creates a new node on the system.
+     *
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Node
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function create(array $data)
     {
         // Validate Fields
@@ -84,6 +88,16 @@ class NodeRepository
         return Models\Node::create($data);
     }
 
+    /**
+     * Updates a node on the system.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Node
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function update($id, array $data)
     {
         $node = Models\Node::findOrFail($id);
@@ -179,8 +193,13 @@ class NodeRepository
 
     /**
      * Adds allocations to a provided node.
-     * @param int $id
-     * @param array   $data
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function addAllocations($id, array $data)
     {
@@ -243,6 +262,14 @@ class NodeRepository
         });
     }
 
+    /**
+     * Deletes a node on the system.
+     *
+     * @param  int  $id
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function delete($id)
     {
         $node = Models\Node::withCount('servers')->findOrFail($id);

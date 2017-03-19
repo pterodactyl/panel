@@ -40,7 +40,7 @@ class ServerObserver
     /**
      * Listen to the Server creating event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function creating(Server $server)
@@ -51,7 +51,7 @@ class ServerObserver
     /**
      * Listen to the Server created event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function created(Server $server)
@@ -72,7 +72,7 @@ class ServerObserver
     /**
      * Listen to the Server deleting event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function deleting(Server $server)
@@ -85,7 +85,7 @@ class ServerObserver
     /**
      * Listen to the Server deleted event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function deleted(Server $server)
@@ -102,7 +102,7 @@ class ServerObserver
     /**
      * Listen to the Server saving event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function saving(Server $server)
@@ -113,7 +113,7 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function saved(Server $server)
@@ -124,7 +124,7 @@ class ServerObserver
     /**
      * Listen to the Server updating event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function updating(Server $server)
@@ -135,7 +135,7 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function updated(Server $server)
