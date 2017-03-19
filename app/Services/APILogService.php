@@ -31,7 +31,7 @@ use Pterodactyl\Models\APILog;
 class APILogService
 {
     /**
-     * Log an API Request
+     * Log an API Request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  null|string               $error

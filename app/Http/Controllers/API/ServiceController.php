@@ -26,7 +26,6 @@ namespace Pterodactyl\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Service;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ServiceController extends BaseController
 {

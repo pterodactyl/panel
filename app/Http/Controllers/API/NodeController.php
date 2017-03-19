@@ -32,7 +32,6 @@ use Dingo\Api\Exception\ResourceException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\NodeRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
@@ -113,13 +112,13 @@ class NodeController extends BaseController
         return $node->toArray();
     }
 
-     /**
-      * Returns a configuration file for a given node.
-      *
-      * @param  Request $request
-      * @param  int     $id
-      * @return array
-      */
+    /**
+     * Returns a configuration file for a given node.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return array
+     */
     public function config(Request $request, $id)
     {
         $node = Node::findOrFail($id);

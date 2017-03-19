@@ -720,7 +720,7 @@ class ServerRepository
     }
 
     /**
-     * Queue a server for deletion
+     * Queue a server for deletion.
      *
      * @param  int   $id
      * @param  bool  $force

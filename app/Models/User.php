@@ -116,6 +116,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         $this->use_totp = ! $this->use_totp;
+
         return $this->save();
     }
 

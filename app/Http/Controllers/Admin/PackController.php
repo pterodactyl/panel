@@ -202,7 +202,6 @@ class PackController extends Controller
 
             return response()->download($filename, 'pack-' . $pack->name . '.zip')->deleteFileAfterSend(true);
         } else {
-
             $fp = fopen($filename, 'a+');
             fwrite($fp, json_encode($json, JSON_PRETTY_PRINT));
             fclose($fp);
