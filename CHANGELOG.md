@@ -3,6 +3,17 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-pre.6 (Courageous Carniadactylus)
+### Fixed
+* `[pre.5]` — Console based server rebuild tool now actually rebuilds the servers with the correct information.
+* `[pre.5]` — Fixes typo and wrong docker contaienr for certain applications.
+
+### Changed
+* Removed all old theme JS and CSS folders to cleanup and avoid confusion in the future.
+
+### Added
+* `[pre.5]` — Added foreign key to `pack_id` to ensure nothing eds up breaking there.
+
 ## v0.6.0-pre.5 (Courageous Carniadactylus)
 ### Changed
 * New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.

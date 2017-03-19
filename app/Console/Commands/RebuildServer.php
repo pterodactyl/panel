@@ -65,15 +65,17 @@ class RebuildServer extends Command
     public function handle()
     {
         if ($this->option('all')) {
-            $servers = Server::with('node', 'option.variables')->get();
+            $servers = Server::all();
         } elseif ($this->option('node')) {
-            $servers = Server::with('node', 'option.variables')->where('node_id', $this->option('node'))->get();
+            $servers = Server::where('node_id', $this->option('node'))->get();
         } elseif ($this->option('server')) {
-            $servers = Server::with('node', 'option.variables')->where('id', $this->option('server'))->get();
+            $servers = Server::where('id', $this->option('server'))->get();
         } else {
             $this->error('You must pass a flag to determine which server(s) to rebuild.');
             return;
         }
+
+        $servers->load('node', 'service', 'option.variables', 'pack');
 
         $this->line('Beginning processing, do not exit this script.');
         $bar = $this->output->createProgressBar(count($servers));
@@ -97,6 +99,11 @@ class RebuildServer extends Command
                         'build' => [
                             'image' => $server->image,
                             'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup]),
+                        ],
+                        'service' => [
+                            'type' => $server->service->folder,
+                            'option' => $server->option->tag,
+                            'pack' => ! is_null($server->pack) ? $server->pack->uuid : null,
                         ],
                     ],
                 ]);
