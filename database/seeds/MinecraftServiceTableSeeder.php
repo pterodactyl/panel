@@ -131,7 +131,7 @@ EOF;
         ], [
             'name' => 'Spigot',
             'description' => 'Spigot is the most widely-used modded Minecraft server software in the world. It powers many of the top Minecraft server networks around to ensure they can cope with their huge player base and ensure the satisfaction of their players. Spigot works by reducing and eliminating many causes of lag, as well as adding in handy features and settings that help make your job of server administration easier.',
-            'docker_image' => 'quay.io/pterodactyl/core:java',
+            'docker_image' => 'quay.io/pterodactyl/core:java-glibc',
             'config_startup' => null,
             'config_files' => '{"spigot.yml":{"parser": "yaml", "find":{"settings.restart-on-crash": "false"}}}',
             'config_logs' => null,
@@ -146,7 +146,7 @@ EOF;
         ], [
             'name' => 'Sponge (SpongeVanilla)',
             'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
-            'docker_image' => 'quay.io/pterodactyl/core:java',
+            'docker_image' => 'quay.io/pterodactyl/core:java-glibc',
             'config_startup' => '{"userInteraction": [ "You need to agree to the EULA"]}',
             'config_files' => null,
             'config_logs' => null,
