@@ -203,7 +203,7 @@ class NodeRepository
             }
         }
 
-        DB::transaction(function () use ($parsed, $node, $data) {
+        DB::transaction(function () use ($data, $node) {
             foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
                 foreach ($data['allocation_ports'] as $port) {
                     // Determine if this is a valid single port, or a valid port range.
