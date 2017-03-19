@@ -42,9 +42,14 @@ class APIRoutes
                 'uses' => 'Pterodactyl\Http\Controllers\API\User\ServerController@info',
             ]);
 
-            $api->put('/server/{uuid}', [
+            $api->post('/server/{uuid}/power', [
                 'as' => 'api.user.server.power',
                 'uses' => 'Pterodactyl\Http\Controllers\API\User\ServerController@power',
+            ]);
+
+            $api->post('/server/{uuid}/command', [
+                'as' => 'api.user.server.command',
+                'uses' => 'Pterodactyl\Http\Controllers\API\User\ServerController@command',
             ]);
         });
 
@@ -55,7 +60,7 @@ class APIRoutes
              */
             $api->get('users', [
                 'as' => 'api.admin.users.list',
-                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@lists',
+                'uses' => 'Pterodactyl\Http\Controllers\API\UserController@index',
             ]);
 
             $api->post('users', [
@@ -83,7 +88,7 @@ class APIRoutes
              */
             $api->get('servers', [
                 'as' => 'api.admin.servers.list',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@lists',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServerController@index',
             ]);
 
             $api->post('servers', [
@@ -126,7 +131,7 @@ class APIRoutes
              */
             $api->get('nodes', [
                 'as' => 'api.admin.nodes.list',
-                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@lists',
+                'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@index',
             ]);
 
             $api->post('nodes', [
@@ -150,7 +155,7 @@ class APIRoutes
             ]);
 
             $api->get('nodes/{id}/config', [
-                'as' => 'api.admin.nodes.view',
+                'as' => 'api.admin.nodes.view.config',
                 'uses' => 'Pterodactyl\Http\Controllers\API\NodeController@config',
             ]);
 
@@ -164,7 +169,7 @@ class APIRoutes
              */
             $api->get('locations', [
                 'as' => 'api.admin.locations.list',
-                'uses' => 'Pterodactyl\Http\Controllers\API\LocationController@lists',
+                'uses' => 'Pterodactyl\Http\Controllers\API\LocationController@index',
             ]);
 
             /*
@@ -172,7 +177,7 @@ class APIRoutes
              */
             $api->get('services', [
                 'as' => 'api.admin.services.list',
-                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@lists',
+                'uses' => 'Pterodactyl\Http\Controllers\API\ServiceController@index',
             ]);
 
             $api->get('services/{id}', [

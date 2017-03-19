@@ -25,8 +25,8 @@
 namespace Pterodactyl\Http\Controllers\API;
 
 use Log;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
 use Dingo\Api\Exception\ResourceException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\ServerRepository;
@@ -35,44 +35,30 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
-/**
- * @Resource("Servers")
- */
 class ServerController extends BaseController
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
-     * List All Servers.
-     *
      * Lists all servers currently on the system.
      *
-     * @Get("/servers/{?page}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
-     * })
-     * @Response(200)
+     * @param  Request  $request
+     * @return array
      */
-    public function lists(Request $request)
+    public function index(Request $request)
     {
-        return Models\Server::all()->toArray();
+        return Server::all()->toArray();
     }
 
     /**
      * Create Server.
      *
-     * @Post("/servers")
-     * @Versions({"v1"})
-     * @Response(201)
+     * @param  Request  $request
+     * @return array
      */
     public function create(Request $request)
     {
+        $repo = new ServerRepository;
+
         try {
-            $repo = new ServerRepository;
             $server = $repo->create($request->all());
 
             return ['id' => $server->id];
@@ -89,22 +75,13 @@ class ServerController extends BaseController
     /**
      * List Specific Server.
      *
-     * Lists specific fields about a server or all fields pertaining to that server.
-     *
-     * @Get("/servers/{id}{?fields}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the server to get information on."),
-     *      @Parameter("fields", type="string", required=false, description="A comma delimidated list of fields to include.")
-     * })
-     * @Response(200)
+     * @param  Request  $request
+     * @param  int      $id
+     * @return array
      */
     public function view(Request $request, $id)
     {
-        $server = Models\Server::with('node', 'allocations', 'pack')->where('id', $id)->first();
-        if (! $server) {
-            throw new NotFoundHttpException('No server by that ID was found.');
-        }
+        $server = Server::with('node', 'allocations', 'pack')->where('id', $id)->firstOrFail();
 
         if (! is_null($request->input('fields'))) {
             $fields = explode(',', $request->input('fields'));
@@ -138,32 +115,20 @@ class ServerController extends BaseController
     /**
      * Update Server configuration.
      *
-     * Updates display information on panel.
-     *
-     * @Patch("/servers/{id}/config")
-     * @Versions({"v1"})
-     * @Transaction({
-     *      @Request({
-     *          "owner": "new@email.com",
-     *          "name": "New Name",
-     *          "reset_token": true
-     *      }, headers={"Authorization": "Bearer <token>"}),
-     *      @Response(200, body={"name": "New Name"}),
-     *      @Response(422)
-     * })
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the server to modify.")
-     * })
+     * @param  Request  $request
+     * @param  int      $id
+     * @return array
      */
     public function config(Request $request, $id)
     {
+        $repo = new ServerRepository;
+
         try {
-            $server = new ServerRepository;
-            $server->updateDetails($id, $request->only([
-                'owner', 'name', 'reset_token',
+            $server = $repo->updateDetails($id, $request->intersect([
+                'owner_id', 'name', 'reset_token',
             ]));
 
-            return Models\Server::findOrFail($id);
+            return ['id' => $id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -176,42 +141,21 @@ class ServerController extends BaseController
     /**
      * Update Server Build Configuration.
      *
-     * Updates server build information on panel and on node.
-     *
-     * @Patch("/servers/{id}/build")
-     * @Versions({"v1"})
-     * @Transaction({
-     *      @Request({
-     *          "default": "192.168.0.1:25565",
-     *          "add_additional": [
-     *              "192.168.0.1:25566",
-     *              "192.168.0.1:25567",
-     *              "192.168.0.1:25568"
-     *          ],
-     *          "remove_additional": [],
-     *          "memory": 1024,
-     *          "swap": 0,
-     *          "io": 500,
-     *          "cpu": 0,
-     *          "disk": 1024
-     *      }, headers={"Authorization": "Bearer <token>"}),
-     *      @Response(200, body={"name": "New Name"}),
-     *      @Response(422)
-     * })
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the server to modify.")
-     * })
+     * @param  Request  $request
+     * @param  int      $id
+     * @return array
      */
     public function build(Request $request, $id)
     {
+        $repo = new ServerRepository;
+
         try {
-            $server = new ServerRepository;
-            $server->changeBuild($id, $request->only([
-                'default', 'add_additional', 'remove_additional',
-                'memory', 'swap', 'io', 'cpu', 'disk',
+            $server = $repo->changeBuild($id, $request->intersect([
+                'allocation_id', 'add_allocations', 'remove_allocations',
+                'memory', 'swap', 'io', 'cpu',
             ]));
 
-            return Models\Server::findOrFail($id);
+            return ['id' => $id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -224,18 +168,15 @@ class ServerController extends BaseController
     /**
      * Suspend Server.
      *
-     * @Post("/servers/{id}/suspend")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the server."),
-     * })
-     * @Response(204)
+     * @param  Request  $request
+     * @param  int      $id
+     * @return void
      */
     public function suspend(Request $request, $id)
     {
         try {
-            $server = new ServerRepository;
-            $server->suspend($id);
+            $repo = new ServerRepository;
+            $repo->suspend($id);
 
             return $this->response->noContent();
         } catch (DisplayException $ex) {
@@ -248,18 +189,15 @@ class ServerController extends BaseController
     /**
      * Unsuspend Server.
      *
-     * @Post("/servers/{id}/unsuspend")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the server."),
-     * })
-     * @Response(204)
+     * @param  Request  $request
+     * @param  int      $id
+     * @return void
      */
     public function unsuspend(Request $request, $id)
     {
         try {
-            $server = new ServerRepository;
-            $server->unsuspend($id);
+            $repo = new ServerRepository;
+            $repo->unsuspend($id);
 
             return $this->response->noContent();
         } catch (DisplayException $ex) {
@@ -272,19 +210,17 @@ class ServerController extends BaseController
     /**
      * Delete Server.
      *
-     * @Delete("/servers/{id}/{force}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the server."),
-     *      @Parameter("force", type="string", required=false, description="Use 'force' if the server should be removed regardless of daemon response."),
-     * })
-     * @Response(204)
+     * @param  Request  $request
+     * @param  int      $id
+     * @param  string|null $force
+     * @return void
      */
     public function delete(Request $request, $id, $force = null)
     {
+        $repo = new ServerRepository;
+
         try {
-            $server = new ServerRepository;
-            $server->deleteServer($id, $force);
+            $repo->deleteServer($id, $force);
 
             return $this->response->noContent();
         } catch (DisplayException $ex) {

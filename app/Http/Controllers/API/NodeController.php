@@ -25,8 +25,9 @@
 namespace Pterodactyl\Http\Controllers\API;
 
 use Log;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Allocation;
 use Dingo\Api\Exception\ResourceException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\NodeRepository;
@@ -35,106 +36,66 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
-/**
- * @Resource("Servers")
- */
 class NodeController extends BaseController
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
-     * List All Nodes.
-     *
      * Lists all nodes currently on the system.
      *
-     * @Get("/nodes/{?page}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
-     * })
-     * @Response(200)
+     * @param  Request  $request
+     * @return array
      */
-    public function lists(Request $request)
+    public function index(Request $request)
     {
-        return Models\Node::all()->toArray();
+        return Node::all()->toArray();
     }
 
     /**
-     * Create a New Node.
+     * Create a new node.
      *
-     * @Post("/nodes")
-     * @Versions({"v1"})
-     * @Transaction({
-     *      @Request({
-     *      	'name' => 'My API Node',
-     *      	'location' => 1,
-     *      	'public' => 1,
-     *      	'fqdn' => 'daemon.wuzzle.woo',
-     *      	'scheme' => 'https',
-     *      	'memory' => 10240,
-     *      	'memory_overallocate' => 100,
-     *      	'disk' => 204800,
-     *      	'disk_overallocate' => -1,
-     *      	'daemonBase' => '/srv/daemon-data',
-     *      	'daemonSFTP' => 2022,
-     *      	'daemonListen' => 8080
-     *      }, headers={"Authorization": "Bearer <jwt-token>"}),
-     *       @Response(200),
-     *       @Response(422, body={
-     *          "message": "A validation error occured.",
-     *          "errors": {},
-     *          "status_code": 422
-     *       }),
-     *       @Response(503, body={
-     *       	"message": "There was an error while attempting to add this node to the system.",
-     *       	"status_code": 503
-     *       })
-     * })
+     * @param  Request $request
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(Request $request)
     {
-        try {
-            $repo = new NodeRepository;
-            $node = $repo->create($request->only([
-                'name', 'location_id', 'public', 'fqdn',
-                'scheme', 'memory', 'memory_overallocate',
-                'disk', 'disk_overallocate', 'daemonBase',
-                'daemonSFTP', 'daemonListen',
-            ]));
+        $repo = new NodeRepository;
 
-            return ['id' => $repo->id];
+        try {
+            $node = $repo->create(array_merge(
+                $request->only([
+                    'public', 'disk_overallocate', 'memory_overallocate',
+                ]),
+                $request->intersect([
+                    'name', 'location_id', 'fqdn',
+                    'scheme', 'memory', 'disk',
+                    'daemonBase', 'daemonSFTP', 'daemonListen',
+                ])
+            ));
+
+            return ['id' => $node->id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
             throw new ResourceException($ex->getMessage());
         } catch (\Exception $ex) {
             Log::error($ex);
-            throw new BadRequestHttpException('There was an error while attempting to add this node to the system.');
+            throw new BadRequestHttpException('There was an error while attempting to add this node to the system. This error has been logged.');
         }
     }
 
     /**
-     * List Specific Node.
-     *
      * Lists specific fields about a server or all fields pertaining to that node.
      *
-     * @Get("/nodes/{id}/{?fields}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the node to get information on."),
-     *      @Parameter("fields", type="string", required=false, description="A comma delimidated list of fields to include.")
-     * })
-     * @Response(200)
+     * @param  Request  $request
+     * @param  int      $id
+     * @param  string   $fields
+     * @return array
      */
     public function view(Request $request, $id, $fields = null)
     {
-        $node = Models\Node::with('allocations')->where('id', $id)->first();
-        if (! $node) {
-            throw new NotFoundHttpException('No node by that ID was found.');
-        }
+        $node = Node::with('allocations')->findOrFail($id);
 
         $node->allocations->transform(function ($item) {
             return collect($item)->only([
@@ -142,69 +103,64 @@ class NodeController extends BaseController
             ]);
         });
 
-        if (! is_null($request->input('fields'))) {
+        if (! empty($request->input('fields'))) {
             $fields = explode(',', $request->input('fields'));
             if (! empty($fields) && is_array($fields)) {
                 return collect($node)->only($fields);
             }
         }
 
-        return $node;
+        return $node->toArray();
     }
 
+     /**
+      * Returns a configuration file for a given node.
+      *
+      * @param  Request $request
+      * @param  int     $id
+      * @return array
+      */
     public function config(Request $request, $id)
     {
-        $node = Models\Node::where('id', $id)->first();
-        if (! $node) {
-            throw new NotFoundHttpException('No node by that ID was found.');
-        }
+        $node = Node::findOrFail($id);
 
         return $node->getConfigurationAsJson();
     }
 
      /**
-      * List all Node Allocations.
-      *
       * Returns a listing of all allocations for every node.
       *
-      * @Get("/nodes/allocations")
-      * @Versions({"v1"})
-      * @Response(200)
+      * @param  Request $request
+      * @return array
       */
      public function allocations(Request $request)
      {
-         return Models\Allocation::all()->toArray();
+         return Allocation::all()->toArray();
      }
 
      /**
-      * List Node Allocation based on assigned to ID.
-      *
       * Returns a listing of the allocation for the specified server id.
       *
-      * @Get("/nodes/allocations/{id}")
-      * @Versions({"v1"})
-      * @Response(200)
+      * @param  Request $request
+      * @return array
       */
      public function allocationsView(Request $request, $id)
      {
-         return Models\Allocation::where('server_id', $id)->get()->toArray();
+         return Allocation::where('server_id', $id)->get()->toArray();
      }
 
     /**
-     * Delete Node.
+     * Delete a node.
      *
-     * @Delete("/nodes/{id}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the node."),
-     * })
-     * @Response(204)
+     * @param  Request $request
+     * @param  int     $id
+     * @return void
      */
     public function delete(Request $request, $id)
     {
+        $repo = new NodeRepository;
         try {
-            $node = new NodeRepository;
-            $node->delete($id);
+            $repo->delete($id);
 
             return $this->response->noContent();
         } catch (DisplayException $ex) {

@@ -27,26 +27,15 @@ namespace Pterodactyl\Http\Controllers\API;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Location;
 
-/**
- * @Resource("Servers")
- */
 class LocationController extends BaseController
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
-     * List All Locations.
-     *
      * Lists all locations currently on the system.
      *
-     * @Get("/locations")
-     * @Versions({"v1"})
-     * @Response(200)
+     * @param  Request  $request
+     * @return array
      */
-    public function lists(Request $request)
+    public function index(Request $request)
     {
         return Location::with('nodes')->get()->map(function ($item) {
             $item->nodes->transform(function ($item) {

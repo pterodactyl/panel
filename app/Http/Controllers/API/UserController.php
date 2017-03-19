@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Dingo\Api\Exception\ResourceException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\UserRepository;
@@ -33,51 +33,29 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
-/**
- * @Resource("Users")
- */
 class UserController extends BaseController
 {
-    public function __construct()
-    {
-    }
-
     /**
-     * List All Users.
-     *
      * Lists all users currently on the system.
      *
-     * @Get("/users/{?page}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("page", type="integer", description="The page of results to view.", default=1)
-     * })
-     * @Response(200)
+     * @param  Request  $request
+     * @return array
      */
-    public function lists(Request $request)
+    public function index(Request $request)
     {
-        return Models\User::all()->toArray();
+        return User::all()->toArray();
     }
 
     /**
-     * List Specific User.
-     *
      * Lists specific fields about a user or all fields pertaining to that user.
      *
-     * @Get("/users/{id}/{fields}")
-     * @Versions({"v1"})
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the user to get information on."),
-     *      @Parameter("fields", type="string", required=false, description="A comma delimidated list of fields to include.")
-     * })
-     * @Response(200)
+     * @param  Request  $request
+     * @param  int      $id
+     * @return array
      */
     public function view(Request $request, $id)
     {
-        $user = Models\User::with('servers')->where((is_numeric($id) ? 'id' : 'email'), $id)->first();
-        if (! $user->first()) {
-            throw new NotFoundHttpException('No user by that ID was found.');
-        }
+        $user = User::with('servers')->where((is_numeric($id) ? 'id' : 'email'), $id)->firstOrFail();
 
         $user->servers->transform(function ($item) {
             return collect($item)->only([
@@ -100,31 +78,20 @@ class UserController extends BaseController
     /**
      * Create a New User.
      *
-     * @Post("/users")
-     * @Versions({"v1"})
-     * @Transaction({
-     *      @Request({
-     *          "email": "foo@example.com",
-     *          "password": "foopassword",
-     *          "admin": false,
-     *          "custom_id": 123
-     *       }, headers={"Authorization": "Bearer <token>"}),
-     *       @Response(201),
-     *       @Response(422)
-     * })
+     * @param  Request  $request
+     * @return array
      */
     public function create(Request $request)
     {
-        try {
-            $user = new UserRepository;
-            $create = $user->create($request->only([
-                'email', 'username', 'name_first',
-                'name_last', 'password',
-                'root_admin', 'custom_id',
-            ]));
-            $create = $user->create($request->input('email'), $request->input('password'), $request->input('admin'), $request->input('custom_id'));
+        $repo = new UserRepository;
 
-            return ['id' => $create];
+        try {
+            $user = $user->create($request->only([
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
+            ]));
+
+            return ['id' => $user->id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -137,32 +104,21 @@ class UserController extends BaseController
     /**
      * Update an Existing User.
      *
-     * The data sent in the request will be used to update the existing user on the system.
-     *
-     * @Patch("/users/{id}")
-     * @Versions({"v1"})
-     * @Transaction({
-     *      @Request({
-     *          "email": "new@email.com"
-     *      }, headers={"Authorization": "Bearer <token>"}),
-     *      @Response(200, body={"email": "new@email.com"}),
-     *      @Response(422)
-     * })
-     * @Parameters({
-     *         @Parameter("id", type="integer", required=true, description="The ID of the user to modify.")
-     * })
+     * @param  Request  $request
+     * @param  int      $id
+     * @return array
      */
     public function update(Request $request, $id)
     {
+        $repo = new UserRepository;
+
         try {
-            $user = new UserRepository;
-            $user->update($id, $request->only([
-                'username', 'email', 'name_first',
-                'name_last', 'password',
-                'root_admin', 'language',
+            $user = $repo->update($id, $request->only([
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
             ]));
 
-            return Models\User::findOrFail($id);
+            return ['id' => $id];
         } catch (DisplayValidationException $ex) {
             throw new ResourceException('A validation error occured.', json_decode($ex->getMessage(), true));
         } catch (DisplayException $ex) {
@@ -175,22 +131,16 @@ class UserController extends BaseController
     /**
      * Delete a User.
      *
-     * @Delete("/users/{id}")
-     * @Versions({"v1"})
-     * @Transaction({
-     *      @Request(headers={"Authorization": "Bearer <token>"}),
-     *      @Response(204),
-     *      @Response(422)
-     * })
-     * @Parameters({
-     *      @Parameter("id", type="integer", required=true, description="The ID of the user to delete.")
-     * })
+     * @param  Request  $request
+     * @param  int      $id
+     * @return void
      */
     public function delete(Request $request, $id)
     {
+        $repo = new UserRepository;
+
         try {
-            $user = new UserRepository;
-            $user->delete($id);
+            $repo->delete($id);
 
             return $this->response->noContent();
         } catch (DisplayException $ex) {

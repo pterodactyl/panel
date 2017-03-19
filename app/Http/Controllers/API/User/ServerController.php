@@ -25,15 +25,15 @@
 namespace Pterodactyl\Http\Controllers\API\User;
 
 use Log;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\API\BaseController;
 
 class ServerController extends BaseController
 {
     public function info(Request $request, $uuid)
     {
-        $server = Models\Server::byUuid($uuid)->load('allocations');
+        $server = Server::byUuid($uuid)->load('allocations');
 
         try {
             $response = $server->guzzleClient()->request('GET', '/server');
@@ -82,13 +82,44 @@ class ServerController extends BaseController
 
     public function power(Request $request, $uuid)
     {
-        $server = Models\Server::byUuid($uuid);
-        Auth::user()->can('power-' . $request->input('action'), $server);
+        $server = Server::byUuid($uuid);
+        $request->user()->can('power-' . $request->input('action'), $server);
+
+        if (empty($request->input('action'))) {
+            return $this->response()->error([
+                'error' => 'An action must be passed to this request.',
+            ], 422);
+        }
 
         $res = $server->guzzleClient()->request('PUT', '/server/power', [
             'exceptions' => false,
             'json' => [
                 'action' => $request->input('action'),
+            ],
+        ]);
+
+        if ($res->getStatusCode() !== 204) {
+            return $this->response->error(json_decode($res->getBody())->error, $res->getStatusCode());
+        }
+
+        return $this->response->noContent();
+    }
+
+    public function command(Request $request, $uuid)
+    {
+        $server = Server::byUuid($uuid);
+        $request->user()->can('send-command', $server);
+
+        if (empty($request->input('command'))) {
+            return $this->response()->error([
+                'error' => 'A command must be passed to this request.',
+            ], 422);
+        }
+
+        $res = $server->guzzleClient()->request('POST', '/server/command', [
+            'exceptions' => false,
+            'json' => [
+                'command' => $request->input('command'),
             ],
         ]);
 

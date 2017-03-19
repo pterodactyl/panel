@@ -24,31 +24,20 @@
 
 namespace Pterodactyl\Http\Controllers\API;
 
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Service;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @Resource("Services")
- */
 class ServiceController extends BaseController
 {
-    public function __construct()
+    public function index(Request $request)
     {
-        //
-    }
-
-    public function lists(Request $request)
-    {
-        return Models\Service::all()->toArray();
+        return Service::all()->toArray();
     }
 
     public function view(Request $request, $id)
     {
-        $service = Models\Service::with('options.variables', 'options.packs')->find($id);
-        if (! $service) {
-            throw new NotFoundHttpException('No service by that ID was found.');
-        }
+        $service = Service::with('options.variables', 'options.packs')->findOrFail($id);
 
         return $service->toArray();
     }
