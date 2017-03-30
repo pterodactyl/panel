@@ -12,7 +12,7 @@
     ],
     "require": {
         "php": ">=5.6.4",
-        "laravel/framework": "5.3.21",
+        "laravel/framework": "5.3.31",
         "barryvdh/laravel-debugbar": "2.2.3",
         "doctrine/dbal": "2.5.5",
         "guzzlehttp/guzzle": "6.2.2",
