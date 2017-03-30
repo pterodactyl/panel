@@ -26,7 +26,6 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="_token" content="{{ csrf_token() }}">
 
-
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
         <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
         <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
@@ -35,6 +34,8 @@
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#367fa9">
+
+        @include('layouts.scripts')
 
         @section('scripts')
             {!! Theme::css('vendor/select2/select2.min.css') !!}
@@ -75,13 +76,13 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="Quick Access"><i class="fa fa-fighter-jet" style="margin-top:4px;padding-bottom:2px;"></i></a>
+                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="Quick Access"><i class="fa fa-fighter-jet"></i></a>
                             </li>
                             <li>
-                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
                             </li>
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -171,8 +172,8 @@
                 </section>
             </div>
             <footer class="main-footer">
-                <div class="pull-right hidden-xs small text-gray">
-                    <strong>v</strong> {{ config('app.version') }}
+                <div class="pull-right hidden-xs small text-gray" style="margin-right:10px;">
+                    <strong>v</strong> {{ config('app.version') }} &nbsp;&nbsp; <small class="muted muted-hover"><a href="https://patreon.com/pterry" target="_blank"><i class="fa fa-credit-card"></i></a></small>
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>

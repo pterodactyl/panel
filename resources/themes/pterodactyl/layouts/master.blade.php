@@ -35,6 +35,8 @@
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#367fa9">
 
+        @include('layouts.scripts')
+
         @section('scripts')
             {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
             {!! Theme::css('vendor/adminlte/admin.min.css') !!}
@@ -73,15 +75,15 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a>
+                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>
                             </li>
                             @if(Auth::user()->isRootAdmin())
                                 <li>
-                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
                                 </li>
                             @endif
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off"></i></a></li>
                             </li>
                         </ul>
                     </div>
