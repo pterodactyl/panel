@@ -46,62 +46,6 @@ class SubuserRepository
     ];
 
     /**
-     * Allowed permissions and their related daemon permission.
-     *
-     * @var array
-     */
-    protected $permissions = [
-        // Power Permissions
-        'power-start' => 's:power:start',
-        'power-stop' => 's:power:stop',
-        'power-restart' => 's:power:restart',
-        'power-kill' => 's:power:kill',
-
-        // Commands
-        'send-command' => 's:command',
-
-        // File Manager
-        'list-files' => 's:files:get',
-        'edit-files' => 's:files:read',
-        'save-files' => 's:files:post',
-        'create-files' => 's:files:create',
-        'download-files' => null,
-        'upload-files' => 's:files:upload',
-        'delete-files' => 's:files:delete',
-        'move-files' => 's:files:move',
-        'copy-files' => 's:files:copy',
-        'compress-files' => 's:files:compress',
-        'decompress-files' => 's:files:decompress',
-
-        // Subusers
-        'list-subusers' => null,
-        'view-subuser' => null,
-        'edit-subuser' => null,
-        'create-subuser' => null,
-        'delete-subuser' => null,
-
-        // Tasks
-        'list-tasks' => null,
-        'view-task' => null,
-        'toggle-task' => null,
-        'delete-task' => null,
-        'create-task' => null,
-        'queue-task' => null,
-
-        // Management
-        'set-connection' => null,
-        'view-startup' => null,
-        'edit-startup' => null,
-        'view-sftp' => null,
-        'reset-sftp' => 's:set-password',
-        'view-sftp-password' => null,
-
-        // Databases
-        'view-databases' => null,
-        'reset-db-password' => null,
-    ];
-
-    /**
      * Creates a new subuser on the server.
      *
      * @param  int    $sid
@@ -155,12 +99,14 @@ class SubuserRepository
                 'daemonSecret' => (string) $uuid->generate('servers', 'uuid'),
             ]);
 
+            $perms = Permission::list(true);
             $daemonPermissions = $this->coreDaemonPermissions;
+
             foreach ($data['permissions'] as $permission) {
-                if (array_key_exists($permission, $this->permissions)) {
+                if (array_key_exists($permission, $perms)) {
                     // Build the daemon permissions array for sending.
-                    if (! is_null($this->permissions[$permission])) {
-                        array_push($daemonPermissions, $this->permissions[$permission]);
+                    if (! is_null($perms[$permission])) {
+                        array_push($daemonPermissions, $perms[$permission]);
                     }
 
                     Models\Permission::create([
@@ -272,12 +218,14 @@ class SubuserRepository
                 $permission->delete();
             }
 
+            $perms = Permission::list(true);
             $daemonPermissions = $this->coreDaemonPermissions;
+
             foreach ($data['permissions'] as $permission) {
-                if (array_key_exists($permission, $this->permissions)) {
+                if (array_key_exists($permission, $perms)) {
                     // Build the daemon permissions array for sending.
-                    if (! is_null($this->permissions[$permission])) {
-                        array_push($daemonPermissions, $this->permissions[$permission]);
+                    if (! is_null($perms[$permission])) {
+                        array_push($daemonPermissions, $perms[$permission]);
                     }
                     Models\Permission::create([
                         'subuser_id' => $subuser->id,

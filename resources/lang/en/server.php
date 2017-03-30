@@ -59,24 +59,24 @@ return [
             'server_header' => 'Server Management',
             'task_header' => 'Task Management',
             'sftp_header' => 'SFTP Management',
-            'db_header' => 'Database Management',
-            'start' => [
+            'database_header' => 'Database Management',
+            'power_start' => [
                 'title' => 'Start Server',
                 'description' => 'Allows user to start the server.',
             ],
-            'stop' => [
+            'power_stop' => [
                 'title' => 'Stop Server',
                 'description' => 'Allows user to stop the server.',
             ],
-            'restart' => [
+            'power_restart' => [
                 'title' => 'Restart Server',
                 'description' => 'Allows user to restart the server.',
             ],
-            'kill' => [
+            'power_kill' => [
                 'title' => 'Kill Server',
                 'description' => 'Allows user to kill the server process.',
             ],
-            'command' => [
+            'send_command' => [
                 'title' => 'Send Console Command',
                 'description' => 'Allows sending a command from the console. If the user does not have stop or restart permissions they cannot send the application\'s stop command.',
             ],

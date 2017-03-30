@@ -79,6 +79,7 @@ class SubuserController extends Controller
             'server' => $server,
             'node' => $server->node,
             'subuser' => $subuser,
+            'permlist' => Models\Permission::list(),
             'permissions' => $subuser->permissions->mapWithKeys(function ($item, $key) {
                 return [$item->permission => true];
             }),
@@ -146,6 +147,7 @@ class SubuserController extends Controller
 
         return view('server.users.new', [
             'server' => $server,
+            'permissions' => Models\Permission::list(),
             'node' => $server->node,
         ]);
     }
