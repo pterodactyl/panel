@@ -182,4 +182,14 @@ class LoginController extends Controller
             return redirect()->route('auth.login');
         }
     }
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'user';
+    }
 }
