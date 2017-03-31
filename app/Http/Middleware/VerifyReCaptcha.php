@@ -17,7 +17,7 @@ class VerifyReCaptcha
      */
     public function handle($request, Closure $next)
     {
-        if (!config('recaptcha.enabled')) return next($request);
+        if (!config('recaptcha.enabled')) return $next($request);
         
         $response_domain = null;
 
