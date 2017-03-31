@@ -99,7 +99,7 @@ class SubuserRepository
                 'daemonSecret' => (string) $uuid->generate('servers', 'uuid'),
             ]);
 
-            $perms = Permission::list(true);
+            $perms = Models\Permission::list(true);
             $daemonPermissions = $this->coreDaemonPermissions;
 
             foreach ($data['permissions'] as $permission) {
