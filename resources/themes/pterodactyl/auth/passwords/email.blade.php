@@ -58,7 +58,7 @@
             </div>
             <div class="col-xs-8">
                 {!! csrf_field() !!}
-                <button type="submit" class="btn btn-primary btn-block btn-flat g-recaptcha" data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit'>@lang('auth.request_reset')</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat g-recaptcha" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.request_reset')</button>
             </div>
         </div>
     </form>
@@ -67,10 +67,12 @@
 
 @section('scripts')
     @parent
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script>
-       function onSubmit(token) {
-         document.getElementById("resetForm").submit();
-       }
-     </script>
+    @if(config('recaptcha.enabled'))
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+        function onSubmit(token) {
+            document.getElementById("resetForm").submit();
+        }
+        </script>
+     @endif
 @endsection
