@@ -123,16 +123,24 @@
                             <th style="width:2%;"></th>
                             <th>Identifier</th>
                             <th>Server Name</th>
+                            <th>Access</th>
                             <th>Node</th>
                             <th style="width:10%;"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($user->servers as $server)
+                        @foreach($user->serverAccessCollection() as $server)
                             <tr>
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>
                                 <td><code>{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
+                                <td>
+                                    @if($server->owner_id === $user->id)
+                                        @lang('strings.owner')
+                                    @else
+                                        @lang('strings.subuser')
+                                    @endif
+                                </td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
                                 <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
                             </td>
