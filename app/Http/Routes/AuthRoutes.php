@@ -55,6 +55,7 @@ class AuthRoutes
             // Handle Login
             $router->post('login', [
                 'uses' => 'Auth\LoginController@login',
+                'middleware' => 'recaptcha',
             ]);
 
             $router->get('login/totp', [
@@ -75,6 +76,7 @@ class AuthRoutes
             // Handle Password Reset
             $router->post('password', [
                 'uses' => 'Auth\ForgotPasswordController@sendResetLinkEmail',
+                'middleware' => 'recaptcha',
             ]);
 
             // Show Verification Checkpoint
@@ -87,6 +89,7 @@ class AuthRoutes
             $router->post('password/reset', [
                 'as' => 'auth.reset.post',
                 'uses' => 'Auth\ResetPasswordController@reset',
+                'middleware' => 'recaptcha',
             ]);
         });
 
