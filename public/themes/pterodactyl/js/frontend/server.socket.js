@@ -38,9 +38,13 @@ var Server = (function ()  {
             },
             newest_on_top: true,
             delay: 2000,
+            offset: {
+                x: 20,
+                y: 60,
+            },
             animate: {
-                enter: 'animated zoomInDown',
-                exit: 'animated zoomOutDown'
+                enter: 'animated bounceInUp',
+                exit: 'animated bounceOutDown'
             }
         });
 
@@ -56,7 +60,7 @@ var Server = (function ()  {
                     message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
                 }, {
                     type: 'danger',
-                    delay: 0
+                    delay: 0,
                 });
             }
         });

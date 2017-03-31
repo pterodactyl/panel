@@ -277,13 +277,9 @@ class NodeRepository
             throw new DisplayException('You cannot delete a node with servers currently attached to it.');
         }
 
-        DB::beginTransaction();
-
-        try {
+        DB::transaction(function () use ($node) {
             // Unlink Database Servers
-            Models\DatabaseServer::where('linked_node', $node->id)->update([
-                'linked_node' => null,
-            ]);
+            Models\DatabaseHost::where('node_id', $node->id)->update(['node_id' => null]);
 
             // Delete Allocations
             Models\Allocation::where('node_id', $node->id)->delete();
@@ -293,11 +289,6 @@ class NodeRepository
 
             // Delete Node
             $node->delete();
-
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollback();
-            throw $ex;
-        }
+        });
     }
 }

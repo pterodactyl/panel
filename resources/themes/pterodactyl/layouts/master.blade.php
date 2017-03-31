@@ -35,6 +35,8 @@
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#367fa9">
 
+        @include('layouts.scripts')
+
         @section('scripts')
             {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
             {!! Theme::css('vendor/adminlte/admin.min.css') !!}
@@ -73,15 +75,15 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a>
+                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>
                             </li>
                             @if(Auth::user()->isRootAdmin())
                                 <li>
-                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
                                 </li>
                             @endif
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -127,24 +129,14 @@
                                 </a>
                             </li>
                             @can('list-files', $server)
-                                <li class="treeview
-                                    @if(in_array(Route::currentRouteName(), ['server.files.index', 'server.files.edit', 'server.files.add']))
-                                        active
+                                <li
+                                    @if(starts_with(Route::currentRouteName(), 'server.files'))
+                                        class="active"
                                     @endif
-                                ">
-                                    <a href="#">
-                                        <i class="fa fa-files-o"></i>
-                                        <span>@lang('navigation.server.file_management')</span>
-                                        <span class="pull-right-container">
-                                            <i class="fa fa-angle-left pull-right"></i>
-                                        </span>
+                                >
+                                    <a href="{{ route('server.files.index', $server->uuidShort) }}">
+                                        <i class="fa fa-files-o"></i> <span>@lang('navigation.server.file_management')</span>
                                     </a>
-                                    <ul class="treeview-menu">
-                                        <li class="{{ (Route::currentRouteName() !== 'server.files.index' && Route::currentRouteName() !== 'server.files.edit') ?: 'active' }}"><a href="{{ route('server.files.index', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.file_browser')</a></li>
-                                        @can('create-files', $server)
-                                            <li class="{{ Route::currentRouteName() !== 'server.files.add' ?: 'active' }}"><a href="{{ route('server.files.add', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.create_file')</a></li>
-                                        @endcan
-                                    </ul>
                                 </li>
                             @endcan
                             @can('list-subusers', $server)
@@ -154,7 +146,7 @@
                                     @endif
                                 >
                                     <a href="{{ route('server.subusers', $server->uuidShort)}}">
-                                        <i class="fa fa-users"></i> <span>Subusers</span>
+                                        <i class="fa fa-users"></i> <span>@lang('navigation.server.subusers')</span>
                                     </a>
                                 </li>
                             @endcan
@@ -235,8 +227,8 @@
                 </section>
             </div>
             <footer class="main-footer">
-                <div class="pull-right hidden-xs small text-gray">
-                    <strong>v</strong> {{ config('app.version') }}
+                <div class="pull-right hidden-xs small text-gray" style="margin-right:10px;">
+                    <strong>v</strong> {{ config('app.version') }} &nbsp;&nbsp; <small class="muted muted-hover"><a href="https://patreon.com/pterry" target="_blank"><i class="fa fa-credit-card"></i></a></small>
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>

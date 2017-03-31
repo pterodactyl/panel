@@ -276,3 +276,7 @@ span[aria-labelledby="select2-pUserId-container"] {
 .btn-icon > i.fa {
     line-height: 1.5;
 }
+
+.strong {
+    font-weight: bold !important;
+}
