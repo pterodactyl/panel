@@ -3,8 +3,7 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
-use Alert;
-use \Pterodactyl\Events\Auth\FailedCaptcha;
+use Pterodactyl\Events\Auth\FailedCaptcha;
 
 class VerifyReCaptcha
 {
@@ -17,8 +16,10 @@ class VerifyReCaptcha
      */
     public function handle($request, Closure $next)
     {
-        if (!config('recaptcha.enabled')) return $next($request);
-        
+        if (! config('recaptcha.enabled')) {
+            return $next($request);
+        }
+
         $response_domain = null;
 
         if ($request->has('g-recaptcha-response')) {
@@ -40,20 +41,21 @@ class VerifyReCaptcha
                 // Compare the domain received by google with the app url
                 $domain_verified = false;
                 if (config('recaptcha.verify_domain')) {
-                   $matches;
-                   preg_match('/^(?:https?:\/\/)?((?:www\.)?[^:\/\n]+)/', config('app.url'), $matches);
-                   $domain = $matches[1];
-                   $domain_verified = $response_domain === $domain;
+                    $matches;
+                    preg_match('/^(?:https?:\/\/)?((?:www\.)?[^:\/\n]+)/', config('app.url'), $matches);
+                    $domain = $matches[1];
+                    $domain_verified = $response_domain === $domain;
                 }
 
-                if ($result->success && (!config('recaptcha.verify_domain') || $domain_verified)) {
+                if ($result->success && (! config('recaptcha.verify_domain') || $domain_verified)) {
                     return $next($request);
                 }
             }
         }
-        
+
         // Emit an event and return to the previous view with an error (only the captcha error will be shown!)
         event(new FailedCaptcha($request->ip(), $response_domain));
+
         return back()->withErrors(['g-recaptcha-response' => trans('strings.captcha_invalid')])->withInput();
     }
 }
