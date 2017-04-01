@@ -78,8 +78,6 @@ class ServerObserver
     public function deleting(Server $server)
     {
         event(new Events\Server\Deleting($server));
-
-        $this->dispatch((new SuspendServer($server->id))->onQueue(config('pterodactyl.queues.high')));
     }
 
     /**
@@ -91,12 +89,6 @@ class ServerObserver
     public function deleted(Server $server)
     {
         event(new Events\Server\Deleted($server));
-
-        $this->dispatch(
-            (new DeleteServer($server->id))
-            ->delay(Carbon::now()->addMinutes(config('pterodactyl.tasks.delete_server')))
-            ->onQueue(config('pterodactyl.queues.standard'))
-        );
     }
 
     /**

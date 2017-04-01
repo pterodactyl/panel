@@ -720,25 +720,6 @@ class ServerRepository
     }
 
     /**
-     * Queue a server for deletion.
-     *
-     * @param  int   $id
-     * @param  bool  $force
-     * @return void
-     */
-    public function queueDeletion($id, $force = false)
-    {
-        $server = Models\Server::findOrFail($id);
-
-        DB::transaction(function () use ($force, $server) {
-            $server->installed = $force ? 3 : $server->installed;
-            $server->save();
-
-            $server->delete();
-        });
-    }
-
-    /**
      * Delete a server from the system permanetly.
      *
      * @param  int   $id
@@ -749,13 +730,7 @@ class ServerRepository
      */
     public function delete($id, $force = false)
     {
-        $server = Models\Server::withTrashed()->with('node', 'allocations', 'variables')->findOrFail($id);
-
-        // Handle server being restored previously or
-        // an accidental queue.
-        if (! $server->trashed()) {
-            return;
-        }
+        $server = Models\Server::with('node', 'allocations', 'variables')->findOrFail($id);
 
         // Due to MySQL lockouts if the daemon response fails, we need to
         // delete the server from the daemon first. If it succeedes and then
@@ -768,7 +743,7 @@ class ServerRepository
                 'X-Access-Server' => $server->uuid,
             ])->request('DELETE', '/servers');
         } catch (TransferException $ex) {
-            if ($server->installed !== 3 && ! $force) {
+            if (! $force) {
                 throw new DisplayException($ex->getMessage());
             }
         } catch (\Exception $ex) {
@@ -807,23 +782,8 @@ class ServerRepository
             }
 
             // Fully delete the server.
-            $server->forceDelete();
+            $server->delete();
         });
-    }
-
-    /**
-     * Cancel the deletion of a server.
-     *
-     * @param  int  $id
-     * @return void
-     */
-    public function cancelDeletion($id)
-    {
-        $server = Models\Server::withTrashed()->findOrFail($id);
-        $server->restore();
-
-        $server->installed = 1;
-        $server->save();
     }
 
     /**
@@ -856,7 +816,7 @@ class ServerRepository
      */
     public function suspend($id, $deleted = false)
     {
-        $server = Models\Server::withTrashed()->with('node')->findOrFail($id);
+        $server = Models\Server::with('node')->findOrFail($id);
 
         DB::beginTransaction();
 

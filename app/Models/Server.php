@@ -30,12 +30,11 @@ use Carbon;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Server extends Model
 {
-    use Notifiable, SearchableTrait, SoftDeletes;
+    use Notifiable, SearchableTrait;
 
     /**
      * The table associated with the model.

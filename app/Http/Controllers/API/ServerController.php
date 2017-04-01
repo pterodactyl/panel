@@ -219,7 +219,7 @@ class ServerController extends BaseController
         $repo = new ServerRepository;
 
         try {
-            $repo->deleteServer($id, $force);
+            $repo->delete($id, is_null($force));
 
             return $this->response->noContent();
         } catch (DisplayException $ex) {

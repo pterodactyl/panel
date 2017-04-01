@@ -70,10 +70,8 @@
                                     <code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code>
                                 </td>
                                 <td class="text-center">
-                                    @if($server->suspended && ! $server->trashed())
+                                    @if($server->suspended)
                                         <span class="label bg-maroon">Suspended</span>
-                                    @elseif($server->trashed())
-                                        <span class="label label-danger">Pending Deletion</span>
                                     @elseif(! $server->installed)
                                         <span class="label label-warning">Installing</span>
                                     @else
@@ -85,9 +83,11 @@
                     </tbody>
                 </table>
             </div>
-            <div class="box-footer with-border">
-                <div class="col-md-12 text-center">{!! $servers->render() !!}</div>
-            </div>
+            @if($servers->hasPages())
+                <div class="box-footer with-border">
+                    <div class="col-md-12 text-center">{!! $servers->render() !!}</div>
+                </div>
+            @endif
         </div>
     </div>
 </div>

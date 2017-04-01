@@ -39,48 +39,19 @@
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
                 <li><a href="{{ route('admin.servers.view', $server->id) }}">About</a></li>
-                @if(! $server->trashed() && $server->installed === 1)
+                @if($server->installed === 1)
                     <li><a href="{{ route('admin.servers.view.details', $server->id) }}">Details</a></li>
                     <li><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
                     <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
                     <li><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
                 @endif
-                @if(! $server->trashed())
-                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
-                @endif
+                <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 <li class="tab-danger active"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
             </ul>
         </div>
     </div>
 </div>
 <div class="row">
-    @if($server->trashed())
-        <div class="col-xs-12">
-            <div class="box box-danger">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Marked for Deletion</h3>
-                </div>
-                <div class="box-body">
-                    <p>This server is currently marked for deletion by the system <strong>{{ Carbon::parse($server->deleted_at)->addMinutes(config('pterodactyl.tasks.delete_server'))->diffForHumans() }}</strong>.</p>
-                    <p class="text-danger small">Deleting a server is an irreversible action. <strong>All server data</strong> (including files and users) will be removed from the system.</p>
-                </div>
-                <div class="box-footer">
-                    <form action="{{ route('admin.servers.view.delete.cancel', $server->id) }}" method="POST" style="display:inline;">
-                        {!! csrf_field() !!}
-                        <button type="submit" class="btn btn-default btn-sm">Cancel Deletion Request</button>
-                    </form>
-                    <form data-action="delete" action="{{ route('admin.servers.view.delete.continue', ['id' => $server->id, 'force' => 'force']) }}" method="POST" style="display:inline;">
-                        {!! csrf_field() !!}
-                        <button type="submit" class="btn btn-danger btn-sm pull-right"><strong>Forcibly</strong> Delete Now</button>
-                    </form>
-                    <form data-action="delete" action="{{ route('admin.servers.view.delete.continue', $server->id) }}" method="POST" style="display:inline">
-                        {!! csrf_field() !!}
-                        <button type="submit" class="btn btn-danger btn-sm pull-right" style="margin-right:10px;">Safely Delete Now</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endif
     <div class="col-xs-6">
         <div class="box">
             <div class="box-header with-border">
@@ -93,7 +64,6 @@
             <div class="box-footer">
                 <form action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
                     {!! csrf_field() !!}
-                    <input type="hidden" name="is_force" value="0" />
                     <button type="submit" class="btn btn-danger">Safely Delete This Server</button>
                 </form>
             </div>
@@ -111,7 +81,7 @@
             <div class="box-footer">
                 <form action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
                     {!! csrf_field() !!}
-                    <input type="hidden" name="is_force" value="1" />
+                    <input type="hidden" name="force_delete" value="1" />
                     <button type="submit" class="btn btn-danger">Forcibly Delete This Server</button>
                 </form>
             </div>

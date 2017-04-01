@@ -46,9 +46,7 @@ class ServersController extends Controller
      */
     public function index(Request $request)
     {
-        $servers = Models\Server::withTrashed()->with(
-            'node', 'user', 'allocation'
-        );
+        $servers = Models\Server::with('node', 'user', 'allocation');
 
         if (! is_null($request->input('query'))) {
             $servers->search($request->input('query'));
@@ -146,7 +144,7 @@ class ServersController extends Controller
      */
     public function viewIndex(Request $request, $id)
     {
-        return view('admin.servers.view.index', ['server' => Models\Server::withTrashed()->findOrFail($id)]);
+        return view('admin.servers.view.index', ['server' => Models\Server::findOrFail($id)]);
     }
 
     /**
@@ -238,7 +236,7 @@ class ServersController extends Controller
      */
     public function viewDelete(Request $request, $id)
     {
-        return view('admin.servers.view.delete', ['server' => Models\Server::withTrashed()->findOrFail($id)]);
+        return view('admin.servers.view.delete', ['server' => Models\Server::findOrFail($id)]);
     }
 
     /**
@@ -420,49 +418,7 @@ class ServersController extends Controller
         $repo = new ServerRepository;
 
         try {
-            $repo->queueDeletion($id, ($request->input('is_force') > 0));
-            Alert::success('Server has been marked for deletion on the system.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.delete', $id);
-    }
-
-    /**
-     * Cancels a pending server deletion request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function cancelDeletion(Request $request, $id)
-    {
-        $repo = new ServerRepository;
-
-        $repo->cancelDeletion($id);
-        Alert::success('Server deletion has been cancelled. This server will remain suspended until you unsuspend it.')->flash();
-
-        return redirect()->route('admin.servers.view.delete', $id);
-    }
-
-    /**
-     * Skips the queue and continues the server deletion process.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     * @param  string                    $method
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function continueDeletion(Request $request, $id, $method = 'safe')
-    {
-        $repo = new ServerRepository;
-
-        try {
-            $repo->delete($id, (isset($method) && $method === 'force'));
+            $repo->delete($id, $request->has('force_delete'));
             Alert::success('Server was successfully deleted from the system.')->flash();
 
             return redirect()->route('admin.servers');
