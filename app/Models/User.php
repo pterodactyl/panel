@@ -103,6 +103,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         ],
     ];
 
+    protected $query;
+
     /**
      * Enables or disables TOTP on an account if the token is valid.
      *
@@ -200,18 +202,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
-     * @param  int|null  $paginate
-     * @param  array     $load
-     * @return \Illuminate\Pagination\LengthAwarePagination|\Illuiminate\Database\Eloquent\Collection
+     * @param  array        $load
+     * @return \Illuiminate\Database\Eloquent\Builder
      */
-    public function serverAccessCollection($paginate = null, $load = ['service', 'node', 'allocation'])
+    public function access(...$load)
     {
-        $query = Server::with($load);
+        if (count($load) > 0 && is_null($load[0])) {
+            $query = Server::query();
+        } else {
+            $query = Server::with(! empty($load) ? $load : ['service', 'node', 'allocation']);
+        }
+
         if (! $this->isRootAdmin()) {
             $query->whereIn('id', $this->serverAccessArray());
         }
 
-        return (is_numeric($paginate)) ? $query->paginate($paginate) : $query->get();
+        return $query;
     }
 
     /**

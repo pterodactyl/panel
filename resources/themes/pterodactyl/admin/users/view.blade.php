@@ -129,7 +129,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($user->serverAccessCollection() as $server)
+                        @foreach($user->access()->get() as $server)
                             <tr>
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>
                                 <td><code>{{ $server->uuidShort }}</code></td>

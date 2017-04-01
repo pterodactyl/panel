@@ -38,8 +38,14 @@ class IndexController extends Controller
      */
     public function getIndex(Request $request)
     {
+        $servers = $request->user()->access();
+
+        if (! is_null($request->input('query'))) {
+            $servers->search($request->input('query'));
+        }
+
         return view('base.index', [
-            'servers' => $request->user()->serverAccessCollection(config('pterodactyl.paginate.frontend.servers')),
+            'servers' => $servers->paginate(config('pterodactyl.paginate.frontend.servers')),
         ]);
     }
 

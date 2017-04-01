@@ -31,7 +31,7 @@ class InfoController extends BaseController
 {
     public function me(Request $request)
     {
-        return $request->user()->serverAccessCollection()->load('allocation', 'option')->map(function ($server) {
+        return $request->user()->access('service', 'node', 'allocation', 'option')->get()->map(function ($server) {
             return [
                 'id' => $server->uuidShort,
                 'uuid' => $server->uuid,

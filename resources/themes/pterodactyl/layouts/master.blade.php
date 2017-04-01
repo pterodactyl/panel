@@ -235,7 +235,7 @@
             <aside class="control-sidebar control-sidebar-dark">
                 <div class="tab-content">
                     <ul class="control-sidebar-menu">
-                        @foreach (Auth::user()->serverAccessCollection(null, []) as $s)
+                        @foreach (Auth::user()->access(null)->get() as $s)
                             <li>
                                 <a
                                     @if(isset($server) && isset($node))

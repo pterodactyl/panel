@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
+* Server listing for individual users is now searchable on the front-end.
 
 ### Changed
 * Subuser permissions are now stored in `Permission::list()` to make views way cleaner and make adding to views significantly cleaner.
