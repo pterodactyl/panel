@@ -39,9 +39,11 @@ class VerifyReCaptcha
 
                     $url = parse_url($request->url());
 
-                    if (array_key_exists('host', $url)) {
-                        return $result->hostname === $url['host'];
+                    if (! array_key_exists('host', $url)) {
+                        return false;
                     }
+
+                    return $result->hostname === $url['host'];;
                 };
 
                 if ($result->success && (! config('recaptcha.verify_domain') || $verified($result, $request))) {
