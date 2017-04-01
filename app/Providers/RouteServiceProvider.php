@@ -33,7 +33,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        Route::group(['namespace' => $this->namespace], function ($router) {
+        Route::group(['namespace' => $this->namespace, 'middleware' => 'web'], function ($router) {
             foreach (glob(app_path('Http//Routes') . '/*.php') as $file) {
                 $this->app->make('Pterodactyl\\Http\\Routes\\' . basename($file, '.php'))->map($router);
             }
