@@ -248,6 +248,7 @@ class ServerRepository
                 'uuidShort' => $genShortUuid,
                 'node_id' => $node->id,
                 'name' => $data['name'],
+                'description' => $data['description'],
                 'suspended' => 0,
                 'owner_id' => $user->id,
                 'memory' => $data['memory'],

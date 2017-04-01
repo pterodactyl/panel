@@ -225,7 +225,7 @@ class PackRepository
      */
     public function delete($id)
     {
-        $pack = Models\Pack::withCount('servers')->findOrFail($id);
+        $pack = Pack::withCount('servers')->findOrFail($id);
 
         if ($pack->servers_count > 0) {
             throw new DisplayException('Cannot delete a pack from the system if servers are assocaited with it.');
