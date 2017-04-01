@@ -41,14 +41,21 @@
                     <h3 class="box-title">Core Details</h3>
                 </div>
                 <div class="box-body row">
-                    <div class="form-group col-sm-6">
-                        <label for="pName">Server Name</label>
-                        <input type="text" class="form-control" id="pName" name="name" value="{{ old('name') }}" placeholder="Server Name">
-                        <p class="small text-muted no-margin">Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code> (max 200 characters).</p>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="pName">Server Name</label>
+                            <input type="text" class="form-control" id="pName" name="name" value="{{ old('name') }}" placeholder="Server Name">
+                            <p class="small text-muted no-margin">Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code> (max 200 characters).</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="pUserId">Server Owner</label>
+                            <select class="form-control" style="padding-left:0;" name="user_id" id="pUserId"></select>
+                        </div>
                     </div>
-                    <div class="form-group col-sm-6">
-                        <label for="pUserId">Server Owner</label>
-                        <select class="form-control" style="padding-left:0;" name="user_id" id="pUserId"></select>
+                    <div class="form-group col-md-6">
+                        <label for="description" class="control-label">Server Description</label>
+                        <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
+                        <p class="text-muted small">A brief description of this server.</p>
                     </div>
                 </div>
             </div>

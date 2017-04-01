@@ -60,30 +60,35 @@
                             <th class="text-center">@lang('strings.status')</th>
                         </tr>
                         @foreach($servers as $server)
-                        <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
-                            <td><code>{{ $server->uuidShort }}</code></td>
-                            <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
-                            <td>{{ $server->node->name }}</td>
-                            <td><code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code></td>
-                            <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
-                            <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
-                            <td class="text-center">
-                                @if($server->user->id === Auth::user()->id)
-                                    <span class="label bg-purple">@lang('strings.owner')</span>
-                                @elseif(Auth::user()->isRootAdmin())
-                                    <span class="label bg-maroon">@lang('strings.admin')</span>
-                                @else
-                                    <span class="label bg-blue">@lang('strings.subuser')</span>
-                                @endif
-                            </td>
-                            <td class="text-center" data-action="status">
-                                @if($server->suspended === 1)
-                                    <span class="label label-warning">@lang('strings.suspended')</span>
-                                @else
-                                    <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
-                                @endif
-                            </td>
-                        </tr>
+                            <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
+                                <td @if(! empty($server->description)) rowspan="2" @endif><code>{{ $server->uuidShort }}</code></td>
+                                <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
+                                <td>{{ $server->node->name }}</td>
+                                <td><code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code></td>
+                                <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
+                                <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
+                                <td class="text-center">
+                                    @if($server->user->id === Auth::user()->id)
+                                        <span class="label bg-purple">@lang('strings.owner')</span>
+                                    @elseif(Auth::user()->isRootAdmin())
+                                        <span class="label bg-maroon">@lang('strings.admin')</span>
+                                    @else
+                                        <span class="label bg-blue">@lang('strings.subuser')</span>
+                                    @endif
+                                </td>
+                                <td class="text-center" data-action="status">
+                                    @if($server->suspended === 1)
+                                        <span class="label label-warning">@lang('strings.suspended')</span>
+                                    @else
+                                        <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @if (! empty($server->description))
+                                <tr class="server-description">
+                                    <td colspan="7"><p class="text-muted small no-margin">{{ str_limit($server->description, 400) }}</p></td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -100,5 +105,12 @@
 
 @section('footer-scripts')
     @parent
+    <script>
+        $('tr.server-description').on('mouseenter mouseleave', function (event) {
+            $(this).prev('tr').css({
+                'background-color': (event.type === 'mouseenter') ? '#f5f5f5' : '',
+            });
+        });
+    </script>
     {!! Theme::js('js/frontend/serverlist.js') !!}
 @endsection

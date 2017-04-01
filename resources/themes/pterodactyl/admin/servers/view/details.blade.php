@@ -72,6 +72,11 @@
                         <p class="text-muted small">You can change the owner of this server by changing this field to an email matching another use on this system. If you do this a new daemon security token will be generated automatically.</p>
                     </div>
                     <div class="form-group">
+                        <label for="description" class="control-label">Server Description</label>
+                        <textarea name="description" rows="3" class="form-control">{{ old('description', $server->description) }}</textarea>
+                        <p class="text-muted small">A brief description of this server.</p>
+                    </div>
+                    <div class="form-group">
                         <label for="name" class="control-label">Daemon Secret Token</label>
                         <input type="text" disabled value="{{ $server->daemonSecret }}" class="form-control" />
                         <p class="text-muted small">This token should not be shared with anyone as it has full control over this server.</p>

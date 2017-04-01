@@ -89,6 +89,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'user_id' => 'required|exists:users,id',
             'name' => 'required|regex:/^([\w .-]{1,200})$/',
+            'description' => 'sometimes|nullable|string',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
             'io' => 'required|numeric|min:10|max:1000',
@@ -363,6 +364,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'owner_id' => 'sometimes|required|integer|exists:users,id',
             'name' => 'sometimes|required|regex:([\w .-]{1,200})',
+            'description' => 'sometimes|required|string',
             'reset_token' => 'sometimes|required|accepted',
         ]);
 
@@ -384,24 +386,12 @@ class ServerRepository
                 $resetDaemonKey = true;
             }
 
-            // Update Server Owner if it was passed.
-            if (isset($data['owner_id']) && (int) $data['owner_id'] !== $server->user->id) {
-                $server->owner_id = $data['owner_id'];
-            }
-
-            // Update Server Name if it was passed.
-            if (isset($data['name'])) {
-                $server->name = $data['name'];
-            }
-
             // Save our changes
-            $server->save();
+            $server->fill($data)->save();
 
             // Do we need to update? If not, return successful.
             if (! $resetDaemonKey) {
-                DB::commit();
-
-                return true;
+                return DB::commit();
             }
 
             $res = $server->node->guzzleClient([
@@ -418,16 +408,13 @@ class ServerRepository
             ]);
 
             if ($res->getStatusCode() === 204) {
-                DB::commit();
-
-                return true;
+                return DB::commit();
             } else {
                 throw new DisplayException('Daemon returned a a non HTTP/204 error code. HTTP/' + $res->getStatusCode());
             }
         } catch (\Exception $ex) {
             DB::rollBack();
-            Log::error($ex);
-            throw new DisplayException('An error occured while attempting to update this server\'s information.');
+            throw $ex;
         }
     }
 

@@ -280,3 +280,12 @@ span[aria-labelledby="select2-pUserId-container"] {
 .strong {
     font-weight: bold !important;
 }
+
+.server-description > td {
+    padding-top: 0 !important;
+    border-top: 0 !important;
+}
+
+tr:hover + tr.server-description {
+    background-color: #f5f5f5 !important;
+}
