@@ -41,6 +41,8 @@ class UpdateEnvironment extends Command
                             {--dbuser=}
                             {--dbpass=}
                             {--url=}
+                            {--driver=}
+                            {--session-driver=}
                             {--timezone=}';
 
     /**
@@ -126,8 +128,31 @@ class UpdateEnvironment extends Command
             $variables['APP_TIMEZONE'] = $this->option('timezone');
         }
 
-        $variables['CACHE_DRIVER'] = 'memcached';
-        $variables['SESSION_DRIVER'] = 'database';
+        if (is_null($this->option('driver'))) {
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['CACHE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', [
+                'memcached' => 'Memcache',
+                'redis' => 'Redis (recommended)',
+                'apc' => 'APC',
+                'array' => 'PHP Array',
+            ], config('cache.default', 'memcached'));
+        } else {
+            $variables['CACHE_DRIVER'] = $this->option('driver');
+        }
+
+        if (is_null($this->option('session-driver'))) {
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['SESSION_DRIVER'] = $this->choice('Which session driver backend would you like to use?', [
+                'database' => 'MySQL (recommended)',
+                'redis' => 'Redis',
+                'file' => 'File',
+                'cookie' => 'Cookie',
+                'apc' => 'APC',
+                'array' => 'PHP Array',
+            ], config('session.driver', 'database'));
+        } else {
+            $variables['SESSION_DRIVER'] = $this->option('session-driver');
+        }
 
         $bar = $this->output->createProgressBar(count($variables));
 
