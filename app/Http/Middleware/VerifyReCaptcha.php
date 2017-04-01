@@ -43,7 +43,7 @@ class VerifyReCaptcha
                         return false;
                     }
 
-                    return $result->hostname === $url['host'];;
+                    return $result->hostname === $url['host'];
                 };
 
                 if ($result->success && (! config('recaptcha.verify_domain') || $verified($result, $request))) {
