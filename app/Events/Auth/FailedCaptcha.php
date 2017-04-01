@@ -29,28 +29,28 @@ use Illuminate\Queue\SerializesModels;
 class FailedCaptcha
 {
     use SerializesModels;
-    
+
     /**
-    * The IP that the request originated from.
-    *
-    * @var string
-    */
+     * The IP that the request originated from.
+     *
+     * @var string
+     */
     public $ip;
 
     /**
      * The domain that was used to try to verify the request with recaptcha api.
-     * 
+     *
      * @var string
      */
     public $domain;
-    
+
     /**
-    * Create a new event instance.
-    *
-    * @param  string  $ip
-    * @param  string  $domain
-    * @return void
-    */
+     * Create a new event instance.
+     *
+     * @param  string  $ip
+     * @param  string  $domain
+     * @return void
+     */
     public function __construct($ip, $domain)
     {
         $this->ip = $ip;
