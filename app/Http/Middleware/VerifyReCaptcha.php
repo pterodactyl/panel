@@ -12,7 +12,7 @@ class VerifyReCaptcha
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @return mixed
+     * @return \Illuminate\Http\RediectResponse
      */
     public function handle($request, Closure $next)
     {
@@ -20,41 +20,38 @@ class VerifyReCaptcha
             return $next($request);
         }
 
-        $response_domain = null;
-
         if ($request->has('g-recaptcha-response')) {
-            $response = $request->get('g-recaptcha-response');
-
             $client = new \GuzzleHttp\Client();
-            $res = $client->post('https://www.google.com/recaptcha/api/siteverify', [
+            $res = $client->post(config('recaptcha.domain'), [
                 'form_params' => [
                     'secret' => config('recaptcha.secret_key'),
-                    'response' => $response,
+                    'response' => $request->input('g-recaptcha-response'),
                 ],
             ]);
 
             if ($res->getStatusCode() === 200) {
                 $result = json_decode($res->getBody());
 
-                $response_domain = $result->hostname;
+                $verified = function ($result, $request) {
+                    if (! config('recaptcha.verify_domain')) {
+                        return false;
+                    }
 
-                // Compare the domain received by google with the app url
-                $domain_verified = false;
-                if (config('recaptcha.verify_domain')) {
-                    $matches;
-                    preg_match('/^(?:https?:\/\/)?((?:www\.)?[^:\/\n]+)/', config('app.url'), $matches);
-                    $domain = $matches[1];
-                    $domain_verified = $response_domain === $domain;
-                }
+                    $url = parse_url($request->url());
 
-                if ($result->success && (! config('recaptcha.verify_domain') || $domain_verified)) {
+                    if (array_key_exists('host', $url)) {
+                        return $result->hostname === $url['host'];
+                    }
+                };
+
+                if ($result->success && (! config('recaptcha.verify_domain') || $verified($result, $request))) {
                     return $next($request);
                 }
             }
         }
 
         // Emit an event and return to the previous view with an error (only the captcha error will be shown!)
-        event(new FailedCaptcha($request->ip(), $response_domain));
+        event(new FailedCaptcha($request->ip(), (! isset($result->hostname) ?: $result->hostname)));
 
         return back()->withErrors(['g-recaptcha-response' => trans('strings.captcha_invalid')])->withInput();
     }
