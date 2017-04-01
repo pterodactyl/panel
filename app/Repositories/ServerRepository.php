@@ -330,6 +330,7 @@ class ServerRepository
                         (string) $server->daemonSecret => $this->daemonPermissions,
                     ],
                     'rebuild' => false,
+                    'start_on_completion' => isset($data['start_on_completion']),
                 ],
             ]);
 

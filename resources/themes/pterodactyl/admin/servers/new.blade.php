@@ -52,10 +52,18 @@
                             <select class="form-control" style="padding-left:0;" name="user_id" id="pUserId"></select>
                         </div>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="description" class="control-label">Server Description</label>
-                        <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
-                        <p class="text-muted small">A brief description of this server.</p>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="description" class="control-label">Server Description</label>
+                            <textarea name="description" rows="3" class="form-control">{{ old('description') }}</textarea>
+                            <p class="text-muted small">A brief description of this server.</p>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox checkbox-primary no-margin-bottom">
+                                <input id="pStartOnCreation" name="start_on_completion" type="checkbox" value="1" checked />
+                                <label for="pStartOnCreation" class="strong">Start Server when Installed</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
