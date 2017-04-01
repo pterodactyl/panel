@@ -109,6 +109,10 @@ return [
                     'title' => 'Server Power',
                     'description' => 'Allows access to control server power status.',
                 ],
+                'command' => [
+                    'title' => 'Send Command',
+                    'description' => 'Allows a user to send a command to a specified server.',
+                ],
                 'view' => [
                     'title' => 'Show Single Server',
                     'description' => 'Allows viewing details about a specific server including the daemon_token as well as current process information.',
