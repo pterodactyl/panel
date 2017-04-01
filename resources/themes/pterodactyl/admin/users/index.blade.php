@@ -75,9 +75,11 @@
                     </tbody>
                 </table>
             </div>
-            <div class="box-footer with-border">
-                <div class="col-md-12 text-center">{!! $users->render() !!}</div>
-            </div>
+            @if($users->hasPages())
+                <div class="box-footer with-border">
+                    <div class="col-md-12 text-center">{!! $users->render() !!}</div>
+                </div>
+            @endif
         </div>
     </div>
 </div>
