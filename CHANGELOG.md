@@ -8,6 +8,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.7]` — Fixes bug with subuser checkbox display.
 * `[pre.7]` — Fixes bug with injected JS that was causing `<!DOCTYPE html>` to be ignored in templates.
 * `[pre.7]` — Fixes exception thrown when trying to delete a node due to a misnamed model.
+* `[pre.7]` — Fixes username vanishing on failed login attempts.
+
+### Added
+* Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
 
 ### Changed
 * Subuser permissions are now stored in `Permission::list()` to make views way cleaner and make adding to views significantly cleaner.
