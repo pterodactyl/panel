@@ -19,6 +19,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.7]` — Sidebar for file manager now is a single link rather than a dropdown.
 * Attempting to reset a password for an account that does not exist no longer returns an error, rather it displays a success message. Failed resets trigger a `Pterodactyl\Events\Auth\FailedPasswordReset` event that can be caught if needed to perform other actions.
 * Servers are no longer queued for deletion due to the general hassle and extra logic required.
+* Updated all panel components to run on Laravel v5.4 rather than 5.3 which is EOL.
 
 ## v0.6.0-pre.7 (Courageous Carniadactylus)
 ### Fixed

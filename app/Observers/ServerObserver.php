@@ -25,11 +25,8 @@
 namespace Pterodactyl\Observers;
 
 use Cache;
-use Carbon;
 use Pterodactyl\Events;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Jobs\DeleteServer;
-use Pterodactyl\Jobs\SuspendServer;
 use Pterodactyl\Notifications\ServerCreated;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 

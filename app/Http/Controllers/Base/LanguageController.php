@@ -63,7 +63,7 @@ class LanguageController extends Controller
                 $user->language = $language;
                 $user->save();
             }
-            Session::set('applocale', $language);
+            Session::put('applocale', $language);
         }
 
         return redirect()->back();
