@@ -19,6 +19,10 @@
 // SOFTWARE.
 $(document).ready(function () {
     Socket.on('console', function (data) {
+        if (typeof data === 'undefined' || typeof data.line === 'undefined') {
+            return;
+        }
+
         if (~data.line.indexOf('You need to agree to the EULA in order to run the server')) {
             swal({
                 title: 'EULA Acceptance',
