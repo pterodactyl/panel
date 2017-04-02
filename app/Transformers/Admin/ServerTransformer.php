@@ -22,43 +22,61 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Transformers\User;
+namespace Pterodactyl\Transformers\Admin;
 
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class ServerTransformer extends TransformerAbstract
 {
     /**
-     * Server eloquent model.
+     * List of resources that can be included.
      *
-     * @return \Pterodactyl\Models\Server
+     * @var array
      */
-    protected $server;
+    protected $availableIncludes = [
+        'allocations',
+        'user',
+        'subusers',
+    ];
 
     /**
-     * Setup allocation transformer with access to server data.
-     *
-     * @return void
-     */
-    public function __construct(Server $server)
-    {
-        $this->server = $server;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed server array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(Server $server)
     {
-        return [
-            'id' => $allocation->id,
-            'ip' => $allocation->alias,
-            'port' => $allocation->port,
-            'default' => ($allocation->id === $this->server->allocation_id),
-        ];
+        return $server->toArray();
+    }
+
+    /**
+     * Return a generic array of allocations for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeAllocations(Server $server)
+    {
+        return $this->collection($server->allocations, new AllocationTransformer, 'allocation');
+    }
+
+    /**
+     * Return a generic array of data about subusers for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeSubusers(Server $server)
+    {
+        return $this->collection($server->subusers, new SubuserTransformer, 'subuser');
+    }
+
+    /**
+     * Return a generic array of data about subusers for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includeUser(Server $server)
+    {
+        return $this->item($server->user, new UserTransformer, 'user');
     }
 }

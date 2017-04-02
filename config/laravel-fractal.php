@@ -13,6 +13,6 @@ return [
     |
     */
 
-    'default_serializer' => Pterodactyl\Extensions\NoDataSerializer::class,
+    'default_serializer' => League\Fractal\Serializer\JsonApiSerializer::class,
 
 ];

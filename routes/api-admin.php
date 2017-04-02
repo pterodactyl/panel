@@ -24,11 +24,16 @@
 
 Route::get('/', 'CoreController@index')->name('api.admin');
 
+
 /*
 |--------------------------------------------------------------------------
-| Location Controller Routes
+| Server Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /api/admin
+| Endpoint: /api/admin/servers
 |
 */
+Route::group(['prefix' => '/servers'], function () {
+    Route::get('/', 'ServerController@index')->name('api.admin.servers.list');
+    Route::get('/{id}', 'ServerController@view')->name('api.admin.servers.view');
+});

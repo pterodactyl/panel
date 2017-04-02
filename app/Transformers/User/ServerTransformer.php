@@ -48,7 +48,7 @@ class ServerTransformer extends TransformerAbstract
     public function transform(Server $server)
     {
         return [
-            'uuidShort' => $server->uuidShort,
+            'id' => $server->uuidShort,
             'uuid' => $server->uuid,
             'name' => $server->name,
             'description' => $server->description,
@@ -73,7 +73,7 @@ class ServerTransformer extends TransformerAbstract
     {
         $allocations = $server->allocations;
 
-        return $this->collection($allocations, new AllocationTransformer($server));
+        return $this->collection($allocations, new AllocationTransformer($server), 'allocation');
     }
 
     /**
@@ -85,7 +85,7 @@ class ServerTransformer extends TransformerAbstract
     {
         $server->load('subusers.permissions', 'subusers.user');
 
-        return $this->collection($server->subusers, new SubuserTransformer);
+        return $this->collection($server->subusers, new SubuserTransformer, 'subuser');
     }
 
     /**
@@ -95,6 +95,6 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeStats(Server $server)
     {
-        return $this->item($server->guzzleClient(), new StatsTransformer);
+        return $this->item($server->guzzleClient(), new StatsTransformer, 'stat');
     }
 }

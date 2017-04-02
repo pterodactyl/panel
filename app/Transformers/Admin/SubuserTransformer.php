@@ -22,22 +22,29 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Extensions;
+namespace Pterodactyl\Transformers\Admin;
 
-use League\Fractal\Serializer\ArraySerializer;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Permission;
+use League\Fractal\TransformerAbstract;
 
-class NoDataSerializer extends ArraySerializer
+class SubuserTransformer extends TransformerAbstract
 {
     /**
-     * Serialize a collection and don't insert as a member of `data`
-     *
-     * @param string $resourceKey
-     * @param array  $data
+     * Return a generic transformed subuser array.
      *
      * @return array
      */
-    public function collection($resourceKey, array $data)
+    public function transform(Subuser $subuser)
     {
-        return $data;
+        return [
+            'id' => $subuser->id,
+            'username' => $subuser->user->username,
+            'email' => $subuser->user->email,
+            '2fa' => (bool) $subuser->user->use_totp,
+            'permissions' => $subuser->permissions->pluck('permission'),
+            'created_at' => $subuser->created_at,
+            'updated_at' => $subuser->updated_at,
+        ];
     }
 }

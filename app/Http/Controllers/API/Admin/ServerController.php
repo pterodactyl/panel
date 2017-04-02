@@ -22,27 +22,55 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API\User;
+namespace Pterodactyl\Http\Controllers\API\Admin;
 
 use Fractal;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Transformers\User\OverviewTransformer;
+use Pterodactyl\Transformers\Admin\ServerTransformer;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
-class CoreController extends Controller
+class ServerController extends Controller
 {
     /**
-     * Controller to handle base user request for all of their servers.
+     * Controller to handle returning all servers on the system.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function index(Request $request)
     {
-        $servers = $request->user()->access('service', 'node', 'allocation', 'option')->get();
+        $servers = Server::paginate(20);
 
-        return Fractal::collection($servers)
-            ->transformWith(new OverviewTransformer)
+        return Fractal::create()
+            ->collection($servers)
+            ->transformWith(new ServerTransformer)
+            ->paginateWith(new IlluminatePaginatorAdapter($servers))
+            ->withResourceName('server')
+            ->toArray();
+    }
+
+    /**
+     * Controller to handle returning information on a single server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function view(Request $request, $id)
+    {
+        $server = Server::findOrFail($id);
+
+        $fractal = Fractal::create()->item($server);
+
+        if ($request->input('include')) {
+            $fractal->parseIncludes(collect(explode(',', $request->input('include')))->intersect([
+                'allocations', 'subusers', 'user',
+                'pack', 'service', 'option',
+            ])->toArray());
+        }
+
+        return $fractal->transformWith(new ServerTransformer)
             ->withResourceName('server')
             ->toArray();
     }

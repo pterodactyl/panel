@@ -22,43 +22,20 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Transformers\User;
+namespace Pterodactyl\Transformers\Admin;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\User;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class UserTransformer extends TransformerAbstract
 {
     /**
-     * Server eloquent model.
-     *
-     * @return \Pterodactyl\Models\Server
-     */
-    protected $server;
-
-    /**
-     * Setup allocation transformer with access to server data.
-     *
-     * @return void
-     */
-    public function __construct(Server $server)
-    {
-        $this->server = $server;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed subuser array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(User $user)
     {
-        return [
-            'id' => $allocation->id,
-            'ip' => $allocation->alias,
-            'port' => $allocation->port,
-            'default' => ($allocation->id === $this->server->allocation_id),
-        ];
+        return $user->toArray();
     }
 }

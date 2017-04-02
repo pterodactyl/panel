@@ -37,7 +37,7 @@ class OverviewTransformer extends TransformerAbstract
     public function transform(Server $server)
     {
         return [
-            'uuidShort' => $server->uuidShort,
+            'id' => $server->uuidShort,
             'uuid' => $server->uuid,
             'name' => $server->name,
             'node' => $server->node->name,

@@ -46,13 +46,15 @@ class ServerController extends Controller
         $server = Server::byUuid($uuid);
         $fractal = Fractal::create()->item($server);
 
-        if ($request->input('with')) {
-            $fractal->parseIncludes(collect(explode(',', $request->input('with')))->intersect([
+        if ($request->input('include')) {
+            $fractal->parseIncludes(collect(explode(',', $request->input('include')))->intersect([
                 'allocations', 'subusers', 'stats',
             ])->toArray());
         }
 
-        return $fractal->transformWith(new ServerTransformer)->toArray();
+        return $fractal->transformWith(new ServerTransformer)
+            ->withResourceName('server')
+            ->toArray();
     }
 
     /**

@@ -38,6 +38,7 @@ class SubuserTransformer extends TransformerAbstract
     public function transform(Subuser $subuser)
     {
         return [
+            'id' => $subuser->id,
             'username' => $subuser->user->username,
             'email' => $subuser->user->email,
             '2fa' => (bool) $subuser->user->use_totp,

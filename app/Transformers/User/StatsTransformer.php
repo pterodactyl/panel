@@ -49,6 +49,7 @@ class StatsTransformer extends TransformerAbstract
             $json = json_decode($res->getBody());
 
             return [
+                'id' => 1,
                 'status' => $json->status,
                 'resources' => $json->proc,
             ];
