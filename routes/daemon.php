@@ -22,23 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Routes;
-
-use Illuminate\Routing\Router;
-
-class LanguageRoutes
-{
-    /**
-     * Language controller routes.
-     *
-     * @param  \Illuminate\Routing\Router  $router
-     * @return void
-     */
-    public function map(Router $router)
-    {
-        $router->get('language/{lang}', [
-            'as' => 'langauge.set',
-            'uses' => 'Base\LanguageController@setLanguage',
-        ]);
-    }
-}
+Route::get('/services', 'ServiceController@list')->name('daemon.services');
+Route::get('/services/pull/{service}/{file}', 'ServiceController@pull')->name('daemon.pull');
+Route::get('/packs/pull/{uuid}', 'PackController@pull')->name('daemon.pack.pull');
+Route::get('/packs/pull/{uuid}/hash', 'PackController@hash')->name('daemon.pack.hash');

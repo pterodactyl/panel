@@ -22,36 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Routes;
+Route::get('/configuration/{token}', 'RemoteController@getConfiguration')->name('remote.configuration');
 
-use Illuminate\Routing\Router;
-
-class RemoteRoutes
-{
-    /**
-     * Remote daemon routes.
-     *
-     * @param  \Illuminate\Routing\Router  $router
-     * @return void
-     */
-    public function map(Router $router)
-    {
-        $router->group(['prefix' => 'remote'], function () use ($router) {
-            // Handles Remote Download Authentication Requests
-            $router->post('download', [
-                'as' => 'remote.download',
-                'uses' => 'Remote\RemoteController@postDownload',
-            ]);
-
-            $router->post('install', [
-                'as' => 'remote.install',
-                'uses' => 'Remote\RemoteController@postInstall',
-            ]);
-
-            $router->get('configuration/{token}', [
-                'as' => 'remote.configuration',
-                'uses' => 'Remote\RemoteController@getConfiguration',
-            ]);
-        });
-    }
-}
+Route::post('/download', 'RemoteController@postDownload')->name('remote.download');
+Route::post('/install', 'RemoteController@postInstall')->name('remote.install');

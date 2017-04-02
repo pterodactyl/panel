@@ -22,39 +22,13 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Routes;
+Route::get('/logout', 'LoginController@logout')->name('auth.logout');
+Route::get('/login', 'LoginController@showLoginForm')->name('auth.login');
+Route::get('/login/totp', 'LoginController@totp')->name('auth.totp');
+Route::get('/password', 'ForgotPasswordController@showLinkRequestForm')->name('auth.password');
+Route::get('/password/reset/{token}', 'ForgotPasswordController@showResetForm')->name('auth.reset');
 
-use Illuminate\Routing\Router;
-
-class DaemonRoutes
-{
-    /**
-     * Daemon routes.
-     *
-     * @param  \Illuminate\Routing\Router  $router
-     * @return void
-     */
-    public function map(Router $router)
-    {
-        $router->group(['prefix' => 'daemon', 'middleware' => 'daemon'], function () use ($router) {
-            $router->get('services', [
-                'as' => 'daemon.services',
-                'uses' => 'Daemon\ServiceController@list',
-            ]);
-
-            $router->get('services/pull/{service}/{file}', [
-                'as' => 'remote.install',
-                'uses' => 'Daemon\ServiceController@pull',
-            ]);
-
-            $router->get('packs/pull/{uuid}', [
-                'as' => 'daemon.pack.pull',
-                'uses' => 'Daemon\PackController@pull',
-            ]);
-            $router->get('packs/pull/{uuid}/hash', [
-                'as' => 'daemon.pack.hash',
-                'uses' => 'Daemon\PackController@hash',
-            ]);
-        });
-    }
-}
+Route::post('/login', 'LoginController@login')->middleware('recaptcha');
+Route::post('/login', 'LoginController@totpCheckpoint');
+Route::post('/password/reset', 'ResetPasswordController@reset')->name('auth.reset.post')->middleware('recaptcha');
+Route::post('/password/reset/{token}', 'ForgotPasswordController@sendResetLinkEmail')->middleware('recaptcha');

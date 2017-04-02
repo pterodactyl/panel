@@ -15,10 +15,11 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Pterodactyl\Http\Middleware\EncryptCookies::class,
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Pterodactyl\Http\Middleware\TrimStrings::class,
 
-        \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
+        /*
+         * Custom middleware applied to all routes.
+         */
         \Fideloper\Proxy\TrustProxies::class,
     ];
 
@@ -35,6 +36,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
         ],
         'api' => [
             'throttle:60,1',
