@@ -22,49 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Http\Controllers\API\User;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Pterodactyl\Http\Controllers\Controller;
 
-class APIKey extends Model
+class CoreController extends Controller
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'api_keys';
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['secret'];
-
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'allowed_ips' => 'json',
-    ];
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Gets the permissions associated with a key.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions()
+    public function index(Request $request)
     {
-        return $this->hasMany(APIPermission::class, 'key_id');
+        dd($request->user());
     }
 }

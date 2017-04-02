@@ -127,8 +127,6 @@ return [
 
     'providers' => [
 
-        Dingo\Api\Provider\LaravelServiceProvider::class,
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -180,6 +178,7 @@ return [
         Fideloper\Proxy\TrustedProxyServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
+        Spatie\Fractal\FractalServiceProvider::class,
 
     ],
 
@@ -210,11 +209,10 @@ return [
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
         'DB'        => Illuminate\Support\Facades\DB::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-        'Dingo'     => Dingo\Api\Facade\API::class,
-        'DingoRoute'=> Dingo\Api\Facade\Route::class,
         'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
         'Event'     => Illuminate\Support\Facades\Event::class,
         'File'      => Illuminate\Support\Facades\File::class,
+        'Fractal'   => Spatie\Fractal\FractalFacade::class,
         'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash'      => Illuminate\Support\Facades\Hash::class,

@@ -22,49 +22,13 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+Route::get('/', 'CoreController@index')->name('api.admin');
 
-use Illuminate\Database\Eloquent\Model;
-
-class APIKey extends Model
-{
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'api_keys';
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['secret'];
-
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'allowed_ips' => 'json',
-    ];
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Gets the permissions associated with a key.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions()
-    {
-        return $this->hasMany(APIPermission::class, 'key_id');
-    }
-}
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin
+|
+*/

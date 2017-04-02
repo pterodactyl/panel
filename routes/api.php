@@ -22,49 +22,19 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+Route::get('/', 'CoreController@index')->name('api.user');
 
-use Illuminate\Database\Eloquent\Model;
+/*
+|--------------------------------------------------------------------------
+| Server Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/user/server/{server}
+|
+*/
+Route::group(['prefix' => '/server/{server}'], function () {
+    Route::get('/', 'ServerController@index')->name('api.user.server');
 
-class APIKey extends Model
-{
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'api_keys';
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['secret'];
-
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'allowed_ips' => 'json',
-    ];
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Gets the permissions associated with a key.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions()
-    {
-        return $this->hasMany(APIPermission::class, 'key_id');
-    }
-}
+    Route::post('/power', 'ServerController@power')->name('api.user.server.power');
+    Route::post('/command', 'ServerController@command')->name('api.user.server.command');
+});

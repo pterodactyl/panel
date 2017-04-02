@@ -46,10 +46,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || $request->isJson() || $request->is('api/*', 'remote/*', 'daemon/*')) {
+
+            if (config('app.debug')) {
+                $report = [
+                    'code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
+                    'message' => class_basename($exception) . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine(),
+                ];
+            }
+
             $response = response()->json([
-                'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.',
-            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500);
+                'error' => $exception->getMessage(),
+                'exception' => ! isset($report) ?: $report,
+            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
 
             parent::report($exception);
         }
