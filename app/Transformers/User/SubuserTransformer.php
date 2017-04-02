@@ -22,12 +22,26 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Transformers\User;
 
-use Dingo\Api\Routing\Helpers;
-use Illuminate\Routing\Controller;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Permission;
+use League\Fractal\TransformerAbstract;
 
-class BaseController extends Controller
+class SubuserTransformer extends TransformerAbstract
 {
-    use Helpers;
+    /**
+     * Return a generic transformed subuser array.
+     *
+     * @return array
+     */
+    public function transform(Subuser $subuser)
+    {
+        return [
+            'username' => $subuser->user->username,
+            'email' => $subuser->user->email,
+            '2fa' => (bool) $subuser->user->use_totp,
+            'permissions' => $subuser->permissions->pluck('permission'),
+        ];
+    }
 }

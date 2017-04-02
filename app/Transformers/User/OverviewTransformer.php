@@ -22,26 +22,29 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API\User;
+namespace Pterodactyl\Transformers\User;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\API\BaseController;
+use Pterodactyl\Models\Server;
+use League\Fractal\TransformerAbstract;
 
-class InfoController extends BaseController
+class OverviewTransformer extends TransformerAbstract
 {
-    public function me(Request $request)
+    /**
+     * Return a generic transformed server array.
+     *
+     * @return array
+     */
+    public function transform(Server $server)
     {
-        return $request->user()->access('service', 'node', 'allocation', 'option')->get()->map(function ($server) {
-            return [
-                'id' => $server->uuidShort,
-                'uuid' => $server->uuid,
-                'name' => $server->name,
-                'node' => $server->node->name,
-                'ip' => $server->allocation->alias,
-                'port' => $server->allocation->port,
-                'service' => $server->service->name,
-                'option' => $server->option->name,
-            ];
-        })->all();
+        return [
+            'uuidShort' => $server->uuidShort,
+            'uuid' => $server->uuid,
+            'name' => $server->name,
+            'node' => $server->node->name,
+            'ip' => $server->allocation->alias,
+            'port' => $server->allocation->port,
+            'service' => $server->service->name,
+            'option' => $server->option->name,
+        ];
     }
 }

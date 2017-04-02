@@ -22,27 +22,42 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Transformers\User;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Allocation;
+use League\Fractal\TransformerAbstract;
 
-class LocationController extends BaseController
+class AllocationTransformer extends TransformerAbstract
 {
     /**
-     * Lists all locations currently on the system.
+     * Server eloquent model.
      *
-     * @param  Request  $request
+     * @return \Pterodactyl\Models\Server
+     */
+    protected $server;
+
+    /**
+     * Setup allocation transformer with access to server data.
+     *
+     * @return void
+     */
+    public function __construct(Server $server)
+    {
+        $this->server = $server;
+    }
+
+    /**
+     * Return a generic transformed allocation array.
+     *
      * @return array
      */
-    public function index(Request $request)
+    public function transform(Allocation $allocation)
     {
-        return Location::with('nodes')->get()->map(function ($item) {
-            $item->nodes->transform(function ($item) {
-                return collect($item)->only(['id', 'name', 'fqdn', 'scheme', 'daemonListen', 'daemonSFTP']);
-            });
-
-            return $item;
-        })->toArray();
+        return [
+            'ip' => $allocation->alias,
+            'port' => $allocation->port,
+            'default' => ($allocation->id === $this->server->allocation_id),
+        ];
     }
 }

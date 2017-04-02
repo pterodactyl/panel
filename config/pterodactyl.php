@@ -103,4 +103,18 @@ return [
     'lang' => [
         'in_context' => env('PHRASE_IN_CONTEXT', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | JSON Response Routes
+    |--------------------------------------------------------------------------
+    |
+    | You should not edit this block. These routes are ajax based routes that
+    | expect content to be returned in JSON format.
+    */
+    'json_routes' => [
+        'api/*',
+        'daemon/*',
+        'remote/*',
+    ],
 ];

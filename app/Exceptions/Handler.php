@@ -46,7 +46,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->expectsJson() || $request->isJson() || $request->is('api/*', 'remote/*', 'daemon/*')) {
+        if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
 
             if (config('app.debug')) {
                 $report = [
@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
             }
 
             $response = response()->json([
-                'error' => $exception->getMessage(),
+                'error' => (config('app.debug')) ? $exception->getMessage() : 'An unhandled exception was encountered with this request.',
                 'exception' => ! isset($report) ?: $report,
             ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
 

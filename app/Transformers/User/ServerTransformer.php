@@ -30,6 +30,17 @@ use League\Fractal\TransformerAbstract;
 class ServerTransformer extends TransformerAbstract
 {
     /**
+     * List of resources that can be included.
+     *
+     * @var array
+     */
+    protected $availableIncludes = [
+        'allocations',
+        'subusers',
+        'stats',
+    ];
+
+    /**
      * Return a generic transformed server array.
      *
      * @return array
@@ -37,14 +48,53 @@ class ServerTransformer extends TransformerAbstract
     public function transform(Server $server)
     {
         return [
-            'short' => $server->uuidShort,
+            'uuidShort' => $server->uuidShort,
             'uuid' => $server->uuid,
             'name' => $server->name,
+            'description' => $server->description,
             'node' => $server->node->name,
-            'ip' => $server->allocation->alias,
-            'port' => $server->allocation->port,
-            'service' => $server->service->name,
-            'option' => $server->option->name,
+            'limits' => [
+                'memory' => $server->memory,
+                'swap' => $server->swap,
+                'disk' => $server->disk,
+                'io' => $server->io,
+                'cpu' => $server->cpu,
+                'oom_disabled' => (bool) $server->oom_disabled,
+            ],
         ];
+    }
+
+    /**
+     * Return a generic array of allocations for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeAllocations(Server $server)
+    {
+        $allocations = $server->allocations;
+
+        return $this->collection($allocations, new AllocationTransformer($server));
+    }
+
+    /**
+     * Return a generic array of subusers for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeSubusers(Server $server)
+    {
+        $server->load('subusers.permissions', 'subusers.user');
+
+        return $this->collection($server->subusers, new SubuserTransformer);
+    }
+
+    /**
+     * Return a generic array of allocations for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includeStats(Server $server)
+    {
+        return $this->item($server->guzzleClient(), new StatsTransformer);
     }
 }

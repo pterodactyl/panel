@@ -22,22 +22,37 @@
  * SOFTWARE.
  */
 
-Route::get('/', 'CoreController@index')->name('api.user');
+namespace Pterodactyl\Http\Controllers\API\User;
 
-/*
-|--------------------------------------------------------------------------
-| Server Controller Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /api/user/server/{server}
-|
-*/
-Route::group([
-    'prefix' => '/server/{server}',
-    'middleware' => 'server',
-], function () {
-    Route::get('/', 'ServerController@index')->name('api.user.server');
+use Fractal;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Transformers\User\ServerTransformer;
 
-    Route::post('/power', 'ServerController@power')->name('api.user.server.power');
-    Route::post('/command', 'ServerController@command')->name('api.user.server.command');
-});
+class ServerController extends Controller
+{
+    public function index(Request $request, $uuid)
+    {
+        $server = Server::byUuid($uuid);
+        $fractal = Fractal::create()->item($server);
+
+        if ($request->input('with')) {
+            $fractal->parseIncludes(collect(explode(',', $request->input('with')))->intersect([
+                'allocations', 'subusers', 'stats',
+            ])->toArray());
+        }
+
+        return $fractal->transformWith(new ServerTransformer)->toArray();
+    }
+
+    public function power(Request $request, $uuid)
+    {
+
+    }
+
+    public function command(Request $request, $uuid)
+    {
+
+    }
+}

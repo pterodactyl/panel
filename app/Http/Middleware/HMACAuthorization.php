@@ -198,7 +198,7 @@ class HMACAuthorization
      */
     protected function generateSignature()
     {
-        $content = urldecode($this->request()->url()) . $this->request()->getContent();
+        $content = urldecode($this->request()->fullUrl()) . $this->request()->getContent();
 
         return hash_hmac(self::HMAC_ALGORITHM, $content, Crypt::decrypt($this->key()->secret), true);
     }
