@@ -154,6 +154,19 @@ class UpdateEnvironment extends Command
             $variables['SESSION_DRIVER'] = $this->option('session-driver');
         }
 
+        if (is_null($this->option('queue-driver'))) {
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['QUEUE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', [
+                'database' => 'Database (recommended)',
+                'redis' => 'Redis',
+                'sqs' => 'Amazon SQS',
+                'sync' => 'Sync',
+                'null' => 'None',
+            ], config('queue.driver', 'database'));
+        } else {
+            $variables['QUEUE_DRIVER'] = $this->option('queue-driver');
+        }
+
         $bar = $this->output->createProgressBar(count($variables));
 
         foreach ($variables as $key => $value) {

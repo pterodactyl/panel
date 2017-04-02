@@ -22,34 +22,50 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Middleware;
+namespace Pterodactyl\Http\Controllers\Base;
 
 use Auth;
-use Closure;
 use Session;
-use Settings;
-use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
+use Pterodactyl\Http\Controllers\Controller;
 
-class LanguageMiddleware
+class LanguageController extends Controller
 {
     /**
-     * Handle an incoming request.
+     * A list of supported languages on the panel.
+     *
+     * @var array
+     */
+    protected $languages = [
+        'de' => 'German',
+        'en' => 'English',
+        'et' => 'Estonian',
+        'nb' => 'Norwegian',
+        'nl' => 'Dutch',
+        'pt' => 'Portuguese',
+        'ro' => 'Romanian',
+        'ru' => 'Russian',
+    ];
+
+    /**
+     * Sets the language for a user.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure                  $next
-     * @return mixed
+     * @param  string                    $language
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
+    public function setLanguage(Request $request, $language)
     {
-        if (Session::has('applocale')) {
-            App::setLocale(Session::get('applocale'));
-        } elseif (Auth::check() && isset(Auth::user()->language)) {
-            Session::put('applocale', Auth::user()->language);
-            App::setLocale(Auth::user()->language);
-        } else {
-            App::setLocale(Settings::get('default_language', 'en'));
+        if (array_key_exists($language, $this->languages)) {
+            if (Auth::check()) {
+                $user = User::findOrFail(Auth::user()->id);
+                $user->language = $language;
+                $user->save();
+            }
+            Session::put('applocale', $language);
         }
 
-        return $next($request);
+        return redirect()->back();
     }
 }

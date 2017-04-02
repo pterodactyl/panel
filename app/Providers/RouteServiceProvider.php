@@ -33,21 +33,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        $this->mapper();
-
-        Route::group(['namespace' => $this->namespace], function ($router) {
-            foreach (glob(app_path('Http//Routes') . '/*.php') as $file) {
-                $this->app->make('Pterodactyl\\Http\\Routes\\' . basename($file, '.php'))->map($router);
-            }
-        });
-    }
-
-    /**
-     * Configure all routes used by the application.
-     *
-     * @return void
-     */
-    protected function mapper() {
         Route::middleware(['web', 'auth', 'csrf'])
              ->namespace($this->namespace . '\Base')
              ->group(base_path('routes/base.php'));
