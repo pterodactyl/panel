@@ -17,4 +17,5 @@ return [
     'request_reset' => 'Locate Account',
     '2fa_required' => '2-Factor Authentication',
     '2fa_failed' => 'The 2FA token provided was invalid.',
+    'totp_failed' => 'There was an error while attempting to validate TOTP.',
 ];
