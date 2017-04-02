@@ -27,11 +27,20 @@ namespace Pterodactyl\Http\Controllers\API\User;
 use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\ConnectException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Transformers\User\ServerTransformer;
+use Pterodactyl\Repositories\Daemon\PowerRepository;
 
 class ServerController extends Controller
 {
+    /**
+     * Controller to handle base request for individual server information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return array
+     */
     public function index(Request $request, $uuid)
     {
         $server = Server::byUuid($uuid);
@@ -46,13 +55,39 @@ class ServerController extends Controller
         return $fractal->transformWith(new ServerTransformer)->toArray();
     }
 
+    /**
+     * Controller to handle request for server power toggle.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\Response
+     */
     public function power(Request $request, $uuid)
     {
+        $server = Server::byUuid($uuid);
+        $request->user()->can('power-' . $request->input('action'), $server);
 
+        $repo = new PowerRepository($server);
+        $repo->do($request->input('action'));
+
+        return response('', 204)->header('Content-Type', 'application/json');
     }
 
+    /**
+     * Controller to handle base request for individual server information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\Response
+     */
     public function command(Request $request, $uuid)
     {
+        $server = Server::byUuid($uuid);
+        $request->user()->can('send-command', $server);
 
+        $repo = new CommandRepository($server);
+        $repo->send($request->input('command'));
+
+        return response('', 204)->header('Content-Type', 'application/json');
     }
 }

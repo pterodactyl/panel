@@ -29,6 +29,7 @@ use Crypt;
 use Config;
 use Closure;
 use Response;
+use Debugbar;
 use IPTools\IP;
 use IPTools\Range;
 use Illuminate\Http\Request;
@@ -74,6 +75,7 @@ class HMACAuthorization
      */
     public function __construct()
     {
+        Debugbar::disable();
         Config::set('session.driver', 'array');
     }
 

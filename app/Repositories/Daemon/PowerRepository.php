@@ -25,6 +25,7 @@
 namespace Pterodactyl\Repositories\Daemon;
 
 use Pterodactyl\Models;
+use GuzzleHttp\Exception\ConnectException;
 use Pterodactyl\Exceptions\DisplayException;
 
 class PowerRepository
@@ -60,20 +61,20 @@ class PowerRepository
     {
         // We don't use the user's specific daemon secret here since we
         // are assuming that a call to this function has been validated.
-        // Additionally not all calls to this will be from a logged in user.
-        // (e.g. task queue or API)
         try {
-            $response = $this->server->node->guzzleClient([
-                'X-Access-Token' => $this->server->daemonSecret,
-                'X-Access-Server' => $this->server->uuid,
-            ])->request('PUT', '/server/power', ['json' => ['action' => $action]]);
+            $response = $this->server->guzzleClient()->request('PUT', '/server/power', [
+                'http_errors' => false,
+                'json' => [
+                    'action' => $action,
+                ],
+            ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                throw new DisplayException('Power status responded with a non-200 error code.');
+                throw new DisplayException('Power toggle endpoint responded with a non-200 error code (HTTP/' . $response->getStatusCode() . ').');
             }
 
             return $response->getBody();
-        } catch (\Exception $ex) {
+        } catch (ConnectException $ex) {
             throw $ex;
         }
     }
