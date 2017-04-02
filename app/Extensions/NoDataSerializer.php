@@ -22,19 +22,22 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API\User;
+namespace Pterodactyl\Extensions;
 
-use Fractal;
-use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Transformers\User\ServerTransformer;
+use League\Fractal\Serializer\ArraySerializer;
 
-class CoreController extends Controller
+class NoDataSerializer extends ArraySerializer
 {
-    public function index(Request $request)
+    /**
+     * Serialize a collection and don't insert as a member of `data`
+     *
+     * @param string $resourceKey
+     * @param array  $data
+     *
+     * @return array
+     */
+    public function collection($resourceKey, array $data)
     {
-        $servers = $request->user()->access('service', 'node', 'allocation', 'option')->get();
-
-        return Fractal::collection($servers)->transformWith(new ServerTransformer)->toArray();
+        return $data;
     }
 }
