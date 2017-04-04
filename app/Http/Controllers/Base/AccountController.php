@@ -82,7 +82,7 @@ class AccountController extends Controller
 
         if (
             in_array($request->input('do_action'), ['email', 'password'])
-            && ! password_verify($request->input('password'), $request->user()->password)
+            && ! password_verify($request->input('current_password'), $request->user()->password)
         ) {
             Alert::danger(trans('base.account.invalid_pass'))->flash();
 
