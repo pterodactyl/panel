@@ -60,8 +60,16 @@ class ServerController extends Controller
     public function view(Request $request, $id)
     {
         $server = Server::findOrFail($id);
-
         $fractal = Fractal::create()->item($server);
+
+        // dd($request->user()->can('view-node', $request->apiKey()));
+
+        // Have the api key model return a list of includes that would be allowed
+        // given the permissions they have aleady been granted?
+        //
+        // If someone has 'view-node' they would then be able to use ->parseIncludes(['*.node.*']);
+        // How that logic will work is beyond me currently, but should keep things
+        // fairly clean?
 
         if ($request->input('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));

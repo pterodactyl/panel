@@ -1,0 +1,77 @@
+<?php
+/**
+ * Pterodactyl - Panel
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Pterodactyl\Policies;
+
+use Cache;
+use Carbon;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\APIKey as Key;
+use Pterodactyl\Models\APIPermission as Permission;
+
+class APIKeyPolicy
+{
+    /**
+     * Checks if the API key has permission to perform an action.
+     *
+     * @param \Pterodactyl\Models\User   $user
+     * @param \Pterodactyl\Models\APIKey $key
+     * @param string                     $permission
+     * @return bool
+     */
+    private function checkPermission(User $user, Key $key, $permission)
+    {
+        $permissions = Cache::remember('APIKeyPolicy.' . $user->uuid . $key->public, Carbon::now()->addSeconds(5), function () use ($key) {
+            return $key->permissions()->get()->transform(function ($item) {
+                return $item->permission;
+            })->values();
+        });
+
+        return $permissions->search($permission, true) !== false;
+    }
+
+    /**
+     * Determine if API key is allowed to view all nodes.
+     *
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function listNodes(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'list-nodes');
+    }
+
+    /**
+     * Determine if API key is allowed to view a specific node.
+     *
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function viewNode(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'view-node');
+    }
+}

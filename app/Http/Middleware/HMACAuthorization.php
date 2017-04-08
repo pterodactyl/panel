@@ -92,6 +92,7 @@ class HMACAuthorization
 
         $this->checkBearer();
         $this->validateRequest();
+        $this->validateIPAccess();
         $this->validateContents();
 
         Auth::loginUsingId($this->key()->user_id);
@@ -136,23 +137,6 @@ class HMACAuthorization
         $this->key = APIKey::where('public', $this->public())->first();
         if (! $this->key) {
             throw new AccessDeniedHttpException('Unable to identify requester. Authorization token is invalid.');
-        }
-
-        if (empty($this->request()->route()->getName())) {
-            throw new \Exception('Attempting to access un-named route. This should not be possible.');
-        }
-
-        $this->validateIPAccess();
-
-        $query = APIPermission::where('key_id', $this->key()->id)
-            ->where('permission', $this->request()->route()->getName());
-
-        if (starts_with($this->request()->route()->getName(), 'api.user')) {
-            $query->orWhere('permission', 'api.user.*');
-        }
-
-        if (! $query->first()) {
-            throw new AccessDeniedHttpException('You do not have permission to access this resource on the API.');
         }
     }
 

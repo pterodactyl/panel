@@ -25,6 +25,7 @@
 namespace Pterodactyl\Providers;
 
 use File;
+use Request;
 use Illuminate\Support\ServiceProvider;
 
 class MacroServiceProvider extends ServiceProvider
@@ -47,6 +48,20 @@ class MacroServiceProvider extends ServiceProvider
             }
 
             return round($size, ($i < 2) ? 0 : $precision) . ' ' . $units[$i];
+        });
+
+        Request::macro('apiKey', function () {
+            if (! Request::bearerToken()) {
+                return false;
+            }
+
+            $parts = explode('.', Request::bearerToken());
+
+            if (count($parts) === 2) {
+                return \Pterodactyl\Models\APIKey::where('public', $parts[0])->first();
+            }
+
+            return false;
         });
     }
 }

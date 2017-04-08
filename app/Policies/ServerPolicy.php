@@ -45,7 +45,7 @@ class ServerPolicy
             return true;
         }
 
-        $permissions = Cache::remember('ServerPolicy.' . $user->uuid . $server->uuid, Carbon::now()->addSeconds(10), function () use ($user, $server) {
+        $permissions = Cache::remember('ServerPolicy.' . $user->uuid . $server->uuid, Carbon::now()->addSeconds(5), function () use ($user, $server) {
             return $user->permissions()->server($server)->get()->transform(function ($item) {
                 return $item->permission;
             })->values();
