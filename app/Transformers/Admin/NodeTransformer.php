@@ -80,6 +80,10 @@ class NodeTransformer extends TransformerAbstract
      */
     public function includeAllocations(Node $node)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('view-node')) {
+            return;
+        }
+
         return $this->collection($node->allocations, new AllocationTransformer, 'allocation');
     }
 
@@ -90,6 +94,10 @@ class NodeTransformer extends TransformerAbstract
      */
     public function includeLocation(Node $node)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('view-node')) {
+            return;
+        }
+
         return $this->item($node->location, new LocationTransformer, 'location');
     }
 
