@@ -313,4 +313,14 @@ class Server extends Model
     {
         return $this->hasMany(Database::class);
     }
+
+    /**
+     * Gets the location of the server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->node->location();
+    }
 }

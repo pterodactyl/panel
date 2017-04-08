@@ -64,10 +64,7 @@ class ServerController extends Controller
         $fractal = Fractal::create()->item($server);
 
         if ($request->input('include')) {
-            $fractal->parseIncludes(collect(explode(',', $request->input('include')))->intersect([
-                'allocations', 'subusers', 'user',
-                'pack', 'service', 'option',
-            ])->toArray());
+            $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
         return $fractal->transformWith(new ServerTransformer)

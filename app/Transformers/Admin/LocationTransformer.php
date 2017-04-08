@@ -24,61 +24,48 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Location;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class LocationTransformer extends TransformerAbstract
 {
     /**
-     * The filter to be applied to this transformer.
+     * List of resources that can be included.
      *
-     * @var bool|string
+     * @var array
      */
-    protected $filter;
+    protected $availableIncludes = [
+        'nodes',
+        'servers',
+    ];
 
     /**
-     * Transformer constructor.
-     *
-     * @param  bool|string  $filter
-     * @return void
-     */
-    public function __construct($filter = false)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed pack array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(Location $location)
     {
-        return $this->transformWithFilter($allocation);
+        return $location->toArray();
     }
 
     /**
-     * Determine which transformer filter to apply.
+     * Return the nodes associated with this location.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Collection
      */
-    protected function transformWithFilter(Allocation $allocation)
+    public function includeServers(Location $location)
     {
-        if ($this->filter === 'server') {
-            return $this->transformForServer($allocation);
-        }
-
-        return $allocation->toArray();
+        return $this->collection($location->servers, new ServerTransformer, 'server');
     }
 
     /**
-     * Transform the allocation to only return information not duplicated
-     * in the server response (discard node_id and server_id).
+     * Return the nodes associated with this location.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Collection
      */
-    protected function transformForServer(Allocation $allocation)
+    public function includeNodes(Location $location)
     {
-        return collect($allocation)->only('id', 'ip', 'ip_alias', 'port')->toArray();
+        return $this->collection($location->nodes, new NodeTransformer, 'node');
     }
 }

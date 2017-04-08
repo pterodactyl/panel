@@ -24,61 +24,35 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\ServiceVariable;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class ServiceVariableTransformer extends TransformerAbstract
 {
     /**
-     * The filter to be applied to this transformer.
+     * List of resources that can be included.
      *
-     * @var bool|string
+     * @var array
      */
-    protected $filter;
+    protected $availableIncludes = ['variables'];
 
     /**
-     * Transformer constructor.
-     *
-     * @param  bool|string  $filter
-     * @return void
-     */
-    public function __construct($filter = false)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed server variable array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(ServiceVariable $variable)
     {
-        return $this->transformWithFilter($allocation);
+        return $variable->toArray();
     }
 
     /**
-     * Determine which transformer filter to apply.
+     * Return the server variables associated with this variable.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Collection
      */
-    protected function transformWithFilter(Allocation $allocation)
+    public function includeVariables(ServiceVariable $variable)
     {
-        if ($this->filter === 'server') {
-            return $this->transformForServer($allocation);
-        }
-
-        return $allocation->toArray();
-    }
-
-    /**
-     * Transform the allocation to only return information not duplicated
-     * in the server response (discard node_id and server_id).
-     *
-     * @return array
-     */
-    protected function transformForServer(Allocation $allocation)
-    {
-        return collect($allocation)->only('id', 'ip', 'ip_alias', 'port')->toArray();
+        return $this->collection($variable->serverVariable, new ServerVariableTransformer, 'server_variable');
     }
 }

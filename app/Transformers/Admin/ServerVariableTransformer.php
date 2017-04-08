@@ -24,61 +24,35 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\ServerVariable;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class ServerVariableTransformer extends TransformerAbstract
 {
     /**
-     * The filter to be applied to this transformer.
+     * List of resources that can be included.
      *
-     * @var bool|string
+     * @var array
      */
-    protected $filter;
+    protected $availableIncludes = ['parent'];
 
     /**
-     * Transformer constructor.
-     *
-     * @param  bool|string  $filter
-     * @return void
-     */
-    public function __construct($filter = false)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed server variable array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(ServerVariable $variable)
     {
-        return $this->transformWithFilter($allocation);
+        return $variable->toArray();
     }
 
     /**
-     * Determine which transformer filter to apply.
+     * Return the parent service variable data.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Item
      */
-    protected function transformWithFilter(Allocation $allocation)
+    public function includeParent(ServerVariable $variable)
     {
-        if ($this->filter === 'server') {
-            return $this->transformForServer($allocation);
-        }
-
-        return $allocation->toArray();
-    }
-
-    /**
-     * Transform the allocation to only return information not duplicated
-     * in the server response (discard node_id and server_id).
-     *
-     * @return array
-     */
-    protected function transformForServer(Allocation $allocation)
-    {
-        return collect($allocation)->only('id', 'ip', 'ip_alias', 'port')->toArray();
+        return $this->item($variable->variable, new ServiceVariableTransformer, 'variable');
     }
 }

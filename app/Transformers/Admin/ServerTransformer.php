@@ -38,6 +38,12 @@ class ServerTransformer extends TransformerAbstract
         'allocations',
         'user',
         'subusers',
+        'pack',
+        'service',
+        'option',
+        'variables',
+        'location',
+        'node',
     ];
 
     /**
@@ -57,7 +63,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeAllocations(Server $server)
     {
-        return $this->collection($server->allocations, new AllocationTransformer, 'allocation');
+        return $this->collection($server->allocations, new AllocationTransformer('server'), 'allocation');
     }
 
     /**
@@ -78,5 +84,65 @@ class ServerTransformer extends TransformerAbstract
     public function includeUser(Server $server)
     {
         return $this->item($server->user, new UserTransformer, 'user');
+    }
+
+    /**
+     * Return a generic array with pack information for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includePack(Server $server)
+    {
+        return $this->item($server->pack, new PackTransformer, 'pack');
+    }
+
+    /**
+     * Return a generic array with service information for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includeService(Server $server)
+    {
+        return $this->item($server->service, new ServiceTransformer, 'service');
+    }
+
+    /**
+     * Return a generic array with service option information for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includeOption(Server $server)
+    {
+        return $this->item($server->option, new OptionTransformer, 'option');
+    }
+
+    /**
+     * Return a generic array of data about subusers for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeVariables(Server $server)
+    {
+        return $this->collection($server->variables, new ServerVariableTransformer, 'server_variable');
+    }
+
+    /**
+     * Return a generic array with pack information for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includeLocation(Server $server)
+    {
+        return $this->item($server->location, new LocationTransformer, 'location');
+    }
+
+    /**
+     * Return a generic array with pack information for this server.
+     *
+     * @return \Leauge\Fractal\Resource\Item
+     */
+    public function includeNode(Server $server)
+    {
+        return $this->item($server->node, new NodeTransformer, 'node');
     }
 }

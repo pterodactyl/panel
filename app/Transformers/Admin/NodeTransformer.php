@@ -24,61 +24,59 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Node;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class NodeTransformer extends TransformerAbstract
 {
     /**
-     * The filter to be applied to this transformer.
+     * List of resources that can be included.
      *
-     * @var bool|string
+     * @var array
      */
-    protected $filter;
+    protected $availableIncludes = [
+        'allocations',
+        'location',
+        'servers',
+    ];
 
     /**
-     * Transformer constructor.
-     *
-     * @param  bool|string  $filter
-     * @return void
-     */
-    public function __construct($filter = false)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed pack array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(Node $node)
     {
-        return $this->transformWithFilter($allocation);
+        return $node->toArray();
     }
 
     /**
-     * Determine which transformer filter to apply.
+     * Return the nodes associated with this location.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Collection
      */
-    protected function transformWithFilter(Allocation $allocation)
+    public function includeAllocations(Node $node)
     {
-        if ($this->filter === 'server') {
-            return $this->transformForServer($allocation);
-        }
-
-        return $allocation->toArray();
+        return $this->collection($node->allocations, new AllocationTransformer, 'allocation');
     }
 
     /**
-     * Transform the allocation to only return information not duplicated
-     * in the server response (discard node_id and server_id).
+     * Return the nodes associated with this location.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Item
      */
-    protected function transformForServer(Allocation $allocation)
+    public function includeLocation(Node $node)
     {
-        return collect($allocation)->only('id', 'ip', 'ip_alias', 'port')->toArray();
+        return $this->item($node->location, new LocationTransformer, 'location');
+    }
+
+    /**
+     * Return the nodes associated with this location.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeServers(Node $node)
+    {
+        return $this->collection($node->servers, new ServerTransformer, 'server');
     }
 }

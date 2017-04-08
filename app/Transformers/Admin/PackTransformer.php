@@ -24,61 +24,52 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Pack;
 use League\Fractal\TransformerAbstract;
 
-class AllocationTransformer extends TransformerAbstract
+class PackTransformer extends TransformerAbstract
 {
     /**
-     * The filter to be applied to this transformer.
+     * List of resources that can be included.
      *
-     * @var bool|string
+     * @var array
      */
-    protected $filter;
+    protected $availableIncludes = [
+        'option',
+        'servers',
+    ];
 
     /**
-     * Transformer constructor.
-     *
-     * @param  bool|string  $filter
-     * @return void
-     */
-    public function __construct($filter = false)
-    {
-        $this->filter = $filter;
-    }
-
-    /**
-     * Return a generic transformed allocation array.
+     * Return a generic transformed pack array.
      *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform($pack)
     {
-        return $this->transformWithFilter($allocation);
-    }
-
-    /**
-     * Determine which transformer filter to apply.
-     *
-     * @return array
-     */
-    protected function transformWithFilter(Allocation $allocation)
-    {
-        if ($this->filter === 'server') {
-            return $this->transformForServer($allocation);
+        if (! $pack instanceof Pack) {
+            return ['id' => null];
         }
 
-        return $allocation->toArray();
+        return $pack->toArray();
     }
 
     /**
-     * Transform the allocation to only return information not duplicated
-     * in the server response (discard node_id and server_id).
+     * Return the packs associated with this service.
      *
-     * @return array
+     * @return \Leauge\Fractal\Resource\Item
      */
-    protected function transformForServer(Allocation $allocation)
+    public function includeOption(Pack $pack)
     {
-        return collect($allocation)->only('id', 'ip', 'ip_alias', 'port')->toArray();
+        return $this->item($pack->option, new OptionTransformer, 'option');
+    }
+
+    /**
+     * Return the packs associated with this service.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeServers(Pack $pack)
+    {
+        return $this->collection($pack->servers, new ServerTransformer, 'server');
     }
 }
