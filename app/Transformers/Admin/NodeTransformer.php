@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use League\Fractal\TransformerAbstract;
 
@@ -39,6 +40,28 @@ class NodeTransformer extends TransformerAbstract
         'location',
         'servers',
     ];
+
+    /**
+     * The Illuminate Request object if provided.
+     *
+     * @var \Illuminate\Http\Request|bool
+     */
+    protected $request;
+
+    /**
+     * Setup request object for transformer.
+     *
+     * @param  \Illuminate\Http\Request|bool  $request
+     * @return void
+     */
+    public function __construct($request = false)
+    {
+        if (! $request instanceof Request && $request !== false) {
+            throw new DisplayException('Request passed to constructor must be of type Request or false.');
+        }
+
+        $this->request = $request;
+    }
 
     /**
      * Return a generic transformed pack array.
@@ -77,6 +100,10 @@ class NodeTransformer extends TransformerAbstract
      */
     public function includeServers(Node $node)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('list-servers')) {
+            return;
+        }
+
         return $this->collection($node->servers, new ServerTransformer, 'server');
     }
 }

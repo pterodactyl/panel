@@ -42,7 +42,9 @@ class APIKeyPolicy
      */
     private function checkPermission(User $user, Key $key, $permission)
     {
-        $permissions = Cache::remember('APIKeyPolicy.' . $user->uuid . $key->public, Carbon::now()->addSeconds(5), function () use ($key) {
+        // We don't tag this cache key with the user uuid because the key is already unique,
+        // and multiple users are not defiend for a single key.
+        $permissions = Cache::remember('APIKeyPolicy.' . $key->public, Carbon::now()->addSeconds(5), function () use ($key) {
             return $key->permissions()->get()->transform(function ($item) {
                 return $item->permission;
             })->values();

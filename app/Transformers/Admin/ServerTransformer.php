@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use League\Fractal\TransformerAbstract;
 
@@ -47,6 +48,28 @@ class ServerTransformer extends TransformerAbstract
     ];
 
     /**
+     * The Illuminate Request object if provided.
+     *
+     * @var \Illuminate\Http\Request|bool
+     */
+    protected $request;
+
+    /**
+     * Setup request object for transformer.
+     *
+     * @param  \Illuminate\Http\Request|bool  $request
+     * @return void
+     */
+    public function __construct($request = false)
+    {
+        if (! $request instanceof Request && $request !== false) {
+            throw new DisplayException('Request passed to constructor must be of type Request or false.');
+        }
+
+        $this->request = $request;
+    }
+
+    /**
      * Return a generic transformed server array.
      *
      * @return array
@@ -63,7 +86,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeAllocations(Server $server)
     {
-        return $this->collection($server->allocations, new AllocationTransformer('server'), 'allocation');
+        return $this->collection($server->allocations, new AllocationTransformer($this->request, 'server'), 'allocation');
     }
 
     /**
@@ -73,7 +96,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeSubusers(Server $server)
     {
-        return $this->collection($server->subusers, new SubuserTransformer, 'subuser');
+        return $this->collection($server->subusers, new SubuserTransformer($this->request), 'subuser');
     }
 
     /**
@@ -83,7 +106,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeUser(Server $server)
     {
-        return $this->item($server->user, new UserTransformer, 'user');
+        return $this->item($server->user, new UserTransformer($this->request), 'user');
     }
 
     /**
@@ -93,7 +116,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includePack(Server $server)
     {
-        return $this->item($server->pack, new PackTransformer, 'pack');
+        return $this->item($server->pack, new PackTransformer($this->request), 'pack');
     }
 
     /**
@@ -103,7 +126,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeService(Server $server)
     {
-        return $this->item($server->service, new ServiceTransformer, 'service');
+        return $this->item($server->service, new ServiceTransformer($this->request), 'service');
     }
 
     /**
@@ -113,7 +136,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeOption(Server $server)
     {
-        return $this->item($server->option, new OptionTransformer, 'option');
+        return $this->item($server->option, new OptionTransformer($this->request), 'option');
     }
 
     /**
@@ -123,7 +146,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeVariables(Server $server)
     {
-        return $this->collection($server->variables, new ServerVariableTransformer, 'server_variable');
+        return $this->collection($server->variables, new ServerVariableTransformer($this->request), 'server_variable');
     }
 
     /**
@@ -133,16 +156,16 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeLocation(Server $server)
     {
-        return $this->item($server->location, new LocationTransformer, 'location');
+        return $this->item($server->location, new LocationTransformer($this->request), 'location');
     }
 
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @return \Leauge\Fractal\Resource\Item|void
      */
     public function includeNode(Server $server)
     {
-        return $this->item($server->node, new NodeTransformer, 'node');
+        return $this->item($server->node, new NodeTransformer($this->request), 'node');
     }
 }

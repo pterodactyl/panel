@@ -29,6 +29,13 @@ use Illuminate\Database\Eloquent\Model;
 class APIKey extends Model
 {
     /**
+     * Public key defined length used in verification methods.
+     *
+     * @var int
+     */
+    const PUBLIC_KEY_LEN = 16;
+
+    /**
      * The table associated with the model.
      *
      * @var string

@@ -25,7 +25,10 @@
 namespace Pterodactyl\Providers;
 
 use File;
+use Cache;
+use Carbon;
 use Request;
+use Pterodactyl\Models\APIKey;
 use Illuminate\Support\ServiceProvider;
 
 class MacroServiceProvider extends ServiceProvider
@@ -57,11 +60,27 @@ class MacroServiceProvider extends ServiceProvider
 
             $parts = explode('.', Request::bearerToken());
 
-            if (count($parts) === 2) {
-                return \Pterodactyl\Models\APIKey::where('public', $parts[0])->first();
+            if (count($parts) === 2 && strlen($parts[0]) === APIKey::PUBLIC_KEY_LEN) {
+                // Because the key itself isn't changing frequently, we simply cache this for
+                // 15 minutes to speed up the API and keep requests flowing.
+                return Cache::tags([
+                    'ApiKeyMacro',
+                    'ApiKeyMacro:Key:' . $parts[0],
+                ])->remember('ApiKeyMacro.' . $parts[0], Carbon::now()->addMinutes(15), function() use ($parts) {
+                    return APIKey::where('public', $parts[0])->first();
+                });
             }
 
             return false;
+        });
+
+        Request::macro('apiKeyHasPermission', function($permission) {
+            $key = Request::apiKey();
+            if (! $key) {
+                return false;
+            }
+
+            return Request::user()->can($permission, $key);
         });
     }
 }

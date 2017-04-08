@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\ServiceOption;
 use League\Fractal\TransformerAbstract;
 
@@ -40,6 +41,28 @@ class OptionTransformer extends TransformerAbstract
         'servers',
         'variables',
     ];
+
+    /**
+     * The Illuminate Request object if provided.
+     *
+     * @var \Illuminate\Http\Request|bool
+     */
+    protected $request;
+
+    /**
+     * Setup request object for transformer.
+     *
+     * @param  \Illuminate\Http\Request|bool  $request
+     * @return void
+     */
+    public function __construct($request = false)
+    {
+        if (! $request instanceof Request && $request !== false) {
+            throw new DisplayException('Request passed to constructor must be of type Request or false.');
+        }
+
+        $this->request = $request;
+    }
 
     /**
      * Return a generic transformed service option array.

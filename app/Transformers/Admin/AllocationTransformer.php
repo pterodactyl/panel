@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Allocation;
 use League\Fractal\TransformerAbstract;
 
@@ -37,13 +38,26 @@ class AllocationTransformer extends TransformerAbstract
     protected $filter;
 
     /**
-     * Transformer constructor.
+     * The Illuminate Request object if provided.
      *
-     * @param  bool|string  $filter
+     * @var \Illuminate\Http\Request|bool
+     */
+    protected $request;
+
+    /**
+     * Setup request object for transformer.
+     *
+     * @param  \Illuminate\Http\Request|bool  $request
+     * @param  bool                           $filter
      * @return void
      */
-    public function __construct($filter = false)
+    public function __construct($request = false, $filter = false)
     {
+        if (! $request instanceof Request && $request !== false) {
+            throw new DisplayException('Request passed to constructor must be of type Request or false.');
+        }
+
+        $this->request = $request;
         $this->filter = $filter;
     }
 
