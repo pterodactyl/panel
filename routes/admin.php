@@ -106,7 +106,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::get('/view/{id}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
     Route::get('/view/{id}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
     Route::get('/view/{id}/startup', 'ServersController@viewStartup')->name('admin.servers.view.startup');
-    Route::get('/view/{id}/startup', 'ServersController@viewDatabase')->name('admin.servers.view.database');
+    Route::get('/view/{id}/database', 'ServersController@viewDatabase')->name('admin.servers.view.database');
     Route::get('/view/{id}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
     Route::get('/view/{id}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
 
@@ -114,7 +114,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{id}/details', 'ServersController@setDetails');
     Route::post('/view/{id}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
     Route::post('/view/{id}/build', 'ServersController@updateBuild');
-    Route::post('/view/{id}/build', 'ServersController@saveStartup');
+    Route::post('/view/{id}/startup', 'ServersController@saveStartup');
     Route::post('/view/{id}/database', 'ServersController@newDatabase');
     Route::post('/view/{id}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
     Route::post('/view/{id}/manage/rebuild', 'ServersController@rebuildContainer')->name('admin.servers.view.manage.rebuild');
