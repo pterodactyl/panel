@@ -39,7 +39,7 @@ class CoreController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('user-server-list', $request->apiKey());
+        $this->authorize('user.server-list', $request->apiKey());
 
         $servers = $request->user()->access('service', 'node', 'allocation', 'option')->get();
 

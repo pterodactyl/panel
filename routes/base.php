@@ -51,9 +51,9 @@ Route::group(['prefix' => 'account'], function () {
 */
 Route::group(['prefix' => 'account/api'], function () {
     Route::get('/', 'APIController@index')->name('account.api');
-    Route::get('/new', 'APIController@new')->name('account.api.new');
+    Route::get('/new', 'APIController@create')->name('account.api.new');
 
-    Route::post('/new', 'APIController@save');
+    Route::post('/new', 'APIController@store');
 
     Route::delete('/revoke/{key}', 'APIController@revoke')->name('account.api.revoke');
 });

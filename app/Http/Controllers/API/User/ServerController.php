@@ -43,7 +43,7 @@ class ServerController extends Controller
      */
     public function index(Request $request, $uuid)
     {
-        $this->authorize('user-server-view', $request->apiKey());
+        $this->authorize('user.server-view', $request->apiKey());
 
         $server = Server::byUuid($uuid);
         $fractal = Fractal::create()->item($server);
@@ -66,7 +66,7 @@ class ServerController extends Controller
      */
     public function power(Request $request, $uuid)
     {
-        $this->authorize('user-server-power', $request->apiKey());
+        $this->authorize('user.server-power', $request->apiKey());
 
         $server = Server::byUuid($uuid);
         $request->user()->can('power-' . $request->input('action'), $server);
@@ -86,7 +86,7 @@ class ServerController extends Controller
      */
     public function command(Request $request, $uuid)
     {
-        $this->authorize('user-server-command', $request->apiKey());
+        $this->authorize('user.server-command', $request->apiKey());
 
         $server = Server::byUuid($uuid);
         $request->user()->can('send-command', $server);

@@ -47,8 +47,8 @@
 @endsection
 
 @section('content')
-<div class="row">
-    <form action="{{ route('account.api.new') }}" method="POST" id="permsForm">
+<form action="{{ route('account.api.new') }}" method="POST">
+    <div class="row">
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
@@ -75,292 +75,70 @@
                             </div>
                         </div>
                         <div class="col-xs-6">
+                            {!! csrf_field() !!}
                             <button class="btn btn-success pull-right">@lang('strings.create') &rarr;</button>
                         </div>
                     </div>
-                    <div class="text-right">
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-xs-12 col-lg-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <div class="box-title">@lang('base.api.new.base.title')</div>
-                </div>
-                <div class="box-body">
-                    <div class="form-group">
-                        <div class="checkbox checkbox-primary no-margin-bottom">
-                            <input id="user:*" name="permissions[]" type="checkbox" value="user:*">
-                            <label for="user:*" class="strong">
-                                <span class="label label-default">GET</span> @lang('base.api.new.base.information.title')
-                            </label>
-                        </div>
-                        <p class="text-muted small">@lang('base.api.new.base.information.description')</p>
+    </div>
+    <div class="row">
+        @foreach($permissions['user'] as $block => $perms)
+            <div class="col-sm-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">@lang('base.api.permissions.user.' . $block . '_header')</h3>
+                    </div>
+                    <div class="box-body">
+                        @foreach($perms as $permission)
+                            <div class="form-group">
+                                <div class="checkbox checkbox-primary no-margin-bottom">
+                                    <input id="{{ 'user.' . $block . '-' . $permission }}" name="permissions[]" type="checkbox" value="{{ $block . '-' . $permission }}"/>
+                                    <label for="{{ 'user.' . $block . '-' . $permission }}" class="strong">
+                                        @lang('base.api.permissions.user.' . $block . '.' . $permission . '.title')
+                                    </label>
+                                </div>
+                                <p class="text-muted small">@lang('base.api.permissions.user.' . $block . '.' . $permission . '.desc')</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
-            @if(Auth::user()->isRootAdmin())
-                <div class="box">
-                    <div class="box-header with-border">
-                        <div class="box-title">@lang('base.api.new.user_management.title')</div>
-                    </div>
-                    <div class="box-body">
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:users.list" name="adminPermissions[]" type="checkbox" value="admin:users.list">
-                                <label for="admin:users.list" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.user_management.list.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.user_management.list.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:users.create" name="adminPermissions[]" type="checkbox" value="admin:users.create">
-                                <label for="admin:users.create" class="strong">
-                                    <span class="label label-default">POST</span> @lang('base.api.new.user_management.create.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.user_management.create.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:users.view" name="adminPermissions[]" type="checkbox" value="admin:users.view">
-                                <label for="admin:users.view" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.user_management.view.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.user_management.view.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:users.update" name="adminPermissions[]" type="checkbox" value="admin:users.update">
-                                <label for="admin:users.update" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.user_management.update.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.user_management.update.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-danger no-margin-bottom">
-                                <input id="admin:users.delete" name="adminPermissions[]" type="checkbox" value="admin:users.delete">
-                                <label for="admin:users.delete" class="strong">
-                                    <span class="label label-danger">DELETE</span> @lang('base.api.new.user_management.delete.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.user_management.delete.description')</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="box-header with-border">
-                        <div class="box-title">@lang('base.api.new.node_management.title')</div>
-                    </div>
-                    <div class="box-body">
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:nodes.list" name="adminPermissions[]" type="checkbox" value="admin:nodes.list">
-                                <label for="admin:nodes.list" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.node_management.list.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.node_management.list.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:nodes.create" name="adminPermissions[]" type="checkbox" value="admin:nodes.create">
-                                <label for="admin:nodes.create" class="strong">
-                                    <span class="label label-default">POST</span> @lang('base.api.new.node_management.create.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.node_management.create.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:nodes.view" name="adminPermissions[]" type="checkbox" value="admin:nodes.view">
-                                <label for="admin:nodes.view" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.node_management.view.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.node_management.view.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:nodes.allocations" name="adminPermissions[]" type="checkbox" value="admin:nodes.allocations">
-                                <label for="admin:nodes.allocations" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.node_management.allocations.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.node_management.allocations.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-danger no-margin-bottom">
-                                <input id="admin:nodes.delete" name="adminPermissions[]" type="checkbox" value="admin:nodes.delete">
-                                <label for="admin:nodes.delete" class="strong">
-                                    <span class="label label-danger">DELETE</span> @lang('base.api.new.node_management.delete.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.node_management.delete.description')</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="box">
-                    <div class="box-header with-border">
-                        <div class="box-title">@lang('base.api.new.location_management.title')</div>
-                    </div>
-                    <div class="box-body">
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:locations.list" name="adminPermissions[]" type="checkbox" value="admin:locations.list">
-                                <label for="admin:locations.list" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.location_management.list.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.location_management.list.description')</p>
-                        </div>
-                    </div>
-                </div>
+            @if ($loop->iteration % 2 === 0)
+                <div class="clearfix visible-lg-block visible-md-block visible-sm-block"></div>
             @endif
-        </div>
-        <div class="col-xs-12 col-lg-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <div class="box-title">@lang('base.api.new.server_management.title')</div>
-                </div>
-                <div class="box-body">
-                    <div class="form-group">
-                        <div class="checkbox checkbox-primary no-margin-bottom">
-                            <input id="user:server" name="permissions[]" type="checkbox" value="user:server">
-                            <label for="user:server" class="strong">
-                                <span class="label label-default">GET</span> @lang('base.api.new.server_management.server.title')
-                            </label>
-                        </div>
-                        <p class="text-muted small">@lang('base.api.new.server_management.server.description')</p>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-primary no-margin-bottom">
-                            <input id="user:server.power" name="permissions[]" type="checkbox" value="user:server.power">
-                            <label for="user:server.power" class="strong">
-                                <span class="label label-default">POST</span> @lang('base.api.new.server_management.power.title')
-                            </label>
-                        </div>
-                        <p class="text-muted small">@lang('base.api.new.server_management.power.description')</p>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-primary no-margin-bottom">
-                            <input id="user:server.command" name="permissions[]" type="checkbox" value="user:server.command">
-                            <label for="user:server.command" class="strong">
-                                <span class="label label-default">POST</span> @lang('base.api.new.server_management.command.title')
-                            </label>
-                        </div>
-                        <p class="text-muted small">@lang('base.api.new.server_management.command.description')</p>
-                    </div>
-                    @if(Auth::user()->isRootAdmin())
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:servers.view" name="adminPermissions[]" type="checkbox" value="admin:servers.view">
-                                <label for="admin:servers.view" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.server_management.view.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.view.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:servers.list" name="adminPermissions[]" type="checkbox" value="admin:servers.list">
-                                <label for="admin:servers.list" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.server_management.list.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.list.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:servers.create" name="adminPermissions[]" type="checkbox" value="admin:servers.create">
-                                <label for="admin:servers.create" class="strong">
-                                    <span class="label label-default">POST</span> @lang('base.api.new.server_management.create.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.create.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:servers.config" name="adminPermissions[]" type="checkbox" value="admin:servers.config">
-                                <label for="admin:servers.config" class="strong">
-                                    <span class="label label-default">PATCH</span> @lang('base.api.new.server_management.config.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.config.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:servers.build" name="adminPermissions[]" type="checkbox" value="admin:servers.build">
-                                <label for="admin:servers.build" class="strong">
-                                    <span class="label label-default">PATCH</span> @lang('base.api.new.server_management.build.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.build.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-warning no-margin-bottom">
-                                <input id="admin:servers.suspend" name="adminPermissions[]" type="checkbox" value="admin:servers.suspend">
-                                <label for="admin:servers.suspend" class="strong">
-                                    <span class="label label-default">POST</span> @lang('base.api.new.server_management.suspend.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.suspend.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-warning no-margin-bottom">
-                                <input id="admin:servers.unsuspend" name="adminPermissions[]" type="checkbox" value="admin:servers.unsuspend">
-                                <label for="admin:servers.unsuspend" class="strong">
-                                    <span class="label label-default">POST</span> @lang('base.api.new.server_management.unsuspend.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.unsuspend.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-danger no-margin-bottom">
-                                <input id="admin:servers.delete" name="adminPermissions[]" type="checkbox" value="admin:servers.delete">
-                                <label for="admin:servers.delete" class="strong">
-                                    <span class="label label-danger">DELETE</span> @lang('base.api.new.server_management.delete.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.server_management.delete.description')</p>
-                        </div>
-                    @endif
-                </div>
-            </div>
-            @if(Auth::user()->isRootAdmin())
-                <div class="box">
+        @endforeach
+    </div>
+    <div class="row">
+        @foreach($permissions['admin'] as $block => $perms)
+            <div class="col-lg-4 col-sm-6">
+                <div class="box box-danger">
                     <div class="box-header with-border">
-                        <div class="box-title">@lang('base.api.new.service_management.title')</div>
+                        <h3 class="box-title">@lang('base.api.permissions.admin.' . $block . '_header')</h3>
                     </div>
                     <div class="box-body">
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:services.list" name="adminPermissions[]" type="checkbox" value="admin:services.list">
-                                <label for="admin:services.list" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.service_management.list.title')
-                                </label>
+                        @foreach($perms as $permission)
+                            <div class="form-group">
+                                <div class="checkbox {{ $permission === 'delete' ? 'checkbox-danger' : 'checkbox-primary' }} no-margin-bottom">
+                                    <input id="{{ $block . '-' . $permission }}" name="admin_permissions[]" type="checkbox" value="{{ $block . '-' . $permission }}"/>
+                                    <label for="{{ $block . '-' . $permission }}" class="strong">
+                                        @lang('base.api.permissions.admin.' . $block . '.' . $permission . '.title')
+                                    </label>
+                                </div>
+                                <p class="text-muted small">@lang('base.api.permissions.admin.' . $block . '.' . $permission . '.desc')</p>
                             </div>
-                            <p class="text-muted small">@lang('base.api.new.service_management.list.description')</p>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="admin:services.view" name="adminPermissions[]" type="checkbox" value="admin:services.view">
-                                <label for="admin:services.view" class="strong">
-                                    <span class="label label-default">GET</span> @lang('base.api.new.service_management.view.title')
-                                </label>
-                            </div>
-                            <p class="text-muted small">@lang('base.api.new.service_management.view.description')</p>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
+            </div>
+            @if ($loop->iteration % 3 === 0)
+                <div class="clearfix visible-lg-block"></div>
             @endif
-        </div>
-        {!! csrf_field() !!}
-    </form>
-</div>
+            @if ($loop->iteration % 2 === 0)
+                <div class="clearfix visible-md-block visible-sm-block"></div>
+            @endif
+        @endforeach
+    </div>
+</form>
 @endsection

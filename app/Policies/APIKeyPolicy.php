@@ -42,6 +42,11 @@ class APIKeyPolicy
      */
     protected function checkPermission(User $user, Key $key, $permission)
     {
+        // Non-administrative users cannot use administrative routes.
+        if (! starts_with('user.') && ! $user->isRootAdmin()) {
+            return false;
+        }
+
         // We don't tag this cache key with the user uuid because the key is already unique,
         // and multiple users are not defiend for a single key.
         $permissions = Cache::remember('APIKeyPolicy.' . $key->public, Carbon::now()->addSeconds(5), function () use ($key) {

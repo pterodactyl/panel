@@ -77,16 +77,45 @@ class APIPermission extends Model
         // All other pemissions below are administrative actions.
         'server' => [
             'list',
-            'view',
-            'delete',
             'create',
+            'view',
             'edit-details',
             'edit-container',
+            'edit-build',
+            'edit-startup',
             'suspend',
             'install',
             'rebuild',
-            'edit-build',
-            'edit-startup',
+            'delete',
+        ],
+        'location' => [
+            'list',
+        ],
+        'node' => [
+            'list',
+            'view',
+            'view-config',
+            'create',
+            'delete',
+        ],
+        'user' => [
+            'list',
+            'view',
+            'create',
+            'edit',
+            'delete',
+        ],
+        'service' => [
+            'list',
+            'view',
+        ],
+        'option' => [
+            'list',
+            'view',
+        ],
+        'pack' => [
+            'list',
+            'view',
         ],
     ];
 

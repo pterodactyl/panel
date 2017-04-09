@@ -95,6 +95,8 @@ Route::group(['prefix' => '/users'], function () {
 
     Route::post('/', 'UserController@store');
 
+    Route::put('/{id}', 'UserController@update');
+
     Route::delete('/{id}', 'UserController@delete');
 });
 
