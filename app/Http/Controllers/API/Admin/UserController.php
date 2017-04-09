@@ -32,6 +32,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Transformers\Admin\UserTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class UserController extends Controller
 {
@@ -44,14 +45,12 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $this->authorize('user-list', $request->apiKey());
+        $users = User::paginate(50);
 
-        $fractal = Fractal::create()->collection(User::all());
-        if ($request->input('include')) {
-            $fractal->parseIncludes(explode(',', $request->input('include')));
-        }
-
-        return $fractal->transformWith(new UserTransformer($request))
+        return Fractal::create()->collection($users)
+            ->transformWith(new UserTransformer($request))
             ->withResourceName('user')
+            ->paginateWith(new IlluminatePaginatorAdapter($users))
             ->toArray();
     }
 

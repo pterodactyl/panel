@@ -97,3 +97,16 @@ Route::group(['prefix' => '/users'], function () {
 
     Route::delete('/{id}', 'UserController@delete');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Service Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/services
+|
+*/
+Route::group(['prefix' => '/services'], function () {
+    Route::get('/', 'ServiceController@index');
+    Route::get('/{id}', 'ServiceController@view');
+});

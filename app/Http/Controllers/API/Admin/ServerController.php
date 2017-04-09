@@ -61,6 +61,7 @@ class ServerController extends Controller
      * Controller to handle returning information on a single server.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return array
      */
     public function view(Request $request, $id)
