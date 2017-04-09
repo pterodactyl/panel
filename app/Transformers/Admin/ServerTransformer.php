@@ -184,7 +184,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeLocation(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('location-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('location-list')) {
             return;
         }
 
