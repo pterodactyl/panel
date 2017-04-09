@@ -337,9 +337,6 @@ class ServerRepository
             DB::commit();
 
             return $server;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -351,7 +348,7 @@ class ServerRepository
      *
      * @param  int    $id
      * @param  array  $data
-     * @return bool
+     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
@@ -409,7 +406,9 @@ class ServerRepository
             ]);
 
             if ($res->getStatusCode() === 204) {
-                return DB::commit();
+                DB::commit();
+
+                return $server;
             } else {
                 throw new DisplayException('Daemon returned a a non HTTP/204 error code. HTTP/' + $res->getStatusCode());
             }
@@ -424,9 +423,8 @@ class ServerRepository
      *
      * @param  int    $id
      * @param  array  $data
-     * @return bool
+     * @return \Pterodactyl\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function updateContainer($id, array $data)
@@ -461,10 +459,7 @@ class ServerRepository
 
             DB::commit();
 
-            return true;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.', $ex);
+            return $server;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -609,9 +604,6 @@ class ServerRepository
             DB::commit();
 
             return $server;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('A TransferException occured while attempting to update the server configuration, check that the daemon is online. This error has been logged.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -799,8 +791,6 @@ class ServerRepository
      * @param  int   $id
      * @param  bool  $deleted
      * @return void
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function suspend($id, $deleted = false)
     {
@@ -824,9 +814,6 @@ class ServerRepository
             ])->request('POST', '/server/suspend');
 
             return DB::commit();
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('An error occured while attempting to contact the remote daemon to suspend this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -838,8 +825,6 @@ class ServerRepository
      *
      * @param  int   $id
      * @return void
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function unsuspend($id)
     {
@@ -848,7 +833,6 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
-
             // Already unsuspended, no need to make more requests.
             if ($server->suspended === 0) {
                 return true;
@@ -863,9 +847,6 @@ class ServerRepository
             ])->request('POST', '/server/unsuspend');
 
             return DB::commit();
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('An error occured while attempting to contact the remote daemon to un-suspend this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -879,7 +860,6 @@ class ServerRepository
      * @param  string  $password
      * @return void
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function updateSFTPPassword($id, $password)
@@ -910,9 +890,6 @@ class ServerRepository
             DB::commit();
 
             return true;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('There was an error while attmping to contact the remote service to change the password.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;

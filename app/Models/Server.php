@@ -27,6 +27,7 @@ namespace Pterodactyl\Models;
 use Auth;
 use Cache;
 use Carbon;
+use Schema;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -201,6 +202,15 @@ class Server extends Model
         }
 
         return Javascript::put($response);
+    }
+
+    /**
+     * Return the columns available for this table.
+     *
+     * @return array
+     */
+    public function getTableColumns() {
+        return Schema::getColumnListing($this->getTable());
     }
 
     /**

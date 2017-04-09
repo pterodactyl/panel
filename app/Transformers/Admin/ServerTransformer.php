@@ -76,7 +76,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function transform(Server $server)
     {
-        return $server->toArray();
+        return collect($server->toArray())->only($server->getTableColumns())->toArray();
     }
 
     /**

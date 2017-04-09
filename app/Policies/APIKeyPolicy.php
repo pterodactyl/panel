@@ -54,26 +54,162 @@ class APIKeyPolicy
     }
 
     /**
-     * Determine if API key is allowed to view all nodes.
-     *
      * @param  \Pterodactyl\Models\User    $user
      * @param  \Pterodactyl\Models\APIKey  $key
      * @return bool
      */
-    public function listNodes(User $user, Key $key)
+    public function locationList(User $user, Key $key)
     {
-        return $this->checkPermission($user, $key, 'list-nodes');
+        return $this->checkPermission($user, $key, 'location-list');
     }
 
     /**
-     * Determine if API key is allowed to view a specific node.
-     *
      * @param  \Pterodactyl\Models\User    $user
      * @param  \Pterodactyl\Models\APIKey  $key
      * @return bool
      */
-    public function viewNode(User $user, Key $key)
+    public function serverList(User $user, Key $key)
     {
-        return $this->checkPermission($user, $key, 'view-node');
+        return $this->checkPermission($user, $key, 'server-list');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverView(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-view');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverCreate(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-create');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverDelete(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-delete');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverEditDetails(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-edit-details');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverEditContainer(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-edit-container');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverEditBuild(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-edit-build');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverEditStartup(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-edit-startup');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverSuspend(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-suspend');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function servrerInstall(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-install');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function serverRebuild(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'server-rebuild');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function userServerList(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'user-server-list');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function userServerView(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'user-server-view');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function userServerPower(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'user-server-power');
+    }
+
+    /**
+     * @param  \Pterodactyl\Models\User    $user
+     * @param  \Pterodactyl\Models\APIKey  $key
+     * @return bool
+     */
+    public function userServerCommand(User $user, Key $key)
+    {
+        return $this->checkPermission($user, $key, 'user-server-command');
     }
 }

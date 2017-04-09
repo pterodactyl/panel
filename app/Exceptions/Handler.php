@@ -47,6 +47,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
+            $exception = $this->prepareException($exception);
 
             if (config('app.debug')) {
                 $report = [

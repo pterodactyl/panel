@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-Route::get('/', 'CoreController@index')->name('api.admin');
+Route::get('/', 'CoreController@index');
 
 
 /*
@@ -34,6 +34,31 @@ Route::get('/', 'CoreController@index')->name('api.admin');
 |
 */
 Route::group(['prefix' => '/servers'], function () {
-    Route::get('/', 'ServerController@index')->name('api.admin.servers.list');
-    Route::get('/{id}', 'ServerController@view')->name('api.admin.servers.view');
+    Route::get('/', 'ServerController@index');
+    Route::get('/{id}', 'ServerController@view');
+
+    Route::post('/', 'ServerController@store');
+
+    Route::put('/{id}/details', 'ServerController@details');
+    Route::put('/{id}/container', 'ServerController@container');
+    Route::put('/{id}/build', 'ServerController@build');
+    Route::put('/{id}/startup', 'ServerController@startup');
+
+    Route::patch('/{id}/install', 'ServerController@install');
+    Route::patch('/{id}/rebuild', 'ServerController@rebuild');
+    Route::patch('/{id}/suspend', 'ServerController@suspend');
+
+    Route::delete('/{id}', 'ServerController@delete');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/locations
+|
+*/
+Route::group(['prefix' => '/locations'], function () {
+    Route::get('/', 'LocationController@index');
 });
