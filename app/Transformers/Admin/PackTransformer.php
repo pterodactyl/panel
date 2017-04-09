@@ -83,7 +83,7 @@ class PackTransformer extends TransformerAbstract
      */
     public function includeOption(Pack $pack)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('pack-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
             return;
         }
 
@@ -97,7 +97,7 @@ class PackTransformer extends TransformerAbstract
      */
     public function includeServers(Pack $pack)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('pack-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
         }
 

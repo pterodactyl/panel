@@ -76,7 +76,7 @@ class ServiceVariableTransformer extends TransformerAbstract
      */
     public function includeVariables(ServiceVariable $variable)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
             return;
         }
 

@@ -79,7 +79,7 @@ class UserTransformer extends TransformerAbstract
      */
     public function includeServers(User $user)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('user-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
         }
 
@@ -93,7 +93,7 @@ class UserTransformer extends TransformerAbstract
      */
     public function includeAccess(User $user)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('user-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
         }
 

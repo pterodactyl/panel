@@ -80,7 +80,7 @@ class ServiceTransformer extends TransformerAbstract
      */
     public function includeOptions(Service $service)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-list')) {
             return;
         }
 
@@ -94,7 +94,7 @@ class ServiceTransformer extends TransformerAbstract
      */
     public function includeServers(Service $service)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
         }
 
@@ -108,7 +108,7 @@ class ServiceTransformer extends TransformerAbstract
      */
     public function includePacks(Service $service)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('pack-list')) {
             return;
         }
 

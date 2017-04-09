@@ -93,7 +93,7 @@ class LocationTransformer extends TransformerAbstract
      */
     public function includeNodes(Location $location)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('location-list')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('node-list')) {
             return;
         }
 

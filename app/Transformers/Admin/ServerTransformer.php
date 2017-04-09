@@ -114,7 +114,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeUser(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('user-view')) {
             return;
         }
 
@@ -128,7 +128,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includePack(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('pack-view')) {
             return;
         }
 
@@ -142,7 +142,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeService(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
             return;
         }
 
@@ -156,7 +156,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeOption(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
             return;
         }
 
@@ -184,7 +184,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeLocation(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('location-view')) {
             return;
         }
 
@@ -198,7 +198,7 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeNode(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('node-view')) {
             return;
         }
 
