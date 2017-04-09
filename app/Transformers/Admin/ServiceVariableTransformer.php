@@ -25,8 +25,8 @@
 namespace Pterodactyl\Transformers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\ServiceVariable;
 use League\Fractal\TransformerAbstract;
+use Pterodactyl\Models\ServiceVariable;
 
 class ServiceVariableTransformer extends TransformerAbstract
 {

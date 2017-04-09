@@ -147,7 +147,7 @@ class UserRepository
             unset($data['password']);
         }
 
-        $user->fill($data)->save();;
+        $user->fill($data)->save();
 
         return $user;
     }

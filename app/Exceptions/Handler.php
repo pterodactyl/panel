@@ -4,7 +4,6 @@ namespace Pterodactyl\Exceptions;
 
 use Log;
 use Exception;
-use DisplayException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 

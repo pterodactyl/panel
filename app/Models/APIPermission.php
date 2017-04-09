@@ -71,7 +71,7 @@ class APIPermission extends Model
                 'view',
                 'power',
                 'command',
-            ]
+            ],
         ],
 
         // All other pemissions below are administrative actions.
@@ -120,7 +120,7 @@ class APIPermission extends Model
     ];
 
     /**
-     * Return permissions for API
+     * Return permissions for API.
      *
      * @return array
      */

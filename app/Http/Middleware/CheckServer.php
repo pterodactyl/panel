@@ -64,7 +64,7 @@ class CheckServer
         $this->request = $request;
         $this->server = Server::byUuid($request->route()->server);
 
-        if(! $this->exists()) {
+        if (! $this->exists()) {
             return response()->view('errors.404', [], 404);
         }
 
@@ -124,6 +124,6 @@ class CheckServer
             }
         }
 
-        return ($this->server->installed === 1);
+        return $this->server->installed === 1;
     }
 }

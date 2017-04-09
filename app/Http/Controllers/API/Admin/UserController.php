@@ -27,8 +27,8 @@ namespace Pterodactyl\Http\Controllers\API\Admin;
 use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\UserRepository;
 use Pterodactyl\Transformers\Admin\UserTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
@@ -109,6 +109,7 @@ class UserController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to create this user. Please try again.',
             ], 500);
@@ -145,6 +146,7 @@ class UserController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to update this user. Please try again.',
             ], 500);
@@ -173,6 +175,7 @@ class UserController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to delete this user. Please try again.',
             ], 500);

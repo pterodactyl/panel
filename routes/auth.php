@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 Route::get('/logout', 'LoginController@logout')->name('auth.logout')->middleware('auth');
 Route::get('/login', 'LoginController@showLoginForm')->name('auth.login');
 Route::get('/login/totp', 'LoginController@totp')->name('auth.totp');
