@@ -40,7 +40,7 @@ class APIKeyPolicy
      * @param string                     $permission
      * @return bool
      */
-    private function checkPermission(User $user, Key $key, $permission)
+    protected function checkPermission(User $user, Key $key, $permission)
     {
         // We don't tag this cache key with the user uuid because the key is already unique,
         // and multiple users are not defiend for a single key.
@@ -54,162 +54,15 @@ class APIKeyPolicy
     }
 
     /**
+     * Determine if a user has permission to perform this action against the system.
+     *
      * @param  \Pterodactyl\Models\User    $user
+     * @param  string                      $permission
      * @param  \Pterodactyl\Models\APIKey  $key
      * @return bool
      */
-    public function locationList(User $user, Key $key)
+    public function before(User $user, $permission, Key $key)
     {
-        return $this->checkPermission($user, $key, 'location-list');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverList(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-list');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverView(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-view');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverCreate(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-create');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverDelete(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-delete');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverEditDetails(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-edit-details');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverEditContainer(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-edit-container');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverEditBuild(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-edit-build');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverEditStartup(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-edit-startup');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverSuspend(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-suspend');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function servrerInstall(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-install');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function serverRebuild(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'server-rebuild');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function userServerList(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'user-server-list');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function userServerView(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'user-server-view');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function userServerPower(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'user-server-power');
-    }
-
-    /**
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  \Pterodactyl\Models\APIKey  $key
-     * @return bool
-     */
-    public function userServerCommand(User $user, Key $key)
-    {
-        return $this->checkPermission($user, $key, 'user-server-command');
+        return $this->checkPermission($user, $key, $permission);
     }
 }
