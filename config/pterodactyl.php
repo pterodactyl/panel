@@ -43,7 +43,7 @@ return [
     | Configuration options for the API.
     */
     'api' => [
-        'allow_includes_on_list' => env('API_ALLOW_INCLUDE_ON_LIST', false),
+        'include_on_list' => env('API_INCLUDE_ON_LIST', false),
     ],
 
     /*

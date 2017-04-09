@@ -52,7 +52,7 @@ class UserController extends Controller
             ->withResourceName('user')
             ->paginateWith(new IlluminatePaginatorAdapter($users));
 
-        if (config('pterodactyl.api.allow_includes_on_list') && $request->input('include')) {
+        if (config('pterodactyl.api.include_on_list') && $request->input('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
