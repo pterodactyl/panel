@@ -63,7 +63,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $services = Models\Service::with('options.packs', 'options.variables')->get();
         Javascript::put([
@@ -86,7 +86,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Response\RedirectResponse
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         try {
             $repo = new ServerRepository;
@@ -97,6 +97,9 @@ class ServersController extends Controller
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
@@ -111,7 +114,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function newServerNodes(Request $request)
+    public function nodes(Request $request)
     {
         $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
 
@@ -284,8 +287,9 @@ class ServersController extends Controller
             Alert::success('Successfully updated this server\'s docker image.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.');
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. This error has been logged.')->flash();
@@ -366,8 +370,9 @@ class ServersController extends Controller
             $repo->$action($id);
 
             Alert::success('Server has been ' . $action . 'ed.');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to ' . $action . ' this server. This error has been logged.')->flash();
@@ -398,6 +403,9 @@ class ServersController extends Controller
             return redirect()->route('admin.servers.view.build', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')->flash();

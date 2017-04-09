@@ -57,4 +57,75 @@ class APIPermission extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * List of permissions available for the API.
+     *
+     * @var array
+     */
+    protected static $permissions = [
+        // Items within this block are available to non-adminitrative users.
+        '_user' => [
+            'server' => [
+                'list',
+                'view',
+                'power',
+                'command',
+            ],
+        ],
+
+        // All other pemissions below are administrative actions.
+        'server' => [
+            'list',
+            'create',
+            'view',
+            'edit-details',
+            'edit-container',
+            'edit-build',
+            'edit-startup',
+            'suspend',
+            'install',
+            'rebuild',
+            'delete',
+        ],
+        'location' => [
+            'list',
+        ],
+        'node' => [
+            'list',
+            'view',
+            'view-config',
+            'create',
+            'delete',
+        ],
+        'user' => [
+            'list',
+            'view',
+            'create',
+            'edit',
+            'delete',
+        ],
+        'service' => [
+            'list',
+            'view',
+        ],
+        'option' => [
+            'list',
+            'view',
+        ],
+        'pack' => [
+            'list',
+            'view',
+        ],
+    ];
+
+    /**
+     * Return permissions for API.
+     *
+     * @return array
+     */
+    public static function permissions()
+    {
+        return self::$permissions;
+    }
 }

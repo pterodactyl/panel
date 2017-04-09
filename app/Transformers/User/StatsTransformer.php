@@ -22,26 +22,42 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API\User;
+namespace Pterodactyl\Transformers\User;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\API\BaseController;
+use GuzzleHttp\Client;
+use League\Fractal\TransformerAbstract;
+use GuzzleHttp\Exception\ConnectException;
 
-class InfoController extends BaseController
+class StatsTransformer extends TransformerAbstract
 {
-    public function me(Request $request)
+    /**
+     * Return a generic transformed subuser array.
+     *
+     * @return array
+     */
+    public function transform(Client $client)
     {
-        return $request->user()->access('service', 'node', 'allocation', 'option')->get()->map(function ($server) {
+        try {
+            $res = $client->request('GET', '/server', ['http_errors' => false]);
+
+            if ($res->getStatusCode() !== 200) {
+                return [
+                    'error' => 'Error: HttpResponseException. Recieved non-200 HTTP status code from daemon: ' . $res->statusCode(),
+                ];
+            }
+
+            $json = json_decode($res->getBody());
+
             return [
-                'id' => $server->uuidShort,
-                'uuid' => $server->uuid,
-                'name' => $server->name,
-                'node' => $server->node->name,
-                'ip' => $server->allocation->alias,
-                'port' => $server->allocation->port,
-                'service' => $server->service->name,
-                'option' => $server->option->name,
+                'id' => 1,
+                'status' => $json->status,
+                'resources' => $json->proc,
             ];
-        })->all();
+        } catch (ConnectException $ex) {
+            return [
+                'error' => 'Error: ConnectException. Unable to contact the daemon to request server status.',
+                'exception' => (config('app.debug')) ? $ex->getMessage() : null,
+            ];
+        }
     }
 }

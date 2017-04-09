@@ -60,7 +60,7 @@ class PackController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         return view('admin.packs.new', [
             'services' => Service::with('options')->get(),
@@ -86,7 +86,7 @@ class PackController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $repo = new PackRepository;
 

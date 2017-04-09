@@ -43,7 +43,7 @@ class SubuserController extends Controller
      * @param  string                    $uuid
      * @return \Illuminate\View\View
      */
-    public function getIndex(Request $request, $uuid)
+    public function index(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid)->load('subusers.user');
         $this->authorize('list-subusers', $server);
@@ -65,7 +65,7 @@ class SubuserController extends Controller
      * @param  int                       $id
      * @return \Illuminate\View\View
      */
-    public function getView(Request $request, $uuid, $id)
+    public function view(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('node');
         $this->authorize('view-subuser', $server);
@@ -94,7 +94,7 @@ class SubuserController extends Controller
      * @param  int                       $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postView(Request $request, $uuid, $id)
+    public function update(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-subuser', $server);
@@ -139,7 +139,7 @@ class SubuserController extends Controller
      * @param  string                    $uuid
      * @return \Illuminate\View\View
      */
-    public function getNew(Request $request, $uuid)
+    public function create(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
@@ -159,7 +159,7 @@ class SubuserController extends Controller
      * @param  string                    $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNew(Request $request, $uuid)
+    public function store(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
@@ -195,7 +195,7 @@ class SubuserController extends Controller
      * @param  int                       $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function deleteSubuser(Request $request, $uuid, $id)
+    public function delete(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('delete-subuser', $server);

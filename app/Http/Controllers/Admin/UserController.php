@@ -42,7 +42,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function getIndex(Request $request)
+    public function index(Request $request)
     {
         $users = User::withCount('servers');
 
@@ -61,7 +61,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function getNew(Request $request)
+    public function create(Request $request)
     {
         return view('admin.users.new');
     }
@@ -73,7 +73,7 @@ class UserController extends Controller
      * @param  int                       $id
      * @return \Illuminate\View\View
      */
-    public function getView(Request $request, $id)
+    public function view(Request $request, $id)
     {
         return view('admin.users.view', [
             'user' => User::with('servers.node')->findOrFail($id),
@@ -87,7 +87,7 @@ class UserController extends Controller
      * @param  int                       $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function deleteUser(Request $request, $id)
+    public function delete(Request $request, $id)
     {
         try {
             $repo = new UserRepository;
@@ -111,7 +111,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNew(Request $request)
+    public function store(Request $request)
     {
         try {
             $user = new UserRepository;
@@ -136,26 +136,26 @@ class UserController extends Controller
      * Update a user.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $user
+     * @param  int                       $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateUser(Request $request, $user)
+    public function update(Request $request, $id)
     {
         try {
             $repo = new UserRepository;
-            $repo->update($user, $request->only([
+            $user = $repo->update($user, $request->intersect([
                 'email', 'password', 'name_first',
                 'name_last', 'username', 'root_admin',
             ]));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.view', $user)->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $e) {
-            Log::error($e);
+            return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An error occured while attempting to update this user.')->flash();
         }
 
-        return redirect()->route('admin.users.view', $user);
+        return redirect()->route('admin.users.view', $id);
     }
 
     /**
@@ -164,7 +164,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Pterodactyl\Models\User
      */
-    public function getJson(Request $request)
+    public function json(Request $request)
     {
         return User::select('id', 'email', 'username', 'name_first', 'name_last')
             ->search($request->input('q'))

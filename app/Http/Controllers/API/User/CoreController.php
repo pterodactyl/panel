@@ -22,27 +22,30 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Http\Controllers\API\User;
 
+use Fractal;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Location;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Transformers\User\OverviewTransformer;
 
-class LocationController extends BaseController
+class CoreController extends Controller
 {
     /**
-     * Lists all locations currently on the system.
+     * Controller to handle base user request for all of their servers.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function index(Request $request)
     {
-        return Location::with('nodes')->get()->map(function ($item) {
-            $item->nodes->transform(function ($item) {
-                return collect($item)->only(['id', 'name', 'fqdn', 'scheme', 'daemonListen', 'daemonSFTP']);
-            });
+        $this->authorize('user.server-list', $request->apiKey());
 
-            return $item;
-        })->toArray();
+        $servers = $request->user()->access('service', 'node', 'allocation', 'option')->get();
+
+        return Fractal::collection($servers)
+            ->transformWith(new OverviewTransformer)
+            ->withResourceName('server')
+            ->toArray();
     }
 }

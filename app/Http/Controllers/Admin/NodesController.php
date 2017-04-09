@@ -60,7 +60,7 @@ class NodesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $locations = Models\Location::all();
         if (! $locations->count()) {
@@ -78,7 +78,7 @@ class NodesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         try {
             $repo = new NodeRepository;

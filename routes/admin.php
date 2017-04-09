@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 Route::get('/', 'BaseController@getIndex')->name('admin.index');
 
 /*
@@ -79,15 +78,15 @@ Route::group(['prefix' => 'settings'], function () {
 |
 */
 Route::group(['prefix' => 'users'], function () {
-    Route::get('/', 'UserController@getIndex')->name('admin.users');
-    Route::get('/accounts.json', 'UserController@getJson')->name('admin.users.json');
-    Route::get('/new', 'UserController@getNew')->name('admin.users.new');
-    Route::get('/view/{id}', 'UserController@getView')->name('admin.users.view');
+    Route::get('/', 'UserController@index')->name('admin.users');
+    Route::get('/accounts.json', 'UserController@json')->name('admin.users.json');
+    Route::get('/new', 'UserController@create')->name('admin.users.new');
+    Route::get('/view/{id}', 'UserController@view')->name('admin.users.view');
 
-    Route::post('/new', 'UserController@postNew');
-    Route::post('/view/{id}', 'UserController@updateUser');
+    Route::post('/new', 'UserController@store');
+    Route::post('/view/{id}', 'UserController@update');
 
-    Route::delete('/view/{id}', 'UserController@deleteUser');
+    Route::delete('/view/{id}', 'UserController@delete');
 });
 
 /*
@@ -100,8 +99,8 @@ Route::group(['prefix' => 'users'], function () {
 */
 Route::group(['prefix' => 'servers'], function () {
     Route::get('/', 'ServersController@index')->name('admin.servers');
-    Route::get('/new', 'ServersController@new')->name('admin.servers.new');
-    Route::get('/new/nodes', 'ServersController@newServerNodes')->name('admin.servers.new.nodes');
+    Route::get('/new', 'ServersController@create')->name('admin.servers.new');
+    Route::get('/new/nodes', 'ServersController@nodes')->name('admin.servers.new.nodes');
     Route::get('/view/{id}', 'ServersController@viewIndex')->name('admin.servers.view');
     Route::get('/view/{id}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
     Route::get('/view/{id}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
@@ -110,7 +109,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::get('/view/{id}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
     Route::get('/view/{id}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
 
-    Route::post('/new', 'ServersController@create');
+    Route::post('/new', 'ServersController@store');
     Route::post('/view/{id}/details', 'ServersController@setDetails');
     Route::post('/view/{id}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
     Route::post('/view/{id}/build', 'ServersController@updateBuild');
@@ -136,7 +135,7 @@ Route::group(['prefix' => 'servers'], function () {
 */
 Route::group(['prefix' => 'nodes'], function () {
     Route::get('/', 'NodesController@index')->name('admin.nodes');
-    Route::get('/new', 'NodesController@new')->name('admin.nodes.new');
+    Route::get('/new', 'NodesController@create')->name('admin.nodes.new');
     Route::get('/view/{id}', 'NodesController@viewIndex')->name('admin.nodes.view');
     Route::get('/view/{id}/settings', 'NodesController@viewSettings')->name('admin.nodes.view.settings');
     Route::get('/view/{id}/configuration', 'NodesController@viewConfiguration')->name('admin.nodes.view.configuration');
@@ -144,7 +143,7 @@ Route::group(['prefix' => 'nodes'], function () {
     Route::get('/view/{id}/servers', 'NodesController@viewServers')->name('admin.nodes.view.servers');
     Route::get('/view/{id}/settings/token', 'NodesController@setToken')->name('admin.nodes.view.configuration.token');
 
-    Route::post('/new', 'NodesController@create');
+    Route::post('/new', 'NodesController@store');
     Route::post('/view/{id}/settings', 'NodesController@updateSettings');
     Route::post('/view/{id}/allocation', 'NodesController@createAllocation');
     Route::post('/view/{id}/allocation/remove', 'NodesController@allocationRemoveBlock')->name('admin.nodes.view.allocation.removeBlock');
@@ -164,16 +163,16 @@ Route::group(['prefix' => 'nodes'], function () {
 */
 Route::group(['prefix' => 'services'], function () {
     Route::get('/', 'ServiceController@index')->name('admin.services');
-    Route::get('/new', 'ServiceController@new')->name('admin.services.new');
+    Route::get('/new', 'ServiceController@create')->name('admin.services.new');
     Route::get('/view/{id}', 'ServiceController@view')->name('admin.services.view');
     Route::get('/view/{id}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
-    Route::get('/option/new', 'OptionController@new')->name('admin.services.option.new');
+    Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
     Route::get('/option/{id}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
     Route::get('/option/{id}/variables', 'OptionController@viewVariables')->name('admin.services.option.variables');
 
-    Route::post('/new', 'ServiceController@create');
+    Route::post('/new', 'ServiceController@store');
     Route::post('/view/{id}', 'ServiceController@edit');
-    Route::post('/option/new', 'OptionController@new');
+    Route::post('/option/new', 'OptionController@store');
     Route::post('/option/{id}', 'OptionController@editConfiguration');
     Route::post('/option/{id}/variables', 'OptionController@createVariable');
     Route::post('/option/{id}/variables/{variable}', 'OptionController@editVariable')->name('admin.services.option.variables.edit');
@@ -191,11 +190,11 @@ Route::group(['prefix' => 'services'], function () {
 */
 Route::group(['prefix' => 'packs'], function () {
     Route::get('/', 'PackController@index')->name('admin.packs');
-    Route::get('/new', 'PackController@new')->name('admin.packs.new');
+    Route::get('/new', 'PackController@create')->name('admin.packs.new');
     Route::get('/new/template', 'PackController@newTemplate')->name('admin.packs.new.template');
     Route::get('/view/{id}', 'PackController@view')->name('admin.packs.view');
 
-    Route::post('/new', 'PackController@create');
+    Route::post('/new', 'PackController@store');
     Route::post('/view/{id}', 'PackController@update');
     Route::post('/view/{id}/export/{files?}', 'PackController@export')->name('admin.packs.view.export');
 });

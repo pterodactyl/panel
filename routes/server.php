@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 Route::get('/', 'ServerController@getIndex')->name('server.index');
 
 /*
@@ -71,14 +70,14 @@ Route::group(['prefix' => 'files'], function () {
 |
 */
 Route::group(['prefix' => 'users'], function () {
-    Route::get('/', 'SubuserController@getIndex')->name('server.subusers');
-    Route::get('/new', 'SubuserController@getNew')->name('server.subusers.new');
-    Route::get('/view/{id}', 'SubuserController@getView')->name('server.subusers.view');
+    Route::get('/', 'SubuserController@index')->name('server.subusers');
+    Route::get('/new', 'SubuserController@create')->name('server.subusers.new');
+    Route::get('/view/{id}', 'SubuserController@view')->name('server.subusers.view');
 
-    Route::post('/new', 'SubuserController@postNew');
-    Route::post('/view/{id}', 'SubuserController@postView');
+    Route::post('/new', 'SubuserController@store');
+    Route::post('/view/{id}', 'SubuserController@update');
 
-    Route::delete('/delete/{id}', 'SubuserController@deleteSubuser')->name('server.subusers.delete');
+    Route::delete('/delete/{id}', 'SubuserController@delete')->name('server.subusers.delete');
 });
 
 /*
@@ -90,15 +89,13 @@ Route::group(['prefix' => 'users'], function () {
 |
 */
 Route::group(['prefix' => 'tasks'], function () {
-    Route::get('/', 'TaskController@getIndex')->name('server.tasks');
-    Route::get('/new', 'TaskController@getNew')->name('server.tasks.new');
-    Route::get('/view/{id}', 'TaskController@getView')->name('server.tasks.view');
+    Route::get('/', 'TaskController@index')->name('server.tasks');
+    Route::get('/new', 'TaskController@create')->name('server.tasks.new');
 
-    Route::post('/new', 'TaskController@postNew');
-    Route::post('/view/{id}', 'SubuserController@postView');
-    Route::post('/toggle/{id}', 'TaskController@toggleTask')->name('server.tasks.toggle');
+    Route::post('/new', 'TaskController@store');
+    Route::post('/toggle/{id}', 'TaskController@toggle')->name('server.tasks.toggle');
 
-    Route::delete('/delete/{id}', 'TaskController@deleteTask')->name('server.tasks.delete');
+    Route::delete('/delete/{id}', 'TaskController@delete')->name('server.tasks.delete');
 });
 
 /*

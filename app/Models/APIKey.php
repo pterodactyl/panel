@@ -29,6 +29,13 @@ use Illuminate\Database\Eloquent\Model;
 class APIKey extends Model
 {
     /**
+     * Public key defined length used in verification methods.
+     *
+     * @var int
+     */
+    const PUBLIC_KEY_LEN = 16;
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -41,6 +48,15 @@ class APIKey extends Model
      * @var array
      */
     protected $hidden = ['secret'];
+
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'allowed_ips' => 'json',
+    ];
 
     /**
      * Fields that are not mass assignable.

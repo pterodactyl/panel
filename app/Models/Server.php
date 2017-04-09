@@ -27,6 +27,7 @@ namespace Pterodactyl\Models;
 use Auth;
 use Cache;
 use Carbon;
+use Schema;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -204,6 +205,16 @@ class Server extends Model
     }
 
     /**
+     * Return the columns available for this table.
+     *
+     * @return array
+     */
+    public function getTableColumns()
+    {
+        return Schema::getColumnListing($this->getTable());
+    }
+
+    /**
      * Gets the user who owns the server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -312,5 +323,15 @@ class Server extends Model
     public function databases()
     {
         return $this->hasMany(Database::class);
+    }
+
+    /**
+     * Gets the location of the server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->node->location();
     }
 }

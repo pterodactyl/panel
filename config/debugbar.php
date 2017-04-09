@@ -28,7 +28,7 @@ return [
      */
     'storage' => [
         'enabled' => true,
-        'driver' => 'file', // redis, file, pdo
+        'driver' => env('DEBUGBAR_DRIVER', 'file'), // redis, file, pdo
         'path' => storage_path() . '/debugbar', // For file driver
         'connection' => null,   // Leave null for default connection (Redis/PDO)
     ],
@@ -125,7 +125,7 @@ return [
                 'enabled' => false,
                 'types' => ['SELECT', 'INSERT', 'UPDATE', 'DELETE'], // array('SELECT', 'INSERT', 'UPDATE', 'DELETE'); for MySQL 5.6.3+
             ],
-            'hints'             => true,    // Show hints for common mistakes
+            'hints'             => false,    // Show hints for common mistakes
         ],
         'mail' => [
             'full_log' => false,

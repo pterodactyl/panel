@@ -54,7 +54,7 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         return view('admin.services.new');
     }
@@ -91,7 +91,7 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $repo = new ServiceRepository;
 

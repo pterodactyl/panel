@@ -24,109 +24,75 @@
 
 namespace Pterodactyl\Http\Controllers\API\User;
 
-use Log;
+use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Http\Controllers\API\BaseController;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Daemon\PowerRepository;
+use Pterodactyl\Transformers\User\ServerTransformer;
 
-class ServerController extends BaseController
+class ServerController extends Controller
 {
-    public function info(Request $request, $uuid)
+    /**
+     * Controller to handle base request for individual server information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return array
+     */
+    public function index(Request $request, $uuid)
     {
-        $server = Server::byUuid($uuid)->load('allocations');
+        $this->authorize('user.server-view', $request->apiKey());
 
-        try {
-            $response = $server->guzzleClient()->request('GET', '/server');
+        $server = Server::byUuid($uuid);
+        $fractal = Fractal::create()->item($server);
 
-            $json = json_decode($response->getBody());
-            $daemon = [
-                'status' => $json->status,
-                'stats' => $json->proc,
-            ];
-        } catch (\Exception $ex) {
-            $daemon = [
-                'error' => 'An error was encountered while trying to connect to the daemon to collect information. It might be offline.',
-            ];
-            Log::error($ex);
+        if ($request->input('include')) {
+            $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
-        return [
-            'uuidShort' => $server->uuidShort,
-            'uuid' => $server->uuid,
-            'name' => $server->name,
-            'node' => $server->node->name,
-            'limits' => [
-                'memory' => $server->memory,
-                'swap' => $server->swap,
-                'disk' => $server->disk,
-                'io' => $server->io,
-                'cpu' => $server->cpu,
-                'oom_disabled' => (bool) $server->oom_disabled,
-            ],
-            'allocations' => $server->allocations->map(function ($item) use ($server) {
-                return [
-                    'ip' => $item->alias,
-                    'port' => $item->port,
-                    'default' => ($item->id === $server->allocation_id),
-                ];
-            }),
-            'sftp' => [
-                'username' => ($request->user()->can('view-sftp', $server)) ? $server->username : null,
-            ],
-            'daemon' => [
-                'token' => $server->daemonSecret,
-                'response' => $daemon,
-            ],
-        ];
+        return $fractal->transformWith(new ServerTransformer)
+            ->withResourceName('server')
+            ->toArray();
     }
 
+    /**
+     * Controller to handle request for server power toggle.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\Response
+     */
     public function power(Request $request, $uuid)
     {
+        $this->authorize('user.server-power', $request->apiKey());
+
         $server = Server::byUuid($uuid);
         $request->user()->can('power-' . $request->input('action'), $server);
 
-        if (empty($request->input('action'))) {
-            return $this->response()->error([
-                'error' => 'An action must be passed to this request.',
-            ], 422);
-        }
+        $repo = new PowerRepository($server);
+        $repo->do($request->input('action'));
 
-        $res = $server->guzzleClient()->request('PUT', '/server/power', [
-            'exceptions' => false,
-            'json' => [
-                'action' => $request->input('action'),
-            ],
-        ]);
-
-        if ($res->getStatusCode() !== 204) {
-            return $this->response->error(json_decode($res->getBody())->error, $res->getStatusCode());
-        }
-
-        return $this->response->noContent();
+        return response('', 204)->header('Content-Type', 'application/json');
     }
 
+    /**
+     * Controller to handle base request for individual server information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\Response
+     */
     public function command(Request $request, $uuid)
     {
+        $this->authorize('user.server-command', $request->apiKey());
+
         $server = Server::byUuid($uuid);
         $request->user()->can('send-command', $server);
 
-        if (empty($request->input('command'))) {
-            return $this->response()->error([
-                'error' => 'A command must be passed to this request.',
-            ], 422);
-        }
+        $repo = new CommandRepository($server);
+        $repo->send($request->input('command'));
 
-        $res = $server->guzzleClient()->request('POST', '/server/command', [
-            'exceptions' => false,
-            'json' => [
-                'command' => $request->input('command'),
-            ],
-        ]);
-
-        if ($res->getStatusCode() !== 204) {
-            return $this->response->error(json_decode($res->getBody())->error, $res->getStatusCode());
-        }
-
-        return $this->response->noContent();
+        return response('', 204)->header('Content-Type', 'application/json');
     }
 }

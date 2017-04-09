@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
         ],
         'api' => [
+            \Pterodactyl\Http\Middleware\HMACAuthorization::class,
             'throttle:60,1',
             'bindings',
         ],

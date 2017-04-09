@@ -22,22 +22,30 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Http\Controllers\API\Admin;
 
+use Fractal;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Transformers\Admin\LocationTransformer;
 
-class ServiceController extends BaseController
+class LocationController extends Controller
 {
+    /**
+     * Controller to handle returning all locations on the system.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     public function index(Request $request)
     {
-        return Service::all()->toArray();
-    }
+        $this->authorize('location-list', $request->apiKey());
 
-    public function view(Request $request, $id)
-    {
-        $service = Service::with('options.variables', 'options.packs')->findOrFail($id);
-
-        return $service->toArray();
+        return Fractal::create()
+            ->collection(Location::all())
+            ->transformWith(new LocationTransformer($request))
+            ->withResourceName('location')
+            ->toArray();
     }
 }

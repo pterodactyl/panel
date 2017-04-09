@@ -22,12 +22,43 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API;
+namespace Pterodactyl\Transformers\User;
 
-use Dingo\Api\Routing\Helpers;
-use Illuminate\Routing\Controller;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Allocation;
+use League\Fractal\TransformerAbstract;
 
-class BaseController extends Controller
+class AllocationTransformer extends TransformerAbstract
 {
-    use Helpers;
+    /**
+     * Server eloquent model.
+     *
+     * @return \Pterodactyl\Models\Server
+     */
+    protected $server;
+
+    /**
+     * Setup allocation transformer with access to server data.
+     *
+     * @return void
+     */
+    public function __construct(Server $server)
+    {
+        $this->server = $server;
+    }
+
+    /**
+     * Return a generic transformed allocation array.
+     *
+     * @return array
+     */
+    public function transform(Allocation $allocation)
+    {
+        return [
+            'id' => $allocation->id,
+            'ip' => $allocation->alias,
+            'port' => $allocation->port,
+            'default' => ($allocation->id === $this->server->allocation_id),
+        ];
+    }
 }

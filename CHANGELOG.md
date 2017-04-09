@@ -20,6 +20,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Attempting to reset a password for an account that does not exist no longer returns an error, rather it displays a success message. Failed resets trigger a `Pterodactyl\Events\Auth\FailedPasswordReset` event that can be caught if needed to perform other actions.
 * Servers are no longer queued for deletion due to the general hassle and extra logic required.
 * Updated all panel components to run on Laravel v5.4 rather than 5.3 which is EOL.
+* Routes are now handled in the `routes/` folder, and use a significantly cleaner syntax. Controller names and methods have been updated as well to be clearer as well as avoid conflicts with PHP reserved keywords.
+* API has been completely overhauled to use new permissions system. **Any old API keys will immediately become invalid and fail to operate properly anymore. You will need to generate new keys.**
 
 ## v0.6.0-pre.7 (Courageous Carniadactylus)
 ### Fixed

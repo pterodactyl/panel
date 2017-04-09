@@ -42,7 +42,7 @@ class TaskController extends Controller
      * @param  string                    $uuid
      * @return \Illuminate\View\View
      */
-    public function getIndex(Request $request, $uuid)
+    public function index(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid)->load('tasks');
         $this->authorize('list-tasks', $server);
@@ -66,7 +66,7 @@ class TaskController extends Controller
      * @param  string                    $uuid
      * @return \Illuminate\View\View
      */
-    public function getNew(Request $request, $uuid)
+    public function create(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('create-task', $server);
@@ -85,7 +85,7 @@ class TaskController extends Controller
      * @param  string                    $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postNew(Request $request, $uuid)
+    public function store(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('create-task', $server);
@@ -117,7 +117,7 @@ class TaskController extends Controller
      * @param  int                       $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function deleteTask(Request $request, $uuid, $id)
+    public function delete(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('tasks');
         $this->authorize('delete-task', $server);
@@ -151,7 +151,7 @@ class TaskController extends Controller
      * @param  int                       $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function toggleTask(Request $request, $uuid, $id)
+    public function toggle(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('tasks');
         $this->authorize('toggle-task', $server);
