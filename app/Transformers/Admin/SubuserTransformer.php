@@ -60,6 +60,10 @@ class SubuserTransformer extends TransformerAbstract
      */
     public function transform(Subuser $subuser)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return [
             'id' => $subuser->id,
             'username' => $subuser->user->username,

@@ -86,6 +86,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeAllocations(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->collection($server->allocations, new AllocationTransformer($this->request, 'server'), 'allocation');
     }
 
@@ -96,6 +100,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeSubusers(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->collection($server->subusers, new SubuserTransformer($this->request), 'subuser');
     }
 
@@ -106,6 +114,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeUser(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->item($server->user, new UserTransformer($this->request), 'user');
     }
 
@@ -116,6 +128,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includePack(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->item($server->pack, new PackTransformer($this->request), 'pack');
     }
 
@@ -126,6 +142,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeService(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->item($server->service, new ServiceTransformer($this->request), 'service');
     }
 
@@ -136,6 +156,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeOption(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->item($server->option, new OptionTransformer($this->request), 'option');
     }
 
@@ -146,6 +170,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeVariables(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->collection($server->variables, new ServerVariableTransformer($this->request), 'server_variable');
     }
 
@@ -156,6 +184,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeLocation(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->item($server->location, new LocationTransformer($this->request), 'location');
     }
 
@@ -166,6 +198,10 @@ class ServerTransformer extends TransformerAbstract
      */
     public function includeNode(Server $server)
     {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
         return $this->item($server->node, new NodeTransformer($this->request), 'node');
     }
 }

@@ -76,6 +76,10 @@ class ServiceVariableTransformer extends TransformerAbstract
      */
     public function includeVariables(ServiceVariable $variable)
     {
-        return $this->collection($variable->serverVariable, new ServerVariableTransformer, 'server_variable');
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
+            return;
+        }
+
+        return $this->collection($variable->serverVariable, new ServerVariableTransformer($this->request), 'server_variable');
     }
 }

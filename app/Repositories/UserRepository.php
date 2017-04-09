@@ -114,7 +114,7 @@ class UserRepository
      *
      * @param  int    $id
      * @param  array  $data
-     * @return bool
+     * @return \Pterodactyl\Models\User
      *
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
@@ -147,9 +147,9 @@ class UserRepository
             unset($data['password']);
         }
 
-        $user->fill($data);
+        $user->fill($data)->save();;
 
-        return $user->save();
+        return $user;
     }
 
     /**

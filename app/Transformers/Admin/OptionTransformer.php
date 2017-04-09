@@ -81,7 +81,11 @@ class OptionTransformer extends TransformerAbstract
      */
     public function includeService(ServiceOption $option)
     {
-        return $this->item($option->service, new ServiceTransformer, 'service');
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
+            return;
+        }
+
+        return $this->item($option->service, new ServiceTransformer($this->request), 'service');
     }
 
     /**
@@ -91,7 +95,11 @@ class OptionTransformer extends TransformerAbstract
      */
     public function includePacks(ServiceOption $option)
     {
-        return $this->collection($option->packs, new PackTransformer, 'pack');
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
+            return;
+        }
+
+        return $this->collection($option->packs, new PackTransformer($this->request), 'pack');
     }
 
     /**
@@ -101,7 +109,11 @@ class OptionTransformer extends TransformerAbstract
      */
     public function includeServers(ServiceOption $option)
     {
-        return $this->collection($option->servers, new ServerTransformer, 'server');
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
+            return;
+        }
+
+        return $this->collection($option->servers, new ServerTransformer($this->request), 'server');
     }
 
     /**
@@ -111,6 +123,10 @@ class OptionTransformer extends TransformerAbstract
      */
     public function includeVariables(ServiceOption $option)
     {
-        return $this->collection($option->variables, new ServiceVariableTransformer, 'variable');
+        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
+            return;
+        }
+
+        return $this->collection($option->variables, new ServiceVariableTransformer($this->request), 'variable');
     }
 }

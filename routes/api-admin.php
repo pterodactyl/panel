@@ -74,4 +74,26 @@ Route::group(['prefix' => '/locations'], function () {
 Route::group(['prefix' => '/nodes'], function () {
     Route::get('/', 'NodeController@index');
     Route::get('/{id}', 'NodeController@view');
+    Route::get('/{id}/config', 'NodeController@viewConfig');
+
+    Route::post('/', 'NodeController@store');
+
+    Route::delete('/{id}', 'NodeController@delete');
+});
+
+/*
+|--------------------------------------------------------------------------
+| User Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/users
+|
+*/
+Route::group(['prefix' => '/users'], function () {
+    Route::get('/', 'UserController@index');
+    Route::get('/{id}', 'UserController@view');
+
+    Route::post('/', 'UserController@store');
+
+    Route::delete('/{id}', 'UserController@delete');
 });

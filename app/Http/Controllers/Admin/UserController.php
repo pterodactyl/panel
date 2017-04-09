@@ -136,26 +136,26 @@ class UserController extends Controller
      * Update a user.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $user
+     * @param  int                       $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateUser(Request $request, $user)
+    public function updateUser(Request $request, $id)
     {
         try {
             $repo = new UserRepository;
-            $repo->update($user, $request->only([
+            $user = $repo->update($user, $request->intersect([
                 'email', 'password', 'name_first',
                 'name_last', 'username', 'root_admin',
             ]));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.view', $user)->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $e) {
-            Log::error($e);
+            return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An error occured while attempting to update this user.')->flash();
         }
 
-        return redirect()->route('admin.users.view', $user);
+        return redirect()->route('admin.users.view', $id);
     }
 
     /**

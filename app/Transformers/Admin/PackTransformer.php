@@ -83,7 +83,11 @@ class PackTransformer extends TransformerAbstract
      */
     public function includeOption(Pack $pack)
     {
-        return $this->item($pack->option, new OptionTransformer, 'option');
+        if ($this->request && ! $this->request->apiKeyHasPermission('pack-view')) {
+            return;
+        }
+
+        return $this->item($pack->option, new OptionTransformer($this->request), 'option');
     }
 
     /**
@@ -93,6 +97,10 @@ class PackTransformer extends TransformerAbstract
      */
     public function includeServers(Pack $pack)
     {
-        return $this->collection($pack->servers, new ServerTransformer, 'server');
+        if ($this->request && ! $this->request->apiKeyHasPermission('pack-view')) {
+            return;
+        }
+
+        return $this->collection($pack->servers, new ServerTransformer($this->request), 'server');
     }
 }

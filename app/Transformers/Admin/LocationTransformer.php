@@ -79,7 +79,11 @@ class LocationTransformer extends TransformerAbstract
      */
     public function includeServers(Location $location)
     {
-        return $this->collection($location->servers, new ServerTransformer, 'server');
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
+            return;
+        }
+
+        return $this->collection($location->servers, new ServerTransformer($this->request), 'server');
     }
 
     /**
@@ -89,6 +93,10 @@ class LocationTransformer extends TransformerAbstract
      */
     public function includeNodes(Location $location)
     {
-        return $this->collection($location->nodes, new NodeTransformer, 'node');
+        if ($this->request && ! $this->request->apiKeyHasPermission('location-list')) {
+            return;
+        }
+
+        return $this->collection($location->nodes, new NodeTransformer($this->request), 'node');
     }
 }

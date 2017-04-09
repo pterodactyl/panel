@@ -84,7 +84,7 @@ class NodeTransformer extends TransformerAbstract
             return;
         }
 
-        return $this->collection($node->allocations, new AllocationTransformer, 'allocation');
+        return $this->collection($node->allocations, new AllocationTransformer($this->request), 'allocation');
     }
 
     /**
@@ -98,7 +98,7 @@ class NodeTransformer extends TransformerAbstract
             return;
         }
 
-        return $this->item($node->location, new LocationTransformer, 'location');
+        return $this->item($node->location, new LocationTransformer($this->request), 'location');
     }
 
     /**
@@ -112,6 +112,6 @@ class NodeTransformer extends TransformerAbstract
             return;
         }
 
-        return $this->collection($node->servers, new ServerTransformer, 'server');
+        return $this->collection($node->servers, new ServerTransformer($this->request), 'server');
     }
 }

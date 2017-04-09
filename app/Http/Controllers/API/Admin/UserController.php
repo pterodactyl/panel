@@ -26,37 +26,37 @@ namespace Pterodactyl\Http\Controllers\API\Admin;
 
 use Fractal;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\NodeRepository;
-use Pterodactyl\Transformers\Admin\NodeTransformer;
+use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Transformers\Admin\UserTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-class NodeController extends Controller
+class UserController extends Controller
 {
     /**
-     * Controller to handle returning all nodes on the system.
+     * Controller to handle returning all users on the system.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function index(Request $request)
     {
-        $this->authorize('node-list', $request->apiKey());
+        $this->authorize('user-list', $request->apiKey());
 
-        $fractal = Fractal::create()->collection(Node::all());
+        $fractal = Fractal::create()->collection(User::all());
         if ($request->input('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
-        return $fractal->transformWith(new NodeTransformer($request))
-            ->withResourceName('node')
+        return $fractal->transformWith(new UserTransformer($request))
+            ->withResourceName('user')
             ->toArray();
     }
 
     /**
-     * Display information about a single node on the system.
+     * Display information about a single user on the system.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int                       $id
@@ -64,81 +64,91 @@ class NodeController extends Controller
      */
     public function view(Request $request, $id)
     {
-        $this->authorize('node-view', $request->apiKey());
+        $this->authorize('user-view', $request->apiKey());
 
-        $fractal = Fractal::create()->item(Node::findOrFail($id));
+        $fractal = Fractal::create()->item(User::findOrFail($id));
         if ($request->input('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
-        return $fractal->transformWith(new NodeTransformer($request))
-            ->withResourceName('node')
+        return $fractal->transformWith(new UserTransformer($request))
+            ->withResourceName('user')
             ->toArray();
     }
 
     /**
-     * Display information about a single node on the system.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function viewConfig(Request $request, $id)
-    {
-        $this->authorize('node-view-config', $request->apiKey());
-
-        $node = Node::findOrFail($id);
-
-        return response()->json(json_decode($node->getConfigurationAsJson()));
-    }
-
-    /**
-     * Create a new node on the system.
+     * Create a new user on the system.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse|array
      */
     public function store(Request $request)
     {
-        $this->authorize('node-create', $request->apiKey());
+        $this->authorize('user-create', $request->apiKey());
 
-        $repo = new NodeRepository;
+        $repo = new UserRepository;
         try {
-            $node = $repo->create(array_merge(
-                $request->only([
-                    'public', 'disk_overallocate', 'memory_overallocate',
-                ]),
-                $request->intersect([
-                    'name', 'location_id', 'fqdn',
-                    'scheme', 'memory', 'disk',
-                    'daemonBase', 'daemonSFTP', 'daemonListen',
-                ])
-            ));
+            $user = $repo->create($request->only([
+                'custom_id', 'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
+            ]));
 
-            $fractal = Fractal::create()->item($node)->transformWith(new NodeTransformer($request));
+            $fractal = Fractal::create()->item($user)->transformWith(new UserTransformer($request));
             if ($request->input('include')) {
                 $fractal->parseIncludes(explode(',', $request->input('include')));
             }
 
-            return $fractal->withResourceName('node')->toArray();
+            return $fractal->withResourceName('user')->toArray();
         } catch (DisplayValidationException $ex) {
             return response()->json([
                 'error' => json_decode($ex->getMessage()),
             ], 400);
-        } catch (DisplayException $ex) {
-            return response()->json([
-                'error' => $ex->getMessage(),
-            ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
             return response()->json([
-                'error' => 'An unhandled exception occured while attemping to create this node. Please try again.',
+                'error' => 'An unhandled exception occured while attemping to create this user. Please try again.',
             ], 500);
         }
     }
 
     /**
-     * Delete a node from the system.
+     * Update a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $user)
+    {
+        $this->authorize('user-edit', $request->apiKey());
+
+        $repo = new UserRepository;
+        try {
+            $user = $repo->update($user, $request->intersect([
+                'email', 'password', 'name_first',
+                'name_last', 'username', 'root_admin',
+            ]));
+
+            $fractal = Fractal::create()->item($user)->transformWith(new UserTransformer($request));
+            if ($request->input('include')) {
+                $fractal->parseIncludes(explode(',', $request->input('include')));
+            }
+
+            return $fractal->withResourceName('user')->toArray();
+        } catch (DisplayValidationException $ex) {
+            return response()->json([
+                'error' => json_decode($ex->getMessage()),
+            ], 400);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            return response()->json([
+                'error' => 'An unhandled exception occured while attemping to update this user. Please try again.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Delete a user from the system.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int                       $id
@@ -146,9 +156,9 @@ class NodeController extends Controller
      */
     public function delete(Request $request, $id)
     {
-        $this->authorize('node-delete', $request->apiKey());
+        $this->authorize('user-delete', $request->apiKey());
 
-        $repo = new NodeRepository;
+        $repo = new UserRepository;
         try {
             $repo->delete($id);
 
@@ -160,7 +170,7 @@ class NodeController extends Controller
         } catch (\Exception $ex) {
             Log::error($ex);
             return response()->json([
-                'error' => 'An unhandled exception occured while attemping to delete this node. Please try again.',
+                'error' => 'An unhandled exception occured while attemping to delete this user. Please try again.',
             ], 500);
         }
     }

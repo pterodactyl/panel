@@ -31,6 +31,16 @@ use League\Fractal\TransformerAbstract;
 class UserTransformer extends TransformerAbstract
 {
     /**
+     * List of resources that can be included.
+     *
+     * @var array
+     */
+    protected $availableIncludes = [
+        'access',
+        'servers',
+    ];
+
+    /**
      * The Illuminate Request object if provided.
      *
      * @var \Illuminate\Http\Request|bool
@@ -60,5 +70,33 @@ class UserTransformer extends TransformerAbstract
     public function transform(User $user)
     {
         return $user->toArray();
+    }
+
+    /**
+     * Return the servers associated with this user.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeServers(User $user)
+    {
+        if ($this->request && ! $this->request->apiKeyHasPermission('user-view')) {
+            return;
+        }
+
+        return $this->collection($user->servers, new ServerTransformer($this->request), 'server');
+    }
+
+    /**
+     * Return the servers that this user can access.
+     *
+     * @return \Leauge\Fractal\Resource\Collection
+     */
+    public function includeAccess(User $user)
+    {
+        if ($this->request && ! $this->request->apiKeyHasPermission('user-view')) {
+            return;
+        }
+
+        return $this->collection($user->access()->get(), new ServerTransformer($this->request), 'server');
     }
 }

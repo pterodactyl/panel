@@ -76,6 +76,10 @@ class ServerVariableTransformer extends TransformerAbstract
      */
     public function includeParent(ServerVariable $variable)
     {
-        return $this->item($variable->variable, new ServiceVariableTransformer, 'variable');
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
+            return;
+        }
+
+        return $this->item($variable->variable, new ServiceVariableTransformer($this->request), 'variable');
     }
 }
