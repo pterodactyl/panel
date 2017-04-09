@@ -62,3 +62,16 @@ Route::group(['prefix' => '/servers'], function () {
 Route::group(['prefix' => '/locations'], function () {
     Route::get('/', 'LocationController@index');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Node Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/nodes
+|
+*/
+Route::group(['prefix' => '/nodes'], function () {
+    Route::get('/', 'NodeController@index');
+    Route::get('/{id}', 'NodeController@view');
+});

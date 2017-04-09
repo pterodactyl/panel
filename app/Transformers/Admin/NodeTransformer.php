@@ -80,7 +80,7 @@ class NodeTransformer extends TransformerAbstract
      */
     public function includeAllocations(Node $node)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('view-node')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('node-view')) {
             return;
         }
 
@@ -94,7 +94,7 @@ class NodeTransformer extends TransformerAbstract
      */
     public function includeLocation(Node $node)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('view-node')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('node-view')) {
             return;
         }
 
@@ -108,7 +108,7 @@ class NodeTransformer extends TransformerAbstract
      */
     public function includeServers(Node $node)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('list-servers')) {
+        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
         }
 
