@@ -44,7 +44,7 @@ class OptionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $services = Service::with('options')->get();
         Javascript::put(['services' => $services->keyBy('id')]);
@@ -58,7 +58,7 @@ class OptionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Response\RedirectResponse
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $repo = new OptionRepository;
 

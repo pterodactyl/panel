@@ -63,7 +63,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $services = Models\Service::with('options.packs', 'options.variables')->get();
         Javascript::put([
@@ -86,7 +86,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Response\RedirectResponse
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         try {
             $repo = new ServerRepository;
@@ -114,7 +114,7 @@ class ServersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function newServerNodes(Request $request)
+    public function nodes(Request $request)
     {
         $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
 
