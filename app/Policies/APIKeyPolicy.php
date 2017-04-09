@@ -43,7 +43,7 @@ class APIKeyPolicy
     protected function checkPermission(User $user, Key $key, $permission)
     {
         // Non-administrative users cannot use administrative routes.
-        if (! starts_with('user.') && ! $user->isRootAdmin()) {
+        if (! starts_with($key, 'user.') && ! $user->isRootAdmin()) {
             return false;
         }
 

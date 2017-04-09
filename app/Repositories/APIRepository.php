@@ -147,7 +147,7 @@ class APIRepository
             if ($this->user->isRootAdmin() && isset($data['admin_permissions'])) {
                 unset($pNodes['_user']);
 
-                foreach ($data['admin_permissions'] as $permNode) {
+                foreach ($data['admin_permissions'] as $permission) {
                     $parts = explode('-', $permission);
 
                     if (count($parts) !== 2) {
