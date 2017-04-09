@@ -32,6 +32,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\NodeRepository;
 use Pterodactyl\Transformers\Admin\NodeTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class NodeController extends Controller
 {
@@ -45,14 +46,17 @@ class NodeController extends Controller
     {
         $this->authorize('node-list', $request->apiKey());
 
-        $fractal = Fractal::create()->collection(Node::all());
-        if ($request->input('include')) {
+        $nodes = Node::paginate(config('pterodactyl.paginate.api.nodes'));
+        $fractal = Fractal::create()->collection($nodes)
+            ->transformWith(new NodeTransformer($request))
+            ->withResourceName('user')
+            ->paginateWith(new IlluminatePaginatorAdapter($nodes));
+
+        if (config('pterodactyl.api.allow_includes_on_list') && $request->input('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
-        return $fractal->transformWith(new NodeTransformer($request))
-            ->withResourceName('node')
-            ->toArray();
+        return $fractal->toArray();
     }
 
     /**

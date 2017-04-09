@@ -26,8 +26,24 @@ return [
     */
     'paginate' => [
         'frontend' => [
-            'servers' => 15,
+            'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
         ],
+        'api' => [
+            'nodes' => env('APP_PAGINATE_API_NODES', 25),
+            'servers' => env('APP_PAGINATE_API_SERVERS', 25),
+            'users' => env('APP_PAGINATE_API_USERS', 25),
+        ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Options
+    |--------------------------------------------------------------------------
+    |
+    | Configuration options for the API.
+    */
+    'api' => [
+        'allow_includes_on_list' => env('API_ALLOW_INCLUDE_ON_LIST', false),
     ],
 
     /*

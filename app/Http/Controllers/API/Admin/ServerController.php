@@ -47,14 +47,17 @@ class ServerController extends Controller
     {
         $this->authorize('server-list', $request->apiKey());
 
-        $servers = Server::paginate(20);
-
-        return Fractal::create()
-            ->collection($servers)
+        $servers = Server::paginate(config('pterodactyl.paginate.api.servers'));
+        $fractal = Fractal::create()->collection($servers)
             ->transformWith(new ServerTransformer($request))
-            ->paginateWith(new IlluminatePaginatorAdapter($servers))
-            ->withResourceName('server')
-            ->toArray();
+            ->withResourceName('user')
+            ->paginateWith(new IlluminatePaginatorAdapter($servers));
+
+        if (config('pterodactyl.api.allow_includes_on_list') && $request->input('include')) {
+            $fractal->parseIncludes(explode(',', $request->input('include')));
+        }
+
+        return $fractal->toArray();
     }
 
     /**

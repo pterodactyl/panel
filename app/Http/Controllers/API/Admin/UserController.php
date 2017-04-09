@@ -45,13 +45,18 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $this->authorize('user-list', $request->apiKey());
-        $users = User::paginate(50);
 
-        return Fractal::create()->collection($users)
+        $users = User::paginate(config('pterodactyl.paginate.api.users'));
+        $fractal = Fractal::create()->collection($users)
             ->transformWith(new UserTransformer($request))
             ->withResourceName('user')
-            ->paginateWith(new IlluminatePaginatorAdapter($users))
-            ->toArray();
+            ->paginateWith(new IlluminatePaginatorAdapter($users));
+
+        if (config('pterodactyl.api.allow_includes_on_list') && $request->input('include')) {
+            $fractal->parseIncludes(explode(',', $request->input('include')));
+        }
+
+        return $fractal->toArray();
     }
 
     /**
