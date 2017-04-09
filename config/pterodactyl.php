@@ -32,7 +32,7 @@ return [
             'nodes' => env('APP_PAGINATE_API_NODES', 25),
             'servers' => env('APP_PAGINATE_API_SERVERS', 25),
             'users' => env('APP_PAGINATE_API_USERS', 25),
-        ]
+        ],
     ],
 
     /*

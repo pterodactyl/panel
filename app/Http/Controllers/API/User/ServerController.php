@@ -27,10 +27,9 @@ namespace Pterodactyl\Http\Controllers\API\User;
 use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\ConnectException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Transformers\User\ServerTransformer;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
+use Pterodactyl\Transformers\User\ServerTransformer;
 
 class ServerController extends Controller
 {

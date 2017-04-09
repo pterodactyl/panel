@@ -27,8 +27,8 @@ namespace Pterodactyl\Http\Controllers\API\Admin;
 use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\NodeRepository;
 use Pterodactyl\Transformers\Admin\NodeTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
@@ -135,6 +135,7 @@ class NodeController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to create this node. Please try again.',
             ], 500);
@@ -163,6 +164,7 @@ class NodeController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to delete this node. Please try again.',
             ], 500);

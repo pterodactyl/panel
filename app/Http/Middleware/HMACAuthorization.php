@@ -28,13 +28,11 @@ use Auth;
 use Crypt;
 use Config;
 use Closure;
-use Response;
 use Debugbar;
 use IPTools\IP;
 use IPTools\Range;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\APIKey;
-use Pterodactyl\Models\APIPermission;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException; // 400
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException; // 403
 
@@ -150,7 +148,7 @@ class HMACAuthorization
     protected function validateIPAccess()
     {
         if (! is_null($this->key()->allowed_ips)) {
-            foreach($this->key()->allowed_ips as $ip) {
+            foreach ($this->key()->allowed_ips as $ip) {
                 if (Range::parse($ip)->contains(new IP($this->request()->ip()))) {
                     return true;
                 }
@@ -194,7 +192,8 @@ class HMACAuthorization
      *
      * @return string
      */
-    protected function public() {
+    protected function public()
+    {
         return $this->token['public'];
     }
 
@@ -203,7 +202,8 @@ class HMACAuthorization
      *
      * @return string
      */
-    protected function hash() {
+    protected function hash()
+    {
         return $this->token['hash'];
     }
 
@@ -212,7 +212,8 @@ class HMACAuthorization
      *
      * @return \Pterodactyl\Models\APIKey
      */
-    protected function key() {
+    protected function key()
+    {
         return $this->key;
     }
 

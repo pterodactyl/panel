@@ -113,11 +113,13 @@ class ServerController extends Controller
             ], 400);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to add this server. Please try again.',
             ], 500);
@@ -146,18 +148,20 @@ class ServerController extends Controller
             ], 400);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to add this server. Please try again.',
             ], 500);
         }
     }
 
-        /**
+    /**
      * Update the details for a server.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -190,6 +194,7 @@ class ServerController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to modify this server. Please try again.',
             ], 500);
@@ -223,11 +228,13 @@ class ServerController extends Controller
             ], 400);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to modify this server container. Please try again.',
             ], 500);
@@ -256,6 +263,7 @@ class ServerController extends Controller
             ], 400);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to toggle the install status for this server. Please try again.',
             ], 500);
@@ -283,6 +291,7 @@ class ServerController extends Controller
             return response('', 204);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
@@ -318,11 +327,13 @@ class ServerController extends Controller
             ], 400);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to ' . $action . ' this server. Please try again.',
             ], 500);
@@ -363,11 +374,13 @@ class ServerController extends Controller
             ], 400);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to modify the build settings for this server. Please try again.',
             ], 500);
@@ -400,11 +413,13 @@ class ServerController extends Controller
             ], 400);
         } catch (TransferException $ex) {
             Log::warning($ex);
+
             return response()->json([
                 'error' => 'A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.',
             ], 504);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
                 'error' => 'An unhandled exception occured while attemping to modify the startup settings for this server. Please try again.',
             ], 500);

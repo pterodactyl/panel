@@ -31,8 +31,8 @@ use Validator;
 use IPTools\Network;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\APIKey as Key;
-use Pterodactyl\Models\APIPermission as Permission;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Models\APIPermission as Permission;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class APIRepository

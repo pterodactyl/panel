@@ -66,7 +66,7 @@ class MacroServiceProvider extends ServiceProvider
                 return Cache::tags([
                     'ApiKeyMacro',
                     'ApiKeyMacro:Key:' . $parts[0],
-                ])->remember('ApiKeyMacro.' . $parts[0], Carbon::now()->addMinutes(15), function() use ($parts) {
+                ])->remember('ApiKeyMacro.' . $parts[0], Carbon::now()->addMinutes(15), function () use ($parts) {
                     return APIKey::where('public', $parts[0])->first();
                 });
             }
@@ -74,7 +74,7 @@ class MacroServiceProvider extends ServiceProvider
             return false;
         });
 
-        Request::macro('apiKeyHasPermission', function($permission) {
+        Request::macro('apiKeyHasPermission', function ($permission) {
             $key = Request::apiKey();
             if (! $key) {
                 return false;

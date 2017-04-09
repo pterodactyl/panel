@@ -209,7 +209,8 @@ class Server extends Model
      *
      * @return array
      */
-    public function getTableColumns() {
+    public function getTableColumns()
+    {
         return Schema::getColumnListing($this->getTable());
     }
 
