@@ -43,6 +43,7 @@ class UpdateEnvironment extends Command
                             {--url=}
                             {--driver=}
                             {--session-driver=}
+                            {--queue-driver=}
                             {--timezone=}';
 
     /**
