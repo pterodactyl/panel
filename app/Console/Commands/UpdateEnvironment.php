@@ -136,7 +136,7 @@ class UpdateEnvironment extends Command
                 'apc' => 'APC',
                 'array' => 'PHP Array',
             ];
-            $default = (in_array($options, config('cache.default', 'memcached'))) ? config('cache.default', 'memcached') : 'memcached';
+            $default = (in_array(config('cache.default', 'memcached'), $options)) ? config('cache.default', 'memcached') : 'memcached';
 
             $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
             $variables['CACHE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', $options, $default);
@@ -153,7 +153,7 @@ class UpdateEnvironment extends Command
                 'apc' => 'APC',
                 'array' => 'PHP Array',
             ];
-            $default = (in_array($options, config('session.driver', 'database'))) ? config('cache.default', 'database') : 'database';
+            $default = (in_array(config('session.driver', 'database'), $options)) ? config('cache.default', 'database') : 'database';
 
             $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
             $variables['SESSION_DRIVER'] = $this->choice('Which session driver backend would you like to use?', $options, $default);
@@ -169,7 +169,7 @@ class UpdateEnvironment extends Command
                 'sync' => 'Sync',
                 'null' => 'None',
             ];
-            $default = (in_array($options, config('queue.driver', 'database'))) ? config('queue.driver', 'database') : 'database';
+            $default = (in_array(config('queue.driver', 'database'), $options)) ? config('queue.driver', 'database') : 'database';
 
             $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
             $variables['QUEUE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', $options, $default);
