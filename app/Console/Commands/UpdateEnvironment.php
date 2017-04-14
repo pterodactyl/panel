@@ -130,40 +130,49 @@ class UpdateEnvironment extends Command
         }
 
         if (is_null($this->option('driver'))) {
-            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
-            $variables['CACHE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', [
+            $options = [
                 'memcached' => 'Memcache',
                 'redis' => 'Redis (recommended)',
                 'apc' => 'APC',
                 'array' => 'PHP Array',
-            ], config('cache.default', 'memcached'));
+            ];
+            $default = (in_array($options, config('cache.default', 'memcached'))) ? config('cache.default', 'memcached') : 'memcached';
+
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['CACHE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', $options, $default);
         } else {
             $variables['CACHE_DRIVER'] = $this->option('driver');
         }
 
         if (is_null($this->option('session-driver'))) {
-            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
-            $variables['SESSION_DRIVER'] = $this->choice('Which session driver backend would you like to use?', [
+            $options = [
                 'database' => 'MySQL (recommended)',
                 'redis' => 'Redis',
                 'file' => 'File',
                 'cookie' => 'Cookie',
                 'apc' => 'APC',
                 'array' => 'PHP Array',
-            ], config('session.driver', 'database'));
+            ];
+            $default = (in_array($options, config('session.driver', 'database'))) ? config('cache.default', 'database') : 'database';
+
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['SESSION_DRIVER'] = $this->choice('Which session driver backend would you like to use?', $options, $default);
         } else {
             $variables['SESSION_DRIVER'] = $this->option('session-driver');
         }
 
         if (is_null($this->option('queue-driver'))) {
-            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
-            $variables['QUEUE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', [
+            $options = [
                 'database' => 'Database (recommended)',
                 'redis' => 'Redis',
                 'sqs' => 'Amazon SQS',
                 'sync' => 'Sync',
                 'null' => 'None',
-            ], config('queue.driver', 'database'));
+            ];
+            $default = (in_array($options, config('queue.driver', 'database'))) ? config('queue.driver', 'database') : 'database';
+
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['QUEUE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', $options, $default);
         } else {
             $variables['QUEUE_DRIVER'] = $this->option('queue-driver');
         }
