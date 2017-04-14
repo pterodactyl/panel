@@ -24,6 +24,8 @@
 
 namespace Pterodactyl\Models;
 
+use Crypt;
+use Config;
 use Illuminate\Database\Eloquent\Model;
 
 class DatabaseHost extends Model
@@ -61,6 +63,26 @@ class DatabaseHost extends Model
         'max_databases' => 'integer',
         'node_id' => 'integer',
     ];
+
+    /**
+     * Sets the database connection name with the details of the host.
+     *
+     * @param  string  $connection
+     * @return void
+     */
+    public function setDynamicConnection($connection = 'dynamic')
+    {
+        Config::set('database.connections.' . $connection, [
+            'driver' => 'mysql',
+            'host' => $this->host,
+            'port' => $this->port,
+            'database' => 'mysql',
+            'username' => $this->username,
+            'password' => Crypt::decrypt($this->password),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+        ]);
+    }
 
     /**
      * Gets the node associated with a database host.

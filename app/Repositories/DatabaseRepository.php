@@ -84,18 +84,9 @@ class DatabaseRepository
             throw $ex;
         }
 
-        Config::set('database.connections.dynamic', [
-            'driver' => 'mysql',
-            'host' => $host->host,
-            'port' => $host->port,
-            'database' => 'mysql',
-            'username' => $host->username,
-            'password' => Crypt::decrypt($host->password),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-        ]);
-
         try {
+            $host->setDynamicConnection();
+
             DB::connection('dynamic')->statement(sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database->database));
             DB::connection('dynamic')->statement(sprintf(
                 'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
@@ -137,20 +128,10 @@ class DatabaseRepository
     public function password($id, $password)
     {
         $database = Database::with('host')->findOrFail($id);
+        $database->host->setDynamicConnection();
 
         DB::transaction(function () use ($database, $password) {
             $database->password = Crypt::encrypt($password);
-
-            Config::set('database.connections.dynamic', [
-                'driver' => 'mysql',
-                'host' => $database->host->host,
-                'port' => $database->host->port,
-                'database' => 'mysql',
-                'username' => $database->host->username,
-                'password' => Crypt::decrypt($database->host->password),
-                'charset'   => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-            ]);
 
             // We have to do the whole delete user, create user thing rather than
             // SET PASSWORD ... because MariaDB and PHP statements ends up inserting
@@ -180,19 +161,9 @@ class DatabaseRepository
     public function drop($id)
     {
         $database = Database::with('host')->findOrFail($id);
+        $database->host->setDynamicConnection();
 
         DB::transaction(function () use ($database) {
-            Config::set('database.connections.dynamic', [
-                'driver' => 'mysql',
-                'host' => $database->host->host,
-                'port' => $database->host->port,
-                'database' => 'mysql',
-                'username' => $database->host->username,
-                'password' => Crypt::decrypt($database->host->password),
-                'charset'   => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-            ]);
-
             DB::connection('dynamic')->statement(sprintf('DROP DATABASE IF EXISTS `%s`', $database->database));
             DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
             DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
@@ -248,20 +219,6 @@ class DatabaseRepository
         }
 
         return DB::transaction(function () use ($data) {
-            Config::set('database.connections.dynamic', [
-                'driver' => 'mysql',
-                'host' => $data['host'],
-                'port' => $data['port'],
-                'database' => 'mysql',
-                'username' => $data['username'],
-                'password' => $data['password'],
-                'charset'   => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-            ]);
-
-            // Allows us to check that we can connect to things.
-            DB::connection('dynamic')->select('SELECT 1 FROM dual');
-
             $host = new DatabaseHost;
             $host->password = Crypt::encrypt($data['password']);
 
@@ -273,6 +230,10 @@ class DatabaseRepository
                 'max_databases' => null,
                 'node_id' => (isset($data['node_id'])) ? $data['node_id'] : null,
             ])->save();
+
+            // Allows us to check that we can connect to things.
+            $host->setDynamicConnection();
+            DB::connection('dynamic')->select('SELECT 1 FROM dual');
 
             return $host;
         });
@@ -315,18 +276,7 @@ class DatabaseRepository
             $host->fill($data)->save();
 
             // Check that we can still connect with these details.
-            Config::set('database.connections.dynamic', [
-                'driver' => 'mysql',
-                'host' => $host->host,
-                'port' => $host->port,
-                'database' => 'mysql',
-                'username' => $host->username,
-                'password' => Crypt::decrypt($host->password),
-                'charset'   => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-            ]);
-
-            // Allows us to check that we can connect to things.
+            $host->setDynamicConnection();
             DB::connection('dynamic')->select('SELECT 1 FROM dual');
 
             return $host;
