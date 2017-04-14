@@ -239,4 +239,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Server::class, 'owner_id');
     }
+
+    /**
+     * Return all servers that user is listed as a subuser of directly.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subuserOf()
+    {
+        return $this->hasMany(Subuser::class);
+    }
 }

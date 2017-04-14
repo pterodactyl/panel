@@ -136,9 +136,9 @@
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                                 <td>
                                     @if($server->owner_id === $user->id)
-                                        @lang('strings.owner')
+                                        <span class="label bg-purple">Owner</span>
                                     @else
-                                        @lang('strings.subuser')
+                                        <span class="label bg-blue">Subuser</span>
                                     @endif
                                 </td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>

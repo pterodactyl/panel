@@ -57,7 +57,8 @@
                             <th>Email</td>
                             <th>Client Name</th>
                             <th>Username</th>
-                            <th>Servers</th>
+                            <th class="text-center" data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</th>
+                            <th class="text-center" data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -68,7 +69,8 @@
                                 <td><a href="{{ route('admin.users.view', $user->id) }}">{{ $user->email }}</a></td>
                                 <td>{{ $user->name_last }}, {{ $user->name_first }}</td>
                                 <td>{{ $user->username }}</td>
-                                <td>{{ $user->servers_count }}</td>
+                                <td class="text-center">{{ $user->servers_count }}</td>
+                                <td class="text-center">{{ $user->subuser_of_count }}</td>
                                 <td class="text-center"><img src="https://www.gravatar.com/avatar/{{ md5(strtolower($user->email)) }}?s=20" class="img-circle" /></td>
                             </tr>
                         @endforeach

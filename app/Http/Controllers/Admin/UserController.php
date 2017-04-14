@@ -44,7 +44,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::withCount('servers');
+        $users = User::withCount('servers', 'subuserOf');
 
         if (! is_null($request->input('query'))) {
             $users->search($request->input('query'));
