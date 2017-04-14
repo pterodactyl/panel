@@ -227,8 +227,9 @@
                 </section>
             </div>
             <footer class="main-footer">
-                <div class="pull-right hidden-xs small text-gray" style="margin-right:10px;">
-                    <strong>v</strong> {{ config('app.version') }} &nbsp;&nbsp; <small class="muted muted-hover"><a href="https://patreon.com/pterry" target="_blank"><i class="fa fa-credit-card"></i></a></small>
+                <div class="pull-right small text-gray" style="margin-right:10px;margin-top:-7px;">
+                    <strong><i class="fa fa-code-fork"></i></strong> {{ config('app.version') }} <br />
+                    <strong><i class="fa fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>

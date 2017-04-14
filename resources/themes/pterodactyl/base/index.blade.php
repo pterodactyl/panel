@@ -39,8 +39,8 @@
                 <h3 class="box-title">@lang('base.index.list')</h3>
                 <div class="box-tools">
                     <form action="{{ route('index') }}" method="GET">
-                        <div class="input-group input-group-sm" style="width: 250px;">
-                            <input type="text" name="query" class="form-control pull-right" value="{{ request()->input('query') }}" placeholder="@lang('strings.search')">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="@lang('strings.search')">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>
