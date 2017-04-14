@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[pre.7]` — Fixes bug with injected JS that was causing `<!DOCTYPE html>` to be ignored in templates.
 * `[pre.7]` — Fixes exception thrown when trying to delete a node due to a misnamed model.
 * `[pre.7]` — Fixes username vanishing on failed login attempts.
+* `[pre.7]` — Terminal is now fixed to actually output all lines, rather than leaving one hanging in neverland until the browser is resized.
 
 ### Added
 * Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
@@ -24,6 +25,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Routes are now handled in the `routes/` folder, and use a significantly cleaner syntax. Controller names and methods have been updated as well to be clearer as well as avoid conflicts with PHP reserved keywords.
 * API has been completely overhauled to use new permissions system. **Any old API keys will immediately become invalid and fail to operate properly anymore. You will need to generate new keys.**
 * Cleaned up dynamic database connection setting to use a single function call from the host model.
+* `[pre.7]` — Corrected a config option for spigot servers to set a boolean value as boolean, and not as a string.
 
 ## v0.6.0-pre.7 (Courageous Carniadactylus)
 ### Fixed

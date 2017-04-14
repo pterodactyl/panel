@@ -262,6 +262,9 @@
             <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')
+            {!! Theme::js('vendor/terminal/keyboard.polyfill.js') !!}
+            <script>keyboardeventKeyPolyfill.polyfill();</script>
+
             {!! Theme::js('js/laroute.js') !!}
             {!! Theme::js('vendor/jquery/jquery.min.js') !!}
             {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}

@@ -83,7 +83,7 @@
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/mousewheel/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('vendor/terminal/jquery.terminal-0.11.23.min.js') !!}
+    {!! Theme::js('vendor/terminal/jquery.terminal.min.js') !!}
     {!! Theme::js('vendor/terminal/unix_formatting.js') !!}
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('vendor/chartjs/chart.min.js') !!}

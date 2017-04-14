@@ -9,7 +9,7 @@
  *
  * This is example of how to create custom formatter for jQuery Terminal
  *
- * Copyright (c) 2014-2016 Jakub Jankiewicz <http://jcubic.pl>
+ * Copyright (c) 2014-2016 Jakub Jankiewicz <http://jcubic.pl/me>
  * Released under the MIT license
  *
  */
@@ -21,10 +21,10 @@
     // :: Replace overtyping (from man) formatting with terminal formatting
     // ---------------------------------------------------------------------
     $.terminal.overtyping = function(string) {
-        return string.replace(/((?:_\x08.|.\x08_)+)/g, function(full, g) {
+        return string.replace(/((?:_\x08.|.\x08_)+)/g, function(full) {
             var striped = full.replace(/_x08|\x08_|_\u0008|\u0008_/g, '');
             return '[[u;;]' + striped + ']';
-        }).replace(/((?:.\x08.)+)/g, function(full, g) {
+        }).replace(/((?:.\x08.)+)/g, function(full) {
             return '[[b;#fff;]' + full.replace(/(.)(?:\x08|\u0008)\1/g,
                                                function(full, g) {
                                                    return g;
@@ -153,7 +153,47 @@
             var _8bit_background = false;
             var process_8bit = false;
             var palette = $.terminal.ansi_colors.palette;
-            for(var i in controls) {
+            function set_styles(num) {
+                switch (num) {
+                    case 1:
+                        styles.push('b');
+                        bold = true;
+                        faited = false;
+                        break;
+                    case 4:
+                        styles.push('u');
+                        break;
+                    case 3:
+                        styles.push('i');
+                        break;
+                    case 5:
+                        process_8bit = true;
+                        break;
+                    case 38:
+                        _8bit_color = true;
+                        break;
+                    case 48:
+                        _8bit_background = true;
+                        break;
+                    case 2:
+                        faited = true;
+                        bold = false;
+                        break;
+                    case 7:
+                        reverse = true;
+                        break;
+                    default:
+                        if (controls.indexOf('5') === -1) {
+                            if (color_list[num]) {
+                                output_color = color_list[num];
+                            }
+                            if (background_list[num]) {
+                                output_background = background_list[num];
+                            }
+                        }
+                }
+            }
+            for (var i in controls) {
                 if (controls.hasOwnProperty(i)) {
                     num = parseInt(controls[i], 10);
                     if (process_8bit && (_8bit_background || _8bit_color)) {
@@ -164,44 +204,7 @@
                             output_background = palette[num];
                         }
                     } else {
-                        switch(num) {
-                        case 1:
-                            styles.push('b');
-                            bold = true;
-                            faited = false;
-                            break;
-                        case 4:
-                            styles.push('u');
-                            break;
-                        case 3:
-                            styles.push('i');
-                            break;
-                        case 5:
-                            process_8bit = true;
-                            break;
-                        case 38:
-                            _8bit_color = true;
-                            break;
-                        case 48:
-                            _8bit_background = true;
-                            break;
-                        case 2:
-                            faited = true;
-                            bold = false;
-                            break;
-                        case 7:
-                            reverse = true;
-                            break;
-                        default:
-                            if (controls.indexOf('5') == -1) {
-                                if (color_list[num]) {
-                                    output_color = color_list[num];
-                                }
-                                if (background_list[num]) {
-                                    output_background = background_list[num];
-                                }
-                            }
-                        }
+                        set_styles(num);
                     }
                 }
             }
@@ -225,14 +228,14 @@
             }
             if (_8bit_color) {
                 color = output_color;
-            } else if (output_color == 'inherit') {
+            } else if (output_color === 'inherit') {
                 color = output_color;
             } else {
                 color = colors[output_color];
             }
             if (_8bit_background) {
                 background = output_background;
-            } else if (output_background == 'transparent') {
+            } else if (output_background === 'transparent') {
                 background = output_background;
             } else {
                 background = backgrounds[output_background];
@@ -242,51 +245,50 @@
         return function(input) {
             //merge multiple codes
             /*input = input.replace(/((?:\x1B\[[0-9;]*[A-Za-z])*)/g, function(group) {
-                return group.replace(/m\x1B\[/g, ';');
-            });*/
+              return group.replace(/m\x1B\[/g, ';');
+              });*/
             var splitted = input.split(/(\x1B\[[0-9;]*[A-Za-z])/g);
-            if (splitted.length == 1) {
+            if (splitted.length === 1) {
                 return input;
             }
             var output = [];
             //skip closing at the begining
             if (splitted.length > 3) {
-                var str = splitted.slice(0,3).join('');
+                var str = splitted.slice(0, 3).join('');
                 if (str.match(/^\[0*m$/)) {
                     splitted = splitted.slice(3);
                 }
             }
-            var next, prev_color, prev_background, code, match;
+            var prev_color, prev_background, code, match;
             var inside = false;
-            for (var i=0; i<splitted.length; ++i) {
+            for (var i = 0; i < splitted.length; ++i) {
                 match = splitted[i].match(/^\x1B\[([0-9;]*)([A-Za-z])$/);
                 if (match) {
                     switch (match[2]) {
-                    case 'm':
-                        if (+match[1] !== 0) {
-                            code = format_ansi(match[1]);
-                        }
-                        if (inside) {
-                            output.push(']');
-                            if (+match[1] === 0) {
-                                //just closing
-                                inside = false;
-                                prev_color = prev_background = '';
-                            } else {
-                                // someone forget to close - move to next
-                                code[1] = code[1] || prev_color;
-                                code[2] = code[2] || prev_background;
-                                output.push('[[' + code.join(';') + ']');
-                                // store colors to next use
-                                if (code[1]) {
-                                    prev_color = code[1];
-                                }
-                                if (code[2]) {
-                                    prev_background = code[2];
-                                }
-                            }
-                        } else {
+                        case 'm':
                             if (+match[1] !== 0) {
+                                code = format_ansi(match[1]);
+                            }
+                            if (inside) {
+                                output.push(']');
+                                if (+match[1] === 0) {
+                                    //just closing
+                                    inside = false;
+                                    prev_color = prev_background = '';
+                                } else {
+                                    // someone forget to close - move to next
+                                    code[1] = code[1] || prev_color;
+                                    code[2] = code[2] || prev_background;
+                                    output.push('[[' + code.join(';') + ']');
+                                    // store colors to next use
+                                    if (code[1]) {
+                                        prev_color = code[1];
+                                    }
+                                    if (code[2]) {
+                                        prev_background = code[2];
+                                    }
+                                }
+                            } else if (+match[1] !== 0) {
                                 inside = true;
                                 code[1] = code[1] || prev_color;
                                 code[2] = code[2] || prev_background;
@@ -299,8 +301,7 @@
                                     prev_background = code[2];
                                 }
                             }
-                        }
-                        break;
+                            break;
                     }
                 } else {
                     output.push(splitted[i]);
