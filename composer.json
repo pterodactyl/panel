@@ -55,12 +55,10 @@
     },
     "scripts": {
         "pre-install-cmd": [
-            "php artisan config:clear",
             "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
             "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
         ],
         "pre-update-cmd": [
-            "php artisan config:clear",
             "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
             "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
         ],
