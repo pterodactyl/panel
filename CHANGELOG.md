@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
 * Server listing for individual users is now searchable on the front-end.
+* Servers that a user is assocaited with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
 
 ### Changed
 * Subuser permissions are now stored in `Permission::list()` to make views way cleaner and make adding to views significantly cleaner.
@@ -22,6 +23,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Updated all panel components to run on Laravel v5.4 rather than 5.3 which is EOL.
 * Routes are now handled in the `routes/` folder, and use a significantly cleaner syntax. Controller names and methods have been updated as well to be clearer as well as avoid conflicts with PHP reserved keywords.
 * API has been completely overhauled to use new permissions system. **Any old API keys will immediately become invalid and fail to operate properly anymore. You will need to generate new keys.**
+* Cleaned up dynamic database connection setting to use a single function call from the host model.
 
 ## v0.6.0-pre.7 (Courageous Carniadactylus)
 ### Fixed
