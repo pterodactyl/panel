@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "70d6bacefded5c87a96f965078580705",
-    "content-hash": "df0caccf38044ef0fdf615ab0c25a8e3",
+    "hash": "6fe59685da66ab0736f2f92250d149c1",
+    "content-hash": "44aab096a8afb66c1e73cd526e949afe",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -194,6 +194,51 @@
                 "rfc4648"
             ],
             "time": "2016-05-05 11:49:03"
+        },
+        {
+            "name": "daneeveritt/login-notifications",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DaneEveritt/login-notifications.git",
+                "reference": "a12e9b25e9a5e42d3f25c16579ba6dc2b8aba910"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DaneEveritt/login-notifications/zipball/a12e9b25e9a5e42d3f25c16579ba6dc2b8aba910",
+                "reference": "a12e9b25e9a5e42d3f25c16579ba6dc2b8aba910",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "~5.3.0|~5.4.0",
+                "nesbot/carbon": "1.22.*",
+                "php": "^5.6|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DaneEveritt\\LoginNotifications\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dane Everitt",
+                    "email": "dane@daneeveritt.com"
+                }
+            ],
+            "description": "Login notifications for Laravel",
+            "keywords": [
+                "email",
+                "events",
+                "laravel",
+                "login",
+                "notifications"
+            ],
+            "time": "2017-04-14 20:57:26"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -3904,12 +3949,12 @@
             "version": "0.9.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/padraic/mockery.git",
+                "url": "https://github.com/mockery/mockery.git",
                 "reference": "6fdb61243844dc924071d3404bb23994ea0b6856"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/6fdb61243844dc924071d3404bb23994ea0b6856",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/6fdb61243844dc924071d3404bb23994ea0b6856",
                 "reference": "6fdb61243844dc924071d3404bb23994ea0b6856",
                 "shasum": ""
             },
@@ -5283,7 +5328,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.0.0"

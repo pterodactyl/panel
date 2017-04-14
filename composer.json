@@ -14,6 +14,7 @@
         "php": ">=7.0.0",
         "aws/aws-sdk-php": "3.25.1",
         "barryvdh/laravel-debugbar": "2.3.2",
+        "daneeveritt/login-notifications": "1.0.0",
         "doctrine/dbal": "2.5.12",
         "edvinaskrucas/settings": "2.0.0",
         "fideloper/proxy": "3.3.0",
@@ -54,10 +55,12 @@
     },
     "scripts": {
         "pre-install-cmd": [
+            "php artisan config:clear",
             "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
             "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
         ],
         "pre-update-cmd": [
+            "php artisan config:clear",
             "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
             "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
         ],
@@ -78,6 +81,7 @@
             "php artisan config:cache"
         ]
     },
+    "prefer-stable": true,
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
