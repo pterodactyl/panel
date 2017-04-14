@@ -171,8 +171,8 @@ class UpdateEnvironment extends Command
             ];
             $default = (in_array(config('queue.driver', 'database'), $options)) ? config('queue.driver', 'database') : 'database';
 
-            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
-            $variables['QUEUE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', $options, $default);
+            $this->line('If you chose redis as your queue driver backend, you *must* have a redis server configured already.');
+            $variables['QUEUE_DRIVER'] = $this->choice('Which queue driver backend would you like to use?', $options, $default);
         } else {
             $variables['QUEUE_DRIVER'] = $this->option('queue-driver');
         }
