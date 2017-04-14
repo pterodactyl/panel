@@ -28,9 +28,11 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Auth;
 use Alert;
 use Cache;
+use Crypt;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
+use Pterodactyl\Events\Auth\FailedLogin;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -80,6 +82,27 @@ class LoginController extends Controller
     }
 
     /**
+     * Get the failed login response instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        $this->incrementLoginAttempts($request);
+
+        $errors = [$this->username() => trans('auth.failed')];
+
+        if ($request->expectsJson()) {
+            return response()->json($errors, 422);
+        }
+
+        return redirect()->route('auth.login')
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors($errors);
+    }
+
+    /**
      * Handle a login request to the application.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -88,42 +111,46 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         // Check wether the user identifier is an email address or a username
-        $isEmail = str_contains($request->input('user'), '@');
+        $checkField = str_contains($request->input('user'), '@') ? 'email' : 'username';
 
-        $this->validate($request, [
-            'user' => $isEmail ? 'required|email' : 'required|string',
-            'password' => 'required',
-        ]);
-
-        if ($lockedOut = $this->hasTooManyLoginAttempts($request)) {
+        if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
             return $this->sendLockoutResponse($request);
         }
 
-        // Is the user (email or username) & password valid?
-        if (! Auth::once([
-            $isEmail ? 'email' : 'username' => $request->input('user'),
-            'password' => $request->input('password'),
-        ], $request->has('remember'))) {
-            if (! $lockedOut) {
-                $this->incrementLoginAttempts($request);
-            }
-
+        // Determine if the user even exists.
+        $user = User::where($checkField, $request->input($this->username()))->first();
+        if (! $user) {
             return $this->sendFailedLoginResponse($request);
         }
 
-        // Verify TOTP Token was Valid
-        if (Auth::user()->use_totp) {
-            $verifyKey = str_random(64);
-            Cache::put($verifyKey, Auth::user()->id, 5);
+        // If user uses 2FA, redirect to that page.
+        if ($user->use_totp) {
+            $token = str_random(64);
+            Cache::put($token, [
+                'user_id' => $user->id,
+                'credentials' => Crypt::encrypt(serialize([
+                    $checkField => $request->input($this->username()),
+                    'password' => $request->input('password'),
+                ])),
+            ], 5);
 
-            return redirect()->route('auth.totp')->with('authentication_token', $verifyKey);
-        } else {
-            Auth::login(Auth::user(), $request->has('remember'));
+            return redirect()->route('auth.totp')->with('authentication_token', $token);
+        }
 
+        $attempt = Auth::attempt([
+            $checkField => $request->input($this->username()),
+            'password' => $request->input('password'),
+            'use_totp' => 0,
+        ], $request->has('remember'));
+
+        if ($attempt) {
             return $this->sendLoginResponse($request);
         }
+
+        // Login failed, send response.
+        return $this->sendFailedLoginResponse($request);
     }
 
     /**
@@ -134,14 +161,14 @@ class LoginController extends Controller
      */
     public function totp(Request $request)
     {
-        $verifyKey = $request->session()->get('authentication_token');
+        $token = $request->session()->get('authentication_token');
 
-        if (is_null($verifyKey) || Auth::user()) {
+        if (is_null($token) || Auth::user()) {
             return redirect()->route('auth.login');
         }
 
         return view('auth.totp', [
-            'verify_key' => $verifyKey,
+            'verify_key' => $token,
             'remember' => $request->has('remember'),
         ]);
     }
@@ -157,30 +184,40 @@ class LoginController extends Controller
         $G2FA = new Google2FA();
 
         if (is_null($request->input('verify_token'))) {
-            $this->incrementLoginAttempts($request);
-            Alert::danger(trans('auth.totp_failed'))->flash();
-
-            return redirect()->route('auth.login');
+            return $this->sendFailedLoginResponse($request);
         }
 
-        $user = User::where('id', Cache::pull($request->input('verify_token')))->first();
-        if (! $user) {
-            $this->incrementLoginAttempts($request);
-            Alert::danger(trans('auth.totp_failed'))->flash();
+        $cache = Cache::pull($request->input('verify_token'));
+        $user = User::where('id', $cache['user_id'])->first();
 
-            return redirect()->route('auth.login');
+        if (! $user || ! $cache) {
+            $this->sendFailedLoginResponse($request);
         }
 
-        if (! is_null($request->input('2fa_token')) && $G2FA->verifyKey($user->totp_secret, $request->input('2fa_token'), 1)) {
-            Auth::login($user, $request->has('remember'));
-
-            return redirect()->intended($this->redirectPath());
-        } else {
-            $this->incrementLoginAttempts($request);
-            Alert::danger(trans('auth.2fa_failed'))->flash();
-
-            return redirect()->route('auth.login');
+        if (is_null($request->input('2fa_token'))) {
+            return $this->sendFailedLoginResponse($request);
         }
+
+        try {
+            $credentials = unserialize(Crypt::decrypt($cache['credentials']));
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $ex) {
+            return $this->sendFailedLoginResponse($request);
+        }
+
+        if (! $G2FA->verifyKey($user->totp_secret, $request->input('2fa_token'), 2)) {
+            event(new \Illuminate\Auth\Events\Failed($user, $credentials));
+
+            return $this->sendFailedLoginResponse($request);
+        }
+
+        $attempt = Auth::attempt($credentials, $request->has('remember'));
+
+        if ($attempt) {
+            return $this->sendLoginResponse($request);
+        }
+
+        // Login failed, send response.
+        return $this->sendFailedLoginResponse($request);
     }
 
     /**
