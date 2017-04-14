@@ -20,7 +20,7 @@
         "guzzlehttp/guzzle": "6.2.3",
         "igaster/laravel-theme": "1.14.0",
         "laracasts/utilities": "2.1.0",
-        "laravel/framework": "5.4.16",
+        "laravel/framework": "5.4.18",
         "laravel/tinker": "1.0.0",
         "lord/laroute": "2.4.4",
         "mtdowling/cron-expression": "1.2.0",
@@ -53,6 +53,14 @@
         }
     },
     "scripts": {
+        "pre-install-cmd": [
+            "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
+            "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
+        ],
+        "pre-update-cmd": [
+            "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
+            "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
+        ],
         "post-root-package-install": [
             "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
