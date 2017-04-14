@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         if (config('pterodactyl.auth.notifications')) {
-            $this->app->registe(\DaneEveritt\LoginNotifications\NotificationServiceProvider::class);
+            $this->app->register(\DaneEveritt\LoginNotifications\NotificationServiceProvider::class);
         }
     }
 }
