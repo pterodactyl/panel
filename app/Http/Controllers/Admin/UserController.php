@@ -143,7 +143,7 @@ class UserController extends Controller
     {
         try {
             $repo = new UserRepository;
-            $user = $repo->update($user, $request->intersect([
+            $user = $repo->update($id, $request->intersect([
                 'email', 'password', 'name_first',
                 'name_last', 'username', 'root_admin',
             ]));
