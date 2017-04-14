@@ -38,7 +38,7 @@ class IndexController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $servers = $request->user()->access();
+        $servers = $request->user()->access()->with('user');
 
         if (! is_null($request->input('query'))) {
             $servers->search($request->input('query'));
