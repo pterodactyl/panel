@@ -71,11 +71,6 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize",
             "php artisan config:cache"
-        ],
-        "setup": [
-            "composer install --no-dev",
-            "php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "php artisan key:generate"
         ]
     },
     "prefer-stable": true,
