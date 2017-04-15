@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-beta.2 (Courageous Carniadactylus)
+### Fixed
+* `[beta.1]` — Fixes task management ststem not running correctly.
+* `[beta.1]` — Fixes API endpoint for command sending missing the required class definition.
+
 ## v0.6.0-beta.1 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.7]` — Fixes bug with subuser checkbox display.

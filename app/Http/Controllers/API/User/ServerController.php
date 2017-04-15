@@ -30,6 +30,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Pterodactyl\Transformers\User\ServerTransformer;
+use Pterodactyl\Repositories\Daemon\CommandRepository;
 
 class ServerController extends Controller
 {
