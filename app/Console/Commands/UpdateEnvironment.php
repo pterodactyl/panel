@@ -85,6 +85,12 @@ class UpdateEnvironment extends Command
             $variables['SERVICE_AUTHOR'] = (string) Uuid::generate(4);
         }
 
+        if(isset($variables['APP_THEME'])) {
+            if ($variables['APP_THEME'] === 'default') {
+                $variables['APP_THEME'] = 'pterodactyl';
+            }
+        }
+
         if (is_null($this->option('dbhost'))) {
             $variables['DB_HOST'] = $this->anticipate('Database Host', ['localhost', '127.0.0.1', config('database.connections.mysql.host')], config('database.connections.mysql.host'));
         } else {

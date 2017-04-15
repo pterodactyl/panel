@@ -107,9 +107,6 @@
                             <input type="password" name="password" class="form-control" />
                         </div>
                     </div>
-                    <div class="form-group">
-                        <button class="btn btn-default btn-sm" id="gen_pass_bttn" type="button">Generate Password</button>
-                    </div>
                 </div>
             </div>
         </div>
