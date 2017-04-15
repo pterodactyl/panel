@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 Route::get('/', 'ServerController@getIndex')->name('server.index');
+Route::get('/console', 'ServerController@getConsole')->name('server.console');
 
 /*
 |--------------------------------------------------------------------------

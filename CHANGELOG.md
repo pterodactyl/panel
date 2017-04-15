@@ -10,6 +10,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes panel looking for an old compiled classfile that is no longer used. This was causing errors relating to `missing class DingoAPI` when trying to upgrade the panel.
 * `[beta.1]` — Should fix render issues when trying to edit some files via the panel file editor.
 
+### Added
+* Ability to launch the console in a new window as an individual unit. https://s3.kelp.in/IrTyE.png
+
 ## v0.6.0-beta.1 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.7]` — Fixes bug with subuser checkbox display.

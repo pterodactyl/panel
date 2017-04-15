@@ -24,8 +24,9 @@ var InitialLogSent = false;
 
 (function initConsole() {
     window.TerminalQueue = [];
+    window.ConsoleServerStatus = 0;
     window.Terminal = $('#terminal').terminal(function (command, term) {
-        Socket.emit('send command', command);
+        Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set status', command);
     }, {
         greetings: '',
         name: Pterodactyl.server.uuid,
@@ -80,6 +81,7 @@ var InitialLogSent = false;
 (function setupSocketListeners() {
     // Update Listings on Initial Status
     Socket.on('initial status', function (data) {
+        ConsoleServerStatus = data.status;
         if (! InitialLogSent) {
             updateServerPowerControls(data.status);
 
@@ -91,6 +93,7 @@ var InitialLogSent = false;
 
     // Update Listings on Status
     Socket.on('status', function (data) {
+        ConsoleServerStatus = data.status;
         updateServerPowerControls(data.status);
     });
 
@@ -134,112 +137,117 @@ $(document).ready(function () {
         }
     });
 
-    Socket.on('proc', function (proc) {
-        if (CPUData.length > 10) {
-            CPUData.shift();
-            MemoryData.shift();
-            TimeLabels.shift();
+    (function setupChartElements() {
+        if (typeof SkipConsoleCharts !== 'undefined') {
+            return;
         }
 
-        var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
-        CPUData.push(cpuUse);
-        MemoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
-
-        TimeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
-
-        CPUChart.update();
-        MemoryChart.update();
-    });
-
-
-    var ctc = $('#chart_cpu');
-    var TimeLabels = [];
-    var CPUData = [];
-    var CPUChart = new Chart(ctc, {
-        type: 'line',
-        data: {
-            labels: TimeLabels,
-            datasets: [
-                {
-                    label: "Percent Use",
-                    fill: false,
-                    lineTension: 0.03,
-                    backgroundColor: "#3c8dbc",
-                    borderColor: "#3c8dbc",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "#3c8dbc",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#3c8dbc",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: CPUData,
-                    spanGaps: false,
-                }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'CPU Usage (as Percent Total)'
-            },
-            legend: {
-                display: false,
-            },
-            animation: {
-                duration: 1,
+        Socket.on('proc', function (proc) {
+            if (CPUData.length > 10) {
+                CPUData.shift();
+                MemoryData.shift();
+                TimeLabels.shift();
             }
-        }
-    });
 
-    var ctm = $('#chart_memory');
-    MemoryData = [];
-    MemoryChart = new Chart(ctm, {
-        type: 'line',
-        data: {
-            labels: TimeLabels,
-            datasets: [
-                {
-                    label: "Memory Use",
-                    fill: false,
-                    lineTension: 0.03,
-                    backgroundColor: "#3c8dbc",
-                    borderColor: "#3c8dbc",
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: "#3c8dbc",
-                    pointBackgroundColor: "#fff",
-                    pointBorderWidth: 1,
-                    pointHoverRadius: 5,
-                    pointHoverBackgroundColor: "#3c8dbc",
-                    pointHoverBorderColor: "rgba(220,220,220,1)",
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 10,
-                    data: MemoryData,
-                    spanGaps: false,
+            var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
+            CPUData.push(cpuUse);
+            MemoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
+
+            TimeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
+
+            CPUChart.update();
+            MemoryChart.update();
+        });
+
+        var ctc = $('#chart_cpu');
+        var TimeLabels = [];
+        var CPUData = [];
+        var CPUChart = new Chart(ctc, {
+            type: 'line',
+            data: {
+                labels: TimeLabels,
+                datasets: [
+                    {
+                        label: "Percent Use",
+                        fill: false,
+                        lineTension: 0.03,
+                        backgroundColor: "#3c8dbc",
+                        borderColor: "#3c8dbc",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "#3c8dbc",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#3c8dbc",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: CPUData,
+                        spanGaps: false,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'CPU Usage (as Percent Total)'
+                },
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 1,
                 }
-            ]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Memory Usage (in Megabytes)'
-            },
-            legend: {
-                display: false,
-            },
-            animation: {
-                duration: 1,
             }
-        }
-    });
+        });
+
+        var ctm = $('#chart_memory');
+        MemoryData = [];
+        MemoryChart = new Chart(ctm, {
+            type: 'line',
+            data: {
+                labels: TimeLabels,
+                datasets: [
+                    {
+                        label: "Memory Use",
+                        fill: false,
+                        lineTension: 0.03,
+                        backgroundColor: "#3c8dbc",
+                        borderColor: "#3c8dbc",
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "#3c8dbc",
+                        pointBackgroundColor: "#fff",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "#3c8dbc",
+                        pointHoverBorderColor: "rgba(220,220,220,1)",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 10,
+                        data: MemoryData,
+                        spanGaps: false,
+                    }
+                ]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Memory Usage (in Megabytes)'
+                },
+                legend: {
+                    display: false,
+                },
+                animation: {
+                    duration: 1,
+                }
+            }
+        });
+    })();
 });

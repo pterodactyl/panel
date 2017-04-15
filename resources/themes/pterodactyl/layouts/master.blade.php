@@ -126,6 +126,11 @@
                             <li class="{{ Route::currentRouteName() !== 'server.index' ?: 'active' }}">
                                 <a href="{{ route('server.index', $server->uuidShort) }}">
                                     <i class="fa fa-terminal"></i> <span>@lang('navigation.server.console')</span>
+                                    <span class="pull-right-container muted muted-hover" href="{{ route('server.console', $server->uuidShort) }}" id="console-popout">
+                                        <span class="label label-default pull-right" style="padding: 3px 5px 2px 5px;">
+                                            <i class="fa fa-external-link"></i>
+                                        </span>
+                                    </span>
                                 </a>
                             </li>
                             @can('list-files', $server)

@@ -66,6 +66,31 @@ class ServerController extends Controller
     }
 
     /**
+     * Renders server console as an individual item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function getConsole(Request $request, $uuid)
+    {
+        \Debugbar::disable();
+        $server = Models\Server::byUuid($uuid);
+
+        $server->js([
+            'config' => [
+                'console_count' => config('pterodactyl.console.count'),
+                'console_freq' => config('pterodactyl.console.freq'),
+            ],
+        ]);
+
+        return view('server.console', [
+            'server' => $server,
+            'node' => $server->node,
+        ]);
+    }
+
+    /**
      * Renders file overview page.
      *
      * @param  \Illuminate\Http\Request  $request
