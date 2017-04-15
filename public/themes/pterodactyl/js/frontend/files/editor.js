@@ -17,16 +17,19 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-$(document).ready(function () {
-    const Editor = ace.edit('editor');
-    const Modelist = ace.require('ace/ext/modelist')
+(function () {
+    window.Editor = ace.edit('editor');
+    var Whitespace = ace.require('ace/ext/whitespace');
+    var Modelist = ace.require('ace/ext/modelist');
 
     Editor.setTheme('ace/theme/chrome');
     Editor.getSession().setUseWrapMode(true);
     Editor.setShowPrintMargin(false);
 
-    if (typeof Pterodactyl !== 'undefined' && typeof Pterodactyl.stat !== 'undefined') {
-        Editor.getSession().setMode(Modelist.getModeForPath(Pterodactyl.stat.name).mode);
+    if (typeof Pterodactyl !== 'undefined') {
+        if(typeof Pterodactyl.stat !== 'undefined') {
+            Editor.getSession().setMode(Modelist.getModeForPath(Pterodactyl.stat.name).mode);
+        }
     }
 
     Editor.commands.addCommand({
@@ -41,6 +44,10 @@ $(document).ready(function () {
         },
         readOnly: false
     });
+
+    Editor.commands.addCommands(Whitespace.commands);
+
+    Whitespace.detectIndentation(Editor.session);
 
     $('#save_file').on('click', function (e) {
         e.preventDefault();
@@ -121,4 +128,4 @@ $(document).ready(function () {
             $('#save_file').html('<i class="fa fa-fw fa-save"></i> &nbsp;Save File').removeClass('disabled');
         });
     }
-});
+})();

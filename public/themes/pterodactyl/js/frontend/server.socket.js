@@ -50,13 +50,11 @@ var Server = (function ()  {
 
         var notifySocketError = false;
 
-        console.log('Starting connection');
         window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/ws/' + Pterodactyl.server.uuid, {
             'query': 'token=' + Pterodactyl.server.daemonSecret,
         });
 
         Socket.io.on('connect_error', function (err) {
-            console.log('connect_error');
             if(typeof notifySocketError !== 'object') {
                 notifySocketError = $.notify({
                     message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
@@ -69,7 +67,6 @@ var Server = (function ()  {
 
         // Connected to Socket Successfully
         Socket.on('connect', function () {
-            console.log('connect');
             if (notifySocketError !== false) {
                 notifySocketError.close();
                 notifySocketError = false;
@@ -77,7 +74,6 @@ var Server = (function ()  {
         });
 
         Socket.on('initial status', function (data) {
-            console.log('initial status');
             setStatusIcon(data.status);
         });
 

@@ -7,7 +7,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[beta.1]` — Fixes task management ststem not running correctly.
 * `[beta.1]` — Fixes API endpoint for command sending missing the required class definition.
-* `[beta.1]` — Fixes panel looking fo an old compiled classfile that is no longer used. This was causing errors relating to `missing class DingoAPI` when trying to upgrade the panel.
+* `[beta.1]` — Fixes panel looking for an old compiled classfile that is no longer used. This was causing errors relating to `missing class DingoAPI` when trying to upgrade the panel.
+* `[beta.1]` — Should fix render issues when trying to edit some files via the panel file editor.
 
 ## v0.6.0-beta.1 (Courageous Carniadactylus)
 ### Fixed

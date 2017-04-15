@@ -70,18 +70,20 @@
                             <option value="java">Java</option>
                             <option value="javascript">JavaScript</option>
                             <option value="json">JSON</option>
+                            <option value="kotlin">Kotlin</option>
                             <option value="lua">Lua</option>
                             <option value="markdown">Markdown</option>
                             <option value="mysql">MySQL</option>
                             <option value="objectivec">Objective-C</option>
                             <option value="perl">Perl</option>
                             <option value="php">PHP</option>
+                            <option value="plain_text" selected="selected">Plain Text</option>
                             <option value="properties">Properties</option>
                             <option value="python">Python</option>
                             <option value="ruby">Ruby</option>
                             <option value="rust">Rust</option>
                             <option value="smarty">Smarty</option>
-                            <option value="textile" selected="selected">Plain Text</option>
+                            <option value="sql">SQL</option>
                             <option value="xml">XML</option>
                             <option value="yaml">YAML</option>
                         </select>

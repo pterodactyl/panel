@@ -52,12 +52,6 @@ var InitialLogSent = false;
             TerminalNotifyElement.addClass('hidden');
         }
     })
-    // Socket.on('initial status', function (data) {
-    //     Terminal.clear();
-    //     if (data.status === 1 || data.status === 2) {
-    //         Socket.emit('send server log');
-    //     }
-    // });
 })();
 
 (function pushOutputQueue() {
@@ -86,7 +80,6 @@ var InitialLogSent = false;
 (function setupSocketListeners() {
     // Update Listings on Initial Status
     Socket.on('initial status', function (data) {
-        console.log('initial status 2');
         if (! InitialLogSent) {
             updateServerPowerControls(data.status);
 

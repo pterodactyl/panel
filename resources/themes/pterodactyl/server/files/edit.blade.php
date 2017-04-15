@@ -59,5 +59,6 @@
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/ace/ace.js') !!}
     {!! Theme::js('vendor/ace/ext-modelist.js') !!}
+    {!! Theme::js('vendor/ace/ext-whitespace.js') !!}
     {!! Theme::js('js/frontend/files/editor.js') !!}
 @endsection
