@@ -150,24 +150,32 @@ class Server extends Model
     /**
      * Returns non-administrative headers for accessing a server on the daemon.
      *
+     * @param  Pterodactyl\Models\User|null  $user
      * @return array
      */
-    public function guzzleHeaders()
+    public function guzzleHeaders(User $user = null)
     {
+        // If no specific user is passed, see if we can find an active
+        // auth session to pull data from.
+        if (is_null($user) && Auth::check()) {
+            $user = Auth::user();
+        }
+
         return [
             'X-Access-Server' => $this->uuid,
-            'X-Access-Token' => Auth::user()->daemonToken($this),
+            'X-Access-Token' => ($user) ? $user->daemonToken($this) : $this->daemonSecret,
         ];
     }
 
     /**
      * Return an instance of the Guzzle client for this specific server using defined access token.
      *
+     * @param  Pterodactyl\Models\User|null  $user
      * @return \GuzzleHttp\Client
      */
-    public function guzzleClient()
+    public function guzzleClient(User $user = null)
     {
-        return $this->node->guzzleClient($this->guzzleHeaders());
+        return $this->node->guzzleClient($this->guzzleHeaders($user));
     }
 
     /**

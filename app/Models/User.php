@@ -176,13 +176,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             return $server->daemonSecret;
         }
 
-        $subuser = Subuser::where('server_id', $server->id)->where('user_id', $this->id)->first();
+        $subuser = $this->subuserOf->where('server_id', $server->id)->first();
 
-        if (is_null($subuser)) {
-            return null;
-        }
-
-        return $subuser->daemonSecret;
+        return ($subuser) ? $subuser->daemonSecret : null;
     }
 
     /**
@@ -193,9 +189,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function serverAccessArray()
     {
-        $union = Subuser::select('server_id')->where('user_id', $this->id);
-
-        return Server::select('id')->where('owner_id', $this->id)->union($union)->pluck('id')->all();
+        return Server::select('id')->where('owner_id', $this->id)->union(
+            Subuser::select('server_id')->where('user_id', $this->id)
+        )->pluck('id')->all();
     }
 
     /**
