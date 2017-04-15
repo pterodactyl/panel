@@ -320,7 +320,7 @@ class Server extends Model
      */
     public function tasks()
     {
-        return $this->hasMany(Task::class, 'server', 'id');
+        return $this->hasMany(Task::class);
     }
 
     /**

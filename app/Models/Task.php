@@ -49,8 +49,10 @@ class Task extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'server' => 'integer',
-        'queued' => 'integer',
+        'user_id' => 'integer',
+        'server_id' => 'integer',
+        'queued' => 'boolean',
+        'active' => 'boolean',
     ];
 
     /**
@@ -59,4 +61,24 @@ class Task extends Model
      * @var array
      */
     protected $dates = ['last_run', 'next_run', 'created_at', 'updated_at'];
+
+    /**
+     * Gets the server associated with a task.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Gets the user associated with a task.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

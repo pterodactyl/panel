@@ -55,7 +55,7 @@
                             <th></th>
                         </tr>
                         @foreach($tasks as $task)
-                            <tr @if($task->active === 0)class="muted muted-hover"@endif>
+                            <tr @if(! $task->active)class="muted muted-hover"@endif>
                                 <td class="middle">{{ $actions[$task->action] }}</td>
                                 <td class="middle"><code>{{ $task->data }}</code></td>
                                 <td class="middle">

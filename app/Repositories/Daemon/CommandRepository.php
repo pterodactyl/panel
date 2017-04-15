@@ -24,7 +24,8 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use Pterodactyl\Models;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\ConnectException;
 use Pterodactyl\Exceptions\DisplayException;
 
@@ -38,14 +39,23 @@ class CommandRepository
     protected $server;
 
     /**
+     * The Eloquent Model associated with the user to run the request as.
+     *
+     * @var \Pterodactyl\Models\User|null
+     */
+    protected $user;
+
+    /**
      * Constuctor for repository.
      *
-     * @param  int|\Pterodactyl\Models\Server  $server
+     * @param  \Pterodactyl\Models\Server  $server
+     * @param  \Pterodactyl\Models\User|null   $user
      * @return void
      */
-    public function __construct($server)
+    public function __construct(Server $server, User $user = null)
     {
-        $this->server = ($server instanceof Models\Server) ? $server : Models\Server::findOrFail($server);
+        $this->server = $server;
+        $this->user = $user;
     }
 
     /**
@@ -62,7 +72,7 @@ class CommandRepository
         // We don't use the user's specific daemon secret here since we
         // are assuming that a call to this function has been validated.
         try {
-            $response = $this->server->guzzleClient()->request('PUT', '/server/command', [
+            $response = $this->server->guzzleClient($this->user)->request('POST', '/server/command', [
                 'http_errors' => false,
                 'json' => [
                     'command' => $command,

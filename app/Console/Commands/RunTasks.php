@@ -25,7 +25,7 @@
 namespace Pterodactyl\Console\Commands;
 
 use Carbon;
-use Pterodactyl\Models;
+use Pterodactyl\Models\Task;
 use Illuminate\Console\Command;
 use Pterodactyl\Jobs\SendScheduledTask;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -65,14 +65,14 @@ class RunTasks extends Command
      */
     public function handle()
     {
-        $tasks = Models\Task::where('queued', 0)->where('active', 1)->where('next_run', '<=', Carbon::now()->toAtomString())->get();
+        $tasks = Task::where('queued', false)->where('active', true)->where('next_run', '<=', Carbon::now()->toAtomString())->get();
 
         $this->info(sprintf('Preparing to queue %d tasks.', count($tasks)));
         $bar = $this->output->createProgressBar(count($tasks));
 
         foreach ($tasks as &$task) {
             $bar->advance();
-            $this->dispatch((new SendScheduledTask(Models\Server::findOrFail($task->server), $task))->onQueue(config('pterodactyl.queues.low')));
+            $this->dispatch((new SendScheduledTask($task))->onQueue(config('pterodactyl.queues.low')));
         }
 
         $bar->finish();

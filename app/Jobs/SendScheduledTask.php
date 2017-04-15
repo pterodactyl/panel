@@ -26,7 +26,10 @@ namespace Pterodactyl\Jobs;
 
 use Cron;
 use Carbon;
-use Pterodactyl\Models;
+use Pterodactyl\Models\Task;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\TaskLog;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -38,11 +41,6 @@ class SendScheduledTask extends Job implements ShouldQueue
     use InteractsWithQueue, SerializesModels;
 
     /**
-     * @var \Pterodactyl\Models\Server
-     */
-    protected $server;
-
-    /**
      * @var \Pterodactyl\Models\Task
      */
     protected $task;
@@ -52,13 +50,12 @@ class SendScheduledTask extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Models\Server $server, Models\Task $task)
+    public function __construct(Task $task)
     {
-        $this->server = $server;
         $this->task = $task;
 
-        $task->queued = 1;
-        $task->save();
+        $this->task->queued = true;
+        $this->task->save();
     }
 
     /**
@@ -69,7 +66,7 @@ class SendScheduledTask extends Job implements ShouldQueue
     public function handle()
     {
         $time = Carbon::now();
-        $log = new Models\TaskLog;
+        $log = new TaskLog;
 
         if ($this->attempts() >= 1) {
             // Just delete the job, we will attempt it again later anyways.
@@ -78,12 +75,15 @@ class SendScheduledTask extends Job implements ShouldQueue
 
         try {
             if ($this->task->action === 'command') {
-                $repo = new CommandRepository($this->server);
+                $repo = new CommandRepository($this->task->server, $this->task->user);
                 $response = $repo->send($this->task->data);
-            } elseif ($this->task->action === 'power') {
-                $repo = new PowerRepository($this->server);
+            } else if ($this->task->action === 'power') {
+                $repo = new PowerRepository($this->task->server, $this->task->user);
                 $response = $repo->do($this->task->data);
+            } else {
+                throw new \Exception('Task type provided was not valid.');
             }
+
             $log->fill([
                 'task_id' => $this->task->id,
                 'run_time' => $time,
@@ -109,7 +109,7 @@ class SendScheduledTask extends Job implements ShouldQueue
             $this->task->fill([
                 'last_run' => $time,
                 'next_run' => $cron->getNextRunDate(),
-                'queued' => 0,
+                'queued' => false,
             ]);
             $this->task->save();
             $log->save();

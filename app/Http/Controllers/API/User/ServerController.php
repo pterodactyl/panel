@@ -70,7 +70,7 @@ class ServerController extends Controller
         $server = Server::byUuid($uuid);
         $request->user()->can('power-' . $request->input('action'), $server);
 
-        $repo = new PowerRepository($server);
+        $repo = new PowerRepository($server, $request->user());
         $repo->do($request->input('action'));
 
         return response('', 204)->header('Content-Type', 'application/json');
@@ -90,7 +90,7 @@ class ServerController extends Controller
         $server = Server::byUuid($uuid);
         $request->user()->can('send-command', $server);
 
-        $repo = new CommandRepository($server);
+        $repo = new CommandRepository($server, $request->user());
         $repo->send($request->input('command'));
 
         return response('', 204)->header('Content-Type', 'application/json');

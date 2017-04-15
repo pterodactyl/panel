@@ -24,9 +24,12 @@
 
 namespace Pterodactyl\Repositories;
 
+use DB;
 use Cron;
 use Validator;
-use Pterodactyl\Models;
+use Pterodactyl\Models\Task;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
@@ -64,49 +67,42 @@ class TaskRepository
      */
     public function delete($id)
     {
-        $task = Models\Task::findOrFail($id);
-        try {
-            $task->delete();
-
-            return true;
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        $task = Task::findOrFail($id);
+        $task->delete();
     }
 
     /**
      * Toggles a task active or inactive.
      *
      * @param  int  $id
-     * @return int
+     * @return bool
      */
     public function toggle($id)
     {
-        $task = Models\Task::findOrFail($id);
-        try {
-            $task->active = ($task->active === 1) ? 0 : 1;
-            $task->queued = 0;
-            $task->save();
+        $task = Task::findOrFail($id);
 
-            return $task->active;
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        $task->active = ! $task->active;
+        $task->queued = false;
+        $task->save();
+
+        return $task->active;
     }
 
     /**
      * Create a new scheduled task for a given server.
      *
-     * @param  int    $id
+     * @param  int    $server
+     * @param  int    $user
      * @param  array  $data
-     * @return bool
+     * @return \Pterodactyl\Models\Task
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
-    public function create($id, $data)
+    public function create($server, $user, $data)
     {
-        $server = Models\Server::findOrFail($id);
+        $server = Server::findOrFail($server);
+        $user = User::findOrFail($user);
 
         $validator = Validator::make($data, [
             'action' => 'string|required',
@@ -148,9 +144,9 @@ class TaskRepository
             throw $ex;
         }
 
-        $task = new Models\Task;
-        $task->fill([
-            'server' => $server->id,
+        return Task::create([
+            'user_id' => $user->id,
+            'server_id' => $server->id,
             'active' => 1,
             'action' => $data['action'],
             'data' => $data['data'],
@@ -164,7 +160,5 @@ class TaskRepository
             'last_run' => null,
             'next_run' => $buildCron->getNextRunDate(),
         ]);
-
-        return $task->save();
     }
 }

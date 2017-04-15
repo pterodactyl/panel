@@ -26,9 +26,9 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
 use Alert;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
-use Pterodactyl\Repositories;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Repositories\TaskRepository;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayValidationException;
@@ -44,7 +44,7 @@ class TaskController extends Controller
      */
     public function index(Request $request, $uuid)
     {
-        $server = Models\Server::byUuid($uuid)->load('tasks');
+        $server = Server::byUuid($uuid)->load('tasks');
         $this->authorize('list-tasks', $server);
         $server->js();
 
@@ -68,7 +68,7 @@ class TaskController extends Controller
      */
     public function create(Request $request, $uuid)
     {
-        $server = Models\Server::byUuid($uuid);
+        $server = Server::byUuid($uuid);
         $this->authorize('create-task', $server);
         $server->js();
 
@@ -87,12 +87,12 @@ class TaskController extends Controller
      */
     public function store(Request $request, $uuid)
     {
-        $server = Models\Server::byUuid($uuid);
+        $server = Server::byUuid($uuid);
         $this->authorize('create-task', $server);
 
+        $repo = new TaskRepository;
         try {
-            $repo = new Repositories\TaskRepository;
-            $repo->create($server->id, $request->except([
+            $repo->create($server->id, $request->user()->id, $request->except([
                 '_token',
             ]));
 
@@ -119,7 +119,7 @@ class TaskController extends Controller
      */
     public function delete(Request $request, $uuid, $id)
     {
-        $server = Models\Server::byUuid($uuid)->load('tasks');
+        $server = Server::byUuid($uuid)->load('tasks');
         $this->authorize('delete-task', $server);
 
         $task = $server->tasks->where('id', $id)->first();
@@ -129,8 +129,8 @@ class TaskController extends Controller
             ], 404);
         }
 
+        $repo = new TaskRepository;
         try {
-            $repo = new Repositories\TaskRepository;
             $repo->delete($id);
 
             return response()->json([], 204);
@@ -153,7 +153,7 @@ class TaskController extends Controller
      */
     public function toggle(Request $request, $uuid, $id)
     {
-        $server = Models\Server::byUuid($uuid)->load('tasks');
+        $server = Server::byUuid($uuid)->load('tasks');
         $this->authorize('toggle-task', $server);
 
         $task = $server->tasks->where('id', $id)->first();
@@ -163,8 +163,8 @@ class TaskController extends Controller
             ], 404);
         }
 
+        $repo = new TaskRepository;
         try {
-            $repo = new Repositories\TaskRepository;
             $resp = $repo->toggle($id);
 
             return response()->json([
