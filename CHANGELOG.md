@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-pre.8 (Courageous Carniadactylus)
+## v0.6.0-beta.1 (Courageous Carniadactylus)
 ### Fixed
 * `[pre.7]` — Fixes bug with subuser checkbox display.
 * `[pre.7]` — Fixes bug with injected JS that was causing `<!DOCTYPE html>` to be ignored in templates.
