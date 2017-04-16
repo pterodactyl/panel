@@ -751,7 +751,7 @@ class ServerRepository
             Models\Download::where('server', $server->uuid)->delete();
 
             // Clear Tasks
-            Models\Task::where('server', $server->id)->delete();
+            Models\Task::where('server_id', $server->id)->delete();
 
             // Delete Databases
             // This is the one un-recoverable point where
