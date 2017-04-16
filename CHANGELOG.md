@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-beta.2 (Courageous Carniadactylus)
+## v0.6.0-beta.3 (Courageous Carniadactylus)
 ### Fixed
 * `[beta.2]` — Fixes filemanager 404 when editing a file within a directory.
 
