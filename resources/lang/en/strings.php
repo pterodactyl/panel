@@ -57,7 +57,7 @@ return [
     'queued' => 'Queued',
     'last_run' => 'Last Run',
     'next_run' => 'Next Run',
-    'not_run_yet' => 'Not Run Yet'
+    'not_run_yet' => 'Not Run Yet',
     'yes' => 'Yes',
     'no' => 'No',
     'delete' => 'Delete',
