@@ -5,7 +5,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.6.0-beta.3 (Courageous Carniadactylus)
 ### Fixed
+* `[beta.2]` — Corrected the information when a task has not run yet.
 * `[beta.2]` — Fixes filemanager 404 when editing a file within a directory.
+* `[beta.2]` — Fixes exception in tasks when deleting a server.
 
 ## v0.6.0-beta.2 (Courageous Carniadactylus)
 ### Fixed

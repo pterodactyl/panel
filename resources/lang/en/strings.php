@@ -25,7 +25,7 @@ return [
     '2fa_token' => 'Authentication Token',
     'submit' => 'Submit',
     'close' => 'Close',
-    'settings' => 'Settings',
+    'settings' => 'Setting-s',
     'configuration' => 'Configuration',
     'sftp' => 'SFTP',
     'databases' => 'Databases',
@@ -57,6 +57,7 @@ return [
     'queued' => 'Queued',
     'last_run' => 'Last Run',
     'next_run' => 'Next Run',
+    'not_run_yet' => 'Not Run Yet'
     'yes' => 'Yes',
     'no' => 'No',
     'delete' => 'Delete',
