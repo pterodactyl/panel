@@ -30,10 +30,6 @@ class UpgradeTaskSystem extends Migration
                 $task->save();
             }
         });
-
-        Schema::table('tasks', function (Blueprint $table) {
-            $table->unsignedInteger('user_id')->nullable(false)->change();
-        });
     }
 
     /**
@@ -44,7 +40,8 @@ class UpgradeTaskSystem extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropForeign(['server_id', 'user_id']);
+            $table->dropForeign(['server_id']);
+            $table->dropForeign(['user_id']);
 
             $table->renameColumn('server_id', 'server');
             $table->dropColumn('user_id');
