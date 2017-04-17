@@ -65,7 +65,13 @@
                                         <span class="label label-default">@lang('strings.no')</span>
                                     @endif
                                 </td>
-                                <td class="middle">{{ Carbon::parse($task->last_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->last_run)->diffForHumans() }})</span></td>
+                                <td class="middle">
+                                @if($task->last_run)
+                                    {{ Carbon::parse($task->last_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->last_run)->diffForHumans() }})</span>
+                                @else 
+                                    @lang('strings.not_run_yet')
+                                @endif
+                                </td>
                                 <td class="middle">
                                     @if($task->active !== 0)
                                         {{ Carbon::parse($task->next_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->next_run)->diffForHumans() }})</span>
