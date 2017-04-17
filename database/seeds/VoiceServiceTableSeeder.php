@@ -63,6 +63,7 @@ class VoiceServiceTableSeeder extends Seeder
             'name' => 'Voice Servers',
             'description' => 'Voice servers such as Mumble and Teamspeak 3.',
             'startup' => '',
+            'index_file' => Service::defaultIndexFile(),
         ]);
     }
 
