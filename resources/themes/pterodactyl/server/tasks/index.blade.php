@@ -66,7 +66,7 @@
                                     @endif
                                 </td>
                                 <td class="middle">
-                                @if($task->last_run > null)
+                                @if($task->last_run)
                                     {{ Carbon::parse($task->last_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->last_run)->diffForHumans() }})</span>
                                 @else 
                                     @lang('strings.not_run_yet')
