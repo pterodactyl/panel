@@ -5,6 +5,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.6.0-beta.3 (Courageous Carniadactylus)
 ### Fixed
+* `[beta.2]` — Suspended servers now show as suspended.
 * `[beta.2]` — Fixes filemanager 404 when editing a file within a directory.
 
 ## v0.6.0-beta.2 (Courageous Carniadactylus)
