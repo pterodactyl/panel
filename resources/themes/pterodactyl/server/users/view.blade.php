@@ -72,7 +72,7 @@
                         @foreach($perms as $permission => $daemon)
                             <div class="form-group">
                                 <div class="checkbox checkbox-primary no-margin-bottom">
-                                    <input id="{{ $permission }}" name="permissions[]" type="checkbox" @if(isset($permissions['power-start']))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="{{ $permission }}"/>
+                                    <input id="{{ $permission }}" name="permissions[]" type="checkbox" @if(isset($permissions[$permission]))checked="checked"@endif @cannot('edit-subuser', $server)disabled="disabled"@endcannot value="{{ $permission }}"/>
                                     <label for="{{ $permission }}" class="strong">
                                         @lang('server.users.new.' . str_replace('-', '_', $permission) . '.title')
                                     </label>
