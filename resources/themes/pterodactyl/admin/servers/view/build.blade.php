@@ -130,7 +130,7 @@
                         <div>
                             <select name="remove_allocations[]" class="form-control" multiple id="pRemoveAllocations">
                                 @foreach ($assigned as $assignment)
-                                    <option value="{{ $assignment->id }}" @if($server->allocation_id === $assignment->id)disabled @endif>{{ $assignment->alias }}:{{ $assignment->port }}</option>
+                                    <option value="{{ $assignment->id }}">{{ $assignment->alias }}:{{ $assignment->port }}</option>
                                 @endforeach
                             </select>
                         </div>

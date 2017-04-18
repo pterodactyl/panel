@@ -518,23 +518,7 @@ class ServerRepository
             }
 
             $newPorts = false;
-            // Remove Assignments
-            if (isset($data['remove_allocations'])) {
-                foreach ($data['remove_allocations'] as $allocation) {
-                    // Can't remove the assigned IP/Port combo
-                    if ((int) $allocation === $server->allocation_id) {
-                        continue;
-                    }
-
-                    $newPorts = true;
-                    Models\Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
-                        'server_id' => null,
-                    ]);
-                }
-
-                $server->load('allocations');
-            }
-
+            $firstNewAllocation = null;
             // Add Assignments
             if (isset($data['add_allocations'])) {
                 foreach ($data['add_allocations'] as $allocation) {
@@ -544,8 +528,32 @@ class ServerRepository
                     }
 
                     $newPorts = true;
+                    $firstNewAllocation = (is_null($firstNewAllocation)) ? $model->id : $firstNewAllocation;
                     $model->update([
                         'server_id' => $server->id,
+                    ]);
+                }
+
+                $server->load('allocations');
+            }
+
+            // Remove Assignments
+            if (isset($data['remove_allocations'])) {
+                foreach ($data['remove_allocations'] as $allocation) {
+                    // Can't remove the assigned IP/Port combo
+                    if ((int) $allocation === $server->allocation_id) {
+                        // No New Allocation
+                        if (is_null($firstNewAllocation)) {
+                            continue;
+                        }
+
+                        // New Allocation, set as the default.
+                        $server->allocation_id = $firstNewAllocation;
+                    }
+
+                    $newPorts = true;
+                    Models\Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
+                        'server_id' => null,
                     ]);
                 }
 
