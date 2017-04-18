@@ -131,7 +131,7 @@
                             <div class="form-group">
                                 <label for="password" class="control-label">@lang('base.account.current_password')</label>
                                 <div>
-                                    <input type="password" class="form-control" name="password" />
+                                    <input type="password" class="form-control" name="current_password" />
                                 </div>
                             </div>
                         </div>

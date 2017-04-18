@@ -10,12 +10,15 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes filemanager 404 when editing a file within a directory.
 * `[beta.2]` — Fixes exception in tasks when deleting a server.
 * `[beta.2]` — Fixes bug with Terarria and Voice servers reporting a `TypeError: Service is not a constructor` in the daemon due to a missing service configuration.
+* `[beta.2]` — Fixes password reset form throwing a MethodNotAllowed error when accessed.
+* `[beta.2]` — Fixes invalid password bug when attempting to change account email address.
 
 ### Changed
 * Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
 
 ### Added
 * Server listing and view in Admin CP now shows the SFTP username/Docker container name.
+* Administrative server view includes link in navigation to go to server console/frontend management.
 
 ## v0.6.0-beta.2 (Courageous Carniadactylus)
 ### Fixed
