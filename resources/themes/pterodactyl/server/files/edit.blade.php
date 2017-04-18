@@ -44,7 +44,9 @@
                 </div>
             </div>
             <input type="hidden" name="file" value="{{ $file }}" />
-            <div class="box-body" style="height:500px;" id="editor">{{ $contents }}</div>
+            <textarea id="editorSetContent" class="hidden">{{ $contents }}</textarea>
+            <div class="overlay" id="editorLoadingOverlay"><i class="fa fa-refresh fa-spin"></i></div>
+            <div class="box-body" style="height:500px;" id="editor"></div>
             <div class="box-footer with-border">
                 <button class="btn btn-sm btn-primary" id="save_file"><i class="fa fa-fw fa-save"></i> &nbsp;@lang('server.files.edit.save')</button>
                 <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="pull-right"><button class="btn btn-default btn-sm">{{ trans('server.files.edit.return') }}</button></a>
@@ -61,4 +63,10 @@
     {!! Theme::js('vendor/ace/ext-modelist.js') !!}
     {!! Theme::js('vendor/ace/ext-whitespace.js') !!}
     {!! Theme::js('js/frontend/files/editor.js') !!}
+    <script>
+        $(document).ready(function () {
+            Editor.setValue($('#editorSetContent').val(), -1);
+            $('#editorLoadingOverlay').hide();
+        });
+    </script>
 @endsection
