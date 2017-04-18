@@ -73,6 +73,10 @@
                                 <td data-attr="container-user"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                             </tr>
                             <tr>
+                                <td>Docker Container Name</td>
+                                <td>{{ $server->username }}</td>
+                            </tr>
+                            <tr>
                                 <td>Service</td>
                                 <td>{{ $server->option->service->name }} :: {{ $server->option->name }}</td>
                             </tr>
