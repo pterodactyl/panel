@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes password reset form throwing a MethodNotAllowed error when accessed.
 * `[beta.2]` — Fixes invalid password bug when attempting to change account email address.
 * `[beta.2]` — New attempt at fixing the issues when rendering files in the browser file editor on certain browsers.
+* `[beta.2]` — Fixes broken auto-deploy time checking causing no tokens to work.
 
 ### Changed
 * Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
