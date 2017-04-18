@@ -26,13 +26,11 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Auth;
-use Alert;
 use Cache;
 use Crypt;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
-use Pterodactyl\Events\Auth\FailedLogin;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
