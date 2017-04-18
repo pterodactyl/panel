@@ -318,7 +318,7 @@ class ServerController extends Controller
         }
 
         try {
-            $repo->$action($id);
+            $repo->toggleAccess($id, ($action === 'unsuspend'));
 
             return response('', 204);
         } catch (DisplayException $ex) {

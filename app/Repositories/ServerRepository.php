@@ -29,6 +29,7 @@ use Crypt;
 use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Exceptions\DisplayException;
@@ -722,6 +723,16 @@ class ServerRepository
                 'X-Access-Token' => $server->node->daemonSecret,
                 'X-Access-Server' => $server->uuid,
             ])->request('DELETE', '/servers');
+        } catch (ClientException $ex) {
+            // Exception is thrown on 4XX HTTP errors, so catch and determine
+            // if we should continue, or if there is a permissions error.
+            //
+            // Daemon throws a 404 if the server doesn't exist, if that is returned
+            // continue with deletion, even if not a force deletion.
+            $response = $ex->getResponse();
+            if ($ex->getResponse()->getStatusCode() !== 404 && ! $force) {
+                throw new DisplayException($ex->getMessage());
+            }
         } catch (TransferException $ex) {
             if (! $force) {
                 throw new DisplayException($ex->getMessage());
@@ -736,30 +747,26 @@ class ServerRepository
                 $item->save();
             });
 
-            $server->variables->each(function ($item) {
-                $item->delete();
+            $server->variables->each->delete();
+
+            $server->load('subusers.permissions');
+            $server->subusers->each(function ($subuser) {
+                $subuser->permissions->each(function ($permission) {
+                    $perm->delete();
+                });
+                $subuser->delete();
             });
 
-            foreach (Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
-                foreach ($subuser->permissions as &$permission) {
-                    $permission->delete();
-                }
-                $subuser->delete();
-            }
-
-            // Remove Downloads
-            Models\Download::where('server', $server->uuid)->delete();
-
-            // Clear Tasks
-            Models\Task::where('server_id', $server->id)->delete();
+            $server->downloads->each->delete();
+            $server->tasks->each->delete();
 
             // Delete Databases
             // This is the one un-recoverable point where
             // transactions will not save us.
             $repository = new DatabaseRepository;
-            foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as $database) {
-                $repository->drop($database->id);
-            }
+            $server->databases->each(function ($item) {
+                $repository->drop($item->id);
+            });
 
             // Fully delete the server.
             $server->delete();
@@ -786,71 +793,32 @@ class ServerRepository
     }
 
     /**
-     * Suspends a server.
+     * Suspends or unsuspends a server.
      *
      * @param  int   $id
-     * @param  bool  $deleted
+     * @param  bool  $unsuspend
      * @return void
      */
-    public function suspend($id, $deleted = false)
+    public function toggleAccess($id, $unsuspend = true)
     {
         $server = Models\Server::with('node')->findOrFail($id);
 
-        DB::beginTransaction();
-
-        try {
-
-            // Already suspended, no need to make more requests.
-            if ($server->suspended) {
+        DB::transaction(function () use ($server, $unsuspend) {
+            if (
+                (! $unsuspend && $server->suspended) ||
+                ($unsuspend && ! $server->suspended)
+            ) {
                 return true;
             }
 
-            $server->suspended = 1;
+            $server->suspended = ! $unsuspend;
             $server->save();
 
             $server->node->guzzleClient([
                 'X-Access-Token' => $server->node->daemonSecret,
                 'X-Access-Server' => $server->uuid,
-            ])->request('POST', '/server/suspend');
-
-            return DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
-    }
-
-    /**
-     * Unsuspends a server.
-     *
-     * @param  int   $id
-     * @return void
-     */
-    public function unsuspend($id)
-    {
-        $server = Models\Server::with('node')->findOrFail($id);
-
-        DB::beginTransaction();
-
-        try {
-            // Already unsuspended, no need to make more requests.
-            if ($server->suspended === 0) {
-                return true;
-            }
-
-            $server->suspended = 0;
-            $server->save();
-
-            $server->node->guzzleClient([
-                'X-Access-Token' => $server->node->daemonSecret,
-                'X-Access-Server' => $server->uuid,
-            ])->request('POST', '/server/unsuspend');
-
-            return DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+            ])->request('POST', ($unsuspend) ? '/server/unsuspend' : '/server/suspend');
+        });
     }
 
     /**
@@ -874,10 +842,8 @@ class ServerRepository
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        DB::beginTransaction();
-        $server->sftp_password = Crypt::encrypt($password);
-
-        try {
+        DB::transaction(function () use ($password, $server) {
+            $server->sftp_password = Crypt::encrypt($password);
             $server->save();
 
             $server->node->guzzleClient([
@@ -886,13 +852,6 @@ class ServerRepository
             ])->request('POST', '/server/password', [
                 'json' => ['password' => $password],
             ]);
-
-            DB::commit();
-
-            return true;
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+        });
     }
 }
