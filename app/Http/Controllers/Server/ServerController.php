@@ -55,7 +55,7 @@ class ServerController extends Controller
             ],
             'config' => [
                 'console_count' => config('pterodactyl.console.count'),
-                'console_freq' => config('pterodactyl.console.freq'),
+                'console_freq' => config('pterodactyl.console.frequency'),
             ],
         ]);
 
@@ -80,7 +80,7 @@ class ServerController extends Controller
         $server->js([
             'config' => [
                 'console_count' => config('pterodactyl.console.count'),
-                'console_freq' => config('pterodactyl.console.freq'),
+                'console_freq' => config('pterodactyl.console.frequency'),
             ],
         ]);
 
