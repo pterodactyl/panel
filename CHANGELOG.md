@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — New attempt at fixing the issues when rendering files in the browser file editor on certain browsers.
 * `[beta.2]` — Fixes broken auto-deploy time checking causing no tokens to work.
 * `[beta.2]` — Fixes display of subusers after creation.
+* `[beta.2]` — Fixes bug throwing model not found exception when editing an existing subuser.
 
 ### Changed
 * Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
