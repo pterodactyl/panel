@@ -32,14 +32,11 @@ class AddForeignServerVariables extends Migration
       public function down()
       {
           Schema::table('server_variables', function (Blueprint $table) {
-              $table->dropForeign('server_variables_server_id_foreign');
-              $table->dropForeign('server_variables_variable_id_foreign');
-
-              $table->dropIndex('server_variables_server_id_foreign');
-              $table->dropIndex('server_variables_variable_id_foreign');
+              $table->dropForeign(['server_id']);
+              $table->dropForeign(['variable_id']);
           });
 
-          DB::statement('ALTER TABLE allocations
+          DB::statement('ALTER TABLE server_variables
               MODIFY COLUMN server_id MEDIUMINT(8) UNSIGNED NULL,
               MODIFY COLUMN variable_id MEDIUMINT(8) UNSIGNED NOT NULL
           ');

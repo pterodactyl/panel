@@ -28,8 +28,6 @@ class AddServerVariables extends Migration
      */
     public function down()
     {
-        Schema::table('server_variables', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('server_variables');
     }
 }

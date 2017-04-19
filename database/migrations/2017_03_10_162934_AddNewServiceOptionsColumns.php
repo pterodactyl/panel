@@ -34,7 +34,7 @@ class AddNewServiceOptionsColumns extends Migration
     public function down()
     {
         Schema::table('service_options', function (Blueprint $table) {
-            $table->dropForeign('config_from');
+            $table->dropForeign(['config_from']);
 
             $table->dropColumn('config_from');
             $table->dropColumn('config_stop');

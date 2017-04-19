@@ -28,8 +28,7 @@ class AddPackColumn extends Migration
     public function down()
     {
         Schema::table('servers', function (Blueprint $table) {
-            $table->dropForeign('servers_pack_foreign');
-            $table->dropIndex('servers_pack_foreign');
+            $table->dropForeign(['pack']);
             $table->dropColumn('pack');
         });
     }
