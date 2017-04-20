@@ -42,7 +42,7 @@ class OptionController extends Controller
         return response()->json([
             'scripts' => [
                 'install' => str_replace(["\r\n", "\n", "\r"], "\n", $server->option->script_install),
-                'upgrade' => str_replace(["\r\n", "\n", "\r"], "\n", $server->option->script_upgrade),
+                // 'upgrade' => str_replace(["\r\n", "\n", "\r"], "\n", $server->option->script_upgrade),
                 'privileged' => $server->option->script_is_privileged,
             ],
             'env' => $environment->merge([

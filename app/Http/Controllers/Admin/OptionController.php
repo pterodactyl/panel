@@ -233,10 +233,8 @@ class OptionController extends Controller
         $repo = new OptionRepository;
 
         try {
-            $repo->scripts($id, $request->only([
-                'script_install', 'script_upgrade',
-            ]));
-            Alert::success('Successfully updated option scripts to be run when servers are installed or updated.')->flash();
+            $repo->scripts($id, $request->only('script_install'));
+            Alert::success('Successfully updated option scripts to be run when servers are installed.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.scripts', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (\Exception $ex) {

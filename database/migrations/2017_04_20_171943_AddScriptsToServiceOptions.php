@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddInstallAndUpgradePaths extends Migration
+class AddScriptsToServiceOptions extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,8 @@ class AddInstallAndUpgradePaths extends Migration
     public function up()
     {
         Schema::table('service_options', function (Blueprint $table) {
-            $table->text('script_upgrade')->after('startup')->nullable();
             $table->text('script_install')->after('startup')->nullable();
-            $table->boolean('script_is_privileged')->default(false)->after('startup');
+            $table->boolean('script_is_privileged')->default(true)->after('startup');
         });
     }
 
@@ -28,7 +27,6 @@ class AddInstallAndUpgradePaths extends Migration
     public function down()
     {
         Schema::table('service_options', function (Blueprint $table) {
-            $table->dropColumn('script_upgrade');
             $table->dropColumn('script_install');
             $table->dropColumn('script_is_privileged');
         });

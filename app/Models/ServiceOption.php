@@ -42,7 +42,6 @@ class ServiceOption extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-<<<<<<< HEAD
      /**
       * Cast values to correct type.
       *
@@ -52,16 +51,6 @@ class ServiceOption extends Model
          'service_id' => 'integer',
          'script_is_privileged' => 'boolean',
      ];
-=======
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'service_id' => 'integer',
-    ];
->>>>>>> develop
 
     /**
      * Returns the display startup string for the option and will use the parent

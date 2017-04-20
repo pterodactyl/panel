@@ -169,11 +169,9 @@ class OptionRepository
         $option = ServiceOption::findOrFail($id);
 
         $data['script_install'] = empty($data['script_install']) ? null : $data['script_install'];
-        $data['script_upgrade'] = empty($data['script_upgrade']) ? null : $data['script_upgrade'];
 
         $validator = Validator::make($data, [
             'script_install' => 'sometimes|nullable|string',
-            'script_upgrade' => 'sometimes|nullable|string',
             'script_is_privileged' => 'sometimes|required|boolean',
         ]);
 
