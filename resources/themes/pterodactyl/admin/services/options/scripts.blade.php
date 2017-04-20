@@ -55,6 +55,20 @@
                 <div class="box-body no-padding">
                     <div id="editor_install"style="height:300px">{{ $option->script_install }}</div>
                 </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label class="control-label">Script Container</label>
+                            <input type="text" name="script_container" class="form-control" value="{{ $option->script_container }}" />
+                            <p class="text-muted small">Docker container to use when running this script for the server.</p>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label class="control-label">Script Entrypoint Command</label>
+                            <input type="text" name="script_entry" class="form-control" value="{{ $option->script_entry }}" />
+                            <p class="text-muted small">The entrypoint command to use for this script.</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     <textarea name="script_install" class="hidden"></textarea>

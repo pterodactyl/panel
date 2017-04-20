@@ -118,6 +118,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{id}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
     Route::post('/view/{id}/manage/rebuild', 'ServersController@rebuildContainer')->name('admin.servers.view.manage.rebuild');
     Route::post('/view/{id}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
+    Route::post('/view/{id}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
     Route::post('/view/{id}/delete', 'ServersController@delete');
 
     Route::patch('/view/{id}/database', 'ServersController@resetDatabasePassword');

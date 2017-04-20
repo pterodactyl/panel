@@ -44,6 +44,10 @@ class OptionController extends Controller
                 'install' => (! $server->option->script_install) ? null : str_replace(["\r\n", "\n", "\r"], "\n", $server->option->script_install),
                 'privileged' => $server->option->script_is_privileged,
             ],
+            'config' => [
+                'container' => $server->option->script_container,
+                'entry' => $server->option->script_entry,
+            ],
             'env' => $environment->merge([
                 'STARTUP=' . $server->startup,
                 'SERVER_MEMORY=' . $server->memory,

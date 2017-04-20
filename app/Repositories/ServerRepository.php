@@ -864,4 +864,25 @@ class ServerRepository
             ]);
         });
     }
+
+    /**
+     * Marks a server for reinstallation on the node.
+     *
+     * @param  int     $id
+     * @return void
+     */
+    public function reinstall($id)
+    {
+        $server = Models\Server::with('node')->findOrFail($id);
+
+        DB::transaction(function () use ($server) {
+            $server->installed = 0;
+            $server->save();
+
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('POST', '/server/reinstall');
+        });
+    }
 }

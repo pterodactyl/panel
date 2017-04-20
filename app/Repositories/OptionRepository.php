@@ -173,6 +173,8 @@ class OptionRepository
         $validator = Validator::make($data, [
             'script_install' => 'sometimes|nullable|string',
             'script_is_privileged' => 'sometimes|required|boolean',
+            'script_entry' => 'sometimes|required|string',
+            'script_container' => 'sometimes|required|string',
         ]);
 
         if ($validator->fails()) {

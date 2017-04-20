@@ -95,7 +95,7 @@ class OptionController extends Controller
         $repo = new VariableRepository;
 
         try {
-            $variable = $repo->create($id, $request->only([
+            $variable = $repo->create($id, $request->intersect([
                 'name', 'description', 'env_variable',
                 'default_value', 'options', 'rules',
             ]));
@@ -200,7 +200,7 @@ class OptionController extends Controller
 
         try {
             if ($request->input('action') !== 'delete') {
-                $variable = $repo->update($variable, $request->only([
+                $variable = $repo->update($variable, $request->intersect([
                     'name', 'description', 'env_variable',
                     'default_value', 'options', 'rules',
                 ]));
@@ -233,7 +233,9 @@ class OptionController extends Controller
         $repo = new OptionRepository;
 
         try {
-            $repo->scripts($id, $request->only('script_install'));
+            $repo->scripts($id, $request->only([
+                'script_install', 'script_entry', 'script_container',
+            ]));
             Alert::success('Successfully updated option scripts to be run when servers are installed.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.scripts', $id)->withErrors(json_decode($ex->getMessage()));

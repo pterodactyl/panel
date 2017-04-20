@@ -323,6 +323,30 @@ class ServersController extends Controller
     }
 
     /**
+     * Reinstalls the server with the currently assigned pack and service.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reinstallServer(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+        try {
+            $repo->reinstall($id);
+
+            Alert::success('Server successfully marked for reinstallation.')->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to perform this reinstallation. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.manage', $id);
+    }
+
+    /**
      * Setup a server to have a container rebuild.
      *
      * @param  \Illuminate\Http\Request  $request
