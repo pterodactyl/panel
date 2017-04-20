@@ -103,6 +103,7 @@ class ServerRepository
             'startup' => 'string',
             'auto_deploy' => 'sometimes|required|accepted',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
+            'skip_scripting' => 'sometimes|required|boolean',
         ]);
 
         $validator->sometimes('node_id', 'required|numeric|min:1|exists:nodes,id', function ($input) {
@@ -326,6 +327,7 @@ class ServerRepository
                         'type' => $service->folder,
                         'option' => $option->tag,
                         'pack' => (isset($pack)) ? $pack->uuid : null,
+                        'skip_scripting' => isset($data['skip_scripting']),
                     ],
                     'keys' => [
                         (string) $server->daemonSecret => $this->daemonPermissions,
