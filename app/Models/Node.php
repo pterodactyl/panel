@@ -75,6 +75,11 @@ class Node extends Model
         'daemonSFTP', 'daemonListen',
     ];
 
+    /**
+     * Fields that are searchable.
+     *
+     * @var array
+     */
     protected $searchable = [
          'columns' => [
              'nodes.name' => 10,
@@ -90,7 +95,7 @@ class Node extends Model
     /**
      * Return an instance of the Guzzle client for this specific node.
      *
-     * @param array $headers
+     * @param  array  $headers
      * @return \GuzzleHttp\Client
      */
     public function guzzleClient($headers = [])
@@ -106,8 +111,8 @@ class Node extends Model
     /**
      * Returns the configuration in JSON format.
      *
-     * @param bool $pretty Wether to pretty print the JSON or not
-     * @return string The configration in JSON format
+     * @param  bool  $pretty
+     * @return string
      */
     public function getConfigurationAsJson($pretty = false)
     {

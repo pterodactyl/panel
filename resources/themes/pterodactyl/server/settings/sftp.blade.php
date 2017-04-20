@@ -71,18 +71,10 @@
                 <h3 class="box-title">@lang('server.config.sftp.details')</h3>
             </div>
             <div class="box-body">
-                <div class="row">
-                    <div class="form-group col-md-8">
-                        <label for="new_email" class="control-label">@lang('server.config.sftp.conn_addr')</label>
-                        <div>
-                            <input type="text" class="form-control" readonly value="{{ $node->fqdn }}" />
-                        </div>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="new_email" class="control-label">@lang('strings.port')</label>
-                        <div>
-                            <input type="text" class="form-control" readonly value="{{ $node->daemonSFTP }}" />
-                        </div>
+                <div class="form-group">
+                    <label class="control-label">@lang('server.config.sftp.conn_addr')</label>
+                    <div>
+                        <input type="text" class="form-control" readonly value="sftp://{{ $node->fqdn }}:{{ $node->daemonSFTP }}" />
                     </div>
                 </div>
                 <div class="form-group">

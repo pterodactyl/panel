@@ -17,61 +17,155 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+var CONSOLE_PUSH_COUNT = Pterodactyl.config.console_count || 10;
+var CONSOLE_PUSH_FREQ = Pterodactyl.config.console_freq || 200;
+var CONSOLE_OUTPUT_LIMIT = Pterodactyl.config.console_limit || 2000;
+var InitialLogSent = false;
 
-var Console = (function () {
-    var CONSOLE_PUSH_COUNT = 50;
-    var CONSOLE_PUSH_FREQ = 200;
+(function initConsole() {
+    window.TerminalQueue = [];
+    window.ConsoleServerStatus = 0;
+    window.Terminal = $('#terminal').terminal(function (command, term) {
+        Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set status', command);
+    }, {
+        greetings: '',
+        name: Pterodactyl.server.uuid,
+        height: 450,
+        exit: false,
+        echoCommand: false,
+        outputLimit: CONSOLE_OUTPUT_LIMIT,
+        prompt: Pterodactyl.server.username + ':~$ ',
+        scrollOnEcho: false,
+        scrollBottomOffset: 5,
+        onBlur: function (terminal) {
+            return false;
+        }
+    });
 
-    var terminalQueue;
-    var terminal;
-    var recievedInitialLog = false;
+    window.TerminalNotifyElement = $('#terminalNotify');
+    TerminalNotifyElement.on('click', function () {
+        Terminal.scroll_to_bottom();
+        TerminalNotifyElement.addClass('hidden');
+    })
 
-    var cpuChart;
-    var cpuData;
-    var memoryChart;
-    var memoryData;
-    var timeLabels;
+    Terminal.on('scroll', function () {
+        if (Terminal.is_bottom()) {
+            TerminalNotifyElement.addClass('hidden');
+        }
+    })
+})();
 
-    var $terminalNotify;
-
-    function initConsole() {
-        terminalQueue = [];
-        terminal = $('#terminal').terminal(function (command, term) {
-            Socket.emit('send command', command);
-        }, {
-            greetings: '',
-            name: Pterodactyl.server.uuid,
-            height: 450,
-            exit: false,
-            prompt: Pterodactyl.server.username + ':~$ ',
-            scrollOnEcho: false,
-            scrollBottomOffset: 5,
-            onBlur: function (terminal) {
-                return false;
-            }
-        });
-
-        $terminalNotify = $('#terminalNotify');
-        $terminalNotify.on('click', function () {
-            terminal.scroll_to_bottom();
-            $terminalNotify.addClass('hidden');
-        })
-
-        terminal.on('scroll', function () {
-            if (terminal.is_bottom()) {
-                $terminalNotify.addClass('hidden');
-            }
-        })
+(function pushOutputQueue() {
+    if (TerminalQueue.length > CONSOLE_PUSH_COUNT) {
+        // console throttled warning show
     }
 
-    function initGraphs() {
+    if (TerminalQueue.length > 0) {
+        for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
+            Terminal.echo(TerminalQueue[0], { flush: false });
+            TerminalQueue.shift();
+        }
+
+        // Flush after looping through all.
+        Terminal.flush();
+
+        // Show Warning
+        if (! Terminal.is_bottom()) {
+            TerminalNotifyElement.removeClass('hidden');
+        }
+    }
+
+    window.setTimeout(pushOutputQueue, CONSOLE_PUSH_FREQ);
+})();
+
+(function setupSocketListeners() {
+    // Update Listings on Initial Status
+    Socket.on('initial status', function (data) {
+        ConsoleServerStatus = data.status;
+        if (! InitialLogSent) {
+            updateServerPowerControls(data.status);
+
+            if (data.status === 1 || data.status === 2) {
+                Socket.emit('send server log');
+            }
+        }
+    });
+
+    // Update Listings on Status
+    Socket.on('status', function (data) {
+        ConsoleServerStatus = data.status;
+        updateServerPowerControls(data.status);
+    });
+
+    Socket.on('server log', function (data) {
+        if (! InitialLogSent) {
+            Terminal.clear();
+            TerminalQueue.push(data);
+            InitialLogSent = true;
+        }
+    });
+
+    Socket.on('console', function (data) {
+        TerminalQueue.push(data.line);
+    });
+})();
+
+
+function updateServerPowerControls (data) {
+    // Server is On or Starting
+    if(data == 1 || data == 2) {
+        $('[data-attr="power"][data-action="start"]').addClass('disabled');
+        $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
+    } else {
+        if (data == 0) {
+            $('[data-attr="power"][data-action="start"]').removeClass('disabled');
+        }
+        $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
+    }
+
+    if(data !== 0) {
+        $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
+    } else {
+        $('[data-attr="power"][data-action="kill"]').addClass('disabled');
+    }
+}
+
+$(document).ready(function () {
+    $('[data-attr="power"]').click(function (event) {
+        if (! $(this).hasClass('disabled')) {
+            Socket.emit('set status', $(this).data('action'));
+        }
+    });
+
+    (function setupChartElements() {
+        if (typeof SkipConsoleCharts !== 'undefined') {
+            return;
+        }
+
+        Socket.on('proc', function (proc) {
+            if (CPUData.length > 10) {
+                CPUData.shift();
+                MemoryData.shift();
+                TimeLabels.shift();
+            }
+
+            var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
+            CPUData.push(cpuUse);
+            MemoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
+
+            TimeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
+
+            CPUChart.update();
+            MemoryChart.update();
+        });
+
         var ctc = $('#chart_cpu');
-        timeLabels = [];
-        cpuData = [];
-        cpuChart = new Chart(ctc, {
+        var TimeLabels = [];
+        var CPUData = [];
+        var CPUChart = new Chart(ctc, {
             type: 'line',
             data: {
-                labels: timeLabels,
+                labels: TimeLabels,
                 datasets: [
                     {
                         label: "Percent Use",
@@ -92,7 +186,7 @@ var Console = (function () {
                         pointHoverBorderWidth: 2,
                         pointRadius: 1,
                         pointHitRadius: 10,
-                        data: cpuData,
+                        data: CPUData,
                         spanGaps: false,
                     }
                 ]
@@ -112,11 +206,11 @@ var Console = (function () {
         });
 
         var ctm = $('#chart_memory');
-        memoryData = [];
-        memoryChart = new Chart(ctm, {
+        MemoryData = [];
+        MemoryChart = new Chart(ctm, {
             type: 'line',
             data: {
-                labels: timeLabels,
+                labels: TimeLabels,
                 datasets: [
                     {
                         label: "Memory Use",
@@ -137,7 +231,7 @@ var Console = (function () {
                         pointHoverBorderWidth: 2,
                         pointRadius: 1,
                         pointHitRadius: 10,
-                        data: memoryData,
+                        data: MemoryData,
                         spanGaps: false,
                     }
                 ]
@@ -155,121 +249,5 @@ var Console = (function () {
                 }
             }
         });
-    }
-
-    function addSocketListeners() {
-        // Update Listings on Initial Status
-        Socket.on('initial status', function (data) {
-            if (! recievedInitialLog) {
-                updateServerPowerControls(data.status);
-
-                if (data.status === 1 || data.status === 2) {
-                    Socket.emit('send server log');
-                }
-            }
-        });
-
-        // Update Listings on Status
-        Socket.on('status', function (data) {
-            updateServerPowerControls(data.status);
-        });
-
-        Socket.on('server log', function (data) {
-            if (! recievedInitialLog) {
-                terminal.clear();
-                terminalQueue.push(data);
-                recievedInitialLog = true;
-            }
-        });
-
-        Socket.on('console', function (data) {
-            terminalQueue.push(data.line);
-        });
-
-        Socket.on('proc', function (proc) {
-            if (cpuData.length > 10) {
-                cpuData.shift();
-                memoryData.shift();
-                timeLabels.shift();
-            }
-
-            var cpuUse = (Pterodactyl.server.cpu > 0) ? parseFloat(((proc.data.cpu.total / Pterodactyl.server.cpu) * 100).toFixed(3).toString()) : proc.data.cpu.total;
-            cpuData.push(cpuUse);
-            memoryData.push(parseInt(proc.data.memory.total / (1024 * 1024)));
-
-            var m = new Date();
-            timeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
-
-            cpuChart.update();
-            memoryChart.update();
-        });
-    }
-
-    function pushOutputQueue() {
-        if (terminalQueue.length > CONSOLE_PUSH_COUNT) {
-            // console throttled warning show
-        }
-
-        if (terminalQueue.length > 0) {
-            for (var i = 0; i < CONSOLE_PUSH_COUNT && terminalQueue.length > 0; i++) {
-                terminal.echo(terminalQueue[0]);
-                terminalQueue.shift();
-            }
-
-            // Show
-            if (!terminal.is_bottom()) {
-                $terminalNotify.removeClass('hidden');
-            }
-        }
-
-        window.setTimeout(pushOutputQueue, CONSOLE_PUSH_FREQ);
-    }
-
-    function updateServerPowerControls (data) {
-        // Server is On or Starting
-        if(data == 1 || data == 2) {
-            $('[data-attr="power"][data-action="start"]').addClass('disabled');
-            $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').removeClass('disabled');
-        } else {
-            if (data == 0) {
-                $('[data-attr="power"][data-action="start"]').removeClass('disabled');
-            }
-            $('[data-attr="power"][data-action="stop"], [data-attr="power"][data-action="restart"]').addClass('disabled');
-        }
-
-        if(data !== 0) {
-            $('[data-attr="power"][data-action="kill"]').removeClass('disabled');
-        } else {
-            $('[data-attr="power"][data-action="kill"]').addClass('disabled');
-        }
-    }
-
-    return {
-        init: function () {
-
-            initConsole();
-            pushOutputQueue();
-            initGraphs();
-            addSocketListeners();
-
-            $('[data-attr="power"]').click(function (event) {
-                if (! $(this).hasClass('disabled')) {
-                    Socket.emit('set status', $(this).data('action'));
-                }
-            });
-        },
-
-        getTerminal: function () {
-            return terminal
-        },
-
-        getTerminalQueue: function () {
-            return terminalQueue
-        },
-    }
-
-})();
-
-$(document).ready(function () {
-    Console.init();
+    })();
 });

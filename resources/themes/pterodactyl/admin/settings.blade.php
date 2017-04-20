@@ -69,23 +69,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="alert alert-info">In order to modify your SMTP settings for sending mail you will need to edit the <code>.env</code> file in this project's root folder.</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Send Emails From:</label>
-                            <div>
-                                <input type="text" class="form-control" name="email_from" value="{{ old('email_from', Settings::get('email_from', env('MAIL_FROM', 'you@example.com'))) }}" />
-                                <p class="text-muted"><small>The email address that panel emails will be sent from. Note that some SMTP services require this to match for a given API key.</small></p>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="control-label">Email Sender Name:</label>
-                            <div>
-                                <input type="text" class="form-control" name="email_sender_name" value="{{ old('email_sender_name', Settings::get('email_sender_name', env('MAIL_FROM_NAME', 'Pterodactyl Panel'))) }}" />
-                                <p class="text-muted"><small>The name that emails will appear to come from.</small></p>
-                            </div>
+                            <div class="alert alert-info">In order to modify your SMTP settings for sending mail you will need to run <code>php artisan pterodactyl:mail</code> in this project's root folder.</div>
                         </div>
                     </div>
                 </div>

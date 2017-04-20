@@ -21,6 +21,11 @@ class ResetPasswordController extends Controller
 
     use ResetsPasswords;
 
+    /**
+     * The URL to redirect users to after password reset.
+     *
+     * @var string
+     */
     public $redirectTo = '/';
 
     /**
@@ -33,6 +38,11 @@ class ResetPasswordController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Return the rules used when validating password reset.
+     *
+     * @return array
+     */
     protected function rules()
     {
         return [

@@ -38,7 +38,7 @@ class PackRepository
     /**
      * Creates a new pack on the system.
      *
-     * @param  array $data
+     * @param  array  $data
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -101,7 +101,7 @@ class PackRepository
     /**
      * Creates a new pack on the system given a template file.
      *
-     * @param  array $data
+     * @param  array  $data
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -173,8 +173,8 @@ class PackRepository
     /**
      * Updates a pack on the system.
      *
-     * @param  int   $id
-     * @param  array $data
+     * @param  int    $id
+     * @param  array  $data
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -225,7 +225,7 @@ class PackRepository
      */
     public function delete($id)
     {
-        $pack = Models\Pack::withCount('servers')->findOrFail($id);
+        $pack = Pack::withCount('servers')->findOrFail($id);
 
         if ($pack->servers_count > 0) {
             throw new DisplayException('Cannot delete a pack from the system if servers are assocaited with it.');

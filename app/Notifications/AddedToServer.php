@@ -33,12 +33,15 @@ class AddedToServer extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * @var object
+     */
     public $server;
 
     /**
      * Create a new notification instance.
      *
-     * @param  array $server
+     * @param  array  $server
      * @return void
      */
     public function __construct(array $server)

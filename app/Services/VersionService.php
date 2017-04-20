@@ -29,18 +29,25 @@ use GuzzleHttp\Client;
 
 class VersionService
 {
+    /**
+     * The cached CDN response.
+     *
+     * @var object
+     */
     protected static $versions;
 
     /**
-     * Constructor.
+     * Version constructor.
+     *
+     * @return void
      */
     public function __construct()
     {
-        self::$versions = Cache::remember('versions', env('VERSION_CACHE_TIME', 60), function () {
+        self::$versions = Cache::remember('versions', config('pterodactyl.cdn.cache'), function () {
             $client = new Client();
 
             try {
-                $response = $client->request('GET', env('VERSION_CHECK_URL', 'https://cdn.pterodactyl.io/releases/latest.json'));
+                $response = $client->request('GET', config('pterodactyl.cdn.url'));
 
                 if ($response->getStatusCode() === 200) {
                     return json_decode($response->getBody());
@@ -52,32 +59,57 @@ class VersionService
                 return (object) [
                     'panel' => 'error',
                     'daemon' => 'error',
-                    'discord' => 'https://pterodactyl.io',
+                    'discord' => 'https://pterodactyl.io/discord',
                 ];
             }
         });
     }
 
+    /**
+     * Return current panel version from CDN.
+     *
+     * @return string
+     */
     public static function getPanel()
     {
         return self::$versions->panel;
     }
 
+    /**
+     * Return current daemon version from CDN.
+     *
+     * @return string
+     */
     public static function getDaemon()
     {
         return self::$versions->daemon;
     }
 
+    /**
+     * Return Discord link from CDN.
+     *
+     * @return string
+     */
     public static function getDiscord()
     {
         return self::$versions->discord;
     }
 
+    /**
+     * Return current panel version.
+     *
+     * @return null|string
+     */
     public function getCurrentPanel()
     {
         return config('app.version');
     }
 
+    /**
+     * Determine if panel is latest version.
+     *
+     * @return bool
+     */
     public static function isLatestPanel()
     {
         if (config('app.version') === 'canary') {
@@ -87,6 +119,11 @@ class VersionService
         return version_compare(config('app.version'), self::$versions->panel) >= 0;
     }
 
+    /**
+     * Determine if daemon is latest version.
+     *
+     * @return bool
+     */
     public static function isLatestDaemon($daemon)
     {
         if ($daemon === '0.0.0-canary') {

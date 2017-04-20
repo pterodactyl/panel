@@ -25,13 +25,24 @@
 
 @section('content')
 <div class="login-box-body">
+    @if (count($errors) > 0)
+        <div class="callout callout-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @lang('auth.auth_error')<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     @if (session('status'))
         <div class="callout callout-success">
             @lang('auth.email_sent')
         </div>
     @endif
     <p class="login-box-msg">@lang('auth.request_reset_text')</p>
-    <form action="{{ route('auth.password') }}" method="POST">
+    <form id="resetForm" action="{{ route('auth.password') }}" method="POST">
         <div class="form-group has-feedback">
             <input type="email" name="email" class="form-control" value="{{ old('email') }}" autofocus placeholder="@lang('strings.email')">
             <span class="fa fa-envelope form-control-feedback"></span>
@@ -47,9 +58,21 @@
             </div>
             <div class="col-xs-8">
                 {!! csrf_field() !!}
-                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('auth.request_reset')</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat g-recaptcha" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.request_reset')</button>
             </div>
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+    @parent
+    @if(config('recaptcha.enabled'))
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+        function onSubmit(token) {
+            document.getElementById("resetForm").submit();
+        }
+        </script>
+     @endif
 @endsection

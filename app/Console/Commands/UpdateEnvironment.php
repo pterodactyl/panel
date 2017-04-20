@@ -41,6 +41,9 @@ class UpdateEnvironment extends Command
                             {--dbuser=}
                             {--dbpass=}
                             {--url=}
+                            {--driver=}
+                            {--session-driver=}
+                            {--queue-driver=}
                             {--timezone=}';
 
     /**
@@ -77,39 +80,37 @@ class UpdateEnvironment extends Command
         $envContents = file_get_contents($file);
 
         $this->info('Simply leave blank and press enter to fields that you do not wish to update.');
-        if (! env('SERVICE_AUTHOR', false)) {
+        if (is_null(config('pterodactyl.service.author', null))) {
             $this->info('No service author set, setting one now.');
-            $variables['SERVICE_AUTHOR'] = env('SERVICE_AUTHOR', (string) Uuid::generate(4));
+            $variables['SERVICE_AUTHOR'] = (string) Uuid::generate(4);
         }
 
-        if (! env('QUEUE_STANDARD', false) || ! env('QUEUE_DRIVER', false)) {
-            $this->info('Setting default queue settings.');
-            $variables['QUEUE_DRIVER'] = env('QUEUE_DRIVER', 'database');
-            $variables['QUEUE_HIGH'] = env('QUEUE_HIGH', 'high');
-            $variables['QUEUE_STANDARD'] = env('QUEUE_STANDARD', 'standard');
-            $variables['QUEUE_LOW'] = env('QUEUE_LOW', 'low');
+        if(isset($variables['APP_THEME'])) {
+            if ($variables['APP_THEME'] === 'default') {
+                $variables['APP_THEME'] = 'pterodactyl';
+            }
         }
 
         if (is_null($this->option('dbhost'))) {
-            $variables['DB_HOST'] = $this->anticipate('Database Host', ['localhost', '127.0.0.1', env('DB_HOST')], env('DB_HOST'));
+            $variables['DB_HOST'] = $this->anticipate('Database Host', ['localhost', '127.0.0.1', config('database.connections.mysql.host')], config('database.connections.mysql.host'));
         } else {
             $variables['DB_HOST'] = $this->option('dbhost');
         }
 
         if (is_null($this->option('dbport'))) {
-            $variables['DB_PORT'] = $this->anticipate('Database Port', [3306, env('DB_PORT')], env('DB_PORT'));
+            $variables['DB_PORT'] = $this->anticipate('Database Port', [3306, config('database.connections.mysql.port')], config('database.connections.mysql.port'));
         } else {
             $variables['DB_PORT'] = $this->option('dbport');
         }
 
         if (is_null($this->option('dbname'))) {
-            $variables['DB_DATABASE'] = $this->anticipate('Database Name', ['pterodactyl', 'homestead', ENV('DB_DATABASE')], env('DB_DATABASE'));
+            $variables['DB_DATABASE'] = $this->anticipate('Database Name', ['pterodactyl', 'homestead', config('database.connections.mysql.database')], config('database.connections.mysql.database'));
         } else {
             $variables['DB_DATABASE'] = $this->option('dbname');
         }
 
         if (is_null($this->option('dbuser'))) {
-            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [ENV('DB_DATABASE')], env('DB_USERNAME'));
+            $variables['DB_USERNAME'] = $this->anticipate('Database Username', [config('database.connections.mysql.username')], config('database.connections.mysql.username'));
         } else {
             $variables['DB_USERNAME'] = $this->option('dbuser');
         }
@@ -122,25 +123,68 @@ class UpdateEnvironment extends Command
         }
 
         if (is_null($this->option('url'))) {
-            $variables['APP_URL'] = $this->ask('Panel URL (include http(s)://)', env('APP_URL'));
+            $variables['APP_URL'] = $this->ask('Panel URL (include http(s)://)', config('app.url'));
         } else {
             $variables['APP_URL'] = $this->option('url');
         }
 
         if (is_null($this->option('timezone'))) {
             $this->line('The timezone should match one of the supported timezones according to http://php.net/manual/en/timezones.php');
-            $variables['APP_TIMEZONE'] = $this->anticipate('Panel Timezone', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL), env('APP_TIMEZONE'));
+            $variables['APP_TIMEZONE'] = $this->anticipate('Panel Timezone', \DateTimeZone::listIdentifiers(\DateTimeZone::ALL), config('app.timezone'));
         } else {
             $variables['APP_TIMEZONE'] = $this->option('timezone');
         }
 
-        $variables['APP_THEME'] = 'pterodactyl';
-        $variables['CACHE_DRIVER'] = 'memcached';
-        $variables['SESSION_DRIVER'] = 'database';
+        if (is_null($this->option('driver'))) {
+            $options = [
+                'memcached' => 'Memcache',
+                'redis' => 'Redis (recommended)',
+                'apc' => 'APC',
+                'array' => 'PHP Array',
+            ];
+            $default = (in_array(config('cache.default', 'memcached'), $options)) ? config('cache.default', 'memcached') : 'memcached';
+
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['CACHE_DRIVER'] = $this->choice('Which cache driver backend would you like to use?', $options, $default);
+        } else {
+            $variables['CACHE_DRIVER'] = $this->option('driver');
+        }
+
+        if (is_null($this->option('session-driver'))) {
+            $options = [
+                'database' => 'MySQL (recommended)',
+                'redis' => 'Redis',
+                'file' => 'File',
+                'cookie' => 'Cookie',
+                'apc' => 'APC',
+                'array' => 'PHP Array',
+            ];
+            $default = (in_array(config('session.driver', 'database'), $options)) ? config('cache.default', 'database') : 'database';
+
+            $this->line('If you chose redis as your cache driver backend, you *must* have a redis server configured already.');
+            $variables['SESSION_DRIVER'] = $this->choice('Which session driver backend would you like to use?', $options, $default);
+        } else {
+            $variables['SESSION_DRIVER'] = $this->option('session-driver');
+        }
+
+        if (is_null($this->option('queue-driver'))) {
+            $options = [
+                'database' => 'Database (recommended)',
+                'redis' => 'Redis',
+                'sqs' => 'Amazon SQS',
+                'sync' => 'Sync',
+                'null' => 'None',
+            ];
+            $default = (in_array(config('queue.driver', 'database'), $options)) ? config('queue.driver', 'database') : 'database';
+
+            $this->line('If you chose redis as your queue driver backend, you *must* have a redis server configured already.');
+            $variables['QUEUE_DRIVER'] = $this->choice('Which queue driver backend would you like to use?', $options, $default);
+        } else {
+            $variables['QUEUE_DRIVER'] = $this->option('queue-driver');
+        }
 
         $bar = $this->output->createProgressBar(count($variables));
 
-        $this->line('Writing new environment configuration to file.');
         foreach ($variables as $key => $value) {
             $newValue = $key . '=' . $value;
 
@@ -155,8 +199,7 @@ class UpdateEnvironment extends Command
         file_put_contents($file, $envContents);
         $bar->finish();
 
-        $this->line('Updating evironment configuration cache file.');
         $this->call('config:cache');
-        echo "\n";
+        $this->line("\n");
     }
 }

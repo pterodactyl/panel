@@ -59,6 +59,80 @@ class Permission extends Model
     ];
 
     /**
+     * A list of all permissions available for a user.
+     *
+     * @var array
+     */
+    protected static $permissions = [
+        'power' => [
+            'power-start' => 's:power:start',
+            'power-stop' => 's:power:stop',
+            'power-restart' => 's:power:restart',
+            'power-kill' => 's:power:kill',
+            'send-command' => 's:command',
+        ],
+        'subuser' => [
+            'list-subusers' => null,
+            'view-subuser' => null,
+            'edit-subuser' => null,
+            'create-subuser' => null,
+            'delete-subuser' => null,
+        ],
+        'server' => [
+            'set-connection' => null,
+            'view-startup' => null,
+            'edit-startup'  => null,
+        ],
+        'sftp' => [
+            'view-sftp' => null,
+            'view-sftp-password' => null,
+            'reset-sftp' => 's:set-password',
+        ],
+        'file' => [
+            'list-files' => 's:files:get',
+            'edit-files' => 's:files:read',
+            'save-files' => 's:files:post',
+            'move-files' => 's:files:move',
+            'copy-files' => 's:files:copy',
+            'compress-files' => 's:files:compress',
+            'decompress-files' => 's:files:decompress',
+            'create-files' => 's:files:create',
+            'upload-files' => 's:files:upload',
+            'delete-files' => 's:files:delete',
+            'download-files' => null,
+        ],
+        'task' => [
+            'list-tasks' => null,
+            'view-task' => null,
+            'toggle-task' => null,
+            'queue-task' => null,
+            'create-task' => null,
+            'delete-task' => null,
+        ],
+        'database' => [
+            'view-databases' => null,
+            'reset-db-password' => null,
+        ],
+    ];
+
+    /**
+     * Return a collection of permissions available.
+     *
+     * @param  array  $single
+     * @return \Illuminate\Support\Collection|array
+     */
+    public static function list($single = false)
+    {
+        if ($single) {
+            return collect(self::$permissions)->mapWithKeys(function ($item) {
+                return $item;
+            })->all();
+        }
+
+        return collect(self::$permissions);
+    }
+
+    /**
      * Find permission by permission node.
      *
      * @param  \Illuminate\Database\Query\Builder $query

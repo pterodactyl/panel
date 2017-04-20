@@ -6,14 +6,17 @@
 storage/framework/*
 
 composer.lock
-
-Homestead.yaml
-Vagrantfile
-Vagrantfile
-
-node_modules
-yarn.lock
 node_modules
 
 _ide_helper_models.php
 _ide_helper.php
+
+sami.phar
+/.sami
+
+# For local development with docker
+# Remove if we ever put the Dockerfile in the repo
+.dockerignore
+Dockerfile
+# for image related files
+misc

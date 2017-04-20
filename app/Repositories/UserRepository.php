@@ -38,19 +38,13 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserRepository
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Creates a user on the panel. Returns the created user's ID.
      *
-     * @param  string       $email
-     * @param  string|null  $password An unhashed version of the user's password.
-     * @param  bool         $admin    Boolean value if user should be an admin or not.
-     * @param  int          $token    A custom user ID.
-     * @return bool|int
+     * @param  array  $data
+     * @return \Pterodactyl\Models\User
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
@@ -118,9 +112,11 @@ class UserRepository
     /**
      * Updates a user on the panel.
      *
-     * @param  int $id
-     * @param  array $data An array of columns and their associated values to update for the user.
-     * @return bool
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\User
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function update($id, array $data)
     {
@@ -151,16 +147,19 @@ class UserRepository
             unset($data['password']);
         }
 
-        $user->fill($data);
+        $user->fill($data)->save();
 
-        return $user->save();
+        return $user;
     }
 
     /**
-     * Deletes a user on the panel, returns the number of records deleted.
+     * Deletes a user on the panel.
      *
      * @param  int $id
-     * @return int
+     * @return void
+     * @todo   Move user self-deletion checking to the controller, rather than the repository.
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete($id)
     {
@@ -168,8 +167,7 @@ class UserRepository
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
         }
 
-        // @TODO: this should probably be checked outside of this method because we won't always have Auth::user()
-        if (! is_null(Auth::user()) && Auth::user()->id === $id) {
+        if (! is_null(Auth::user()) && (int) Auth::user()->id === (int) $id) {
             throw new DisplayException('Cannot delete your own account.');
         }
 
@@ -186,8 +184,6 @@ class UserRepository
 
             Models\User::destroy($id);
             DB::commit();
-
-            return true;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;

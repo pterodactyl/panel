@@ -83,7 +83,7 @@ class AddNode extends Command
             $selectedLocation = $this->option('location');
         }
 
-        $this->data['location'] = $locations->where('short', $selectedLocation)->first()->id;
+        $this->data['location_id'] = $locations->where('short', $selectedLocation)->first()->id;
 
         if (is_null($this->option('fqdn'))) {
             $this->line('Please enter domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.');

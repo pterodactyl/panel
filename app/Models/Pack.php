@@ -83,7 +83,7 @@ class Pack extends Model
     /**
      * Returns all of the archived files for a given pack.
      *
-     * @param  bool   $collection
+     * @param  bool  $collection
      * @return \Illuminate\Support\Collection|object
      */
     public function files($collection = false)

@@ -44,8 +44,8 @@
                 <h3 class="box-title">Node List</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.nodes') }}" method="GET">
-                        <div class="input-group input-group-sm" style="width: 300px;">
-                            <input type="text" name="query" class="form-control pull-right" value="{{ request()->input('query') }}" placeholder="Search Nodes">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search Nodes">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                                 <a href="{{ route('admin.nodes.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
@@ -82,9 +82,11 @@
                     </tbody>
                 </table>
             </div>
-            <div class="box-footer with-border">
-                <div class="col-md-12 text-center">{!! $nodes->render() !!}</div>
-            </div>
+            @if($nodes->hasPages())
+                <div class="box-footer with-border">
+                    <div class="col-md-12 text-center">{!! $nodes->render() !!}</div>
+                </div>
+            @endif
         </div>
     </div>
 </div>

@@ -36,7 +36,7 @@ class ServiceController extends Controller
      * as well as the associated files and the file hashes for
      * caching purposes.
      *
-     * @param  \Illuminate\Http\Request   $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
@@ -77,7 +77,7 @@ class ServiceController extends Controller
      * Returns a `main.json` file based on the configuration
      * of each service option.
      *
-     * @param  int     $id
+     * @param  int  $id
      * @return \Illuminate\Support\Collection
      */
     protected function getConfiguration($id)

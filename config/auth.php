@@ -69,11 +69,6 @@ return [
             'driver' => 'eloquent',
             'model' => Pterodactyl\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*

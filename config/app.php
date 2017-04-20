@@ -6,7 +6,16 @@ return [
 
     'version' => env('APP_VERSION', 'canary'),
 
-    'phrase_in_context' => env('PHRASE_IN_CONTEXT', false),
+    /*
+    |--------------------------------------------------------------------------
+    | Application Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    */
+    'name' => 'Pterodactyl',
 
     /*
     |--------------------------------------------------------------------------
@@ -101,7 +110,9 @@ return [
     |
     */
 
-    'log' => 'daily',
+    'log' => env('APP_LOG', 'daily'),
+
+    'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
     /*
     |--------------------------------------------------------------------------
@@ -115,8 +126,6 @@ return [
     */
 
     'providers' => [
-
-        Dingo\Api\Provider\LaravelServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...
@@ -144,6 +153,11 @@ return [
         Illuminate\Notifications\NotificationServiceProvider::class,
 
         /*
+         * Package Service Providers...
+         */
+        Laravel\Tinker\TinkerServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         Pterodactyl\Providers\AppServiceProvider::class,
@@ -164,6 +178,7 @@ return [
         Fideloper\Proxy\TrustedProxyServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
+        Spatie\Fractal\FractalServiceProvider::class,
 
     ],
 
@@ -194,11 +209,10 @@ return [
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
         'DB'        => Illuminate\Support\Facades\DB::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-        'Dingo'     => Dingo\Api\Facade\API::class,
-        'DingoRoute'=> Dingo\Api\Facade\Route::class,
         'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
         'Event'     => Illuminate\Support\Facades\Event::class,
         'File'      => Illuminate\Support\Facades\File::class,
+        'Fractal'   => Spatie\Fractal\FractalFacade::class,
         'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash'      => Illuminate\Support\Facades\Hash::class,

@@ -75,7 +75,7 @@ class SourceServiceTableSeeder extends Seeder
         ], [
             'name' => 'Custom Source Engine Game',
             'description' => 'This option allows modifying the startup arguments and other details to run a custo SRCDS based game on the panel.',
-            'docker_image' => 'quay.io/pterodactyl/srcds',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
             'config_startup' => '{"done": "gameserver Steam ID", "userInteraction": []}',
             'config_files' => '{}',
             'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
@@ -90,7 +90,7 @@ class SourceServiceTableSeeder extends Seeder
         ], [
             'name' => 'Insurgency',
             'description' => 'Take to the streets for intense close quarters combat, where a team\'s survival depends upon securing crucial strongholds and destroying enemy supply in this multiplayer and cooperative Source Engine based experience.',
-            'docker_image' => 'quay.io/pterodactyl/srcds',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
             'config_startup' => null,
             'config_files' => null,
             'config_logs' => null,
@@ -105,7 +105,7 @@ class SourceServiceTableSeeder extends Seeder
         ], [
             'name' => 'Team Fortress 2',
             'description' => 'Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.',
-            'docker_image' => 'quay.io/pterodactyl/srcds',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
             'config_startup' => null,
             'config_files' => null,
             'config_logs' => null,
@@ -120,7 +120,7 @@ class SourceServiceTableSeeder extends Seeder
         ], [
             'name' => 'Ark: Survival Evolved',
             'description' => 'As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! — Gamepedia: ARK',
-            'docker_image' => 'quay.io/pterodactyl/srcds:ark',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
             'config_startup' => '{"done": "Setting breakpad minidump AppID"}',
             'config_files' => null,
             'config_logs' => null,

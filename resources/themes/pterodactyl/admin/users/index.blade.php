@@ -39,8 +39,8 @@
                 <h3 class="box-title">User List</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.users') }}" method="GET">
-                        <div class="input-group input-group-sm" style="width: 300px;">
-                            <input type="text" name="query" class="form-control pull-right" value="{{ request()->input('query') }}" placeholder="Search">
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                                 <a href="{{ route('admin.users.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
@@ -57,7 +57,8 @@
                             <th>Email</td>
                             <th>Client Name</th>
                             <th>Username</th>
-                            <th>Servers</th>
+                            <th class="text-center" data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</th>
+                            <th class="text-center" data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -68,16 +69,19 @@
                                 <td><a href="{{ route('admin.users.view', $user->id) }}">{{ $user->email }}</a></td>
                                 <td>{{ $user->name_last }}, {{ $user->name_first }}</td>
                                 <td>{{ $user->username }}</td>
-                                <td>{{ $user->servers_count }}</td>
+                                <td class="text-center">{{ $user->servers_count }}</td>
+                                <td class="text-center">{{ $user->subuser_of_count }}</td>
                                 <td class="text-center"><img src="https://www.gravatar.com/avatar/{{ md5(strtolower($user->email)) }}?s=20" class="img-circle" /></td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-            <div class="box-footer with-border">
-                <div class="col-md-12 text-center">{!! $users->render() !!}</div>
-            </div>
+            @if($users->hasPages())
+                <div class="box-footer with-border">
+                    <div class="col-md-12 text-center">{!! $users->render() !!}</div>
+                </div>
+            @endif
         </div>
     </div>
 </div>

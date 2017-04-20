@@ -32,6 +32,11 @@ use Pterodactyl\Http\Controllers\Controller;
 
 class LanguageController extends Controller
 {
+    /**
+     * A list of supported languages on the panel.
+     *
+     * @var array
+     */
     protected $languages = [
         'de' => 'German',
         'en' => 'English',
@@ -44,13 +49,12 @@ class LanguageController extends Controller
     ];
 
     /**
-     * Controller Constructor.
+     * Sets the language for a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $language
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function __construct()
-    {
-        //
-    }
-
     public function setLanguage(Request $request, $language)
     {
         if (array_key_exists($language, $this->languages)) {
@@ -59,7 +63,7 @@ class LanguageController extends Controller
                 $user->language = $language;
                 $user->save();
             }
-            Session::set('applocale', $language);
+            Session::put('applocale', $language);
         }
 
         return redirect()->back();

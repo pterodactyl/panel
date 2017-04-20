@@ -35,8 +35,9 @@ class LocationRepository
      * Creates a new location on the system.
      *
      * @param  array  $data
-     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      * @return \Pterodactyl\Models\Location
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
@@ -58,11 +59,11 @@ class LocationRepository
     /**
      * Modifies a location.
      *
-     * @param  int     $id
-     * @param  array   $data
+     * @param  int    $id
+     * @param  array  $data
      * @return \Pterodactyl\Models\Location
      *
-     * @throws Pterodactyl\Exceptions\DisplayValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function update($id, array $data)
     {
@@ -85,10 +86,10 @@ class LocationRepository
     /**
      * Deletes a location from the system.
      *
-     * @param  int     $id
+     * @param  int  $id
      * @return void
      *
-     * @throws Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete($id)
     {

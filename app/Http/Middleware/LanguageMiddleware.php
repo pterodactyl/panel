@@ -32,16 +32,11 @@ use Illuminate\Support\Facades\App;
 
 class LanguageMiddleware
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Closure                  $next
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -49,7 +44,7 @@ class LanguageMiddleware
         if (Session::has('applocale')) {
             App::setLocale(Session::get('applocale'));
         } elseif (Auth::check() && isset(Auth::user()->language)) {
-            Session::set('applocale', Auth::user()->language);
+            Session::put('applocale', Auth::user()->language);
             App::setLocale(Auth::user()->language);
         } else {
             App::setLocale(Settings::get('default_language', 'en'));

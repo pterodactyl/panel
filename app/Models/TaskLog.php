@@ -42,16 +42,16 @@ class TaskLog extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'id' => 'integer',
-         'task_id' => 'integer',
-         'run_status' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'task_id' => 'integer',
+        'run_status' => 'integer',
+    ];
 
     /**
      * The attributes that should be mutated to dates.

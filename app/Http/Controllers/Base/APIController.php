@@ -27,8 +27,9 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Log;
 use Alert;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\APIPermission;
 use Pterodactyl\Repositories\APIRepository;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -36,25 +37,48 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class APIController extends Controller
 {
+    /**
+     * Display base API index page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         return view('base.api.index', [
-            'keys' => Models\APIKey::where('user_id', $request->user()->id)->get(),
+            'keys' => APIKey::where('user_id', $request->user()->id)->get(),
         ]);
     }
 
+    /**
+     * Display API key creation page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request)
     {
-        return view('base.api.new');
+        return view('base.api.new', [
+            'permissions' => [
+                'user' => collect(APIPermission::permissions())->pull('_user'),
+                'admin' => collect(APIPermission::permissions())->except('_user')->toArray(),
+            ],
+        ]);
     }
 
-    public function save(Request $request)
+    /**
+     * Handle saving new API key.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
     {
         try {
             $repo = new APIRepository($request->user());
             $secret = $repo->create($request->intersect([
                 'memo', 'allowed_ips',
-                'adminPermissions', 'permissions',
+                'admin_permissions', 'permissions',
             ]));
             Alert::success('An API Key-Pair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br /><code>' . $secret . '</code>')->flash();
 
@@ -71,6 +95,13 @@ class APIController extends Controller
         return redirect()->route('account.api.new')->withInput();
     }
 
+    /**
+     * Handle revoking API key.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $key
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
     public function revoke(Request $request, $key)
     {
         try {

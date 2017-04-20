@@ -34,7 +34,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser creating event.
      *
-     * @param  Subuser $subuser The eloquent Subuser model.
+     * @param  \Pterodactyl\Models\Subuser  $subuser
      * @return void
      */
     public function creating(Subuser $subuser)
@@ -45,7 +45,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser created event.
      *
-     * @param  Subuser $subuser The eloquent Subuser model.
+     * @param  \Pterodactyl\Models\Subuser  $subuser
      * @return void
      */
     public function created(Subuser $subuser)
@@ -62,7 +62,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser deleting event.
      *
-     * @param  Subuser $subuser The eloquent Subuser model.
+     * @param  \Pterodactyl\Models\Subuser  $subuser
      * @return void
      */
     public function deleting(Subuser $subuser)
@@ -73,7 +73,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser deleted event.
      *
-     * @param  Subuser $subuser The eloquent Subuser model.
+     * @param  \Pterodactyl\Models\Subuser  $subuser
      * @return void
      */
     public function deleted(Subuser $subuser)

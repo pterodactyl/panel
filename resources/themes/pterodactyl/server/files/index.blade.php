@@ -54,8 +54,8 @@
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
-    {!! Theme::js('js/vendor/async/async.min.js') !!}
-    {!! Theme::js('js/vendor/lodash/lodash.js') !!}
+    {!! Theme::js('vendor/async/async.min.js') !!}
+    {!! Theme::js('vendor/lodash/lodash.js') !!}
     {!! Theme::js('vendor/siofu/client.min.js') !!}
     @if(App::environment('production'))
         {!! Theme::js('js/frontend/files/filemanager.min.js') !!}

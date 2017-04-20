@@ -91,7 +91,7 @@ class VariableRepository
      * Deletes a specified option variable as well as all server
      * variables currently assigned.
      *
-     * @param  int    $id
+     * @param  int  $id
      * @return void
      */
     public function delete($id)

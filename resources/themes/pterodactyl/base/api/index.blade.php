@@ -37,6 +37,9 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('base.api.index.list')</h3>
+                <div class="box-tools">
+                    <a href="{{ route('account.api.new') }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                </div>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -69,11 +72,6 @@
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('account.api.new') }}">
-                    <button class="btn btn-sm btn-success">@lang('base.api.index.create_new')</button>
-                </a>
             </div>
         </div>
     </div>

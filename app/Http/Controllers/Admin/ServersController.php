@@ -41,14 +41,12 @@ class ServersController extends Controller
     /**
      * Display the index page with all servers currently on the system.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
-        $servers = Models\Server::withTrashed()->with(
-            'node', 'user', 'allocation'
-        );
+        $servers = Models\Server::with('node', 'user', 'allocation');
 
         if (! is_null($request->input('query'))) {
             $servers->search($request->input('query'));
@@ -62,10 +60,10 @@ class ServersController extends Controller
     /**
      * Display create new server page.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function new(Request $request)
+    public function create(Request $request)
     {
         $services = Models\Service::with('options.packs', 'options.variables')->get();
         Javascript::put([
@@ -85,10 +83,10 @@ class ServersController extends Controller
     /**
      * Create server controller method.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Response\RedirectResponse
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         try {
             $repo = new ServerRepository;
@@ -99,6 +97,9 @@ class ServersController extends Controller
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
@@ -110,10 +111,10 @@ class ServersController extends Controller
     /**
      * Returns a tree of all avaliable nodes in a given location.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function newServerNodes(Request $request)
+    public function nodes(Request $request)
     {
         $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
 
@@ -140,20 +141,20 @@ class ServersController extends Controller
     /**
      * Display the index when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewIndex(Request $request, $id)
     {
-        return view('admin.servers.view.index', ['server' => Models\Server::withTrashed()->findOrFail($id)]);
+        return view('admin.servers.view.index', ['server' => Models\Server::findOrFail($id)]);
     }
 
     /**
      * Display the details page when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewDetails(Request $request, $id)
@@ -166,8 +167,8 @@ class ServersController extends Controller
     /**
      * Display the build details page when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewBuild(Request $request, $id)
@@ -184,8 +185,8 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewStartup(Request $request, $id)
@@ -203,8 +204,8 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewDatabase(Request $request, $id)
@@ -220,8 +221,8 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewManage(Request $request, $id)
@@ -232,28 +233,28 @@ class ServersController extends Controller
     /**
      * Display the deletion page for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
      * @return \Illuminate\View\View
      */
     public function viewDelete(Request $request, $id)
     {
-        return view('admin.servers.view.delete', ['server' => Models\Server::withTrashed()->findOrFail($id)]);
+        return view('admin.servers.view.delete', ['server' => Models\Server::findOrFail($id)]);
     }
 
     /**
      * Update the details for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function setDetails(Request $request, $id)
     {
         $repo = new ServerRepository;
         try {
             $repo->updateDetails($id, $request->intersect([
-                'owner_id', 'name', 'reset_token',
+                'owner_id', 'name', 'description', 'reset_token',
             ]));
 
             Alert::success('Server details were successfully updated.')->flash();
@@ -272,9 +273,9 @@ class ServersController extends Controller
     /**
      * Set the new docker container for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function setContainer(Request $request, $id)
     {
@@ -286,8 +287,9 @@ class ServersController extends Controller
             Alert::success('Successfully updated this server\'s docker image.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.');
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. This error has been logged.')->flash();
@@ -299,9 +301,9 @@ class ServersController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function toggleInstall(Request $request, $id)
     {
@@ -323,9 +325,9 @@ class ServersController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function rebuildContainer(Request $request, $id)
     {
@@ -349,9 +351,9 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function manageSuspension(Request $request, $id)
     {
@@ -365,11 +367,12 @@ class ServersController extends Controller
         }
 
         try {
-            $repo->$action($id);
+            $repo->toggleAccess($id, ($action === 'unsuspend'));
 
             Alert::success('Server has been ' . $action . 'ed.');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to ' . $action . ' this server. This error has been logged.')->flash();
@@ -381,9 +384,9 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function updateBuild(Request $request, $id)
     {
@@ -400,6 +403,9 @@ class ServersController extends Controller
             return redirect()->route('admin.servers.view.build', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')->flash();
@@ -411,58 +417,16 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function delete(Request $request, $id)
     {
         $repo = new ServerRepository;
 
         try {
-            $repo->queueDeletion($id, ($request->input('is_force') > 0));
-            Alert::success('Server has been marked for deletion on the system.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.delete', $id);
-    }
-
-    /**
-     * Cancels a pending server deletion request.
-     *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
-     */
-    public function cancelDeletion(Request $request, $id)
-    {
-        $repo = new ServerRepository;
-
-        $repo->cancelDeletion($id);
-        Alert::success('Server deletion has been cancelled. This server will remain suspended until you unsuspend it.')->flash();
-
-        return redirect()->route('admin.servers.view.delete', $id);
-    }
-
-    /**
-     * Skips the queue and continues the server deletion process.
-     *
-     * @param  Request $request
-     * @param  int     $id
-     * @param  string  $method
-     * @return \Illuminate\Response\RedirectResponse
-     */
-    public function continueDeletion(Request $request, $id, $method = 'safe')
-    {
-        $repo = new ServerRepository;
-
-        try {
-            $repo->delete($id, (isset($method) && $method === 'force'));
+            $repo->delete($id, $request->has('force_delete'));
             Alert::success('Server was successfully deleted from the system.')->flash();
 
             return redirect()->route('admin.servers');
@@ -482,9 +446,9 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function saveStartup(Request $request, $id)
     {
@@ -511,9 +475,10 @@ class ServersController extends Controller
 
     /**
      * Creates a new database assigned to a specific server.
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function newDatabase(Request $request, $id)
     {
@@ -537,9 +502,10 @@ class ServersController extends Controller
 
     /**
      * Resets the database password for a specific database on this server.
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function resetDatabasePassword(Request $request, $id)
     {
@@ -559,9 +525,11 @@ class ServersController extends Controller
 
     /**
      * Deletes a database from a server.
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @param  int                       $database
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function deleteDatabase(Request $request, $id, $database)
     {

@@ -31,11 +31,17 @@ class Deleting
 {
     use SerializesModels;
 
+    /**
+     * The Eloquent model of the server.
+     *
+     * @var \Pterodactyl\Models\Subuser
+     */
     public $subuser;
 
     /**
      * Create a new event instance.
      *
+     * @param  \Pterodactyl\Models\Subuser  $subuser
      * @return void
      */
     public function __construct(Subuser $subuser)

@@ -28,35 +28,102 @@ use Auth;
 use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CheckServer
 {
     /**
+     * The elquent model for the server.
+     *
+     * @var \Pterodactyl\Models\Server
+     */
+    protected $server;
+
+    /**
+     * The request object.
+     *
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
+
+    /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Closure                  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         if (! Auth::user()) {
-            return redirect()->guest('auth/login');
+            throw new AuthenticationException();
         }
 
-        $server = Server::byUuid($request->route()->server);
-        if (! $server) {
+        $this->request = $request;
+        $this->server = Server::byUuid($request->route()->server);
+
+        if (! $this->exists()) {
             return response()->view('errors.404', [], 404);
         }
 
-        if ($server->suspended) {
+        if ($this->suspended()) {
             return response()->view('errors.suspended', [], 403);
         }
 
-        if (! $server->installed) {
+        if (! $this->installed()) {
             return response()->view('errors.installing', [], 403);
         }
 
         return $next($request);
+    }
+
+    /**
+     * Determine if the server was found on the system.
+     *
+     * @return bool
+     */
+    protected function exists()
+    {
+        if (! $this->server) {
+            if ($this->request->expectsJson() || $this->request->is(...config('pterodactyl.json_routes'))) {
+                throw new NotFoundHttpException('The requested server was not found on the system.');
+            }
+        }
+
+        return (! $this->server) ? false : true;
+    }
+
+    /**
+     * Determine if the server is suspended.
+     *
+     * @return bool
+     */
+    protected function suspended()
+    {
+        if ($this->server->suspended) {
+            if ($this->request->expectsJson() || $this->request->is(...config('pterodactyl.json_routes'))) {
+                throw new AccessDeniedHttpException('Server is suspended.');
+            }
+        }
+
+        return $this->server->suspended;
+    }
+
+    /**
+     * Determine if the server is installed.
+     *
+     * @return bool
+     */
+    protected function installed()
+    {
+        if ($this->server->installed !== 1) {
+            if ($this->request->expectsJson() || $this->request->is(...config('pterodactyl.json_routes'))) {
+                throw new AccessDeniedHttpException('Server is completing install process.');
+            }
+        }
+
+        return $this->server->installed === 1;
     }
 }

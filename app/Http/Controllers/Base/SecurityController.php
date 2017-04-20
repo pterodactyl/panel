@@ -36,8 +36,8 @@ class SecurityController extends Controller
     /**
      * Returns Security Management Page.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -50,8 +50,8 @@ class SecurityController extends Controller
      * Generates TOTP Secret and returns popup data for user to verify
      * that they can generate a valid response.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function generateTotp(Request $request)
     {
@@ -73,7 +73,7 @@ class SecurityController extends Controller
     /**
      * Verifies that 2FA token recieved is valid and will work on the account.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function setTotp(Request $request)
@@ -95,8 +95,8 @@ class SecurityController extends Controller
     /**
      * Disables TOTP on an account.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function disableTotp(Request $request)
     {
@@ -116,6 +116,13 @@ class SecurityController extends Controller
         return redirect()->route('account.security');
     }
 
+    /**
+     * Revokes a user session.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function revoke(Request $request, $id)
     {
         Session::where('user_id', $request->user()->id)->findOrFail($id)->delete();

@@ -37,16 +37,13 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class SubuserController extends Controller
 {
     /**
-     * Controller Constructor.
+     * Displays the subuser overview index.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function __construct()
-    {
-        //
-    }
-
-    public function getIndex(Request $request, $uuid)
+    public function index(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid)->load('subusers.user');
         $this->authorize('list-subusers', $server);
@@ -60,7 +57,15 @@ class SubuserController extends Controller
         ]);
     }
 
-    public function getView(Request $request, $uuid, $id)
+    /**
+     * Displays the a single subuser overview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid)->load('node');
         $this->authorize('view-subuser', $server);
@@ -74,13 +79,22 @@ class SubuserController extends Controller
             'server' => $server,
             'node' => $server->node,
             'subuser' => $subuser,
+            'permlist' => Models\Permission::list(),
             'permissions' => $subuser->permissions->mapWithKeys(function ($item, $key) {
                 return [$item->permission => true];
             }),
         ]);
     }
 
-    public function postView(Request $request, $uuid, $id)
+    /**
+     * Handles editing a subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-subuser', $server);
@@ -118,7 +132,14 @@ class SubuserController extends Controller
         ]);
     }
 
-    public function getNew(Request $request, $uuid)
+    /**
+     * Display new subuser creation page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
@@ -126,11 +147,19 @@ class SubuserController extends Controller
 
         return view('server.users.new', [
             'server' => $server,
+            'permissions' => Models\Permission::list(),
             'node' => $server->node,
         ]);
     }
 
-    public function postNew(Request $request, $uuid)
+    /**
+     * Handles creating a new subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
@@ -158,7 +187,15 @@ class SubuserController extends Controller
         return redirect()->route('server.subusers.new', $uuid)->withInput();
     }
 
-    public function deleteSubuser(Request $request, $uuid, $id)
+    /**
+     * Handles deleting a subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function delete(Request $request, $uuid, $id)
     {
         $server = Models\Server::byUuid($uuid);
         $this->authorize('delete-subuser', $server);

@@ -37,6 +37,8 @@ class ServiceRepository
      *
      * @param  array  $data
      * @return \Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
@@ -80,6 +82,8 @@ class ServiceRepository
      * @param  int    $id
      * @param  array  $data
      * @return \Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function update($id, array $data)
     {
@@ -109,6 +113,8 @@ class ServiceRepository
      *
      * @param  int   $id
      * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete($id)
     {

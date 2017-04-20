@@ -38,16 +38,15 @@
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="{{ route('admin.servers.view', $server->id) }}">About</a></li>
-                @if(! $server->trashed() && $server->installed === 1)
+                @if($server->installed === 1)
                     <li><a href="{{ route('admin.servers.view.details', $server->id) }}">Details</a></li>
                     <li><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
                     <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
                     <li><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
                 @endif
-                @if(! $server->trashed())
-                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
-                @endif
+                <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
+                <li class="tab-success"><a href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-external-link"></i></a></li>
             </ul>
         </div>
     </div>
@@ -73,6 +72,10 @@
                             <tr>
                                 <td>Docker User ID</td>
                                 <td data-attr="container-user"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Docker Container Name</td>
+                                <td>{{ $server->username }}</td>
                             </tr>
                             <tr>
                                 <td>Service</td>

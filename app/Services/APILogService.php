@@ -30,11 +30,14 @@ use Pterodactyl\Models\APILog;
 
 class APILogService
 {
-    public function __constructor()
-    {
-        //
-    }
-
+    /**
+     * Log an API Request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  null|string               $error
+     * @param  bool                      $authorized
+     * @return void
+     */
     public static function log(Request $request, $error = null, $authorized = false)
     {
         if ($request->bearerToken() && ! empty($request->bearerToken())) {

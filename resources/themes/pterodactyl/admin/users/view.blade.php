@@ -85,9 +85,6 @@
                             <input type="password" id="password" name="password" class="form-control">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <button class="btn btn-default btn-sm" id="gen_pass_bttn" type="button">Generate Password</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -123,16 +120,24 @@
                             <th style="width:2%;"></th>
                             <th>Identifier</th>
                             <th>Server Name</th>
+                            <th>Access</th>
                             <th>Node</th>
                             <th style="width:10%;"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($user->servers as $server)
+                        @foreach($user->access()->get() as $server)
                             <tr>
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>
                                 <td><code>{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
+                                <td>
+                                    @if($server->owner_id === $user->id)
+                                        <span class="label bg-purple">Owner</span>
+                                    @else
+                                        <span class="label bg-blue">Subuser</span>
+                                    @endif
+                                </td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
                                 <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
                             </td>

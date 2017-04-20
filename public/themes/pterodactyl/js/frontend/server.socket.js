@@ -17,7 +17,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-
+$('#console-popout').on('click', function (event) {
+    event.preventDefault();
+    window.open($(this).attr('href'), 'Pterodactyl Console', 'width=800,height=400');
+});
 var Server = (function ()  {
 
     function initSocket() {
@@ -38,9 +41,13 @@ var Server = (function ()  {
             },
             newest_on_top: true,
             delay: 2000,
+            offset: {
+                x: 20,
+                y: 60,
+            },
             animate: {
-                enter: 'animated zoomInDown',
-                exit: 'animated zoomOutDown'
+                enter: 'animated bounceInUp',
+                exit: 'animated bounceOutDown'
             }
         });
 
@@ -56,7 +63,7 @@ var Server = (function ()  {
                     message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
                 }, {
                     type: 'danger',
-                    delay: 0
+                    delay: 0,
                 });
             }
         });

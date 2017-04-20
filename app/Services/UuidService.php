@@ -30,20 +30,12 @@ use Uuid;
 class UuidService
 {
     /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Generate a unique UUID validating against specified table and column.
      * Defaults to `users.uuid`.
      *
-     * @param  string $table
-     * @param  string $field
-     * @param  int $type The type of UUID to generate.
+     * @param  string  $table
+     * @param  string  $field
+     * @param  int     $type
      * @return string
      */
     public function generate($table = 'users', $field = 'uuid', $type = 4)
@@ -62,8 +54,9 @@ class UuidService
     /**
      * Generates a ShortUUID code which is 8 characters long and is used for identifying servers in the system.
      *
-     * @param string $table
-     * @param string $field
+     * @param  string       $table
+     * @param  string       $field
+     * @param  null|string  $attachedUuid
      * @return string
      */
     public function generateShort($table = 'servers', $field = 'uuidShort', $attachedUuid = null)

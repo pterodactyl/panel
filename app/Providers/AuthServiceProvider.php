@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Providers;
 
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -14,6 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'Pterodactyl\Models\Server' => 'Pterodactyl\Policies\ServerPolicy',
+        'Pterodactyl\Models\APIKey' => 'Pterodactyl\Policies\APIKeyPolicy',
     ];
 
     /**
@@ -22,10 +22,8 @@ class AuthServiceProvider extends ServiceProvider
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function boot(GateContract $gate)
+    public function boot()
     {
-        parent::registerPolicies($gate);
-
-        //
+        $this->registerPolicies();
     }
 }

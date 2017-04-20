@@ -37,17 +37,14 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class UserController extends Controller
 {
     /**
-     * Controller Constructor.
+     * Display user index page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
-    public function __construct()
+    public function index(Request $request)
     {
-        //
-    }
-
-    // @TODO: implement nicolaslopezj/searchable to clean up this disaster.
-    public function getIndex(Request $request)
-    {
-        $users = User::withCount('servers');
+        $users = User::withCount('servers', 'subuserOf');
 
         if (! is_null($request->input('query'))) {
             $users->search($request->input('query'));
@@ -58,19 +55,39 @@ class UserController extends Controller
         ]);
     }
 
-    public function getNew(Request $request)
+    /**
+     * Display new user page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request)
     {
         return view('admin.users.new');
     }
 
-    public function getView(Request $request, $id)
+    /**
+     * Display user view page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $id)
     {
         return view('admin.users.view', [
             'user' => User::with('servers.node')->findOrFail($id),
         ]);
     }
 
-    public function deleteUser(Request $request, $id)
+    /**
+     * Delete a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete(Request $request, $id)
     {
         try {
             $repo = new UserRepository;
@@ -88,7 +105,13 @@ class UserController extends Controller
         return redirect()->route('admin.users.view', $id);
     }
 
-    public function postNew(Request $request)
+    /**
+     * Create a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
     {
         try {
             $user = new UserRepository;
@@ -109,26 +132,39 @@ class UserController extends Controller
         }
     }
 
-    public function updateUser(Request $request, $user)
+    /**
+     * Update a user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $id)
     {
         try {
             $repo = new UserRepository;
-            $repo->update($user, $request->only([
+            $user = $repo->update($id, $request->intersect([
                 'email', 'password', 'name_first',
                 'name_last', 'username', 'root_admin',
             ]));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.view', $user)->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $e) {
-            Log::error($e);
+            return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (\Exception $ex) {
+            Log::error($ex);
             Alert::danger('An error occured while attempting to update this user.')->flash();
         }
 
-        return redirect()->route('admin.users.view', $user);
+        return redirect()->route('admin.users.view', $id);
     }
 
-    public function getJson(Request $request)
+    /**
+     * Get a JSON response of users on the system.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Pterodactyl\Models\User
+     */
+    public function json(Request $request)
     {
         return User::select('id', 'email', 'username', 'name_first', 'name_last')
             ->search($request->input('q'))

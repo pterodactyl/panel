@@ -38,20 +38,11 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class ServerController extends Controller
 {
     /**
-     * Controller Constructor.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Renders server index page for specified server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
     public function getIndex(Request $request, $uuid)
     {
@@ -62,6 +53,10 @@ class ServerController extends Controller
                 'saveFile' => route('server.files.save', $server->uuidShort),
                 'csrfToken' => csrf_token(),
             ],
+            'config' => [
+                'console_count' => config('pterodactyl.console.count'),
+                'console_freq' => config('pterodactyl.console.frequency'),
+            ],
         ]);
 
         return view('server.index', [
@@ -71,10 +66,36 @@ class ServerController extends Controller
     }
 
     /**
+     * Renders server console as an individual item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function getConsole(Request $request, $uuid)
+    {
+        \Debugbar::disable();
+        $server = Models\Server::byUuid($uuid);
+
+        $server->js([
+            'config' => [
+                'console_count' => config('pterodactyl.console.count'),
+                'console_freq' => config('pterodactyl.console.frequency'),
+            ],
+        ]);
+
+        return view('server.console', [
+            'server' => $server,
+            'node' => $server->node,
+        ]);
+    }
+
+    /**
      * Renders file overview page.
      *
-     * @param  Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
     public function getFiles(Request $request, $uuid)
     {
@@ -106,8 +127,9 @@ class ServerController extends Controller
     /**
      * Renders add file page.
      *
-     * @param  Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
     public function getAddFile(Request $request, $uuid)
     {
@@ -126,10 +148,10 @@ class ServerController extends Controller
     /**
      * Renders edit file page for a given file.
      *
-     * @param  Request $request
-     * @param  string  $uuid
-     * @param  string  $file
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  string                    $file
+     * @return \Illuminate\View\View
      */
     public function getEditFile(Request $request, $uuid, $file)
     {
@@ -169,10 +191,10 @@ class ServerController extends Controller
     /**
      * Handles downloading a file for the user.
      *
-     * @param  Request $request
-     * @param  string  $uuid
-     * @param  string  $file
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  string                    $file
+     * @return \Illuminate\View\View
      */
     public function getDownloadFile(Request $request, $uuid, $file)
     {
@@ -190,6 +212,13 @@ class ServerController extends Controller
         return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $download->token);
     }
 
+    /**
+     * Returns the allocation overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getAllocation(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -205,6 +234,13 @@ class ServerController extends Controller
         ]);
     }
 
+    /**
+     * Returns the startup overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getStartup(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -235,6 +271,13 @@ class ServerController extends Controller
         ]);
     }
 
+    /**
+     * Returns the database overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getDatabases(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -250,6 +293,13 @@ class ServerController extends Controller
         ]);
     }
 
+    /**
+     * Returns the SFTP overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
     public function getSFTP(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -262,6 +312,13 @@ class ServerController extends Controller
         ]);
     }
 
+    /**
+     * Handles changing the SFTP password for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSettingsSFTP(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
@@ -283,6 +340,13 @@ class ServerController extends Controller
         return redirect()->route('server.settings.sftp', $uuid);
     }
 
+    /**
+     * Handles changing the startup settings for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSettingsStartup(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);

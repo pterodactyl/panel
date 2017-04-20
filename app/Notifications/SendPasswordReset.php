@@ -43,6 +43,7 @@ class SendPasswordReset extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
+     * @param  string  $token
      * @return void
      */
     public function __construct($token)

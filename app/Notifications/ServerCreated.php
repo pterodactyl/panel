@@ -33,6 +33,9 @@ class ServerCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * @var object
+     */
     public $server;
 
     /**

@@ -38,6 +38,9 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.tasks.current')</h3>
+                <div class="box-tools">
+                    <a href="{{ route('server.tasks.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                </div>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -52,7 +55,7 @@
                             <th></th>
                         </tr>
                         @foreach($tasks as $task)
-                            <tr @if($task->active === 0)class="muted muted-hover"@endif>
+                            <tr @if(! $task->active)class="muted muted-hover"@endif>
                                 <td class="middle">{{ $actions[$task->action] }}</td>
                                 <td class="middle"><code>{{ $task->data }}</code></td>
                                 <td class="middle">
@@ -62,7 +65,13 @@
                                         <span class="label label-default">@lang('strings.no')</span>
                                     @endif
                                 </td>
-                                <td class="middle">{{ Carbon::parse($task->last_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->last_run)->diffForHumans() }})</span></td>
+                                <td class="middle">
+                                @if($task->last_run)
+                                    {{ Carbon::parse($task->last_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->last_run)->diffForHumans() }})</span>
+                                @else 
+                                    @lang('strings.not_run_yet')
+                                @endif
+                                </td>
                                 <td class="middle">
                                     @if($task->active !== 0)
                                         {{ Carbon::parse($task->next_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->next_run)->diffForHumans() }})</span>
@@ -81,11 +90,6 @@
 
                     </tbody>
                 </table>
-            </div>
-            <div class="box-footer">
-                <a href="{{ route('server.tasks.new', $server->uuidShort) }}">
-                    <button class="btn btn-sm btn-primary">@lang('server.tasks.new_task')</button>
-                </a>
             </div>
         </div>
     </div>

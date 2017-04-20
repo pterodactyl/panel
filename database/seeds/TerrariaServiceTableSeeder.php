@@ -63,6 +63,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'name' => 'Terraria',
             'description' => 'Terraria is a land of adventure! A land of mystery! A land that\'s yours to shape, defend, and enjoy. Your options in Terraria are limitless. Are you an action gamer with an itchy trigger finger? A master builder? A collector? An explorer? There\'s something for everyone.',
             'startup' => 'mono TerrariaServer.exe -port {{SERVER_PORT}} -autocreate 2 -worldname World',
+            'index_file' => Service::defaultIndexFile(),
         ]);
     }
 
@@ -74,7 +75,7 @@ class TerrariaServiceTableSeeder extends Seeder
         ], [
             'name' => 'Terraria Server (TShock)',
             'description' => 'TShock is a server modification for Terraria, written in C#, and based upon the Terraria Server API. It uses JSON for configuration management, and offers several features not present in the Terraria Server normally.',
-            'docker_image' => 'quay.io/pterodactyl/terraria:tshock',
+            'docker_image' => 'quay.io/pterodactyl/core:mono',
             'config_startup' => '{"userInteraction": [ "You need to agree to the EULA"]}',
             'config_startup' => '{"done": "Type \'help\' for a list of commands", "userInteraction": []}',
             'config_files' => '{"tshock/config.json":{"parser": "json", "find":{"ServerPort": "{{server.build.default.port}}", "MaxSlots": "{{server.build.env.MAX_SLOTS}}"}}}',

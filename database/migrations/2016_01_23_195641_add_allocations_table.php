@@ -29,6 +29,6 @@ class AddAllocationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExsits('allocations');
+        Schema::dropIfExists('allocations');
     }
 }

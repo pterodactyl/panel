@@ -46,118 +46,162 @@ return [
                 'title' => 'Allowed IPs',
                 'description' => 'Enter a line delimitated list of IPs that are allowed to access the API using this key. CIDR notation is allowed. Leave blank to allow any IP.',
             ],
-            'base' => [
-                'title' => 'Base Information',
-                'information' => [
-                    'title' => 'Base Information',
-                    'description' => 'Returns a listing of all servers that this account has access to.',
-                ],
-            ],
-            'user_management' => [
-                'title' => 'User Management',
-                'list' => [
-                    'title' => 'List Users',
-                    'description' => 'Allows listing of all users currently on the system.',
-                ],
-                'create' => [
-                    'title' => 'Create User',
-                    'description' => 'Allows creating a new user on the system.',
-                ],
-                'view' => [
-                    'title' => 'List Single User',
-                    'description' => 'Allows viewing details about a specific user including active services.',
-                ],
-                'update' => [
-                    'title' => 'Update User',
-                    'description' => 'Allows modifying user details (email, password, TOTP information).',
-                ],
-                'delete' => [
-                    'title' => 'Delete User',
-                    'description' => 'Allows deleting a user.',
-                ],
-            ],
-            'node_management' => [
-                'title' => 'Node Management',
-                'list' => [
-                    'title' => 'List Nodes',
-                    'description' => 'Allows listing of all nodes currently on the system.',
-                ],
-                'create' => [
-                    'title' => 'Create Node',
-                    'description' => 'Allows creating a new node on the system.',
-                ],
-                'view' => [
-                    'title' => 'List Single Node',
-                    'description' => 'Allows viewing details about a specific node including active services.',
-                ],
-                'allocations' => [
-                    'title' => 'List Allocations',
-                    'description' => 'Allows viewing all allocations on the panel for all nodes.',
-                ],
-                'delete' => [
-                    'title' => 'Delete Node',
-                    'description' => 'Allows deleting a node.',
-                ],
-            ],
-            'server_management' => [
-                'title' => 'Server Management',
+        ],
+        'permissions' => [
+            'user' => [
+                'server_header' => 'User Server Permissions',
                 'server' => [
-                    'title' => 'Server Info',
-                    'description' => 'Allows access to viewing information about a single server including current stats and allocations.',
-                ],
-                'power' => [
-                    'title' => 'Server Power',
-                    'description' => 'Allows access to control server power status.',
-                ],
-                'view' => [
-                    'title' => 'Show Single Server',
-                    'description' => 'Allows viewing details about a specific server including the daemon_token as well as current process information.',
-                ],
-                'list' => [
-                    'title' => 'List Servers',
-                    'description' => 'Allows listing of all servers currently on the system.',
-                ],
-                'create' => [
-                    'title' => 'Create Server',
-                    'description' => 'Allows creating a new server on the system.',
-                ],
-                'config' => [
-                    'title' => 'Update Configuration',
-                    'description' => 'Allows modifying server config (name, owner, and access token).',
-                ],
-                'build' => [
-                    'title' => 'Update Build',
-                    'description' => 'Allows modifying a server\'s build parameters such as memory, CPU, and disk space along with assigned and default IPs.',
-                ],
-                'suspend' => [
-                    'title' => 'Suspend Server',
-                    'description' => 'Allows suspending a server instance.',
-                ],
-                'unsuspend' => [
-                    'title' => 'Unsuspend Server',
-                    'description' => 'Allows unsuspending a server instance.',
-                ],
-                'delete' => [
-                    'title' => 'Delete Server',
-                    'description' => 'Allows deleting a server.',
+                    'list' => [
+                        'title' => 'List Servers',
+                        'desc' => 'Allows listing of all servers a user owns or has access to as a subuser.',
+                    ],
+                    'view' => [
+                        'title' => 'View Server',
+                        'desc'=> 'Allows viewing of specific server user can access.',
+                    ],
+                    'power' => [
+                        'title' => 'Toggle Power',
+                        'desc'=> 'Allow toggling of power status for a server.',
+                    ],
+                    'command' => [
+                        'title' => 'Send Command',
+                        'desc'=> 'Allow sending of a command to a running server.',
+                    ],
                 ],
             ],
-            'service_management' => [
-                'title' => 'Service Management',
-                'list' => [
-                    'title' => 'List Services',
-                    'description' => 'Allows listing of all services configured on the system.',
+            'admin' => [
+                'server_header' => 'Server Control',
+                'server' => [
+                    'list' => [
+                        'title' => 'List Servers',
+                        'desc' => 'Allows listing of all servers currently on the system.',
+                    ],
+                    'view' => [
+                        'title' => 'View Server',
+                        'desc' => 'Allows view of single server including service and details.',
+                    ],
+                    'delete' => [
+                        'title' => 'Delete Server',
+                        'desc' => 'Allows deletion of a server from the system.',
+                    ],
+                    'create' => [
+                        'title' => 'Create Server',
+                        'desc' => 'Allows creation of a new server on the system.',
+                    ],
+                    'edit-details' => [
+                        'title' => 'Edit Server Details',
+                        'desc' => 'Allows editing of server details such as name, owner, description, and secret key.',
+                    ],
+                    'edit-container' => [
+                        'title' => 'Edit Server Container',
+                        'desc' => 'Allows for modification of the docker container the server runs in.',
+                    ],
+                    'suspend' => [
+                        'title' => 'Suspend Server',
+                        'desc' => 'Allows for the suspension and unsuspension of a given server.',
+                    ],
+                    'install' => [
+                        'title' => 'Toggle Install Status',
+                        'desc' => '',
+                    ],
+                    'rebuild' => [
+                        'title' => 'Rebuild Server',
+                        'desc' => '',
+                    ],
+                    'edit-build' => [
+                        'title' => 'Edit Server Build',
+                        'desc' => 'Allows editing of server build setting such as CPU and memory allocations.',
+                    ],
+                    'edit-startup' => [
+                        'title' => 'Edit Server Startup',
+                        'desc' => 'Allows modification of server startup commands and parameters.',
+                    ],
                 ],
-                'view' => [
-                    'title' => 'List Single Service',
-                    'description' => 'Allows listing details about each service on the system including service options and variables.',
+                'location_header' => 'Location Control',
+                'location' => [
+                    'list' => [
+                        'title' => 'List Locations',
+                        'desc' => 'Allows listing all locations and thier associated nodes.',
+                    ],
                 ],
-            ],
-            'location_management' => [
-                'title' => 'Location Management',
-                'list' => [
-                    'title' => 'List Locations',
-                    'description' => 'Allows listing all locations and thier associated nodes.',
+                'node_header' => 'Node Control',
+                'node' => [
+                    'list' => [
+                        'title' => 'List Nodes',
+                        'desc' => 'Allows listing of all nodes currently on the system.',
+                    ],
+                    'view' => [
+                        'title' => 'View Node',
+                        'desc' => 'llows viewing details about a specific node including active services.',
+                    ],
+                    'view-config' => [
+                        'title' => 'View Node Configuration',
+                        'desc' => 'Danger. This allows the viewing of the node configuration file used by the daemon, and exposes secret daemon tokens.',
+                    ],
+                    'create' => [
+                        'title' => 'Create Node',
+                        'desc' => 'Allows creating a new node on the system.',
+                    ],
+                    'delete' => [
+                        'title' => 'Delete Node',
+                        'desc' => 'Allows deletion of a node from the system.',
+                    ],
+                ],
+                'user_header' => 'User Control',
+                'user' => [
+                    'list' => [
+                        'title' => 'List Users',
+                        'desc' => 'Allows listing of all users currently on the system.',
+                    ],
+                    'view' => [
+                        'title' => 'View User',
+                        'desc' => 'Allows viewing details about a specific user including active services.',
+                    ],
+                    'create' => [
+                        'title' => 'Create User',
+                        'desc' => 'Allows creating a new user on the system.',
+                    ],
+                    'edit' => [
+                        'title' => 'Update User',
+                        'desc' => 'Allows modification of user details.',
+                    ],
+                    'delete' => [
+                        'title' => 'Delete User',
+                        'desc' => 'Allows deleting a user.',
+                    ],
+                ],
+                'service_header' => 'Service Control',
+                'service' => [
+                    'list' => [
+                        'title' => 'List Services',
+                        'desc' => 'Allows listing of all services configured on the system.',
+                    ],
+                    'view' => [
+                        'title' => 'View Service',
+                        'desc' => 'Allows listing details about each service on the system including service options and variables.',
+                    ],
+                ],
+                'option_header' => 'Option Control',
+                'option' => [
+                    'list' => [
+                        'title' => 'List Options',
+                        'desc' => '',
+                    ],
+                    'view' => [
+                        'title' => 'View Option',
+                        'desc' => '',
+                    ],
+                ],
+                'pack_header' => 'Pack Control',
+                'pack' => [
+                    'list' => [
+                        'title' => 'List Packs',
+                        'desc' => '',
+                    ],
+                    'view' => [
+                        'title' => 'View Pack',
+                        'desc' => '',
+                    ],
                 ],
             ],
         ],

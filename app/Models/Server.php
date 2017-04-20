@@ -27,15 +27,15 @@ namespace Pterodactyl\Models;
 use Auth;
 use Cache;
 use Carbon;
+use Schema;
 use Javascript;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Server extends Model
 {
-    use Notifiable, SearchableTrait, SoftDeletes;
+    use Notifiable, SearchableTrait;
 
     /**
      * The table associated with the model.
@@ -115,8 +115,11 @@ class Server extends Model
      * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
      * YOU WILL OVERWRITE THE SECRET KEY AND BREAK THINGS.
      *
-     * @param  string $uuid The Short-UUID of the server to return an object about.
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  string  $uuid
+     * @param  array   $with
+     * @param  array   $withCount
+     * @return \Pterodactyl\Models\Server
+     * @todo   Remove $with and $withCount due to cache issues, they aren't used anyways.
      */
     public static function byUuid($uuid, array $with = [], array $withCount = [])
     {
@@ -147,30 +150,39 @@ class Server extends Model
     /**
      * Returns non-administrative headers for accessing a server on the daemon.
      *
-     * @param  string $uuid
+     * @param  Pterodactyl\Models\User|null  $user
      * @return array
      */
-    public function guzzleHeaders()
+    public function guzzleHeaders(User $user = null)
     {
+        // If no specific user is passed, see if we can find an active
+        // auth session to pull data from.
+        if (is_null($user) && Auth::check()) {
+            $user = Auth::user();
+        }
+
         return [
             'X-Access-Server' => $this->uuid,
-            'X-Access-Token' => Auth::user()->daemonToken($this),
+            'X-Access-Token' => ($user) ? $user->daemonToken($this) : $this->daemonSecret,
         ];
     }
 
     /**
      * Return an instance of the Guzzle client for this specific server using defined access token.
      *
+     * @param  Pterodactyl\Models\User|null  $user
      * @return \GuzzleHttp\Client
      */
-    public function guzzleClient()
+    public function guzzleClient(User $user = null)
     {
-        return $this->node->guzzleClient($this->guzzleHeaders());
+        return $this->node->guzzleClient($this->guzzleHeaders($user));
     }
 
     /**
      * Returns javascript object to be embedded on server view pages with relevant information.
      *
+     * @param  array|null  $additional
+     * @param  array|null  $overwrite
      * @return \Laracasts\Utilities\JavaScript\JavaScriptFacade
      */
     public function js($additional = null, $overwrite = null)
@@ -198,6 +210,16 @@ class Server extends Model
         }
 
         return Javascript::put($response);
+    }
+
+    /**
+     * Return the columns available for this table.
+     *
+     * @return array
+     */
+    public function getTableColumns()
+    {
+        return Schema::getColumnListing($this->getTable());
     }
 
     /**
@@ -298,7 +320,7 @@ class Server extends Model
      */
     public function tasks()
     {
-        return $this->hasMany(Task::class, 'server', 'id');
+        return $this->hasMany(Task::class);
     }
 
     /**
@@ -309,5 +331,25 @@ class Server extends Model
     public function databases()
     {
         return $this->hasMany(Database::class);
+    }
+
+    /**
+     * Gets all downloads associated with a server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function downloads()
+    {
+        return $this->hasMany(Download::class, 'server', 'id');
+    }
+
+    /**
+     * Gets the location of the server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->node->location();
     }
 }

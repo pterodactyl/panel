@@ -25,11 +25,11 @@
 namespace Pterodactyl\Repositories;
 
 use DB;
-use Log;
 use Crypt;
 use Validator;
 use Pterodactyl\Models;
 use Pterodactyl\Services\UuidService;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Exceptions\DisplayException;
@@ -37,21 +37,21 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerRepository
 {
+    /**
+     * An array of daemon permission to assign to this server.
+     *
+     * @var array
+     */
     protected $daemonPermissions = [
         's:*',
     ];
-
-    public function __construct()
-    {
-        //
-    }
 
     /**
      * Generates a SFTP username for a server given a server name.
      * format: mumble_67c7a4b0.
      *
-     * @param  string $name
-     * @param  string $identifier
+     * @param  string       $name
+     * @param  null|string  $identifier
      * @return string
      */
     protected function generateSFTPUsername($name, $identifier = null)
@@ -75,8 +75,12 @@ class ServerRepository
 
     /**
      * Adds a new server to the system.
-     * @param   array  $data  An array of data descriptors for creating the server. These should align to the columns in the database.
-     * @return  int
+     *
+     * @param   array  $data
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
@@ -85,6 +89,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'user_id' => 'required|exists:users,id',
             'name' => 'required|regex:/^([\w .-]{1,200})$/',
+            'description' => 'sometimes|nullable|string',
             'memory' => 'required|numeric|min:0',
             'swap' => 'required|numeric|min:-1',
             'io' => 'required|numeric|min:10|max:1000',
@@ -96,7 +101,7 @@ class ServerRepository
             'pack_id' => 'sometimes|nullable|numeric|min:0',
             'custom_container' => 'string',
             'startup' => 'string',
-            'auto_deploy' => 'sometimes|boolean',
+            'auto_deploy' => 'sometimes|required|accepted',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
         ]);
 
@@ -243,6 +248,7 @@ class ServerRepository
                 'uuidShort' => $genShortUuid,
                 'node_id' => $node->id,
                 'name' => $data['name'],
+                'description' => $data['description'],
                 'suspended' => 0,
                 'owner_id' => $user->id,
                 'memory' => $data['memory'],
@@ -325,15 +331,13 @@ class ServerRepository
                         (string) $server->daemonSecret => $this->daemonPermissions,
                     ],
                     'rebuild' => false,
+                    'start_on_completion' => isset($data['start_on_completion']),
                 ],
             ]);
 
             DB::commit();
 
             return $server;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('There was an error while attempting to connect to the daemon to add this server.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -341,10 +345,14 @@ class ServerRepository
     }
 
     /**
-     * [updateDetails description].
-     * @param  int  $id
-     * @param  array    $data
-     * @return bool
+     * Update the details for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function updateDetails($id, array $data)
     {
@@ -355,6 +363,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'owner_id' => 'sometimes|required|integer|exists:users,id',
             'name' => 'sometimes|required|regex:([\w .-]{1,200})',
+            'description' => 'sometimes|required|string',
             'reset_token' => 'sometimes|required|accepted',
         ]);
 
@@ -376,24 +385,12 @@ class ServerRepository
                 $resetDaemonKey = true;
             }
 
-            // Update Server Owner if it was passed.
-            if (isset($data['owner_id']) && (int) $data['owner_id'] !== $server->user->id) {
-                $server->owner_id = $data['owner_id'];
-            }
-
-            // Update Server Name if it was passed.
-            if (isset($data['name'])) {
-                $server->name = $data['name'];
-            }
-
             // Save our changes
-            $server->save();
+            $server->fill($data)->save();
 
             // Do we need to update? If not, return successful.
             if (! $resetDaemonKey) {
-                DB::commit();
-
-                return true;
+                return DB::commit();
             }
 
             $res = $server->node->guzzleClient([
@@ -412,22 +409,24 @@ class ServerRepository
             if ($res->getStatusCode() === 204) {
                 DB::commit();
 
-                return true;
+                return $server;
             } else {
                 throw new DisplayException('Daemon returned a a non HTTP/204 error code. HTTP/' + $res->getStatusCode());
             }
         } catch (\Exception $ex) {
             DB::rollBack();
-            Log::error($ex);
-            throw new DisplayException('An error occured while attempting to update this server\'s information.');
+            throw $ex;
         }
     }
 
     /**
-     * [updateContainer description].
-     * @param  int      $id
-     * @param  array    $data
-     * @return bool
+     * Update the container for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function updateContainer($id, array $data)
     {
@@ -461,10 +460,7 @@ class ServerRepository
 
             DB::commit();
 
-            return true;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.', $ex);
+            return $server;
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
@@ -472,10 +468,14 @@ class ServerRepository
     }
 
     /**
-     * [changeBuild description].
-     * @param  int  $id
-     * @param  array    $data
-     * @return bool
+     * Update the build details for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function changeBuild($id, array $data)
     {
@@ -518,23 +518,7 @@ class ServerRepository
             }
 
             $newPorts = false;
-            // Remove Assignments
-            if (isset($data['remove_allocations'])) {
-                foreach ($data['remove_allocations'] as $allocation) {
-                    // Can't remove the assigned IP/Port combo
-                    if ((int) $allocation === $server->allocation_id) {
-                        continue;
-                    }
-
-                    $newPorts = true;
-                    Models\Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
-                        'server_id' => null,
-                    ]);
-                }
-
-                $server->load('allocations');
-            }
-
+            $firstNewAllocation = null;
             // Add Assignments
             if (isset($data['add_allocations'])) {
                 foreach ($data['add_allocations'] as $allocation) {
@@ -544,8 +528,32 @@ class ServerRepository
                     }
 
                     $newPorts = true;
+                    $firstNewAllocation = (is_null($firstNewAllocation)) ? $model->id : $firstNewAllocation;
                     $model->update([
                         'server_id' => $server->id,
+                    ]);
+                }
+
+                $server->load('allocations');
+            }
+
+            // Remove Assignments
+            if (isset($data['remove_allocations'])) {
+                foreach ($data['remove_allocations'] as $allocation) {
+                    // Can't remove the assigned IP/Port combo
+                    if ((int) $allocation === $server->allocation_id) {
+                        // No New Allocation
+                        if (is_null($firstNewAllocation)) {
+                            continue;
+                        }
+
+                        // New Allocation, set as the default.
+                        $server->allocation_id = $firstNewAllocation;
+                    }
+
+                    $newPorts = true;
+                    Models\Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
+                        'server_id' => null,
                     ]);
                 }
 
@@ -605,15 +613,24 @@ class ServerRepository
             DB::commit();
 
             return $server;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('A TransferException occured while attempting to update the server configuration, check that the daemon is online. This error has been logged.', $ex);
         } catch (\Exception $ex) {
             DB::rollBack();
             throw $ex;
         }
     }
 
+    /**
+     * Update the startup details for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @param  bool   $admin
+     * @return void
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function updateStartup($id, array $data, $admin = false)
     {
         $server = Models\Server::with('variables', 'option.variables')->findOrFail($id);
@@ -691,34 +708,18 @@ class ServerRepository
         });
     }
 
-    public function queueDeletion($id, $force = false)
-    {
-        $server = Models\Server::findOrFail($id);
-        DB::beginTransaction();
-
-        try {
-            if ($force) {
-                $server->installed = 3;
-                $server->save();
-            }
-            $server->delete();
-
-            return DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
-    }
-
+    /**
+     * Delete a server from the system permanetly.
+     *
+     * @param  int   $id
+     * @param  bool  $force
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function delete($id, $force = false)
     {
-        $server = Models\Server::withTrashed()->with('node', 'allocations', 'variables')->findOrFail($id);
-
-        // Handle server being restored previously or
-        // an accidental queue.
-        if (! $server->trashed()) {
-            return;
-        }
+        $server = Models\Server::with('node', 'allocations', 'variables')->findOrFail($id);
 
         // Due to MySQL lockouts if the daemon response fails, we need to
         // delete the server from the daemon first. If it succeedes and then
@@ -730,8 +731,18 @@ class ServerRepository
                 'X-Access-Token' => $server->node->daemonSecret,
                 'X-Access-Server' => $server->uuid,
             ])->request('DELETE', '/servers');
+        } catch (ClientException $ex) {
+            // Exception is thrown on 4XX HTTP errors, so catch and determine
+            // if we should continue, or if there is a permissions error.
+            //
+            // Daemon throws a 404 if the server doesn't exist, if that is returned
+            // continue with deletion, even if not a force deletion.
+            $response = $ex->getResponse();
+            if ($ex->getResponse()->getStatusCode() !== 404 && ! $force) {
+                throw new DisplayException($ex->getMessage());
+            }
         } catch (TransferException $ex) {
-            if ($server->installed !== 3 && ! $force) {
+            if (! $force) {
                 throw new DisplayException($ex->getMessage());
             }
         } catch (\Exception $ex) {
@@ -744,45 +755,40 @@ class ServerRepository
                 $item->save();
             });
 
-            $server->variables->each(function ($item) {
-                $item->delete();
+            $server->variables->each->delete();
+
+            $server->load('subusers.permissions');
+            $server->subusers->each(function ($subuser) {
+                $subuser->permissions->each(function ($permission) {
+                    $perm->delete();
+                });
+                $subuser->delete();
             });
 
-            foreach (Models\Subuser::with('permissions')->where('server_id', $server->id)->get() as &$subuser) {
-                foreach ($subuser->permissions as &$permission) {
-                    $permission->delete();
-                }
-                $subuser->delete();
-            }
-
-            // Remove Downloads
-            Models\Download::where('server', $server->uuid)->delete();
-
-            // Clear Tasks
-            Models\Task::where('server', $server->id)->delete();
+            $server->downloads->each->delete();
+            $server->tasks->each->delete();
 
             // Delete Databases
             // This is the one un-recoverable point where
             // transactions will not save us.
             $repository = new DatabaseRepository;
-            foreach (Models\Database::select('id')->where('server_id', $server->id)->get() as $database) {
-                $repository->drop($database->id);
-            }
+            $server->databases->each(function ($item) {
+                $repository->drop($item->id);
+            });
 
             // Fully delete the server.
-            $server->forceDelete();
+            $server->delete();
         });
     }
 
-    public function cancelDeletion($id)
-    {
-        $server = Models\Server::withTrashed()->findOrFail($id);
-        $server->restore();
-
-        $server->installed = 1;
-        $server->save();
-    }
-
+    /**
+     * Toggle the install status of a serve.
+     *
+     * @param  int    $id
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function toggleInstall($id)
     {
         $server = Models\Server::findOrFail($id);
@@ -795,77 +801,43 @@ class ServerRepository
     }
 
     /**
-     * Suspends a server instance making it unable to be booted or used by a user.
-     * @param  int $id
-     * @return bool
+     * Suspends or unsuspends a server.
+     *
+     * @param  int   $id
+     * @param  bool  $unsuspend
+     * @return void
      */
-    public function suspend($id, $deleted = false)
-    {
-        $server = Models\Server::withTrashed()->with('node')->findOrFail($id);
-
-        DB::beginTransaction();
-
-        try {
-
-            // Already suspended, no need to make more requests.
-            if ($server->suspended) {
-                return true;
-            }
-
-            $server->suspended = 1;
-            $server->save();
-
-            $server->node->guzzleClient([
-                'X-Access-Token' => $server->node->daemonSecret,
-                'X-Access-Server' => $server->uuid,
-            ])->request('POST', '/server/suspend');
-
-            return DB::commit();
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('An error occured while attempting to contact the remote daemon to suspend this server.', $ex);
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
-    }
-
-    /**
-     * Unsuspends a server instance.
-     * @param  int $id
-     * @return bool
-     */
-    public function unsuspend($id)
+    public function toggleAccess($id, $unsuspend = true)
     {
         $server = Models\Server::with('node')->findOrFail($id);
 
-        DB::beginTransaction();
-
-        try {
-
-            // Already unsuspended, no need to make more requests.
-            if ($server->suspended === 0) {
+        DB::transaction(function () use ($server, $unsuspend) {
+            if (
+                (! $unsuspend && $server->suspended) ||
+                ($unsuspend && ! $server->suspended)
+            ) {
                 return true;
             }
 
-            $server->suspended = 0;
+            $server->suspended = ! $unsuspend;
             $server->save();
 
             $server->node->guzzleClient([
                 'X-Access-Token' => $server->node->daemonSecret,
                 'X-Access-Server' => $server->uuid,
-            ])->request('POST', '/server/unsuspend');
-
-            return DB::commit();
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('An error occured while attempting to contact the remote daemon to un-suspend this server.', $ex);
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+            ])->request('POST', ($unsuspend) ? '/server/unsuspend' : '/server/suspend');
+        });
     }
 
+    /**
+     * Updates the SFTP password for a server.
+     *
+     * @param  int     $id
+     * @param  string  $password
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function updateSFTPPassword($id, $password)
     {
         $server = Models\Server::with('node')->findOrFail($id);
@@ -878,10 +850,8 @@ class ServerRepository
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        DB::beginTransaction();
-        $server->sftp_password = Crypt::encrypt($password);
-
-        try {
+        DB::transaction(function () use ($password, $server) {
+            $server->sftp_password = Crypt::encrypt($password);
             $server->save();
 
             $server->node->guzzleClient([
@@ -890,16 +860,6 @@ class ServerRepository
             ])->request('POST', '/server/password', [
                 'json' => ['password' => $password],
             ]);
-
-            DB::commit();
-
-            return true;
-        } catch (TransferException $ex) {
-            DB::rollBack();
-            throw new DisplayException('There was an error while attmping to contact the remote service to change the password.', $ex);
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+        });
     }
 }

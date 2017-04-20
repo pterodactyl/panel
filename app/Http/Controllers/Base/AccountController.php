@@ -38,8 +38,8 @@ class AccountController extends Controller
     /**
      * Display base account information page.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -48,8 +48,10 @@ class AccountController extends Controller
 
     /**
      * Update details for a users account.
-     * @param  \Illuminate\Http\Request $request
-     * @return void
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function update(Request $request)
     {
@@ -80,7 +82,7 @@ class AccountController extends Controller
 
         if (
             in_array($request->input('do_action'), ['email', 'password'])
-            && ! password_verify($request->input('password'), $request->user()->password)
+            && ! password_verify($request->input('current_password'), $request->user()->password)
         ) {
             Alert::danger(trans('base.account.invalid_pass'))->flash();
 

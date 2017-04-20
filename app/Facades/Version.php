@@ -28,6 +28,11 @@ use Illuminate\Support\Facades\Facade;
 
 class Version extends Facade
 {
+    /**
+     * Returns the facade accessor class.
+     *
+     * @return strig
+     */
     protected static function getFacadeAccessor()
     {
         return '\Pterodactyl\Services\VersionService';

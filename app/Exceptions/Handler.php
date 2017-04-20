@@ -4,7 +4,6 @@ namespace Pterodactyl\Exceptions;
 
 use Log;
 use Exception;
-use DisplayException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -29,7 +28,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $e
+     * @param  \Exception  $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -41,15 +40,25 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
+     * @param  \Exception                $exception
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
+            $exception = $this->prepareException($exception);
+
+            if (config('app.debug')) {
+                $report = [
+                    'code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
+                    'message' => class_basename($exception) . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine(),
+                ];
+            }
+
             $response = response()->json([
-                'error' => ($exception instanceof DisplayException) ? $exception->getMessage() : 'An unhandled error occured while attempting to process this request.',
-            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500);
+                'error' => (config('app.debug')) ? $exception->getMessage() : 'An unhandled exception was encountered with this request.',
+                'exception' => ! isset($report) ?: $report,
+            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
 
             parent::report($exception);
         }
@@ -60,7 +69,7 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request                  $request
      * @param  \Illuminate\Auth\AuthenticationException  $exception
      * @return \Illuminate\Http\Response
      */
@@ -70,6 +79,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest('/auth/login');
+        return redirect()->guest(route('auth.login'));
     }
 }

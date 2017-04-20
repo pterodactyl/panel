@@ -45,7 +45,7 @@
         @endforeach
     @endforeach
     <p class="login-box-msg">@lang('auth.authentication_required')</p>
-    <form action="{{ route('auth.login') }}" method="POST">
+    <form id="loginForm" action="{{ route('auth.login') }}" method="POST">
         <div class="form-group has-feedback">
             <input name="user" class="form-control" value="{{ old('user') }}" placeholder="@lang('strings.user_identifier')">
             <span class="fa fa-envelope form-control-feedback"></span>
@@ -62,10 +62,22 @@
             </div>
             <div class="col-xs-4">
                 {!! csrf_field() !!}
-                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('auth.sign_in')</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat g-recaptcha" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.sign_in')</button>
             </div>
         </div>
     </form>
     <a href="{{ route('auth.password') }}">@lang('auth.forgot_password')</a><br>
 </div>
+@endsection
+
+@section('scripts')
+    @parent
+    @if(config('recaptcha.enabled'))
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+        function onSubmit(token) {
+            document.getElementById("loginForm").submit();
+        }
+        </script>
+     @endif
 @endsection

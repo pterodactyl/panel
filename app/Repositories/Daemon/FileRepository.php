@@ -35,14 +35,15 @@ class FileRepository
     /**
      * The Eloquent Model associated with the requested server.
      *
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var \Pterodactyl\Models\Server
      */
     protected $server;
 
     /**
      * Constructor.
      *
-     * @param string $server The server Short UUID
+     * @param  string  $uuid
+     * @return void
      */
     public function __construct($uuid)
     {
@@ -52,8 +53,11 @@ class FileRepository
     /**
      * Get the contents of a requested file for the server.
      *
-     * @param  string $file
+     * @param  string  $file
      * @return array
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function returnFileContents($file)
     {
@@ -95,9 +99,12 @@ class FileRepository
     /**
      * Save the contents of a requested file on the daemon.
      *
-     * @param  string $file
-     * @param  string $content
+     * @param  string  $file
+     * @param  string  $content
      * @return bool
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function saveFileContents($file, $content)
     {
@@ -125,8 +132,11 @@ class FileRepository
     /**
      * Returns a listing of all files and folders within a specified directory on the daemon.
      *
-     * @param  string $directory
+     * @param  string  $directory
      * @return object
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function returnDirectoryListing($directory)
     {

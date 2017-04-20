@@ -32,13 +32,11 @@ use Pterodactyl\Http\Controllers\Controller;
 class RemoteController extends Controller
 {
     /**
-     * Controller Constructor.
+     * Handles download request from daemon.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function __construct()
-    {
-        // No middleware for this route.
-    }
-
     public function postDownload(Request $request)
     {
         $download = Models\Download::where('token', $request->input('token'))->first();
@@ -56,6 +54,12 @@ class RemoteController extends Controller
         ]);
     }
 
+    /**
+     * Handles install toggle request from daemon.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function postInstall(Request $request)
     {
         $server = Models\Server::where('uuid', $request->input('server'))->with('node')->first();
@@ -82,6 +86,13 @@ class RemoteController extends Controller
         ], 200);
     }
 
+    /**
+     * Handles event from daemon.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     * @deprecated
+     */
     public function event(Request $request)
     {
         $server = Models\Server::where('uuid', $request->input('server'))->with('node')->first();
@@ -101,6 +112,13 @@ class RemoteController extends Controller
         return response('', 201);
     }
 
+    /**
+     * Handles configuration data request from daemon.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $token
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
     public function getConfiguration(Request $request, $token)
     {
         // Try to query the token and the node from the database
@@ -111,7 +129,7 @@ class RemoteController extends Controller
         }
 
         // Check if token is expired
-        if ($model->created_at->lt(Carbon::now())) {
+        if ($model->created_at->addMinutes(5)->lt(Carbon::now())) {
             $model->delete();
 
             return response()->json(['error' => 'token_expired'], 403);

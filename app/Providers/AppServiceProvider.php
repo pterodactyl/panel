@@ -52,5 +52,9 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment() !== 'production') {
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
+
+        if (config('pterodactyl.auth.notifications')) {
+            $this->app->register(\DaneEveritt\LoginNotifications\NotificationServiceProvider::class);
+        }
     }
 }

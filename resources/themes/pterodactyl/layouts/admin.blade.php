@@ -25,6 +25,18 @@
         <title>{{ Settings::get('company', 'Pterodactyl') }} - @yield('title')</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="_token" content="{{ csrf_token() }}">
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
+        <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+        <link rel="manifest" href="/favicons/manifest.json">
+        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
+        <link rel="shortcut icon" href="/favicons/favicon.ico">
+        <meta name="msapplication-config" content="/favicons/browserconfig.xml">
+        <meta name="theme-color" content="#367fa9">
+
+        @include('layouts.scripts')
+
         @section('scripts')
             {!! Theme::css('vendor/select2/select2.min.css') !!}
             {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
@@ -64,13 +76,10 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="Quick Access"><i class="fa fa-fighter-jet" style="margin-top:4px;padding-bottom:2px;"></i></a>
+                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
                             </li>
                             <li>
-                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
-                            </li>
-                            <li>
-                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off" style="margin-top:4px;padding-bottom:2px;"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -160,63 +169,24 @@
                 </section>
             </div>
             <footer class="main-footer">
-                <div class="pull-right hidden-xs small text-gray">
-                    <strong>v</strong> {{ config('app.version') }}
+                <div class="pull-right small text-gray" style="margin-right:10px;margin-top:-7px;">
+                    <strong><i class="fa fa-code-fork"></i></strong> {{ config('app.version') }} <br />
+                    <strong><i class="fa fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
-            <aside class="control-sidebar control-sidebar-dark">
-                <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                    <li class="active"><a href="#control-sidebar-servers-tab" data-toggle="tab"><i class="fa fa-server"></i></a></li>
-                    <li><a href="#control-sidebar-nodes-tab" data-toggle="tab"><i class="fa fa-sitemap"></i></a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="control-sidebar-servers-tab">
-                        <ul class="control-sidebar-menu">
-                            @foreach (Pterodactyl\Models\Server::all() as $s)
-                                <li>
-                                    <a href="{{ route('admin.servers.view', $s->id) }}">
-                                        @if($s->owner_id === Auth::user()->id)
-                                            <i class="menu-icon fa fa-user bg-blue"></i>
-                                        @else
-                                            <i class="menu-icon fa fa-user-o bg-gray"></i>
-                                        @endif
-                                        <div class="menu-info">
-                                            <h4 class="control-sidebar-subheading">{{ $s->name }}</h4>
-                                            <p>{{ $s->username }}</p>
-                                        </div>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="tab-pane" id="control-sidebar-nodes-tab">
-                        <ul class="control-sidebar-menu">
-                            @foreach (Pterodactyl\Models\Node::with('location')->get() as $n)
-                                <li>
-                                    <a href="{{ route('admin.nodes.view', $n->id) }}">
-                                        <i class="menu-icon fa fa-codepen bg-gray"></i>
-                                        <div class="menu-info">
-                                            <h4 class="control-sidebar-subheading">{{ $n->name }}</h4>
-                                            <p>{{ $n->location->short }}</p>
-                                        </div>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </aside>
-            <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')
+            {!! Theme::js('vendor/terminal/keyboard.polyfill.js') !!}
+            <script>keyboardeventKeyPolyfill.polyfill();</script>
+
             {!! Theme::js('js/laroute.js') !!}
-            {!! Theme::js('js/vendor/jquery/jquery.min.js') !!}
+            {!! Theme::js('vendor/jquery/jquery.min.js') !!}
             {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
             {!! Theme::js('vendor/adminlte/app.min.js') !!}
-            {!! Theme::js('js/vendor/socketio/socket.io.min.js') !!}
+            {!! Theme::js('vendor/socketio/socket.io.min.js') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
             {!! Theme::js('vendor/select2/select2.full.min.js') !!}
             {!! Theme::js('js/admin/functions.js') !!}

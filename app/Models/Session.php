@@ -35,13 +35,13 @@ class Session extends Model
      */
     protected $table = 'sessions';
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'id' => 'string',
-         'user_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'string',
+        'user_id' => 'integer',
+    ];
 }

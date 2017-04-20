@@ -25,11 +25,8 @@
 namespace Pterodactyl\Observers;
 
 use Cache;
-use Carbon;
 use Pterodactyl\Events;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Jobs\DeleteServer;
-use Pterodactyl\Jobs\SuspendServer;
 use Pterodactyl\Notifications\ServerCreated;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
@@ -40,7 +37,7 @@ class ServerObserver
     /**
      * Listen to the Server creating event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function creating(Server $server)
@@ -51,7 +48,7 @@ class ServerObserver
     /**
      * Listen to the Server created event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function created(Server $server)
@@ -72,37 +69,29 @@ class ServerObserver
     /**
      * Listen to the Server deleting event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function deleting(Server $server)
     {
         event(new Events\Server\Deleting($server));
-
-        $this->dispatch((new SuspendServer($server->id))->onQueue(env('QUEUE_HIGH', 'high')));
     }
 
     /**
      * Listen to the Server deleted event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function deleted(Server $server)
     {
         event(new Events\Server\Deleted($server));
-
-        $this->dispatch(
-            (new DeleteServer($server->id))
-            ->delay(Carbon::now()->addMinutes(env('APP_DELETE_MINUTES', 10)))
-            ->onQueue(env('QUEUE_STANDARD', 'standard'))
-        );
     }
 
     /**
      * Listen to the Server saving event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function saving(Server $server)
@@ -113,7 +102,7 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function saved(Server $server)
@@ -124,7 +113,7 @@ class ServerObserver
     /**
      * Listen to the Server updating event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function updating(Server $server)
@@ -135,7 +124,7 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param  Server $server The server model.
+     * @param  \Pterodactyl\Models\Server  $server
      * @return void
      */
     public function updated(Server $server)

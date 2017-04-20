@@ -34,11 +34,15 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 
 class NodeRepository
 {
-    public function __construct()
-    {
-        //
-    }
-
+    /**
+     * Creates a new node on the system.
+     *
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Node
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function create(array $data)
     {
         // Validate Fields
@@ -84,6 +88,16 @@ class NodeRepository
         return Models\Node::create($data);
     }
 
+    /**
+     * Updates a node on the system.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Node
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
     public function update($id, array $data)
     {
         $node = Models\Node::findOrFail($id);
@@ -179,8 +193,13 @@ class NodeRepository
 
     /**
      * Adds allocations to a provided node.
-     * @param int $id
-     * @param array   $data
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function addAllocations($id, array $data)
     {
@@ -203,7 +222,7 @@ class NodeRepository
             }
         }
 
-        DB::transaction(function () use ($parsed, $node, $data) {
+        DB::transaction(function () use ($data, $node) {
             foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
                 foreach ($data['allocation_ports'] as $port) {
                     // Determine if this is a valid single port, or a valid port range.
@@ -243,6 +262,14 @@ class NodeRepository
         });
     }
 
+    /**
+     * Deletes a node on the system.
+     *
+     * @param  int  $id
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function delete($id)
     {
         $node = Models\Node::withCount('servers')->findOrFail($id);
@@ -250,13 +277,9 @@ class NodeRepository
             throw new DisplayException('You cannot delete a node with servers currently attached to it.');
         }
 
-        DB::beginTransaction();
-
-        try {
+        DB::transaction(function () use ($node) {
             // Unlink Database Servers
-            Models\DatabaseServer::where('linked_node', $node->id)->update([
-                'linked_node' => null,
-            ]);
+            Models\DatabaseHost::where('node_id', $node->id)->update(['node_id' => null]);
 
             // Delete Allocations
             Models\Allocation::where('node_id', $node->id)->delete();
@@ -266,11 +289,6 @@ class NodeRepository
 
             // Delete Node
             $node->delete();
-
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollback();
-            throw $ex;
-        }
+        });
     }
 }

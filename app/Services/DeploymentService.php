@@ -30,20 +30,13 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class DeploymentService
 {
-    public function __constructor()
-    {
-        //
-    }
-
     /**
      * Return a random location model. DO NOT USE.
-     * @return \Pterodactyl\Models\Node
      *
-     * @TODO Actually make this smarter. If we're selecting a random location
+     * @return \Pterodactyl\Models\Node
+     * @todo Actually make this smarter. If we're selecting a random location
      * but then it has no nodes we should probably continue attempting all locations
      * until we hit one.
-     *
-     * Currently you should just pick a location and go from there.
      */
     public static function randomLocation()
     {
@@ -52,8 +45,8 @@ class DeploymentService
 
     /**
      * Return a model instance of a random node.
-     * @param  int $location
-     * @param  array $not
+     * @param  int    $location
+     * @param  array  $not
      * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -76,9 +69,9 @@ class DeploymentService
     /**
      * Selects a random node ensuring it does not put the node
      * over allocation limits.
-     * @param  int $memory
-     * @param  int $disk
-     * @param  int $location
+     * @param  int       $memory
+     * @param  int       $disk
+     * @param  null|int  $location
      * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -102,7 +95,7 @@ class DeploymentService
 
     /**
      * Returns a random allocation for a node.
-     * @param  int $node
+     * @param  int  $node
      * @return \Models\Pterodactyl\Allocation
      */
     public static function randomAllocation($node)
@@ -118,8 +111,8 @@ class DeploymentService
     /**
      * Checks that a node's allocation limits will not be passed with the given information.
      * @param  \Pterodactyl\Models\Node $node
-     * @param  int $memory
-     * @param  int $disk
+     * @param  int                      $memory
+     * @param  int                      $disk
      * @return bool Returns true if this information would not put the node over it's limit.
      */
     protected static function checkNodeAllocation(Models\Node $node, $memory, $disk)

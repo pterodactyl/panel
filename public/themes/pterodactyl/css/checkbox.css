@@ -37,6 +37,7 @@
     width: 17px;
     height: 17px;
     left: 0;
+    top: 2.5px;
     margin-left: -20px;
     border: 1px solid #cccccc;
     border-radius: 3px;
@@ -51,7 +52,7 @@
     width: 16px;
     height: 16px;
     left: 0;
-    top: 0;
+    top: 2.5px;
     margin-left: -20px;
     padding-left: 3px;
     padding-top: 1px;
