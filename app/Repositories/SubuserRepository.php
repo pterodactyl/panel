@@ -26,8 +26,12 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Validator;
-use Pterodactyl\Models;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\UuidService;
+use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
@@ -57,7 +61,7 @@ class SubuserRepository
      */
     public function create($sid, array $data)
     {
-        $server = Models\Server::with('node')->findOrFail($sid);
+        $server = Server::with('node')->findOrFail($sid);
 
         $validator = Validator::make($data, [
             'permissions' => 'required|array',
@@ -72,7 +76,7 @@ class SubuserRepository
 
         try {
             // Determine if this user exists or if we need to make them an account.
-            $user = Models\User::where('email', $data['email'])->first();
+            $user = User::where('email', $data['email'])->first();
             if (! $user) {
                 try {
                     $repo = new UserRepository;
@@ -88,18 +92,18 @@ class SubuserRepository
                 }
             } elseif ($server->owner_id === $user->id) {
                 throw new DisplayException('You cannot add the owner of a server as a subuser.');
-            } elseif (Models\Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
+            } elseif (Subuser::select('id')->where('user_id', $user->id)->where('server_id', $server->id)->first()) {
                 throw new DisplayException('A subuser with that email already exists for this server.');
             }
 
             $uuid = new UuidService;
-            $subuser = Models\Subuser::create([
+            $subuser = Subuser::create([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
                 'daemonSecret' => (string) $uuid->generate('servers', 'uuid'),
             ]);
 
-            $perms = Models\Permission::list(true);
+            $perms = Permission::list(true);
             $daemonPermissions = $this->coreDaemonPermissions;
 
             foreach ($data['permissions'] as $permission) {
@@ -109,7 +113,7 @@ class SubuserRepository
                         array_push($daemonPermissions, $perms[$permission]);
                     }
 
-                    Models\Permission::create([
+                    Permission::create([
                         'subuser_id' => $subuser->id,
                         'permission' => $permission,
                     ]);
@@ -134,7 +138,7 @@ class SubuserRepository
             DB::commit();
 
             return $subuser;
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error attempting to connect to the daemon to add this user.', $ex);
         } catch (\Exception $ex) {
@@ -155,7 +159,7 @@ class SubuserRepository
      */
     public function delete($id)
     {
-        $subuser = Models\Subuser::with('server.node')->findOrFail($id);
+        $subuser = Subuser::with('server.node')->findOrFail($id);
         $server = $subuser->server;
 
         DB::beginTransaction();
@@ -177,7 +181,7 @@ class SubuserRepository
             }
             $subuser->delete();
             DB::commit();
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error attempting to connect to the daemon to delete this subuser.', $ex);
         } catch (\Exception $ex) {
@@ -208,7 +212,7 @@ class SubuserRepository
             throw new DisplayValidationException(json_encode($validator->all()));
         }
 
-        $subuser = Models\Subuser::with('server.node')->findOrFail($id);
+        $subuser = Subuser::with('server.node')->findOrFail($id);
         $server = $subuser->server;
 
         DB::beginTransaction();
@@ -227,7 +231,7 @@ class SubuserRepository
                     if (! is_null($perms[$permission])) {
                         array_push($daemonPermissions, $perms[$permission]);
                     }
-                    Models\Permission::create([
+                    Permission::create([
                         'subuser_id' => $subuser->id,
                         'permission' => $permission,
                     ]);
@@ -249,7 +253,7 @@ class SubuserRepository
             ]);
 
             DB::commit();
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
+        } catch (TransferException $ex) {
             DB::rollBack();
             throw new DisplayException('There was an error attempting to connect to the daemon to update permissions.', $ex);
         } catch (\Exception $ex) {

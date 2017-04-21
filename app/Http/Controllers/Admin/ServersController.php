@@ -367,7 +367,7 @@ class ServersController extends Controller
         }
 
         try {
-            $repo->$action($id);
+            $repo->toggleAccess($id, ($action === 'unsuspend'));
 
             Alert::success('Server has been ' . $action . 'ed.');
         } catch (TransferException $ex) {

@@ -53,7 +53,9 @@ Route::group(['prefix' => 'settings'], function () {
 Route::group(['prefix' => 'files'], function () {
     Route::get('/', 'ServerController@getFiles')->name('server.files.index');
     Route::get('/add', 'ServerController@getAddFile')->name('server.files.add');
-    Route::get('/edit/{file}', 'ServerController@getEditFile')->name('server.files.edit');
+    Route::get('/edit/{file}', 'ServerController@getEditFile')
+        ->name('server.files.edit')
+        ->where('file', '.*');
     Route::get('/download/{file}', 'ServerController@getDownloadFile')
          ->name('server.files.edit')
          ->where('file', '.*');

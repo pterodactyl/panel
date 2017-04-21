@@ -30,6 +30,6 @@ class AddServiceOptions extends Migration
      */
     public function down()
     {
-        Schema::dropIfExsits('service_options');
+        Schema::dropIfExists('service_options');
     }
 }

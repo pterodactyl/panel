@@ -26,11 +26,7 @@ class AddForeignTasks extends Migration
     public function down()
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->dropForeign('tasks_server_foreign');
-            $table->dropForeign('tasks_server_foreign');
-
-            $table->dropIndex('tasks_server_foreign');
-            $table->dropIndex('tasks_server_foreign');
+            $table->dropForeign(['server']);
         });
     }
 }

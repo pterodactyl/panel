@@ -3,6 +3,28 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0-beta.2.1 (Courageous Carniadactylus)
+### Fixed
+* `[beta.2]` — Suspended servers now show as suspended.
+* `[beta.2]` — Corrected the information when a task has not run yet.
+* `[beta.2]` — Fixes filemanager 404 when editing a file within a directory.
+* `[beta.2]` — Fixes exception in tasks when deleting a server.
+* `[beta.2]` — Fixes bug with Terarria and Voice servers reporting a `TypeError: Service is not a constructor` in the daemon due to a missing service configuration.
+* `[beta.2]` — Fixes password reset form throwing a MethodNotAllowed error when accessed.
+* `[beta.2]` — Fixes invalid password bug when attempting to change account email address.
+* `[beta.2]` — New attempt at fixing the issues when rendering files in the browser file editor on certain browsers.
+* `[beta.2]` — Fixes broken auto-deploy time checking causing no tokens to work.
+* `[beta.2]` — Fixes display of subusers after creation.
+* `[beta.2]` — Fixes bug throwing model not found exception when editing an existing subuser.
+
+### Changed
+* Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
+* Changed behavior when modifying server allocation information. You can now remove the default allocation assuming you assing a new allocation at the same time. Reduces the number of steps to change the default allocation for a server.
+
+### Added
+* Server listing and view in Admin CP now shows the SFTP username/Docker container name.
+* Administrative server view includes link in navigation to go to server console/frontend management.
+
 ## v0.6.0-beta.2 (Courageous Carniadactylus)
 ### Fixed
 * `[beta.1]` — Fixes task management ststem not running correctly.
