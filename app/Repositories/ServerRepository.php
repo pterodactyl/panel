@@ -761,9 +761,7 @@ class ServerRepository
 
             $server->load('subusers.permissions');
             $server->subusers->each(function ($subuser) {
-                $subuser->permissions->each(function ($permission) {
-                    $perm->delete();
-                });
+                $subuser->permissions->each->delete();
                 $subuser->delete();
             });
 
@@ -774,7 +772,7 @@ class ServerRepository
             // This is the one un-recoverable point where
             // transactions will not save us.
             $repository = new DatabaseRepository;
-            $server->databases->each(function ($item) {
+            $server->databases->each(function ($item) use ($repository) {
                 $repository->drop($item->id);
             });
 
