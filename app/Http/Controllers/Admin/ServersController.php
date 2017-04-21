@@ -198,7 +198,24 @@ class ServersController extends Controller
             return $item;
         });
 
-        return view('admin.servers.view.startup', ['server' => $server]);
+        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        Javascript::put([
+            'services' => $services->map(function ($item) {
+                return array_merge($item->toArray(), [
+                    'options' => $item->options->keyBy('id')->toArray(),
+                ]);
+            })->keyBy('id'),
+            'server_variables' => $server->variables->mapWithKeys(function ($item) {
+                return ['env_' . $item->variable_id => [
+                    'value' => $item->variable_value,
+                ]];
+            })->toArray(),
+        ]);
+
+        return view('admin.servers.view.startup', [
+            'server' => $server,
+            'services' => $services,
+        ]);
     }
 
     /**
@@ -479,9 +496,13 @@ class ServersController extends Controller
         $repo = new ServerRepository;
 
         try {
-            $repo->updateStartup($id, $request->except('_token'), true);
+            if ($repo->updateStartup($id, $request->except('_token'), true)) {
+                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')->flash();
 
-            Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
+                return redirect()->route('admin.servers.view', $id);
+            } else {
+                Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
+            }
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view.startup', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
