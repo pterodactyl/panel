@@ -12,7 +12,7 @@ return [
         'current' => 'Current Scheduled Tasks',
         'actions' => [
             'command' => 'Send Command',
-            'power' => 'Send Power Toggle',
+            'power' => 'Send Power Option',
         ],
         'new_task' => 'Add New Task',
         'toggle' => 'Toggle Status',
