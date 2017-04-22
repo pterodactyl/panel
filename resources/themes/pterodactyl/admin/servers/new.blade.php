@@ -212,6 +212,13 @@
                         <select name="pack_id" id="pPackId" class="form-control"></select>
                         <p class="small text-muted no-margin">Select a service pack to be automatically installed on this server when first created.</p>
                     </div>
+                    <div class="form-group col-xs-12">
+                        <div class="checkbox checkbox-primary no-margin-bottom">
+                            <input id="pSkipScripting" name="skip_scripting" type="checkbox" value="1" />
+                            <label for="pSkipScripting" class="strong">Skip Service Option Install Script</label>
+                        </div>
+                        <p class="small text-muted no-margin">If the selected <code>Option</code> has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                    </div>
                 </div>
             </div>
         </div>

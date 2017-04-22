@@ -118,6 +118,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{id}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
     Route::post('/view/{id}/manage/rebuild', 'ServersController@rebuildContainer')->name('admin.servers.view.manage.rebuild');
     Route::post('/view/{id}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
+    Route::post('/view/{id}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
     Route::post('/view/{id}/delete', 'ServersController@delete');
 
     Route::patch('/view/{id}/database', 'ServersController@resetDatabasePassword');
@@ -169,11 +170,13 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
     Route::get('/option/{id}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
     Route::get('/option/{id}/variables', 'OptionController@viewVariables')->name('admin.services.option.variables');
+    Route::get('/option/{id}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
 
     Route::post('/new', 'ServiceController@store');
     Route::post('/view/{id}', 'ServiceController@edit');
     Route::post('/option/new', 'OptionController@store');
     Route::post('/option/{id}', 'OptionController@editConfiguration');
+    Route::post('/option/{id}/scripts', 'OptionController@updateScripts');
     Route::post('/option/{id}/variables', 'OptionController@createVariable');
     Route::post('/option/{id}/variables/{variable}', 'OptionController@editVariable')->name('admin.services.option.variables.edit');
 

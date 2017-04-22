@@ -198,7 +198,24 @@ class ServersController extends Controller
             return $item;
         });
 
-        return view('admin.servers.view.startup', ['server' => $server]);
+        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        Javascript::put([
+            'services' => $services->map(function ($item) {
+                return array_merge($item->toArray(), [
+                    'options' => $item->options->keyBy('id')->toArray(),
+                ]);
+            })->keyBy('id'),
+            'server_variables' => $server->variables->mapWithKeys(function ($item) {
+                return ['env_' . $item->variable_id => [
+                    'value' => $item->variable_value,
+                ]];
+            })->toArray(),
+        ]);
+
+        return view('admin.servers.view.startup', [
+            'server' => $server,
+            'services' => $services,
+        ]);
     }
 
     /**
@@ -317,6 +334,30 @@ class ServersController extends Controller
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to toggle this servers status. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.manage', $id);
+    }
+
+    /**
+     * Reinstalls the server with the currently assigned pack and service.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reinstallServer(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+        try {
+            $repo->reinstall($id);
+
+            Alert::success('Server successfully marked for reinstallation.')->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to perform this reinstallation. This error has been logged.')->flash();
         }
 
         return redirect()->route('admin.servers.view.manage', $id);
@@ -455,9 +496,13 @@ class ServersController extends Controller
         $repo = new ServerRepository;
 
         try {
-            $repo->updateStartup($id, $request->except('_token'), true);
+            if ($repo->updateStartup($id, $request->except('_token'), true)) {
+                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')->flash();
 
-            Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
+                return redirect()->route('admin.servers.view', $id);
+            } else {
+                Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
+            }
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.view.startup', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {

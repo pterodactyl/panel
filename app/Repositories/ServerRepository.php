@@ -103,6 +103,7 @@ class ServerRepository
             'startup' => 'string',
             'auto_deploy' => 'sometimes|required|accepted',
             'custom_id' => 'sometimes|required|numeric|unique:servers,id',
+            'skip_scripts' => 'sometimes|required|boolean',
         ]);
 
         $validator->sometimes('node_id', 'required|numeric|min:1|exists:nodes,id', function ($input) {
@@ -249,14 +250,15 @@ class ServerRepository
                 'node_id' => $node->id,
                 'name' => $data['name'],
                 'description' => $data['description'],
-                'suspended' => 0,
+                'skip_scripts' => isset($data['skip_scripts']),
+                'suspended' => false,
                 'owner_id' => $user->id,
                 'memory' => $data['memory'],
                 'swap' => $data['swap'],
                 'disk' => $data['disk'],
                 'io' => $data['io'],
                 'cpu' => $data['cpu'],
-                'oom_disabled' => (isset($data['oom_disabled'])) ? true : false,
+                'oom_disabled' => isset($data['oom_disabled']),
                 'allocation_id' => $allocation->id,
                 'service_id' => $data['service_id'],
                 'option_id' => $data['option_id'],
@@ -326,6 +328,7 @@ class ServerRepository
                         'type' => $service->folder,
                         'option' => $option->tag,
                         'pack' => (isset($pack)) ? $pack->uuid : null,
+                        'skip_scripts' => $server->skip_scripts,
                     ],
                     'keys' => [
                         (string) $server->daemonSecret => $this->daemonPermissions,
@@ -620,12 +623,92 @@ class ServerRepository
     }
 
     /**
+     * Update the service configuration for a server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return void
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
+    protected function changeService($id, array $data)
+    {
+
+    }
+
+    protected function processVariables(Models\Server $server, $data, $admin = false)
+    {
+        $server->load('option.variables');
+
+        if ($admin) {
+            $server->startup = $data['startup'];
+            $server->save();
+        }
+
+        if ($server->option->variables) {
+            foreach ($server->option->variables as &$variable) {
+                $set = isset($data['env_' . $variable->id]);
+
+                // If user is not an admin and are trying to edit a non-editable field
+                // or an invisible field just silently skip the variable.
+                if (! $admin && (! $variable->user_editable || ! $variable->user_viewable)) {
+                    continue;
+                }
+
+                // Perform Field Validation
+                $validator = Validator::make([
+                    'variable_value' => ($set) ? $data['env_' . $variable->id] : null,
+                ], [
+                    'variable_value' => $variable->rules,
+                ]);
+
+                if ($validator->fails()) {
+                    throw new DisplayValidationException(json_encode(
+                        collect([
+                            'notice' => ['There was a validation error with the `' . $variable->name . '` variable.'],
+                        ])->merge($validator->errors()->toArray())
+                    ));
+                }
+
+                $svar = Models\ServerVariable::firstOrNew([
+                    'server_id' => $server->id,
+                    'variable_id' => $variable->id,
+                ]);
+
+                // Set the value; if one was not passed set it to the default value
+                if ($set) {
+                    $svar->variable_value = $data['env_' . $variable->id];
+
+                // Not passed, check if this record exists if so keep value, otherwise set default
+                } else {
+                    $svar->variable_value = ($svar->exists) ? $svar->variable_value : $variable->default_value;
+                }
+
+                $svar->save();
+            }
+        }
+
+        // Reload Variables
+        $server->load('variables');
+        return $server->option->variables->map(function ($item, $key) use ($server) {
+            $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+
+            return [
+                'variable' => $item->env_variable,
+                'value' => (! is_null($display)) ? $display : $item->default_value,
+            ];
+        });
+    }
+
+    /**
      * Update the startup details for a server.
      *
      * @param  int    $id
      * @param  array  $data
      * @param  bool   $admin
-     * @return void
+     * @return bool
      *
      * @throws \GuzzleHttp\Exception\RequestException
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -634,78 +717,110 @@ class ServerRepository
     public function updateStartup($id, array $data, $admin = false)
     {
         $server = Models\Server::with('variables', 'option.variables')->findOrFail($id);
+        $hasServiceChanges = false;
 
-        DB::transaction(function () use ($admin, $data, $server) {
-            if (isset($data['startup']) && $admin) {
-                $server->startup = $data['startup'];
-                $server->save();
+        if ($admin) {
+            // User is an admin, lots of things to do here.
+            $validator = Validator::make($data, [
+                'startup' => 'required|string',
+                'skip_scripts' => 'sometimes|required|boolean',
+                'service_id' => 'required|numeric|min:1|exists:services,id',
+                'option_id' => 'required|numeric|min:1|exists:service_options,id',
+                'pack_id' => 'sometimes|nullable|numeric|min:0',
+            ]);
+
+            if ((int) $data['pack_id'] < 1) {
+                $data['pack_id'] = null;
             }
 
-            if ($server->option->variables) {
-                foreach ($server->option->variables as &$variable) {
-                    $set = isset($data['env_' . $variable->id]);
-
-                    // If user is not an admin and are trying to edit a non-editable field
-                    // or an invisible field just silently skip the variable.
-                    if (! $admin && (! $variable->user_editable || ! $variable->user_viewable)) {
-                        continue;
-                    }
-
-                    // Perform Field Validation
-                    $validator = Validator::make([
-                        'variable_value' => ($set) ? $data['env_' . $variable->id] : null,
-                    ], [
-                        'variable_value' => $variable->rules,
-                    ]);
-
-                    if ($validator->fails()) {
-                        throw new DisplayValidationException(json_encode(
-                            collect([
-                                'notice' => ['There was a validation error with the `' . $variable->name . '` variable.'],
-                            ])->merge($validator->errors()->toArray())
-                        ));
-                    }
-
-                    $svar = Models\ServerVariable::firstOrNew([
-                        'server_id' => $server->id,
-                        'variable_id' => $variable->id,
-                    ]);
-
-                    // Set the value; if one was not passed set it to the default value
-                    if ($set) {
-                        $svar->variable_value = $data['env_' . $variable->id];
-
-                    // Not passed, check if this record exists if so keep value, otherwise set default
-                    } else {
-                        $svar->variable_value = ($svar->exists) ? $svar->variable_value : $variable->default_value;
-                    }
-
-                    $svar->save();
-                }
+            if ($validator->fails()) {
+                throw new DisplayValidationException(json_encode($validator->errors()));
             }
 
-            // Reload Variables
-            $server->load('variables');
-            $environment = $server->option->variables->map(function ($item, $key) use ($server) {
-                $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+            if (
+                $server->service_id != $data['service_id'] ||
+                $server->option_id != $data['option_id'] ||
+                $server->pack_id != $data['pack_id']
+            ) {
+                $hasServiceChanges = true;
+            }
+        }
 
-                return [
-                    'variable' => $item->env_variable,
-                    'value' => (! is_null($display)) ? $display : $item->default_value,
-                ];
+        // If user isn't an administrator, this function is being access from the front-end
+        // Just try to update specific variables.
+        if (! $admin || ! $hasServiceChanges) {
+            return DB::transaction(function () use ($admin, $data, $server) {
+                $environment = $this->processVariables($server, $data, $admin);
+
+                $server->node->guzzleClient([
+                    'X-Access-Server' => $server->uuid,
+                    'X-Access-Token' => $server->node->daemonSecret,
+                ])->request('PATCH', '/server', [
+                    'json' => [
+                        'build' => [
+                            'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup])->toArray(),
+                        ],
+                    ],
+                ]);
+
+                return false;
             });
+        }
+
+        // Validate those Service Option Variables
+        // We know the service and option exists because of the validation.
+        // We need to verify that the option exists for the service, and then check for
+        // any required variable fields. (fields are labeled env_<env_variable>)
+        $option = Models\ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
+        if (! $option) {
+            throw new DisplayException('The requested service option does not exist for the specified service.');
+        }
+
+        // Validate the Pack
+        if (! isset($data['pack_id']) || (int) $data['pack_id'] < 1) {
+            $data['pack_id'] = null;
+        } else {
+            $pack = Models\Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
+            if (! $pack) {
+                throw new DisplayException('The requested service pack does not seem to exist for this combination.');
+            }
+        }
+
+        return DB::transaction(function () use ($admin, $data, $server) {
+            $server->installed = 0;
+            $server->service_id = $data['service_id'];
+            $server->option_id = $data['option_id'];
+            $server->pack_id = $data['pack_id'];
+            $server->skip_scripts = isset($data['skip_scripts']);
+            $server->save();
+
+            $server->variables->each->delete();
+
+            $server->load('service', 'pack');
+
+            // Send New Environment
+            $environment = $this->processVariables($server, $data, $admin);
 
             $server->node->guzzleClient([
                 'X-Access-Server' => $server->uuid,
                 'X-Access-Token' => $server->node->daemonSecret,
-            ])->request('PATCH', '/server', [
+            ])->request('POST', '/server/reinstall', [
                 'json' => [
                     'build' => [
-                        'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup]),
+                        'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup])->toArray(),
+                    ],
+                    'service' => [
+                        'type' => $server->option->service->folder,
+                        'option' => $server->option->tag,
+                        'pack' => (! is_null($server->pack_id)) ? $server->pack->uuid : null,
+                        'skip_scripts' => $server->skip_scripts,
                     ],
                 ],
             ]);
+
+            return true;
         });
+
     }
 
     /**
@@ -759,9 +874,7 @@ class ServerRepository
 
             $server->load('subusers.permissions');
             $server->subusers->each(function ($subuser) {
-                $subuser->permissions->each(function ($permission) {
-                    $perm->delete();
-                });
+                $subuser->permissions->each->delete();
                 $subuser->delete();
             });
 
@@ -772,7 +885,7 @@ class ServerRepository
             // This is the one un-recoverable point where
             // transactions will not save us.
             $repository = new DatabaseRepository;
-            $server->databases->each(function ($item) {
+            $server->databases->each(function ($item) use ($repository) {
                 $repository->drop($item->id);
             });
 
@@ -860,6 +973,27 @@ class ServerRepository
             ])->request('POST', '/server/password', [
                 'json' => ['password' => $password],
             ]);
+        });
+    }
+
+    /**
+     * Marks a server for reinstallation on the node.
+     *
+     * @param  int     $id
+     * @return void
+     */
+    public function reinstall($id)
+    {
+        $server = Models\Server::with('node')->findOrFail($id);
+
+        DB::transaction(function () use ($server) {
+            $server->installed = 0;
+            $server->save();
+
+            $server->node->guzzleClient([
+                'X-Access-Token' => $server->node->daemonSecret,
+                'X-Access-Server' => $server->uuid,
+            ])->request('POST', '/server/reinstall');
         });
     }
 }

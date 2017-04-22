@@ -5,6 +5,15 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.6.0-beta.2.1 (Courageous Carniadactylus)
 ### Fixed
+* `[beta.2.1]` — Fixed a bug preventing the deletion of a server.
+
+### Added
+* Added new scripts for service options that allows installation of software in a privileged Docker container on the node prior to marking a server as installed.
+* Added ability to reinstall a server using the currently assigned service and option.
+* Added ability to change a server's service and service option, as well as change pack assignments and other management services in that regard.
+
+## v0.6.0-beta.2.1 (Courageous Carniadactylus)
+### Fixed
 * `[beta.2]` — Suspended servers now show as suspended.
 * `[beta.2]` — Corrected the information when a task has not run yet.
 * `[beta.2]` — Fixes filemanager 404 when editing a file within a directory.

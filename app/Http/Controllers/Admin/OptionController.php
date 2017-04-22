@@ -95,7 +95,7 @@ class OptionController extends Controller
         $repo = new VariableRepository;
 
         try {
-            $variable = $repo->create($id, $request->only([
+            $variable = $repo->create($id, $request->intersect([
                 'name', 'description', 'env_variable',
                 'default_value', 'options', 'rules',
             ]));
@@ -135,6 +135,18 @@ class OptionController extends Controller
     public function viewVariables(Request $request, $id)
     {
         return view('admin.services.options.variables', ['option' => ServiceOption::with('variables')->findOrFail($id)]);
+    }
+
+    /**
+     * Display script management page for an option.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\View\View
+     */
+    public function viewScripts(Request $request, $id)
+    {
+        return view('admin.services.options.scripts', ['option' => ServiceOption::findOrFail($id)]);
     }
 
     /**
@@ -188,7 +200,7 @@ class OptionController extends Controller
 
         try {
             if ($request->input('action') !== 'delete') {
-                $variable = $repo->update($variable, $request->only([
+                $variable = $repo->update($variable, $request->intersect([
                     'name', 'description', 'env_variable',
                     'default_value', 'options', 'rules',
                 ]));
@@ -207,5 +219,31 @@ class OptionController extends Controller
         }
 
         return redirect()->route('admin.services.option.variables', $option);
+    }
+
+    /**
+     * Handles POST when updating scripts for a service option.
+     *
+     * @param  Request $request
+     * @param  int     $id
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function updateScripts(Request $request, $id)
+    {
+        $repo = new OptionRepository;
+
+        try {
+            $repo->scripts($id, $request->only([
+                'script_install', 'script_entry', 'script_container',
+            ]));
+            Alert::success('Successfully updated option scripts to be run when servers are installed.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.services.option.scripts', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.services.option.scripts', $id);
     }
 }

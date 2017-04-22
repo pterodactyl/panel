@@ -72,6 +72,7 @@ class Server extends Model
      */
     protected $casts = [
         'node_id' => 'integer',
+        'skip_scripts' => 'boolean',
         'suspended' => 'integer',
         'owner_id' => 'integer',
         'memory' => 'integer',
