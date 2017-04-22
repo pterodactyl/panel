@@ -132,7 +132,7 @@ return [
                     ],
                     'view' => [
                         'title' => 'View Node',
-                        'desc' => 'llows viewing details about a specific node including active services.',
+                        'desc' => 'Allows viewing details about a specific node including active services.',
                     ],
                     'view-config' => [
                         'title' => 'View Node Configuration',
