@@ -436,7 +436,7 @@ class ServersController extends Controller
         try {
             $repo->changeBuild($id, $request->intersect([
                 'allocation_id', 'add_allocations', 'remove_allocations',
-                'memory', 'swap', 'io', 'cpu',
+                'memory', 'swap', 'io', 'cpu', 'disk',
             ]));
 
             Alert::success('Server details were successfully updated.')->flash();

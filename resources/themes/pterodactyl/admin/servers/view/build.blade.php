@@ -91,7 +91,14 @@
                         </div>
                         <p class="text-muted small">Changing this value can have negative effects on all containers on the system. We strongly recommend leaving this value as <code>500</code>.</p>
                     </div>
-
+                    <div class="form-group">
+                        <label for="cpu" class="control-label">Disk Space Limit</label>
+                        <div class="input-group">
+                            <input type="text" name="disk" class="form-control" value="{{ old('disk', $server->disk) }}"/>
+                            <span class="input-group-addon">MB</span>
+                        </div>
+                        <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available.</p>
+                    </div>
                 </div>
             </div>
         </div>
