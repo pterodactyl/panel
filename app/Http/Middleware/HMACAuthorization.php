@@ -170,7 +170,7 @@ class HMACAuthorization
      */
     protected function validateContents()
     {
-        if (base64_decode($this->hash()) !== $this->generateSignature()) {
+        if(!hash_equals(base64_decode($this->hash()),$this->generateSignature())){
             throw new BadRequestHttpException('The HMAC for the request was invalid.');
         }
     }
