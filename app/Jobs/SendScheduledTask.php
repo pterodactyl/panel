@@ -27,8 +27,6 @@ namespace Pterodactyl\Jobs;
 use Cron;
 use Carbon;
 use Pterodactyl\Models\Task;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\TaskLog;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -77,7 +75,7 @@ class SendScheduledTask extends Job implements ShouldQueue
             if ($this->task->action === 'command') {
                 $repo = new CommandRepository($this->task->server, $this->task->user);
                 $response = $repo->send($this->task->data);
-            } else if ($this->task->action === 'power') {
+            } elseif ($this->task->action === 'power') {
                 $repo = new PowerRepository($this->task->server, $this->task->user);
                 $response = $repo->do($this->task->data);
             } else {

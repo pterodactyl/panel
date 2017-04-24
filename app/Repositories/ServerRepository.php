@@ -635,7 +635,6 @@ class ServerRepository
      */
     protected function changeService($id, array $data)
     {
-
     }
 
     protected function processVariables(Models\Server $server, $data, $admin = false)
@@ -692,6 +691,7 @@ class ServerRepository
 
         // Reload Variables
         $server->load('variables');
+
         return $server->option->variables->map(function ($item, $key) use ($server) {
             $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
 
@@ -820,7 +820,6 @@ class ServerRepository
 
             return true;
         });
-
     }
 
     /**

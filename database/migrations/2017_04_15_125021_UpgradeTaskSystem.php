@@ -25,7 +25,7 @@ class UpgradeTaskSystem extends Migration
         });
 
         DB::transaction(function () {
-            foreach(Task::all() as $task) {
+            foreach (Task::all() as $task) {
                 $task->user_id = $task->server->owner_id;
                 $task->save();
             }

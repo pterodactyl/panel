@@ -24,7 +24,6 @@
 
 namespace Pterodactyl\Repositories;
 
-use DB;
 use Cron;
 use Validator;
 use Pterodactyl\Models\Task;
