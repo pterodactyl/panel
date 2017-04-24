@@ -1,6 +1,13 @@
 # Contributing
 We're glad you want to help us out and make this panel the best that it can be! We have a few simple things to follow when making changes to files and adding new features.
 
+### Code Guidelines
+*This section is still under construction.*
+
+We are a `PSR-4` and `PSR-0` compliant project, so please follow those guidelines at a minimum. In addition, StyleCI runs on all of our code to ensure the formatting is standardized across everything. Please follow the existing code formatting, I will write up more detailed documentation at a later time.
+
+In addition, all functions must be properly Doc-Block'd.
+
 ### Responsible Disclosure
 This is a fairly in-depth project, and makes use of a lot of parts. We strive to keep everything as secure as possible, and welcome you to take a look into it yourself. We do ask that you be considerate of others who are using the software and not publicly disclose security issues without contacting us first by email.
 
@@ -11,4 +18,4 @@ If you've found what you believe is a security issue please email us at `support
 ### Where to find Us
 You can find us in a couple places online. First and foremost, we're active right here on Github. If you encounter a bug or other problem open an issue on here for us to take a look at it. We also accept feature requests here as well.
 
-You can also find us on [Discord](https://discord.gg/0gYt8oU8QOkDhKLS) or our [community forums](https://forums.pterodactyl.io/). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our forums or here.
+You can also find us on [Discord](https://pterodactyl.io/discord) or our [community forums](https://forums.pterodactyl.io/). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our forums or here.
