@@ -26,7 +26,6 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Crypt;
-use Config;
 use Validator;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;

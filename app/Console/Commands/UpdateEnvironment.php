@@ -85,7 +85,7 @@ class UpdateEnvironment extends Command
             $variables['SERVICE_AUTHOR'] = (string) Uuid::generate(4);
         }
 
-        if(isset($variables['APP_THEME'])) {
+        if (isset($variables['APP_THEME'])) {
             if ($variables['APP_THEME'] === 'default') {
                 $variables['APP_THEME'] = 'pterodactyl';
             }

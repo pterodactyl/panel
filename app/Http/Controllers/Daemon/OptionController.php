@@ -26,7 +26,6 @@ namespace Pterodactyl\Http\Controllers\Daemon;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Http\Controllers\Controller;
 
 class OptionController extends Controller
