@@ -186,7 +186,10 @@ class UpdateEnvironment extends Command
         $bar = $this->output->createProgressBar(count($variables));
 
         foreach ($variables as $key => $value) {
-            $newValue = $key . '=' . $value;
+            if (str_contains($value, ' ') && ! str_contains($value, '"')) {
+                $value = '"' . $value . '"';
+            }
+            $newValue = $key . '=' . $value . ' # DO NOT EDIT! set using pterodactyl:env';
 
             if (preg_match_all('/^' . $key . '=(.*)$/m', $envContents) < 1) {
                 $envContents = $envContents . "\n" . $newValue;

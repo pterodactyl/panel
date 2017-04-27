@@ -12,6 +12,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Added ability to reinstall a server using the currently assigned service and option.
 * Added ability to change a server's service and service option, as well as change pack assignments and other management services in that regard.
 
+### Changed
+* Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
+
 ## v0.6.0-beta.2.1 (Courageous Carniadactylus)
 ### Fixed
 * `[beta.2]` — Suspended servers now show as suspended.
