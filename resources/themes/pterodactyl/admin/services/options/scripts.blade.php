@@ -52,27 +52,58 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Install Script</h3>
                 </div>
+                @if(! is_null($option->copyFrom))
+                    <div class="box-body">
+                        <div class="callout callout-warning no-margin">
+                            This service option is copying installation scripts and containe options from <a href="{{ route('admin.services.option.view', $option->copyFrom->id) }}">{{ $option->copyFrom->name }}</a>. Any changes you make to this script will not apply unless you select "None" from the dropdown box below.
+                        </div>
+                    </div>
+                @endif
                 <div class="box-body no-padding">
                     <div id="editor_install"style="height:300px">{{ $option->script_install }}</div>
                 </div>
                 <div class="box-body">
                     <div class="row">
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-4">
+                            <label class="control-label">Copy Script From</label>
+                            <select id="pCopyScriptFrom" name="copy_script_from">
+                                <option value="0">None</option>
+                                @foreach($copyFromOptions as $opt)
+                                    <option value="{{ $opt->id }}" {{ $option->copy_script_from !== $opt->id ?: 'selected' }}>{{ $opt->name }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-muted small">If selected, script above will be ignored and script from selected option will be used in place.</p>
+                        </div>
+                        <div class="form-group col-sm-4">
                             <label class="control-label">Script Container</label>
                             <input type="text" name="script_container" class="form-control" value="{{ $option->script_container }}" />
                             <p class="text-muted small">Docker container to use when running this script for the server.</p>
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-4">
                             <label class="control-label">Script Entrypoint Command</label>
                             <input type="text" name="script_entry" class="form-control" value="{{ $option->script_entry }}" />
                             <p class="text-muted small">The entrypoint command to use for this script.</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 text-muted">
+                            The following service options rely on this script:
+                            @if(count($relyOnScript) > 0)
+                                @foreach($relyOnScript as $rely)
+                                    <a href="{{ route('admin.services.option.view', $rely->id) }}">
+                                        <code>{{ $rely->name }}</code>&nbsp;
+                                    </a>
+                                @endforeach
+                            @else
+                                <em>none</em>
+                            @endif
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     <textarea name="script_install" class="hidden"></textarea>
-                    <button type="submit" class="btn btn-primary btn-sm pull-right">Save Scripts</button>
+                    <button type="submit" class="btn btn-primary btn-sm pull-right">Save Script</button>
                 </div>
             </div>
         </div>
@@ -86,6 +117,8 @@
     {!! Theme::js('vendor/ace/ext-modelist.js') !!}
     <script>
     $(document).ready(function () {
+        $('#pCopyScriptFrom').select2();
+
         const InstallEditor = ace.edit('editor_install');
         const Modelist = ace.require('ace/ext/modelist')
 

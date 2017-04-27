@@ -110,6 +110,27 @@ EOF;
 
     private function addCoreOptions()
     {
+        $script = <<<'EOF'
+#!/bin/ash
+# Vanilla MC Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add curl
+
+cd /mnt/server
+
+LATEST_VERSION=`curl -s https://s3.amazonaws.com/Minecraft.Download/versions/versions.json | grep -o "[[:digit:]]\.[0-9]*\.[0-9]" | head -n 1`
+
+if [ -z "$VANILLA_VERSION" ] || [ "$VANILLA_VERSION" == "latest" ]; then
+  DL_VERSION=$LATEST_VERSION
+else
+  DL_VERSION=$VANILLA_VERSION
+fi
+
+curl -o ${SERVER_JARFILE} https://s3.amazonaws.com/Minecraft.Download/versions/${DL_VERSION}/minecraft_server.${DL_VERSION}.jar
+EOF;
+
         $this->option['vanilla'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'vanilla',
@@ -123,7 +144,26 @@ EOF;
             'config_stop' => 'stop',
             'config_from' => null,
             'startup' => null,
+            'script_install' => $script,
         ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
+# Spigot Installation Script
+#
+# Server Files: /mnt/server
+
+## Only download if a path is provided, otherwise continue.
+if [ ! -z "${DL_PATH}" ]; then
+    apk update
+    apk add curl
+
+    cd /mnt/server
+
+    MODIFIED_DOWNLOAD=`eval echo $(echo ${DL_PATH} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
+    curl -sSL -o ${SERVER_JARFILE} ${MODIFIED_DOWNLOAD}
+fi
+EOF;
 
         $this->option['spigot'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
@@ -138,7 +178,22 @@ EOF;
             'config_stop' => null,
             'config_from' => $this->option['vanilla']->id,
             'startup' => null,
+            'script_install' => $script,
         ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
+# Sponge Installation Script
+#
+# Server Files: /mnt/server
+
+apk update
+apk add curl
+
+cd /mnt/server
+
+curl -sSL "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/${SPONGE_VERSION}/spongevanilla-${SPONGE_VERSION}.jar" -o ${SERVER_JARFILE}
+EOF;
 
         $this->option['sponge'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
@@ -153,7 +208,25 @@ EOF;
             'config_stop' => null,
             'config_from' => $this->option['vanilla']->id,
             'startup' => null,
+            'script_install' => $script,
         ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
+# Bungeecord Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add curl
+
+cd /mnt/server
+
+if [ -z "${BUNGEE_VERSION}" ] || [ "${BUNGEE_VERSION}" == "latest" ]; then
+    BUNGEE_VERSION="lastStableBuild"
+fi
+
+curl -o ${SERVER_JARFILE} https://ci.md-5.net/job/BungeeCord/${BUNGEE_VERSION}/artifact/bootstrap/target/BungeeCord.jar
+EOF;
 
         $this->option['bungeecord'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
@@ -168,6 +241,7 @@ EOF;
             'config_stop' => 'end',
             'config_from' => null,
             'startup' => null,
+            'script_install' => $script,
         ]);
     }
 

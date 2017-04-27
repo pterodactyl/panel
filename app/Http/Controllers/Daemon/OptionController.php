@@ -40,12 +40,12 @@ class OptionController extends Controller
 
         return response()->json([
             'scripts' => [
-                'install' => (! $server->option->script_install) ? null : str_replace(["\r\n", "\n", "\r"], "\n", $server->option->script_install),
+                'install' => (! $server->option->copy_script_install) ? null : str_replace(["\r\n", "\n", "\r"], "\n", $server->option->copy_script_install),
                 'privileged' => $server->option->script_is_privileged,
             ],
             'config' => [
-                'container' => $server->option->script_container,
-                'entry' => $server->option->script_entry,
+                'container' => $server->option->copy_script_container,
+                'entry' => $server->option->copy_script_entry,
             ],
             'env' => $environment->merge([
                 'STARTUP=' . $server->startup,

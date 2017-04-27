@@ -79,7 +79,10 @@
                             </tr>
                             <tr>
                                 <td>Service</td>
-                                <td>{{ $server->option->service->name }} :: {{ $server->option->name }}</td>
+                                <td>
+                                    <a href="{{ route('admin.services.view', $server->option->service->id) }}">{{ $server->option->service->name }}</a> ::
+                                    <a href="{{ route('admin.services.option.view', $server->option->id) }}">{{ $server->option->name }}</a>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Name</td>

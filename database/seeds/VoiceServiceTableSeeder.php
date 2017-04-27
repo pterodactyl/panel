@@ -69,6 +69,22 @@ class VoiceServiceTableSeeder extends Seeder
 
     private function addCoreOptions()
     {
+        $script = <<<'EOF'
+#!/bin/ash
+# Mumble Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add tar curl
+
+cd /tmp
+
+curl -sSLO https://github.com/mumble-voip/mumble/releases/download/${MUMBLE_VERSION}/murmur-static_x86-${MUMBLE_VERSION}.tar.bz2
+
+tar -xjvf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2
+cp -r murmur-static_x86-${MUMBLE_VERSION}/* /mnt/server
+EOF;
+
         $this->option['mumble'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'mumble',
@@ -82,7 +98,45 @@ class VoiceServiceTableSeeder extends Seeder
             'config_stop' => '^C',
             'config_from' => null,
             'startup' => './murmur.x86 -fg',
+            'script_install' => $script,
         ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
+# TS3 Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add tar curl
+
+cd /tmp
+
+curl -sSLO http://dl.4players.de/ts/releases/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2
+
+tar -xjvf teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2
+cp -r teamspeak3-server_linux_amd64/* /mnt/server
+
+echo "machine_id=
+default_voice_port=${SERVER_PORT}
+voice_ip=0.0.0.0
+licensepath=
+filetransfer_port=30033
+filetransfer_ip=
+query_port=${SERVER_PORT}
+query_ip=0.0.0.0
+query_ip_whitelist=query_ip_whitelist.txt
+query_ip_blacklist=query_ip_blacklist.txt
+dbplugin=ts3db_sqlite3
+dbpluginparameter=
+dbsqlpath=sql/
+dbsqlcreatepath=create_sqlite/
+dbconnections=10
+logpath=logs
+logquerycommands=0
+dbclientkeepdays=30
+logappend=0
+query_skipbruteforcecheck=0" > /mnt/server/ts3server.ini
+EOF;
 
         $this->option['ts3'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
@@ -97,6 +151,7 @@ class VoiceServiceTableSeeder extends Seeder
             'config_stop' => '^C',
             'config_from' => null,
             'startup' => './ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}',
+            'script_install' => $script,
         ]);
     }
 

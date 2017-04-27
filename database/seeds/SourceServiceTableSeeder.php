@@ -69,6 +69,27 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addCoreOptions()
     {
+        $script = <<<'EOF'
+#!/bin/bash
+# SRCDS Base Installation Script
+#
+# Server Files: /mnt/server
+apt update
+apt install curl
+
+cd /tmp
+curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+
+mkdir /mnt/server/steamcmd
+tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+cd /mnt/server/steamcmd
+
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update ${SRCDS_APPID} +quit
+
+mkdir -p /mnt/server/.steam/sdk32
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+EOF;
+
         $this->option['source'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'source',
@@ -82,6 +103,9 @@ class SourceServiceTableSeeder extends Seeder
             'config_stop' => 'quit',
             'config_from' => null,
             'startup' => null,
+            'script_install' => $script,
+            'script_entry' => 'bash',
+            'script_container' => 'ubuntu:16.04',
         ]);
 
         $this->option['insurgency'] = ServiceOption::updateOrCreate([
@@ -97,6 +121,7 @@ class SourceServiceTableSeeder extends Seeder
             'config_stop' => null,
             'config_from' => $this->option['source']->id,
             'startup' => './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
+            'copy_script_from' => $this->option['source']->id,
         ]);
 
         $this->option['tf2'] = ServiceOption::updateOrCreate([
@@ -112,7 +137,33 @@ class SourceServiceTableSeeder extends Seeder
             'config_stop' => null,
             'config_from' => $this->option['source']->id,
             'startup' => './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
+            'copy_script_from' => $this->option['source']->id,
         ]);
+
+        $script = <<<'EOF'
+#!/bin/bash
+# ARK: Installation Script
+#
+# Server Files: /mnt/server
+apt update
+apt install curl
+
+cd /tmp
+curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+
+mkdir /mnt/server/steamcmd
+mkdir -p /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+
+tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+tar -xzvf steamcmd.tar.gz -C /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+
+cd /mnt/server/steamcmd
+
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 376030 +quit
+
+mkdir -p /mnt/server/.steam/sdk32
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+EOF;
 
         $this->option['ark'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
@@ -127,6 +178,9 @@ class SourceServiceTableSeeder extends Seeder
             'config_stop' => '^C',
             'config_from' => $this->option['source']->id,
             'startup' => './ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}',
+            'script_install' => $script,
+            'script_entry' => 'bash',
+            'script_container' => 'ubuntu:16.04',
         ]);
     }
 

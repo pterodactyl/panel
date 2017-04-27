@@ -47,7 +47,7 @@
                                 <label for="pServiceId" class="form-label">Associated Service</label>
                                 <select name="service_id" id="pServiceId">
                                     @foreach($services as $service)
-                                        <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                        <option value="{{ $service->id }}" {{ old('service_id') != $service->id ?: 'selected' }}>{{ $service->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

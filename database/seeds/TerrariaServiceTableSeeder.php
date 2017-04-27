@@ -69,6 +69,21 @@ class TerrariaServiceTableSeeder extends Seeder
 
     private function addCoreOptions()
     {
+        $script = <<<'EOF'
+#!/bin/ash
+# TShock Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add curl unzip
+
+cd /tmp
+
+curl -sSLO https://github.com/NyxStudios/TShock/releases/download/v${T_VERSION}/tshock_${T_VERSION}.zip
+
+unzip -o tshock_${T_VERSION}.zip -d /mnt/server
+EOF;
+
         $this->option['tshock'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'tshock',
@@ -82,6 +97,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'config_logs' => '{"custom": false, "location": "ServerLog.txt"}',
             'config_stop' => 'exit',
             'startup' => null,
+            'script_install' => $script,
         ]);
     }
 

@@ -146,7 +146,16 @@ class OptionController extends Controller
      */
     public function viewScripts(Request $request, $id)
     {
-        return view('admin.services.options.scripts', ['option' => ServiceOption::findOrFail($id)]);
+        $option = ServiceOption::with('copyFrom')->findOrFail($id);
+
+        return view('admin.services.options.scripts', [
+            'copyFromOptions' => ServiceOption::whereNull('copy_script_from')->where([
+                ['service_id', $option->service_id],
+                ['id', '!=', $option->id],
+            ])->get(),
+            'relyOnScript' => ServiceOption::where('copy_script_from', $option->id)->get(),
+            'option' => $option,
+        ]);
     }
 
     /**
@@ -234,11 +243,14 @@ class OptionController extends Controller
 
         try {
             $repo->scripts($id, $request->only([
-                'script_install', 'script_entry', 'script_container',
+                'script_install', 'script_entry',
+                'script_container', 'copy_script_from',
             ]));
             Alert::success('Successfully updated option scripts to be run when servers are installed.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.services.option.scripts', $id)->withErrors(json_decode($ex->getMessage()));
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();

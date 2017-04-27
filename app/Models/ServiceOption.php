@@ -64,6 +64,39 @@ class ServiceOption extends Model
     }
 
     /**
+     * Returns the install script for the option; if option is copying from another
+     * it will return the copied script.
+     *
+     * @return string
+     */
+    public function getCopyScriptInstallAttribute($value)
+    {
+        return (is_null($this->copy_script_from)) ? $this->script_install : $this->copyFrom->script_install;
+    }
+
+    /**
+     * Returns the entry command for the option; if option is copying from another
+     * it will return the copied entry command.
+     *
+     * @return string
+     */
+    public function getCopyScriptEntryAttribute($value)
+    {
+        return (is_null($this->copy_script_from)) ? $this->script_entry : $this->copyFrom->script_entry;
+    }
+
+    /**
+     * Returns the install container for the option; if option is copying from another
+     * it will return the copied install container.
+     *
+     * @return string
+     */
+    public function getCopyScriptContainerAttribute($value)
+    {
+        return (is_null($this->copy_script_from)) ? $this->script_container : $this->copyFrom->script_container;
+    }
+
+    /**
      * Gets service associated with a service option.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -101,5 +134,10 @@ class ServiceOption extends Model
     public function packs()
     {
         return $this->hasMany(Pack::class, 'option_id');
+    }
+
+    public function copyFrom()
+    {
+        return $this->belongsTo(ServiceOption::class, 'copy_script_from');
     }
 }

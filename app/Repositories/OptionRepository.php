@@ -49,7 +49,7 @@ class OptionRepository
             'description' => 'required|string',
             'tag' => 'required|string|max:255|unique:service_options,tag',
             'docker_image' => 'required|string|max:255',
-            'startup' => 'required|string',
+            'startup' => 'sometimes|nullable|string',
             'config_from' => 'sometimes|required|numeric|exists:service_options,id',
             'config_startup' => 'required_without:config_from|json',
             'config_stop' => 'required_without:config_from|string|max:255',
@@ -162,6 +162,7 @@ class OptionRepository
      * @param  array  $data
      * @return \Pterodactyl\Models\ServiceOption
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function scripts($id, array $data)
@@ -175,7 +176,21 @@ class OptionRepository
             'script_is_privileged' => 'sometimes|required|boolean',
             'script_entry' => 'sometimes|required|string',
             'script_container' => 'sometimes|required|string',
+            'copy_script_from' => 'sometimes|nullable|numeric',
         ]);
+
+        if (isset($data['copy_script_from']) && ! empty($data['copy_script_from'])) {
+            $select = ServiceOption::whereNull('copy_script_from')->where([
+                ['id', $data['copy_script_from']],
+                ['service_id', $option->service_id],
+            ])->first();
+
+            if (! $select) {
+                throw new DisplayException('The service option selected to copy a script from either does not exist, or is copying from a higher level.');
+            }
+        } else {
+            $data['copy_script_from'] = null;
+        }
 
         if ($validator->fails()) {
             throw new DisplayValidationException(json_encode($validator->errors()));
