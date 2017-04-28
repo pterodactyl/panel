@@ -22,17 +22,21 @@
  */
  @import 'checkbox.css';
 
- .login-box, .register-box {
-     width: 40%;
-     margin: 7% auto
- }
+.login-page {
+    height: auto;
+}
 
- @media (max-width:768px) {
-     .login-box, .register-box {
-         width: 90%;
-         margin-top: 20px
-     }
- }
+.login-box, .register-box {
+    width: 40%;
+    margin: 7% auto;
+}
+
+@media (max-width:768px) {
+    .login-box, .register-box {
+        width: 90%;
+        margin-top: 20px
+    }
+}
 
 .weight-100 {
     font-weight: 100;
@@ -288,4 +292,10 @@ span[aria-labelledby="select2-pUserId-container"] {
 
 tr:hover + tr.server-description {
     background-color: #f5f5f5 !important;
+}
+
+.login-corner-info {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
 }

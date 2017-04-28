@@ -24,6 +24,8 @@
 
 namespace Pterodactyl\Providers;
 
+use View;
+use Cache;
 use Pterodactyl\Models;
 use Pterodactyl\Observers;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +42,9 @@ class AppServiceProvider extends ServiceProvider
         Models\User::observe(Observers\UserObserver::class);
         Models\Server::observe(Observers\ServerObserver::class);
         Models\Subuser::observe(Observers\SubuserObserver::class);
+
+        View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
+        View::share('appIsGit', $this->versionData()['is_git'] ?? false);
     }
 
     /**
@@ -56,5 +61,32 @@ class AppServiceProvider extends ServiceProvider
         if (config('pterodactyl.auth.notifications')) {
             $this->app->register(\DaneEveritt\LoginNotifications\NotificationServiceProvider::class);
         }
+    }
+
+    /**
+     * Return version information for the footer.
+     *
+     * @return array
+     */
+    protected function versionData()
+    {
+        return Cache::remember('git-version', 5, function () {
+            if (file_exists(base_path('.git/HEAD'))) {
+                $head = explode(' ', file_get_contents(base_path('.git/HEAD')));
+                $path = base_path('.git/' . trim($head[1]));
+            }
+
+            if (isset($path) && file_exists($path)) {
+                return [
+                    'version' => substr(file_get_contents($path), 0, 8),
+                    'is_git' => true,
+                ];
+            }
+
+            return [
+                'version' => config('app.version'),
+                'is_git' => false,
+            ];
+        });
     }
 }
