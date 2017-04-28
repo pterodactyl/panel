@@ -84,11 +84,12 @@ class NodesController extends Controller
             $repo = new NodeRepository;
             $node = $repo->create(array_merge(
                 $request->only([
-                    'public', 'disk_overallocate', 'memory_overallocate',
+                    'public', 'disk_overallocate',
+                    'memory_overallocate', 'behind_proxy',
                 ]),
                 $request->intersect([
                     'name', 'location_id', 'fqdn',
-                    'scheme', 'memory', 'disk', 'behind_proxy',
+                    'scheme', 'memory', 'disk',
                     'daemonBase', 'daemonSFTP', 'daemonListen',
                 ])
             ));
@@ -215,10 +216,11 @@ class NodesController extends Controller
         try {
             $node = $repo->update($id, array_merge(
                 $request->only([
-                    'public', 'disk_overallocate', 'memory_overallocate',
+                    'public', 'disk_overallocate',
+                    'memory_overallocate', 'behind_proxy',
                 ]),
                 $request->intersect([
-                    'name', 'location_id', 'fqdn', 'behind_proxy',
+                    'name', 'location_id', 'fqdn',
                     'scheme', 'memory', 'disk', 'upload_size',
                     'reset_secret', 'daemonSFTP', 'daemonListen',
                 ])
