@@ -25,6 +25,17 @@
 
 @section('content')
 <div class="login-box-body">
+    @if (count($errors) > 0)
+        <div class="callout callout-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @lang('auth.auth_error')<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <p class="login-box-msg">@lang('auth.reset_password_text')</p>
     <form action="{{ route('auth.reset.post') }}" method="POST">
         <div class="form-group">
