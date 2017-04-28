@@ -37,7 +37,7 @@
         </div>
     @endif
     <p class="login-box-msg">@lang('auth.reset_password_text')</p>
-    <form action="{{ route('auth.reset.post') }}" method="POST">
+    <form id="resetForm" action="{{ route('auth.reset.post') }}" method="POST">
         <div class="form-group">
             <label for="email" class="control-label">@lang('strings.email')</label>
             <div>
@@ -89,7 +89,7 @@
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script>
         function onSubmit(token) {
-            document.getElementById("loginForm").submit();
+            document.getElementById("resetForm").submit();
         }
         </script>
      @endif
