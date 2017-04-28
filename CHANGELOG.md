@@ -62,7 +62,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Servers that a user is assocaited with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
 
 ### Changed
-* Subuser permissions are now stored in `Permission::list()` to make views way cleaner and make adding to views significantly cleaner.
+* Subuser permissions are now stored in `Permission::listPermissions()` to make views way cleaner and make adding to views significantly cleaner.
 * `[pre.7]` — Sidebar for file manager now is a single link rather than a dropdown.
 * Attempting to reset a password for an account that does not exist no longer returns an error, rather it displays a success message. Failed resets trigger a `Pterodactyl\Events\Auth\FailedPasswordReset` event that can be caught if needed to perform other actions.
 * Servers are no longer queued for deletion due to the general hassle and extra logic required.

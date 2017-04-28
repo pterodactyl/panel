@@ -39,7 +39,7 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function list(Request $request)
+    public function listServices(Request $request)
     {
         $response = [];
         foreach (Service::all() as $service) {

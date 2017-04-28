@@ -121,7 +121,7 @@ class Permission extends Model
      * @param  array  $single
      * @return \Illuminate\Support\Collection|array
      */
-    public static function list($single = false)
+    public static function listPermissions($single = false)
     {
         if ($single) {
             return collect(self::$permissions)->mapWithKeys(function ($item) {

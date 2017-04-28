@@ -103,7 +103,7 @@ class SubuserRepository
                 'daemonSecret' => (string) $uuid->generate('servers', 'uuid'),
             ]);
 
-            $perms = Permission::list(true);
+            $perms = Permission::listPermissions(true);
             $daemonPermissions = $this->coreDaemonPermissions;
 
             foreach ($data['permissions'] as $permission) {
@@ -222,7 +222,7 @@ class SubuserRepository
                 $permission->delete();
             }
 
-            $perms = Permission::list(true);
+            $perms = Permission::listPermissions(true);
             $daemonPermissions = $this->coreDaemonPermissions;
 
             foreach ($data['permissions'] as $permission) {

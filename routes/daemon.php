@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-Route::get('/services', 'ServiceController@list')->name('daemon.services');
+Route::get('/services', 'ServiceController@listServices')->name('daemon.services');
 Route::get('/services/pull/{service}/{file}', 'ServiceController@pull')->name('daemon.pull');
 Route::get('/packs/pull/{uuid}', 'PackController@pull')->name('daemon.pack.pull');
 Route::get('/packs/pull/{uuid}/hash', 'PackController@hash')->name('daemon.pack.hash');
