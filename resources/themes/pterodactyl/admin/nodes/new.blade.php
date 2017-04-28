@@ -78,19 +78,28 @@
                         <div>
                             <div class="radio radio-success radio-inline">
                                 <input type="radio" id="pSSLTrue" value="https" name="scheme" checked>
-                                <label for="pSSLTrue"> Enable SSL </label>
+                                <label for="pSSLTrue"> Use SSL Connection</label>
                             </div>
                             <div class="radio radio-danger radio-inline">
                                 <input type="radio" id="pSSLFalse" value="http" name="scheme">
-                                <label for="pSSLFalse"> Disable SSL </label>
+                                <label for="pSSLFalse"> Use HTTP Connection</label>
                             </div>
                         </div>
-                        <p class="text-muted small">SSL should only be disabled if this node is assigned an IP address as the FQDN and not an actual FQDN. Disabling SSL could allow a malicious user to intercept traffic between the panel and the daemon potentially exposing sensitive information.</p>
+                        <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
                     </div>
                     <div class="form-group">
-                        <label for="pDaemonBase" class="form-label">Daemon Server File Directory</label>
-                        <input type="text" name="daemonBase" id="pDaemonBase" class="form-control" value="/srv/daemon-data" />
-                        <p class="text-muted small">Enter the directory where server files should be stored. <strong>If you use OVH you should check your partition scheme. You may need to use <code>/home/daemon-data</code> to have enough space.</strong></p>
+                        <label class="form-label">Behind Proxy</label>
+                        <div>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pProxyFalse" value="0" name="behind_proxy" checked>
+                                <label for="pProxyFalse"> Not Behind Proxy </label>
+                            </div>
+                            <div class="radio radio-info radio-inline">
+                                <input type="radio" id="pProxyTrue" value="1" name="behind_proxy">
+                                <label for="pProxyTrue"> Behind Proxy </label>
+                            </div>
+                        </div>
+                        <p class="text-muted small">If you are running the daemon behind a proxy such as Cloudflare, select this to have the daemon skip looking for certificates on boot.</p>
                     </div>
                 </div>
             </div>
@@ -102,6 +111,11 @@
                 </div>
                 <div class="box-body">
                     <div class="row">
+                        <div class="form-group col-xs-12">
+                            <label for="pDaemonBase" class="form-label">Daemon Server File Directory</label>
+                            <input type="text" name="daemonBase" id="pDaemonBase" class="form-control" value="/srv/daemon-data" />
+                            <p class="text-muted small">Enter the directory where server files should be stored. <strong>If you use OVH you should check your partition scheme. You may need to use <code>/home/daemon-data</code> to have enough space.</strong></p>
+                        </div>
                         <div class="form-group col-md-6">
                             <label for="pMemory" class="form-label">Total Memory</label>
                             <div class="input-group">

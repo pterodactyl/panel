@@ -52,6 +52,7 @@ class NodeRepository
             'public' => 'required|numeric|between:0,1',
             'fqdn' => 'required|string|unique:nodes,fqdn',
             'scheme' => 'required|regex:/^(http(s)?)$/',
+            'behind_proxy' => 'required|boolean',
             'memory' => 'required|numeric|min:1',
             'memory_overallocate' => 'required|numeric|min:-1',
             'disk' => 'required|numeric|min:1',
@@ -109,6 +110,7 @@ class NodeRepository
             'public' => 'numeric|between:0,1',
             'fqdn' => 'string|unique:nodes,fqdn,' . $id,
             'scheme' => 'regex:/^(http(s)?)$/',
+            'behind_proxy' => 'boolean',
             'memory' => 'numeric|min:1',
             'memory_overallocate' => 'numeric|min:-1',
             'disk' => 'numeric|min:1',
@@ -166,7 +168,7 @@ class NodeRepository
                     'web' => [
                         'listen' => $node->daemonListen,
                         'ssl' => [
-                            'enabled' => ($node->scheme === 'https'),
+                            'enabled' => (! $node->behind_proxy && $node->scheme === 'https'),
                         ],
                     ],
                     'sftp' => [

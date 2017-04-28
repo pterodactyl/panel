@@ -88,7 +88,7 @@ class NodesController extends Controller
                 ]),
                 $request->intersect([
                     'name', 'location_id', 'fqdn',
-                    'scheme', 'memory', 'disk',
+                    'scheme', 'memory', 'disk', 'behind_proxy',
                     'daemonBase', 'daemonSFTP', 'daemonListen',
                 ])
             ));
@@ -218,7 +218,7 @@ class NodesController extends Controller
                     'public', 'disk_overallocate', 'memory_overallocate',
                 ]),
                 $request->intersect([
-                    'name', 'location_id', 'fqdn',
+                    'name', 'location_id', 'fqdn', 'behind_proxy',
                     'scheme', 'memory', 'disk', 'upload_size',
                     'reset_secret', 'daemonSFTP', 'daemonListen',
                 ])

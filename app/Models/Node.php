@@ -59,6 +59,7 @@ class Node extends Model
          'disk' => 'integer',
          'daemonListen' => 'integer',
          'daemonSFTP' => 'integer',
+         'behind_proxy' => 'boolean',
      ];
 
     /**
@@ -68,8 +69,8 @@ class Node extends Model
      */
     protected $fillable = [
         'public', 'name', 'location_id',
-        'fqdn', 'scheme', 'memory',
-        'memory_overallocate', 'disk',
+        'fqdn', 'scheme', 'behind_proxy',
+        'memory', 'memory_overallocate', 'disk',
         'disk_overallocate', 'upload_size',
         'daemonSecret', 'daemonBase',
         'daemonSFTP', 'daemonListen',
@@ -121,7 +122,7 @@ class Node extends Model
                 'host' => '0.0.0.0',
                 'listen' => $this->daemonListen,
                 'ssl' => [
-                    'enabled' => $this->scheme === 'https',
+                    'enabled' => (! $this->behind_proxy && $this->scheme === 'https'),
                     'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
                     'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
                 ],
@@ -143,7 +144,7 @@ class Node extends Model
                 'count' => 3,
             ],
             'remote' => [
-                'base' => config('app.url'),
+                'base' => route('index'),
                 'download' => route('remote.download'),
                 'installed' => route('remote.install'),
             ],

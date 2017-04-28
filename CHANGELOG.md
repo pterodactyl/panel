@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Added new scripts for service options that allows installation of software in a privileged Docker container on the node prior to marking a server as installed.
 * Added ability to reinstall a server using the currently assigned service and option.
 * Added ability to change a server's service and service option, as well as change pack assignments and other management services in that regard.
+* Added support for using a proxy such as Cloudflare with a node connection. Previously there was no way to tell the panel to connect over SSL without marking the Daemon as also using SSL.
 
 ### Changed
 * Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
