@@ -76,7 +76,7 @@
             <div class="col-xs-12">
                 {!! csrf_field() !!}
                 <input type="hidden" name="token" value="{{ $token }}">
-                <button type="submit" class="btn btn-primary btn-block btn-flat">@lang('auth.reset_password')</button>
+                <button type="submit" class="btn btn-primary btn-block btn-flat g-recaptcha" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.reset_password')</button>
             </div>
         </div>
     </form>

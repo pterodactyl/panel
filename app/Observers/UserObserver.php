@@ -25,6 +25,8 @@
 namespace Pterodactyl\Observers;
 
 use DB;
+use Hash;
+use Carbon;
 use Pterodactyl\Events;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
@@ -52,12 +54,20 @@ class UserObserver
     {
         event(new Events\User\Created($user));
 
-        $token = DB::table('password_resets')->where('email', $user->email)->orderBy('created_at', 'desc')->first();
-        $user->notify((new AccountCreated([
+        if ($user->password === 'unset') {
+            $token = hash_hmac('sha256', str_random(40), config('app.key'));
+            DB::table('password_resets')->insert([
+                'email' => $user->email,
+                'token' => Hash::make($token),
+                'created_at' => Carbon::now()->toDateTimeString(),
+            ]);
+        }
+
+        $user->notify(new AccountCreated([
             'name' => $user->name_first,
             'username' => $user->username,
-            'token' => (! is_null($token)) ? $token->token : null,
-        ])));
+            'token' => (isset($token)) ? $token : null,
+        ]));
     }
 
     /**

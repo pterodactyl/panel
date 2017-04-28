@@ -83,22 +83,11 @@ class UserRepository
                 'username' => $data['username'],
                 'name_first' => $data['name_first'],
                 'name_last' => $data['name_last'],
-                'password' => Hash::make((empty($data['password'])) ? str_random(30) : $data['password']),
+                'password' => (empty($data['password'])) ? 'unset' : Hash::make($data['password']),
                 'root_admin' => $data['root_admin'],
                 'language' => Settings::get('default_language', 'en'),
             ]);
             $user->save();
-
-            // Setup a Password Reset to use when they set a password.
-            // Only used if no password is provided.
-            if (empty($data['password'])) {
-                $token = str_random(32);
-                DB::table('password_resets')->insert([
-                    'email' => $user->email,
-                    'token' => $token,
-                    'created_at' => Carbon::now()->toDateTimeString(),
-                ]);
-            }
 
             DB::commit();
 
