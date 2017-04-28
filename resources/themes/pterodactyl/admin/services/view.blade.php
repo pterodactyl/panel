@@ -45,7 +45,7 @@
 </div>
 <form action="{{ route('admin.services.view', $service->id) }}" method="POST">
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-md-6">
             <div class="box">
                 <div class="box-body">
                     <div class="form-group">
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-md-6">
             <div class="box">
                 <div class="box-body">
                     <div class="form-group">

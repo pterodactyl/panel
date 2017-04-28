@@ -53,7 +53,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-6">
+    <div class="col-md-6">
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Safely Delete Server</h3>
@@ -70,7 +70,7 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-6">
+    <div class="col-md-6">
         <div class="box box-danger">
             <div class="box-header with-border">
                 <h3 class="box-title">Force Delete Server</h3>

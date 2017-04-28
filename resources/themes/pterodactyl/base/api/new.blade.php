@@ -68,13 +68,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-xs-6">
+                        <div class="col-md-6 col-xs-8">
                             <div class="btn-group">
                                 <a id="selectAllCheckboxes" class="btn btn-default">@lang('strings.select_all')</a>
                                 <a id="unselectAllCheckboxes" class="btn btn-default">@lang('strings.select_none')</a>
                             </div>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-md-6 col-xs-4">
                             {!! csrf_field() !!}
                             <button class="btn btn-success pull-right">@lang('strings.create') &rarr;</button>
                         </div>
