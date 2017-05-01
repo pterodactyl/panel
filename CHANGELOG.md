@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2.1]` — Fixes a bug causing login issues and password reset failures when reCAPTCHA is enabled.
 * Fixes remote timing attack vulnerability due to hmac comparsion in API middleware.
 * `[beta.2.1]` — Fixes bug requiring docker image field to be filled out when adding a service option.
+* `[beta.2.1]` — Fixes inability to mark a user as a non-admin once they were assigned the role.
 
 ### Added
 * Added new scripts for service options that allows installation of software in a privileged Docker container on the node prior to marking a server as installed.

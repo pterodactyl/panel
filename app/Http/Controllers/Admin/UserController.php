@@ -143,10 +143,13 @@ class UserController extends Controller
     {
         try {
             $repo = new UserRepository;
-            $user = $repo->update($id, $request->intersect([
-                'email', 'password', 'name_first',
-                'name_last', 'username', 'root_admin',
-            ]));
+            $user = $repo->update($id, array_merge(
+                $request->only('root_admin'),
+                $request->intersect([
+                    'email', 'password', 'name_first',
+                    'name_last', 'username',
+                ])
+            ));
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
