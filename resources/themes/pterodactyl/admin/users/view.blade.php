@@ -44,13 +44,13 @@
                     <div class="form-group">
                         <label for="email" class="control-label">Email</label>
                         <div>
-                            <input type="text" name="email" value="{{ $user->email }}" class="form-control">
+                            <input type="email" name="input_email" value="{{ $user->email }}" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="registered" class="control-label">Username</label>
                         <div>
-                            <input type="text" name="username" value="{{ $user->username }}" class="form-control">
+                            <input type="text" name="input_username" value="{{ $user->username }}" class="form-control">
                         </div>
                     </div>
                     <div class="form-group">
@@ -82,7 +82,7 @@
                     <div class="form-group">
                         <label for="password" class="control-label">Password</label>
                         <div>
-                            <input type="password" id="password" name="password" class="form-control">
+                            <input type="password" id="password" name="input_password" class="form-control">
                         </div>
                     </div>
                 </div>

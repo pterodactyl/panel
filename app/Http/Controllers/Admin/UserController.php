@@ -141,12 +141,20 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $repo = new UserRepository;
-            $user = $repo->update($id, $request->intersect([
+        // Rename variables because autofill cannot be disabled
+        // in any logical manner, and editing users is impossible.
+        $fixedData = array_filter(
+            collect($request->all())->mapWithKeys(function ($item, $key) {
+                return [str_replace('input_', '', $key) => $item];
+            })->only([
                 'email', 'password', 'name_first',
                 'name_last', 'username', 'root_admin',
-            ]));
+            ])->toArray()
+        );
+
+        try {
+            $repo = new UserRepository;
+            $user = $repo->update($id, $fixedData);
             Alert::success('User account was successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
