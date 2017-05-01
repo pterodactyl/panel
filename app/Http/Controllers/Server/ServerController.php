@@ -202,10 +202,10 @@ class ServerController extends Controller
         $this->authorize('download-files', $server);
 
         $token = str_random(40);
-        Cache::tags(['Downloads', 'Downloads:Server:' . $server->uuid])->put('Download:' . $token, [
+        Cache::tags(['Server:Downloads'])->put($token, [
             'server' => $server->uuid,
             'path' => $file,
-        ], 1);
+        ], 5);
 
         return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $token);
     }

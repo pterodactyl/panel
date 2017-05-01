@@ -366,7 +366,7 @@ class NodesController extends Controller
         $node = Models\Node::findOrFail($id);
 
         $token = str_random(32);
-        Cache::put('NodeConfiguration:' . $token, $node->id, 5);
+        Cache::tags(['Node:Configuration'])->put($token, $node->id, 5);
 
         return response()->json(['token' => $token]);
     }

@@ -40,7 +40,7 @@ class ActionController extends Controller
      */
     public function authenticateDownload(Request $request)
     {
-        $download = Cache::pull('Download:' . $request->input('token'));
+        $download = Cache::tags(['Server:Downloads'])->pull($request->input('token'));
 
         if (is_null($download)) {
             return response()->json([
@@ -81,7 +81,7 @@ class ActionController extends Controller
         $server->installed = ($status === 'installed') ? 1 : 2;
         $server->save();
 
-        return response('', 204);
+        return response()->json([]);
     }
 
     /**
@@ -93,7 +93,7 @@ class ActionController extends Controller
      */
     public function configuration(Request $request, $token)
     {
-        $nodeId = Cache::pull('NodeConfiguration:' . $token);
+        $nodeId = Cache::tags(['Node:Configuration'])->pull($token);
         if (is_null($nodeId)) {
             return response()->json(['error' => 'token_invalid'], 403);
         }
