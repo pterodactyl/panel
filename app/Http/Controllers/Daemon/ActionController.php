@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\Remote;
+namespace Pterodactyl\Http\Controllers\Daemon;
 
-use Carbon\Carbon;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Download;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Models\NodeConfigurationToken;
 
-class RemoteController extends Controller
+class ActionController extends Controller
 {
     /**
      * Handles download request from daemon.
@@ -37,9 +38,9 @@ class RemoteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function postDownload(Request $request)
+    public function authenticateDownload(Request $request)
     {
-        $download = Models\Download::where('token', $request->input('token'))->first();
+        $download = Download::where('token', $request->input('token'))->first();
         if (! $download) {
             return response()->json([
                 'error' => 'An invalid request token was recieved with this request.',
@@ -60,9 +61,9 @@ class RemoteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function postInstall(Request $request)
+    public function markInstall(Request $request)
     {
-        $server = Models\Server::where('uuid', $request->input('server'))->with('node')->first();
+        $server = Server::where('uuid', $request->input('server'))->with('node')->first();
         if (! $server) {
             return response()->json([
                 'error' => 'No server by that ID was found on the system.',
@@ -72,7 +73,7 @@ class RemoteController extends Controller
         $hmac = $request->input('signed');
         $status = $request->input('installed');
 
-        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $server->node->daemonSecret, true)) {
+        if (! hash_equals(base64_decode($hmac), hash_hmac('sha256', $server->uuid, $server->node->daemonSecret, true))) {
             return response()->json([
                 'error' => 'Signed HMAC was invalid.',
             ], 403);
@@ -81,35 +82,7 @@ class RemoteController extends Controller
         $server->installed = ($status === 'installed') ? 1 : 2;
         $server->save();
 
-        return response()->json([
-            'message' => 'Recieved!',
-        ], 200);
-    }
-
-    /**
-     * Handles event from daemon.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
-     * @deprecated
-     */
-    public function event(Request $request)
-    {
-        $server = Models\Server::where('uuid', $request->input('server'))->with('node')->first();
-        if (! $server) {
-            return response()->json([
-                'error' => 'No server by that ID was found on the system.',
-            ], 422);
-        }
-
-        $hmac = $request->input('signed');
-        if (base64_decode($hmac) !== hash_hmac('sha256', $server->uuid, $server->node->daemonSecret, true)) {
-            return response()->json([
-                'error' => 'Signed HMAC was invalid.',
-            ], 403);
-        }
-
-        return response('', 201);
+        return response('', 204);
     }
 
     /**
@@ -119,11 +92,11 @@ class RemoteController extends Controller
      * @param  string                    $token
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function getConfiguration(Request $request, $token)
+    public function configuration(Request $request, $token)
     {
         // Try to query the token and the node from the database
         try {
-            $model = Models\NodeConfigurationToken::with('node')->where('token', $token)->firstOrFail();
+            $model = NodeConfigurationToken::with('node')->where('token', $token)->firstOrFail();
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'token_invalid'], 403);
         }

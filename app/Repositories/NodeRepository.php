@@ -177,8 +177,6 @@ class NodeRepository
                     ],
                     'remote' => [
                         'base' => config('app.url'),
-                        'download' => route('remote.download'),
-                        'installed' => route('remote.install'),
                     ],
                     'uploads' => [
                         'size_limit' => $node->upload_size,

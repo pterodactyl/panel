@@ -145,8 +145,6 @@ class Node extends Model
             ],
             'remote' => [
                 'base' => route('index'),
-                'download' => route('remote.download'),
-                'installed' => route('remote.install'),
             ],
             'uploads' => [
                 'size_limit' => $this->upload_size,

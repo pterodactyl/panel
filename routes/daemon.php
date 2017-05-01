@@ -26,3 +26,7 @@ Route::get('/services/pull/{service}/{file}', 'ServiceController@pull')->name('d
 Route::get('/packs/pull/{uuid}', 'PackController@pull')->name('daemon.pack.pull');
 Route::get('/packs/pull/{uuid}/hash', 'PackController@hash')->name('daemon.pack.hash');
 Route::get('/details/option/{server}', 'OptionController@details')->name('daemon.option.details');
+Route::get('/configure/{token}', 'ActionController@configuration')->name('daemon.configuration');
+
+Route::post('/download', 'ActionController@authentiateDownload')->name('daemon.download');
+Route::post('/install', 'ActionController@markInstall')->name('daemon.install');
