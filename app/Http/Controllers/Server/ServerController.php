@@ -207,7 +207,7 @@ class ServerController extends Controller
             'path' => $file,
         ], 1);
 
-        return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $download->token);
+        return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $token);
     }
 
     /**
