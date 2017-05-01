@@ -138,6 +138,7 @@ class ServerObserver
          */
         Cache::tags('Model:Server:byUuid:' . $server->uuid)->flush();
         Cache::tags('Model:Server:byUuid:' . $server->uuidShort)->flush();
+        Cache::tags('Downloads:Server:' . $server->uuid)->flush();
 
         event(new Events\Server\Updated($server));
     }

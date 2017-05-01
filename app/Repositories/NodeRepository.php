@@ -284,9 +284,6 @@ class NodeRepository
             // Delete Allocations
             Models\Allocation::where('node_id', $node->id)->delete();
 
-            // Delete configure tokens
-            Models\NodeConfigurationToken::where('node_id', $node->id)->delete();
-
             // Delete Node
             $node->delete();
         });

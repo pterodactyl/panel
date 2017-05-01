@@ -25,8 +25,8 @@
 namespace Pterodactyl\Http\Controllers\Server;
 
 use Log;
-use Uuid;
 use Alert;
+use Cache;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
@@ -201,13 +201,11 @@ class ServerController extends Controller
         $server = Models\Server::byUuid($uuid);
         $this->authorize('download-files', $server);
 
-        $download = new Models\Download;
-
-        $download->token = (string) Uuid::generate(4);
-        $download->server = $server->uuid;
-        $download->path = $file;
-
-        $download->save();
+        $token = str_random(40);
+        Cache::tags(['Downloads', 'Downloads:Server:' . $server->uuid])->put('Download:' . $token, [
+            'server' => $server->uuid,
+            'path' => $file,
+        ], 1);
 
         return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $download->token);
     }

@@ -335,16 +335,6 @@ class Server extends Model
     }
 
     /**
-     * Gets all downloads associated with a server.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function downloads()
-    {
-        return $this->hasMany(Download::class, 'server', 'id');
-    }
-
-    /**
      * Gets the location of the server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

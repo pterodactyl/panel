@@ -20,6 +20,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
 * Version in footer of panel now displays correctly if panel is installed using Git rather than a download from source.
 * Mobile views are now more... viewable. Fixes `col-xs-6` usage thoughout the Admin CP where it was intended to be `col-md-6`.
+* Node Configuration tokens and Download tokens are stored using the cache helpers rather than a database to speed up functions and make use of auto-expiration/deletion functions.
+* Old daemon routes using `/remote` have been changed to use `/daemon`, panel changes now reflect this.
 
 ## v0.6.0-beta.2.1 (Courageous Carniadactylus)
 ### Fixed

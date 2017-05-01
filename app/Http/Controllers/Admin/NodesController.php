@@ -27,6 +27,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use DB;
 use Log;
 use Alert;
+use Cache;
 use Javascript;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
@@ -364,11 +365,9 @@ class NodesController extends Controller
     {
         $node = Models\Node::findOrFail($id);
 
-        $t = Models\NodeConfigurationToken::create([
-            'node_id' => $id,
-            'token' => str_random(32),
-        ]);
+        $token = str_random(32);
+        Cache::put('NodeConfiguration:' . $token, $node->id, 5);
 
-        return response()->json(['token' => $t->token]);
+        return response()->json(['token' => $token]);
     }
 }

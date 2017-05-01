@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Http\Controllers\Daemon;
 
+use Cache;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Download;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Models\NodeConfigurationToken;
 
 class ActionController extends Controller
 {
@@ -40,18 +40,17 @@ class ActionController extends Controller
      */
     public function authenticateDownload(Request $request)
     {
-        $download = Download::where('token', $request->input('token'))->first();
-        if (! $download) {
+        $download = Cache::pull('Download:' . $request->input('token'));
+
+        if (is_null($download)) {
             return response()->json([
                 'error' => 'An invalid request token was recieved with this request.',
             ], 403);
         }
 
-        $download->delete();
-
         return response()->json([
-            'path' => $download->path,
-            'server' => $download->server,
+            'path' => $download['path'],
+            'server' => $download['server'],
         ]);
     }
 
@@ -94,24 +93,14 @@ class ActionController extends Controller
      */
     public function configuration(Request $request, $token)
     {
-        // Try to query the token and the node from the database
-        try {
-            $model = NodeConfigurationToken::with('node')->where('token', $token)->firstOrFail();
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        $nodeId = Cache::pull('NodeConfiguration:' . $token);
+        if (is_null($nodeId)) {
             return response()->json(['error' => 'token_invalid'], 403);
         }
 
-        // Check if token is expired
-        if ($model->created_at->addMinutes(5)->lt(Carbon::now())) {
-            $model->delete();
-
-            return response()->json(['error' => 'token_expired'], 403);
-        }
-
-        // Delete the token, it's one-time use
-        $model->delete();
+        $node = Node::findOrFail($nodeId);
 
         // Manually as getConfigurationAsJson() returns it in correct format already
-        return response($model->node->getConfigurationAsJson())->header('Content-Type', 'text/json');
+        return response($node->getConfigurationAsJson())->header('Content-Type', 'text/json');
     }
 }
