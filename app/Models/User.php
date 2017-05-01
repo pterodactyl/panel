@@ -57,6 +57,13 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     const USERNAME_RULES = 'regex:/^([\w\d\.\-]{1,255})$/';
 
     /**
+     * Level of servers to display when using access() on a user.
+     *
+     * @var string
+     */
+    protected $accessLevel = 'all';
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -195,6 +202,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Change the access level for a given call to `access()` on the user.
+     *
+     * @param  string  $level can be all, admin, subuser, owner
+     * @return void
+     */
+    public function setAccessLevel($level = 'all')
+    {
+        if (! in_array($level, ['all', 'admin', 'subuser', 'owner'])) {
+            $level = 'all';
+        }
+        $this->accessLevel = $level;
+
+        return $this;
+    }
+
+    /**
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
@@ -209,8 +232,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             $query = Server::with(! empty($load) ? $load : ['service', 'node', 'allocation']);
         }
 
-        if (! $this->isRootAdmin()) {
+        // If access level is set to owner, only display servers
+        // that the user owns.
+        if ($this->accessLevel === 'owner') {
+            $query->where('owner_id', $this->id);
+        }
+
+        // If set to all, display all servers they can access, including
+        // those they access as an admin.
+        //
+        // If set to subuser, only return the servers they can access because
+        // they are owner, or marked as a subuser of the server.
+        if (($this->accessLevel === 'all' && ! $this->isRootAdmin()) || $this->accessLevel === 'subuser') {
             $query->whereIn('id', $this->serverAccessArray());
+        }
+
+        // If set to admin, only display the servers a user can access
+        // as an administrator (leaves out owned and subuser of).
+        if ($this->accessLevel === 'admin' && $this->isRootAdmin()) {
+            $query->whereNotIn('id', $this->serverAccessArray());
         }
 
         return $query;
