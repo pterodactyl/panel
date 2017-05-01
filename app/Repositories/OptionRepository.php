@@ -48,7 +48,7 @@ class OptionRepository
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'tag' => 'required|string|max:255|unique:service_options,tag',
-            'docker_image' => 'required|string|max:255',
+            'docker_image' => 'sometimes|string|max:255',
             'startup' => 'sometimes|nullable|string',
             'config_from' => 'sometimes|required|numeric|exists:service_options,id',
             'config_startup' => 'required_without:config_from|json',
