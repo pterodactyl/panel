@@ -54,6 +54,30 @@ class ServiceVariable extends Model
     ];
 
     /**
+     * Reserved environment variable names.
+     *
+     * @var array
+     */
+    protected static $reservedNames = [
+        'SERVER_MEMORY',
+        'SERVER_IP',
+        'SERVER_PORT',
+        'ENV',
+        'HOME',
+        'USER',
+    ];
+
+    /**
+     * Returns an array of environment variable names that cannot be used.
+     *
+     * @return array
+     */
+    public static function reservedNames()
+    {
+        return self::$reservedNames;
+    }
+
+    /**
      * Returns the display executable for the option and will use the parent
      * service one if the option does not have one defined.
      *

@@ -53,12 +53,11 @@ class VariableRepository
             'env_variable' => 'required|regex:/^[\w]{1,255}$/',
             'default_value' => 'string',
             'options' => 'sometimes|required|array',
-            'rules' => 'bail|required|string|min:1',
+            'rules' => 'bail|required|string',
         ]);
 
         // Ensure the default value is allowed by the rules provided.
-        $rules = (isset($data['rules'])) ? $data['rules'] : $variable->rules;
-        $validator->sometimes('default_value', $rules, function ($input) {
+        $validator->sometimes('default_value', $data['rules'] ?? null, function ($input) {
             return $input->default_value;
         });
 
@@ -66,11 +65,13 @@ class VariableRepository
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        if (isset($data['env_variable'])) {
-            $search = ServiceVariable::where('env_variable', $data['env_variable'])->where('option_id', $option->id);
-            if ($search->first()) {
-                throw new DisplayException('The envionment variable name assigned to this variable must be unique for this service option.');
-            }
+        if (in_array($data['env_variable'], ServiceVariable::reservedNames())) {
+            throw new DisplayException('The environment variable name provided is a reserved keyword for the daemon.');
+        }
+
+        $search = ServiceVariable::where('env_variable', $data['env_variable'])->where('option_id', $option->id);
+        if ($search->first()) {
+            throw new DisplayException('The envionment variable name assigned to this variable must be unique for this service option.');
         }
 
         if (! isset($data['options']) || ! is_array($data['options'])) {
@@ -141,6 +142,10 @@ class VariableRepository
         }
 
         if (isset($data['env_variable'])) {
+            if (in_array($data['env_variable'], ServiceVariable::reservedNames())) {
+                throw new DisplayException('The environment variable name provided is a reserved keyword for the daemon.');
+            }
+
             $search = ServiceVariable::where('env_variable', $data['env_variable'])
                 ->where('option_id', $variable->option_id)
                 ->where('id', '!=', $variable->id);
