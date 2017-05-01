@@ -190,6 +190,7 @@
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
             {!! Theme::js('vendor/select2/select2.full.min.js') !!}
             {!! Theme::js('js/admin/functions.js') !!}
+            {!! Theme::js('js/autocomplete.js') !!}
         @show
     </body>
 </html>

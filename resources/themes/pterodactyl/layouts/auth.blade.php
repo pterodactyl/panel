@@ -63,6 +63,7 @@
         </div>
         {!! Theme::js('vendor/jquery/jquery.min.js') !!}
         {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
+        {!! Theme::js('js/autocomplete.js') !!}
 
         @if(config('pterodactyl.lang.in_context')) {!! Theme::js('vendor/phraseapp/phraseapp.js') !!} @endif
     </body>

@@ -299,3 +299,8 @@ tr:hover + tr.server-description {
     bottom: 5px;
     right: 10px;
 }
+
+input.form-autocomplete-stop[readonly] {
+    background: inherit;
+    cursor: text;
+}
