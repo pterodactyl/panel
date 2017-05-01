@@ -3,9 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-beta.2.1 (Courageous Carniadactylus)
+## v0.6.0-beta.3 (Courageous Carniadactylus)
 ### Fixed
 * `[beta.2.1]` — Fixed a bug preventing the deletion of a server.
+* It is now possible to modify a server's disk limits after the server is created.
+* `[beta.2.1]` — Fixes a bug causing login issues and password reset failures when reCAPTCHA is enabled.
+* Fixes remote timing attack vulnerability due to hmac comparsion in API middleware.
 
 ### Added
 * Added new scripts for service options that allows installation of software in a privileged Docker container on the node prior to marking a server as installed.
@@ -15,6 +18,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
+* Version in footer of panel now displays correctly if panel is installed using Git rather than a download from source.
+* Mobile views are now more... viewable. Fixes `col-xs-6` usage thoughout the Admin CP where it was intended to be `col-md-6`.
 
 ## v0.6.0-beta.2.1 (Courageous Carniadactylus)
 ### Fixed
