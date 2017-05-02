@@ -258,13 +258,12 @@ span[aria-labelledby="select2-pUserId-container"] {
 
 .terminal-notify {
     position: absolute;
-    right: 10px;
+    right: 27px;
     bottom: 10px;
-    /* Browsers usually have a 17px scrollbar which is visible in the terminal */
-    padding: 7px 24px 7px 7px;
-    border-top-left-radius: 3px;
-    background: white;
-    color: black;
+    padding: 3.5px 7px;
+    border-radius: 3px 3px 0 0;
+    background: #ccc;
+    color: #000;
     opacity: .5;
     cursor: pointer;
 }
