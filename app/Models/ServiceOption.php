@@ -138,6 +138,6 @@ class ServiceOption extends Model
 
     public function copyFrom()
     {
-        return $this->belongsTo(ServiceOption::class, 'copy_script_from');
+        return $this->belongsTo(self::class, 'copy_script_from');
     }
 }
