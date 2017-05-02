@@ -3,7 +3,7 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.6.0-beta.3 (Courageous Carniadactylus)
+## v0.6.0-rc.1 (Courageous Carniadactylus)
 ### Fixed
 * `[beta.2.1]` — Fixed a bug preventing the deletion of a server.
 * It is now possible to modify a server's disk limits after the server is created.
