@@ -213,7 +213,8 @@ class DeploymentService
      *
      * @return \Pterodactyl\Models\Node
      */
-    public function node() {
+    public function node()
+    {
         return $this->node;
     }
 
@@ -222,7 +223,8 @@ class DeploymentService
      *
      * @return \Pterodactyl\Models\Location
      */
-    public function location() {
+    public function location()
+    {
         return $this->location;
     }
 
@@ -231,7 +233,8 @@ class DeploymentService
      *
      * @return \Pterodactyl\Models\Allocation
      */
-    public function allocation() {
+    public function allocation()
+    {
         return $this->allocation;
     }
 
@@ -240,7 +243,8 @@ class DeploymentService
      *
      * @return void
      */
-    public function select() {
+    public function select()
+    {
         if (! $this->node) {
             $this->findNode();
         }
