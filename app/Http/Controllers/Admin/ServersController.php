@@ -34,6 +34,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Repositories\DatabaseRepository;
+use Pterodactyl\Exceptions\AutoDeploymentException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServersController extends Controller
@@ -97,6 +98,8 @@ class ServersController extends Controller
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+        } catch (AutoDeploymentException $ex) {
+            Alert::danger('Auto-Deployment Exception: ' . $ex->getMessage())->flash();
         } catch (TransferException $ex) {
             Log::warning($ex);
             Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();

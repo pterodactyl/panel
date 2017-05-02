@@ -27,8 +27,16 @@ namespace Pterodactyl\Repositories;
 use DB;
 use Crypt;
 use Validator;
-use Pterodactyl\Models;
+use Pterodactyl\Models\Pack;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\UuidService;
+use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\ServerVariable;
+use Pterodactyl\Models\ServiceVariable;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\DeploymentService;
@@ -80,12 +88,11 @@ class ServerRepository
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\AutoDeploymentException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
-
-        // Validate Fields
         $validator = Validator::make($data, [
             'user_id' => 'required|exists:users,id',
             'name' => 'required|regex:/^([\w .-]{1,200})$/',
@@ -124,25 +131,27 @@ class ServerRepository
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        $user = Models\User::findOrFail($data['user_id']);
+        $user = User::findOrFail($data['user_id']);
 
-        $autoDeployed = false;
-        if (isset($data['auto_deploy']) && $data['auto_deploy']) {
-            // This is an auto-deployment situation
-            // Ignore any other passed node data
-            unset($data['node_id'], $data['allocation_id']);
+        $deployment = false;
+        if (isset($data['auto_deploy'])) {
+            $deployment = new DeploymentService;
 
-            $autoDeployed = true;
-            $node = DeploymentService::smartRandomNode($data['memory'], $data['disk'], $data['location_id']);
-            $allocation = DeploymentService::randomAllocation($node->id);
-        } else {
-            $node = Models\Node::findOrFail($data['node_id']);
+            if (isset($data['location_id'])) {
+                $deployment->setLocation($data['location_id']);
+            }
+
+            $deployment->setMemory($data['memory'])->setDisk($data['disk'])->select();
         }
+
+        $node = (! $deployment) ? Node::findOrFail($data['node_id']) : $deployment->node();
 
         // Verify IP & Port are a.) free and b.) assigned to the node.
         // We know the node exists because of 'exists:nodes,id' in the validation
-        if (! $autoDeployed) {
-            $allocation = Models\Allocation::where('id', $data['allocation_id'])->where('node_id', $data['node_id'])->whereNull('server_id')->first();
+        if (! $deployment) {
+            $allocation = Allocation::where('id', $data['allocation_id'])->where('node_id', $data['node_id'])->whereNull('server_id')->first();
+        } else {
+            $allocation = $deployment->allocation();
         }
 
         // Something failed in the query, either that combo doesn't exist, or it is in use.
@@ -154,7 +163,7 @@ class ServerRepository
         // We know the service and option exists because of the validation.
         // We need to verify that the option exists for the service, and then check for
         // any required variable fields. (fields are labeled env_<env_variable>)
-        $option = Models\ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
+        $option = ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
         if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
@@ -163,17 +172,17 @@ class ServerRepository
         if (! isset($data['pack_id']) || (int) $data['pack_id'] < 1) {
             $data['pack_id'] = null;
         } else {
-            $pack = Models\Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
+            $pack = Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
         }
 
         // Load up the Service Information
-        $service = Models\Service::find($option->service_id);
+        $service = Service::find($option->service_id);
 
         // Check those Variables
-        $variables = Models\ServiceVariable::where('option_id', $data['option_id'])->get();
+        $variables = ServiceVariable::where('option_id', $data['option_id'])->get();
         $variableList = [];
         if ($variables) {
             foreach ($variables as $variable) {
@@ -206,9 +215,9 @@ class ServerRepository
         }
 
         // Check Overallocation
-        if (! $autoDeployed) {
+        if (! $deployment) {
             if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
-                $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first();
+                $totals = Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $node->id)->first();
 
                 // Check memory limits
                 if (is_numeric($node->memory_overallocate)) {
@@ -236,7 +245,7 @@ class ServerRepository
             $uuid = new UuidService;
 
             // Add Server to the Database
-            $server = new Models\Server;
+            $server = new Server;
             $genUuid = $uuid->generate('servers', 'uuid');
             $genShortUuid = $uuid->generateShort('servers', 'uuidShort', $genUuid);
 
@@ -278,7 +287,7 @@ class ServerRepository
             // Add Additional Allocations
             if (isset($data['allocation_additional']) && is_array($data['allocation_additional'])) {
                 foreach ($data['allocation_additional'] as $allocation) {
-                    $model = Models\Allocation::where('id', $allocation)->where('node_id', $data['node_id'])->whereNull('server_id')->first();
+                    $model = Allocation::where('id', $allocation)->where('node_id', $data['node_id'])->whereNull('server_id')->first();
                     if (! $model) {
                         continue;
                     }
@@ -296,7 +305,7 @@ class ServerRepository
             foreach ($variableList as $item) {
                 $environmentVariables[$item['env']] = $item['val'];
 
-                Models\ServerVariable::create([
+                ServerVariable::create([
                     'server_id' => $server->id,
                     'variable_id' => $item['id'],
                     'variable_value' => $item['val'],
@@ -379,7 +388,7 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
-            $server = Models\Server::with('user')->findOrFail($id);
+            $server = Server::with('user')->findOrFail($id);
 
             // Update daemon secret if it was passed.
             if (isset($data['reset_token']) || (isset($data['owner_id']) && (int) $data['owner_id'] !== $server->user->id)) {
@@ -445,7 +454,7 @@ class ServerRepository
 
         DB::beginTransaction();
         try {
-            $server = Models\Server::findOrFail($id);
+            $server = Server::findOrFail($id);
 
             $server->image = $data['docker_image'];
             $server->save();
@@ -502,7 +511,7 @@ class ServerRepository
         DB::beginTransaction();
 
         try {
-            $server = Models\Server::with('allocation', 'allocations')->findOrFail($id);
+            $server = Server::with('allocation', 'allocations')->findOrFail($id);
             $newBuild = [];
             $newAllocations = [];
 
@@ -525,7 +534,7 @@ class ServerRepository
             // Add Assignments
             if (isset($data['add_allocations'])) {
                 foreach ($data['add_allocations'] as $allocation) {
-                    $model = Models\Allocation::where('id', $allocation)->whereNull('server_id')->first();
+                    $model = Allocation::where('id', $allocation)->whereNull('server_id')->first();
                     if (! $model) {
                         continue;
                     }
@@ -555,7 +564,7 @@ class ServerRepository
                     }
 
                     $newPorts = true;
-                    Models\Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
+                    Allocation::where('id', $allocation)->where('server_id', $server->id)->update([
                         'server_id' => null,
                     ]);
                 }
@@ -637,7 +646,7 @@ class ServerRepository
     {
     }
 
-    protected function processVariables(Models\Server $server, $data, $admin = false)
+    protected function processVariables(Server $server, $data, $admin = false)
     {
         $server->load('option.variables');
 
@@ -671,7 +680,7 @@ class ServerRepository
                     ));
                 }
 
-                $svar = Models\ServerVariable::firstOrNew([
+                $svar = ServerVariable::firstOrNew([
                     'server_id' => $server->id,
                     'variable_id' => $variable->id,
                 ]);
@@ -716,7 +725,7 @@ class ServerRepository
      */
     public function updateStartup($id, array $data, $admin = false)
     {
-        $server = Models\Server::with('variables', 'option.variables')->findOrFail($id);
+        $server = Server::with('variables', 'option.variables')->findOrFail($id);
         $hasServiceChanges = false;
 
         if ($admin) {
@@ -771,7 +780,7 @@ class ServerRepository
         // We know the service and option exists because of the validation.
         // We need to verify that the option exists for the service, and then check for
         // any required variable fields. (fields are labeled env_<env_variable>)
-        $option = Models\ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
+        $option = ServiceOption::where('id', $data['option_id'])->where('service_id', $data['service_id'])->first();
         if (! $option) {
             throw new DisplayException('The requested service option does not exist for the specified service.');
         }
@@ -780,7 +789,7 @@ class ServerRepository
         if (! isset($data['pack_id']) || (int) $data['pack_id'] < 1) {
             $data['pack_id'] = null;
         } else {
-            $pack = Models\Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
+            $pack = Pack::where('id', $data['pack_id'])->where('option_id', $data['option_id'])->first();
             if (! $pack) {
                 throw new DisplayException('The requested service pack does not seem to exist for this combination.');
             }
@@ -833,7 +842,7 @@ class ServerRepository
      */
     public function delete($id, $force = false)
     {
-        $server = Models\Server::with('node', 'allocations', 'variables')->findOrFail($id);
+        $server = Server::with('node', 'allocations', 'variables')->findOrFail($id);
 
         // Due to MySQL lockouts if the daemon response fails, we need to
         // delete the server from the daemon first. If it succeedes and then
@@ -903,7 +912,7 @@ class ServerRepository
      */
     public function toggleInstall($id)
     {
-        $server = Models\Server::findOrFail($id);
+        $server = Server::findOrFail($id);
         if ($server->installed > 1) {
             throw new DisplayException('This server was marked as having a failed install or being deleted, you cannot override this.');
         }
@@ -921,7 +930,7 @@ class ServerRepository
      */
     public function toggleAccess($id, $unsuspend = true)
     {
-        $server = Models\Server::with('node')->findOrFail($id);
+        $server = Server::with('node')->findOrFail($id);
 
         DB::transaction(function () use ($server, $unsuspend) {
             if (
@@ -952,7 +961,7 @@ class ServerRepository
      */
     public function updateSFTPPassword($id, $password)
     {
-        $server = Models\Server::with('node')->findOrFail($id);
+        $server = Server::with('node')->findOrFail($id);
 
         $validator = Validator::make(['password' => $password], [
             'password' => 'required|regex:/^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})$/',
@@ -983,7 +992,7 @@ class ServerRepository
      */
     public function reinstall($id)
     {
-        $server = Models\Server::with('node')->findOrFail($id);
+        $server = Server::with('node')->findOrFail($id);
 
         DB::transaction(function () use ($server) {
             $server->installed = 0;
