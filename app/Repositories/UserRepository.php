@@ -28,7 +28,6 @@ namespace Pterodactyl\Repositories;
 use DB;
 use Auth;
 use Hash;
-use Carbon;
 use Settings;
 use Validator;
 use Pterodactyl\Models;
