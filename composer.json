@@ -12,16 +12,19 @@
     ],
     "require": {
         "php": ">=7.0.0",
-        "aws/aws-sdk-php": "3.25.1",
+        "aws/aws-sdk-php": "3.26.5",
         "barryvdh/laravel-debugbar": "2.3.2",
         "daneeveritt/login-notifications": "1.0.0",
         "doctrine/dbal": "2.5.12",
         "edvinaskrucas/settings": "2.0.0",
+        "ext-mbstring": "*",
+        "ext-zip": "*",
+        "ext-pdo_mysql": "*",
         "fideloper/proxy": "3.3.0",
         "guzzlehttp/guzzle": "6.2.3",
         "igaster/laravel-theme": "1.14.0",
         "laracasts/utilities": "2.1.0",
-        "laravel/framework": "5.4.18",
+        "laravel/framework": "5.4.21",
         "laravel/tinker": "1.0.0",
         "lord/laroute": "2.4.4",
         "mtdowling/cron-expression": "1.2.0",
@@ -31,7 +34,7 @@
         "predis/predis": "1.1.1",
         "prologue/alerts": "0.4.1",
         "s1lentium/iptools": "1.1.0",
-        "spatie/laravel-fractal": "3.5.0",
+        "spatie/laravel-fractal": "4.0.0",
         "webpatser/laravel-uuid": "2.0.1"
     },
     "require-dev": {
@@ -55,12 +58,10 @@
     },
     "scripts": {
         "pre-install-cmd": [
-            "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
-            "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
+            "rm -f bootstrap/cache/services.php bootstrap/cache/compiled.php"
         ],
         "pre-update-cmd": [
-            "php -r \"!file_exists('bootstrap/cache/services.php') || @unlink('bootstrap/cache/services.php');\"",
-            "php -r \"!file_exists('bootstrap/cache/compiled.php') || @unlink('bootstrap/cache/compiled.php');\""
+            "rm -f bootstrap/cache/services.php bootstrap/cache/compiled.php"
         ],
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
