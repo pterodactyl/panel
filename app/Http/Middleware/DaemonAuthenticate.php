@@ -38,6 +38,15 @@ class DaemonAuthenticate
     protected $auth;
 
     /**
+     * An array of route names to not apply this middleware to.
+     *
+     * @var array
+     */
+    protected $except = [
+        'daemon.configuration',
+    ];
+
+    /**
      * Create a new filter instance.
      *
      * @param  \Illuminate\Contracts\Auth\Guard  $auth
@@ -57,6 +66,10 @@ class DaemonAuthenticate
      */
     public function handle($request, Closure $next)
     {
+        if (in_array($request->route()->getName(), $this->except)) {
+            return $next($request);
+        }
+
         if (! $request->header('X-Access-Node')) {
             return abort(403);
         }
