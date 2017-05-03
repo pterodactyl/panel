@@ -886,7 +886,6 @@ class ServerRepository
                 $subuser->delete();
             });
 
-            $server->downloads->each->delete();
             $server->tasks->each->delete();
 
             // Delete Databases
