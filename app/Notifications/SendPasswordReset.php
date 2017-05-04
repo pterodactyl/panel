@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -42,6 +43,7 @@ class SendPasswordReset extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
+     * @param  string  $token
      * @return void
      */
     public function __construct($token)
@@ -71,20 +73,7 @@ class SendPasswordReset extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Reset Password')
             ->line('You are receiving this email because we received a password reset request for your account.')
-            ->action('Reset Password', url('auth/password/reset', $this->token))
+            ->action('Reset Password', url('/auth/password/reset/' . $this->token . '?email=' . $notifiable->email))
             ->line('If you did not request a password reset, no further action is required.');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
     }
 }

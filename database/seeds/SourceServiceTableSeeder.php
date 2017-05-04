@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 use Illuminate\Database\Seeder;
-
-use Pterodactyl\Models;
+use Pterodactyl\Models\Service;
+use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\ServiceVariable;
 
 class SourceServiceTableSeeder extends Seeder
 {
@@ -35,7 +36,7 @@ class SourceServiceTableSeeder extends Seeder
     protected $service;
 
     /**
-     * Stores all of the option objects
+     * Stores all of the option objects.
      *
      * @var array
      */
@@ -55,56 +56,131 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Models\Service::create([
-            'author' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
+        $this->service = Service::updateOrCreate([
+            'author' => config('pterodactyl.service.core'),
+            'folder' => 'srcds',
+        ], [
             'name' => 'Source Engine',
             'description' => 'Includes support for most Source Dedicated Server games.',
-            'file' => 'srcds',
-            'executable' => './srcds_run',
-            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} -strictportbind -norestart'
+            'startup' => './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +ip 0.0.0.0 -strictportbind -norestart',
+            'index_file' => Service::defaultIndexFile(),
         ]);
     }
 
     private function addCoreOptions()
     {
-        $this->option['insurgency'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
-            'name' => 'Insurgency',
-            'description' => 'Take to the streets for intense close quarters combat, where a team\'s survival depends upon securing crucial strongholds and destroying enemy supply in this multiplayer and cooperative Source Engine based experience.',
-            'tag' => 'srcds',
-            'docker_image' => 'quay.io/pterodactyl/srcds',
-            'executable' => null,
-            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart'
-        ]);
+        $script = <<<'EOF'
+#!/bin/bash
+# SRCDS Base Installation Script
+#
+# Server Files: /mnt/server
+apt update
+apt install curl
 
-        $this->option['tf2'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
-            'name' => 'Team Fortress 2',
-            'description' => 'Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.',
-            'tag' => 'srcds',
-            'docker_image' => 'quay.io/pterodactyl/srcds',
-            'executable' => null,
-            'startup' => '-game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} -strictportbind -norestart'
-        ]);
+cd /tmp
+curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
 
-        $this->option['ark'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
-            'name' => 'Ark: Survival Evolved',
-            'description' => 'As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! — Gamepedia: ARK',
-            'tag' => 'ark',
-            'docker_image' => 'quay.io/pterodactyl/srcds:ark',
-            'executable' => './ShooterGameServer',
-            'startup' => 'TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}'
-        ]);
+mkdir /mnt/server/steamcmd
+tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+cd /mnt/server/steamcmd
 
-        $this->option['custom'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update ${SRCDS_APPID} +quit
+
+mkdir -p /mnt/server/.steam/sdk32
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+EOF;
+
+        $this->option['source'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'source',
+        ], [
             'name' => 'Custom Source Engine Game',
             'description' => 'This option allows modifying the startup arguments and other details to run a custo SRCDS based game on the panel.',
-            'tag' => 'srcds',
-            'docker_image' => 'quay.io/pterodactyl/srcds',
-            'executable' => null,
-            'startup' => null
+            'docker_image' => 'quay.io/pterodactyl/core:source',
+            'config_startup' => '{"done": "gameserver Steam ID", "userInteraction": []}',
+            'config_files' => '{}',
+            'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
+            'config_stop' => 'quit',
+            'config_from' => null,
+            'startup' => null,
+            'script_install' => $script,
+            'script_entry' => 'bash',
+            'script_container' => 'ubuntu:16.04',
+        ]);
+
+        $this->option['insurgency'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'insurgency',
+        ], [
+            'name' => 'Insurgency',
+            'description' => 'Take to the streets for intense close quarters combat, where a team\'s survival depends upon securing crucial strongholds and destroying enemy supply in this multiplayer and cooperative Source Engine based experience.',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
+            'config_startup' => null,
+            'config_files' => null,
+            'config_logs' => null,
+            'config_stop' => null,
+            'config_from' => $this->option['source']->id,
+            'startup' => './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
+            'copy_script_from' => $this->option['source']->id,
+        ]);
+
+        $this->option['tf2'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'tf2',
+        ], [
+            'name' => 'Team Fortress 2',
+            'description' => 'Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
+            'config_startup' => null,
+            'config_files' => null,
+            'config_logs' => null,
+            'config_stop' => null,
+            'config_from' => $this->option['source']->id,
+            'startup' => './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
+            'copy_script_from' => $this->option['source']->id,
+        ]);
+
+        $script = <<<'EOF'
+#!/bin/bash
+# ARK: Installation Script
+#
+# Server Files: /mnt/server
+apt update
+apt install curl
+
+cd /tmp
+curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+
+mkdir /mnt/server/steamcmd
+mkdir -p /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+
+tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+tar -xzvf steamcmd.tar.gz -C /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+
+cd /mnt/server/steamcmd
+
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 376030 +quit
+
+mkdir -p /mnt/server/.steam/sdk32
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+EOF;
+
+        $this->option['ark'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'ark',
+        ], [
+            'name' => 'Ark: Survival Evolved',
+            'description' => 'As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! — Gamepedia: ARK',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
+            'config_startup' => '{"done": "Setting breakpad minidump AppID"}',
+            'config_files' => null,
+            'config_logs' => null,
+            'config_stop' => '^C',
+            'config_from' => $this->option['source']->id,
+            'startup' => './ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}',
+            'script_install' => $script,
+            'script_entry' => 'bash',
+            'script_container' => 'ubuntu:16.04',
         ]);
     }
 
@@ -118,145 +194,145 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addInsurgencyVariables()
     {
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['insurgency']->id,
+            'env_variable' => 'SRCDS_APPID',
+        ], [
             'name' => 'Game ID',
             'description' => 'The ID corresponding to the game to download and run using SRCDS.',
-            'env_variable' => 'SRCDS_APPID',
             'default_value' => '17705',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(17705)$/'
+            'rules' => 'required|regex:/^(17705)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['insurgency']->id,
+            'env_variable' => 'SRCDS_GAME',
+        ], [
             'name' => 'Game Name',
             'description' => 'The name corresponding to the game to download and run using SRCDS.',
-            'env_variable' => 'SRCDS_GAME',
             'default_value' => 'insurgency',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(insurgency)$/'
+            'rules' => 'required|regex:/^(insurgency)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['insurgency']->id,
+            'env_variable' => 'SRCDS_MAP',
+        ], [
             'name' => 'Default Map',
             'description' => 'The default map to use when starting the server.',
-            'env_variable' => 'SRCDS_MAP',
             'default_value' => 'sinjar',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
-            'regex' => '/^(\w{1,20})$/'
+            'rules' => 'required|regex:/^(\w{1,20})$/',
         ]);
     }
 
     private function addTF2Variables()
     {
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['tf2']->id,
+            'env_variable' => 'SRCDS_APPID',
+        ], [
             'name' => 'Game ID',
             'description' => 'The ID corresponding to the game to download and run using SRCDS.',
-            'env_variable' => 'SRCDS_APPID',
             'default_value' => '232250',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(232250)$/'
+            'rules' => 'required|regex:/^(232250)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['tf2']->id,
+            'env_variable' => 'SRCDS_GAME',
+        ], [
             'name' => 'Game Name',
             'description' => 'The name corresponding to the game to download and run using SRCDS.',
-            'env_variable' => 'SRCDS_GAME',
             'default_value' => 'tf',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(tf)$/'
+            'rules' => 'required|regex:/^(tf)$/',
         ]);
 
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['tf2']->id,
+            'env_variable' => 'SRCDS_MAP',
+        ], [
             'name' => 'Default Map',
             'description' => 'The default map to use when starting the server.',
-            'env_variable' => 'SRCDS_MAP',
             'default_value' => 'cp_dustbowl',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
-            'regex' => '/^(\w{1,20})$/'
+            'rules' => 'required|regex:/^(\w{1,20})$/',
         ]);
     }
 
     private function addArkVariables()
     {
-        DB::table('service_variables')->insert([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['ark']->id,
+            'env_variable' => 'ARK_PASSWORD',
+        ], [
             'name' => 'Server Password',
             'description' => 'If specified, players must provide this password to join the server.',
-            'env_variable' => 'ARK_PASSWORD',
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 0,
-            'regex' => '/^(\w\.*)$/'
+            'rules' => 'alpha_dash|between:1,100',
         ]);
 
-        DB::table('service_variables')->insert([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['ark']->id,
+            'env_variable' => 'ARK_ADMIN_PASSWORD',
+        ], [
             'name' => 'Admin Password',
             'description' => 'If specified, players must provide this password (via the in-game console) to gain access to administrator commands on the server.',
-            'env_variable' => 'ARK_ADMIN_PASSWORD',
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 0,
-            'regex' => '/^(\w\.*)$/'
+            'rules' => 'alpha_dash|between:1,100',
         ]);
 
-        DB::table('service_variables')->insert([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['ark']->id,
+            'env_variable' => 'SERVER_MAX_PLAYERS',
+        ], [
             'name' => 'Maximum Players',
             'description' => 'Specifies the maximum number of players that can play on the server simultaneously.',
-            'env_variable' => 'SERVER_MAX_PLAYERS',
             'default_value' => 20,
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
-            'regex' => '/^(\d{1,4})$/'
+            'rules' => 'required|numeric|digits_between:1,4',
         ]);
     }
 
     private function addCustomVariables()
     {
-        Models\ServiceVariables::create([
-            'option_id' => $this->option['custom']->id,
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['source']->id,
+            'env_variable' => 'SRCDS_APPID',
+        ], [
             'name' => 'Game ID',
             'description' => 'The ID corresponding to the game to download and run using SRCDS.',
-            'env_variable' => 'SRCDS_APPID',
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(\d){1,6}$/'
+            'rules' => 'required|numeric|digits_between:1,6',
         ]);
 
-        Models\ServiceVariables::create([
-            'option_id' => $this->option['custom']->id,
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['source']->id,
+            'env_variable' => 'SRCDS_GAME',
+        ], [
             'name' => 'Game Name',
             'description' => 'The name corresponding to the game to download and run using SRCDS.',
-            'env_variable' => 'SRCDS_GAME',
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(.*)$/'
+            'rules' => 'required|alpha_dash|between:1,100',
         ]);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,97 +21,79 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\API\User;
 
-use Auth;
-use Log;
-use Pterodactyl\Models;
+use Fractal;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Daemon\PowerRepository;
+use Pterodactyl\Transformers\User\ServerTransformer;
+use Pterodactyl\Repositories\Daemon\CommandRepository;
 
-use Pterodactyl\Http\Controllers\API\BaseController;
-
-class ServerController extends BaseController
+class ServerController extends Controller
 {
-
-    public function info(Request $request, $uuid)
+    /**
+     * Controller to handle base request for individual server information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return array
+     */
+    public function index(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::findOrFail($server->node);
-        $client = Models\Node::guzzleRequest($node->id);
+        $this->authorize('user.server-view', $request->apiKey());
 
-        try {
-            $response = $client->request('GET', '/server', [
-                'headers' => [
-                    'X-Access-Token' => $server->daemonSecret,
-                    'X-Access-Server' => $server->uuid
-                ]
-            ]);
+        $server = Server::byUuid($uuid);
+        $fractal = Fractal::create()->item($server);
 
-            $json = json_decode($response->getBody());
-            $daemon = [
-                'status' => $json->status,
-                'stats' => $json->proc,
-                'query' =>  $json->query
-            ];
-        } catch (\Exception $ex) {
-            $daemon = [
-                'error' => 'An error was encountered while trying to connect to the daemon to collece information. It might be offline.'
-            ];
-            Log::error($ex);
+        if ($request->input('include')) {
+            $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
-        $allocations = Models\Allocation::select('id', 'ip', 'port', 'ip_alias as alias')->where('assigned_to', $server->id)->get();
-        foreach($allocations as &$allocation) {
-            $allocation->default = ($allocation->id === $server->allocation);
-            unset($allocation->id);
-        }
-        return [
-            'uuidShort' => $server->uuidShort,
-            'uuid' => $server->uuid,
-            'name' => $server->name,
-            'node' => $node->name,
-            'limits' => [
-                'memory' => $server->memory,
-                'swap' => $server->swap,
-                'disk' => $server->disk,
-                'io' => $server->io,
-                'cpu' => $server->cpu,
-                'oom_disabled' => (bool) $server->oom_disabled
-            ],
-            'allocations' => $allocations,
-            'sftp' => [
-                'username' => (Auth::user()->can('view-sftp', $server)) ? $server->username : null
-            ],
-            'daemon' => [
-                'token' => ($request->secure()) ? $server->daemonSecret : false,
-                'response' => $daemon
-            ]
-        ];
+        return $fractal->transformWith(new ServerTransformer)
+            ->withResourceName('server')
+            ->toArray();
     }
 
+    /**
+     * Controller to handle request for server power toggle.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\Response
+     */
     public function power(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::getByID($server->node);
-        $client = Models\Node::guzzleRequest($server->node);
+        $this->authorize('user.server-power', $request->apiKey());
 
-        Auth::user()->can('power-' . $request->input('action'), $server);
+        $server = Server::byUuid($uuid);
+        $request->user()->can('power-' . $request->input('action'), $server);
 
-        $res = $client->request('PUT', '/server/power', [
-            'headers' => [
-                'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $server->daemonSecret
-            ],
-            'exceptions' => false,
-            'json' => [
-                'action' => $request->input('action')
-            ]
-        ]);
+        $repo = new PowerRepository($server, $request->user());
+        $repo->do($request->input('action'));
 
-        if ($res->getStatusCode() !== 204) {
-            return $this->response->error(json_decode($res->getBody())->error, $res->getStatusCode());
-        }
+        return response('', 204)->header('Content-Type', 'application/json');
+    }
 
-        return $this->response->noContent();
+    /**
+     * Controller to handle base request for individual server information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\Response
+     */
+    public function command(Request $request, $uuid)
+    {
+        $this->authorize('user.server-command', $request->apiKey());
+
+        $server = Server::byUuid($uuid);
+        $request->user()->can('send-command', $server);
+
+        $repo = new CommandRepository($server, $request->user());
+        $repo->send($request->input('command'));
+
+        return response('', 204)->header('Content-Type', 'application/json');
     }
 }

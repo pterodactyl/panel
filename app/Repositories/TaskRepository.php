@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use Cron;
 use Validator;
-
-use Pterodactyl\Models;
-
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Models\Task;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class TaskRepository
 {
-
+    /**
+     * The default values to use for new tasks.
+     *
+     * @var array
+     */
     protected $defaults = [
         'year' => '*',
         'day_of_week' => '*',
@@ -43,65 +48,60 @@ class TaskRepository
         'minute' => '*/30',
     ];
 
+    /**
+     * Task action types.
+     *
+     * @var array
+     */
     protected $actions = [
         'command',
         'power',
     ];
 
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Deletes a given task.
-     * @param  int      $id
      *
+     * @param  int      $id
      * @return bool
      */
     public function delete($id)
     {
-        $task = Models\Task::findOrFail($id);
-        try {
-            $task->delete();
-            return true;
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        $task = Task::findOrFail($id);
+        $task->delete();
     }
 
     /**
      * Toggles a task active or inactive.
-     * @param  int      $id
      *
-     * @return int
+     * @param  int  $id
+     * @return bool
      */
     public function toggle($id)
     {
-        $task = Models\Task::findOrFail($id);
-        try {
-            $task->active = ($task->active === 1) ? 0 : 1;
-            $task->queued = 0;
-            $task->save();
+        $task = Task::findOrFail($id);
 
-            return $task->active;
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        $task->active = ! $task->active;
+        $task->queued = false;
+        $task->save();
+
+        return $task->active;
     }
 
     /**
      * Create a new scheduled task for a given server.
-     * @param  int      $id
-     * @param  array    $data
      *
-     * @throws DisplayException
-     * @throws DisplayValidationException
-     * @return void
+     * @param  int    $server
+     * @param  int    $user
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Task
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
-    public function create($id, $data)
+    public function create($server, $user, $data)
     {
-        $server = Models\Server::findOrFail($id);
+        $server = Server::findOrFail($server);
+        $user = User::findOrFail($user);
 
         $validator = Validator::make($data, [
             'action' => 'string|required',
@@ -111,20 +111,20 @@ class TaskRepository
             'month' => 'string|sometimes',
             'day_of_month' => 'string|sometimes',
             'hour' => 'string|sometimes',
-            'minute' => 'string|sometimes'
+            'minute' => 'string|sometimes',
         ]);
 
         if ($validator->fails()) {
             throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        if (!in_array($data['action'], $this->actions)) {
+        if (! in_array($data['action'], $this->actions)) {
             throw new DisplayException('The action provided is not valid.');
         }
 
         $cron = $this->defaults;
         foreach ($this->defaults as $setting => $value) {
-            if (array_key_exists($setting, $data) && !is_null($data[$setting]) && $data[$setting] !== '') {
+            if (array_key_exists($setting, $data) && ! is_null($data[$setting]) && $data[$setting] !== '') {
                 $cron[$setting] = $data[$setting];
             }
         }
@@ -143,9 +143,9 @@ class TaskRepository
             throw $ex;
         }
 
-        $task = new Models\Task;
-        $task->fill([
-            'server' => $server->id,
+        return Task::create([
+            'user_id' => $user->id,
+            'server_id' => $server->id,
             'active' => 1,
             'action' => $data['action'],
             'data' => $data['data'],
@@ -157,11 +157,7 @@ class TaskRepository
             'hour' => $cron['hour'],
             'minute' => $cron['minute'],
             'last_run' => null,
-            'next_run' => $buildCron->getNextRunDate()
+            'next_run' => $buildCron->getNextRunDate(),
         ]);
-
-        return $task->save();
-
     }
-
 }

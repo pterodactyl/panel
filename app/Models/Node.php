@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Node extends Model
 {
+    use Notifiable, SearchableTrait;
 
     /**
      * The table associated with the model.
@@ -43,80 +47,141 @@ class Node extends Model
      */
     protected $hidden = ['daemonSecret'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
          'public' => 'integer',
-         'location' => 'integer',
+         'location_id' => 'integer',
          'memory' => 'integer',
          'disk' => 'integer',
          'daemonListen' => 'integer',
          'daemonSFTP' => 'integer',
+         'behind_proxy' => 'boolean',
      ];
 
     /**
-     * Fields that are not mass assignable.
+     * Fields that are mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'public', 'name', 'location_id',
+        'fqdn', 'scheme', 'behind_proxy',
+        'memory', 'memory_overallocate', 'disk',
+        'disk_overallocate', 'upload_size',
+        'daemonSecret', 'daemonBase',
+        'daemonSFTP', 'daemonListen',
+    ];
 
     /**
+     * Fields that are searchable.
+     *
      * @var array
      */
-    protected static $guzzle = [];
+    protected $searchable = [
+         'columns' => [
+             'nodes.name' => 10,
+             'nodes.fqdn' => 8,
+             'locations.short' => 4,
+             'locations.long' => 4,
+         ],
+         'joins' => [
+            'locations' => ['locations.id', 'nodes.location_id'],
+         ],
+     ];
 
     /**
-     * @var array
-     */
-    protected static $nodes = [];
-
-    /**
-     * Returns an instance of the database object for the requested node ID.
+     * Return an instance of the Guzzle client for this specific node.
      *
-     * @param  int $id
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public static function getByID($id)
-    {
-
-        // The Node is already cached.
-        if (array_key_exists($id, self::$nodes)) {
-            return self::$nodes[$id];
-        }
-
-        self::$nodes[$id] = Node::where('id', $id)->first();
-        return self::$nodes[$id];
-
-    }
-
-    /**
-     * Returns a Guzzle Client for the node in question.
-     *
-     * @param  int $node
+     * @param  array  $headers
      * @return \GuzzleHttp\Client
      */
-    public static function guzzleRequest($node)
+    public function guzzleClient($headers = [])
     {
-
-        // The Guzzle Client is cached already.
-        if (array_key_exists($node, self::$guzzle)) {
-            return self::$guzzle[$node];
-        }
-
-        $nodeData = self::getByID($node);
-
-        self::$guzzle[$node] = new Client([
-            'base_uri' => sprintf('%s://%s:%s/', $nodeData->scheme, $nodeData->fqdn, $nodeData->daemonListen),
-            'timeout' => 5.0,
-            'connect_timeout' => 3.0,
+        return new Client([
+            'base_uri' => sprintf('%s://%s:%s/', $this->scheme, $this->fqdn, $this->daemonListen),
+            'timeout' => config('pterodactyl.guzzle.timeout'),
+            'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
+            'headers' => $headers,
         ]);
-
-        return self::$guzzle[$node];
-
     }
 
+    /**
+     * Returns the configuration in JSON format.
+     *
+     * @param  bool  $pretty
+     * @return string
+     */
+    public function getConfigurationAsJson($pretty = false)
+    {
+        $config = [
+            'web' => [
+                'host' => '0.0.0.0',
+                'listen' => $this->daemonListen,
+                'ssl' => [
+                    'enabled' => (! $this->behind_proxy && $this->scheme === 'https'),
+                    'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
+                ],
+            ],
+            'docker' => [
+                'socket' => '/var/run/docker.sock',
+                'autoupdate_images' => true,
+            ],
+            'sftp' => [
+                'path' => $this->daemonBase,
+                'port' => $this->daemonSFTP,
+                'container' => 'ptdl-sftp',
+            ],
+            'logger' => [
+                'path' => 'logs/',
+                'src' => false,
+                'level' => 'info',
+                'period' => '1d',
+                'count' => 3,
+            ],
+            'remote' => [
+                'base' => route('index'),
+            ],
+            'uploads' => [
+                'size_limit' => $this->upload_size,
+            ],
+            'keys' => [$this->daemonSecret],
+        ];
+
+        return json_encode($config, ($pretty) ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Gets the location associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
+    /**
+     * Gets the servers associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
+
+    /**
+     * Gets the allocations associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function allocations()
+    {
+        return $this->hasMany(Allocation::class);
+    }
 }

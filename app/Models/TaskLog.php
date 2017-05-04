@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class TaskLog extends Model
 {
-
     /**
      * The table associated with the model.
      *
@@ -47,17 +47,16 @@ class TaskLog extends Model
      *
      * @var array
      */
-     protected $casts = [
-         'id' => 'integer',
-         'task_id' => 'integer',
-         'run_status' => 'integer'
-     ];
+    protected $casts = [
+        'id' => 'integer',
+        'task_id' => 'integer',
+        'run_status' => 'integer',
+    ];
 
-     /**
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['run_time', 'created_at', 'updated_at'];
-
 }

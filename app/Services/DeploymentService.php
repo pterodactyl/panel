@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,125 +21,238 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Services;
 
 use DB;
-
-use Pterodactyl\Models;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Exceptions\AutoDeploymentException;
 
 class DeploymentService
 {
+    /**
+     * Eloquent model representing the allocation to use.
+     *
+     * @var \Pterodactyl\Models\Allocation
+     */
+    protected $allocation;
 
-    public function __constructor()
+    /**
+     * Amount of disk to be used by the server.
+     *
+     * @var int
+     */
+    protected $disk;
+
+    /**
+     * Amount of memory to be used by the sever.
+     *
+     * @var int
+     */
+    protected $memory;
+
+    /**
+     * Eloquent model representing the location to use.
+     *
+     * @var \Pterodactyl\Models\Location
+     */
+    protected $location;
+
+    /**
+     * Eloquent model representing the node to use.
+     *
+     * @var \Pterodactyl\Models\Node
+     */
+    protected $node;
+
+    /**
+     * Set the location to use when auto-deploying.
+     *
+     * @param  int|\Pterodactyl\Models\Location  $location
+     * @return void
+     */
+    public function setLocation($location)
     {
-        //
+        $this->location = ($location instanceof Location) ? $location : Location::with('nodes')->findOrFail($location);
+        if (! $this->location->relationLoaded('nodes')) {
+            $this->location->load('nodes');
+        }
+
+        if (count($this->location->nodes) < 1) {
+            throw new AutoDeploymentException('The location provided does not contain any nodes and cannot be used.');
+        }
+
+        return $this;
     }
 
     /**
-     * Return a random location model. DO NOT USE.
-     * @return \Pterodactyl\Models\Node
+     * Set the node to use when auto-deploying.
      *
-     * @TODO Actually make this smarter. If we're selecting a random location
-     * but then it has no nodes we should probably continue attempting all locations
-     * until we hit one.
-     *
-     * Currently you should just pick a location and go from there.
+     * @param  int|\Pterodactyl\Models\Node  $node
+     * @return void
      */
-    public static function randomLocation()
+    public function setNode($node)
     {
-        return Models\Location::inRandomOrder()->first();
+        $this->node = ($node instanceof Node) ? $node : Node::findOrFail($node);
+        if (! $this->node->relationLoaded('allocations')) {
+            $this->node->load('allocations');
+        }
+
+        $this->setLocation($this->node->location);
+
+        return $this;
+    }
+
+    /**
+     * Set the amount of disk space to be used by the new server.
+     *
+     * @param  int  $disk
+     * @return void
+     */
+    public function setDisk(int $disk)
+    {
+        $this->disk = $disk;
+
+        return $this;
+    }
+
+    /**
+     * Set the amount of memory to be used by the new server.
+     *
+     * @param  int  $memory
+     * @return void
+     */
+    public function setMemory(int $memory)
+    {
+        $this->memory = $memory;
+
+        return $this;
+    }
+
+    /**
+     * Return a random location model.
+     *
+     * @param  array  $exclude
+     * @return void;
+     */
+    protected function findLocation(array $exclude = [])
+    {
+        $location = Location::with('nodes')->whereNotIn('id', $exclude)->inRandomOrder()->first();
+
+        if (! $location) {
+            throw new AutoDeploymentException('Unable to locate a suitable location to select a node from.');
+        }
+
+        if (count($location->nodes) < 1) {
+            return $this->findLocation(array_merge($exclude, [$location->id]));
+        }
+
+        $this->setLocation($location);
     }
 
     /**
      * Return a model instance of a random node.
-     * @param  int $location
-     * @param  array $not
+     *
+     * @return void;
+     */
+    protected function findNode(array $exclude = [])
+    {
+        if (! $this->location) {
+            $this->setLocation($this->findLocation());
+        }
+
+        $select = $this->location->nodes->whereNotIn('id', $exclude);
+        if (count($select) < 1) {
+            throw new AutoDeploymentException('Unable to find a suitable node within the assigned location with enough space.');
+        }
+
+        // Check usage, select new node if necessary
+        $this->setNode($select->random());
+        if (! $this->checkNodeUsage()) {
+            return $this->findNode(array_merge($exclude, [$this->node()->id]));
+        }
+    }
+
+    /**
+     * Checks that a node's allocation limits will not be passed
+     * with the assigned limits.
+     *
+     * @return bool
+     */
+    protected function checkNodeUsage()
+    {
+        if (! $this->disk && ! $this->memory) {
+            return true;
+        }
+
+        $totals = Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node_id', $this->node()->id)->first();
+
+        if ($this->memory) {
+            $limit = ($this->node()->memory * (1 + ($this->node()->memory_overallocate / 100)));
+
+            if (($totals->memory + $this->memory) > $limit) {
+                return false;
+            }
+        }
+
+        if ($this->disk) {
+            $limit = ($this->node()->disk * (1 + ($this->node()->disk_overallocate / 100)));
+
+            if (($totals->disk + $this->disk) > $limit) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Return the assigned node for this auto-deployment.
+     *
      * @return \Pterodactyl\Models\Node
+     */
+    public function node()
+    {
+        return $this->node;
+    }
+
+    /**
+     * Return the assigned location for this auto-deployment.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @return \Pterodactyl\Models\Location
      */
-    public static function randomNode($location, array $not = [])
+    public function location()
     {
-        $useLocation = Models\Location::where('id', $location)->first();
-        if (!$useLocation) {
-            throw new DisplayException("The location passed was not valid and could not be found.");
-        }
-
-        $node = Models\Node::where('location', $useLocation->id)->where('public', 1)->whereNotIn('id', $not)->inRandomOrder()->first();
-        if (!$node) {
-            throw new DisplayException("Unable to find a node in location {$useLocation->short} (id: {$useLocation->id}) that is available and has space.");
-        }
-
-        return $node;
+        return $this->location;
     }
 
     /**
-     * Selects a random node ensuring it does not put the node
-     * over allocation limits.
-     * @param  int $memory
-     * @param  int $disk
-     * @param  int $location
-     * @return \Pterodactyl\Models\Node;
+     * Return the assigned location for this auto-deployment.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @return \Pterodactyl\Models\Allocation
      */
-    public static function smartRandomNode($memory, $disk, $location = null) {
-        $node = self::randomNode($location);
-        $notIn = [];
-        do {
-            $return = self::checkNodeAllocation($node, $memory, $disk);
-            if (!$return) {
-                $notIn = array_merge($notIn, [
-                    $node->id
-                ]);
-                $node = self::randomNode($location, $notIn);
-            }
-        } while (!$return);
-
-        return $node;
+    public function allocation()
+    {
+        return $this->allocation;
     }
 
     /**
-     * Returns a random allocation for a node.
-     * @param  int $node
-     * @return \Models\Pterodactyl\Allocation;
+     * Select and return the node to be used by the auto-deployment system.
+     *
+     * @return void
      */
-    public static function randomAllocation($node)
+    public function select()
     {
-        $allocation = Models\Allocation::where('node', $node)->whereNull('assigned_to')->inRandomOrder()->first();
-        if (!$allocation) {
-            throw new DisplayException('No available allocation could be found for the assigned node.');
+        if (! $this->node) {
+            $this->findNode();
         }
 
-        return $allocation;
-    }
-
-    /**
-     * Checks that a node's allocation limits will not be passed with the given information.
-     * @param  \Pterodactyl\Models\Node $node
-     * @param  int $memory
-     * @param  int $disk
-     * @return bool Returns true if this information would not put the node over it's limit.
-     */
-    protected static function checkNodeAllocation(Models\Node $node, $memory, $disk)
-    {
-        if (is_numeric($node->memory_overallocate) || is_numeric($node->disk_overallocate)) {
-            $totals = Models\Server::select(DB::raw('SUM(memory) as memory, SUM(disk) as disk'))->where('node', $node->id)->first();
-
-            // Check memory limits
-            if (is_numeric($node->memory_overallocate)) {
-                $limit = ($node->memory * (1 + ($node->memory_overallocate / 100)));
-                $memoryLimitReached = (($totals->memory + $memory) > $limit);
-            }
-
-            // Check Disk Limits
-            if (is_numeric($node->disk_overallocate)) {
-                $limit = ($node->disk * (1 + ($node->disk_overallocate / 100)));
-                $diskLimitReached = (($totals->disk + $disk) > $limit);
-            }
-
-            return (!$diskLimitReached && !$memoryLimitReached);
+        // Set the Allocation
+        $this->allocation = $this->node()->allocations->where('server_id', null)->random();
+        if (! $this->allocation) {
+            throw new AutoDeploymentException('Unable to find a suitable allocation to assign to this server.');
         }
     }
 }

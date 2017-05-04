@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Jobs;
 
-use Pterodactyl\Jobs\Job;
+use Cron;
+use Carbon;
+use Pterodactyl\Models\Task;
+use Pterodactyl\Models\TaskLog;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
-use DB;
-use Carbon;
-use Cron;
-use Pterodactyl\Models;
-use Pterodactyl\Repositories\Daemon\CommandRepository;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
+use Pterodactyl\Repositories\Daemon\CommandRepository;
 
 class SendScheduledTask extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
-    protected $server;
-
+    /**
+     * @var \Pterodactyl\Models\Task
+     */
     protected $task;
 
     /**
@@ -48,13 +48,12 @@ class SendScheduledTask extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(Models\Server $server, Models\Task $task)
+    public function __construct(Task $task)
     {
-        $this->server = $server;
         $this->task = $task;
 
-        $task->queued = 1;
-        $task->save();
+        $this->task->queued = true;
+        $this->task->save();
     }
 
     /**
@@ -65,7 +64,7 @@ class SendScheduledTask extends Job implements ShouldQueue
     public function handle()
     {
         $time = Carbon::now();
-        $log = new Models\TaskLog;
+        $log = new TaskLog;
 
         if ($this->attempts() >= 1) {
             // Just delete the job, we will attempt it again later anyways.
@@ -74,24 +73,27 @@ class SendScheduledTask extends Job implements ShouldQueue
 
         try {
             if ($this->task->action === 'command') {
-                $repo = new CommandRepository($this->server);
+                $repo = new CommandRepository($this->task->server, $this->task->user);
                 $response = $repo->send($this->task->data);
-            } else if ($this->task->action === 'power') {
-                $repo = new PowerRepository($this->server);
+            } elseif ($this->task->action === 'power') {
+                $repo = new PowerRepository($this->task->server, $this->task->user);
                 $response = $repo->do($this->task->data);
+            } else {
+                throw new \Exception('Task type provided was not valid.');
             }
+
             $log->fill([
                 'task_id' => $this->task->id,
                 'run_time' => $time,
                 'run_status' => 0,
-                'response' => $response
+                'response' => $response,
             ]);
         } catch (\Exception $ex) {
             $log->fill([
                 'task_id' => $this->task->id,
                 'run_time' => $time,
                 'run_status' => 1,
-                'response' => $ex->getMessage()
+                'response' => $ex->getMessage(),
             ]);
         } finally {
             $cron = Cron::factory(sprintf('%s %s %s %s %s %s',
@@ -105,7 +107,7 @@ class SendScheduledTask extends Job implements ShouldQueue
             $this->task->fill([
                 'last_run' => $time,
                 'next_run' => $cron->getNextRunDate(),
-                'queued' => 0
+                'queued' => false,
             ]);
             $this->task->save();
             $log->save();

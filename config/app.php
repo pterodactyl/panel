@@ -4,7 +4,18 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
-    'version' => env('APP_VERSION', 'v0.5.0'),
+    'version' => env('APP_VERSION', 'canary'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    */
+    'name' => 'Pterodactyl',
 
     /*
     |--------------------------------------------------------------------------
@@ -99,7 +110,9 @@ return [
     |
     */
 
-    'log' => 'daily',
+    'log' => env('APP_LOG', 'daily'),
+
+    'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
     /*
     |--------------------------------------------------------------------------
@@ -113,8 +126,6 @@ return [
     */
 
     'providers' => [
-
-        Dingo\Api\Provider\LaravelServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...
@@ -137,10 +148,14 @@ return [
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
         Illuminate\Session\SessionServiceProvider::class,
-        Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Illuminate\Notifications\NotificationServiceProvider::class,
+
+        /*
+         * Package Service Providers...
+         */
+        Laravel\Tinker\TinkerServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -149,6 +164,8 @@ return [
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
+        Pterodactyl\Providers\MacroServiceProvider::class,
+        Pterodactyl\Providers\PhraseAppTranslationProvider::class,
 
         /*
          * Additional Dependencies
@@ -158,6 +175,10 @@ return [
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
+        Fideloper\Proxy\TrustedProxyServiceProvider::class,
+        Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
+        Lord\Laroute\LarouteServiceProvider::class,
+        Spatie\Fractal\FractalServiceProvider::class,
 
     ],
 
@@ -188,16 +209,16 @@ return [
         'Crypt'     => Illuminate\Support\Facades\Crypt::class,
         'DB'        => Illuminate\Support\Facades\DB::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-        'Dingo'     => Dingo\Api\Facade\API::class,
-        'DingoRoute'=> Dingo\Api\Facade\Route::class,
         'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
         'Event'     => Illuminate\Support\Facades\Event::class,
         'File'      => Illuminate\Support\Facades\File::class,
+        'Fractal'   => Spatie\Fractal\FractalFacade::class,
         'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash'      => Illuminate\Support\Facades\Hash::class,
         'Input'     => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,
+        'Javascript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
         'Lang'      => Illuminate\Support\Facades\Lang::class,
         'Log'       => Illuminate\Support\Facades\Log::class,
         'Mail'      => Illuminate\Support\Facades\Mail::class,
@@ -217,6 +238,7 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Uuid'      => Webpatser\Uuid\Uuid::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
+        'Version'   => Pterodactyl\Facades\Version::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
     ],

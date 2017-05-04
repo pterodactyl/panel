@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,59 +21,71 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories\Daemon;
 
-use Pterodactyl\Models;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\ConnectException;
 use Pterodactyl\Exceptions\DisplayException;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-
-class CommandRepository {
-
+class CommandRepository
+{
+    /**
+     * The Eloquent Model associated with the requested server.
+     *
+     * @var \Pterodactyl\Models\Server
+     */
     protected $server;
-    protected $node;
-    protected $client;
 
-    public function __construct($server)
+    /**
+     * The Eloquent Model associated with the user to run the request as.
+     *
+     * @var \Pterodactyl\Models\User|null
+     */
+    protected $user;
+
+    /**
+     * Constuctor for repository.
+     *
+     * @param  \Pterodactyl\Models\Server  $server
+     * @param  \Pterodactyl\Models\User|null   $user
+     * @return void
+     */
+    public function __construct(Server $server, User $user = null)
     {
-        $this->server = ($server instanceof Models\Server) ? $server : Models\Server::findOrFail($server);
-        $this->node = Models\Node::getByID($this->server->node);
-        $this->client = Models\Node::guzzleRequest($this->server->node);
+        $this->server = $server;
+        $this->user = $user;
     }
 
     /**
-     * [send description]
-     * @param  string   $command
-     * @return boolean
-     * @throws DisplayException
-     * @throws RequestException
+     * Sends a command to the daemon.
+     *
+     * @param  string  $command
+     * @return string
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \GuzzleHttp\Exception\RequestException
      */
     public function send($command)
     {
         // We don't use the user's specific daemon secret here since we
         // are assuming that a call to this function has been validated.
-        // Additionally not all calls to this will be from a logged in user.
-        // (e.g. task queue or API)
         try {
-            $response = $this->client->request('POST', '/server/command', [
-                'headers' => [
-                    'X-Access-Token' => $this->server->daemonSecret,
-                    'X-Access-Server' => $this->server->uuid
-                ],
+            $response = $this->server->guzzleClient($this->user)->request('POST', '/server/command', [
+                'http_errors' => false,
                 'json' => [
-                    'command' => $command
-                ]
+                    'command' => $command,
+                ],
             ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                throw new DisplayException('Command sending responded with a non-200 error code.');
+                throw new DisplayException('Command sending responded with a non-200 error code (HTTP/' . $response->getStatusCode() . ').');
             }
 
             return $response->getBody();
-        } catch (\Exception $ex) {
+        } catch (ConnectException $ex) {
             throw $ex;
         }
     }
-
 }

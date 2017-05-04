@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Services;
 
 use DB;
@@ -28,65 +29,48 @@ use Uuid;
 
 class UuidService
 {
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Generate a unique UUID validating against specified table and column.
-     * Defaults to `users.uuid`
+     * Defaults to `users.uuid`.
      *
-     * @param  string $table
-     * @param  string $field
-     * @param  integer $type The type of UUID to generate.
+     * @param  string  $table
+     * @param  string  $field
+     * @param  int     $type
      * @return string
      */
     public function generate($table = 'users', $field = 'uuid', $type = 4)
     {
-
         $return = false;
         do {
-
             $uuid = Uuid::generate($type);
-            if (!DB::table($table)->where($field, $uuid)->exists()) {
+            if (! DB::table($table)->where($field, $uuid)->exists()) {
                 $return = $uuid;
             }
-
-        } while (!$return);
+        } while (! $return);
 
         return (string) $return;
-
     }
 
     /**
      * Generates a ShortUUID code which is 8 characters long and is used for identifying servers in the system.
      *
-     * @param string $table
-     * @param string $field
+     * @param  string       $table
+     * @param  string       $field
+     * @param  null|string  $attachedUuid
      * @return string
      */
     public function generateShort($table = 'servers', $field = 'uuidShort', $attachedUuid = null)
     {
-
         $return = false;
         do {
-
             $short = (is_null($attachedUuid)) ? substr(Uuid::generate(4), 0, 8) : substr($attachedUuid, 0, 8);
             $attachedUuid = null;
 
-            if (!DB::table($table)->where($field, $short)->exists()) {
+            if (! DB::table($table)->where($field, $short)->exists()) {
                 $return = $short;
             }
-
-        } while (!$return);
+        } while (! $return);
 
         return (string) $return;
-
     }
-
 }

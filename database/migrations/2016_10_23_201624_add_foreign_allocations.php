@@ -12,17 +12,17 @@ class AddForeignAllocations extends Migration
      * @return void
      */
     public function up()
-     {
-         DB::statement('ALTER TABLE allocations
+    {
+        DB::statement('ALTER TABLE allocations
              MODIFY COLUMN assigned_to INT(10) UNSIGNED NULL,
              MODIFY COLUMN node INT(10) UNSIGNED NOT NULL
          ');
 
-         Schema::table('allocations', function (Blueprint $table) {
-             $table->foreign('assigned_to')->references('id')->on('servers');
-             $table->foreign('node')->references('id')->on('nodes');
-         });
-     }
+        Schema::table('allocations', function (Blueprint $table) {
+            $table->foreign('assigned_to')->references('id')->on('servers');
+            $table->foreign('node')->references('id')->on('nodes');
+        });
+    }
 
      /**
       * Reverse the migrations.

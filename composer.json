@@ -11,30 +11,37 @@
         }
     ],
     "require": {
-        "php": ">=5.6.4",
-        "laravel/framework": "5.3.21",
-        "barryvdh/laravel-debugbar": "2.2.3",
-        "doctrine/dbal": "2.5.5",
-        "guzzlehttp/guzzle": "6.2.2",
-        "pragmarx/google2fa": "1.0.1",
-        "webpatser/laravel-uuid": "2.0.1",
-        "prologue/alerts": "0.4.0",
-        "s1lentium/iptools": "1.1.0",
+        "php": ">=7.0.0",
+        "aws/aws-sdk-php": "3.26.5",
+        "barryvdh/laravel-debugbar": "2.3.2",
+        "daneeveritt/login-notifications": "1.0.0",
+        "doctrine/dbal": "2.5.12",
         "edvinaskrucas/settings": "2.0.0",
-        "igaster/laravel-theme": "1.1.3",
-        "nesbot/carbon": "1.21.0",
-        "mtdowling/cron-expression": "1.1.0",
-        "dingo/api": "1.0.0-beta6",
-        "aws/aws-sdk-php": "3.19.20",
-        "predis/predis": "1.1.1"
+        "ext-mbstring": "*",
+        "ext-zip": "*",
+        "ext-pdo_mysql": "*",
+        "fideloper/proxy": "3.3.0",
+        "guzzlehttp/guzzle": "6.2.3",
+        "igaster/laravel-theme": "1.14.0",
+        "laracasts/utilities": "2.1.0",
+        "laravel/framework": "5.4.21",
+        "laravel/tinker": "1.0.0",
+        "lord/laroute": "2.4.4",
+        "mtdowling/cron-expression": "1.2.0",
+        "nesbot/carbon": "1.22.1",
+        "nicolaslopezj/searchable": "1.9.5",
+        "pragmarx/google2fa": "1.0.1",
+        "predis/predis": "1.1.1",
+        "prologue/alerts": "0.4.1",
+        "s1lentium/iptools": "1.1.0",
+        "spatie/laravel-fractal": "4.0.0",
+        "webpatser/laravel-uuid": "2.0.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~5.0",
-        "symfony/css-selector": "3.1.*",
-        "symfony/dom-crawler": "3.1.*",
-        "laravel/homestead": "3.0.*"
+        "phpunit/phpunit": "~5.7",
+        "barryvdh/laravel-ide-helper": "^2.3"
     },
     "autoload": {
         "classmap": [
@@ -45,43 +52,32 @@
         }
     },
     "autoload-dev": {
-        "classmap": [
-            "tests/TestCase.php"
-        ]
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "scripts": {
-        "post-root-package-install": [
-            "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        "pre-install-cmd": [
+            "rm -f bootstrap/cache/services.php bootstrap/cache/compiled.php"
         ],
-        "post-create-project-cmd": [
-            "php artisan key:generate"
+        "pre-update-cmd": [
+            "rm -f bootstrap/cache/services.php bootstrap/cache/compiled.php"
         ],
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+            "php artisan optimize",
+            "php artisan config:cache"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
-        ],
-        "setup-dev": [
-            "composer install",
-            "php -r \"copy('.env.example', '.env');\"",
-            "php vendor/bin/homestead make --ip=192.168.10.32",
-            "sed -i.bak 's/homestead.app/pterodactyl.local/g' Homestead.yaml",
-            "rm Homestead.yaml.bak",
-            "php artisan key:generate"
-        ],
-        "setup": [
-            "composer install --ansi --no-dev",
-            "php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "php artisan key:generate"
-        ],
-        "upgrade": [
-            "composer update --ansi --no-dev"
+            "php artisan optimize",
+            "php artisan config:cache"
         ]
     },
+    "prefer-stable": true,
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
     }
 }

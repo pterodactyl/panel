@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 use Illuminate\Database\Seeder;
-
-use Pterodactyl\Models;
+use Pterodactyl\Models\Service;
+use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\ServiceVariable;
 
 class TerrariaServiceTableSeeder extends Seeder
 {
@@ -35,7 +36,7 @@ class TerrariaServiceTableSeeder extends Seeder
     protected $service;
 
     /**
-     * Stores all of the option objects
+     * Stores all of the option objects.
      *
      * @var array
      */
@@ -55,53 +56,75 @@ class TerrariaServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Models\Service::create([
-            'author' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
+        $this->service = Service::updateOrCreate([
+            'author' => config('pterodactyl.service.core'),
+            'folder' => 'terraria',
+        ], [
             'name' => 'Terraria',
             'description' => 'Terraria is a land of adventure! A land of mystery! A land that\'s yours to shape, defend, and enjoy. Your options in Terraria are limitless. Are you an action gamer with an itchy trigger finger? A master builder? A collector? An explorer? There\'s something for everyone.',
-            'file' => 'terraria',
-            'executable' => 'TerrariaServer.exe',
-            'startup' => '-port {{SERVER_PORT}} -autocreate 2 -worldname World'
+            'startup' => 'mono TerrariaServer.exe -port {{SERVER_PORT}} -autocreate 2 -worldname World',
+            'index_file' => Service::defaultIndexFile(),
         ]);
     }
 
     private function addCoreOptions()
     {
-        $this->option['tshock'] = Models\ServiceOptions::create([
-            'parent_service' => $this->service->id,
+        $script = <<<'EOF'
+#!/bin/ash
+# TShock Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add curl unzip
+
+cd /tmp
+
+curl -sSLO https://github.com/NyxStudios/TShock/releases/download/v${T_VERSION}/tshock_${T_VERSION}.zip
+
+unzip -o tshock_${T_VERSION}.zip -d /mnt/server
+EOF;
+
+        $this->option['tshock'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'tshock',
+        ], [
             'name' => 'Terraria Server (TShock)',
             'description' => 'TShock is a server modification for Terraria, written in C#, and based upon the Terraria Server API. It uses JSON for configuration management, and offers several features not present in the Terraria Server normally.',
-            'tag' => 'tshock',
-            'docker_image' => 'quay.io/pterodactyl/terraria:tshock',
-            'executable' => '',
-            'startup' => ''
+            'docker_image' => 'quay.io/pterodactyl/core:mono',
+            'config_startup' => '{"userInteraction": [ "You need to agree to the EULA"]}',
+            'config_startup' => '{"done": "Type \'help\' for a list of commands", "userInteraction": []}',
+            'config_files' => '{"tshock/config.json":{"parser": "json", "find":{"ServerPort": "{{server.build.default.port}}", "MaxSlots": "{{server.build.env.MAX_SLOTS}}"}}}',
+            'config_logs' => '{"custom": false, "location": "ServerLog.txt"}',
+            'config_stop' => 'exit',
+            'startup' => null,
+            'script_install' => $script,
         ]);
     }
 
     private function addVariables()
     {
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['tshock']->id,
+            'env_variable' => 'T_VERSION',
+        ], [
             'name' => 'TShock Version',
             'description' => 'Which version of TShock to install and use.',
-            'env_variable' => 'T_VERSION',
-            'default_value' => '4.3.17',
+            'default_value' => '4.3.22',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'required' => 1,
-            'regex' => '/^([0-9_\.-]{5,10})$/'
+            'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
         ]);
 
-        Models\ServiceVariables::create([
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['tshock']->id,
+            'env_variable' => 'MAX_SLOTS',
+        ], [
             'name' => 'Maximum Slots',
             'description' => 'Total number of slots to allow on the server.',
-            'env_variable' => 'MAX_SLOTS',
-            'default_value' => '20',
+            'default_value' => 20,
             'user_viewable' => 1,
             'user_editable' => 0,
-            'required' => 1,
-            'regex' => '/^(\d){1,3}$/'
+            'rules' => 'required|numeric|digits_between:1,3',
         ]);
     }
 }

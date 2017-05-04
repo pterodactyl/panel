@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,80 +21,84 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
 use Validator;
-
-use Pterodactyl\Models;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class LocationRepository
 {
-
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Creates a new location on the system.
+     *
      * @param  array  $data
-     * @throws Pterodactyl\Exceptions\DisplayValidationException
-     * @return integer
+     * @return \Pterodactyl\Models\Location
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function create(array $data)
     {
         $validator = Validator::make($data, [
-            'short' => 'required|regex:/^[a-z0-9_.-]{1,10}$/i|unique:locations,short',
-            'long' => 'required|string|min:1|max:255'
+            'short' => 'required|string|between:1,60|unique:locations,short',
+            'long' => 'required|string|between:1,255',
         ]);
 
-        // Run validator, throw catchable and displayable exception if it fails.
-        // Exception includes a JSON result of failed validation rules.
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        $location = new Models\Location;
-        $location->fill([
+        return Location::create([
             'long' => $data['long'],
-            'short' => $data['short']
+            'short' => $data['short'],
         ]);
-        $location->save();
-
-        return $location->id;
     }
 
     /**
-     * Modifies a location based on the fields passed in $data.
-     * @param  integer $id
-     * @param  array   $data
-     * @throws Pterodactyl\Exceptions\DisplayValidationException
-     * @return boolean
+     * Modifies a location.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Location
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
-    public function edit($id, array $data)
+    public function update($id, array $data)
     {
+        $location = Location::findOrFail($id);
+
         $validator = Validator::make($data, [
-            'short' => 'regex:/^[a-z0-9_.-]{1,10}$/i',
-            'long' => 'string|min:1|max:255'
+            'short' => 'sometimes|required|string|between:1,60|unique:locations,short,' . $location->id,
+            'long' => 'sometimes|required|string|between:1,255',
         ]);
 
-        // Run validator, throw catchable and displayable exception if it fails.
-        // Exception includes a JSON result of failed validation rules.
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        $location = Models\Location::findOrFail($id);
+        $location->fill($data)->save();
 
-        if (isset($data['short'])) {
-            $location->short = $data['short'];
+        return $location;
+    }
+
+    /**
+     * Deletes a location from the system.
+     *
+     * @param  int  $id
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function delete($id)
+    {
+        $location = Location::withCount('nodes')->findOrFail($id);
+
+        if ($location->nodes_count > 0) {
+            throw new DisplayException('Cannot delete a location that has nodes assigned to it.');
         }
 
-        if (isset($data['long'])) {
-            $location->long = $data['long'];
-        }
-
-        return $location->save();
+        $location->delete();
     }
 }
