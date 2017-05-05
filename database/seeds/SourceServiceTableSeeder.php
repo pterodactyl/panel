@@ -74,16 +74,21 @@ class SourceServiceTableSeeder extends Seeder
 # SRCDS Base Installation Script
 #
 # Server Files: /mnt/server
-apt update
-apt install curl
+apt -y update
+apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
 
 cd /tmp
 curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
 
-mkdir /mnt/server/steamcmd
+mkdir -p /mnt/server/steamcmd
 tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
 cd /mnt/server/steamcmd
 
+# SteamCMD fails otherwise for some reason, even running as root.
+# This is changed at the end of the install process anyways.
+chown -R root:root /mnt
+
+export HOME=/mnt/server
 ./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update ${SRCDS_APPID} +quit
 
 mkdir -p /mnt/server/.steam/sdk32
@@ -145,13 +150,13 @@ EOF;
 # ARK: Installation Script
 #
 # Server Files: /mnt/server
-apt update
-apt install curl
+apt -y update
+apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
 
 cd /tmp
 curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
 
-mkdir /mnt/server/steamcmd
+mkdir -p /mnt/server/steamcmd
 mkdir -p /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
 
 tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
@@ -159,6 +164,11 @@ tar -xzvf steamcmd.tar.gz -C /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Lin
 
 cd /mnt/server/steamcmd
 
+# SteamCMD fails otherwise for some reason, even running as root.
+# This is changed at the end of the install process anyways.
+chown -R root:root /mnt
+
+export HOME=/mnt/server
 ./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 376030 +quit
 
 mkdir -p /mnt/server/.steam/sdk32
