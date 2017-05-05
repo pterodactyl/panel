@@ -297,14 +297,7 @@ class ServerRepository
                 }
             }
 
-            // Add Variables
-            $environmentVariables = [
-                'STARTUP' => $data['startup'],
-            ];
-
             foreach ($variableList as $item) {
-                $environmentVariables[$item['env']] = $item['val'];
-
                 ServerVariable::create([
                     'server_id' => $server->id,
                     'variable_id' => $item['id'],
@@ -312,7 +305,9 @@ class ServerRepository
                 ]);
             }
 
+            $environment = $this->parseVariables($server);
             $server->load('allocation', 'allocations');
+
             $node->guzzleClient(['X-Access-Token' => $node->daemonSecret])->request('POST', '/servers', [
                 'json' => [
                     'uuid' => (string) $server->uuid,
@@ -325,7 +320,7 @@ class ServerRepository
                         'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
                             return $item->pluck('port');
                         })->toArray(),
-                        'env' => $environmentVariables,
+                        'env' => $environment->pluck('value', 'variable')->toArray(),
                         'memory' => (int) $server->memory,
                         'swap' => (int) $server->swap,
                         'io' => (int) $server->io,
@@ -576,6 +571,8 @@ class ServerRepository
                 $newBuild['ports|overwrite'] = $server->allocations->groupBy('ip')->map(function ($item) {
                     return $item->pluck('port');
                 })->toArray();
+
+                $newBuild['env|overwrite'] = $this->parseVariables($server)->pluck('value', 'variable')->toArray();
             }
 
             // @TODO: verify that server can be set to this much memory without
@@ -632,20 +629,15 @@ class ServerRepository
     }
 
     /**
-     * Update the service configuration for a server.
+     * Process the variables for a server, and save to the database.
      *
-     * @param  int    $id
-     * @param  array  $data
-     * @return void
+     * @param  \Pterodactyl\Models\Server  $server
+     * @param  array                       $data
+     * @param  bool                        $admin
+     * @return \Illuminate\Support\Collection
      *
-     * @throws \GuzzleHttp\Exception\RequestException
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
-    protected function changeService($id, array $data)
-    {
-    }
-
     protected function processVariables(Server $server, $data, $admin = false)
     {
         $server->load('option.variables');
@@ -698,10 +690,21 @@ class ServerRepository
             }
         }
 
+        return $this->parseVariables($server);
+    }
+
+    /**
+     * Parse the variables and return in a standardized format.
+     *
+     * @param  \Pterodactyl\Models\Server  $server
+     * @return \Illuminate\Support\Collection
+     */
+    protected function parseVariables(Server $server)
+    {
         // Reload Variables
         $server->load('variables');
 
-        return $server->option->variables->map(function ($item, $key) use ($server) {
+        $parsed = $server->option->variables->map(function ($item, $key) use ($server) {
             $display = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
 
             return [
@@ -709,6 +712,28 @@ class ServerRepository
                 'value' => (! is_null($display)) ? $display : $item->default_value,
             ];
         });
+
+        $merge = [[
+            'variable' => 'STARTUP',
+            'value' => $server->startup,
+        ], [
+            'variable' => 'P_VARIABLE__LOCATION',
+            'value' => $server->location->short,
+        ]];
+
+        $allocations = $server->allocations->where('id', '!=', $server->allocation_id);
+        $i = 0;
+
+        foreach($allocations as $allocation) {
+            $merge[] = [
+                'variable' => 'ALLOC_' . $i . '__PORT',
+                'value' => $allocation->port,
+            ];
+
+            $i++;
+        }
+
+        return $parsed->merge($merge);
     }
 
     /**
@@ -767,7 +792,7 @@ class ServerRepository
                 ])->request('PATCH', '/server', [
                     'json' => [
                         'build' => [
-                            'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup])->toArray(),
+                            'env|overwrite' => $environment->pluck('value', 'variable')->toArray(),
                         ],
                     ],
                 ]);
@@ -816,7 +841,7 @@ class ServerRepository
             ])->request('POST', '/server/reinstall', [
                 'json' => [
                     'build' => [
-                        'env|overwrite' => $environment->pluck('value', 'variable')->merge(['STARTUP' => $server->startup])->toArray(),
+                        'env|overwrite' => $environment->pluck('value', 'variable')->toArray(),
                     ],
                     'service' => [
                         'type' => $server->option->service->folder,
