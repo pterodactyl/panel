@@ -62,7 +62,7 @@
                             <th class="text-center">@lang('strings.status')</th>
                         </tr>
                         @foreach($servers as $server)
-                            <tr class=" {{$server->suspended ?: 'dynamic-update' }}" data-server="{{ $server->uuidShort }}">
+                            <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
                                 <td @if(! empty($server->description)) rowspan="2" @endif><code>{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
                                 <td>{{ $server->node->name }}</td>
@@ -79,11 +79,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center" data-action="status">
-                                    @if($server->suspended)
-                                        <span class="label label-warning">@lang('strings.suspended')</span>
-                                    @else
-                                        <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
-                                    @endif
+                                    <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
                                 </td>
                             </tr>
                             @if (! empty($server->description))

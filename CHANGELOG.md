@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.0 (Courageous Carniadactylus)
+### Fixed
+* `[rc.1]` — Server deletion is fixed, caused by removed download table.
+* `[rc.1]` — Server status indication on front-end no longer shows `Error` when server is marked as installing or suspended.
+
 ## v0.6.0-rc.1 (Courageous Carniadactylus)
 ### Fixed
 * `[beta.2.1]` — Fixed a bug preventing the deletion of a server.

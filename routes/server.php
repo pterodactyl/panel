@@ -110,8 +110,6 @@ Route::group(['prefix' => 'tasks'], function () {
 |
 */
 Route::group(['prefix' => 'ajax'], function () {
-    Route::get('/status', 'AjaxController@getStatus')->name('server.ajax.status');
-
     Route::post('/set-primary', 'AjaxController@postSetPrimary')->name('server.ajax.set-primary');
     Route::post('/settings/reset-database-password', 'AjaxController@postResetDatabasePassword')->name('server.ajax.reset-database-password');
 });

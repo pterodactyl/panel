@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 Route::get('/', 'IndexController@getIndex')->name('index');
+Route::get('/status/{server}', 'IndexController@status')->name('index.status');
+
 Route::get('/index', function () {
     redirect()->route('index');
 });

@@ -30,7 +30,7 @@
 
         $.ajax({
             type: 'GET',
-            url: Router.route('server.ajax.status', { server: serverShortUUID }),
+            url: Router.route('index.status', { server: serverShortUUID }),
             timeout: 5000,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),

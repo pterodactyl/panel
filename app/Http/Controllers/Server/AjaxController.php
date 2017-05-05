@@ -51,41 +51,6 @@ class AjaxController extends Controller
     protected $directory;
 
     /**
-     * Returns true or false depending on the power status of the requested server.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getStatus(Request $request, $uuid)
-    {
-        $server = Models\Server::byUuid($uuid);
-
-        if (! $server) {
-            return response()->json([], 404);
-        }
-
-        if (! $server->installed) {
-            return response()->json(['status' => 20]);
-        }
-
-        if ($server->suspended) {
-            return response()->json(['status' => 30]);
-        }
-
-        try {
-            $res = $server->guzzleClient()->request('GET', '/server');
-            if ($res->getStatusCode() === 200) {
-                return response()->json(json_decode($res->getBody()));
-            }
-        } catch (RequestException $e) {
-            //
-        }
-
-        return response()->json([]);
-    }
-
-    /**
      * Returns a listing of files in a given directory for a server.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -26,6 +26,7 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
 
 class IndexController extends Controller
@@ -70,5 +71,40 @@ class IndexController extends Controller
         }
 
         return $generated;
+    }
+
+    /**
+     * Returns status of the server in a JSON response used for populating active status list.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function status(Request $request, $uuid)
+    {
+        $server = Server::byUuid($uuid);
+
+        if (! $server) {
+            return response()->json([], 404);
+        }
+
+        if (! $server->installed) {
+            return response()->json(['status' => 20]);
+        }
+
+        if ($server->suspended) {
+            return response()->json(['status' => 30]);
+        }
+
+        try {
+            $res = $server->guzzleClient()->request('GET', '/server');
+            if ($res->getStatusCode() === 200) {
+                return response()->json(json_decode($res->getBody()));
+            }
+        } catch (\Exception $e) {
+            //
+        }
+
+        return response()->json([]);
     }
 }
