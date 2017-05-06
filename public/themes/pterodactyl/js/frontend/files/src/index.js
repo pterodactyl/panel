@@ -62,7 +62,7 @@ class FileManager {
             swal({
                 type: 'error',
                 title: 'File Error',
-                text: 'An error occured while attempting to process this request. Please try again.',
+                text: jqXHR.responseText || 'An error occured while attempting to process this request. Please try again.',
             });
             console.error(jqXHR);
         });

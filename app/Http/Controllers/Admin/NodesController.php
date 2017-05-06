@@ -124,10 +124,17 @@ class NodesController extends Controller
                 DB::raw('SUM(memory) as memory, SUM(disk) as disk')
             )->where('node_id', $node->id)->first()
         )->mapWithKeys(function ($item, $key) use ($node) {
-            $percent = ($item / $node->{$key}) * 100;
+            if ($node->{$key . '_overallocate'} > 0) {
+                $withover = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+            } else {
+                $withover = $node->{$key};
+            }
+
+            $percent = ($item / $withover) * 100;
 
             return [$key => [
-                'value' => $item,
+                'value' => number_format($item),
+                'max' => number_format($withover),
                 'percent' => $percent,
                 'css' => ($percent <= 75) ? 'green' : (($percent > 90) ? 'red' : 'yellow'),
             ]];

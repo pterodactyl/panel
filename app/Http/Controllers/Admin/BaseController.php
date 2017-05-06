@@ -64,7 +64,7 @@ class BaseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'company' => 'required|between:1,256',
-            'default_language' => 'required|alpha_dash|min:2|max:5',
+            // 'default_language' => 'required|alpha_dash|min:2|max:5',
         ]);
 
         if ($validator->fails()) {
@@ -72,7 +72,7 @@ class BaseController extends Controller
         }
 
         Settings::set('company', $request->input('company'));
-        Settings::set('default_language', $request->input('default_language'));
+        // Settings::set('default_language', $request->input('default_language'));
 
         Alert::success('Settings have been successfully updated.')->flash();
 

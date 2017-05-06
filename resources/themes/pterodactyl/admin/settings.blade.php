@@ -48,7 +48,7 @@
                                 <p class="text-muted"><small>This is the name that is used throughout the panel and in emails sent to clients.</small></p>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
+                        {{-- <div class="form-group col-md-6">
                             <label class="control-label">Default Language:</label>
                             <div>
                                 <select name="default_language" class="form-control">
@@ -65,7 +65,7 @@
                                 </select>
                                 <p class="text-muted"><small>This is the default language that all clients will use unless they manually change it.</small></p>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row">
                         <div class="col-md-12">

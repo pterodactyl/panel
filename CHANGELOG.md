@@ -7,6 +7,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[rc.1]` — Server deletion is fixed, caused by removed download table.
 * `[rc.1]` — Server status indication on front-end no longer shows `Error` when server is marked as installing or suspended.
+* `[rc.1]` — Fixes issues with SteamCMD not registering and installing games properly.
+
+### Changed
+* Panel now sends all non-default allocations as `ALLOC_#__IP` and `ALLOC_#__PORT` to the daemon, as well as the location.
 
 ## v0.6.0-rc.1 (Courageous Carniadactylus)
 ### Fixed

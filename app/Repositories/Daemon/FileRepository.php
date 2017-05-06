@@ -144,12 +144,21 @@ class FileRepository
             throw new Exception('A valid directory must be specified in order to list its contents.');
         }
 
-        $res = $this->server->guzzleClient()->request('GET', '/server/directory/' . rawurlencode($directory));
+        try {
+            $res = $this->server->guzzleClient()->request('GET', '/server/directory/' . rawurlencode($directory));
+        } catch(\GuzzleHttp\Exception\ClientException $ex) {
+            $json = json_decode($ex->getResponse()->getBody());
+
+            throw new DisplayException($json->error);
+        } catch (\GuzzleHttp\Exception\ServerException $ex) {
+            throw new DisplayException('A remote server error was encountered while attempting to display this directory.');
+        } catch (\GuzzleHttp\Exception\ConnectException $ex) {
+            throw new DisplayException('A ConnectException was encountered: unable to contact daemon.');
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
 
         $json = json_decode($res->getBody());
-        if ($res->getStatusCode() !== 200) {
-            throw new DisplayException('An error occured while attempting to save this file. ' . $res->getBody());
-        }
 
         // Iterate through results
         $files = [];
