@@ -41,14 +41,15 @@ class LanguageMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (Session::has('applocale')) {
-            App::setLocale(Session::get('applocale'));
-        } elseif (Auth::check() && isset(Auth::user()->language)) {
-            Session::put('applocale', Auth::user()->language);
-            App::setLocale(Auth::user()->language);
-        } else {
-            App::setLocale(Settings::get('default_language', 'en'));
-        }
+        // if (Session::has('applocale')) {
+        //     App::setLocale(Session::get('applocale'));
+        // } elseif (Auth::check() && isset(Auth::user()->language)) {
+        //     Session::put('applocale', Auth::user()->language);
+        //     App::setLocale(Auth::user()->language);
+        // } else {
+        //     App::setLocale(Settings::get('default_language', 'en'));
+        // }
+        App::setLocale('en');
 
         return $next($request);
     }
