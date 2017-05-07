@@ -5,14 +5,83 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.6.0 (Courageous Carniadactylus)
 ### Fixed
+* Bug causing error logs to be spammed if someone timed out on an ajax based page.
+* Fixes edge case where specific server names could cause daemon errors due to an invalid SFTP username being created by the panel.
+* Fixes sessions being removed on browser close, and set sessions to idle for up to 3 hours before being marked as expired.
+* Emails sending with 'Pterodactyl Panel' as the from name. Now configurable by using `php artisan pterodactyl:mail` to update.
+* Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
+* Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
+* Fixes bug causing MySQL user accounts to be corrupted when resetting a password via the panel.
+* Fixes remote timing attack vulnerability due to hmac comparsion in API middleware.
 * `[rc.1]` — Server deletion is fixed, caused by removed download table.
 * `[rc.1]` — Server status indication on front-end no longer shows `Error` when server is marked as installing or suspended.
 * `[rc.1]` — Fixes issues with SteamCMD not registering and installing games properly.
 
 ### Changed
+* Admin API and base routes for user management now define the fields that should be passed to repositories rather than passing all fields.
+* User model now defines mass assignment fields using `$fillable` rather than `$guarded`.
+* 2FA checkpoint on login is now its own page, and not an AJAX based call. Improves security on that front.
+* Updated Server model code to be more efficient, as well as make life easier for backend changes and work.
+* Reduced the number of database queries being executed when viewing a specific server. This is done by caching the query for up to 15 minutes in memcached.
+* User creation emails include more information and are sent by the event listener rather than the repository.
+* Account password reset emails now auto-fill the email when clicking the link.
+* New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
+* New server creation page now makes significantly less AJAX calls and is much quicker to respond.
+* Server and Node view pages wee modified to split tabs into individual pages to make re-themeing and modifications significantly easier, and reduce MySQL query loads on page.
+* Most of the backend `UnhandledException` display errors now include a clearer error that directs admins to the program's logs.
+* Table seeders for services now can be run during upgrades and will attempt to locate and update, or create new if not found in the database.
+* Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.
+* Clarified details for database hosts to prevent users entering invalid account details, as well as renamed tables and columns relating to it to keep things clearer.
+* Updated all code to be Laravel compliant when using `env()` and moved to using `config()` throughout non `config/*.php` files.
+* Subuser permissions are now stored in `Permission::listPermissions()` to make views way cleaner and make adding to views significantly cleaner.
+* Attempting to reset a password for an account that does not exist no longer returns an error, rather it displays a success message. Failed resets trigger a `Pterodactyl\Events\Auth\FailedPasswordReset` event that can be caught if needed to perform other actions.
+* Servers are no longer queued for deletion due to the general hassle and extra logic required.
+* Updated all panel components to run on Laravel v5.4 rather than 5.3 which is EOL.
+* Routes are now handled in the `routes/` folder, and use a significantly cleaner syntax. Controller names and methods have been updated as well to be clearer as well as avoid conflicts with PHP reserved keywords.
+* API has been completely overhauled to use new permissions system. **Any old API keys will immediately become invalid and fail to operate properly anymore. You will need to generate new keys.**
+* Cleaned up dynamic database connection setting to use a single function call from the host model.
+* Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
+* Changed behavior when modifying server allocation information. You can now remove the default allocation assuming you assing a new allocation at the same time. Reduces the number of steps to change the default allocation for a server.
+* Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
+* Version in footer of panel now displays correctly if panel is installed using Git rather than a download from source.
+* Mobile views are now more... viewable. Fixes `col-xs-6` usage thoughout the Admin CP where it was intended to be `col-md-6`.
+* Node Configuration tokens and Download tokens are stored using the cache helpers rather than a database to speed up functions and make use of auto-expiration/deletion functions.
+* Old daemon routes using `/remote` have been changed to use `/daemon`, panel changes now reflect this.
+* Only display servers that a user is owner of or subuser of in the Admin CP rather than all servers if the user is marked as an admin.
 * Panel now sends all non-default allocations as `ALLOC_#__IP` and `ALLOC_#__PORT` to the daemon, as well as the location.
 
-## v0.6.0-rc.1 (Courageous Carniadactylus)
+### Added
+* Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
+* Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
+* Users can now have a username as well as client name assigned to their account.
+* Ability to create a node through the CLI using `pterodactyl:node` as well as locations via `pterodactyl:location`.
+* New theme (AdminLTE) for front-end with tweaks to backend files to work properly with it.
+* Add support for PhraseApp's in-context editor
+* Notifications when a user is added or removed as a subuser for a server.
+* New cache policy for ServerPolicy to avoid making 15+ queries per page load when confirming if a user has permission to perform an action.
+* Ability to assign multiple allocations at once when creating a new server.
+* New `humanReadable` macro on `File` facade that accepts a file path and returns a human readable size. (`File::humanReadable(path, precision)`)
+* Added ability to edit database host details after creation on the system.
+* Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
+* Server listing for individual users is now searchable on the front-end.
+* Servers that a user is assocaited with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
+* Ability to launch the console in a new window as an individual unit. https://s3.kelp.in/IrTyE.png
+* Server listing and view in Admin CP now shows the SFTP username/Docker container name.
+* Administrative server view includes link in navigation to go to server console/frontend management.
+* Added new scripts for service options that allows installation of software in a privileged Docker container on the node prior to marking a server as installed.
+* Added ability to reinstall a server using the currently assigned service and option.
+* Added ability to change a server's service and service option, as well as change pack assignments and other management services in that regard.
+* Added support for using a proxy such as Cloudflare with a node connection. Previously there was no way to tell the panel to connect over SSL without marking the Daemon as also using SSL.
+
+### Removed
+* Removed all old theme JS and CSS folders to cleanup and avoid confusion in the future.
+* Old API calls to `Server::create` will fail due to changed data structure.
+* Many old routes were modified to reflect new standards in panel, and many of the controller functions being called were also modified. This shouldn't really impact anyone unless you have been digging into the code and modifying things.
+* `Server::getUserDaemonSecret(Server $server)` was removed and replaced with `User::daemonSecret(Server $server)` in order to clean up models.
+* `Server::getByUUID()` was replaced with `Server::byUuid()` as well as various other functions through-out the Server model.
+* `Server::getHeaders()` was removed and replaced with `Server::getClient()` which returns a Guzzle Client with the correct headers already assigned.
+
+## v0.6.0-rc.1
 ### Fixed
 * `[beta.2.1]` — Fixed a bug preventing the deletion of a server.
 * It is now possible to modify a server's disk limits after the server is created.
@@ -35,7 +104,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Old daemon routes using `/remote` have been changed to use `/daemon`, panel changes now reflect this.
 * Only display servers that a user is owner of or subuser of in the Admin CP rather than all servers if the user is marked as an admin.
 
-## v0.6.0-beta.2.1 (Courageous Carniadactylus)
+## v0.6.0-beta.2.1
 ### Fixed
 * `[beta.2]` — Suspended servers now show as suspended.
 * `[beta.2]` — Corrected the information when a task has not run yet.
@@ -57,7 +126,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Server listing and view in Admin CP now shows the SFTP username/Docker container name.
 * Administrative server view includes link in navigation to go to server console/frontend management.
 
-## v0.6.0-beta.2 (Courageous Carniadactylus)
+## v0.6.0-beta.2
 ### Fixed
 * `[beta.1]` — Fixes task management ststem not running correctly.
 * `[beta.1]` — Fixes API endpoint for command sending missing the required class definition.
@@ -67,7 +136,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Ability to launch the console in a new window as an individual unit. https://s3.kelp.in/IrTyE.png
 
-## v0.6.0-beta.1 (Courageous Carniadactylus)
+## v0.6.0-beta.1
 ### Fixed
 * `[pre.7]` — Fixes bug with subuser checkbox display.
 * `[pre.7]` — Fixes bug with injected JS that was causing `<!DOCTYPE html>` to be ignored in templates.
@@ -91,14 +160,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Cleaned up dynamic database connection setting to use a single function call from the host model.
 * `[pre.7]` — Corrected a config option for spigot servers to set a boolean value as boolean, and not as a string.
 
-## v0.6.0-pre.7 (Courageous Carniadactylus)
+## v0.6.0-pre.7
 ### Fixed
 * `[pre.6]` — Addresses misconfigured console queue that was still sending data way to quickly thus causing the console to explode on some devices when large amounts of data were sent.
 * `[pre.6]` — Fixes bug in allocation parsing for a node that prevented adding new allocations.
 * `[pre.6]` — Fixes typo in migrations that wouldn't save custom regex for non-required variables.
 * `[pre.6]` — Fixes auto-deploy checkbox on server creation causing validation error.
 
-## v0.6.0-pre.6 (Courageous Carniadactylus)
+## v0.6.0-pre.6
 ### Fixed
 * `[pre.5]` — Console based server rebuild tool now actually rebuilds the servers with the correct information.
 * `[pre.5]` — Fixes typo and wrong docker contaienr for certain applications.
@@ -109,7 +178,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * `[pre.5]` — Added foreign key to `pack_id` to ensure nothing eds up breaking there.
 
-## v0.6.0-pre.5 (Courageous Carniadactylus)
+## v0.6.0-pre.5
 ### Changed
 * New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
 * New server creation page now makes significantly less AJAX calls and is much quicker to respond.
@@ -142,7 +211,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Old API calls to `Server::create` will fail due to changed data structure.
 * Many old routes were modified to reflect new standards in panel, and many of the controller functions being called were also modified. This shouldn't really impact anyone unless you have been digging into the code and modifying things.
 
-## v0.6.0-pre.4 (Courageous Carniadactylus)
+## v0.6.0-pre.4
 ### Fixed
 * `[pre.3]` — Fixes bug in cache handler that doesn't cache against the user making the request. Would have allowed for users to access servers not belonging to themselves in production.
 * `[pre.3]` — Fixes misnamed MySQL column that was causing the inability to delete certain port ranges from the database.
@@ -151,7 +220,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * New cache policy for ServerPolicy to avoid making 15+ queries per page load when confirming if a user has permission to perform an action.
 
-## v0.6.0-pre.3 (Courageous Carniadactylus)
+## v0.6.0-pre.3
 ### Fixed
 * `[pre.2]` — Fixes bug where servers could not be manually deployed to nodes due to a broken SQL call.
 * `[pre.2]` — Fixes inability to edit a server due to owner_id issues.
@@ -171,14 +240,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Notifications when a user is added or removed as a subuser for a server.
 
-## v0.6.0-pre.2 (Courageous Carniadactylus)
+## v0.6.0-pre.2
 ### Fixed
 * `[pre.1]` — Fixes bug with database seeders that prevented correctly installing the panel.
 
 ### Changed
 * `[pre.1]` — Moved around navigation bar on fronted to make it more obvious where logout and admin buttons were, as well as use the right icon for server listing.
 
-## v0.6.0-pre.1 (Courageous Carniadactylus)
+## v0.6.0-pre.1
 ### Added
 * Remote routes for daemon to contact in order to allow Daemon to retrieve updated service configuration files on boot. Centralizes services to the panel rather than to each daemon.
 * Basic service pack implementation to allow assignment of modpacks or software to a server to pre-install applications and allow users to update.
