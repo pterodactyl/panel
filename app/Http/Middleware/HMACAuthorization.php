@@ -148,7 +148,7 @@ class HMACAuthorization
     protected function validateIPAccess()
     {
         if (! is_null($this->key()->allowed_ips)) {
-            foreach ($this->key()->allowed_ips as $ip) {
+            foreach (json_decode($this->key()->allowed_ips) as $ip) {
                 if (Range::parse($ip)->contains(new IP($this->request()->ip()))) {
                     return true;
                 }
