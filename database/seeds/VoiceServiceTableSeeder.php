@@ -183,11 +183,11 @@ EOF;
 
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['ts3']->id,
-            'env_variable' => 'T_VERSION',
+            'env_variable' => 'TS_VERSION',
         ], [
             'name' => 'Server Version',
             'description' => 'The version of Teamspeak 3 to use when running the server.',
-            'default_value' => '3.1.1.1',
+            'default_value' => '3.0.13.6',
             'user_viewable' => 1,
             'user_editable' => 1,
             'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
