@@ -304,3 +304,10 @@ input.form-autocomplete-stop[readonly] {
     background: inherit;
     cursor: text;
 }
+
+/* fix Google Recaptcha badge */
+.grecaptcha-badge {
+    bottom: 54px !important;
+    background: white;
+    box-shadow: none !important;
+}
