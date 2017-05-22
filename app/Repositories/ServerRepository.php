@@ -733,6 +733,10 @@ class ServerRepository
             $i++;
         }
 
+        if ($parsed->count() === 0) {
+            return collect($merge);
+        }
+
         return $parsed->merge($merge);
     }
 

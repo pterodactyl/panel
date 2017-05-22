@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.1 (Courageous Carniadactylus)
+### Fixed
+* Fixes a bug preventing the use of services that have no variables attached to them.
+
 ## v0.6.0 (Courageous Carniadactylus)
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.
