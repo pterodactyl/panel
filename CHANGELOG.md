@@ -6,6 +6,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.6.1 (Courageous Carniadactylus)
 ### Fixed
 * Fixes a bug preventing the use of services that have no variables attached to them.
+* Fixes 'Remember Me' checkbox being ignored when using 2FA on an account.
+
+### Changed
+* Renamed session cookies from `laravel_session` to `pterodactyl_session`.
+* Sessions are now encrypted before being stored as an additional layer of security.
 
 ## v0.6.0 (Courageous Carniadactylus)
 ### Fixed
