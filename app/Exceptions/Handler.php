@@ -48,16 +48,16 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
             $exception = $this->prepareException($exception);
 
-            if (config('app.debug')) {
-                $report = [
-                    'code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
-                    'message' => class_basename($exception) . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine(),
-                ];
+            if (config('app.debug') || $this->isHttpException($exception)) {
+                $displayError = $exception->getMessage();
+            } else {
+                $displayError = 'An unhandled exception was encountered with this request.';
             }
 
             $response = response()->json([
-                'error' => (config('app.debug')) ? $exception->getMessage() : 'An unhandled exception was encountered with this request.',
-                'exception' => ! isset($report) ?: $report,
+                'error' => $displayError,
+                'http_code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
+                'trace' => (! config('app.debug')) ? null : class_basename($exception) . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine(),
             ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
 
             parent::report($exception);
