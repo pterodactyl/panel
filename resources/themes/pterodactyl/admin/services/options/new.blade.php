@@ -66,7 +66,7 @@
                             <div class="form-group">
                                 <label for="pTag" class="form-label">Option Tag</label>
                                 <input type="text" id="pTag" name="tag" value="{{ old('tag') }}" class="form-control" />
-                                <p class="text-muted small">This should be a unique identifer for this service option that is not used for any other service options.</p>
+                                <p class="text-muted small">This should be a unique identifer for this service option that is not used for any other service options. Must be alpha-numeric and no more than 60 characters in length.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pDockerImage" class="form-label">Docker Image</label>
