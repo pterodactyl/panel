@@ -273,9 +273,12 @@ class ServersController extends Controller
     {
         $repo = new ServerRepository;
         try {
-            $repo->updateDetails($id, $request->intersect([
-                'owner_id', 'name', 'description', 'reset_token',
-            ]));
+            $repo->updateDetails($id, array_merge(
+                $request->only('description'),
+                $request->intersect([
+                    'owner_id', 'name', 'reset_token',
+                ])
+            ));
 
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {

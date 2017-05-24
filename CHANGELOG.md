@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Renamed session cookies from `laravel_session` to `pterodactyl_session`.
 * Sessions are now encrypted before being stored as an additional layer of security.
+* It is now possible to clear out a server description and have it be blank, rather than throwing an error about the field being required.
 
 ## v0.6.0 (Courageous Carniadactylus)
 ### Fixed
