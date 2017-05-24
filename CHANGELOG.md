@@ -8,6 +8,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a bug preventing the use of services that have no variables attached to them.
 * Fixes 'Remember Me' checkbox being ignored when using 2FA on an account.
 * API now returns a useful error displaying what went wrong rather than an obscure 'An Error was Encountered' message when API issues arise.
+* Fixes bug preventing the creation of new files in the file manager due to a missing JS dependency on page load.
 
 ### Changed
 * Renamed session cookies from `laravel_session` to `pterodactyl_session`.
