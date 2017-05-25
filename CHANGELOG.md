@@ -9,7 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes 'Remember Me' checkbox being ignored when using 2FA on an account.
 * API now returns a useful error displaying what went wrong rather than an obscure 'An Error was Encountered' message when API issues arise.
 * Fixes bug preventing the creation of new files in the file manager due to a missing JS dependency on page load.
-* Prevent using a service option tag that contains special chaacters that are not valid. Now only allows alpha-numeric, no spaces or underscores.
+* Prevent using a service option tag that contains special characters that are not valid. Now only allows alpha-numeric, no spaces or underscores.
 * Fix unhandled excpetion due to missing `Log` class when using the API and causing an error.
 
 ### Changed
