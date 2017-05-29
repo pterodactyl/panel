@@ -3,6 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.1 (Courageous Carniadactylus)
+### Fixed
+* Fixes a bug preventing the use of services that have no variables attached to them.
+* Fixes 'Remember Me' checkbox being ignored when using 2FA on an account.
+* API now returns a useful error displaying what went wrong rather than an obscure 'An Error was Encountered' message when API issues arise.
+* Fixes bug preventing the creation of new files in the file manager due to a missing JS dependency on page load.
+* Prevent using a service option tag that contains special characters that are not valid. Now only allows alpha-numeric, no spaces or underscores.
+* Fix unhandled excpetion due to missing `Log` class when using the API and causing an error.
+
+### Changed
+* Renamed session cookies from `laravel_session` to `pterodactyl_session`.
+* Sessions are now encrypted before being stored as an additional layer of security.
+* It is now possible to clear out a server description and have it be blank, rather than throwing an error about the field being required.
+
 ## v0.6.0 (Courageous Carniadactylus)
 ### Fixed
 * Bug causing error logs to be spammed if someone timed out on an ajax based page.

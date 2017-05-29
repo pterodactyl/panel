@@ -28,6 +28,7 @@
 
 .login-box, .register-box {
     width: 40%;
+    max-width: 500px;
     margin: 7% auto;
 }
 
@@ -302,4 +303,11 @@ tr:hover + tr.server-description {
 input.form-autocomplete-stop[readonly] {
     background: inherit;
     cursor: text;
+}
+
+/* fix Google Recaptcha badge */
+.grecaptcha-badge {
+    bottom: 54px !important;
+    background: white;
+    box-shadow: none !important;
 }

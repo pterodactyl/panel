@@ -38,6 +38,17 @@ class OptionController extends Controller
             return sprintf('%s=%s', $item->variable->env_variable, $item->variable_value);
         });
 
+        $mergeInto = [
+            'STARTUP=' . $server->startup,
+            'SERVER_MEMORY=' . $server->memory,
+            'SERVER_IP=' . $server->allocation->ip,
+            'SERVER_PORT=' . $server->allocation->port,
+        ];
+
+        if ($environment->count() === 0) {
+            $environment = collect($mergeInto);
+        }
+
         return response()->json([
             'scripts' => [
                 'install' => (! $server->option->copy_script_install) ? null : str_replace(["\r\n", "\n", "\r"], "\n", $server->option->copy_script_install),
@@ -47,12 +58,7 @@ class OptionController extends Controller
                 'container' => $server->option->copy_script_container,
                 'entry' => $server->option->copy_script_entry,
             ],
-            'env' => $environment->merge([
-                'STARTUP=' . $server->startup,
-                'SERVER_MEMORY=' . $server->memory,
-                'SERVER_IP=' . $server->allocation->ip,
-                'SERVER_PORT=' . $server->allocation->port,
-            ])->toArray(),
+            'env' => $environment->toArray(),
         ]);
     }
 }

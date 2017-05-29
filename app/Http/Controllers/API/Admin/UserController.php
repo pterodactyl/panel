@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Http\Controllers\API\Admin;
 
+use Log;
 use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;

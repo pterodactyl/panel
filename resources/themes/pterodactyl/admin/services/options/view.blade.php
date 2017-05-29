@@ -48,6 +48,11 @@
 <form action="{{ route('admin.services.option.view', $option->id) }}" method="POST">
     <div class="row">
         <div class="col-xs-12">
+            <div class="callout callout-info">
+                <strong>Notice:</strong> Editing the Option Tag or any of the Process Management fields <em>requires</em> that each daemon be rebooted to apply the changes.
+            </div>
+        </div>
+        <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Configuration</h3>

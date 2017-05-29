@@ -370,7 +370,7 @@ class ServerRepository
         $validator = Validator::make($data, [
             'owner_id' => 'sometimes|required|integer|exists:users,id',
             'name' => 'sometimes|required|regex:([\w .-]{1,200})',
-            'description' => 'sometimes|required|string',
+            'description' => 'sometimes|nullable|string',
             'reset_token' => 'sometimes|required|accepted',
         ]);
 
@@ -731,6 +731,10 @@ class ServerRepository
             ];
 
             $i++;
+        }
+
+        if ($parsed->count() === 0) {
+            return collect($merge);
         }
 
         return $parsed->merge($merge);

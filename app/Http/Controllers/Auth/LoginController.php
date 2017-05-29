@@ -134,7 +134,9 @@ class LoginController extends Controller
                 ])),
             ], 5);
 
-            return redirect()->route('auth.totp')->with('authentication_token', $token);
+            return redirect()->route('auth.totp')
+                ->with('authentication_token', $token)
+                ->with('remember', $request->has('remember'));
         }
 
         $attempt = Auth::attempt([
@@ -167,7 +169,7 @@ class LoginController extends Controller
 
         return view('auth.totp', [
             'verify_key' => $token,
-            'remember' => $request->has('remember'),
+            'remember' => $request->session()->get('remember'),
         ]);
     }
 
