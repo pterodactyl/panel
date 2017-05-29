@@ -20,7 +20,7 @@ return [
     'account' => 'Account',
     'security' => 'Security',
     'ip' => 'IP Address',
-    'last_activity' => 'Last Activitiy',
+    'last_activity' => 'Last Activity',
     'revoke' => 'Revoke',
     '2fa_token' => 'Authentication Token',
     'submit' => 'Submit',
