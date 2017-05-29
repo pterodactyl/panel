@@ -24,7 +24,7 @@ return [
     ],
     'index' => [
         'header' => 'Your Servers',
-        'header_sub' => 'Servers you own and have access to.',
+        'header_sub' => 'Servers you have access to.',
         'list' => 'Server List',
     ],
     'api' => [
