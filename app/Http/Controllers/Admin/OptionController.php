@@ -35,6 +35,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\OptionRepository;
 use Pterodactyl\Repositories\VariableRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable;
 
 class OptionController extends Controller
 {
@@ -198,28 +199,23 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $option
-     * @param  int                       $variable
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable  $request
+     * @param  int                                                           $option
+     * @param  int                                                           $variable
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function editVariable(Request $request, $option, $variable)
+    public function editVariable(StoreOptionVariable $request, $option, $variable)
     {
         $repo = new VariableRepository;
 
         try {
             if ($request->input('action') !== 'delete') {
-                $variable = $repo->update($variable, $request->intersect([
-                    'name', 'description', 'env_variable',
-                    'default_value', 'options', 'rules',
-                ]));
+                $variable = $repo->update($variable, $request->normalize());
                 Alert::success("The service variable '{$variable->name}' has been updated.")->flash();
             } else {
                 $repo->delete($variable);
                 Alert::success('That service variable has been deleted.')->flash();
             }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.variables', $option)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
