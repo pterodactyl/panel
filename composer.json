@@ -1,5 +1,5 @@
 {
-    "name": "Pterodactyl Panel",
+    "name": "pterodactyl/panel",
     "description": "The free, open-source game management panel. Supporting Minecraft, Spigot, BungeeCord, and SRCDS servers.",
     "license": "MIT",
     "authors": [
@@ -38,10 +38,12 @@
         "webpatser/laravel-uuid": "2.0.1"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.3",
+        "friendsofphp/php-cs-fixer": "1.*",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7",
-        "barryvdh/laravel-ide-helper": "^2.3"
+        "sllh/php-cs-fixer-styleci-bridge": "^2.1"
     },
     "autoload": {
         "classmap": [

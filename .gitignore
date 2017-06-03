@@ -4,6 +4,7 @@
 .vagrant/*
 .vscode/*
 storage/framework/*
+/.idea
 
 composer.lock
 node_modules
