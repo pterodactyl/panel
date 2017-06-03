@@ -28,7 +28,6 @@ use Log;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Repositories;
-use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayValidationException;
