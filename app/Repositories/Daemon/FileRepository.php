@@ -146,7 +146,7 @@ class FileRepository
 
         try {
             $res = $this->server->guzzleClient()->request('GET', '/server/directory/' . rawurlencode($directory));
-        } catch(\GuzzleHttp\Exception\ClientException $ex) {
+        } catch (\GuzzleHttp\Exception\ClientException $ex) {
             $json = json_decode($ex->getResponse()->getBody());
 
             throw new DisplayException($json->error);

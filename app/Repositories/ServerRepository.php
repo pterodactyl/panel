@@ -724,7 +724,7 @@ class ServerRepository
         $allocations = $server->allocations->where('id', '!=', $server->allocation_id);
         $i = 0;
 
-        foreach($allocations as $allocation) {
+        foreach ($allocations as $allocation) {
             $merge[] = [
                 'variable' => 'ALLOC_' . $i . '__PORT',
                 'value' => $allocation->port,
