@@ -137,7 +137,7 @@ EOF;
         ], [
             'name' => 'Vanilla Minecraft',
             'description' => 'Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.',
-            'docker_image' => 'quay.io/pterodactyl/core:java',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:latest',
             'config_startup' => '{"done": ")! For help, type ", "userInteraction": [ "Go to eula.txt for more info."]}',
             'config_logs' => '{"custom": false, "location": "logs/latest.log"}',
             'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "enable-query": "true", "server-port": "{{server.build.default.port}}", "query.port": "{{server.build.default.port}}"}}}',
@@ -171,7 +171,7 @@ EOF;
         ], [
             'name' => 'Spigot',
             'description' => 'Spigot is the most widely-used modded Minecraft server software in the world. It powers many of the top Minecraft server networks around to ensure they can cope with their huge player base and ensure the satisfaction of their players. Spigot works by reducing and eliminating many causes of lag, as well as adding in handy features and settings that help make your job of server administration easier.',
-            'docker_image' => 'quay.io/pterodactyl/core:java-glibc',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:spigot',
             'config_startup' => null,
             'config_files' => '{"spigot.yml":{"parser": "yaml", "find":{"settings.restart-on-crash": false}}}',
             'config_logs' => null,
@@ -201,7 +201,7 @@ EOF;
         ], [
             'name' => 'Sponge (SpongeVanilla)',
             'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
-            'docker_image' => 'quay.io/pterodactyl/core:java-glibc',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:sponge',
             'config_startup' => '{"userInteraction": [ "You need to agree to the EULA"]}',
             'config_files' => null,
             'config_logs' => null,
@@ -234,7 +234,7 @@ EOF;
         ], [
             'name' => 'Bungeecord',
             'description' => 'For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community\'s full potential.',
-            'docker_image' => 'quay.io/pterodactyl/core:java',
+            'docker_image' => 'quay.io/pterodactyl/minecraft:bungeecord',
             'config_startup' => '{"done": "Listening on ", "userInteraction": [ "Listening on /0.0.0.0:25577"]}',
             'config_files' => '{"config.yml":{"parser": "yaml", "find":{"listeners[0].query_enabled": true, "listeners[0].query_port": "{{server.build.default.port}}", "listeners[0].host": "0.0.0.0:{{server.build.default.port}}", "servers.*.address":{"127.0.0.1": "{{config.docker.interface}}", "localhost": "{{config.docker.interface}}"}}}}',
             'config_logs' => '{"custom": false, "location": "proxy.log.0"}',
