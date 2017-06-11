@@ -30,7 +30,7 @@ use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Repositories\oldUserRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AccountController extends Controller
@@ -90,7 +90,7 @@ class AccountController extends Controller
         }
 
         try {
-            $repo = new UserRepository;
+            $repo = new oldUserRepository;
             $repo->update($request->user()->id, $data);
             Alert::success('Your account details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {

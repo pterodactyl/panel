@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,25 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Http\Requests\Admin\Service;
 
-use Log;
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class DisplayException extends PterodactylException
+class EditOptionScript extends AdminFormRequest
 {
     /**
-     * Exception constructor.
+     * Return the rules to be used when validating the sent data in the request.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @return array
      */
-    public function __construct($message, $log = null)
+    public function rules()
     {
-        if (! is_null($log)) {
-            Log::error($log);
-        }
-
-        parent::__construct($message);
+        return [
+            'script_install' => 'sometimes|nullable|string',
+            'script_is_privileged' => 'sometimes|required|boolean',
+            'script_entry' => 'sometimes|required|string',
+            'script_container' => 'sometimes|required|string',
+            'copy_script_from' => 'sometimes|nullable|numeric',
+        ];
     }
 }

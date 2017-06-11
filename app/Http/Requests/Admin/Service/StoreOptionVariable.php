@@ -24,25 +24,10 @@
 
 namespace Pterodactyl\Http\Requests\Admin\Service;
 
-use Pterodactyl\Models\User;
-use Illuminate\Foundation\Http\FormRequest;
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class StoreOptionVariable extends FormRequest
+class StoreOptionVariable extends AdminFormRequest
 {
-    /**
-     * Determine if user is allowed to access this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        if (! $this->user() instanceof User) {
-            return false;
-        }
-
-        return $this->user()->isRootAdmin();
-    }
-
     /**
      * Set the rules to be used for data passed to the request.
      *
@@ -58,18 +43,5 @@ class StoreOptionVariable extends FormRequest
             'default_value' => explode('|', $this->input('rules')),
             'options' => 'sometimes|required|array',
         ];
-    }
-
-    /**
-     * Return only the fields that we are interested in from the request.
-     * This will include empty fields as a null value.
-     *
-     * @return array
-     */
-    public function normalize()
-    {
-        return $this->only(
-            array_keys($this->rules())
-        );
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,18 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Contracts\Criteria;
 
-use Log;
+use Pterodactyl\Repositories\Repository;
 
-class DisplayException extends PterodactylException
+interface CriteriaInterface
 {
     /**
-     * Exception constructor.
+     * Apply selected criteria to a repository call.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @param  \Illuminate\Database\Eloquent\Model            $model
+     * @param  \Pterodactyl\Repositories\Repository  $repository
+     * @return mixed
      */
-    public function __construct($message, $log = null)
-    {
-        if (! is_null($log)) {
-            Log::error($log);
-        }
-
-        parent::__construct($message);
-    }
+    public function apply($model, Repository $repository);
 }

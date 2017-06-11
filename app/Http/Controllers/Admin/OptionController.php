@@ -26,8 +26,10 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Log;
 use Alert;
+use Route;
 use Javascript;
 use Illuminate\Http\Request;
+use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Exceptions\DisplayException;
@@ -39,6 +41,21 @@ use Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable;
 
 class OptionController extends Controller
 {
+    /**
+     * Store the repository instance.
+     *
+     * @var \Pterodactyl\Repositories\OptionRepository
+     */
+    protected $repository;
+
+    /**
+     * OptionController constructor.
+     */
+    public function __construct()
+    {
+        $this->repository = new OptionRepository(Route::current()->parameter('option'));
+    }
+
     /**
      * Handles request to view page for adding new option.
      *
@@ -227,24 +244,17 @@ class OptionController extends Controller
     }
 
     /**
-     * Handles POST when updating scripts for a service option.
+     * Handles POST when updating script for a service option.
      *
-     * @param  Request $request
-     * @param  int     $id
-     * @return \Illuminate\Response\RedirectResponse
+     * @param \Pterodactyl\Http\Requests\Admin\Service\EditOptionScript $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateScripts(Request $request, $id)
+    public function updateScripts(EditOptionScript $request)
     {
-        $repo = new OptionRepository;
-
         try {
-            $repo->scripts($id, $request->only([
-                'script_install', 'script_entry',
-                'script_container', 'copy_script_from',
-            ]));
+            $this->repository->scripts($request->normalize());
+
             Alert::success('Successfully updated option scripts to be run when servers are installed.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.scripts', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {

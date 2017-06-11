@@ -43,7 +43,7 @@ use Pterodactyl\Services\DeploymentService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-class ServerRepository
+class old_ServerRepository
 {
     /**
      * An array of daemon permission to assign to this server.

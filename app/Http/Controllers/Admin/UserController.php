@@ -25,17 +25,31 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
 use Alert;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use Pterodactyl\Contracts\Repositories\UserInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
 
 class UserController extends Controller
 {
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\UserRepository
+     */
+    protected $repository;
+
+    /**
+     * UserController constructor.
+     *
+     * @param \Pterodactyl\Contracts\Repositories\UserInterface $repository
+     */
+    public function __construct(UserInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display user index page.
      *
@@ -44,7 +58,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::withCount('servers', 'subuserOf');
+        $users = $this->repository->withCount('servers', 'subuserOf');
 
         if (! is_null($request->input('query'))) {
             $users->search($request->input('query'));
@@ -58,10 +72,9 @@ class UserController extends Controller
     /**
      * Display new user page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create()
     {
         return view('admin.users.new');
     }
@@ -69,96 +82,61 @@ class UserController extends Controller
     /**
      * Display user view page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Models\User  $user
      * @return \Illuminate\View\View
      */
-    public function view(Request $request, $id)
+    public function view(User $user)
     {
         return view('admin.users.view', [
-            'user' => User::with('servers.node')->findOrFail($id),
+            'user' => $user,
         ]);
     }
 
     /**
-     * Delete a user.
+     * Delete a user from the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function delete(Request $request, $id)
+    public function delete(User $user)
     {
         try {
-            $repo = new UserRepository;
-            $repo->delete($id);
-            Alert::success('Successfully deleted user from system.')->flash();
+            $this->repository->delete($user->id);
 
             return redirect()->route('admin.users');
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An exception was encountered while attempting to delete this user.')->flash();
         }
 
-        return redirect()->route('admin.users.view', $id);
+        return redirect()->route('admin.users.view', $user->id);
     }
 
     /**
      * Create a user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(UserFormRequest $request)
     {
-        try {
-            $user = new UserRepository;
-            $userid = $user->create($request->only([
-                'email', 'password', 'name_first',
-                'name_last', 'username', 'root_admin',
-            ]));
-            Alert::success('Account has been successfully created.')->flash();
+        $user = $this->repository->create($request->normalize());
+        Alert::success('Account has been successfully created.')->flash();
 
-            return redirect()->route('admin.users.view', $userid);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new user.')->flash();
-
-            return redirect()->route('admin.users.new');
-        }
+        return redirect()->route('admin.users.view', $user->id);
     }
 
     /**
-     * Update a user.
+     * Update a user on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest  $request
+     * @param  \Pterodactyl\Models\User                          $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(UserFormRequest $request, User $user)
     {
-        try {
-            $repo = new UserRepository;
-            $user = $repo->update($id, array_merge(
-                $request->only('root_admin'),
-                $request->intersect([
-                    'email', 'password', 'name_first',
-                    'name_last', 'username',
-                ])
-            ));
-            Alert::success('User account was successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to update this user.')->flash();
-        }
+        $this->repository->update($user->id, $request->normalize());
 
-        return redirect()->route('admin.users.view', $id);
+        return redirect()->route('admin.users.view', $user->id);
     }
 
     /**
@@ -169,12 +147,12 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
-        return User::select('id', 'email', 'username', 'name_first', 'name_last')
-            ->search($request->input('q'))
-            ->get()->transform(function ($item) {
-                $item->md5 = md5(strtolower($item->email));
+        return $this->repository->search($request->input('q'))->all([
+            'id', 'email', 'username', 'name_first', 'name_last',
+        ])->transform(function ($item) {
+            $item->md5 = md5(strtolower($item->email));
 
-                return $item;
-            });
+            return $item;
+        });
     }
 }

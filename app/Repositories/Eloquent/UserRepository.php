@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,57 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Repositories\Eloquent;
 
-use Log;
+use Pterodactyl\Models\User;
+use Illuminate\Contracts\Auth\Guard;
+use Pterodactyl\Repositories\Repository;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Repositories\UserInterface;
 
-class DisplayException extends PterodactylException
+class UserRepository extends Repository implements UserInterface
 {
     /**
-     * Exception constructor.
+     * Dependencies to automatically inject into the repository.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @var array
      */
-    public function __construct($message, $log = null)
+    protected $inject = [
+        'guard' => Guard::class,
+    ];
+
+    /**
+     * Return the model to be used for the repository.
+     *
+     * @return string
+     */
+    public function model()
     {
-        if (! is_null($log)) {
-            Log::error($log);
+        return User::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function search($term)
+    {
+        $this->model->search($term);
+
+        return $this;
+    }
+
+    public function delete($id)
+    {
+        $user = $this->model->withCount('servers')->find($id);
+
+        if ($this->guard->user() && $this->guard->user()->id === $user->id) {
+            throw new DisplayException('You cannot delete your own account.');
         }
 
-        parent::__construct($message);
+        if ($user->server_count > 0) {
+            throw new DisplayException('Cannot delete an account that has active servers attached to it.');
+        }
+
+        return $user->delete();
     }
 }

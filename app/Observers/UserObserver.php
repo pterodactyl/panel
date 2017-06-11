@@ -30,9 +30,17 @@ use Carbon;
 use Pterodactyl\Events;
 use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
+use Pterodactyl\Services\UuidService;
 
 class UserObserver
 {
+    protected $uuid;
+
+    public function __construct(UuidService $uuid)
+    {
+        $this->uuid = $uuid;
+    }
+
     /**
      * Listen to the User creating event.
      *
@@ -41,6 +49,8 @@ class UserObserver
      */
     public function creating(User $user)
     {
+        $user->uuid = $this->uuid->generate();
+
         event(new Events\User\Creating($user));
     }
 
@@ -52,8 +62,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        event(new Events\User\Created($user));
-
+        dd($user);
         if ($user->password === 'unset') {
             $token = hash_hmac('sha256', str_random(40), config('app.key'));
             DB::table('password_resets')->insert([
@@ -68,6 +77,8 @@ class UserObserver
             'username' => $user->username,
             'token' => (isset($token)) ? $token : null,
         ]));
+
+        event(new Events\User\Created($user));
     }
 
     /**

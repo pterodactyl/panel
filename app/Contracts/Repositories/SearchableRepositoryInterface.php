@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Contracts\Repositories;
 
-use Log;
-
-class DisplayException extends PterodactylException
+interface SearchableRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Exception constructor.
+     * Pass parameters to search trait on model.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @param  string  $term
+     * @return mixed
      */
-    public function __construct($message, $log = null)
-    {
-        if (! is_null($log)) {
-            Log::error($log);
-        }
-
-        parent::__construct($message);
-    }
+    public function search($term);
 }

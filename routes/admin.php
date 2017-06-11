@@ -81,12 +81,12 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/', 'UserController@index')->name('admin.users');
     Route::get('/accounts.json', 'UserController@json')->name('admin.users.json');
     Route::get('/new', 'UserController@create')->name('admin.users.new');
-    Route::get('/view/{id}', 'UserController@view')->name('admin.users.view');
+    Route::get('/view/{user}', 'UserController@view')->name('admin.users.view');
 
     Route::post('/new', 'UserController@store');
-    Route::post('/view/{id}', 'UserController@update');
+    Route::patch('/view/{user}', 'UserController@update');
 
-    Route::delete('/view/{id}', 'UserController@delete');
+    Route::delete('/view/{user}', 'UserController@delete');
 });
 
 /*
@@ -168,17 +168,17 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('/view/{id}', 'ServiceController@view')->name('admin.services.view');
     Route::get('/view/{id}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
     Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
-    Route::get('/option/{id}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
-    Route::get('/option/{id}/variables', 'OptionController@viewVariables')->name('admin.services.option.variables');
-    Route::get('/option/{id}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
+    Route::get('/option/{option}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
+    Route::get('/option/{option}/variables', 'OptionController@viewVariables')->name('admin.services.option.variables');
+    Route::get('/option/{option}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
 
     Route::post('/new', 'ServiceController@store');
-    Route::post('/view/{id}', 'ServiceController@edit');
+    Route::post('/view/{option}', 'ServiceController@edit');
     Route::post('/option/new', 'OptionController@store');
-    Route::post('/option/{id}', 'OptionController@editConfiguration');
-    Route::post('/option/{id}/scripts', 'OptionController@updateScripts');
-    Route::post('/option/{id}/variables', 'OptionController@createVariable');
-    Route::post('/option/{id}/variables/{variable}', 'OptionController@editVariable')->name('admin.services.option.variables.edit');
+    Route::post('/option/{option}', 'OptionController@editConfiguration');
+    Route::post('/option/{option}/scripts', 'OptionController@updateScripts');
+    Route::post('/option/{option}/variables', 'OptionController@createVariable');
+    Route::post('/option/{option}/variables/{variable}', 'OptionController@editVariable')->name('admin.services.option.variables.edit');
 
     Route::delete('/view/{id}', 'ServiceController@delete');
 });

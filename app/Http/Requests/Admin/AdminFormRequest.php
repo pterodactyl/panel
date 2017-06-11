@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,38 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Http\Requests\Admin;
 
-use Log;
+use Pterodactyl\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
 
-class DisplayException extends PterodactylException
+abstract class AdminFormRequest extends FormRequest
 {
     /**
-     * Exception constructor.
+     * Determine if the user is an admin and has permission to access this
+     * form controller in the first place.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @return bool
      */
-    public function __construct($message, $log = null)
+    public function authorize()
     {
-        if (! is_null($log)) {
-            Log::error($log);
+        if (! $this->user() instanceof User) {
+            return false;
         }
 
-        parent::__construct($message);
+        return $this->user()->isRootAdmin();
+    }
+
+    /**
+     * Return only the fields that we are interested in from the request.
+     * This will include empty fields as a null value.
+     *
+     * @return array
+     */
+    public function normalize()
+    {
+        return $this->only(
+            array_keys($this->rules())
+        );
     }
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,19 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Providers;
 
-use Log;
+use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Contracts\Repositories\UserInterface;
+use Pterodactyl\Repositories\Eloquent\UserRepository;
 
-class DisplayException extends PterodactylException
+class RepositoryServiceProvider extends ServiceProvider
 {
     /**
-     * Exception constructor.
-     *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * Register the repositories.
      */
-    public function __construct($message, $log = null)
+    public function register()
     {
-        if (! is_null($log)) {
-            Log::error($log);
-        }
-
-        parent::__construct($message);
+        $this->app->bind(UserInterface::class, UserRepository::class);
     }
 }

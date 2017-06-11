@@ -35,7 +35,7 @@ use Pterodactyl\Services\UuidService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-class UserRepository
+class old_UserRepository
 {
     /**
      * Creates a user on the panel. Returns the created user's ID.

@@ -163,6 +163,7 @@ return [
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
+        Pterodactyl\Providers\RepositoryServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
         Pterodactyl\Providers\MacroServiceProvider::class,
         Pterodactyl\Providers\PhraseAppTranslationProvider::class,

@@ -117,6 +117,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @param  int  $token
      * @return bool
+     * @deprecated
      */
     public function toggleTotp($token)
     {
@@ -136,9 +137,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *      - at least one lowercase character
      *      - at least one number.
      *
-     * @param  string  $password
-     * @param  string  $regex
+     * @param  string $password
+     * @param  string $regex
      * @return void
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @deprecated
      */
     public function setPassword($password, $regex = '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})')
     {
@@ -165,6 +168,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Return true or false depending on wether the user is root admin or not.
      *
      * @return bool
+     * @deprecated
      */
     public function isRootAdmin()
     {
@@ -254,6 +258,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         return $query;
+    }
+
+    /**
+     * Store the username as a lowecase string.
+     *
+     * @param  string  $value
+     */
+    public function setUsernameAttribute($value)
+    {
+        $this->attributes['username'] = strtolower($value);
     }
 
     /**

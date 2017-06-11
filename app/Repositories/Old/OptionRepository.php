@@ -26,12 +26,67 @@ namespace Pterodactyl\Repositories;
 
 use DB;
 use Validator;
+use InvalidArgumentException;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class OptionRepository
 {
+    /**
+     * Store the requested service option.
+     *
+     * @var \Pterodactyl\Models\ServiceOption
+     */
+    protected $model;
+
+    /**
+     * OptionRepository constructor.
+     *
+     * @param  null|int|\Pterodactyl\Models\ServiceOption  $option
+     */
+    public function __construct($option = null)
+    {
+        if (is_null($option)) {
+            return;
+        }
+
+        if ($option instanceof ServiceOption) {
+            $this->model = $option;
+        } else {
+            if (! is_numeric($option)) {
+                throw new InvalidArgumentException(
+                    sprintf('Variable passed to constructor must be integer or instance of \Pterodactyl\Models\ServiceOption.')
+                );
+            }
+
+            $this->model = ServiceOption::findOrFail($option);
+        }
+    }
+
+    /**
+     * Return the eloquent model for the given repository.
+     *
+     * @return null|\Pterodactyl\Models\ServiceOption
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * Update the currently assigned model by re-initalizing the class.
+     *
+     * @param  null|int|\Pterodactyl\Models\ServiceOption $option
+     * @return $this
+     */
+    public function setModel($option)
+    {
+        self::__construct($option);
+
+        return $this;
+    }
+
     /**
      * Creates a new service option on the system.
      *
@@ -67,7 +122,7 @@ class OptionRepository
             }
         }
 
-        return ServiceOption::create($data);
+        return $this->setModel(ServiceOption::create($data))->getModel();
     }
 
     /**
@@ -76,13 +131,15 @@ class OptionRepository
      * @param  int  $id
      * @return void
      *
+     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Throwable
      */
     public function delete($id)
     {
-        $option = ServiceOption::with('variables')->withCount('servers')->findOrFail($id);
+        $this->model->load('variables', 'servers');
 
-        if ($option->servers_count > 0) {
+        if ($this->model->servers->count() > 0) {
             throw new DisplayException('You cannot delete a service option that has servers associated with it.');
         }
 
@@ -158,32 +215,19 @@ class OptionRepository
     /**
      * Updates a service option's scripts in the database.
      *
-     * @param  int    $id
      * @param  array  $data
-     * @return \Pterodactyl\Models\ServiceOption
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
-    public function scripts($id, array $data)
+    public function scripts(array $data)
     {
-        $option = ServiceOption::findOrFail($id);
-
         $data['script_install'] = empty($data['script_install']) ? null : $data['script_install'];
 
-        $validator = Validator::make($data, [
-            'script_install' => 'sometimes|nullable|string',
-            'script_is_privileged' => 'sometimes|required|boolean',
-            'script_entry' => 'sometimes|required|string',
-            'script_container' => 'sometimes|required|string',
-            'copy_script_from' => 'sometimes|nullable|numeric',
-        ]);
-
         if (isset($data['copy_script_from']) && ! empty($data['copy_script_from'])) {
-            $select = ServiceOption::whereNull('copy_script_from')->where([
-                ['id', $data['copy_script_from']],
-                ['service_id', $option->service_id],
-            ])->first();
+            $select = ServiceOption::whereNull('copy_script_from')
+                ->where('id', $data['copy_script_from'])
+                ->where('service_id', $this->model->service_id)
+                ->first();
 
             if (! $select) {
                 throw new DisplayException('The service option selected to copy a script from either does not exist, or is copying from a higher level.');
@@ -192,12 +236,6 @@ class OptionRepository
             $data['copy_script_from'] = null;
         }
 
-        if ($validator->fails()) {
-            throw new DisplayValidationException(json_encode($validator->errors()));
-        }
-
-        $option->fill($data)->save();
-
-        return $option;
+        $this->model->fill($data)->save();
     }
 }

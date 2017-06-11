@@ -30,7 +30,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Repositories\oldUserRepository;
 use Pterodactyl\Transformers\Admin\UserTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -91,7 +91,7 @@ class UserController extends Controller
     {
         $this->authorize('user-create', $request->apiKey());
 
-        $repo = new UserRepository;
+        $repo = new oldUserRepository;
         try {
             $user = $repo->create($request->only([
                 'custom_id', 'email', 'password', 'name_first',
@@ -128,7 +128,7 @@ class UserController extends Controller
     {
         $this->authorize('user-edit', $request->apiKey());
 
-        $repo = new UserRepository;
+        $repo = new oldUserRepository;
         try {
             $user = $repo->update($user, $request->intersect([
                 'email', 'password', 'name_first',
@@ -165,7 +165,7 @@ class UserController extends Controller
     {
         $this->authorize('user-delete', $request->apiKey());
 
-        $repo = new UserRepository;
+        $repo = new oldUserRepository;
         try {
             $repo->delete($id);
 

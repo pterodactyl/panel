@@ -79,7 +79,7 @@ class SubuserRepository
             $user = User::where('email', $data['email'])->first();
             if (! $user) {
                 try {
-                    $repo = new UserRepository;
+                    $repo = new oldUserRepository;
                     $user = $repo->create([
                         'email' => $data['email'],
                         'username' => str_random(8),

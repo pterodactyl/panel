@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,25 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions;
+namespace Pterodactyl\Exceptions\Repository;
 
-use Log;
-
-class DisplayException extends PterodactylException
+class RepositoryException extends \Exception
 {
-    /**
-     * Exception constructor.
-     *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
-     */
-    public function __construct($message, $log = null)
-    {
-        if (! is_null($log)) {
-            Log::error($log);
-        }
-
-        parent::__construct($message);
-    }
+    //
 }
