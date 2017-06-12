@@ -1,0 +1,13 @@
+[Unit]
+Description=Mailhog
+
+[Service]
+# On some systems the user and group might be different.
+# Some systems use `apache` as the user and group.
+User=www-data
+Group=www-data
+Restart=on-failure
+ExecStart=/usr/bin/mailhog
+
+[Install]
+WantedBy=multi-user.target

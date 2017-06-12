@@ -1,0 +1,71 @@
+#!/bin/bash
+
+echo "Provisioning development environment for Pterodactyl Panel."
+
+apt-get install -y software-properties-common > /dev/null
+
+echo "Add the ondrej/php ppa repository"
+add-apt-repository -y ppa:ondrej/php > /dev/null
+echo "Add the mariadb repository"
+curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash > /dev/null
+
+apt-get update > /dev/null
+
+echo "Install the dependencies"
+export DEBIAN_FRONTEND=noninteractive
+# set the mariadb root password because mariadb asks for it
+debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password password pterodactyl'
+debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password_again password pterodactyl'
+# actually install
+apt-get install -y php7.1 php7.1-cli php7.1-gd php7.1-mysql php7.1-pdo php7.1-mbstring php7.1-tokenizer php7.1-bcmath php7.1-xml php7.1-fpm php7.1-memcached php7.1-curl php7.1-zip mariadb-server nginx curl tar unzip git memcached > /dev/null
+
+echo "Install composer"
+curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+echo "Install and run mailhog"
+curl -sL -o /usr/bin/mailhog https://github.com/mailhog/MailHog/releases/download/v1.0.0/MailHog_linux_amd64
+chmod +x /usr/bin/mailhog
+cp /var/www/html/pterodactyl/.dev/vagrant/mailhog.service /etc/systemd/system/
+systemctl enable mailhog.service
+systemctl start mailhog
+
+echo "Configure nginx"
+cp /var/www/html/pterodactyl/.dev/vagrant/pterodactyl.conf /etc/nginx/sites-available/
+rm /etc/nginx/sites-available/default
+ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
+service nginx restart
+
+echo "Setup database"
+mysql -u root -ppterodactyl << SQL
+CREATE USER 'pterodactyl'@'localhost' IDENTIFIED BY 'pterodactyl';
+CREATE DATABASE panel;
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'localhost';
+FLUSH PRIVILEGES;
+SQL
+
+echo "Setup pterodactyl queue worker service"
+cp /var/www/html/pterodactyl/.dev/vagrant/pteroq.service /etc/systemd/system/
+systemctl enable pteroq.service
+
+
+echo "Setup panel with base settings"
+cp /var/www/html/pterodactyl/.dev/vagrant/.env.vagrant /var/www/html/pterodactyl/.env
+cd /var/www/html/pterodactyl
+chmod -R 755 storage/* bootstrap/cache
+composer install --no-progress
+php artisan key:generate --force
+php artisan migrate
+php artisan db:seed
+php artisan pterodactyl:user --firstname Test --lastname Admin --username admin --email testadmin@pterodactyl.io --password Ptero123 --admin 1
+php artisan pterodactyl:user --firstname Test --lastname User --username user --email testuser@pterodactyl.io --password Ptero123 --admin 0
+
+echo "Add queue cronjob and start queue worker"
+(crontab -l 2>/dev/null; echo "* * * * * php /var/www/html/pterodactyl/artisan schedule:run >> /dev/null 2>&1") | crontab -
+systemctl start pteroq
+
+echo "   ----------------"
+echo "Provisioning is completed."
+echo "The panel should be available at http://localhost:50080/"
+echo "You may use the default admin user to login: admin/Ptero123"
+echo "A normal user has also been created: user/Ptero123"
+echo "MailHog is available at http://localhost:58025/"
