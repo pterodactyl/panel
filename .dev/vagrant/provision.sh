@@ -2,6 +2,7 @@
 
 echo "Provisioning development environment for Pterodactyl Panel."
 cp /var/www/html/pterodactyl/.dev/vagrant/motd.txt /etc/motd
+chmod -x /etc/update-motd.d/10-help-text /etc/update-motd.d/51-cloudguest
 
 apt-get install -y software-properties-common > /dev/null
 
@@ -37,10 +38,13 @@ ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/ptero
 service nginx restart
 
 echo "Setup database"
+# Replace default config with custom one to bind mysql to 0.0.0.0 to make it accessible from the host
+cp /var/www/html/pterodactyl/.dev/vagrant/mariadb.cnf /etc/mysql/my.cnf
+systemctl restart mariadb
 mysql -u root -ppterodactyl << SQL
-CREATE USER 'pterodactyl'@'localhost' IDENTIFIED BY 'pterodactyl';
 CREATE DATABASE panel;
-GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'localhost';
+GRANT ALL PRIVILEGES ON panel.* TO 'pterodactyl'@'%' IDENTIFIED BY 'pterodactyl' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'pterodactyl' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 SQL
 
@@ -70,3 +74,4 @@ echo "The panel should be available at http://localhost:50080/"
 echo "You may use the default admin user to login: admin/Ptero123"
 echo "A normal user has also been created: user/Ptero123"
 echo "MailHog is available at http://localhost:58025/"
+echo "Connect to the database using root/pterodactyl or pterodactyl/pterodactyl on localhost:53306"
