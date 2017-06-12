@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "Provisioning development environment for Pterodactyl Panel."
+cp /var/www/html/pterodactyl/.dev/vagrant/motd.txt /etc/motd
 
 apt-get install -y software-properties-common > /dev/null
 

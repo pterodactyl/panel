@@ -1,0 +1,11 @@
+#####################################################
+            Pterodactyl Panel Vagrant VM
+
+Install: /var/www/html/pterodactyl
+Ports:
+    Panel: 80 (50080 on host)
+    MailHog: 8025 (58025 on host)
+    MySQL: 3306
+
+Services for pteroq and mailhog are running
+#####################################################
