@@ -19,7 +19,7 @@ export DEBIAN_FRONTEND=noninteractive
 debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password password pterodactyl'
 debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password_again password pterodactyl'
 # actually install
-apt-get install -y php7.1 php7.1-cli php7.1-gd php7.1-mysql php7.1-pdo php7.1-mbstring php7.1-tokenizer php7.1-bcmath php7.1-xml php7.1-fpm php7.1-memcached php7.1-curl php7.1-zip mariadb-server nginx curl tar unzip git memcached > /dev/null
+apt-get install -y php7.1 php7.1-cli php7.1-gd php7.1-mysql php7.1-pdo php7.1-mbstring php7.1-tokenizer php7.1-bcmath php7.1-xml php7.1-fpm php7.1-memcached php7.1-curl php7.1-zip php-xdebug mariadb-server nginx curl tar unzip git memcached > /dev/null
 
 echo "Install composer"
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -31,11 +31,15 @@ cp /var/www/html/pterodactyl/.dev/vagrant/mailhog.service /etc/systemd/system/
 systemctl enable mailhog.service
 systemctl start mailhog
 
+echo "Configure xDebug"
+cp /var/www/html/pterodactyl/.dev/vagrant/xdebug.ini /etc/php/7.1/mods-available/
+systemctl restart php7.1-fpm
+
 echo "Configure nginx"
 cp /var/www/html/pterodactyl/.dev/vagrant/pterodactyl.conf /etc/nginx/sites-available/
 rm /etc/nginx/sites-available/default
 ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
-service nginx restart
+systemctl restart nginx
 
 echo "Setup database"
 # Replace default config with custom one to bind mysql to 0.0.0.0 to make it accessible from the host
