@@ -25,7 +25,6 @@
 namespace Pterodactyl\Http\Requests\Admin;
 
 use Pterodactyl\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Pterodactyl\Contracts\Repositories\UserInterface;
 
 class UserFormRequest extends AdminFormRequest
@@ -45,21 +44,21 @@ class UserFormRequest extends AdminFormRequest
     {
         if ($this->method() === 'PATCH') {
             return [
-                'email' => 'sometimes|required|email|unique:users,email,' . $this->user->id,
-                'username' => 'sometimes|required|alpha_dash|between:1,255|unique:users,username, ' . $this->user->id . '|' . User::USERNAME_RULES,
-                'name_first' => 'sometimes|required|string|between:1,255',
-                'name_last' => 'sometimes|required|string|between:1,255',
+                'email' => 'required|email|unique:users,email,' . $this->user->id,
+                'username' => 'required|alpha_dash|between:1,255|unique:users,username, ' . $this->user->id . '|' . User::USERNAME_RULES,
+                'name_first' => 'required|string|between:1,255',
+                'name_last' => 'required|string|between:1,255',
                 'password' => 'sometimes|nullable|' . User::PASSWORD_RULES,
-                'root_admin' => 'sometimes|required|boolean',
-                'language' => 'sometimes|required|string|min:1|max:5',
-                'use_totp' => 'sometimes|required|boolean',
-                'totp_secret' => 'sometimes|required|size:16',
+                'root_admin' => 'required|boolean',
+//                'language' => 'sometimes|required|string|min:1|max:5',
+//                'use_totp' => 'sometimes|required|boolean',
+//                'totp_secret' => 'sometimes|required|size:16',
             ];
         }
 
         return [
-            'email' => 'required|email|unique:users,email,' . $this->user->id,
-            'username' => 'required|alpha_dash|between:1,255|unique:users,username,' . $this->user->id . '|' . User::USERNAME_RULES,
+            'email' => 'required|email|unique:users,email',
+            'username' => 'required|alpha_dash|between:1,255|unique:users,username|' . User::USERNAME_RULES,
             'name_first' => 'required|string|between:1,255',
             'name_last' => 'required|string|between:1,255',
             'password' => 'sometimes|nullable|' . User::PASSWORD_RULES,
@@ -70,8 +69,11 @@ class UserFormRequest extends AdminFormRequest
 
     public function normalize()
     {
-        if ($this->has('password')) {
-            $this->merge(['password' => Hash::make($this->input('password'))]);
+        if ($this->method === 'PATCH') {
+            return array_merge(
+                $this->intersect('password'),
+                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin'])
+            );
         }
 
         return parent::normalize();

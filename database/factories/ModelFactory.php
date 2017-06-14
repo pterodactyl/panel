@@ -13,9 +13,21 @@
 
 $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->email,
-        'password' => bcrypt(str_random(10)),
-        'remember_token' => str_random(10),
+        'external_id' => null,
+        'uuid' => $faker->uuid,
+        'username' => $faker->userName,
+        'email' => $faker->safeEmail,
+        'name_first' => $faker->firstName,
+        'name_last' => $faker->lastName,
+        'password' => bcrypt('password'),
+        'language' => 'en',
+        'root_admin' => false,
+        'use_totp' => false,
+    ];
+});
+
+$factory->state(Pterodactyl\Models\User::class, 'admin', function () {
+    return [
+       'root_admin' => true,
     ];
 });

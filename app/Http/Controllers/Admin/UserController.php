@@ -27,27 +27,30 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Alert;
 use Illuminate\Http\Request;
-use Pterodactyl\Contracts\Repositories\UserInterface;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\UserService;
 
 class UserController extends Controller
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\UserRepository
+     * @var \Pterodactyl\Services\UserService
      */
-    protected $repository;
+    protected $service;
 
     /**
      * UserController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repositories\UserInterface $repository
+     * @param  \Prologue\Alerts\AlertsMessageBag  $alert
+     * @param  \Pterodactyl\Services\UserService  $service
      */
-    public function __construct(UserInterface $repository)
+    public function __construct(AlertsMessageBag $alert, UserService $service)
     {
-        $this->repository = $repository;
+        $this->alert = $alert;
+        $this->service = $service;
     }
 
     /**
@@ -58,7 +61,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->repository->withCount('servers', 'subuserOf');
+        $users = User::withCount('servers', 'subuserOf');
 
         if (! is_null($request->input('query'))) {
             $users->search($request->input('query'));
@@ -97,15 +100,17 @@ class UserController extends Controller
      *
      * @param  \Pterodactyl\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
      */
     public function delete(User $user)
     {
         try {
-            $this->repository->delete($user->id);
+            $this->service->delete($user);
 
             return redirect()->route('admin.users');
         } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
+            $this->alert->danger($ex->getMessage())->flash();
         }
 
         return redirect()->route('admin.users.view', $user->id);
@@ -116,11 +121,14 @@ class UserController extends Controller
      *
      * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest  $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Throwable
      */
     public function store(UserFormRequest $request)
     {
-        $user = $this->repository->create($request->normalize());
-        Alert::success('Account has been successfully created.')->flash();
+        $user = $this->service->create($request->normalize());
+        $this->alert->success('Account has been successfully created.')->flash();
 
         return redirect()->route('admin.users.view', $user->id);
     }
@@ -134,7 +142,8 @@ class UserController extends Controller
      */
     public function update(UserFormRequest $request, User $user)
     {
-        $this->repository->update($user->id, $request->normalize());
+        $this->service->update($user, $request->normalize());
+        $this->alert->success('User account has been updated.')->flash();
 
         return redirect()->route('admin.users.view', $user->id);
     }
@@ -147,7 +156,7 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
-        return $this->repository->search($request->input('q'))->all([
+        return User::search($request->input('q'))->all([
             'id', 'email', 'username', 'name_first', 'name_last',
         ])->transform(function ($item) {
             $item->md5 = md5(strtolower($item->email));

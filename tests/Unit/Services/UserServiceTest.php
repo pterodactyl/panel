@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,19 +22,40 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Providers;
+namespace Tests\Unit\Services;
 
-use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Contracts\Repositories\UserInterface;
-use Pterodactyl\Repositories\Eloquent\UserRepository;
+use Illuminate\Config\Repository;
+use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Queue;
+use \Mockery as m;
+use Pterodactyl\Models\User;
+use Pterodactyl\Services\Components\UuidService;
+use Pterodactyl\Services\UserService;
+use Tests\TestCase;
 
-class RepositoryServiceProvider extends ServiceProvider
+class UserServiceTest extends TestCase
 {
-    /**
-     * Register the repositories.
-     */
-    public function register()
+    protected $service;
+
+    public function setUp()
     {
-        $this->app->bind(UserInterface::class, UserRepository::class);
+        parent::setUp();
+
+        $this->config = m::mock(Repository::class);
+        $this->database = m::mock(Connection::class);
+        $this->guard = m::mock(Guard::class);
+        $this->hasher = m::mock(Hasher::class);
+        $this->uuid = m::mock(UuidService::class);
+
+        $this->service = new UserService(
+            $this->config,
+            $this->database,
+            $this->guard,
+            $this->hasher,
+            $this->uuid
+        );;
     }
 }

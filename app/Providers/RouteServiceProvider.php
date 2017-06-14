@@ -4,6 +4,7 @@ namespace Pterodactyl\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Pterodactyl\Models\User;
 
 class RouteServiceProvider extends ServiceProvider
 {
