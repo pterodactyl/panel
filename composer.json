@@ -35,7 +35,7 @@
         "prologue/alerts": "0.4.1",
         "s1lentium/iptools": "1.1.0",
         "spatie/laravel-fractal": "4.0.0",
-        "watson/validating": "3.0.s1",
+        "watson/validating": "3.0.1",
         "webpatser/laravel-uuid": "2.0.1"
     },
     "require-dev": {
