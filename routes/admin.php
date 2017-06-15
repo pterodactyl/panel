@@ -33,10 +33,10 @@ Route::get('/', 'BaseController@getIndex')->name('admin.index');
 */
 Route::group(['prefix' => 'locations'], function () {
     Route::get('/', 'LocationController@index')->name('admin.locations');
-    Route::get('/view/{id}', 'LocationController@view')->name('admin.locations.view');
+    Route::get('/view/{location}', 'LocationController@view')->name('admin.locations.view');
 
     Route::post('/', 'LocationController@create');
-    Route::post('/view/{id}', 'LocationController@update');
+    Route::post('/view/{location}', 'LocationController@update');
 });
 
 /*

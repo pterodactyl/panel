@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "84c501086eb1d2505bf6ce8bb4d06f61",
-    "content-hash": "5d52bbe44333fc6d4a0d922958510fde",
+    "hash": "3a539370a2c653dbe460cad3d03c3db5",
+    "content-hash": "ad3015e0fe97ab992635581a6c72fddd",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3641,6 +3641,56 @@
             "time": "2016-09-01 10:05:43"
         },
         {
+            "name": "watson/validating",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dwightwatson/validating.git",
+                "reference": "3cef5b4cd0af2dc26d2c7ca668bd12f4d4ab421b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dwightwatson/validating/zipball/3cef5b4cd0af2dc26d2c7ca668bd12f4d4ab421b",
+                "reference": "3cef5b4cd0af2dc26d2c7ca668bd12f4d4ab421b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": ">=5.3",
+                "illuminate/database": ">=5.3",
+                "illuminate/events": ">=5.3",
+                "illuminate/support": ">=5.3",
+                "illuminate/validation": ">=5.3",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Watson\\Validating\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dwight Watson",
+                    "email": "dwight@studiousapp.com"
+                }
+            ],
+            "description": "Eloquent model validating trait.",
+            "keywords": [
+                "eloquent",
+                "laravel",
+                "validation"
+            ],
+            "time": "2016-10-31 21:53:17"
+        },
+        {
             "name": "webpatser/laravel-uuid",
             "version": "2.0.1",
             "source": {
@@ -5938,8 +5988,8 @@
     "platform": {
         "php": ">=7.0.0",
         "ext-mbstring": "*",
-        "ext-zip": "*",
-        "ext-pdo_mysql": "*"
+        "ext-pdo_mysql": "*",
+        "ext-zip": "*"
     },
     "platform-dev": []
 }

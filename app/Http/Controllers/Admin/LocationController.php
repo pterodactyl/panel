@@ -24,96 +24,127 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Exceptions\DisplayException;
+use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Services\LocationService;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\LocationRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Requests\Admin\LocationRequest;
 
 class LocationController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Models\Location
+     */
+    protected $location;
+
+    /**
+     * @var \Pterodactyl\Services\LocationService
+     */
+    protected $service;
+
+    /**
+     * LocationController constructor.
+     *
+     * @param  \Prologue\Alerts\AlertsMessageBag      $alert
+     * @param  \Pterodactyl\Models\Location          $location
+     * @param  \Pterodactyl\Services\LocationService $service
+     */
+    public function __construct(AlertsMessageBag $alert, Location $location, LocationService $service)
+    {
+        $this->alert = $alert;
+        $this->location = $location;
+        $this->service = $service;
+    }
+
+    /**
      * Return the location overview page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('admin.locations.index', [
-            'locations' => Location::withCount('nodes', 'servers')->get(),
+            'locations' => $this->location->withCount('nodes', 'servers')->get(),
         ]);
     }
 
     /**
      * Return the location view page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Models\Location  $location
      * @return \Illuminate\View\View
      */
-    public function view(Request $request, $id)
+    public function view(Location $location)
     {
-        return view('admin.locations.view', ['location' => Location::with('nodes.servers')->findOrFail($id)]);
+        $location->load('nodes.servers');
+
+        return view('admin.locations.view', ['location' => $location]);
     }
 
     /**
      * Handle request to create new location.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Pterodactyl\Http\Requests\Admin\LocationRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Throwable
+     * @throws \Watson\Validating\ValidationException
      */
-    public function create(Request $request)
+    public function create(LocationRequest $request)
     {
-        $repo = new LocationRepository;
+        $location = $this->service->create($request->normalize());
+        $this->alert->success('Location was created successfully.')->flash();
 
-        try {
-            $location = $repo->create($request->intersect(['short', 'long']));
-            Alert::success('Location was created successfully.')->flash();
-
-            return redirect()->route('admin.locations.view', $location->id);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.locations')->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::error('An unhandled exception occurred while processing this request. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.locations');
+        return redirect()->route('admin.locations.view', $location->id);
     }
 
     /**
      * Handle request to update or delete location.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Http\Requests\Admin\LocationRequest $request
+     * @param  \Pterodactyl\Models\Location                     $location
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Throwable
+     * @throws \Watson\Validating\ValidationException
      */
-    public function update(Request $request, $id)
+    public function update(LocationRequest $request, Location $location)
     {
-        $repo = new LocationRepository;
-
-        try {
-            if ($request->input('action') !== 'delete') {
-                $location = $repo->update($id, $request->intersect(['short', 'long']));
-                Alert::success('Location was updated successfully.')->flash();
-            } else {
-                $repo->delete($id);
-
-                return redirect()->route('admin.locations');
-            }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.locations.view', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::error('An unhandled exception occurred while processing this request. This error has been logged.')->flash();
+        if ($request->input('action') === 'delete') {
+            return $this->delete($location);
         }
 
-        return redirect()->route('admin.locations.view', $id);
+        $this->service->update($location, $request->normalize());
+        $this->alert->success('Location was updated successfully.')->flash();
+
+        return redirect()->route('admin.locations.view', $location->id);
+    }
+
+    /**
+     * Delete a location from the system.
+     *
+     * @param  \Pterodactyl\Models\Location $location
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function delete(Location $location)
+    {
+        try {
+            $this->service->delete($location);
+
+            return redirect()->route('admin.locations');
+        } catch (DisplayException $ex) {
+            $this->alert->danger($ex->getMessage())->flash();
+        }
+
+        return redirect()->route('admin.locations.view', $location->id);
     }
 }

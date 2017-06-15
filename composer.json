@@ -12,14 +12,14 @@
     ],
     "require": {
         "php": ">=7.0.0",
+        "ext-mbstring": "*",
+        "ext-pdo_mysql": "*",
+        "ext-zip": "*",
         "aws/aws-sdk-php": "3.26.5",
         "barryvdh/laravel-debugbar": "2.3.2",
         "daneeveritt/login-notifications": "1.0.0",
         "doctrine/dbal": "2.5.12",
         "edvinaskrucas/settings": "2.0.0",
-        "ext-mbstring": "*",
-        "ext-zip": "*",
-        "ext-pdo_mysql": "*",
         "fideloper/proxy": "3.3.0",
         "guzzlehttp/guzzle": "6.2.3",
         "igaster/laravel-theme": "1.14.0",
@@ -35,6 +35,7 @@
         "prologue/alerts": "0.4.1",
         "s1lentium/iptools": "1.1.0",
         "spatie/laravel-fractal": "4.0.0",
+        "watson/validating": "3.0.s1",
         "webpatser/laravel-uuid": "2.0.1"
     },
     "require-dev": {
