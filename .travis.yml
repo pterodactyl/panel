@@ -1,0 +1,32 @@
+langauge: php
+
+dist: trusty
+
+php:
+  - 7.0
+  - 7.1
+  - 7.2
+
+sudo: required
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE travis;'
+
+before_script:
+  - phpenv config-rm xdebug.ini
+  - cp .env.travis .env
+  - composer self-update
+  - composer install --no-interaction
+  - php artisan key:generate --force
+  - php artisan migrate --force
+  - php artisan db:seed --force
+
+script:
+  - vendor/bin/phpunit --coverage-clover=coverage.xml

@@ -31,3 +31,10 @@ $factory->state(Pterodactyl\Models\User::class, 'admin', function () {
        'root_admin' => true,
     ];
 });
+
+$factory->define(Pterodactyl\Models\Location::class, function (Faker\Generator $faker) {
+    return [
+       'short' => $faker->domainWord,
+       'long' => $faker->catchPhrase,
+   ];
+});

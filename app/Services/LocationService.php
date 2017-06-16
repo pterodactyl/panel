@@ -64,15 +64,16 @@ class LocationService
     /**
      * Update location model in the DB.
      *
-     * @param  \Pterodactyl\Models\Location $location
-     * @param  array                        $data
+     * @param  int    $id
+     * @param  array  $data
      * @return \Pterodactyl\Models\Location
      *
      * @throws \Throwable
      * @throws \Watson\Validating\ValidationException
      */
-    public function update(Location $location, array $data)
+    public function update($id, array $data)
     {
+        $location = $this->model->findOrFail($id);
         $location->fill($data)->saveOrFail();
 
         return $location;
@@ -81,15 +82,15 @@ class LocationService
     /**
      * Delete a model from the DB.
      *
-     * @param \Pterodactyl\Models\Location $location
+     * @param  int  $id
      * @return bool
-     *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(Location $location)
+    public function delete($id)
     {
-        if ($location->nodes()->count() > 0) {
+        $location = $this->model->withCount('nodes')->findOrFail($id);
+
+        if ($location->nodes_count > 0) {
             throw new DisplayException('Cannot delete a location that has nodes assigned to it.');
         }
 
