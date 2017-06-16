@@ -38,3 +38,22 @@ $factory->define(Pterodactyl\Models\Location::class, function (Faker\Generator $
        'long' => $faker->catchPhrase,
    ];
 });
+
+$factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $faker) {
+    return [
+        'public' => true,
+        'name' => $faker->firstName,
+        'fqdn' => $faker->ipv4,
+        'scheme' => 'http',
+        'behind_proxy' => false,
+        'memory' => 1024,
+        'memory_overallocate' => 0,
+        'disk' => 10240,
+        'disk_overallocate' => 0,
+        'upload_size' => 100,
+        'daemonSecret' => $faker->uuid,
+        'daemonListen' => 8080,
+        'daemonSFTP' => 2022,
+        'daemonBase' => '/srv/daemon',
+    ];
+});

@@ -25,6 +25,8 @@
 namespace Tests\Feature\Services;
 
 use Illuminate\Validation\ValidationException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Models\Node;
 use Tests\TestCase;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\LocationService;
@@ -200,5 +202,47 @@ class LocationServiceTest extends TestCase
     public function testShouldThrowExceptionIfInvalidModelIdIsProvided()
     {
         $this->service->update(0, []);
+    }
+
+    /**
+     * Test that a location can be deleted normally when no nodes are attached.
+     */
+    public function testShouldDeleteExistingLocation()
+    {
+        $location = factory(Location::class)->create();
+
+        $this->assertDatabaseHas('locations', [
+            'id' => $location->id,
+        ]);
+
+        $model = $this->service->delete($location);
+
+        $this->assertTrue($model);
+        $this->assertDatabaseMissing('locations', [
+            'id' => $location->id,
+        ]);
+    }
+
+    /**
+     * Test that a location cannot be deleted if a node is attached to it.
+     *
+     * @expectedException \Pterodactyl\Exceptions\DisplayException
+     */
+    public function testShouldFailToDeleteExistingLocationWithAttachedNodes()
+    {
+        $location = factory(Location::class)->create();
+        $node = factory(Node::class)->create(['location_id' => $location->id]);
+
+        $this->assertDatabaseHas('locations', ['id' => $location->id]);
+        $this->assertDatabaseHas('nodes', ['id' => $node->id]);
+
+        try {
+            $this->service->delete($location->id);
+        } catch (\Exception $ex) {
+            $this->assertInstanceOf(DisplayException::class, $ex);
+            $this->assertNotEmpty($ex->getMessage());
+
+            throw $ex;
+        }
     }
 }

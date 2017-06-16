@@ -3,8 +3,7 @@ dist: trusty
 php:
   - '7.0'
   - '7.1'
-  - nightly
-sudo: required
+sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
@@ -15,9 +14,9 @@ before_install:
 before_script:
   - phpenv config-rm xdebug.ini
   - cp .env.travis .env
-  - composer install --no-interaction --no-scripts --prefer-dist --no-suggest
-  - php artisan migrate --force -v
-  - php artisan db:seed --force -v
+  - composer install --no-interaction --prefer-dist --no-suggest --verbose
+  - php artisan migrate -v
+  - php artisan db:seed -v
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 notifications:
