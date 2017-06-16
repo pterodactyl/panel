@@ -15,7 +15,7 @@ return [
         ],
         'installing' => [
             'header' => 'Server Installing',
-            'desc' => 'The requested server is still completing the install process. Please check back in a few minutes, you should recieve an email as soon as this process is completed.',
+            'desc' => 'The requested server is still completing the install process. Please check back in a few minutes, you should receive an email as soon as this process is completed.',
         ],
         'suspended' => [
             'header' => 'Server Suspended',
