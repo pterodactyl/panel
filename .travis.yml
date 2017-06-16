@@ -15,11 +15,9 @@ before_install:
 before_script:
   - phpenv config-rm xdebug.ini
   - cp .env.travis .env
-  - composer self-update
-  - composer install --no-interaction --no-scripts
-  - php artisan key:generate --force
-  - php artisan migrate --force
-  - php artisan db:seed --force
+  - composer install --no-interaction --no-scripts --prefer-dist --no-suggest
+  - php artisan migrate --force -v
+  - php artisan db:seed --force -v
 script:
   - vendor/bin/phpunit --coverage-clover=coverage.xml
 notifications:
