@@ -24,14 +24,14 @@
 
 namespace Pterodactyl\Services;
 
-use Illuminate\Config\Repository as ConfigRepository;
+use Pterodactyl\Models\User;
+use Illuminate\Database\Connection;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Database\Connection;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\User;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Components\UuidService;
+use Illuminate\Config\Repository as ConfigRepository;
 
 class UserService
 {

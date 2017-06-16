@@ -25,14 +25,13 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
 use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Http\Controllers\Controller;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\UserService;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 
 class UserController extends Controller
 {
