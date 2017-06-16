@@ -14,11 +14,11 @@ before_install:
 before_script:
   - phpenv config-rm xdebug.ini
   - cp .env.travis .env
-  - composer install --no-interaction --prefer-dist --no-suggest --verbose
+  - composer install --no-interaction --prefer-dist --no-suggest --no-scripts --verbose
   - php artisan migrate -v
   - php artisan db:seed -v
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.xml
+  - vendor/bin/phpunit --coverage-clover coverage.xml
 notifications:
   email: false
 after_success:
