@@ -24,10 +24,10 @@
 
 namespace Tests\Feature\Services;
 
-use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\LocationService;
+use Illuminate\Validation\ValidationException;
 
 class LocationServiceTest extends TestCase
 {
@@ -63,7 +63,7 @@ class LocationServiceTest extends TestCase
         $this->assertEquals($data['short'], $response->short);
         $this->assertDatabaseHas('locations', [
             'short' => $data['short'],
-            'long' => $data['long']
+            'long' => $data['long'],
         ]);
     }
 
