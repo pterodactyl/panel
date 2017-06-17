@@ -1,8 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,32 +24,43 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
 use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Models\User;
-use Pterodactyl\Http\Controllers\Controller;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\UserService;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 
 class UserController extends Controller
 {
+    /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
     /**
      * @var \Pterodactyl\Services\UserService
      */
     protected $service;
 
     /**
+     * @var \Pterodactyl\Models\User
+     */
+    protected $userModel;
+
+    /**
      * UserController constructor.
      *
      * @param  \Prologue\Alerts\AlertsMessageBag  $alert
      * @param  \Pterodactyl\Services\UserService  $service
+     * @param  \Pterodactyl\Models\User           $userModel
      */
-    public function __construct(AlertsMessageBag $alert, UserService $service)
+    public function __construct(AlertsMessageBag $alert, UserService $service, User $userModel)
     {
         $this->alert = $alert;
         $this->service = $service;
+        $this->userModel = $userModel;
     }
 
     /**
@@ -61,14 +71,14 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::withCount('servers', 'subuserOf');
+        $users = $this->userModel->withCount('servers', 'subuserOf');
 
         if (! is_null($request->input('query'))) {
             $users->search($request->input('query'));
         }
 
         return view('admin.users.index', [
-            'users' => $users->paginate(25),
+            'users' => $users->paginate(config('pterodactyl.paginate.admin.users')),
         ]);
     }
 
@@ -106,7 +116,7 @@ class UserController extends Controller
     public function delete(User $user)
     {
         try {
-            $this->service->delete($user);
+            $this->service->delete($user->id);
 
             return redirect()->route('admin.users');
         } catch (DisplayException $ex) {
@@ -142,7 +152,7 @@ class UserController extends Controller
      */
     public function update(UserFormRequest $request, User $user)
     {
-        $this->service->update($user, $request->normalize());
+        $this->service->update($user->id, $request->normalize());
         $this->alert->success('User account has been updated.')->flash();
 
         return redirect()->route('admin.users.view', $user->id);
@@ -156,7 +166,7 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
-        return User::search($request->input('q'))->all([
+        return $this->userModel->search($request->input('q'))->all([
             'id', 'email', 'username', 'name_first', 'name_last',
         ])->transform(function ($item) {
             $item->md5 = md5(strtolower($item->email));

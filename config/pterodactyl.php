@@ -39,6 +39,9 @@ return [
         'frontend' => [
             'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
         ],
+        'admin' => [
+            'users' => env('APP_PAGINATE_ADMIN_USERS', 25),
+        ],
         'api' => [
             'nodes' => env('APP_PAGINATE_API_NODES', 25),
             'servers' => env('APP_PAGINATE_API_SERVERS', 25),

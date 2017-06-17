@@ -41,7 +41,7 @@ class LocationController extends Controller
     /**
      * @var \Pterodactyl\Models\Location
      */
-    protected $location;
+    protected $locationModel;
 
     /**
      * @var \Pterodactyl\Services\LocationService
@@ -52,13 +52,16 @@ class LocationController extends Controller
      * LocationController constructor.
      *
      * @param  \Prologue\Alerts\AlertsMessageBag      $alert
-     * @param  \Pterodactyl\Models\Location          $location
-     * @param  \Pterodactyl\Services\LocationService $service
+     * @param  \Pterodactyl\Models\Location           $locationModel
+     * @param  \Pterodactyl\Services\LocationService  $service
      */
-    public function __construct(AlertsMessageBag $alert, Location $location, LocationService $service)
-    {
+    public function __construct(
+        AlertsMessageBag $alert,
+        Location $locationModel,
+        LocationService $service
+    ) {
         $this->alert = $alert;
-        $this->location = $location;
+        $this->locationModel = $locationModel;
         $this->service = $service;
     }
 
@@ -70,7 +73,7 @@ class LocationController extends Controller
     public function index()
     {
         return view('admin.locations.index', [
-            'locations' => $this->location->withCount('nodes', 'servers')->get(),
+            'locations' => $this->locationModel->withCount('nodes', 'servers')->get(),
         ]);
     }
 
@@ -120,7 +123,7 @@ class LocationController extends Controller
             return $this->delete($location);
         }
 
-        $this->service->update($location, $request->normalize());
+        $this->service->update($location->id, $request->normalize());
         $this->alert->success('Location was updated successfully.')->flash();
 
         return redirect()->route('admin.locations.view', $location->id);
@@ -129,7 +132,7 @@ class LocationController extends Controller
     /**
      * Delete a location from the system.
      *
-     * @param  \Pterodactyl\Models\Location $location
+     * @param  \Pterodactyl\Models\Location  $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -138,7 +141,7 @@ class LocationController extends Controller
     public function delete(Location $location)
     {
         try {
-            $this->service->delete($location);
+            $this->service->delete($location->id);
 
             return redirect()->route('admin.locations');
         } catch (DisplayException $ex) {
