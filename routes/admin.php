@@ -49,10 +49,10 @@ Route::group(['prefix' => 'locations'], function () {
 */
 Route::group(['prefix' => 'databases'], function () {
     Route::get('/', 'DatabaseController@index')->name('admin.databases');
-    Route::get('/view/{id}', 'DatabaseController@view')->name('admin.databases.view');
+    Route::get('/view/{host}', 'DatabaseController@view')->name('admin.databases.view');
 
     Route::post('/', 'DatabaseController@create');
-    Route::post('/view/{id}', 'DatabaseController@update');
+    Route::patch('/view/{host}', 'DatabaseController@update');
 });
 
 /*

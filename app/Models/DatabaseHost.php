@@ -24,12 +24,13 @@
 
 namespace Pterodactyl\Models;
 
-use Crypt;
-use Config;
+use Watson\Validating\ValidatingTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class DatabaseHost extends Model
 {
+    use ValidatingTrait;
+
     /**
      * The table associated with the model.
      *
@@ -65,24 +66,18 @@ class DatabaseHost extends Model
     ];
 
     /**
-     * Sets the database connection name with the details of the host.
+     * Validation rules to assign to this model.
      *
-     * @param  string  $connection
-     * @return void
+     * @var array
      */
-    public function setDynamicConnection($connection = 'dynamic')
-    {
-        Config::set('database.connections.' . $connection, [
-            'driver' => 'mysql',
-            'host' => $this->host,
-            'port' => $this->port,
-            'database' => 'mysql',
-            'username' => $this->username,
-            'password' => Crypt::decrypt($this->password),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-        ]);
-    }
+    protected $rules = [
+        'name' => 'required|string|max:255',
+        'host' => 'required|ip|unique:database_hosts,host',
+        'port' => 'required|numeric|between:1,65535',
+        'username' => 'required|string|max:32',
+        'password' => 'sometimes|nullable|string',
+        'node_id' => 'sometimes|required|nullable|exists:nodes,id',
+    ];
 
     /**
      * Gets the node associated with a database host.

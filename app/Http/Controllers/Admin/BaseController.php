@@ -24,21 +24,35 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
-use Settings;
-use Validator;
-use Illuminate\Http\Request;
+use Krucas\Settings\Settings;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\BaseFormRequest;
 
 class BaseController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Krucas\Settings\Settings
+     */
+    protected $settings;
+
+    public function __construct(AlertsMessageBag $alert, Settings $settings)
+    {
+        $this->alert = $alert;
+        $this->settings = $settings;
+    }
+
+    /**
      * Return the admin index view.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function getIndex(Request $request)
+    public function getIndex()
     {
         return view('admin.index');
     }
@@ -46,10 +60,9 @@ class BaseController extends Controller
     /**
      * Return the admin settings view.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function getSettings(Request $request)
+    public function getSettings()
     {
         return view('admin.settings');
     }
@@ -57,24 +70,14 @@ class BaseController extends Controller
     /**
      * Handle settings post request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Pterodactyl\Http\Requests\Admin\BaseFormRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSettings(Request $request)
+    public function postSettings(BaseFormRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'company' => 'required|between:1,256',
-            // 'default_language' => 'required|alpha_dash|min:2|max:5',
-        ]);
+        $this->settings->set('company', $request->input('company'));
 
-        if ($validator->fails()) {
-            return redirect()->route('admin.settings')->withErrors($validator->errors())->withInput();
-        }
-
-        Settings::set('company', $request->input('company'));
-        // Settings::set('default_language', $request->input('default_language'));
-
-        Alert::success('Settings have been successfully updated.')->flash();
+        $this->alert->success('Settings have been successfully updated.')->flash();
 
         return redirect()->route('admin.settings');
     }

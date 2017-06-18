@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,56 +22,28 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Http\Requests\Admin;
 
-use Illuminate\Database\Eloquent\Model;
-use Watson\Validating\ValidatingTrait;
+use Pterodactyl\Models\DatabaseHost;
 
-class Location extends Model
+class DatabaseHostFormRequest extends AdminFormRequest
 {
-    use ValidatingTrait;
-
     /**
-     * The table associated with the model.
-     *
-     * @var string
+     * @return mixed
      */
-    protected $table = 'locations';
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Validation rules to apply to this model.
-     *
-     * @var array
-     */
-    protected $rules = [
-        'short' => 'required|string|between:1,60|unique:locations,short',
-        'long' => 'required|string|between:1,255',
-    ];
-
-    /**
-     * Gets the nodes in a specificed location.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function nodes()
+    public function rules()
     {
-        return $this->hasMany(Node::class);
-    }
+        $this->merge([
+            'node_id' => ($this->input('node_id') < 1) ? null : $this->input('node_id'),
+            'host' => gethostbyname($this->input('host')),
+        ]);
 
-    /**
-     * Gets the servers within a given location.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function servers()
-    {
-        return $this->hasManyThrough(Server::class, Node::class);
+        $rules = app()->make(DatabaseHost::class)->getRules();
+
+        if ($this->method() === 'PATCH') {
+            $rules['host'] = $rules['host'] . ',' . $this->route()->parameter('host')->id;
+        }
+
+        return $rules;
     }
 }

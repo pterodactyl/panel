@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,56 +22,14 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Models;
+namespace Pterodactyl\Http\Requests\Admin;
 
-use Illuminate\Database\Eloquent\Model;
-use Watson\Validating\ValidatingTrait;
-
-class Location extends Model
+class BaseFormRequest extends AdminFormRequest
 {
-    use ValidatingTrait;
-
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'locations';
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Validation rules to apply to this model.
-     *
-     * @var array
-     */
-    protected $rules = [
-        'short' => 'required|string|between:1,60|unique:locations,short',
-        'long' => 'required|string|between:1,255',
-    ];
-
-    /**
-     * Gets the nodes in a specificed location.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function nodes()
+    public function rules()
     {
-        return $this->hasMany(Node::class);
-    }
-
-    /**
-     * Gets the servers within a given location.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function servers()
-    {
-        return $this->hasManyThrough(Server::class, Node::class);
+        return [
+            'company' => 'required|between:1,256',
+        ];
     }
 }
