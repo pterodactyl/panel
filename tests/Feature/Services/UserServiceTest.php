@@ -24,11 +24,11 @@
 
 namespace Tests\Feature\Services;
 
-use Illuminate\Support\Facades\Notification;
-use Pterodactyl\Models\User;
-use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\UserService;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
+use Pterodactyl\Services\UserService;
+use Illuminate\Support\Facades\Notification;
+use Pterodactyl\Notifications\AccountCreated;
 
 class UserServiceTest extends TestCase
 {

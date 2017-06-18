@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class Location extends Model
 {

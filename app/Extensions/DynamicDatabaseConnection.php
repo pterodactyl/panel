@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Extensions;
 
-use Illuminate\Config\Repository as ConfigRepository;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Models\DatabaseHost;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Config\Repository as ConfigRepository;
 
 class DynamicDatabaseConnection
 {

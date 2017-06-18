@@ -27,8 +27,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Pterodactyl\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\LocationService;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\LocationRequest;
 
 class LocationController extends Controller
