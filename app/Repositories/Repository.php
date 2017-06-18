@@ -26,8 +26,8 @@ namespace Pterodactyl\Repositories;
 
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
-use Pterodactyl\Contracts\Repositories\RepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RepositoryException;
+use Pterodactyl\Contracts\Repositories\RepositoryInterface;
 
 abstract class Repository implements RepositoryInterface
 {

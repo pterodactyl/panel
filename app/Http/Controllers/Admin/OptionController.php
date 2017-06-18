@@ -29,7 +29,6 @@ use Alert;
 use Route;
 use Javascript;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Exceptions\DisplayException;
@@ -37,6 +36,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\OptionRepository;
 use Pterodactyl\Repositories\VariableRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
 use Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable;
 
 class OptionController extends Controller
