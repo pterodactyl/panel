@@ -79,7 +79,7 @@
                                 <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
                             </li>
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -191,6 +191,17 @@
             {!! Theme::js('vendor/select2/select2.full.min.js') !!}
             {!! Theme::js('js/admin/functions.js') !!}
             {!! Theme::js('js/autocomplete.js') !!}
+
+            @if(Auth::user()->isRootAdmin())
+                <script>
+                    $('#logoutButton').on('click', function (event) {
+                        event.preventDefault();
+                        if (confirm('Are you sure you want to logout?')) {
+                            window.location = $(this).attr('href');
+                        }
+                    });
+                </script>
+            @endif
         @show
     </body>
 </html>

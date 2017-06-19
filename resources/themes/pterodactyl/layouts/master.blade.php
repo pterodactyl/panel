@@ -83,7 +83,7 @@
                                 </li>
                             @endif
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -282,6 +282,17 @@
             {!! Theme::js('js/autocomplete.js') !!}
             @if(config('pterodactyl.lang.in_context'))
                 {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
+            @endif
+
+            @if(Auth::user()->isRootAdmin())
+                <script>
+                    $('#logoutButton').on('click', function (event) {
+                        event.preventDefault();
+                        if (confirm('Are you sure you want to logout?')) {
+                            window.location = $(this).attr('href');
+                        }
+                    });
+                </script>
             @endif
         @show
     </body>
