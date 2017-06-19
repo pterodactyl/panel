@@ -209,7 +209,7 @@ class OptionController extends Controller
 
         try {
             if ($request->input('action') !== 'delete') {
-                $variable = $repo->update($variable, $request->intersect([
+                $variable = $repo->update($variable, $request->only([
                     'name', 'description', 'env_variable',
                     'default_value', 'options', 'rules',
                 ]));
