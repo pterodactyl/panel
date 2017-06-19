@@ -62,13 +62,13 @@
                 <p>This will reinstall the server with the assigned pack and service scripts. <strong>Danger!</strong> This could overwrite server data.</p>
             </div>
             <div class="box-footer">
-                @if($server->installed)
+                @if($server->installed === 1)
                     <form action="{{ route('admin.servers.view.manage.reinstall', $server->id) }}" method="POST">
                         {!! csrf_field() !!}
                         <button type="submit" class="btn btn-danger">Reinstall Server</button>
                     </form>
                 @else
-                    <button class="btn btn-danger disabled">Reinstall Server</button>
+                    <button class="btn btn-danger disabled">Server Must Install Properly to Reinstall</button>
                 @endif
             </div>
         </div>
