@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * API now returns a 404 error when deleting a user that doesn't exist, rather than saying it was successful.
 * Service variables that allow empty input now allow you to empty out the assigned value and set it back to blank.
 * Fixes a bug where changing the default allocation for a server would not actually apply that allocation as the default on the daemon.
+* Newly created service variables are now backfilled and assigned to existing servers properly.
 
 ### Added
 * Added a `Vagrantfile` to the repository to help speed up development and testing for those who don't want to do a full dedicated install.

@@ -242,9 +242,10 @@ class ServerController extends Controller
     public function getStartup(Request $request, $uuid)
     {
         $server = Models\Server::byUuid($uuid);
-        $server->load(['node', 'allocation', 'variables.variable']);
-
         $this->authorize('view-startup', $server);
+
+        $server->load(['node', 'allocation', 'variables']);
+        $variables = Models\ServiceVariable::where('option_id', $server->option_id)->get();
 
         $replacements = [
             '{{SERVER_MEMORY}}' => $server->memory,
@@ -253,9 +254,16 @@ class ServerController extends Controller
         ];
 
         $processed = str_replace(array_keys($replacements), array_values($replacements), $server->startup);
-        foreach ($server->variables as $v) {
-            $replace = ($v->user_can_view) ? $v->variable_value : '[hidden]';
-            $processed = str_replace('{{' . $v->variable->env_variable . '}}', $replace, $processed);
+
+        foreach ($variables as $var) {
+            if ($var->user_viewable) {
+                $serverVar = $server->variables->where('variable_id', $var->id)->first();
+                $var->server_set_value = $serverVar->variable_value ?? $var->default_value;
+            } else {
+                $var->server_set_value = '[hidden]';
+            }
+
+            $processed = str_replace('{{' . $var->env_variable . '}}', $var->server_set_value, $processed);
         }
 
         $server->js();
@@ -263,7 +271,7 @@ class ServerController extends Controller
         return view('server.settings.startup', [
             'server' => $server,
             'node' => $server->node,
-            'variables' => $server->variables->where('user_can_view', true),
+            'variables' => $variables->where('user_viewable', 1),
             'service' => $server->service,
             'processedStartup' => $processed,
         ]);
