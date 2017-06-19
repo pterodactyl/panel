@@ -57,15 +57,15 @@ return [
                     ],
                     'view' => [
                         'title' => 'View Server',
-                        'desc'=> 'Allows viewing of specific server user can access.',
+                        'desc' => 'Allows viewing of specific server user can access.',
                     ],
                     'power' => [
                         'title' => 'Toggle Power',
-                        'desc'=> 'Allow toggling of power status for a server.',
+                        'desc' => 'Allow toggling of power status for a server.',
                     ],
                     'command' => [
                         'title' => 'Send Command',
-                        'desc'=> 'Allow sending of a command to a running server.',
+                        'desc' => 'Allow sending of a command to a running server.',
                     ],
                 ],
             ],
