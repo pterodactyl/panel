@@ -535,7 +535,7 @@ class ServerRepository
                     }
 
                     $newPorts = true;
-                    $firstNewAllocation = (is_null($firstNewAllocation)) ? $model->id : $firstNewAllocation;
+                    $firstNewAllocation = $firstNewAllocation ?? $model;
                     $model->update([
                         'server_id' => $server->id,
                     ]);
@@ -555,7 +555,8 @@ class ServerRepository
                         }
 
                         // New Allocation, set as the default.
-                        $server->allocation_id = $firstNewAllocation;
+                        $server->allocation_id = $firstNewAllocation->id;
+                        $newBuild['default'] = ['ip' => $firstNewAllocation->ip, 'port' => $firstNewAllocation->port];
                     }
 
                     $newPorts = true;
