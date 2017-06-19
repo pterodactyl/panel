@@ -151,6 +151,8 @@ class UserRepository
      */
     public function delete($id)
     {
+        $user = Models\User::findOrFail($id);
+
         if (Models\Server::where('owner_id', $id)->count() > 0) {
             throw new DisplayException('Cannot delete a user with active servers attached to thier account.');
         }
@@ -170,7 +172,7 @@ class UserRepository
                 $subuser->delete();
             }
 
-            Models\User::destroy($id);
+            $user->delete();
             DB::commit();
         } catch (\Exception $ex) {
             DB::rollBack();
