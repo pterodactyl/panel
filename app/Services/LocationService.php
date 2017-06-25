@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 
 class LocationService
 {

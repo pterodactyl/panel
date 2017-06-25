@@ -192,7 +192,7 @@ class LocationServiceTest extends TestCase
         $this->service->update(0, []);
     }
 
-    /**
+    /*
      * Test that a location can be deleted normally when no nodes are attached.
      */
 //    public function testShouldDeleteExistingLocation()
@@ -211,7 +211,7 @@ class LocationServiceTest extends TestCase
 //        ]);
 //    }
 
-    /**
+    /*
      * Test that a location cannot be deleted if a node is attached to it.
      *
      * @expectedException \Pterodactyl\Exceptions\DisplayException

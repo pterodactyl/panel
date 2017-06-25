@@ -108,7 +108,7 @@ class UserServiceTest extends TestCase
 
     public function testShouldUpdateUserModelInDatabase()
     {
-//        $user = factory(User::class)->create();
+        //        $user = factory(User::class)->create();
 //
 //        $response = $this->service->update($user, [
 //            'email' => 'test_change@example.com',
@@ -126,7 +126,7 @@ class UserServiceTest extends TestCase
 
     public function testShouldDeleteUserFromDatabase()
     {
-//        $user = factory(User::class)->create();
+        //        $user = factory(User::class)->create();
 //        $service = $this->app->make(UserService::class);
 //
 //        $response = $service->delete($user);
