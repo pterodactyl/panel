@@ -3,6 +3,32 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.2 (Courageous Carniadactylus)
+### Fixed
+* Fixes a few typos throughout the panel, there are more don't worry.
+* Fixes bug when disabling 2FA due to a misnamed route.
+* API now returns a 404 error when deleting a user that doesn't exist, rather than saying it was successful.
+* Service variables that allow empty input now allow you to empty out the assigned value and set it back to blank.
+* Fixes a bug where changing the default allocation for a server would not actually apply that allocation as the default on the daemon.
+* Newly created service variables are now backfilled and assigned to existing servers properly.
+
+### Added
+* Added a `Vagrantfile` to the repository to help speed up development and testing for those who don't want to do a full dedicated install.
+* Added a confirmation dialog to the logout button for admins to prevent misguided clickers from accidentally logging out when they wanted to switch to Admin or Server views.
+
+### Changed
+* Blocked out the `Reinstall` button for servers that have failed installation to avoid confusion and bugs causing the daemon to break.
+* Updated dependencies, listed below.
+```
+aws/aws-sdk-php (3.26.5 => 3.29.7)       
+laravel/framework (v5.4.21 => v5.4.27)        
+barryvdh/laravel-debugbar (v2.3.2 => v2.4.0)     
+fideloper/proxy (3.3.0 => 3.3.3)
+igaster/laravel-theme (v1.14 => v1.16)    
+laravel/tinker (v1.0.0 => v1.0.1)  
+spatie/laravel-fractal (4.0.0 => 4.0.1)
+```
+
 ## v0.6.1 (Courageous Carniadactylus)
 ### Fixed
 * Fixes a bug preventing the use of services that have no variables attached to them.

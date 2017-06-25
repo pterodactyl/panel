@@ -75,5 +75,5 @@ Route::group(['prefix' => 'account/security'], function () {
 
     Route::post('/totp', 'SecurityController@setTotp');
 
-    Route::delete('/api/security/totp', 'SecurityController@disableTotp');
+    Route::delete('/totp', 'SecurityController@disableTotp');
 });

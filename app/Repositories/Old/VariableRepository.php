@@ -123,12 +123,11 @@ class VariableRepository
         $variable = ServiceVariable::findOrFail($id);
 
         $validator = Validator::make($data, [
-            'name' => 'sometimes|required|string|min:1|max:255',
-            'description' => 'sometimes|nullable|string',
-            'env_variable' => 'sometimes|required|regex:/^[\w]{1,255}$/',
-            'default_value' => 'string',
+            'name' => 'required|string|min:1|max:255',
+            'description' => 'nullable|string',
+            'env_variable' => 'required|regex:/^[\w]{1,255}$/',
+            'rules' => 'bail|required|string',
             'options' => 'sometimes|required|array',
-            'rules' => 'bail|sometimes|required|string|min:1',
         ]);
 
         // Ensure the default value is allowed by the rules provided.
