@@ -24,14 +24,14 @@
 
 namespace Tests\Unit\Services;
 
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Database\Connection;
 use Mockery as m;
+use Tests\TestCase;
 use Pterodactyl\Models\User;
+use Illuminate\Database\Connection;
+use Pterodactyl\Services\UserService;
+use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
-use Pterodactyl\Services\UserService;
-use Tests\TestCase;
 
 class UserServiceTest extends TestCase
 {
