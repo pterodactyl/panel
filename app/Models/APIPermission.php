@@ -24,46 +24,19 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class APIPermission extends Model
+class APIPermission extends Model implements ValidableContract
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'api_permissions';
-
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id'];
-
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'key_id' => 'integer',
-    ];
-
-    /**
-     * Disable timestamps for this table.
-     *
-     * @var bool
-     */
-    public $timestamps = false;
+    use Eloquence, Validable;
 
     /**
      * List of permissions available for the API.
-     *
-     * @var array
      */
-    protected static $permissions = [
+    const PERMISSIONS = [
         // Items within this block are available to non-adminitrative users.
         '_user' => [
             'server' => [
@@ -120,12 +93,48 @@ class APIPermission extends Model
     ];
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'api_permissions';
+
+    /**
+     * Fields that are not mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'key_id' => 'integer',
+    ];
+
+    protected static $dataIntegrityRules = [
+        'key_id' => 'required|numeric',
+        'permission' => 'required|string|max:200',
+    ];
+
+    /**
+     * Disable timestamps for this table.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * Return permissions for API.
      *
      * @return array
+     * @deprecated
      */
     public static function permissions()
     {
-        return self::$permissions;
+        return [];
     }
 }

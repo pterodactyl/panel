@@ -22,25 +22,20 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-abstract class AdminFormRequest extends FormRequest
+class BaseFormRequest extends FormRequest
 {
     /**
-     * Determine if the user is an admin and has permission to access this
-     * form controller in the first place.
+     * Determine if a user is authorized to access this endpoint.
      *
      * @return bool
      */
     public function authorize()
     {
-        if (is_null($this->user())) {
-            return false;
-        }
-
-        return $this->user()->isRootAdmin();
+        return ! is_null($this->user());
     }
 
     /**

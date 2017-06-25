@@ -22,37 +22,58 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Services;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Pterodactyl\Models\APIPermission;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 
-abstract class AdminFormRequest extends FormRequest
+class ApiPermissionService
 {
     /**
-     * Determine if the user is an admin and has permission to access this
-     * form controller in the first place.
-     *
-     * @return bool
+     * @var \Pterodactyl\Models\APIPermission
      */
-    public function authorize()
-    {
-        if (is_null($this->user())) {
-            return false;
-        }
+    protected $model;
 
-        return $this->user()->isRootAdmin();
+    /**
+     * ApiPermissionService constructor.
+     *
+     * @param \Pterodactyl\Models\APIPermission $model
+     */
+    public function __construct(APIPermission $model)
+    {
+        $this->model = $model;
     }
 
     /**
-     * Return only the fields that we are interested in from the request.
-     * This will include empty fields as a null value.
+     * Store a permission key in the database.
+     *
+     * @param  string  $key
+     * @param  string  $permission
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    public function create($key, $permission)
+    {
+        $instance = $this->model->newInstance([
+            'key_id' => $key,
+            'permission' => $permission,
+        ]);
+
+        if (! $instance->save()) {
+            throw new DataValidationException($instance->getValidator());
+        }
+
+        return true;
+    }
+
+    /**
+     * Return all of the permissions available for an API Key.
      *
      * @return array
      */
-    public function normalize()
+    public function getPermissions()
     {
-        return $this->only(
-            array_keys($this->rules())
-        );
+        return APIPermission::PERMISSIONS;
     }
 }
