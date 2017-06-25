@@ -26,31 +26,18 @@ namespace Pterodactyl\Services;
 
 use Pterodactyl\Models\User;
 use Illuminate\Database\Connection;
-use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\Components\UuidService;
-use Illuminate\Config\Repository as ConfigRepository;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 
 class UserService
 {
-    const HMAC_ALGO = 'sha256';
-
-    /**
-     * @var \Illuminate\Config\Repository
-     */
-    protected $config;
-
     /**
      * @var \Illuminate\Database\Connection
      */
     protected $database;
-
-    /**
-     * @var \Illuminate\Contracts\Auth\Guard
-     */
-    protected $guard;
 
     /**
      * @var \Illuminate\Contracts\Hashing\Hasher
@@ -58,62 +45,43 @@ class UserService
     protected $hasher;
 
     /**
-     * @var \Pterodactyl\Services\Components\UuidService
+     * @var \Pterodactyl\Services\Helpers\TemporaryPasswordService
      */
-    protected $uuid;
+    protected $passwordService;
+
+    /**
+     * @var \Pterodactyl\Models\User
+     */
+    protected $model;
 
     /**
      * UserService constructor.
      *
-     * @param  \Illuminate\Config\Repository                 $config
-     * @param  \Illuminate\Database\Connection               $database
-     * @param  \Illuminate\Contracts\Auth\Guard              $guard
-     * @param  \Illuminate\Contracts\Hashing\Hasher          $hasher
-     * @param  \Pterodactyl\Services\Components\UuidService  $uuid
+     * @param  \Illuminate\Database\Connection $database
+     * @param  \Illuminate\Contracts\Hashing\Hasher                                $hasher
+     * @param  \Pterodactyl\Services\Helpers\TemporaryPasswordService               $passwordService
+     * @param  \Pterodactyl\Models\User                                            $model
      */
     public function __construct(
-        ConfigRepository $config,
         Connection $database,
-        Guard $guard,
         Hasher $hasher,
-        UuidService $uuid
+        TemporaryPasswordService $passwordService,
+        User $model
     ) {
-        $this->config = $config;
         $this->database = $database;
-        $this->guard = $guard;
         $this->hasher = $hasher;
-        $this->uuid = $uuid;
-    }
-
-    /**
-     * Assign a temporary password to an account and return an authentication token to
-     * email to the user for resetting their password.
-     *
-     * @param  \Pterodactyl\Models\User  $user
-     * @return string
-     */
-    protected function assignTemporaryPassword(User $user)
-    {
-        $user->password = $this->hasher->make(str_random(30));
-
-        $token = hash_hmac(self::HMAC_ALGO, str_random(40), $this->config->get('app.key'));
-
-        $this->database->table('password_resets')->insert([
-            'email' => $user->email,
-            'token' => $this->hasher->make($token),
-        ]);
-
-        return $token;
+        $this->passwordService = $passwordService;
+        $this->model = $model;
     }
 
     /**
      * Create a new user on the system.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Pterodactyl\Models\User
      *
      * @throws \Exception
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function create(array $data)
     {
@@ -121,16 +89,18 @@ class UserService
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        $user = new User;
-        $user->fill($data);
+        $user = $this->model->newInstance($data);
 
         // Persist the data
         $token = $this->database->transaction(function () use ($user) {
             if (empty($user->password)) {
-                $token = $this->assignTemporaryPassword($user);
+                $user->password = $this->hasher->make(str_random(30));
+                $token = $this->passwordService->generateReset($user->email);
             }
 
-            $user->save();
+            if (! $user->save()) {
+                throw new DataValidationException($user->getValidator());
+            }
 
             return $token ?? null;
         });
@@ -147,35 +117,44 @@ class UserService
     /**
      * Update the user model.
      *
-     * @param  \Pterodactyl\Models\User  $user
+     * @param  int|\Pterodactyl\Models\User  $user
      * @param  array                     $data
      * @return \Pterodactyl\Models\User
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function update(User $user, array $data)
+    public function update($user, array $data)
     {
+        if (! $user instanceof User) {
+            $user = $this->model->findOrFail($user);
+        }
+
         if (isset($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        $user->fill($data)->save();
+        $user->fill($data);
+
+        if (! $user->save()) {
+            throw new DataValidationException($user->getValidator());
+        }
 
         return $user;
     }
 
     /**
-     * @param \Pterodactyl\Models\User $user
+     * @param  int|\Pterodactyl\Models\User $user
      * @return bool|null
+     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function delete(User $user)
+    public function delete($user)
     {
-        if ($user->servers()->count() > 0) {
-            throw new DisplayException('Cannot delete an account that has active servers attached to it.');
-        }
-
-        if ($this->guard->check() && $this->guard->id() === $user->id) {
-            throw new DisplayException('You cannot delete your own account.');
+        if (! $user instanceof User) {
+            $user = $this->model->findOrFail($user);
         }
 
         if ($user->servers()->count() > 0) {

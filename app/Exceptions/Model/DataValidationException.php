@@ -22,23 +22,29 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Exceptions\Model;
 
-use Pterodactyl\Models\Location;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Contracts\Support\MessageProvider;
 
-class LocationRequest extends AdminFormRequest
+class DataValidationException extends ValidationException implements MessageProvider
 {
     /**
-     * Setup the validation rules to use for these requests.
+     * DataValidationException constructor.
      *
-     * @return array
+     * @param \Illuminate\Contracts\Validation\Validator $validator
      */
-    public function rules()
+    public function __construct(Validator $validator)
     {
-        if ($this->method() === 'PATCH') {
-            return Location::getUpdateRulesForId($this->location->id);
-        }
+        parent::__construct($validator);
+    }
 
-        return Location::getCreateRules();
+    /**
+     * @return \Illuminate\Support\MessageBag
+     */
+    public function getMessageBag()
+    {
+        return $this->validator->errors();
     }
 }

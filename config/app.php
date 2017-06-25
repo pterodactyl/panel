@@ -179,6 +179,7 @@ return [
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
+        Sofa\Eloquence\ServiceProvider::class,
 
     ],
 

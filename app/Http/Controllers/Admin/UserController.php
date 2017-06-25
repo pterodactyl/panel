@@ -47,20 +47,20 @@ class UserController extends Controller
     /**
      * @var \Pterodactyl\Models\User
      */
-    protected $userModel;
+    protected $model;
 
     /**
      * UserController constructor.
      *
      * @param  \Prologue\Alerts\AlertsMessageBag  $alert
      * @param  \Pterodactyl\Services\UserService  $service
-     * @param  \Pterodactyl\Models\User           $userModel
+     * @param  \Pterodactyl\Models\User           $model
      */
-    public function __construct(AlertsMessageBag $alert, UserService $service, User $userModel)
+    public function __construct(AlertsMessageBag $alert, UserService $service, User $model)
     {
         $this->alert = $alert;
         $this->service = $service;
-        $this->userModel = $userModel;
+        $this->model = $model;
     }
 
     /**
@@ -71,7 +71,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->userModel->withCount('servers', 'subuserOf');
+        $users = $this->model->newQuery()->withCount('servers', 'subuserOf');
 
         if (! is_null($request->input('query'))) {
             $users->search($request->input('query'));
@@ -108,13 +108,19 @@ class UserController extends Controller
     /**
      * Delete a user from the system.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  \Pterodactyl\Models\User  $user
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(User $user)
+    public function delete(Request $request, User $user)
     {
+        if ($request->user()->id === $user->id) {
+            throw new DisplayException('Cannot delete your own account.');
+        }
+
         try {
             $this->service->delete($user->id);
 
@@ -146,9 +152,11 @@ class UserController extends Controller
     /**
      * Update a user on the system.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest  $request
-     * @param  \Pterodactyl\Models\User                          $user
+     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
+     * @param  \Pterodactyl\Models\User                         $user
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function update(UserFormRequest $request, User $user)
     {
@@ -166,7 +174,7 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
-        return $this->userModel->search($request->input('q'))->all([
+        return $this->model->search($request->input('q'))->all([
             'id', 'email', 'username', 'name_first', 'name_last',
         ])->transform(function ($item) {
             $item->md5 = md5(strtolower($item->email));

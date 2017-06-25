@@ -24,12 +24,14 @@
 
 namespace Pterodactyl\Models;
 
-use Watson\Validating\ValidatingTrait;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Location extends Model
+class Location extends Model implements ValidableContract
 {
-    use ValidatingTrait;
+    use Eloquence, Validable;
 
     /**
      * The table associated with the model.
@@ -50,9 +52,19 @@ class Location extends Model
      *
      * @var array
      */
-    protected $rules = [
-        'short' => 'required|string|between:1,60|unique:locations,short',
-        'long' => 'required|string|between:1,255',
+    protected static $applicationRules = [
+        'short' => 'required',
+        'long' => 'required',
+    ];
+
+    /**
+     * Rules ensuring that the raw data stored in the database meets expectations.
+     *
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'short' => 'string|between:1,60|unique:locations,short',
+        'long' => 'string|between:1,255',
     ];
 
     /**

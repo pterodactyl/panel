@@ -25,46 +25,19 @@
 namespace Pterodactyl\Http\Requests\Admin;
 
 use Pterodactyl\Models\User;
-use Pterodactyl\Contracts\Repositories\UserInterface;
 
 class UserFormRequest extends AdminFormRequest
 {
     /**
      * {@inheritdoc}
      */
-    public function repository()
-    {
-        return UserInterface::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         if ($this->method() === 'PATCH') {
-            return [
-                'email' => 'required|email|unique:users,email,' . $this->user->id,
-                'username' => 'required|alpha_dash|between:1,255|unique:users,username, ' . $this->user->id . '|' . User::USERNAME_RULES,
-                'name_first' => 'required|string|between:1,255',
-                'name_last' => 'required|string|between:1,255',
-                'password' => 'sometimes|nullable|' . User::PASSWORD_RULES,
-                'root_admin' => 'required|boolean',
-//                'language' => 'sometimes|required|string|min:1|max:5',
-//                'use_totp' => 'sometimes|required|boolean',
-//                'totp_secret' => 'sometimes|required|size:16',
-            ];
+            return User::getUpdateRulesForId($this->user->id);
         }
 
-        return [
-            'email' => 'required|email|unique:users,email',
-            'username' => 'required|alpha_dash|between:1,255|unique:users,username|' . User::USERNAME_RULES,
-            'name_first' => 'required|string|between:1,255',
-            'name_last' => 'required|string|between:1,255',
-            'password' => 'sometimes|nullable|' . User::PASSWORD_RULES,
-            'root_admin' => 'required|boolean',
-            'external_id' => 'sometimes|nullable|numeric|unique:users,external_id',
-        ];
+        return User::getCreateRules();
     }
 
     public function normalize()

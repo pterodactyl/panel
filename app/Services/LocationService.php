@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Services;
 
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Exceptions\DisplayException;
 
@@ -50,13 +51,15 @@ class LocationService
      * @param  array $data
      * @return \Pterodactyl\Models\Location
      *
-     * @throws \Throwable
-     * @throws \Watson\Validating\ValidationException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function create(array $data)
     {
-        $location = $this->model->fill($data);
-        $location->saveOrFail();
+        $location = $this->model->newInstance($data);
+
+        if (! $location->save()) {
+            throw new DataValidationException($location->getValidator());
+        }
 
         return $location;
     }
@@ -64,17 +67,19 @@ class LocationService
     /**
      * Update location model in the DB.
      *
-     * @param  int    $id
-     * @param  array  $data
+     * @param  int   $id
+     * @param  array $data
      * @return \Pterodactyl\Models\Location
      *
-     * @throws \Throwable
-     * @throws \Watson\Validating\ValidationException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function update($id, array $data)
     {
-        $location = $this->model->findOrFail($id);
-        $location->fill($data)->saveOrFail();
+        $location = $this->model->findOrFail($id)->fill($data);
+
+        if (! $location->save()) {
+            throw new DataValidationException($location->getValidator());
+        }
 
         return $location;
     }
@@ -84,6 +89,7 @@ class LocationService
      *
      * @param  int  $id
      * @return bool
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete($id)

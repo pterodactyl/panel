@@ -36,7 +36,7 @@ Route::group(['prefix' => 'locations'], function () {
     Route::get('/view/{location}', 'LocationController@view')->name('admin.locations.view');
 
     Route::post('/', 'LocationController@create');
-    Route::post('/view/{location}', 'LocationController@update');
+    Route::patch('/view/{location}', 'LocationController@update');
 });
 
 /*
