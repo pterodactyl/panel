@@ -20,39 +20,56 @@
 var CONSOLE_PUSH_COUNT = Pterodactyl.config.console_count || 10;
 var CONSOLE_PUSH_FREQ = Pterodactyl.config.console_freq || 200;
 var CONSOLE_OUTPUT_LIMIT = Pterodactyl.config.console_limit || 2000;
+
 var InitialLogSent = false;
+var AnsiUp = new AnsiUp;
+
+var $terminal = $('#terminal');
+var $ghostInput = $('.terminal_input--input');
+var $visibleInput = $('.terminal_input--text');
+var $scrollNotify = $('#terminalNotify');
+
+$(document).ready(function () {
+    $ghostInput.focus();
+    $('.terminal_input--text, #terminal_input, #terminal, #terminalNotify').on('click', function () {
+        $ghostInput.focus();
+    });
+
+    $ghostInput.on('input', function () {
+        $visibleInput.html($(this).val());
+    });
+
+    $ghostInput.on('keyup', function (e) {
+        if (e.which === 13) {
+            Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set status', $(this).val());
+
+            $(this).val('');
+            $visibleInput.html('');
+        }
+    });
+});
+
+$terminal.on('scroll', function () {
+    if ($(this).scrollTop() + $(this).innerHeight() < $(this)[0].scrollHeight) {
+        $scrollNotify.removeClass('hidden');
+    } else {
+        $scrollNotify.addClass('hidden');
+    }
+});
+
+window.scrollToBottom = function () {
+    $terminal.scrollTop($terminal[0].scrollHeight);
+};
 
 (function initConsole() {
     window.TerminalQueue = [];
     window.ConsoleServerStatus = 0;
-    window.Terminal = $('#terminal').terminal(function (command, term) {
-        Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set status', command);
-    }, {
-        greetings: '',
-        name: Pterodactyl.server.uuid,
-        height: 450,
-        exit: false,
-        echoCommand: false,
-        outputLimit: CONSOLE_OUTPUT_LIMIT,
-        prompt: Pterodactyl.server.username + ':~$ ',
-        scrollOnEcho: false,
-        scrollBottomOffset: 5,
-        onBlur: function (terminal) {
-            return false;
-        }
+    window.ConsoleElements = 0;
+
+    $scrollNotify.on('click', function () {
+        window.scrollToBottom();
+        $scrollNotify.addClass('hidden');
     });
-
-    window.TerminalNotifyElement = $('#terminalNotify');
-    TerminalNotifyElement.on('click', function () {
-        Terminal.scroll_to_bottom();
-        TerminalNotifyElement.addClass('hidden');
-    })
-
-    Terminal.on('scroll', function () {
-        if (Terminal.is_bottom()) {
-            TerminalNotifyElement.addClass('hidden');
-        }
-    })
 })();
 
 (function pushOutputQueue() {
@@ -62,16 +79,22 @@ var InitialLogSent = false;
 
     if (TerminalQueue.length > 0) {
         for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
-            Terminal.echo(TerminalQueue[0], { flush: false });
+            $terminal.append(
+                '<div class="cmd">' + AnsiUp.ansi_to_html(TerminalQueue[0] + '\u001b[0m') + '</div>'
+            );
+
+            if (! $scrollNotify.is(':visible')) {
+                window.scrollToBottom();
+            }
+
+            window.ConsoleElements++;
             TerminalQueue.shift();
         }
 
-        // Flush after looping through all.
-        Terminal.flush();
-
-        // Show Warning
-        if (! Terminal.is_bottom()) {
-            TerminalNotifyElement.removeClass('hidden');
+        var removeElements = window.ConsoleElements - CONSOLE_OUTPUT_LIMIT;
+        if (removeElements > 0) {
+            $('#terminal').find('.cmd').slice(0, removeElements).remove();
+            window.ConsoleElements = window.ConsoleElements - removeElements;
         }
     }
 
@@ -99,14 +122,18 @@ var InitialLogSent = false;
 
     Socket.on('server log', function (data) {
         if (! InitialLogSent) {
-            Terminal.clear();
-            TerminalQueue.push(data);
+            $('#terminal').html('');
+            data.split(/\n/g).forEach(function (item) {
+                TerminalQueue.push(item);
+            });
             InitialLogSent = true;
         }
     });
 
     Socket.on('console', function (data) {
-        TerminalQueue.push(data.line);
+        data.line.split(/\n/g).forEach(function (item) {
+            TerminalQueue.push(item);
+        });
     });
 })();
 

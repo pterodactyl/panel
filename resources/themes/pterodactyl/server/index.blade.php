@@ -23,11 +23,6 @@
     {{ trans('server.index.title', [ 'name' => $server->name]) }}
 @endsection
 
-@section('scripts')
-    @parent
-    {!! Theme::css('vendor/terminal/jquery.terminal.css') !!}
-@endsection
-
 @section('content-header')
     <h1>@lang('server.index.header')<small>@lang('server.index.header_sub')</small></h1>
     <ol class="breadcrumb">
@@ -42,6 +37,10 @@
         <div class="box">
             <div class="box-body position-relative">
                 <div id="terminal" style="width:100%;"></div>
+                <div id="terminal_input">
+                    <span class="terminal_input--prompt">{{ $server->username }}:~$</span> <span class="terminal_input--text"></span>
+                    <input type="text" class="terminal_input--input" />
+                </div>
                 <div id="terminalNotify" class="terminal-notify hidden">
                     <i class="fa fa-bell"></i>
                 </div>
@@ -81,10 +80,9 @@
 
 @section('footer-scripts')
     @parent
+    {!! Theme::js('vendor/ansi/ansi_up.js') !!}
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/mousewheel/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('vendor/terminal/jquery.terminal.min.js') !!}
-    {!! Theme::js('vendor/terminal/unix_formatting.js') !!}
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('vendor/jquery/date-format.min.js') !!}

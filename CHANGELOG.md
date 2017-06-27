@@ -3,6 +3,13 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.3 (Courageous Carniadactylus)
+### Fixed
+* **[Security]** — Addresses an oversight in how the terminal rendered information sent from the server feed which allowed a malicious user to execute arbitrary commands on the game-server process itself by using a specifically crafted in-game command.
+
+### Changed
+* Removed `jquery.terminal` and replaced it with an in-house developed terminal with less potential for security issues.
+
 ## v0.6.2 (Courageous Carniadactylus)
 ### Fixed
 * Fixes a few typos throughout the panel, there are more don't worry.
