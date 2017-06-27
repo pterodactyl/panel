@@ -320,7 +320,7 @@ input.form-autocomplete-stop[readonly] {
     line-height: 14px;
     padding: 10px 10px 0;
     box-sizing: border-box;
-    min-height: 30px;
+    height: 500px;
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
