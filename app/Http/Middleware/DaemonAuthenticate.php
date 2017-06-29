@@ -76,7 +76,7 @@ class DaemonAuthenticate
 
         $node = Node::where('daemonSecret', $request->header('X-Access-Node'))->first();
         if (! $node) {
-            return abort(404);
+            return abort(401);
         }
 
         return $next($request);
