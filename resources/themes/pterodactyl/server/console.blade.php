@@ -40,7 +40,7 @@
     {!! Theme::js('js/laroute.js') !!}
     {!! Theme::js('vendor/ansi/ansi_up.js') !!}
     {!! Theme::js('vendor/jquery/jquery.min.js') !!}
-    {!! Theme::js('vendor/socketio/socket.io.min.js') !!}
+    {!! Theme::js('vendor/socketio/socket.io.v203.min.js') !!}
     {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/mousewheel/jquery.mousewheel-min.js') !!}
