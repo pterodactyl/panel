@@ -23,6 +23,11 @@
     {{ trans('server.index.title', [ 'name' => $server->name]) }}
 @endsection
 
+@section('scripts')
+    @parent
+    {!! Theme::css('css/terminal.css') !!}
+@endsection
+
 @section('content-header')
     <h1>@lang('server.index.header')<small>@lang('server.index.header_sub')</small></h1>
     <ol class="breadcrumb">

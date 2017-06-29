@@ -4,8 +4,12 @@ This file is a running track of new features and fixes to each version of the pa
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.6.4 (Courageous Carniadactylus)
+###
+* Fixed the console rendering on page load, I guess people don't like watching it load line-by-line for 10 minutes. Who would have guessed...
+
 ### Changed
 * Panel API for Daemon now responds with a `HTTP/401 Unauthorized` error when unable to locate a node with a given authentication token, rather than a `HTTP/404 Not Found` response.
+* Added better colors and styling for the terminal that can be adjusted per-theme.
 
 ## v0.6.3 (Courageous Carniadactylus)
 ### Fixed

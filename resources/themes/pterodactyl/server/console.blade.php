@@ -23,10 +23,10 @@
         <title>{{ Settings::get('company', 'Pterodactyl') }} - Console &rarr; {{ $server->name }}</title>
         @include('layouts.scripts')
         {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
-        {!! Theme::css('css/pterodactyl.css') !!}
+        {!! Theme::css('css/terminal.css') !!}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
-    <body style="margin:0;width:100%;height:100%;background:#000;overflow: hidden;">
+    <body id="terminal-body">
         <div id="terminal" style="width:100%;max-height: none !important;"></div>
         <div id="terminal_input">
             <span class="terminal_input--prompt">{{ $server->username }}:~$</span> <span class="terminal_input--text"></span>
@@ -47,11 +47,11 @@
     {!! Theme::js('js/frontend/console.js') !!}
     <script>
         $terminal.height($(window).innerHeight() - 40);
-        $terminal.width($(window).innerWidth() - 40);
+        $terminal.width($(window).innerWidth());
         $(window).on('resize', function () {
             window.scrollToBottom();
             $terminal.height($(window).innerHeight() - 40);
-            $terminal.width($(window).innerWidth() - 40);
+            $terminal.width($(window).innerWidth());
         });
     </script>
 </html>

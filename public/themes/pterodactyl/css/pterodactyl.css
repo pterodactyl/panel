@@ -257,22 +257,6 @@ span[aria-labelledby="select2-pUserId-container"] {
     position: relative;
 }
 
-.terminal-notify {
-    position: absolute;
-    right: 27px;
-    bottom: 10px;
-    padding: 3.5px 7px;
-    border-radius: 3px 3px 0 0;
-    background: #ccc;
-    color: #000;
-    opacity: .5;
-    cursor: pointer;
-}
-
-.terminal-notify:hover {
-    opacity: .9;
-}
-
 .no-margin-bottom {
     margin-bottom: 0 !important;
 }
@@ -310,91 +294,4 @@ input.form-autocomplete-stop[readonly] {
     bottom: 54px !important;
     background: white;
     box-shadow: none !important;
-}
-
-#terminal {
-    font-family: monospace;
-    color: #aaa;
-    background: #000;
-    font-size: 12px;
-    line-height: 14px;
-    padding: 10px 10px 0;
-    box-sizing: border-box;
-    height: 500px;
-    max-height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border-radius: 5px 5px 0 0;
-}
-
-#terminal > .cmd {
-    padding: 1px 0;
-}
-
-@keyframes blinky {
-    0% {
-        background: transparent;
-    }
-    100% {
-        background: rgba(170, 170, 170, 0.9);
-    }
-}
-
-@-webkit-keyframes blinky {
-    0% {
-        background: transparent;
-    }
-    100% {
-        background: rgba(170, 170, 170, 0.9);
-    }
-}
-
-#terminal_input {
-    width: 100%;
-    background: #000;
-    border-radius: 0 0 5px 5px;
-    padding: 5px 10px;
-}
-
-.terminal_input--input {
-    height: 0;
-    width: 0;
-    position: absolute;
-    top: -20px;
-}
-
-.terminal_input--text, .terminal_input--prompt {
-    line-height: 14px;
-    width: 100%;
-    vertical-align: middle;
-    font-size: 12px;
-    font-family: monospace;
-    margin-bottom: 0;
-    background: transparent;
-    color: #aaa;
-}
-
-.terminal_input--text:before, .terminal_input--text:after {
-    content: "";
-    display: inline-block;
-    width: 7px;
-    height: 14px;
-    margin: 0 0 -12px -6px;
-    vertical-align: middle;
-}
-
-.terminal_input--text:after {
-    position: relative;
-    bottom: 8px;
-    left: 8px;
-    background: #ff00;
-    animation: blinky 0.6s linear infinite alternate;
-    -webkit-animation: blinky 0.6s linear infinite alternate;
-}
-
-.terminal_input--input {
-    color: transparent;
-    background-color: transparent;
-    border: 0;
-    outline: none;
 }

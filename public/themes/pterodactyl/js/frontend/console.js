@@ -17,12 +17,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-var CONSOLE_PUSH_COUNT = Pterodactyl.config.console_count || 10;
+var CONSOLE_PUSH_COUNT = Pterodactyl.config.console_count || 50;
 var CONSOLE_PUSH_FREQ = Pterodactyl.config.console_freq || 200;
 var CONSOLE_OUTPUT_LIMIT = Pterodactyl.config.console_limit || 2000;
 
-var InitialLogSent = false;
 var AnsiUp = new AnsiUp;
+AnsiUp.use_classes = true;
 
 var $terminal = $('#terminal');
 var $ghostInput = $('.terminal_input--input');
@@ -61,6 +61,10 @@ window.scrollToBottom = function () {
     $terminal.scrollTop($terminal[0].scrollHeight);
 };
 
+function pushToTerminal(string) {
+    $terminal.append('<div class="cmd">' + AnsiUp.ansi_to_html(string + '\u001b[0m') + '</div>');
+}
+
 (function initConsole() {
     window.TerminalQueue = [];
     window.ConsoleServerStatus = 0;
@@ -79,9 +83,7 @@ window.scrollToBottom = function () {
 
     if (TerminalQueue.length > 0) {
         for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
-            $terminal.append(
-                '<div class="cmd">' + AnsiUp.ansi_to_html(TerminalQueue[0] + '\u001b[0m') + '</div>'
-            );
+            pushToTerminal(TerminalQueue[0]);
 
             if (! $scrollNotify.is(':visible')) {
                 window.scrollToBottom();
@@ -105,12 +107,10 @@ window.scrollToBottom = function () {
     // Update Listings on Initial Status
     Socket.on('initial status', function (data) {
         ConsoleServerStatus = data.status;
-        if (! InitialLogSent) {
-            updateServerPowerControls(data.status);
+        updateServerPowerControls(data.status);
 
-            if (data.status === 1 || data.status === 2) {
-                Socket.emit('send server log');
-            }
+        if (data.status === 1 || data.status === 2) {
+            Socket.emit('send server log');
         }
     });
 
@@ -120,14 +120,14 @@ window.scrollToBottom = function () {
         updateServerPowerControls(data.status);
     });
 
+    // Skips the queue so we don't wait
+    // 10 minutes to load the log...
     Socket.on('server log', function (data) {
-        if (! InitialLogSent) {
-            $('#terminal').html('');
-            data.split(/\n/g).forEach(function (item) {
-                TerminalQueue.push(item);
-            });
-            InitialLogSent = true;
-        }
+        $('#terminal').html('');
+        data.split(/\n/g).forEach(function (item) {
+            pushToTerminal(item);
+            window.scrollToBottom();
+        });
     });
 
     Socket.on('console', function (data) {
