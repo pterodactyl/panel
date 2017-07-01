@@ -28,72 +28,26 @@
     padding: 1px 0;
 }
 
-@keyframes cursorblink {
-    0% {
-        background: transparent;
-    }
-    100% {
-        background: rgba(170, 170, 170, 0.9);
-    }
-}
-
-@-webkit-keyframes cursorblink {
-    0% {
-        background: transparent;
-    }
-    100% {
-        background: rgba(170, 170, 170, 0.9);
-    }
-}
-
 #terminal_input {
     width: 100%;
     background: rgb(26, 26, 26);
     border-radius: 0 0 5px 5px;
-    padding: 5px 10px;
+    padding: 0 0 0 10px !important;
 }
 
-.terminal_input--input {
-    height: 0;
-    width: 0;
-    position: absolute;
-    top: -20px;
-}
-
-.terminal_input--text, .terminal_input--prompt {
-    line-height: 14px;
-    width: 100%;
-    vertical-align: middle;
-    font-size: 12px;
+.terminal_input--input, .terminal_input--prompt {
     font-family: 'Source Code Pro', monospace;
     margin-bottom: 0;
-    background: transparent;
+    border: 0 !important;
+    background: transparent !important;
     color: rgb(223, 223, 223);
+    font-size: 12px;
+    padding: 1px 0 4px !important;
 }
-
-.terminal_input--text:before, .terminal_input--text:after {
-    content: "";
-    display: inline-block;
-    width: 7px;
-    height: 14px;
-    margin: 0 0 -12px -6px;
-    vertical-align: middle;
-}
-
-.terminal_input--text:after {
-    position: relative;
-    bottom: 8px;
-    left: 8px;
-    background: #ff00;
-    animation: cursorblink 0.6s linear infinite alternate;
-    -webkit-animation: cursorblink 0.6s linear infinite alternate;
-}
-
 .terminal_input--input {
-    color: transparent;
-    background-color: transparent;
-    border: 0;
-    outline: none;
+    margin-left: 6px;
+    line-height: 1;
+    outline: none !important;
 }
 
 .terminal-notify {

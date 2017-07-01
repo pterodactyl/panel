@@ -21,32 +21,98 @@ var CONSOLE_PUSH_COUNT = Pterodactyl.config.console_count || 50;
 var CONSOLE_PUSH_FREQ = Pterodactyl.config.console_freq || 200;
 var CONSOLE_OUTPUT_LIMIT = Pterodactyl.config.console_limit || 2000;
 
+var KEYCODE_UP_ARROW = 38;
+var KEYCODE_DOWN_ARROW = 40;
+
 var AnsiUp = new AnsiUp;
 AnsiUp.use_classes = true;
 
 var $terminal = $('#terminal');
-var $ghostInput = $('.terminal_input--input');
-var $visibleInput = $('.terminal_input--text');
+var $terminalInput = $('.terminal_input--input');
 var $scrollNotify = $('#terminalNotify');
 
 $(document).ready(function () {
-    $ghostInput.focus();
-    $('.terminal_input--text, #terminal_input, #terminal, #terminalNotify').on('click', function () {
-        $ghostInput.focus();
+    var storage = window.localStorage;
+    var activeHx = [];
+    var currentHxIndex = 0;
+    var currentKeyCount = 0;
+
+    var storedConsoleHistory = storage.getItem('console_hx_' + Pterodactyl.server.uuid);
+    try {
+        activeHx = JSON.parse(storedConsoleHistory) || [];
+        currentKeyCount = activeHx.length - 1;
+    } catch (ex) {
+        //
+    }
+
+    $terminalInput.focus();
+    $('.terminal_input--prompt, #terminal_input, #terminal, #terminalNotify').on('click', function () {
+        $terminalInput.focus();
     });
 
-    $ghostInput.on('input', function () {
-        $visibleInput.html($(this).val());
-    });
+    $terminalInput.on('keyup', function (e) {
+        if (e.which === KEYCODE_DOWN_ARROW || e.which === KEYCODE_UP_ARROW) {
+            var value = consoleHistory(e.which);
 
-    $ghostInput.on('keyup', function (e) {
+            if (value !== false) {
+                $terminalInput.val(value);
+            }
+        }
+
+        if (e.which === 27) {
+            $(this).val('');
+        }
+
         if (e.which === 13) {
+            saveToHistory($(this).val());
             Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set status', $(this).val());
 
             $(this).val('');
-            $visibleInput.html('');
         }
     });
+
+    function consoleHistory(key) {
+        // Get previous
+        if (key === KEYCODE_UP_ARROW) {
+            // currentHxIndex++;
+            var index = activeHx.length - (currentHxIndex + 1);
+
+            if (typeof activeHx[index - 1] === 'undefined') {
+                return activeHx[index];
+            }
+
+            currentHxIndex++;
+            return activeHx[index];
+        }
+
+        // Get more recent
+        if (key === KEYCODE_DOWN_ARROW) {
+            var index = activeHx.length - currentHxIndex;
+
+            if (typeof activeHx[index + 1] === 'undefined') {
+                return activeHx[index];
+            }
+
+            currentHxIndex--;
+            return activeHx[index];
+        }
+    }
+
+    function saveToHistory(command) {
+        if (command.length === 0) {
+            return;
+        }
+
+        if (activeHx.length >= 50) {
+            activeHx.pop();
+        }
+
+        currentHxIndex = 0;
+        currentKeyCount++;
+        activeHx[currentKeyCount] = command;
+
+        storage.setItem('console_hx_' + Pterodactyl.server.uuid, JSON.stringify(activeHx));
+    }
 });
 
 $terminal.on('scroll', function () {
@@ -136,7 +202,6 @@ function pushToTerminal(string) {
         });
     });
 })();
-
 
 function updateServerPowerControls (data) {
     // Server is On or Starting

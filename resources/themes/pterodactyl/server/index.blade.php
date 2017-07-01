@@ -42,9 +42,11 @@
         <div class="box">
             <div class="box-body position-relative">
                 <div id="terminal" style="width:100%;"></div>
-                <div id="terminal_input">
-                    <span class="terminal_input--prompt">{{ $server->username }}:~$</span> <span class="terminal_input--text"></span>
-                    <input type="text" class="terminal_input--input" />
+                <div id="terminal_input" class="form-group no-margin">
+                    <div class="input-group">
+                        <div class="input-group-addon terminal_input--prompt">{{ $server->username }}:~$</div>
+                        <input type="text" class="form-control terminal_input--input">
+                    </div>
                 </div>
                 <div id="terminalNotify" class="terminal-notify hidden">
                     <i class="fa fa-bell"></i>
