@@ -39,6 +39,8 @@ AdminLTE - [license](https://github.com/almasaeed2010/AdminLTE/blob/master/LICEN
 
 Animate.css - [license](https://github.com/daneden/animate.css/blob/master/LICENSE) - [homepage](http://daneden.github.io/animate.css/)
 
+AnsiUp - [license](https://github.com/drudru/ansi_up/blob/master/Readme.md#license) - [homepage](https://github.com/drudru/ansi_up)
+
 Async.js - [license](https://github.com/caolan/async/blob/master/LICENSE) - [homepage](https://github.com/caolan/async/)
 
 Bootstrap - [license](https://github.com/twbs/bootstrap/blob/master/LICENSE) - [homepage](http://getbootstrap.com)
@@ -52,8 +54,6 @@ FontAwesome - [license](http://fontawesome.io/license/) - [homepage](http://font
 FontAwesome Animations - [license](https://github.com/l-lin/font-awesome-animation#license) - [homepage](https://github.com/l-lin/font-awesome-animation)
 
 jQuery - [license](https://github.com/jquery/jquery/blob/master/LICENSE.txt) - [homepage](http://jquery.com)
-
-jQuery Terminal - [license](https://github.com/jcubic/jquery.terminal/blob/master/LICENSE) - [homepage](http://terminal.jcubic.pl)
 
 Laravel Framework - [license](https://github.com/laravel/framework/blob/5.4/LICENSE.md) - [homepage](https://laravel.com)
 

@@ -25,7 +25,7 @@
 
 @section('scripts')
     @parent
-    {!! Theme::css('vendor/terminal/jquery.terminal.css') !!}
+    {!! Theme::css('css/terminal.css') !!}
 @endsection
 
 @section('content-header')
@@ -42,6 +42,12 @@
         <div class="box">
             <div class="box-body position-relative">
                 <div id="terminal" style="width:100%;"></div>
+                <div id="terminal_input" class="form-group no-margin">
+                    <div class="input-group">
+                        <div class="input-group-addon terminal_input--prompt">{{ $server->username }}:~$</div>
+                        <input type="text" class="form-control terminal_input--input">
+                    </div>
+                </div>
                 <div id="terminalNotify" class="terminal-notify hidden">
                     <i class="fa fa-bell"></i>
                 </div>
@@ -81,10 +87,9 @@
 
 @section('footer-scripts')
     @parent
+    {!! Theme::js('vendor/ansi/ansi_up.js') !!}
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/mousewheel/jquery.mousewheel-min.js') !!}
-    {!! Theme::js('vendor/terminal/jquery.terminal.min.js') !!}
-    {!! Theme::js('vendor/terminal/unix_formatting.js') !!}
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('vendor/jquery/date-format.min.js') !!}

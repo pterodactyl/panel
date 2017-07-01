@@ -257,22 +257,6 @@ span[aria-labelledby="select2-pUserId-container"] {
     position: relative;
 }
 
-.terminal-notify {
-    position: absolute;
-    right: 27px;
-    bottom: 10px;
-    padding: 3.5px 7px;
-    border-radius: 3px 3px 0 0;
-    background: #ccc;
-    color: #000;
-    opacity: .5;
-    cursor: pointer;
-}
-
-.terminal-notify:hover {
-    opacity: .9;
-}
-
 .no-margin-bottom {
     margin-bottom: 0 !important;
 }

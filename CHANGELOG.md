@@ -3,6 +3,23 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.6.4 (Courageous Carniadactylus)
+### Fixed
+* Fixed the console rendering on page load, I guess people don't like watching it load line-by-line for 10 minutes. Who would have guessed...
+* Re-added support for up/down arrows loading previous commands in the console window.
+
+### Changed
+* Panel API for Daemon now responds with a `HTTP/401 Unauthorized` error when unable to locate a node with a given authentication token, rather than a `HTTP/404 Not Found` response.
+* Added better colors and styling for the terminal that can be adjusted per-theme.
+* Session timeout adjusted to be 7 days by default.
+
+## v0.6.3 (Courageous Carniadactylus)
+### Fixed
+* **[Security]** — Addresses an oversight in how the terminal rendered information sent from the server feed which allowed a malicious user to execute arbitrary commands on the game-server process itself by using a specifically crafted in-game command.
+
+### Changed
+* Removed `jquery.terminal` and replaced it with an in-house developed terminal with less potential for security issues.
+
 ## v0.6.2 (Courageous Carniadactylus)
 ### Fixed
 * Fixes a few typos throughout the panel, there are more don't worry.

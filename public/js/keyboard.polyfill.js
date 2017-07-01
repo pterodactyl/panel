@@ -1,5 +1,5 @@
 /* global define, KeyboardEvent, module */
-// https://github.com/cvan/keyboardevent-key-polyfill/blob/master/LICENSE.md
+
 (function () {
 
   var keyboardeventKeyPolyfill = {
