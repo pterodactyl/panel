@@ -28,6 +28,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 abstract class AdminFormRequest extends FormRequest
 {
+    abstract public function rules();
+
     /**
      * Determine if the user is an admin and has permission to access this
      * form controller in the first place.
@@ -47,12 +49,14 @@ abstract class AdminFormRequest extends FormRequest
      * Return only the fields that we are interested in from the request.
      * This will include empty fields as a null value.
      *
+     * @param  array $only
      * @return array
      */
-    public function normalize()
+    public function normalize($only = [])
     {
-        return $this->only(
-            array_keys($this->rules())
+        return array_merge(
+            $this->only($only),
+            $this->intersect(array_keys($this->rules()))
         );
     }
 }

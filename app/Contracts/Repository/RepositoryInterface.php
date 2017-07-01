@@ -22,9 +22,29 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repositories;
+namespace Pterodactyl\Contracts\Repository;
 
-interface UserInterface extends RepositoryInterface, SearchableRepositoryInterface
+interface RepositoryInterface
 {
-    //
+    public function model();
+
+    public function getModel();
+
+    public function getBuilder();
+
+    public function getColumns();
+
+    public function withColumns($columns = ['*']);
+
+    public function create($fields);
+
+    public function delete($id);
+
+    public function find($id);
+
+    public function findWhere($fields);
+
+    public function update($id, $fields);
+
+    public function massUpdate($fields);
 }

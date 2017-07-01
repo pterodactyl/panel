@@ -25,6 +25,7 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\UserService;
@@ -50,17 +51,28 @@ class UserController extends Controller
     protected $model;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     */
+    protected $repository;
+
+    /**
      * UserController constructor.
      *
-     * @param  \Prologue\Alerts\AlertsMessageBag  $alert
-     * @param  \Pterodactyl\Services\UserService  $service
-     * @param  \Pterodactyl\Models\User           $model
+     * @param  \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param  \Pterodactyl\Services\UserService                         $service
+     * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param  \Pterodactyl\Models\User                                  $model
      */
-    public function __construct(AlertsMessageBag $alert, UserService $service, User $model)
-    {
+    public function __construct(
+        AlertsMessageBag $alert,
+        UserService $service,
+        UserRepositoryInterface $repository,
+        User $model
+    ) {
         $this->alert = $alert;
         $this->service = $service;
         $this->model = $model;
+        $this->repository = $repository;
     }
 
     /**
@@ -71,14 +83,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->model->newQuery()->withCount('servers', 'subuserOf');
-
-        if (! is_null($request->input('query'))) {
-            $users->search($request->input('query'));
-        }
+        $users = $this->repository->search($request->input('query'))->getAllUsersWithCounts();
 
         return view('admin.users.index', [
-            'users' => $users->paginate(config('pterodactyl.paginate.admin.users')),
+            'users' => $users,
         ]);
     }
 
@@ -122,7 +130,7 @@ class UserController extends Controller
         }
 
         try {
-            $this->service->delete($user->id);
+            $this->repository->deleteIfNoServers($user->id);
 
             return redirect()->route('admin.users');
         } catch (DisplayException $ex) {
@@ -144,6 +152,7 @@ class UserController extends Controller
     public function store(UserFormRequest $request)
     {
         $user = $this->service->create($request->normalize());
+
         $this->alert->success('Account has been successfully created.')->flash();
 
         return redirect()->route('admin.users.view', $user->id);

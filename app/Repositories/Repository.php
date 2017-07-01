@@ -22,67 +22,77 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories;
+namespace Pterodactyl\Repository;
 
-use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Model;
-use Pterodactyl\Exceptions\Repository\RepositoryException;
-use Pterodactyl\Contracts\Repositories\RepositoryInterface;
+use Illuminate\Foundation\Application;
+use Pterodactyl\Contracts\Repository\RepositoryInterface;
 
 abstract class Repository implements RepositoryInterface
 {
-    const RULE_UPDATED = 'updated';
-    const RULE_CREATED = 'created';
-
     /**
-     * @var \Illuminate\Container\Container
+     * @var \Illuminate\Foundation\Application
      */
-    protected $container;
+    protected $app;
 
     /**
-     * Array of classes to inject automatically into the container.
-     *
      * @var array
      */
-    protected $inject = [];
+    protected $columns = ['*'];
 
     /**
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var mixed
      */
     protected $model;
 
     /**
-     * Array of validation rules that can be accessed from this repository.
-     *
-     * @var array
+     * @var bool
      */
-    protected $rules = [];
+    protected $withFresh = true;
 
     /**
-     * {@inheritdoc}
+     * Repository constructor.
+     *
+     * @param \Illuminate\Foundation\Application $application
      */
-    public function __construct(Container $container)
+    public function __construct(Application $application)
     {
-        $this->container = $container;
+        $this->app = $application;
 
-        foreach ($this->inject as $key => $value) {
-            if (isset($this->{$key})) {
-                throw new \Exception('Cannot override a defined object in this class.');
-            }
-
-            $this->{$key} = $this->container->make($value);
-        }
-
-        $this->makeModel();
+        $this->setModel($this->model());
     }
 
     /**
-     * {@inheritdoc}
+     * Take the provided model and make it accessible to the rest of the repository.
+     *
+     * @param  string|array $model
+     * @return mixed
+     */
+    protected function setModel($model)
+    {
+        if (is_array($model)) {
+            if (count($model) !== 2) {
+                throw new \InvalidArgumentException(
+                    printf('setModel expected exactly 2 parameters, %d received.', count($model))
+                );
+            }
+
+            return $this->model = call_user_func(
+                $model[1], $this->app->make($model[0])
+            );
+        }
+
+        return $this->model = $this->app->make($model);
+    }
+
+    /**
+     * @return mixed
      */
     abstract public function model();
 
     /**
-     * {@inheritdoc}
+     * Return the model being used for this repository.
+     *
+     * @return mixed
      */
     public function getModel()
     {
@@ -90,140 +100,39 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Setup column selection functionality.
+     *
+     * @param  array $columns
+     * @return $this
      */
-    public function makeModel()
+    public function withColumns($columns = ['*'])
     {
-        $model = $this->container->make($this->model());
+        $clone = clone $this;
+        $clone->columns = is_array($columns) ? $columns : func_get_args();
 
-        if (! $model instanceof Model) {
-            throw new RepositoryException(
-                "Class {$this->model()} must be an instance of \\Illuminate\\Database\\Eloquent\\Model"
-            );
-        }
-
-        return $this->model = $model->newQuery();
+        return $clone;
     }
 
     /**
-     * {@inheritdoc}
+     * Return the columns to be selected in the repository call.
+     *
+     * @return array
      */
-    public function getRules()
+    public function getColumns()
     {
-        return $this->rules;
+        return $this->columns;
     }
 
     /**
-     * {@inheritdoc}
+     * Set repository to not return a fresh record from the DB when completed.
+     *
+     * @return $this
      */
-    public function getUpdateRules()
+    public function withoutFresh()
     {
-        if (array_key_exists(self::RULE_UPDATED, $this->rules)) {
-            return $this->rules[self::RULE_UPDATED];
-        }
+        $clone = clone $this;
+        $clone->withFresh = false;
 
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCreateRules()
-    {
-        if (array_key_exists(self::RULE_CREATED, $this->rules)) {
-            return $this->rules[self::RULE_CREATED];
-        }
-
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function with(...$params)
-    {
-        $this->model = $this->model->with($params);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withCount(...$params)
-    {
-        $this->model = $this->model->withCount($params);
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function all(array $columns = ['*'])
-    {
-        return $this->model->get($columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function paginate($limit = 15, array $columns = ['*'])
-    {
-        return $this->model->paginate($limit, $columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function create(array $data)
-    {
-        return $this->model->create($data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function update($attributes, array $data)
-    {
-        // If only a number is passed, we assume it is an ID
-        // for the specific model at hand.
-        if (is_numeric($attributes)) {
-            $attributes = [['id', '=', $attributes]];
-        }
-
-        return $this->model->where($attributes)->get()->each->update($data);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function delete($id)
-    {
-        return $this->model->find($id)->delete();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function destroy($id)
-    {
-        return $this->model->find($id)->forceDelete();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function find($id, array $columns = ['*'])
-    {
-        return $this->model->find($id, $columns);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findBy(array $attributes, array $columns = ['*'])
-    {
-        return $this->model->where($attributes)->first($columns);
+        return $clone;
     }
 }

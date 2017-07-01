@@ -24,16 +24,21 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Models\User;
-use Illuminate\Database\Connection;
+use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
+use Illuminate\Notifications\ChannelManager;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserService
 {
+    /**
+     * @var \Illuminate\Foundation\Application
+     */
+    protected $app;
+
     /**
      * @var \Illuminate\Database\Connection
      */
@@ -45,33 +50,44 @@ class UserService
     protected $hasher;
 
     /**
+     * @var \Illuminate\Notifications\ChannelManager
+     */
+    protected $notification;
+
+    /**
      * @var \Pterodactyl\Services\Helpers\TemporaryPasswordService
      */
     protected $passwordService;
 
     /**
-     * @var \Pterodactyl\Models\User
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
-    protected $model;
+    protected $repository;
 
     /**
      * UserService constructor.
      *
-     * @param  \Illuminate\Database\Connection $database
-     * @param  \Illuminate\Contracts\Hashing\Hasher                                $hasher
-     * @param  \Pterodactyl\Services\Helpers\TemporaryPasswordService               $passwordService
-     * @param  \Pterodactyl\Models\User                                            $model
+     * @param \Illuminate\Foundation\Application                         $application
+     * @param  \Illuminate\Notifications\ChannelManager                  $notification
+     * @param  \Illuminate\Database\ConnectionInterface                  $database
+     * @param  \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param  \Pterodactyl\Services\Helpers\TemporaryPasswordService    $passwordService
+     * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
-        Connection $database,
+        Application $application,
+        ChannelManager $notification,
+        ConnectionInterface $database,
         Hasher $hasher,
         TemporaryPasswordService $passwordService,
-        User $model
+        UserRepositoryInterface $repository
     ) {
+        $this->app = $application;
         $this->database = $database;
         $this->hasher = $hasher;
+        $this->notification = $notification;
         $this->passwordService = $passwordService;
-        $this->model = $model;
+        $this->repository = $repository;
     }
 
     /**
@@ -89,78 +105,47 @@ class UserService
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        $user = $this->model->newInstance($data);
+        // Begin Transaction
+        $this->database->beginTransaction();
+
+        if (! isset($data['password']) || empty($data['password'])) {
+            $data['password'] = $this->hasher->make(str_random(30));
+            $token = $this->passwordService->generateReset($data['email']);
+        }
+
+        $user = $this->repository->create($data);
 
         // Persist the data
-        $token = $this->database->transaction(function () use ($user) {
-            if (empty($user->password)) {
-                $user->password = $this->hasher->make(str_random(30));
-                $token = $this->passwordService->generateReset($user->email);
-            }
+        $this->database->commit();
 
-            if (! $user->save()) {
-                throw new DataValidationException($user->getValidator());
-            }
-
-            return $token ?? null;
-        });
-
-        $user->notify(new AccountCreated([
-            'name' => $user->name_first,
-            'username' => $user->username,
-            'token' => $token,
+        $this->notification->send($user, $this->app->makeWith(AccountCreated::class, [
+            'user' => [
+                'name' => $user->name_first,
+                'username' => $user->username,
+                'token' => $token ?? null,
+            ],
         ]));
 
         return $user;
     }
 
     /**
-     * Update the user model.
+     * Update the user model instance.
      *
-     * @param  int|\Pterodactyl\Models\User  $user
-     * @param  array                     $data
-     * @return \Pterodactyl\Models\User
+     * @param  int   $id
+     * @param  array $data
+     * @return mixed
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function update($user, array $data)
+    public function update($id, array $data)
     {
-        if (! $user instanceof User) {
-            $user = $this->model->findOrFail($user);
-        }
-
         if (isset($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        $user->fill($data);
-
-        if (! $user->save()) {
-            throw new DataValidationException($user->getValidator());
-        }
+        $user = $this->repository->update($id, $data);
 
         return $user;
-    }
-
-    /**
-     * @param  int|\Pterodactyl\Models\User $user
-     * @return bool|null
-     *
-     * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    public function delete($user)
-    {
-        if (! $user instanceof User) {
-            $user = $this->model->findOrFail($user);
-        }
-
-        if ($user->servers()->count() > 0) {
-            throw new DisplayException('Cannot delete an account that has active servers attached to it.');
-        }
-
-        return $user->delete();
     }
 }

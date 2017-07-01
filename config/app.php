@@ -166,6 +166,7 @@ return [
         Pterodactyl\Providers\RouteServiceProvider::class,
         Pterodactyl\Providers\MacroServiceProvider::class,
         Pterodactyl\Providers\PhraseAppTranslationProvider::class,
+        Pterodactyl\Providers\RepositoryServiceProvider::class,
 
         /*
          * Additional Dependencies

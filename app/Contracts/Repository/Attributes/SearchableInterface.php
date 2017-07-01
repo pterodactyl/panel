@@ -22,15 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repositories;
+namespace Pterodactyl\Contracts\Repository\Attributes;
 
-interface SearchableRepositoryInterface extends RepositoryInterface
+interface SearchableInterface
 {
-    /**
-     * Pass parameters to search trait on model.
-     *
-     * @param  string  $term
-     * @return mixed
-     */
     public function search($term);
 }

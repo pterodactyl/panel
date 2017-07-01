@@ -22,33 +22,11 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Exceptions\Repository;
 
-use Pterodactyl\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class UserFormRequest extends AdminFormRequest
+class RecordNotFoundException extends ModelNotFoundException
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        if ($this->method() === 'PATCH') {
-            return User::getUpdateRulesForId($this->user->id);
-        }
-
-        return User::getCreateRules();
-    }
-
-    public function normalize($only = [])
-    {
-        if ($this->method === 'PATCH') {
-            return array_merge(
-                $this->intersect('password'),
-                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin'])
-            );
-        }
-
-        return parent::normalize();
-    }
+    //
 }

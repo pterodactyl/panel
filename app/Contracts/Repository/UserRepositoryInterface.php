@@ -22,33 +22,13 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Models\User;
+use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-class UserFormRequest extends AdminFormRequest
+interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        if ($this->method() === 'PATCH') {
-            return User::getUpdateRulesForId($this->user->id);
-        }
+    public function getAllUsersWithCounts();
 
-        return User::getCreateRules();
-    }
-
-    public function normalize($only = [])
-    {
-        if ($this->method === 'PATCH') {
-            return array_merge(
-                $this->intersect('password'),
-                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin'])
-            );
-        }
-
-        return parent::normalize();
-    }
+    public function deleteIfNoServers($id);
 }

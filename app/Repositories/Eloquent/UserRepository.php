@@ -24,52 +24,85 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\User;
-use Illuminate\Contracts\Auth\Guard;
-use Pterodactyl\Repositories\Repository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Foundation\Application;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repositories\UserInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Models\User;
 
-class UserRepository extends Repository implements UserInterface
+class UserRepository extends EloquentRepository implements UserRepositoryInterface
 {
     /**
-     * Dependencies to automatically inject into the repository.
-     *
-     * @var array
+     * @var \Illuminate\Contracts\Config\Repository
      */
-    protected $inject = [
-        'guard' => Guard::class,
-    ];
+    protected $config;
 
     /**
-     * Return the model to be used for the repository.
-     *
-     * @return string
+     * @var bool|array
      */
+    protected $searchTerm = false;
+
+    /**
+     * UserRepository constructor.
+     *
+     * @param \Illuminate\Foundation\Application      $application
+     * @param \Illuminate\Contracts\Config\Repository $config
+     */
+    public function __construct(Application $application, ConfigRepository $config)
+    {
+        parent::__construct($application);
+
+        $this->config = $config;
+    }
+
     public function model()
     {
         return User::class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function search($term)
     {
-        $this->model->search($term);
-
-        return $this;
-    }
-
-    public function delete($id)
-    {
-        $user = $this->model->withCount('servers')->find($id);
-
-        if ($this->guard->user() && $this->guard->user()->id === $user->id) {
-            throw new DisplayException('You cannot delete your own account.');
+        if (empty($term)) {
+            return $this;
         }
 
-        if ($user->server_count > 0) {
+        $clone = clone $this;
+        $clone->searchTerm = $term;
+
+        return $clone;
+    }
+
+    public function getAllUsersWithCounts()
+    {
+        $users = $this->getBuilder()->withCount('servers', 'subuserOf');
+
+        if ($this->searchTerm) {
+            $users->search($this->searchTerm);
+        }
+
+        return $users->paginate(
+            $this->config->get('pterodactyl.paginate.admin.users'), $this->getColumns()
+        );
+    }
+
+    /**
+     * Delete a user if they have no servers attached to their account.
+     *
+     * @param  int $id
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function deleteIfNoServers($id)
+    {
+        $user = $this->getBuilder()->withCount('servers')->where('id', $id)->first();
+
+        if (! $user) {
+            throw new RecordNotFoundException();
+        }
+
+        if ($user->servers_count > 0) {
             throw new DisplayException('Cannot delete an account that has active servers attached to it.');
         }
 

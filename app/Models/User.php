@@ -103,7 +103,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $searchable = [
+    protected $searchableColumns = [
         'email' => 10,
         'username' => 9,
         'name_first' => 6,
