@@ -22,25 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Providers;
+namespace Pterodactyl\Contracts\Repository;
 
-use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\UserRepository;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-
-class RepositoryServiceProvider extends ServiceProvider
+interface DatabaseHostInterface extends RepositoryInterface
 {
-    /**
-     * Register all of the repository bindings.
-     */
-    public function register()
-    {
-        $this->app->bind(DatabaseHostInterface::class, DatabaseHostRepository::class);
-        $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-    }
+    public function deleteIfNoDatabases($id);
 }

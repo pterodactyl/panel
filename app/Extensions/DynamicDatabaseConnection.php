@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Extensions;
 
+use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
 use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Config\Repository as ConfigRepository;
@@ -45,25 +46,25 @@ class DynamicDatabaseConnection
     protected $encrypter;
 
     /**
-     * @var \Pterodactyl\Models\DatabaseHost
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostInterface
      */
-    protected $model;
+    protected $repository;
 
     /**
      * DynamicDatabaseConnection constructor.
      *
-     * @param \Illuminate\Config\Repository              $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Models\DatabaseHost           $model
+     * @param \Illuminate\Config\Repository                           $config
+     * @param \Pterodactyl\Contracts\Repository\DatabaseHostInterface $repository
+     * @param \Illuminate\Contracts\Encryption\Encrypter              $encrypter
      */
     public function __construct(
         ConfigRepository $config,
-        Encrypter $encrypter,
-        DatabaseHost $model
+        DatabaseHostInterface $repository,
+        Encrypter $encrypter
     ) {
         $this->config = $config;
         $this->encrypter = $encrypter;
-        $this->model = $model;
+        $this->repository = $repository;
     }
 
     /**
@@ -76,7 +77,7 @@ class DynamicDatabaseConnection
     public function set($connection, $host, $database = 'mysql')
     {
         if (! $host instanceof DatabaseHost) {
-            $host = $this->model->findOrFail($host);
+            $host = $this->repository->find($host);
         }
 
         $this->config->set('database.connections.' . $connection, [

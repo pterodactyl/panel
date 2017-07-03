@@ -22,64 +22,69 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\Location;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
-class LocationService
+class LocationRepository extends EloquentRepository implements LocationRepositoryInterface
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var string
      */
-    protected $repository;
+    protected $searchTerm;
 
     /**
-     * LocationService constructor.
+     * Setup model.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @return string
      */
-    public function __construct(LocationRepositoryInterface $repository)
+    public function model()
     {
-        $this->repository = $repository;
+        return Location::class;
     }
 
     /**
-     * Create the location in the database and return it.
+     * Setup the model for search abilities.
      *
-     * @param  array $data
-     * @return \Pterodactyl\Models\Location
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @param  $term
+     * @return $this
      */
-    public function create(array $data)
+    public function search($term)
     {
-        return $this->repository->create($data);
+        if (empty($term)) {
+            return $this;
+        }
+
+        $clone = clone $this;
+        $clone->searchTerm = $term;
+
+        return $clone;
     }
 
     /**
-     * Update location model in the DB.
+     * Delete a location only if there are no nodes attached to it.
      *
-     * @param  int   $id
-     * @param  array $data
-     * @return \Pterodactyl\Models\Location
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-    public function update($id, array $data)
-    {
-        return $this->repository->update($id, $data);
-    }
-
-    /**
-     * Delete a model from the DB.
-     *
-     * @param  int  $id
-     * @return bool
+     * @param  $id
+     * @return bool|mixed|null
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete($id)
+    public function deleteIfNoNodes($id)
     {
-        return $this->repository->deleteIfNoNodes($id);
+        $location = $this->getBuilder()->with('nodes')->find($id);
+
+        if (! $location) {
+            throw new RecordNotFoundException();
+        }
+
+        if ($location->nodes_count > 0) {
+            throw new DisplayException('Cannot delete a location that has nodes assigned to it.');
+        }
+
+        return $location->delete();
     }
 }

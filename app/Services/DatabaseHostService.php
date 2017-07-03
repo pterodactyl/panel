@@ -24,11 +24,10 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
-use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
 
 class DatabaseHostService
 {
@@ -48,28 +47,28 @@ class DatabaseHostService
     protected $encrypter;
 
     /**
-     * @var \Pterodactyl\Models\DatabaseHost
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostInterface
      */
-    protected $model;
+    protected $repository;
 
     /**
      * DatabaseHostService constructor.
      *
-     * @param \Illuminate\Database\DatabaseManager              $database
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter        $encrypter
-     * @param \Pterodactyl\Models\DatabaseHost                  $model
+     * @param \Pterodactyl\Contracts\Repository\DatabaseHostInterface $repository
+     * @param \Illuminate\Database\DatabaseManager                    $database
+     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection       $dynamic
+     * @param \Illuminate\Contracts\Encryption\Encrypter              $encrypter
      */
     public function __construct(
+        DatabaseHostInterface $repository,
         DatabaseManager $database,
         DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter,
-        DatabaseHost $model
+        Encrypter $encrypter
     ) {
         $this->database = $database;
         $this->dynamic = $dynamic;
         $this->encrypter = $encrypter;
-        $this->model = $model;
+        $this->repository = $repository;
     }
 
     /**
@@ -83,10 +82,10 @@ class DatabaseHostService
      */
     public function create(array $data)
     {
-        $instance = $this->model->newInstance();
-        $instance->password = $this->encrypter->encrypt(array_get($data, 'password'));
+        $this->database->beginTransaction();
 
-        $instance->fill([
+        $host = $this->repository->create([
+            'password' => $this->encrypter->encrypt(array_get($data, 'password')),
             'name' => array_get($data, 'name'),
             'host' => array_get($data, 'host'),
             'port' => array_get($data, 'port'),
@@ -96,12 +95,12 @@ class DatabaseHostService
         ]);
 
         // Check Access
-        $this->dynamic->set('dynamic', $instance);
+        $this->dynamic->set('dynamic', $host);
         $this->database->connection('dynamic')->select('SELECT 1 FROM dual');
 
-        $instance->saveOrFail();
+        $this->database->commit();
 
-        return $instance;
+        return $host;
     }
 
     /**
@@ -115,19 +114,22 @@ class DatabaseHostService
      */
     public function update($id, array $data)
     {
-        $model = $this->model->findOrFail($id);
+        $this->database->beginTransaction();
 
         if (! empty(array_get($data, 'password'))) {
-            $model->password = $this->encrypter->encrypt($data['password']);
+            $data['password'] = $this->encrypter->encrypt($data['password']);
+        } else {
+            unset($data['password']);
         }
 
-        $model->fill($data);
-        $this->dynamic->set('dynamic', $model);
+        $host = $this->repository->update($id, $data);
+
+        $this->dynamic->set('dynamic', $host);
         $this->database->connection('dynamic')->select('SELECT 1 FROM dual');
 
-        $model->saveOrFail();
+        $this->database->commit();
 
-        return $model;
+        return $host;
     }
 
     /**
@@ -140,12 +142,6 @@ class DatabaseHostService
      */
     public function delete($id)
     {
-        $model = $this->model->withCount('databases')->findOrFail($id);
-
-        if ($model->databases_count > 0) {
-            throw new DisplayException('Cannot delete a database host that has active databases attached to it.');
-        }
-
-        return $model->delete();
+        return $this->repository->deleteIfNoDatabases($id);
     }
 }

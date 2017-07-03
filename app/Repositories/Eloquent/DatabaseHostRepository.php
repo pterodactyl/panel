@@ -22,25 +22,46 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Providers;
+namespace Pterodactyl\Repositories\Eloquent;
 
-use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\UserRepository;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Models\DatabaseHost;
 
-class RepositoryServiceProvider extends ServiceProvider
+class DatabaseHostRepository extends EloquentRepository implements DatabaseHostInterface
 {
     /**
-     * Register all of the repository bindings.
+     * Setup the model to be used.
+     *
+     * @return string
      */
-    public function register()
+    public function model()
     {
-        $this->app->bind(DatabaseHostInterface::class, DatabaseHostRepository::class);
-        $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        return DatabaseHost::class;
+    }
+
+    /**
+     * Delete a database host from the DB if there are no databases using it.
+     *
+     * @param  int $id
+     * @return bool|null
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function deleteIfNoDatabases($id)
+    {
+        $instance = $this->getBuilder()->withCount('databases')->find($id);
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        if ($instance->databases_count > 0) {
+            throw new DisplayException('Cannot delete a database host that has active databases attached to it.');
+        }
+
+        return $instance->delete();
     }
 }
