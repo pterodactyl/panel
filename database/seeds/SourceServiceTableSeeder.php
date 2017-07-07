@@ -220,7 +220,7 @@ cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
         $this->option['csgo'] = ServiceOption::updateOrCreate([
-		    'service_id' => $this->service->id,
+            'service_id' => $this->service->id,
             'tag' => 'csgo',
         ], [
             'name' => 'Counter-Strike: Global Offensive',
@@ -377,8 +377,8 @@ EOF;
             'user_editable' => 0,
             'rules' => 'required|alpha_num',
         ]);
-		
-		ServiceVariable::updateOrCreate([
+
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
             'env_variable' => 'STEAM_PASS',
         ], [
@@ -389,7 +389,7 @@ EOF;
             'user_editable' => 0,
             'rules' => 'required',
         ]);
-    }    
+    }
 
     private function addCustomVariables()
     {
