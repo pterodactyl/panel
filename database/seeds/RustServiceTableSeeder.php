@@ -26,7 +26,7 @@ use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
 
-class SourceServiceTableSeeder extends Seeder
+class RustServiceTableSeeder extends Seeder
 {
     /**
      * The core service ID.
