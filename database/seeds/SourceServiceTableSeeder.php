@@ -213,7 +213,7 @@ cd /mnt/server/steamcmd
 chown -R root:root /mnt
 
 export HOME=/mnt/server
-./steamcmd.sh +login "${STEAM_USER}" "${STEAM_PASS}" +force_install_dir /mnt/server +app_update 740 +quit
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 740 +quit
 
 mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
@@ -226,12 +226,12 @@ EOF;
             'name' => 'Counter-Strike: Global Offensive',
             'description' => 'Counter-Strike: Global Offensive is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation.',
             'docker_image' => 'quay.io/pterodactyl/core:source',
-            'config_startup' => null,
+            'config_startup' => '{ "done": "VAC secure mode is activated.", "userInteraction": []}',
             'config_files' => null,
-            'config_logs' => null,
-            'config_stop' => null,
+            'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
+            'config_stop' => 'quit',
             'config_from' => $this->option['source']->id,
-            'startup' => './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
+            'startup' => './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}',
             'script_install' => $script,
             'script_entry' => 'bash',
             'script_container' => 'ubuntu:16.04',
@@ -368,25 +368,25 @@ EOF;
     {
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
-            'env_variable' => 'STEAM_USER',
+            'env_variable' => 'SRCDS_MAP',
         ], [
-            'name' => 'Account Name',
-            'description' => 'A Steam username w/ CS:GO on the account',
+            'name' => 'Map',
+            'description' => 'The default map for the server.',
             'default_value' => '',
-            'user_viewable' => 0,
-            'user_editable' => 0,
-            'rules' => 'required|alpha_num',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required',
         ]);
 
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
-            'env_variable' => 'STEAM_PASS',
+            'env_variable' => 'STEAM_ACC',
         ], [
-            'name' => 'Account Password',
-            'description' => 'The password for the Steam Account',
+            'name' => 'Steam Account Token',
+            'description' => 'The Steam Account Token required for the server to connect.',
             'default_value' => '',
-            'user_viewable' => 0,
-            'user_editable' => 0,
+            'user_viewable' => 1,
+            'user_editable' => 1,
             'rules' => 'required',
         ]);
     }
