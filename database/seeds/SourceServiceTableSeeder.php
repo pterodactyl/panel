@@ -192,6 +192,50 @@ EOF;
             'script_entry' => 'bash',
             'script_container' => 'ubuntu:16.04',
         ]);
+    
+        $script = <<<'EOF'
+#!/bin/bash
+# CSGO Installation Script
+#
+# Server Files: /mnt/server
+apt -y update
+apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
+
+cd /tmp
+curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+
+mkdir -p /mnt/server/steamcmd
+tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+cd /mnt/server/steamcmd
+
+# SteamCMD fails otherwise for some reason, even running as root.
+# This is changed at the end of the install process anyways.
+chown -R root:root /mnt
+
+export HOME=/mnt/server
+./steamcmd.sh +login "${STEAM_USER}" "${STEAM_PASS}" +force_install_dir /mnt/server +app_update 740 +quit > /mnt/server/log.txt 2>&1
+
+mkdir -p /mnt/server/.steam/sdk32 > /mnt/server/log2.txt 2>&1
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so > /mnt/server/log3.txt 2>&1
+EOF;
+
+		$this->option['csgo'] = ServiceOption::updateOrCreate([
+		    'service_id' => $this->service->id,
+            'tag' => 'csgo',
+        ], [
+            'name' => 'Counter-Strike: Global Offensive',
+            'description' => 'Counter-Strike: Global Offensive is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation.',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
+            'config_startup' => null,
+            'config_files' => null,
+            'config_logs' => null,
+            'config_stop' => null,
+            'config_from' => $this->option['source']->id,
+            'startup' => './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
+			'script_install' => $script,
+            'script_entry' => 'bash',
+            'script_container' => 'ubuntu:16.04',
+		]);
     }
 
     private function addVariables()
@@ -199,6 +243,7 @@ EOF;
         $this->addInsurgencyVariables();
         $this->addTF2Variables();
         $this->addArkVariables();
+        $this->addCSGOVariables();
         $this->addCustomVariables();
     }
 
@@ -318,6 +363,33 @@ EOF;
             'rules' => 'required|numeric|digits_between:1,4',
         ]);
     }
+
+	private function addCSGOVariables()
+	{
+		ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['csgo']->id,
+            'env_variable' => 'STEAM_USER',
+        ], [
+            'name' => 'Account Name',
+            'description' => 'A Steam username w/ CS:GO on the account',
+            'default_value' => '',
+            'user_viewable' => 0,
+            'user_editable' => 0,
+            'rules' => 'required|alpha_num',
+        ]);
+		
+		ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['csgo']->id,
+            'env_variable' => 'STEAM_PASS',
+        ], [
+            'name' => 'Account Password',
+            'description' => 'The password for the Steam Account',
+            'default_value' => '',
+            'user_viewable' => 0,
+            'user_editable' => 0,
+            'rules' => 'required',
+        ]);
+	}    
 
     private function addCustomVariables()
     {
