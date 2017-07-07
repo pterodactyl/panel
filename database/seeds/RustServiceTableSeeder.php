@@ -126,7 +126,7 @@ EOF;
             'user_editable' => 0,
             'rules' => 'required',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'HOSTNAME',
@@ -138,7 +138,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'required|string',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'LEVEL',
@@ -150,7 +150,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'required|string',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'DESCRIPTION',
@@ -162,7 +162,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'required',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'URL',
@@ -174,7 +174,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'url',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'WORLD_SIZE',
@@ -186,7 +186,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'required|integer',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'SEED',
@@ -198,7 +198,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'present',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'MAX_PLAYERS',
@@ -210,7 +210,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'required|integer',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'SERVER_IMG',
@@ -222,7 +222,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'url',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'RCON_PORT',
@@ -234,7 +234,7 @@ EOF;
             'user_editable' => 0,
             'rules' => 'required|integer',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'RCON_PASS',
@@ -246,7 +246,7 @@ EOF;
             'user_editable' => 1,
             'rules' => 'required',
         ]);
-        
+
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'ADDITIONAL_ARGS',
