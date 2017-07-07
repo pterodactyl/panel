@@ -231,7 +231,7 @@ EOF;
             'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
             'config_stop' => 'quit',
             'config_from' => $this->option['source']->id,
-            'startup' => './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}',
+            'startup' => './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}',
             'script_install' => $script,
             'script_entry' => 'bash',
             'script_container' => 'ubuntu:16.04',
