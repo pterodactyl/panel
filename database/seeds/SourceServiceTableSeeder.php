@@ -192,7 +192,7 @@ EOF;
             'script_entry' => 'bash',
             'script_container' => 'ubuntu:16.04',
         ]);
-    
+
         $script = <<<'EOF'
 #!/bin/bash
 # CSGO Installation Script
@@ -219,7 +219,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
-		$this->option['csgo'] = ServiceOption::updateOrCreate([
+        $this->option['csgo'] = ServiceOption::updateOrCreate([
 		    'service_id' => $this->service->id,
             'tag' => 'csgo',
         ], [
@@ -232,10 +232,10 @@ EOF;
             'config_stop' => null,
             'config_from' => $this->option['source']->id,
             'startup' => './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart',
-			'script_install' => $script,
+            'script_install' => $script,
             'script_entry' => 'bash',
             'script_container' => 'ubuntu:16.04',
-		]);
+        ]);
     }
 
     private function addVariables()
@@ -364,9 +364,9 @@ EOF;
         ]);
     }
 
-	private function addCSGOVariables()
-	{
-		ServiceVariable::updateOrCreate([
+    private function addCSGOVariables()
+    {
+        ServiceVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
             'env_variable' => 'STEAM_USER',
         ], [
@@ -389,7 +389,7 @@ EOF;
             'user_editable' => 0,
             'rules' => 'required',
         ]);
-	}    
+    }    
 
     private function addCustomVariables()
     {
