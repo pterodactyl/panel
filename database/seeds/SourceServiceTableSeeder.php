@@ -383,7 +383,7 @@ EOF;
             'env_variable' => 'STEAM_ACC',
         ], [
             'name' => 'Steam Account Token',
-            'description' => 'The Steam Account Token required for the server to connect.',
+            'description' => 'The Steam Account Token required for the server to be displayed publicly.',
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 1,
