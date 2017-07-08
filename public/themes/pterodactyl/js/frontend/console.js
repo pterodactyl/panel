@@ -116,7 +116,7 @@ $(document).ready(function () {
 });
 
 $terminal.on('scroll', function () {
-    if ($(this).scrollTop() + $(this).innerHeight() < $(this)[0].scrollHeight) {
+    if ($(this).scrollTop() + $(this).innerHeight() + 50 < $(this)[0].scrollHeight) {
         $scrollNotify.removeClass('hidden');
     } else {
         $scrollNotify.addClass('hidden');

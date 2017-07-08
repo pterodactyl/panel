@@ -94,9 +94,9 @@ class NodesController extends Controller
                     'daemonBase', 'daemonSFTP', 'daemonListen',
                 ])
             ));
-            Alert::success('Successfully created new node that can be configured automatically on your remote machine by visiting the configuration tab. <strong>Before you can add any servers you need to first assign some IP addresses and ports.</strong>')->flash();
+            Alert::success('Successfully created new node that can be configured automatically on your remote machine by visiting the configuration tab. <strong>Before you can add any servers you need to first assign some IP addresses and ports by adding an allocation.</strong>')->flash();
 
-            return redirect()->route('admin.nodes.view', $node->id);
+            return redirect()->route('admin.nodes.view.allocation', $node->id);
         } catch (DisplayValidationException $e) {
             return redirect()->route('admin.nodes.new')->withErrors(json_decode($e->getMessage()))->withInput();
         } catch (DisplayException $e) {
