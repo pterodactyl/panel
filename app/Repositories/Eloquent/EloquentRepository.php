@@ -126,7 +126,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             }
         }
 
-        return ($this->withFresh) ? $instance->fresh($this->getColumns()) : $saved;
+        return ($this->withFresh) ? $instance->fresh() : $saved;
     }
 
     /**
