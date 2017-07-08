@@ -24,16 +24,7 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-interface DatabaseHostInterface extends RepositoryInterface
+interface ApiKeyRepositoryInterface extends RepositoryInterface
 {
-    /**
-     * Delete a database host from the DB if there are no databases using it.
-     *
-     * @param  int $id
-     * @return bool|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function deleteIfNoDatabases($id);
+    //
 }

@@ -36,7 +36,7 @@ class APIPermission extends Model implements ValidableContract
     /**
      * List of permissions available for the API.
      */
-    const PERMISSIONS = [
+    const CONST_PERMISSIONS = [
         // Items within this block are available to non-adminitrative users.
         '_user' => [
             'server' => [

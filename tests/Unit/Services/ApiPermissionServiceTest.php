@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,11 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Tests\Unit\Services;
 
+use Mockery as m;
 use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
+use Pterodactyl\Models\APIPermission;
+use Pterodactyl\Services\ApiPermissionService;
+use Tests\TestCase;
 
-class ApiPermissionService
+class ApiPermissionServiceTest extends TestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface
@@ -34,40 +38,40 @@ class ApiPermissionService
     protected $repository;
 
     /**
-     * ApiPermissionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface $repository
+     * @var \Pterodactyl\Services\ApiPermissionService
      */
-    public function __construct(ApiPermissionRepositoryInterface $repository)
+    protected $service;
+
+    /**
+     * Setup tests.
+     */
+    public function setUp()
     {
-        $this->repository = $repository;
+        parent::setUp();
+
+        $this->repository = m::mock(ApiPermissionRepositoryInterface::class);
+        $this->service = new ApiPermissionService($this->repository);
     }
 
     /**
-     * Store a permission key in the database.
-     *
-     * @param  string  $key
-     * @param  string  $permission
-     * @return bool
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * Test that a new API permission can be assigned to a key.
      */
-    public function create($key, $permission)
+    public function test_create_function()
     {
-        // @todo handle an array of permissions to do a mass assignment?
-        return $this->repository->withoutFresh()->create([
-            'key_id' => $key,
-            'permission' => $permission,
-        ]);
+        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('create')->with(['key_id' => 1, 'permission' => 'test-permission'])
+            ->once()->andReturn(true);
+
+        $this->assertTrue($this->service->create(1, 'test-permission'));
     }
 
     /**
-     * Return all of the permissions available for an API Key.
-     *
-     * @return array
+     * Test that function returns an array of all the permissions available as defined on the model.
      */
-    public function getPermissions()
+    public function test_get_permissions_function()
     {
-        return $this->repository->getModel()::CONST_PERMISSIONS;
+        $this->repository->shouldReceive('getModel')->withNoArgs()->once()->andReturn(new APIPermission());
+
+        $this->assertEquals(APIPermission::CONST_PERMISSIONS, $this->service->getPermissions());
     }
 }

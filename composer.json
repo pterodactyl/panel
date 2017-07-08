@@ -44,6 +44,7 @@
         "friendsofphp/php-cs-fixer": "1.*",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
+        "php-mock/php-mock-phpunit": "^1.1",
         "phpunit/phpunit": "~5.7",
         "sllh/php-cs-fixer-styleci-bridge": "^2.1"
     },

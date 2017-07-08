@@ -56,11 +56,17 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
         $this->config = $config;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function model()
     {
         return User::class;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function search($term)
     {
         if (empty($term)) {
@@ -73,6 +79,9 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
         return $clone;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAllUsersWithCounts()
     {
         $users = $this->getBuilder()->withCount('servers', 'subuserOf');
@@ -87,12 +96,7 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Delete a user if they have no servers attached to their account.
-     *
-     * @param  int $id
-     * @return bool
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * {@inheritdoc}
      */
     public function deleteIfNoServers($id)
     {

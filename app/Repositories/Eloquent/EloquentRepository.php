@@ -24,14 +24,15 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Exceptions\Model\DataValidationException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Repository\Repository;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 abstract class EloquentRepository extends Repository implements RepositoryInterface
 {
     /**
+     * {@inheritdoc}
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getBuilder()
@@ -40,14 +41,11 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * Create a new model instance and persist it to the database.
-     * @param  array $fields
-     * @param  bool  $validate
-     * @param  bool  $force
-     * @return bool|\Illuminate\Database\Eloquent\Model
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * {@inheritdoc}
+     * @param  bool $force
+     * @return \Illuminate\Database\Eloquent\Model|bool
      */
-    public function create($fields, $validate = true, $force = false)
+    public function create(array $fields, $validate = true, $force = false)
     {
         $instance = $this->getBuilder()->newModelInstance();
 
@@ -69,12 +67,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * Return a record from the database for a given ID.
-     *
-     * @param  int $id
+     * {@inheritdoc}
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function find($id)
     {
@@ -87,17 +81,16 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         return $instance;
     }
 
-    public function findWhere($fields)
+    /**
+     * {@inheritdoc}
+     */
+    public function findWhere(array $fields)
     {
         // TODO: Implement findWhere() method.
     }
 
     /**
-     * Delete a record from the DB given an ID.
-     *
-     * @param  int $id
-     * @param  bool $destroy
-     * @return bool|null
+     * {@inheritdoc}
      */
     public function delete($id, $destroy = false)
     {
@@ -109,16 +102,9 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * @param  int   $id
-     * @param  array $fields
-     * @param  bool  $validate
-     * @param  bool  $force
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * {@inheritdoc}
      */
-    public function update($id, $fields, $validate = true, $force = false)
+    public function update($id, array $fields, $validate = true, $force = false)
     {
         $instance = $this->getBuilder()->where('id', $id)->first();
 
@@ -143,7 +129,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         return ($this->withFresh) ? $instance->fresh($this->getColumns()) : $saved;
     }
 
-    public function massUpdate($fields)
+    /**
+     * {@inheritdoc}
+     */
+    public function massUpdate(array $where, array $fields)
     {
         // TODO: Implement massUpdate() method.
     }

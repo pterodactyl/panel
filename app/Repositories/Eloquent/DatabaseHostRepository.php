@@ -32,9 +32,7 @@ use Pterodactyl\Models\DatabaseHost;
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostInterface
 {
     /**
-     * Setup the model to be used.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function model()
     {
@@ -42,13 +40,7 @@ class DatabaseHostRepository extends EloquentRepository implements DatabaseHostI
     }
 
     /**
-     * Delete a database host from the DB if there are no databases using it.
-     *
-     * @param  int $id
-     * @return bool|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * {@inheritdoc}
      */
     public function deleteIfNoDatabases($id)
     {

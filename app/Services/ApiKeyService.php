@@ -24,10 +24,9 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Models\APIKey;
-use Illuminate\Database\Connection;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class ApiKeyService
 {
@@ -35,14 +34,14 @@ class ApiKeyService
     const PRIV_CRYPTO_BYTES = 32;
 
     /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    protected $database;
+
+    /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
      */
     protected $encrypter;
-
-    /**
-     * @var \Pterodactyl\Models\APIKey
-     */
-    protected $model;
 
     /**
      * @var \Pterodactyl\Services\ApiPermissionService
@@ -50,22 +49,27 @@ class ApiKeyService
     protected $permissionService;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     */
+    protected $repository;
+
+    /**
      * ApiKeyService constructor.
      *
-     * @param \Pterodactyl\Models\APIKey                 $model
-     * @param \Illuminate\Database\Connection            $database
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Services\ApiPermissionService $permissionService
+     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \Illuminate\Database\ConnectionInterface                    $database
+     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
+     * @param \Pterodactyl\Services\ApiPermissionService                  $permissionService
      */
     public function __construct(
-        APIKey $model,
-        Connection $database,
+        ApiKeyRepositoryInterface $repository,
+        ConnectionInterface $database,
         Encrypter $encrypter,
         ApiPermissionService $permissionService
     ) {
+        $this->repository = $repository;
         $this->database = $database;
         $this->encrypter = $encrypter;
-        $this->model = $model;
         $this->permissionService = $permissionService;
     }
 
@@ -88,16 +92,12 @@ class ApiKeyService
         // Start a Transaction
         $this->database->beginTransaction();
 
-        $instance = $this->model->newInstance($data);
-        $instance->public = $publicKey;
-        $instance->secret = $this->encrypter->encrypt($secretKey);
+        $data = array_merge($data, [
+            'public' => $publicKey,
+            'secret' => $this->encrypter->encrypt($secretKey),
+        ]);
 
-        if (! $instance->save()) {
-            $this->database->rollBack();
-            throw new DataValidationException($instance->getValidator());
-        }
-
-        $key = $instance->fresh();
+        $instance = $this->repository->create($data, true, true);
         $nodes = $this->permissionService->getPermissions();
 
         foreach ($permissions as $permission) {
@@ -111,7 +111,7 @@ class ApiKeyService
                 continue;
             }
 
-            $this->permissionService->create($key->id, sprintf('user.%s', $permission));
+            $this->permissionService->create($instance->id, sprintf('user.%s', $permission));
         }
 
         foreach ($administrative as $permission) {
@@ -125,7 +125,7 @@ class ApiKeyService
                 continue;
             }
 
-            $this->permissionService->create($key->id, $permission);
+            $this->permissionService->create($instance->id, $permission);
         }
 
         $this->database->commit();
@@ -136,18 +136,11 @@ class ApiKeyService
     /**
      * Delete the API key and associated permissions from the database.
      *
-     * @param  int|\Pterodactyl\Models\APIKey $key
+     * @param  int $id
      * @return bool|null
-     *
-     * @throws \Exception
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function revoke($key)
+    public function revoke($id)
     {
-        if (! $key instanceof APIKey) {
-            $key = $this->model->findOrFail($key);
-        }
-
-        return $key->delete();
+        return $this->repository->delete($id);
     }
 }

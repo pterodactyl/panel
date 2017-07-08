@@ -26,25 +26,108 @@ namespace Pterodactyl\Contracts\Repository;
 
 interface RepositoryInterface
 {
+    /**
+     * Return an identifier or Model object to be used by the repository.
+     *
+     * @return string|\Closure|object
+     */
     public function model();
 
+    /**
+     * Return the model being used for this repository instance.
+     *
+     * @return mixed
+     */
     public function getModel();
 
+    /**
+     * Returns an instance of a query builder.
+     *
+     * @return mixed
+     */
     public function getBuilder();
 
+    /**
+     * Returns the colummns to be selected or returned by the query.
+     *
+     * @return mixed
+     */
     public function getColumns();
 
+    /**
+     * An array of columns to filter the response by.
+     *
+     * @param  array $columns
+     * @return $this
+     */
     public function withColumns($columns = ['*']);
 
-    public function create($fields);
+    /**
+     * Disable returning a fresh model when data is inserted or updated.
+     *
+     * @return $this
+     */
+    public function withoutFresh();
 
+    /**
+     * Create a new model instance and persist it to the database.
+     *
+     * @param  array $fields
+     * @param  bool  $validate
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    public function create(array $fields, $validate = true);
+
+    /**
+     * Delete a given record from the database.
+     *
+     * @param  int  $id
+     * @return bool|null
+     */
     public function delete($id);
 
+    /**
+     * Find a model that has the specific ID passed.
+     *
+     * @param  int $id
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
     public function find($id);
 
-    public function findWhere($fields);
+    /**
+     * Find a model matching an array of where clauses.
+     *
+     * @param  array $fields
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function findWhere(array $fields);
 
-    public function update($id, $fields);
+    /**
+     * Update a given ID with the passed array of fields.
+     *
+     * @param  int   $id
+     * @param  array $fields
+     * @param  bool  $validate
+     * @param  bool  $force
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function update($id, array $fields, $validate = true, $force = false);
 
-    public function massUpdate($fields);
+    /**
+     * Update multiple records matching the passed clauses.
+     *
+     * @param  array $where
+     * @param  array $fields
+     * @return mixed
+     */
+    public function massUpdate(array $where, array $fields);
 }

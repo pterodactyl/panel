@@ -37,9 +37,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     protected $searchTerm;
 
     /**
-     * Setup model.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function model()
     {
@@ -47,10 +45,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Setup the model for search abilities.
-     *
-     * @param  $term
-     * @return $this
+     * {@inheritdoc}
      */
     public function search($term)
     {
@@ -65,13 +60,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Delete a location only if there are no nodes attached to it.
-     *
-     * @param  $id
-     * @return bool|mixed|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * {@inheritdoc}
      */
     public function deleteIfNoNodes($id)
     {

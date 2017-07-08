@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Repositories\Eloquent;
 
-interface DatabaseHostInterface extends RepositoryInterface
+use Pterodactyl\Models\APIKey;
+use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+
+class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInterface
 {
     /**
-     * Delete a database host from the DB if there are no databases using it.
-     *
-     * @param  int $id
-     * @return bool|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * {@inheritdoc}
      */
-    public function deleteIfNoDatabases($id);
+    public function model()
+    {
+        return APIKey::class;
+    }
 }

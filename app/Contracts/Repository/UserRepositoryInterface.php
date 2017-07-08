@@ -28,7 +28,20 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
+    /**
+     * Return all users with counts of servers and subusers of servers.
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
     public function getAllUsersWithCounts();
 
+    /**
+     * Delete a user if they have no servers attached to their account.
+     *
+     * @param  int $id
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
     public function deleteIfNoServers($id);
 }

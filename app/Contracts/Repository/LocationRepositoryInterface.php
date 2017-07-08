@@ -28,5 +28,14 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
+    /**
+     * Delete a location only if there are no nodes attached to it.
+     *
+     * @param  $id
+     * @return bool|mixed|null
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
     public function deleteIfNoNodes($id);
 }
