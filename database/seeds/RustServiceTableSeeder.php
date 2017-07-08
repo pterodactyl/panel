@@ -104,7 +104,7 @@ EOF;
             'startup' => null,
             'script_install' => $script,
             'script_entry' => 'bash',
-            'script_container' => 'ubuntu:latest',
+            'script_container' => 'ubuntu:16.04',
         ]);
     }
 
@@ -160,7 +160,7 @@ EOF;
             'default_value' => 'Powered by Pterodactyl',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'rules' => 'required',
+            'rules' => 'required|string',
         ]);
 
         ServiceVariable::updateOrCreate([
