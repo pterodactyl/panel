@@ -271,7 +271,7 @@ EOF;
             'description' => 'Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.',
             'docker_image' => 'quay.io/pterodactyl/core:source',
             'config_startup' => '{"done": "VAC secure mode is activated.", "userInteraction": []}',
-            'config_files' => null,	
+            'config_files' => null,
             'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
             'config_stop' => 'quit',
             'config_from' => $this->option['source']->id,
