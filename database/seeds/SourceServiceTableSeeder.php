@@ -226,7 +226,7 @@ EOF;
             'name' => 'Counter-Strike: Global Offensive',
             'description' => 'Counter-Strike: Global Offensive is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation.',
             'docker_image' => 'quay.io/pterodactyl/core:source',
-            'config_startup' => '{ "done": "VAC secure mode is activated.", "userInteraction": []}',
+            'config_startup' => '{"done": "VAC secure mode is activated.", "userInteraction": []}',
             'config_files' => null,
             'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
             'config_stop' => 'quit',
@@ -372,10 +372,10 @@ EOF;
         ], [
             'name' => 'Map',
             'description' => 'The default map for the server.',
-            'default_value' => '',
+            'default_value' => 'de_dust2',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'rules' => 'required',
+            'rules' => 'required|string|alpha_dash',
         ]);
 
         ServiceVariable::updateOrCreate([
@@ -387,7 +387,7 @@ EOF;
             'default_value' => '',
             'user_viewable' => 1,
             'user_editable' => 1,
-            'rules' => 'required',
+            'rules' => 'required|string|alpha_num|size:32',
         ]);
     }
 
