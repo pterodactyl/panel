@@ -22,15 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Tests\Unit\Services;
+namespace Tests\Unit\Services\Administrative;
 
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Database\DatabaseManager;
-use Pterodactyl\Services\DatabaseHostService;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
+use Pterodactyl\Services\Administrative\DatabaseHostService;
 
 class DatabaseHostServiceTest extends TestCase
 {
@@ -55,7 +55,7 @@ class DatabaseHostServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\DatabaseHostService
+     * @var \Pterodactyl\Services\Administrative\DatabaseHostService
      */
     protected $service;
 

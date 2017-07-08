@@ -26,7 +26,7 @@ namespace Tests\Unit\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\LocationService;
+use Pterodactyl\Services\Administrative\LocationService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationServiceTest extends TestCase
@@ -37,7 +37,7 @@ class LocationServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\LocationService
+     * @var \Pterodactyl\Services\Administrative\LocationService
      */
     protected $service;
 

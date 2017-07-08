@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Pterodactyl\Services\Administrative;
 
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;

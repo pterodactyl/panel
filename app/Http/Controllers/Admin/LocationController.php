@@ -26,10 +26,10 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Pterodactyl\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Services\LocationService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\LocationRequest;
+use Pterodactyl\Services\Administrative\LocationService;
 
 class LocationController extends Controller
 {
@@ -44,16 +44,16 @@ class LocationController extends Controller
     protected $locationModel;
 
     /**
-     * @var \Pterodactyl\Services\LocationService
+     * @var \Pterodactyl\Services\Administrative\\LocationService
      */
     protected $service;
 
     /**
      * LocationController constructor.
      *
-     * @param  \Prologue\Alerts\AlertsMessageBag      $alert
-     * @param  \Pterodactyl\Models\Location           $locationModel
-     * @param  \Pterodactyl\Services\LocationService  $service
+     * @param  \Prologue\Alerts\AlertsMessageBag                    $alert
+     * @param  \Pterodactyl\Models\Location                         $locationModel
+     * @param  \Pterodactyl\Services\Administrative\LocationService $service
      */
     public function __construct(
         AlertsMessageBag $alert,

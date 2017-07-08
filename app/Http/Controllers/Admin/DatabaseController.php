@@ -28,7 +28,7 @@ use Pterodactyl\Models\Location;
 use Pterodactyl\Models\DatabaseHost;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\DatabaseHostService;
+use Pterodactyl\Services\Administrative\DatabaseHostService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
 
 class DatabaseController extends Controller
@@ -49,17 +49,17 @@ class DatabaseController extends Controller
     protected $locationModel;
 
     /**
-     * @var \Pterodactyl\Services\DatabaseHostService
+     * @var \Pterodactyl\Services\Administrative\DatabaseHostService
      */
     protected $service;
 
     /**
      * DatabaseController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag         $alert
-     * @param \Pterodactyl\Models\DatabaseHost          $hostModel
-     * @param \Pterodactyl\Models\Location              $locationModel
-     * @param \Pterodactyl\Services\DatabaseHostService $service
+     * @param \Prologue\Alerts\AlertsMessageBag                        $alert
+     * @param \Pterodactyl\Models\DatabaseHost                         $hostModel
+     * @param \Pterodactyl\Models\Location                             $locationModel
+     * @param \Pterodactyl\Services\Administrative\DatabaseHostService $service
      */
     public function __construct(
         AlertsMessageBag $alert,

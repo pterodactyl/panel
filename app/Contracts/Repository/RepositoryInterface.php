@@ -109,6 +109,14 @@ interface RepositoryInterface
     public function findWhere(array $fields);
 
     /**
+     * Find and return the first matching instance for the given fields.
+     *
+     * @param  array $fields
+     * @return mixed
+     */
+    public function findFirstWhere(array $fields);
+
+    /**
      * Update a given ID with the passed array of fields.
      *
      * @param  int   $id

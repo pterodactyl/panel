@@ -28,7 +28,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Services\UserService;
+use Pterodactyl\Services\Administrative\UserService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
@@ -41,7 +41,7 @@ class UserController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\UserService
+     * @var \Pterodactyl\Services\Administrative\UserService
      */
     protected $service;
 
@@ -59,7 +59,7 @@ class UserController extends Controller
      * UserController constructor.
      *
      * @param  \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param  \Pterodactyl\Services\UserService                         $service
+     * @param  \Pterodactyl\Services\Administrative\UserService          $service
      * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      * @param  \Pterodactyl\Models\User                                  $model
      */

@@ -26,12 +26,12 @@ namespace Tests\Unit\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\UserService;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Notifications\ChannelManager;
 use Pterodactyl\Notifications\AccountCreated;
+use Pterodactyl\Services\Administrative\UserService;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -68,7 +68,7 @@ class UserServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\UserService
+     * @var \Pterodactyl\Services\Administrative\UserService
      */
     protected $service;
 

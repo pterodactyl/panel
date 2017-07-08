@@ -83,10 +83,26 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * {@inheritdoc}
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function findWhere(array $fields)
     {
-        // TODO: Implement findWhere() method.
+        return $this->getBuilder()->where($fields)->get($this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function findFirstWhere(array $fields)
+    {
+        $instance = $this->getBuilder()->where($fields)->first($this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
     }
 
     /**

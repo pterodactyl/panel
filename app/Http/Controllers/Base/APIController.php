@@ -26,12 +26,13 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\APIKey;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\APIPermission;
 use Pterodactyl\Services\ApiKeyService;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\ApiKeyRequest;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class APIController extends Controller
 {
@@ -41,9 +42,9 @@ class APIController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Models\APIKey
+     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
      */
-    protected $model;
+    protected $repository;
 
     /**
      * @var \Pterodactyl\Services\ApiKeyService
@@ -53,13 +54,17 @@ class APIController extends Controller
     /**
      * APIController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag   $alert
-     * @param \Pterodactyl\Services\ApiKeyService $service
+     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
+     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \Pterodactyl\Services\ApiKeyService                         $service
      */
-    public function __construct(AlertsMessageBag $alert, ApiKeyService $service, APIKey $model)
-    {
+    public function __construct(
+        AlertsMessageBag $alert,
+        ApiKeyRepositoryInterface $repository,
+        ApiKeyService $service
+    ) {
         $this->alert = $alert;
-        $this->model = $model;
+        $this->repository = $repository;
         $this->service = $service;
     }
 
@@ -72,7 +77,7 @@ class APIController extends Controller
     public function index(Request $request)
     {
         return view('base.api.index', [
-            'keys' => APIKey::where('user_id', $request->user()->id)->get(),
+            'keys' => $this->repository->findWhere([['user_id', '=', $request->user()->id]]),
         ]);
     }
 
@@ -85,8 +90,8 @@ class APIController extends Controller
     {
         return view('base.api.new', [
             'permissions' => [
-                'user' => collect(APIPermission::PERMISSIONS)->pull('_user'),
-                'admin' => collect(APIPermission::PERMISSIONS)->except('_user')->toArray(),
+                'user' => collect(APIPermission::CONST_PERMISSIONS)->pull('_user'),
+                'admin' => collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
             ],
         ]);
     }
@@ -113,7 +118,11 @@ class APIController extends Controller
             'memo' => $request->input('memo'),
         ], $request->input('permissions') ?? [], $adminPermissions);
 
-        $this->alert->success('An API Key-Pair has successfully been generated. The API secret for this public key is shown below and will not be shown again.<br /><br /><code>' . $secret . '</code>')->flash();
+        $this->alert->success(
+            "An API Key-Pair has successfully been generated. The API secret
+            for this public key is shown below and will not be shown again.
+            <br /><br /><code>{$secret}</code>"
+        )->flash();
 
         return redirect()->route('account.api');
     }
@@ -127,12 +136,16 @@ class APIController extends Controller
      */
     public function revoke(Request $request, $key)
     {
-        $key = $this->model->newQuery()
-            ->where('user_id', $request->user()->id)
-            ->where('public', $key)
-            ->firstOrFail();
+        try {
+            $key = $this->repository->withColumns('id')->findFirstWhere([
+                ['user_id', '=', $request->user()->id],
+                ['public', $key],
+            ]);
 
-        $this->service->revoke($key);
+            $this->service->revoke($key->id);
+        } catch (RecordNotFoundException $ex) {
+            return abort(404);
+        }
 
         return response('', 204);
     }
