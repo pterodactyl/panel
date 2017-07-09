@@ -423,5 +423,4 @@ EOF;
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
     }
-
 }
