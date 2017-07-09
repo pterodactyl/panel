@@ -252,8 +252,8 @@ EOF;
 apk update
 apk add curl openjdk8
 
-FUCK_FORGE_NOT_HAVING_A_GOOD_WAY_TO_GET_VERSIONS=$(curl -sl http://files.minecraftforge.net/maven/net/minecraftforge/forge/ | grep -A1 Latest | grep  -o -e '[1]\.[0-9][0-9] - [0-9][0-9]\.[0-9][0-9]\.[0-9]\.[0-9][0-9][0-9][0-9]')
-LATEST_VERSION=$(echo $FUCK_FORGE_NOT_HAVING_A_GOOD_WAY_TO_GET_VERSIONS | sed 's/ //g')
+GET_VERSIONS=$(curl -sl http://files.minecraftforge.net/maven/net/minecraftforge/forge/ | grep -A1 Latest | grep  -o -e '[1]\.[0-9][0-9] - [0-9][0-9]\.[0-9][0-9]\.[0-9]\.[0-9][0-9][0-9][0-9]')
+LATEST_VERSION=$(echo $GET_VERSIONS | sed 's/ //g')
 
 cd /mnt/server
 
