@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-namespace Tests\Unit\Services;
+namespace Tests\Unit\Services\Api;
 
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\ConnectionInterface;
 use Mockery as m;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
-use Pterodactyl\Services\ApiKeyService;
-use Pterodactyl\Services\ApiPermissionService;
+use Pterodactyl\Services\Api\KeyService;
+use Pterodactyl\Services\Api\PermissionService;
 use Tests\TestCase;
 
-class ApiKeyServiceTest extends TestCase
+class KeyServiceTest extends TestCase
 {
     use PHPMock;
 
@@ -48,7 +48,7 @@ class ApiKeyServiceTest extends TestCase
     protected $encrypter;
 
     /**
-     * @var \Pterodactyl\Services\ApiPermissionService
+     * @var \Pterodactyl\Services\Api\PermissionService
      */
     protected $permissions;
 
@@ -58,7 +58,7 @@ class ApiKeyServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\ApiKeyService
+     * @var \Pterodactyl\Services\Api\KeyService
      */
     protected $service;
 
@@ -68,10 +68,10 @@ class ApiKeyServiceTest extends TestCase
 
         $this->database = m::mock(ConnectionInterface::class);
         $this->encrypter = m::mock(Encrypter::class);
-        $this->permissions = m::mock(ApiPermissionService::class);
+        $this->permissions = m::mock(PermissionService::class);
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
 
-        $this->service = new ApiKeyService(
+        $this->service = new KeyService(
             $this->repository, $this->database, $this->encrypter, $this->permissions
         );
     }
@@ -81,7 +81,7 @@ class ApiKeyServiceTest extends TestCase
      */
     public function test_create_function()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services', 'random_bytes')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'random_bytes')
             ->expects($this->exactly(2))
             ->willReturnCallback(function ($bytes) {
                 return hex2bin(str_pad('', $bytes * 2, '0'));

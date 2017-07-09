@@ -24,50 +24,62 @@
 
 namespace Pterodactyl\Services;
 
-use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
-class ApiPermissionService
+class LocationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
-     * ApiPermissionService constructor.
+     * LocationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
      */
-    public function __construct(ApiPermissionRepositoryInterface $repository)
+    public function __construct(LocationRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * Store a permission key in the database.
+     * Create the location in the database and return it.
      *
-     * @param  string  $key
-     * @param  string  $permission
-     * @return bool
+     * @param  array $data
+     * @return \Pterodactyl\Models\Location
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create($key, $permission)
+    public function create(array $data)
     {
-        // @todo handle an array of permissions to do a mass assignment?
-        return $this->repository->withoutFresh()->create([
-            'key_id' => $key,
-            'permission' => $permission,
-        ]);
+        return $this->repository->create($data);
     }
 
     /**
-     * Return all of the permissions available for an API Key.
+     * Update location model in the DB.
      *
-     * @return array
+     * @param  int   $id
+     * @param  array $data
+     * @return \Pterodactyl\Models\Location
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function getPermissions()
+    public function update($id, array $data)
     {
-        return $this->repository->getModel()::CONST_PERMISSIONS;
+        return $this->repository->update($id, $data);
+    }
+
+    /**
+     * Delete a model from the DB.
+     *
+     * @param  int  $id
+     * @return bool
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function delete($id)
+    {
+        return $this->repository->deleteIfNoNodes($id);
     }
 }

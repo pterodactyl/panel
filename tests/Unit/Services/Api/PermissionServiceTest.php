@@ -27,10 +27,10 @@ namespace Tests\Unit\Services;
 use Mockery as m;
 use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
 use Pterodactyl\Models\APIPermission;
-use Pterodactyl\Services\ApiPermissionService;
+use Pterodactyl\Services\Api\PermissionService;
 use Tests\TestCase;
 
-class ApiPermissionServiceTest extends TestCase
+class PermissionServiceTest extends TestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface
@@ -38,7 +38,7 @@ class ApiPermissionServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\ApiPermissionService
+     * @var \Pterodactyl\Services\Api\PermissionService
      */
     protected $service;
 
@@ -50,7 +50,7 @@ class ApiPermissionServiceTest extends TestCase
         parent::setUp();
 
         $this->repository = m::mock(ApiPermissionRepositoryInterface::class);
-        $this->service = new ApiPermissionService($this->repository);
+        $this->service = new PermissionService($this->repository);
     }
 
     /**

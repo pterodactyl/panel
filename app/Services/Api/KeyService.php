@@ -22,13 +22,13 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Pterodactyl\Services\Api;
 
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
-class ApiKeyService
+class KeyService
 {
     const PUB_CRYPTO_BYTES = 8;
     const PRIV_CRYPTO_BYTES = 32;
@@ -44,7 +44,7 @@ class ApiKeyService
     protected $encrypter;
 
     /**
-     * @var \Pterodactyl\Services\ApiPermissionService
+     * @var \Pterodactyl\Services\Api\PermissionService
      */
     protected $permissionService;
 
@@ -59,13 +59,13 @@ class ApiKeyService
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
      * @param \Illuminate\Database\ConnectionInterface                    $database
      * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
-     * @param \Pterodactyl\Services\ApiPermissionService                  $permissionService
+     * @param \Pterodactyl\Services\Api\PermissionService                 $permissionService
      */
     public function __construct(
         ApiKeyRepositoryInterface $repository,
         ConnectionInterface $database,
         Encrypter $encrypter,
-        ApiPermissionService $permissionService
+        PermissionService $permissionService
     ) {
         $this->repository = $repository;
         $this->database = $database;

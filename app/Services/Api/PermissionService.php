@@ -22,64 +22,52 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Administrative;
+namespace Pterodactyl\Services\Api;
 
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
 
-class LocationService
+class PermissionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface
      */
     protected $repository;
 
     /**
-     * LocationService constructor.
+     * ApiPermissionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface $repository
      */
-    public function __construct(LocationRepositoryInterface $repository)
+    public function __construct(ApiPermissionRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * Create the location in the database and return it.
+     * Store a permission key in the database.
      *
-     * @param  array $data
-     * @return \Pterodactyl\Models\Location
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-    public function create(array $data)
-    {
-        return $this->repository->create($data);
-    }
-
-    /**
-     * Update location model in the DB.
-     *
-     * @param  int   $id
-     * @param  array $data
-     * @return \Pterodactyl\Models\Location
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-    public function update($id, array $data)
-    {
-        return $this->repository->update($id, $data);
-    }
-
-    /**
-     * Delete a model from the DB.
-     *
-     * @param  int  $id
+     * @param  string  $key
+     * @param  string  $permission
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function delete($id)
+    public function create($key, $permission)
     {
-        return $this->repository->deleteIfNoNodes($id);
+        // @todo handle an array of permissions to do a mass assignment?
+        return $this->repository->withoutFresh()->create([
+            'key_id' => $key,
+            'permission' => $permission,
+        ]);
+    }
+
+    /**
+     * Return all of the permissions available for an API Key.
+     *
+     * @return array
+     */
+    public function getPermissions()
+    {
+        return $this->repository->getModel()::CONST_PERMISSIONS;
     }
 }

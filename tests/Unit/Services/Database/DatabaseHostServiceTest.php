@@ -30,7 +30,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
-use Pterodactyl\Services\Administrative\DatabaseHostService;
+use Pterodactyl\Services\Database\DatabaseHostService;
 
 class DatabaseHostServiceTest extends TestCase
 {
@@ -55,7 +55,7 @@ class DatabaseHostServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Administrative\DatabaseHostService
+     * @var \Pterodactyl\Services\Database\DatabaseHostService
      */
     protected $service;
 

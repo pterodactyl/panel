@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Administrative;
+namespace Pterodactyl\Services;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;

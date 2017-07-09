@@ -31,7 +31,7 @@ use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Notifications\ChannelManager;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\Administrative\UserService;
+use Pterodactyl\Services\UserService;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -68,7 +68,7 @@ class UserServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Administrative\UserService
+     * @var \Pterodactyl\Services\UserService
      */
     protected $service;
 
