@@ -236,6 +236,50 @@ EOF;
             'script_entry' => 'bash',
             'script_container' => 'ubuntu:16.04',
         ]);
+
+        $script = <<<'EOF'
+#!/bin/bash
+# Garry's Mod Installation Script
+#
+# Server Files: /mnt/server
+apt -y update
+apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
+
+cd /tmp
+curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+
+mkdir -p /mnt/server/steamcmd
+tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+cd /mnt/server/steamcmd
+
+# SteamCMD fails otherwise for some reason, even running as root.
+# This is changed at the end of the install process anyways.
+chown -R root:root /mnt
+
+export HOME=/mnt/server
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 4020 +quit
+
+mkdir -p /mnt/server/.steam/sdk32
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+EOF;
+
+        $this->option['gmod'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'gmod',
+        ], [
+            'name' => 'Garrys Mod',
+            'description' => 'Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.',
+            'docker_image' => 'quay.io/pterodactyl/core:source',
+            'config_startup' => '{"done": "VAC secure mode is activated.", "userInteraction": []}',
+            'config_files' => null,
+            'config_logs' => '{"custom": true, "location": "logs/latest.log"}',
+            'config_stop' => 'quit',
+            'config_from' => $this->option['source']->id,
+            'startup' => './srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}',
+            'script_install' => $script,
+            'script_entry' => 'bash',
+            'script_container' => 'ubuntu:16.04',
+        ]);
     }
 
     private function addVariables()
@@ -244,6 +288,7 @@ EOF;
         $this->addTF2Variables();
         $this->addArkVariables();
         $this->addCSGOVariables();
+        $this->addGMODVariables();
         $this->addCustomVariables();
     }
 
@@ -380,6 +425,33 @@ EOF;
 
         ServiceVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
+            'env_variable' => 'STEAM_ACC',
+        ], [
+            'name' => 'Steam Account Token',
+            'description' => 'The Steam Account Token required for the server to be displayed publicly.',
+            'default_value' => '',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required|string|alpha_num|size:32',
+        ]);
+    }
+
+    private function addGMODVariables()
+    {
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['gmod']->id,
+            'env_variable' => 'SRCDS_MAP',
+        ], [
+            'name' => 'Map',
+            'description' => 'The default map for the server.',
+            'default_value' => 'gm_flatgrass',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required|string|alpha_dash',
+        ]);
+
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['gmod']->id,
             'env_variable' => 'STEAM_ACC',
         ], [
             'name' => 'Steam Account Token',
