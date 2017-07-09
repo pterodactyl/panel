@@ -257,10 +257,10 @@ cd /mnt/server/steamcmd
 chown -R root:root /mnt
 
 export HOME=/mnt/server
-./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 4020 +quit > /mnt/server/log.txt 2>&1
+./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 4020 +quit
 
-mkdir -p /mnt/server/.steam/sdk32 > /mnt/server/log2.txt 2>&1
-cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so > /mnt/server/log3.txt 2>&1
+mkdir -p /mnt/server/.steam/sdk32
+cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
         $this->option['gmod'] = ServiceOption::updateOrCreate([
