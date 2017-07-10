@@ -45,6 +45,8 @@ class FileManager {
                 ContextMenu.run();
                 this.reloadFilesButton();
                 this.addFolderButton();
+                this.selectItem();
+                this.selectiveDeletion();
                 if (_.isFunction(next)) {
                     return next();
                 }
@@ -80,6 +82,18 @@ class FileManager {
         $('i[data-action="reload-files"]').unbind().on('click', () => {
             $('i[data-action="reload-files"]').addClass('fa-spin');
             this.list();
+        });
+    }
+
+    selectItem() {
+        $('[data-action="addToList"]').on('mousedown', event => {
+            new ActionsClass().addToList(event);
+        });
+    }
+
+    selectiveDeletion() {
+        $('[data-action="selective-deletion"]').on('mousedown', event => {
+            new ActionsClass().deleteSelected();
         });
     }
 

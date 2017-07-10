@@ -21,6 +21,9 @@
 <div class="box-header with-border">
     <h3 class="box-title">/home/container{{ $directory['header'] }}</h3>
     <div class="box-tools pull-right">
+        <button class="btn btn-sm btn-danger btn-icon" id="selective-deletion" data-action="selective-deletion">
+            <i class="fa fa-fw fa-trash-o"></i>
+        </button>
         <button class="btn btn-sm btn-success btn-icon" data-action="add-folder">
             <i class="fa fa-fw fa-folder-open-o"></i>
         </button>
@@ -85,7 +88,7 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button></td>
+                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button><button class="btn btn-xxs btn-default disable-menu-hide" data-action="addToList" style="padding:2px 6px 0px;"><i class="fa fa-plus disable-menu-hide"></i></button></td>
                 </tr>
             @endforeach
             @foreach ($files as $file)
@@ -162,7 +165,7 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button></td>
+                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button><button class="btn btn-xxs btn-default disable-menu-hide" data-action="addToList" style="padding:2px 6px 0px;"><i class="fa fa-plus disable-menu-hide"></i></button></td>
                 </tr>
             @endforeach
         </tbody>
