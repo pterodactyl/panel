@@ -95,7 +95,7 @@ EOF;
         ], [
             'name' => 'Vanilla',
             'description' => 'Vanilla Rust server.',
-            'docker_image' => 'tenten8401/pterodactyl-rust',
+            'docker_image' => 'quay.io/pterodactyl/core:rust',
             'config_startup' => '{"done": "Server startup complete", "userInteraction": []}',
             'config_files' => '{}',
             'config_logs' => '{"custom": false, "location": "latest.log"}',
