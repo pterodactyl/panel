@@ -107,7 +107,6 @@ EOF;
             'script_container' => 'ubuntu:16.04',
         ]);
 
-
         $script = <<<'EOF'
 apt update
 apt -y --no-install-recommends install curl unzip lib32gcc1 ca-certificates
