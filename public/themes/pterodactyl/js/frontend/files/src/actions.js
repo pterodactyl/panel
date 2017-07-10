@@ -19,8 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-var files = [];
-var fileselements = [];
+let items = [];
+let itemselements = [];
 
 class ActionsClass {
     constructor(element, menu) {
@@ -329,12 +329,12 @@ class ActionsClass {
       var item = delPath + delName;
 
       //Determine if we're removing or adding the item
-      if(files.indexOf(item) != -1) {
-        files.splice($.inArray(item, files), 1)
+      if(items.indexOf(item) != -1) {
+        items.splice($.inArray(item, files), 1)
         parent.removeClass('warning').delay(200);
       } else {
-        files.push(item);
-        fileselements.push(parent);
+        items.push(item);
+        itemselements.push(parent);
 
         parent.addClass('warning').delay(200);
       }
@@ -342,16 +342,17 @@ class ActionsClass {
     }
 
     deleteSelected() {
-      var nameBlock;
+      let formattedItems = "";
+      $.each(items, function(key, value) {
+        formattedItems += ("<code>" + value + "</code>, ");
+      })
+
+      formattedItems = formattedItems.slice(0, -2);
 
       swal({
           type: 'warning',
           title: '',
-          text: 'Are you sure you want to delete <code>' +
-                $.each(files, function(key, value) {
-                  value + ", ";
-                })
-                + '</code>? There is <strong>no</strong> reversing this action.',
+          text: 'Are you sure you want to delete:' + formattedItems + '? There is <strong>no</strong> reversing this action.',
           html: true,
           showCancelButton: true,
           showConfirmButton: true,
@@ -360,18 +361,18 @@ class ActionsClass {
       }, () => {
           $.ajax({
               type: 'DELETE',
-              url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/f/${files}`,
+              url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/f/${items}`,
               headers: {
                   'X-Access-Token': Pterodactyl.server.daemonSecret,
                   'X-Access-Server': Pterodactyl.server.uuid,
               }
           }).done(data => {
-              $.each(fileselements, function() {
+              $.each(itemselements, function() {
                   $(this).addClass('warning').delay(200).fadeOut();
               })
 
-              files = [];
-              fileselements = [];
+              items = [];
+              itemselements = [];
 
               swal({
                   type: 'success',
