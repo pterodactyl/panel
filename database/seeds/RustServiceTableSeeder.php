@@ -123,12 +123,11 @@ chown -R root:root /mnt
 export HOME=/mnt/server
 ./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 258550 +quit
 
-cd /mnt/server
-curl https://dl.bintray.com/oxidemod/builds/Oxide-Rust.zip > oxide.zip
-unzip oxide.zip
-rm oxide.zip
+curl "https://dl.bintray.com/oxidemod/builds/Oxide-Rust.zip" > /mnt/server/oxide.zip
+unzip -o /mnt/server/oxide.zip -d /mnt/server
+rm /mnt/server/oxide.zip
 echo "This file is used to determine whether the server is an OxideMod server or not.
-Do not delete this file or you may loose OxideMod auto updating from the server." > OXIDE_FLAG
+Do not delete this file or you may loose OxideMod auto updating from the server." > /mnt/server/OXIDE_FLAG
 
 mkdir -p /mnt/server/.steam/sdk32
 cp -v /mnt/server/steam/linux32/steamclient.so /mnt/server/.steam/sdk32/steamclient.so
