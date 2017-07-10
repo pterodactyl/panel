@@ -375,7 +375,7 @@ class ActionsClass {
 
               swal({
                   type: 'success',
-                  title: 'File Deleted'
+                  title: 'Files Deleted'
               });
           }).fail(jqXHR => {
               console.error(jqXHR);
@@ -383,7 +383,7 @@ class ActionsClass {
                   type: 'error',
                   title: 'Whoops!',
                   html: true,
-                  text: 'An error occured while attempting to delete this file. Please try again.',
+                  text: 'An error occured while attempting to delete these files. Please try again.',
               });
           });
       });
