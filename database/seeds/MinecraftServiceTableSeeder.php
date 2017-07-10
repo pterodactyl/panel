@@ -250,7 +250,7 @@ EOF;
 #
 # Server Files: /mnt/server
 apk update
-apk add curl openjdk8
+apk add curl
 
 GET_VERSIONS=$(curl -sl http://files.minecraftforge.net/maven/net/minecraftforge/forge/ | grep -A1 Latest | grep  -o -e '[1]\.[0-9][0-9] - [0-9][0-9]\.[0-9][0-9]\.[0-9]\.[0-9][0-9][0-9][0-9]')
 LATEST_VERSION=$(echo $GET_VERSIONS | sed 's/ //g')
@@ -261,6 +261,7 @@ curl -sS http://files.minecraftforge.net/maven/net/minecraftforge/forge/$LATEST_
 curl -sS http://files.minecraftforge.net/maven/net/minecraftforge/forge/$LATEST_VERSION/forge-$LATEST_VERSION-universal.jar -o server.jar
 
 java -jar installer.jar --installServer
+rm -rf installer.jar
 EOF;
 
         $this->option['forge'] = ServiceOption::updateOrCreate([
@@ -277,6 +278,7 @@ EOF;
             'config_from' => null,
             'startup' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',
             'script_install' => $script,
+            'script_container' => 'frolvlad/alpine-oraclejdk8:cleaned',
         ]);
     }
 
