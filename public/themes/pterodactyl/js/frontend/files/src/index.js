@@ -46,6 +46,7 @@ class FileManager {
                 this.reloadFilesButton();
                 this.addFolderButton();
                 this.selectItem();
+                this.selectAll();
                 this.selectiveDeletion();
                 if (_.isFunction(next)) {
                     return next();
@@ -86,8 +87,14 @@ class FileManager {
     }
 
     selectItem() {
-        $('[data-action="addToList"]').on('change', event => {
-            new ActionsClass().addToList(event);
+        $('[data-action="addSelection"]').on('change', event => {
+            new ActionsClass().toggleHighlight(event);
+        });
+    }
+
+    selectAll() {
+        $('[data-action="selectAll"]').on('change', event => {
+            new ActionsClass().highlightAll(event);
         });
     }
 

@@ -331,6 +331,24 @@ class ActionsClass {
         }
     }
 
+    highlightAll(event) {
+        let parent;
+
+        if(!$(event.target).is(':checked')) {
+          $('#file_listing input[type=checkbox]').prop('checked', false);
+          $('#file_listing input[data-action="addSelection"]').each(function() {
+              parent = $(this).closest('tr');
+              parent.removeClass('warning').delay(200);
+          });
+        } else {
+          $('#file_listing input[type=checkbox]').prop('checked', true);
+          $('#file_listing input[data-action="addSelection"]').each(function() {
+              parent = $(this).closest('tr');
+              parent.addClass('warning').delay(200);
+          });
+        }
+    }
+
     deleteSelected() {
         let selectedItems = [];
         let selectedItemsElements = [];
