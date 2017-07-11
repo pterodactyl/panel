@@ -41,13 +41,13 @@
     <table class="table table-hover" id="file_listing" data-current-dir="{{ $directory['header'] }}">
         <thead>
             <tr>
-                <th style="width:2%;" class="middle text-center">
+                <th style="width:4%;" class="middle text-center">
                     <i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
                 </th>
                 <th style="width:55%">@lang('server.files.file_name')</th>
                 <th style="width:15%" class="hidden-xs">@lang('server.files.size')</th>
                 <th style="width:20%" class="hidden-xs">@lang('server.files.last_modified')</th>
-                <th style="width:8%"></th>
+                <th style="width:6%"></th>
             </tr>
         </thead>
         <tbody id="append_files_to">
@@ -73,7 +73,7 @@
             @endif
             @foreach ($folders as $folder)
                 <tr data-type="folder">
-                    <td data-identifier="type" class="middle"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                    <td data-identifier="type" class="middle"><input type="checkbox" style="position: relative; bottom: 1px; margin-right: 5px;" data-action="addToList"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                     <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
                         <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                     </td>
@@ -88,12 +88,12 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button><button class="btn btn-xxs btn-default disable-menu-hide" data-action="addToList" style="padding:2px 6px 0px;"><i class="fa fa-plus disable-menu-hide"></i></button></td>
+                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></td>
                 </tr>
             @endforeach
             @foreach ($files as $file)
                 <tr data-type="file" data-mime="{{ $file['mime'] }}">
-                    <td data-identifier="type" class="middle">
+                    <td data-identifier="type" class="middle"><input type="checkbox" style="position: relative; bottom: 1px; margin-right: 2px;" data-action="addToList">
                         {{--  oh boy --}}
                         @if(in_array($file['mime'], [
                             'application/x-7z-compressed',
@@ -165,7 +165,7 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button><button class="btn btn-xxs btn-default disable-menu-hide" data-action="addToList" style="padding:2px 6px 0px;"><i class="fa fa-plus disable-menu-hide"></i></button></td>
+                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></td>
                 </tr>
             @endforeach
         </tbody>

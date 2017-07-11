@@ -86,7 +86,7 @@ class FileManager {
     }
 
     selectItem() {
-        $('[data-action="addToList"]').on('mousedown', event => {
+        $('[data-action="addToList"]').on('change', event => {
             new ActionsClass().addToList(event);
         });
     }

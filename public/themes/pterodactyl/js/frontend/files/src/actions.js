@@ -335,7 +335,7 @@ class ActionsClass {
 
       //Determine if we're removing or adding the item
       if(selectedItems.indexOf(item) != -1) {
-        selectedItems.splice($.inArray(item, files), 1)
+        selectedItems.splice($.inArray(item, selectedItems), 1)
         parent.removeClass('warning').delay(200);
       } else {
         selectedItems.push(item);
