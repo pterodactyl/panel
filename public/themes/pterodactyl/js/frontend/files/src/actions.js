@@ -19,9 +19,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-let selectedItems = [];
-let selectedItemsElements = [];
-
 class ActionsClass {
     constructor(element, menu) {
         this.element = element;
@@ -327,26 +324,29 @@ class ActionsClass {
     addToList(event) {
       const parent = $(event.target).closest('tr');
 
-      const nameBlock = $(parent).find('td[data-identifier="name"]');
-      const delPath = decodeURIComponent(nameBlock.data('path'));
-      const delName = decodeURIComponent(nameBlock.data('name'));
-
-      var item = delPath + delName;
-
-      //Determine if we're removing or adding the item
-      if(selectedItems.indexOf(item) != -1) {
-        selectedItems.splice($.inArray(item, selectedItems), 1)
+      if(!$(event.target).is(':checked')) {
         parent.removeClass('warning').delay(200);
       } else {
-        selectedItems.push(item);
-        selectedItemsElements.push(parent);
-
         parent.addClass('warning').delay(200);
       }
-
     }
 
     deleteSelected() {
+      let selectedItems = [];
+      let selectedItemsElements = [];
+      let parent;
+      let nameBlock;
+      let delLocation;
+
+      $('#file_listing input:checked').each(function() {
+          parent = $(this).closest('tr');
+          nameBlock = $(parent).find('td[data-identifier="name"]');
+          delLocation = decodeURIComponent(nameBlock.data('path')) + decodeURIComponent(nameBlock.data('name'));
+
+          selectedItems.push(delLocation);
+          selectedItemsElements.push(parent);
+      });
+
       let formattedItems = "";
       $.each(selectedItems, function(key, value) {
         formattedItems += ("<code>" + value + "</code>, ");
@@ -377,12 +377,13 @@ class ActionsClass {
                   items: selectedItems
               }),
           }).done(data => {
+              $('#file_listing input:checked').each(function() {
+                $(this).prop('checked', false);
+              });
+
               $.each(selectedItemsElements, function() {
                   $(this).addClass('warning').delay(200).fadeOut();
               })
-
-              selectedItems = [];
-              selectedItemsElements = [];
 
               swal({
                   type: 'success',
