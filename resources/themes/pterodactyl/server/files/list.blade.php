@@ -47,7 +47,7 @@
         <thead>
             <tr>
                 <th style="width:4%;" class="middle">
-                    <input type="checkbox" style="position: relative; bottom: 1px; margin-right: 7px;" data-action="selectAll"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
+                    <input type="checkbox" class="select-all-files" data-action="selectAll"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
                 </th>
                 <th style="width:55%">@lang('server.files.file_name')</th>
                 <th style="width:15%" class="hidden-xs">@lang('server.files.size')</th>
@@ -78,7 +78,7 @@
             @endif
             @foreach ($folders as $folder)
                 <tr data-type="folder">
-                    <td data-identifier="type" class="middle"><input type="checkbox" style="position: relative; bottom: 1px; margin-right: 5px;" data-action="addSelection"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                    <td data-identifier="type" class="middle"><input type="checkbox" class="select-folder" data-action="addSelection"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                     <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
                         <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                     </td>
@@ -98,7 +98,7 @@
             @endforeach
             @foreach ($files as $file)
                 <tr data-type="file" data-mime="{{ $file['mime'] }}">
-                    <td data-identifier="type" class="middle"><input type="checkbox" style="position: relative; bottom: 1px; margin-right: 2px;" data-action="addSelection">
+                    <td data-identifier="type" class="middle"><input type="checkbox" class="select-file" data-action="addSelection">
                         {{--  oh boy --}}
                         @if(in_array($file['mime'], [
                             'application/x-7z-compressed',

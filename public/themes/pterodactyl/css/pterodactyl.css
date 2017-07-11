@@ -297,5 +297,23 @@ input.form-autocomplete-stop[readonly] {
 }
 
 .dropdown-massactions {
-  min-width: 80px;
+    min-width: 80px;
+}
+
+.select-all-files {
+    position: relative;
+    bottom: 1px;
+    margin-right: 7px !important;
+}
+
+.select-file {
+    position: relative;
+    bottom: 1px;
+    margin-right: 2px !important;
+}
+
+.select-folder {
+    position: relative;
+    bottom: 1px;
+    margin-right: 5px !important;
 }
