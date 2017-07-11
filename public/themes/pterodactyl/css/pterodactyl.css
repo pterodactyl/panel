@@ -295,3 +295,7 @@ input.form-autocomplete-stop[readonly] {
     background: white;
     box-shadow: none !important;
 }
+
+.dropdown-massactions {
+  min-width: 80px;
+}

@@ -21,9 +21,14 @@
 <div class="box-header with-border">
     <h3 class="box-title">/home/container{{ $directory['header'] }}</h3>
     <div class="box-tools pull-right">
-        <button class="btn btn-sm btn-danger btn-icon" id="selective-deletion" data-action="selective-deletion">
-            <i class="fa fa-fw fa-trash-o"></i>
-        </button>
+        <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              @lang('server.files.mass_actions') <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-massactions">
+              <li><a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.files.delete') <i class="fa fa-fw fa-trash-o"></i></a></li>
+            </ul>
+        </div>
         <button class="btn btn-sm btn-success btn-icon" data-action="add-folder">
             <i class="fa fa-fw fa-folder-open-o"></i>
         </button>
