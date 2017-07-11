@@ -19,8 +19,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-let items = [];
-let itemselements = [];
+let selectedItems = [];
+let selectedItemsElements = [];
 
 class ActionsClass {
     constructor(element, menu) {
@@ -295,12 +295,17 @@ class ActionsClass {
             showLoaderOnConfirm: true
         }, () => {
             $.ajax({
-                type: 'DELETE',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/f/${delPath}${delName}`,
+                type: 'POST',
                 headers: {
                     'X-Access-Token': Pterodactyl.server.daemonSecret,
                     'X-Access-Server': Pterodactyl.server.uuid,
-                }
+                },
+                contentType: 'application/json; charset=utf-8',
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/delete`,
+                timeout: 10000,
+                data: JSON.stringify({
+                    items: [`${delPath}${delName}`]
+                }),
             }).done(data => {
                 nameBlock.parent().addClass('warning').delay(200).fadeOut();
                 swal({
@@ -329,12 +334,12 @@ class ActionsClass {
       var item = delPath + delName;
 
       //Determine if we're removing or adding the item
-      if(items.indexOf(item) != -1) {
-        items.splice($.inArray(item, files), 1)
+      if(selectedItems.indexOf(item) != -1) {
+        selectedItems.splice($.inArray(item, files), 1)
         parent.removeClass('warning').delay(200);
       } else {
-        items.push(item);
-        itemselements.push(parent);
+        selectedItems.push(item);
+        selectedItemsElements.push(parent);
 
         parent.addClass('warning').delay(200);
       }
@@ -343,7 +348,7 @@ class ActionsClass {
 
     deleteSelected() {
       let formattedItems = "";
-      $.each(items, function(key, value) {
+      $.each(selectedItems, function(key, value) {
         formattedItems += ("<code>" + value + "</code>, ");
       })
 
@@ -360,19 +365,24 @@ class ActionsClass {
           showLoaderOnConfirm: true
       }, () => {
           $.ajax({
-              type: 'DELETE',
-              url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/f/${items}`,
+              type: 'POST',
               headers: {
                   'X-Access-Token': Pterodactyl.server.daemonSecret,
                   'X-Access-Server': Pterodactyl.server.uuid,
-              }
+              },
+              contentType: 'application/json; charset=utf-8',
+              url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/delete`,
+              timeout: 10000,
+              data: JSON.stringify({
+                  items: selectedItems
+              }),
           }).done(data => {
-              $.each(itemselements, function() {
+              $.each(selectedItemsElements, function() {
                   $(this).addClass('warning').delay(200).fadeOut();
               })
 
-              items = [];
-              itemselements = [];
+              selectedItems = [];
+              selectedItemsElements = [];
 
               swal({
                   type: 'success',
