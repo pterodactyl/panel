@@ -30,18 +30,14 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\User;
+use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
-class UserRepository extends EloquentRepository implements UserRepositoryInterface
+class UserRepository extends SearchableRepository implements UserRepositoryInterface
 {
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
-
-    /**
-     * @var bool|array
-     */
-    protected $searchTerm = false;
 
     /**
      * UserRepository constructor.
@@ -62,21 +58,6 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
     public function model()
     {
         return User::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function search($term)
-    {
-        if (empty($term)) {
-            return $this;
-        }
-
-        $clone = clone $this;
-        $clone->searchTerm = $term;
-
-        return $clone;
     }
 
     /**

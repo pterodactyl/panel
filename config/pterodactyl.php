@@ -40,6 +40,7 @@ return [
             'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
         ],
         'admin' => [
+            'servers' => env('APP_PAGINATE_ADMIN_SERVERS', 25),
             'users' => env('APP_PAGINATE_ADMIN_USERS', 25),
         ],
         'api' => [

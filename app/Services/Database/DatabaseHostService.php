@@ -27,7 +27,7 @@ namespace Pterodactyl\Services\Database;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseHostInterface;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostService
 {
@@ -47,20 +47,20 @@ class DatabaseHostService
     protected $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostInterface
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     protected $repository;
 
     /**
      * DatabaseHostService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostInterface $repository
-     * @param \Illuminate\Database\DatabaseManager                    $database
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection       $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter              $encrypter
+     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \Illuminate\Database\DatabaseManager                              $database
+     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection                 $dynamic
+     * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
      */
     public function __construct(
-        DatabaseHostInterface $repository,
+        DatabaseHostRepositoryInterface $repository,
         DatabaseManager $database,
         DynamicDatabaseConnection $dynamic,
         Encrypter $encrypter

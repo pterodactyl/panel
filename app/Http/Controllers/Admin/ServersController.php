@@ -24,9 +24,14 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Log;
 use Alert;
 use Javascript;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\TransferException;
@@ -40,33 +45,69 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class ServersController extends Controller
 {
     /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     */
+    protected $databaseRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     */
+    protected $locationRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $serviceRepository;
+
+    public function __construct(
+        ConfigRepository $config,
+        DatabaseRepositoryInterface $databaseRepository,
+        LocationRepositoryInterface $locationRepository,
+        ServerRepositoryInterface $repository,
+        ServiceRepositoryInterface $serviceRepository
+    ) {
+        $this->config = $config;
+        $this->databaseRepository = $databaseRepository;
+        $this->locationRepository = $locationRepository;
+        $this->repository = $repository;
+        $this->serviceRepository = $serviceRepository;
+    }
+
+    /**
      * Display the index page with all servers currently on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        $servers = Models\Server::with('node', 'user', 'allocation');
-
-        if (! is_null($request->input('query'))) {
-            $servers->search($request->input('query'));
-        }
-
         return view('admin.servers.index', [
-            'servers' => $servers->paginate(25),
+            'servers' => $this->repository->getAllServers(
+                $this->config->get('pterodactyl.paginate.admin.servers')
+            ),
         ]);
     }
 
     /**
      * Display create new server page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
+     *
+     * @throws \Exception
      */
-    public function create(Request $request)
+    public function create()
     {
-        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        $services = $this->serviceRepository->getWithOptions();
+
         Javascript::put([
             'services' => $services->map(function ($item) {
                 return array_merge($item->toArray(), [
@@ -76,7 +117,7 @@ class ServersController extends Controller
         ]);
 
         return view('admin.servers.new', [
-            'locations' => Models\Location::all(),
+            'locations' => $this->locationRepository->all(),
             'services' => $services,
         ]);
     }
@@ -115,7 +156,7 @@ class ServersController extends Controller
      * Returns a tree of all avaliable nodes in a given location.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public function nodes(Request $request)
     {

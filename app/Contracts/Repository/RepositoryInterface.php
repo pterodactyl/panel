@@ -138,4 +138,11 @@ interface RepositoryInterface
      * @return mixed
      */
     public function massUpdate(array $where, array $fields);
+
+    /**
+     * Return all records from the model.
+     *
+     * @return mixed
+     */
+    public function all();
 }

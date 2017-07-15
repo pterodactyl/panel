@@ -22,18 +22,33 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Repositories\Eloquent;
 
-interface DatabaseHostInterface extends RepositoryInterface
+use Pterodactyl\Models\Server;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
+
+class ServerRepository extends SearchableRepository implements ServerRepositoryInterface
 {
     /**
-     * Delete a database host from the DB if there are no databases using it.
-     *
-     * @param  int $id
-     * @return bool|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * {@inheritdoc}
      */
-    public function deleteIfNoDatabases($id);
+    public function model()
+    {
+        return Server::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAllServers($paginate = 25)
+    {
+        $instance = $this->getBuilder()->with('node', 'user', 'allocation');
+
+        if ($this->searchTerm) {
+            $instance->search($this->searchTerm);
+        }
+
+        return $instance->paginate($paginate);
+    }
 }

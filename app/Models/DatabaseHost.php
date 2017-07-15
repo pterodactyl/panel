@@ -24,12 +24,13 @@
 
 namespace Pterodactyl\Models;
 
-use Watson\Validating\ValidatingTrait;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 
 class DatabaseHost extends Model
 {
-    use ValidatingTrait;
+    use Eloquence, Validable;
 
     /**
      * The table associated with the model.
@@ -66,17 +67,30 @@ class DatabaseHost extends Model
     ];
 
     /**
+     * Application validation rules.
+     *
+     * @var array
+     */
+    protected static $applicationRules = [
+        'name' => 'required',
+        'host' => 'required',
+        'port' => 'required',
+        'username' => 'required',
+        'node_id' => 'sometimes|required',
+    ];
+
+    /**
      * Validation rules to assign to this model.
      *
      * @var array
      */
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'host' => 'required|ip|unique:database_hosts,host',
-        'port' => 'required|numeric|between:1,65535',
-        'username' => 'required|string|max:32',
-        'password' => 'sometimes|nullable|string',
-        'node_id' => 'sometimes|required|nullable|exists:nodes,id',
+    protected static $dataIntegrityRules = [
+        'name' => 'string|max:255',
+        'host' => 'ip|unique:database_hosts,host',
+        'port' => 'numeric|between:1,65535',
+        'username' => 'string|max:32',
+        'password' => 'nullable|string',
+        'node_id' => 'nullable|exists:nodes,id',
     ];
 
     /**

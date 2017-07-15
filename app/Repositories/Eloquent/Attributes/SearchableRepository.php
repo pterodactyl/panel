@@ -22,38 +22,30 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Pterodactyl\Repositories\Eloquent\Attributes;
 
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Repositories\Eloquent\EloquentRepository;
+use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface
+abstract class SearchableRepository extends EloquentRepository implements SearchableInterface
 {
     /**
-     * {@inheritdoc}
+     * @var bool|string
      */
-    public function model()
-    {
-        return DatabaseHost::class;
-    }
+    protected $searchTerm = false;
 
     /**
      * {@inheritdoc}
      */
-    public function deleteIfNoDatabases($id)
+    public function search($term)
     {
-        $instance = $this->getBuilder()->withCount('databases')->find($id);
-
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        if (empty($term)) {
+            return $this;
         }
 
-        if ($instance->databases_count > 0) {
-            throw new DisplayException('Cannot delete a database host that has active databases attached to it.');
-        }
+        $clone = clone $this;
+        $clone->searchTerm = $term;
 
-        return $instance->delete();
+        return $clone;
     }
 }

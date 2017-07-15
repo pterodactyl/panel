@@ -152,4 +152,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     {
         // TODO: Implement massUpdate() method.
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function all()
+    {
+        return $this->getBuilder()->get($this->getColumns());
+    }
 }
