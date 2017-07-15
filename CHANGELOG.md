@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## Unreleased
+### Added
+* Support for CS:GO as a default service option selection.
+* Support for GMOD as a default service option selection.
+
 ## v0.6.4 (Courageous Carniadactylus)
 ### Fixed
 * Fixed the console rendering on page load, I guess people don't like watching it load line-by-line for 10 minutes. Who would have guessed...
