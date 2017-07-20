@@ -22,7 +22,7 @@
     <h3 class="box-title">/home/container{{ $directory['header'] }}</h3>
     <div class="box-tools pull-right">
         <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" id="mass_actions" class="btn btn-sm btn-info dropdown-toggle disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               @lang('server.files.mass_actions') <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-massactions">
