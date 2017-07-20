@@ -292,12 +292,17 @@ class ActionsClass {
             showLoaderOnConfirm: true
         }, () => {
             $.ajax({
-                type: 'DELETE',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/f/${delPath}${delName}`,
+                type: 'POST',
                 headers: {
                     'X-Access-Token': Pterodactyl.server.daemonSecret,
                     'X-Access-Server': Pterodactyl.server.uuid,
-                }
+                },
+                contentType: 'application/json; charset=utf-8',
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/delete`,
+                timeout: 10000,
+                data: JSON.stringify({
+                    items: [`${delPath}${delName}`]
+                }),
             }).done(data => {
                 nameBlock.parent().addClass('warning').delay(200).fadeOut();
                 swal({
@@ -314,6 +319,125 @@ class ActionsClass {
                 });
             });
         });
+    }
+
+    toggleMassActions() {
+        if ($('#file_listing input[type="checkbox"]:checked').length) {
+            $('#mass_actions').removeClass('disabled');
+        } else {
+            $('#mass_actions').addClass('disabled');
+        }
+    }
+
+    toggleHighlight(event) {
+        const parent = $(event.currentTarget);
+        const item = $(event.currentTarget).find('input');
+
+        if($(item).is(':checked')) {
+            $(item).prop('checked', false);
+            parent.removeClass('warning').delay(200);
+        } else {
+            $(item).prop('checked', true);
+            parent.addClass('warning').delay(200);
+        }
+    }
+
+    highlightAll(event) {
+        let parent;
+        const item = $(event.currentTarget).find('input');
+
+        if($(item).is(':checked')) {
+          $('#file_listing input[type=checkbox]').prop('checked', false);
+          $('#file_listing input[data-action="addSelection"]').each(function() {
+              parent = $(this).closest('tr');
+              parent.removeClass('warning').delay(200);
+          });
+        } else {
+          $('#file_listing input[type=checkbox]').prop('checked', true);
+          $('#file_listing input[data-action="addSelection"]').each(function() {
+              parent = $(this).closest('tr');
+              parent.addClass('warning').delay(200);
+          });
+        }
+    }
+
+    deleteSelected() {
+        let selectedItems = [];
+        let selectedItemsElements = [];
+        let parent;
+        let nameBlock;
+        let delLocation;
+
+        $('#file_listing input[data-action="addSelection"]:checked').each(function() {
+            parent = $(this).closest('tr');
+            nameBlock = $(parent).find('td[data-identifier="name"]');
+            delLocation = decodeURIComponent(nameBlock.data('path')) + decodeURIComponent(nameBlock.data('name'));
+
+            selectedItems.push(delLocation);
+            selectedItemsElements.push(parent);
+        });
+
+        if (selectedItems.length != 0)
+        {
+            let formattedItems = "";
+            $.each(selectedItems, function(key, value) {
+              formattedItems += ("<code>" + value + "</code>, ");
+            })
+
+            formattedItems = formattedItems.slice(0, -2);
+
+            swal({
+                type: 'warning',
+                title: '',
+                text: 'Are you sure you want to delete:' + formattedItems + '? There is <strong>no</strong> reversing this action.',
+                html: true,
+                showCancelButton: true,
+                showConfirmButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, () => {
+                $.ajax({
+                    type: 'POST',
+                    headers: {
+                        'X-Access-Token': Pterodactyl.server.daemonSecret,
+                        'X-Access-Server': Pterodactyl.server.uuid,
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/delete`,
+                    timeout: 10000,
+                    data: JSON.stringify({
+                        items: selectedItems
+                    }),
+                }).done(data => {
+                    $('#file_listing input:checked').each(function() {
+                        $(this).prop('checked', false);
+                    });
+
+                    $.each(selectedItemsElements, function() {
+                        $(this).addClass('warning').delay(200).fadeOut();
+                    })
+
+                    swal({
+                        type: 'success',
+                        title: 'Files Deleted'
+                    });
+                }).fail(jqXHR => {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        html: true,
+                        text: 'An error occured while attempting to delete these files. Please try again.',
+                    });
+                });
+            });
+        } else {
+            swal({
+              type: 'warning',
+              title: '',
+              text: 'Please select files/folders to delete.',
+            });
+        }
     }
 
     decompress() {
