@@ -25,19 +25,27 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\OptionVariableRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Repositories\Eloquent\ServiceRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -49,13 +57,23 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind(AllocationRepositoryInterface::class, AllocationRepository::class);
         $this->app->bind(ApiKeyRepositoryInterface::class, ApiKeyRepository::class);
         $this->app->bind(ApiPermissionRepositoryInterface::class, ApiPermissionRepository::class);
-        $this->app->bind(DatabaseRepositoryInterface::class, DatabaseRepository::class);
         $this->app->bind(DatabaseHostRepositoryInterface::class, DatabaseHostRepository::class);
+        $this->app->bind(DatabaseRepositoryInterface::class, DatabaseRepository::class);
         $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
+        $this->app->bind(NodeRepositoryInterface::class, NodeRepository::class);
+        $this->app->bind(OptionVariableRepositoryInterface::class, OptionVariableRepository::class);
         $this->app->bind(ServerRepositoryInterface::class, ServerRepository::class);
+        $this->app->bind(ServerVariableRepositoryInterface::class, ServerVariableRepository::class);
         $this->app->bind(ServiceRepositoryInterface::class, ServiceRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+
+        // Daemon Repositories
+        $this->app->bind(
+            \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface::class,
+            \Pterodactyl\Repositories\Daemon\ServerRepository::class
+        );
     }
 }

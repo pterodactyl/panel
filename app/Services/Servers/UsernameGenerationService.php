@@ -22,34 +22,34 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Services\Servers;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
-
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+class UsernameGenerationService
 {
     /**
-     * Returns a listing of all servers that exist including relationships.
+     * Generate a unique username to be used for SFTP connections and identification
+     * of the server docker container on the host system.
      *
-     * @param  int $paginate
-     * @return mixed
+     * @param  string $name
+     * @param  null   $identifier
+     * @return string
      */
-    public function getAllServers($paginate);
+    public function generate($name, $identifier = null)
+    {
+        if (is_null($identifier) || ! ctype_alnum($identifier)) {
+            $unique = bin2hex(random_bytes(4));
+        } else {
+            if (strlen($identifier) < 8) {
+                $unique = $identifier . str_random((8 - strlen($identifier)));
+            } else {
+                $unique = substr($identifier, 0, 8);
+            }
+        }
 
-    /**
-     * Return a server model and all variables associated with the server.
-     *
-     * @param  int $id
-     * @return mixed
-     */
-    public function findWithVariables($id);
+        // Filter the Server Name
+        $name = trim(preg_replace('/[^\w]+/', '', $name), '_');
+        $name = (strlen($name) < 1) ? str_random(6) : $name;
 
-    /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param  int $id
-     * @return array
-     */
-    public function getVariablesWithValues($id);
+        return strtolower(substr($name, 0, 6) . '_' . $unique);
+    }
 }

@@ -22,34 +22,26 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Pterodactyl\Models\Allocation;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+class AllocationRepository extends EloquentRepository implements AllocationRepositoryInterface
 {
     /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param  int $paginate
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function getAllServers($paginate);
+    public function model()
+    {
+        return Allocation::class;
+    }
 
     /**
-     * Return a server model and all variables associated with the server.
-     *
-     * @param  int $id
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function findWithVariables($id);
-
-    /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param  int $id
-     * @return array
-     */
-    public function getVariablesWithValues($id);
+    public function assignAllocationsToServer($server, array $ids)
+    {
+        return $this->getBuilder()->whereIn('id', $ids)->update(['server_id' => $server]);
+    }
 }

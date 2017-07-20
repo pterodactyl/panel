@@ -79,7 +79,7 @@ class AjaxController extends Controller
             $prevDir['link_show'] = implode('/', $goBack) . '/';
         }
 
-        $controller = new Repositories\Daemon\FileRepository($uuid);
+        $controller = new Repositories\old_Daemon\FileRepository($uuid);
 
         try {
             $directoryContents = $controller->returnDirectoryListing($this->directory);
@@ -112,7 +112,7 @@ class AjaxController extends Controller
         $server = Models\Server::byUuid($uuid);
         $this->authorize('save-files', $server);
 
-        $controller = new Repositories\Daemon\FileRepository($uuid);
+        $controller = new Repositories\old_Daemon\FileRepository($uuid);
 
         try {
             $controller->saveFileContents($request->input('file'), $request->input('contents'));

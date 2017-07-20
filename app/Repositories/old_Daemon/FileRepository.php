@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace Pterodactyl\Repositories\old_Daemon;
 
 use Exception;
 use GuzzleHttp\Client;

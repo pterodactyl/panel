@@ -22,34 +22,17 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Contracts\Repository\Daemon;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
-
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface ServerRepositoryInterface extends BaseRepositoryInterface
 {
     /**
-     * Returns a listing of all servers that exist including relationships.
+     * Create a new server on the daemon for the panel.
      *
-     * @param  int $paginate
+     * @param  int   $id
+     * @param  array $overrides
+     * @param  bool  $start
      * @return mixed
      */
-    public function getAllServers($paginate);
-
-    /**
-     * Return a server model and all variables associated with the server.
-     *
-     * @param  int $id
-     * @return mixed
-     */
-    public function findWithVariables($id);
-
-    /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param  int $id
-     * @return array
-     */
-    public function getVariablesWithValues($id);
+    public function create($id, $overrides = [], $start = false);
 }

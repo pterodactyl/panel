@@ -37,6 +37,7 @@ class UuidService
      * @param  string  $field
      * @param  int     $type
      * @return string
+     * @deprecated
      */
     public function generate($table = 'users', $field = 'uuid', $type = 4)
     {
@@ -58,6 +59,7 @@ class UuidService
      * @param  string       $field
      * @param  null|string  $attachedUuid
      * @return string
+     * @deprecated
      */
     public function generateShort($table = 'servers', $field = 'uuidShort', $attachedUuid = null)
     {

@@ -22,34 +22,11 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Exceptions\Services\Servers;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Exception;
 
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+class RequiredVariableMissingException extends Exception
 {
-    /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param  int $paginate
-     * @return mixed
-     */
-    public function getAllServers($paginate);
-
-    /**
-     * Return a server model and all variables associated with the server.
-     *
-     * @param  int $id
-     * @return mixed
-     */
-    public function findWithVariables($id);
-
-    /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param  int $id
-     * @return array
-     */
-    public function getVariablesWithValues($id);
+    //
 }

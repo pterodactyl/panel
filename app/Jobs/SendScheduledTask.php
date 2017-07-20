@@ -31,8 +31,8 @@ use Pterodactyl\Models\TaskLog;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Pterodactyl\Repositories\Daemon\PowerRepository;
-use Pterodactyl\Repositories\Daemon\CommandRepository;
+use Pterodactyl\Repositories\old_Daemon\PowerRepository;
+use Pterodactyl\Repositories\old_Daemon\CommandRepository;
 
 class SendScheduledTask extends Job implements ShouldQueue
 {

@@ -32,7 +32,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\ServerRepository;
-use Pterodactyl\Repositories\Daemon\FileRepository;
+use Pterodactyl\Repositories\old_Daemon\FileRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerController extends Controller

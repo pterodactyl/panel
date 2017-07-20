@@ -32,6 +32,7 @@ use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\TransferException;
@@ -41,6 +42,7 @@ use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Repositories\DatabaseRepository;
 use Pterodactyl\Exceptions\AutoDeploymentException;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Servers\ServerService;
 
 class ServersController extends Controller
 {
@@ -65,6 +67,11 @@ class ServersController extends Controller
     protected $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerService
+     */
+    protected $service;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
      */
     protected $serviceRepository;
@@ -73,6 +80,7 @@ class ServersController extends Controller
         ConfigRepository $config,
         DatabaseRepositoryInterface $databaseRepository,
         LocationRepositoryInterface $locationRepository,
+        ServerService $service,
         ServerRepositoryInterface $repository,
         ServiceRepositoryInterface $serviceRepository
     ) {
@@ -80,6 +88,7 @@ class ServersController extends Controller
         $this->databaseRepository = $databaseRepository;
         $this->locationRepository = $locationRepository;
         $this->repository = $repository;
+        $this->service = $service;
         $this->serviceRepository = $serviceRepository;
     }
 
@@ -125,31 +134,33 @@ class ServersController extends Controller
     /**
      * Create server controller method.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param \Illuminate\Http\Request $request
      */
     public function store(Request $request)
     {
-        try {
-            $repo = new ServerRepository;
-            $server = $repo->create($request->except('_token'));
-
-            return redirect()->route('admin.servers.view', $server->id);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (AutoDeploymentException $ex) {
-            Alert::danger('Auto-Deployment Exception: ' . $ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-        }
+        $this->service->create($request->all());
 
         return redirect()->route('admin.servers.new')->withInput();
+        //        try {
+//            $repo = new ServerRepository;
+//            $server = $repo->create($request->except('_token'));
+//
+//            return redirect()->route('admin.servers.view', $server->id);
+//        } catch (DisplayValidationException $ex) {
+//            return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
+//        } catch (DisplayException $ex) {
+//            Alert::danger($ex->getMessage())->flash();
+//        } catch (AutoDeploymentException $ex) {
+//            Alert::danger('Auto-Deployment Exception: ' . $ex->getMessage())->flash();
+//        } catch (TransferException $ex) {
+//            Log::warning($ex);
+//            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
+//        } catch (\Exception $ex) {
+//            Log::error($ex);
+//            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+//        }
+//
+//        return redirect()->route('admin.servers.new')->withInput();
     }
 
     /**
@@ -310,8 +321,9 @@ class ServersController extends Controller
      * @param  int                       $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function setDetails(Request $request, $id)
+    public function setDetails(ServerFormRequest $request, Models\Server $server)
     {
+        dd($server);
         $repo = new ServerRepository;
         try {
             $repo->updateDetails($id, array_merge(

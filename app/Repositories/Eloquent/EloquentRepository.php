@@ -160,4 +160,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     {
         return $this->getBuilder()->get($this->getColumns());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function insert(array $data)
+    {
+        return $this->getBuilder()->insert($data);
+    }
 }

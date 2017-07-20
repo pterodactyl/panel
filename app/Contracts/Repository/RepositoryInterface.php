@@ -145,4 +145,13 @@ interface RepositoryInterface
      * @return mixed
      */
     public function all();
+
+    /**
+     * Insert a single or multiple records into the database at once skipping
+     * validation and mass assignment checking.
+     *
+     * @param  array $data
+     * @return bool
+     */
+    public function insert(array $data);
 }

@@ -29,13 +29,15 @@ use Cache;
 use Carbon;
 use Schema;
 use Javascript;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Server extends Model
+class Server extends Model implements ValidableContract
 {
-    use Notifiable, SearchableTrait;
+    use Eloquence, Notifiable, Validable;
 
     /**
      * The table associated with the model.
@@ -64,6 +66,43 @@ class Server extends Model
      * @var array
      */
     protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
+
+    protected static $applicationRules = [
+        'owner_id' => 'required',
+        'name' => 'required',
+        'memory' => 'required',
+        'swap' => 'required',
+        'io' => 'required',
+        'cpu' => 'required',
+        'disk' => 'required',
+        'service_id' => 'required',
+        'option_id' => 'required',
+        'pack_id' => 'sometimes',
+        'auto_deploy' => 'sometimes',
+        'custom_id' => 'sometimes',
+        'skip_scripts' => 'sometimes',
+    ];
+
+    protected static $dataIntegrityRules = [
+        'owner_id' => 'exists:users,id',
+        'name' => 'regex:/^([\w .-]{1,200})$/',
+        'node_id' => 'exists:nodes,id',
+        'description' => 'nullable|string',
+        'memory' => 'numeric|min:0',
+        'swap' => 'numeric|min:-1',
+        'io' => 'numeric|between:10,1000',
+        'cpu' => 'numeric|min:0',
+        'disk' => 'numeric|min:0',
+        'allocation_id' => 'exists:allocations,id',
+        'service_id' => 'exists:services,id',
+        'option_id' => 'exists:service_options,id',
+        'pack_id' => 'nullable|numeric|min:0',
+        'custom_container' => 'nullable|string',
+        'startup' => 'nullable|string',
+        'auto_deploy' => 'accepted',
+        'custom_id' => 'numeric|unique:servers,id',
+        'skip_scripts' => 'boolean',
+    ];
 
     /**
      * Cast values to correct type.

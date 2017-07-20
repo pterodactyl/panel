@@ -24,32 +24,14 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
-
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface AllocationRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Returns a listing of all servers that exist including relationships.
+     * Set an array of allocation IDs to be assigned to a specific server.
      *
-     * @param  int $paginate
-     * @return mixed
+     * @param  int|null $server
+     * @param  array    $ids
+     * @return int
      */
-    public function getAllServers($paginate);
-
-    /**
-     * Return a server model and all variables associated with the server.
-     *
-     * @param  int $id
-     * @return mixed
-     */
-    public function findWithVariables($id);
-
-    /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param  int $id
-     * @return array
-     */
-    public function getVariablesWithValues($id);
+    public function assignAllocationsToServer($server, array $ids);
 }

@@ -22,14 +22,14 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace Pterodactyl\Repositories\old_Daemon;
 
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\ConnectException;
 use Pterodactyl\Exceptions\DisplayException;
 
-class CommandRepository
+class PowerRepository
 {
     /**
      * The Eloquent Model associated with the requested server.
@@ -59,33 +59,71 @@ class CommandRepository
     }
 
     /**
-     * Sends a command to the daemon.
+     * Sends a power option to the daemon.
      *
-     * @param  string  $command
+     * @param  string                    $action
      * @return string
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function send($command)
+    public function do($action)
     {
-        // We don't use the user's specific daemon secret here since we
-        // are assuming that a call to this function has been validated.
         try {
-            $response = $this->server->guzzleClient($this->user)->request('POST', '/server/command', [
+            $response = $this->server->guzzleClient($this->user)->request('PUT', '/server/power', [
                 'http_errors' => false,
                 'json' => [
-                    'command' => $command,
+                    'action' => $action,
                 ],
             ]);
 
             if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                throw new DisplayException('Command sending responded with a non-200 error code (HTTP/' . $response->getStatusCode() . ').');
+                throw new DisplayException('Power toggle endpoint responded with a non-200 error code (HTTP/' . $response->getStatusCode() . ').');
             }
 
             return $response->getBody();
         } catch (ConnectException $ex) {
             throw $ex;
         }
+    }
+
+    /**
+     * Starts a server.
+     *
+     * @return void
+     */
+    public function start()
+    {
+        $this->do('start');
+    }
+
+    /**
+     * Stops a server.
+     *
+     * @return void
+     */
+    public function stop()
+    {
+        $this->do('stop');
+    }
+
+    /**
+     * Restarts a server.
+     *
+     * @return void
+     */
+    public function restart()
+    {
+        $this->do('restart');
+    }
+
+    /**
+     * Kills a server.
+     *
+     * @return void
+     */
+    public function kill()
+    {
+        $this->do('kill');
     }
 }

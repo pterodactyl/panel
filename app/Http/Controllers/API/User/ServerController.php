@@ -28,9 +28,9 @@ use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Daemon\PowerRepository;
+use Pterodactyl\Repositories\old_Daemon\PowerRepository;
 use Pterodactyl\Transformers\User\ServerTransformer;
-use Pterodactyl\Repositories\Daemon\CommandRepository;
+use Pterodactyl\Repositories\old_Daemon\CommandRepository;
 
 class ServerController extends Controller
 {

@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
@@ -50,5 +51,56 @@ class ServerRepository extends SearchableRepository implements ServerRepositoryI
         }
 
         return $instance->paginate($paginate);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function findWithVariables($id)
+    {
+        $instance = $this->getBuilder()->with('option.variables', 'variables')
+            ->where($this->getModel()->getKeyName(), '=', $id)
+            ->first($this->getColumns());
+
+        if (is_null($instance)) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getVariablesWithValues($id)
+    {
+        $instance = $this->getBuilder()->with('variables', 'option.variables')
+            ->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        $data = [];
+        $instance->option->variables->each(function ($item) use (&$data, $instance) {
+            $display = $instance->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+
+            $data[$item->env_variable] = $display ?? $item->default_value;
+        });
+
+        return $data;
+    }
+
+    public function getDataForCreation($id)
+    {
+        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'option.service')
+            ->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
     }
 }
