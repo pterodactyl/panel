@@ -321,20 +321,32 @@ class ActionsClass {
         });
     }
 
-    toggleHighlight(event) {
-        const parent = $(event.target).closest('tr');
-
-        if(!$(event.target).is(':checked')) {
-          parent.removeClass('warning').delay(200);
+    toggleMassActions() {
+        if ($('#file_listing input[type="checkbox"]:checked').length) {
+            $('#mass_actions').removeClass('disabled');
         } else {
-          parent.addClass('warning').delay(200);
+            $('#mass_actions').addClass('disabled');
+        }
+    }
+
+    toggleHighlight(event) {
+        const parent = $(event.currentTarget);
+        const item = $(event.currentTarget).find('input');
+
+        if($(item).is(':checked')) {
+            $(item).prop('checked', false);
+            parent.removeClass('warning').delay(200);
+        } else {
+            $(item).prop('checked', true);
+            parent.addClass('warning').delay(200);
         }
     }
 
     highlightAll(event) {
         let parent;
+        const item = $(event.currentTarget).find('input');
 
-        if(!$(event.target).is(':checked')) {
+        if($(item).is(':checked')) {
           $('#file_listing input[type=checkbox]').prop('checked', false);
           $('#file_listing input[data-action="addSelection"]').each(function() {
               parent = $(this).closest('tr');

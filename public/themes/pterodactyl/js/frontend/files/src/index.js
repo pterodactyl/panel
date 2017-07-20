@@ -48,6 +48,7 @@ class FileManager {
                 this.selectItem();
                 this.selectAll();
                 this.selectiveDeletion();
+                this.selectRow();
                 if (_.isFunction(next)) {
                     return next();
                 }
@@ -87,14 +88,14 @@ class FileManager {
     }
 
     selectItem() {
-        $('[data-action="addSelection"]').on('change', event => {
-            new ActionsClass().toggleHighlight(event);
+        $('[data-action="addSelection"]').on('click', event => {
+            event.preventDefault();
         });
     }
 
     selectAll() {
-        $('[data-action="selectAll"]').on('change', event => {
-            new ActionsClass().highlightAll(event);
+        $('[data-action="selectAll"]').on('click', event => {
+            event.preventDefault();
         });
     }
 
@@ -108,6 +109,18 @@ class FileManager {
         $('[data-action="add-folder"]').unbind().on('click', () => {
             new ActionsClass().folder($('#file_listing').data('current-dir') || '/');
         })
+    }
+
+    selectRow() {
+      $('#file_listing tr').on('mousedown', event => {
+          if($(event.target).is('th') || $(event.target).is('input[data-action="selectAll"]')) {
+              new ActionsClass().highlightAll(event);
+          } else {
+              new ActionsClass().toggleHighlight(event);
+          }
+
+          new ActionsClass().toggleMassActions();
+      });
     }
 
     decodeHash() {
