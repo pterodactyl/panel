@@ -78,6 +78,15 @@ class ServerFormRequest extends AdminFormRequest
             ], function ($input) {
                 return ! ($input->auto_deploy);
             });
+
+            if ($this->input('pack_id') !== 0) {
+                $validator->sometimes('pack_id', [
+                    Rule::exists('packs', 'id')->where(function ($query) {
+                        $query->where('selectable', 1);
+                        $query->where('option_id', $this->input('option_id'));
+                    }),
+                ]);
+            }
         });
     }
 }

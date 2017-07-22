@@ -44,4 +44,12 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
     {
         return $this->getBuilder()->whereIn('id', $ids)->update(['server_id' => $server]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAllocationsForNode($node)
+    {
+        return $this->getBuilder()->where('node_id', $node)->get();
+    }
 }

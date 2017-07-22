@@ -32,7 +32,7 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @param  int   $id
      * @param  array $overrides
      * @param  bool  $start
-     * @return mixed
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function create($id, $overrides = [], $start = false);
 }

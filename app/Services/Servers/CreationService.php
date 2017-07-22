@@ -33,7 +33,7 @@ use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class ServerService
+class CreationService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
@@ -41,26 +41,58 @@ class ServerService
     protected $allocationRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     */
+    protected $daemonServerRepository;
+
+    /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    protected $database;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     protected $nodeRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
+     */
+    protected $serverVariableRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
     protected $userRepository;
 
-    protected $database;
-    protected $repository;
+    /**
+     * @var \Pterodactyl\Services\Servers\UsernameGenerationService
+     */
     protected $usernameService;
-    protected $serverVariableRepository;
-    protected $daemonServerRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
     protected $validatorService;
 
+    /**
+     * CreationService constructor.
+     *
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
+     * @param \Illuminate\Database\ConnectionInterface                            $database
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface           $nodeRepository
+     * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
+     * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
         ConnectionInterface $database,
@@ -83,9 +115,17 @@ class ServerService
         $this->daemonServerRepository = $daemonServerRepository;
     }
 
+    /**
+     * Create a server on both the panel and daemon.
+     *
+     * @param  array $data
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
     public function create(array $data)
     {
-        // @todo auto-deployment and packs
+        // @todo auto-deployment
         $data['user_id'] = 1;
 
         $node = $this->nodeRepository->find($data['node_id']);
@@ -141,8 +181,11 @@ class ServerService
         $this->serverVariableRepository->insert($records);
 
         // Create the server on the daemon & commit it to the database.
-        $this->daemonServerRepository->setNode($server->node_id)->setAccessToken($node->daemonSecret)->create($server->id);
-        $this->database->rollBack();
+        $this->daemonServerRepository->setNode($server->node_id)
+                                     ->setAccessToken($node->daemonSecret)
+                                     ->create($server->id);
+
+        $this->database->commit();
 
         return $server;
     }

@@ -28,5 +28,11 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
-    //
+    /**
+     * Return a collection of nodes beloning to a specific location for use on frontend display.
+     *
+     * @param  int $location
+     * @return mixed
+     */
+    public function getNodesForLocation($location);
 }

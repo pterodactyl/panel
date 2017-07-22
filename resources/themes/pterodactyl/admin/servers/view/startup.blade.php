@@ -97,7 +97,7 @@
                             @foreach($services as $service)
                                 <option value="{{ $service->id }}"
                                     @if($service->id === $server->service_id)
-                                        selected="selected"
+                                        selected
                                     @endif
                                 >{{ $service->name }}</option>
                             @endforeach
@@ -125,30 +125,7 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="row" id="appendVariablesTo">
-            @foreach($server->option->variables as $variable)
-                <div class="col-xs-12">
-                    <div class="box">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">{{ $variable->name }}</h3>
-                        </div>
-                        <div class="box-body">
-                            <input data-action="match-regex" name="env_{{ $variable->id }}" class="form-control" type="text" value="{{ old('env_' . $variable->id, $variable->server_value) }}" />
-                            <p class="no-margin small text-muted">{{ $variable->description }}</p>
-                            <p class="no-margin">
-                                @if($variable->required)<span class="label label-danger">Required</span>@else<span class="label label-default">Optional</span>@endif
-                                @if($variable->user_viewable)<span class="label label-success">Visible</span>@else<span class="label label-primary">Hidden</span>@endif
-                                @if($variable->user_editable)<span class="label label-success">Editable</span>@else<span class="label label-primary">Locked</span>@endif
-                            </p>
-                        </div>
-                        <div class="box-footer">
-                            <p class="no-margin text-muted small"><strong>Startup Command Variable:</strong> <code>{{ $variable->env_variable }}</code></p>
-                            <p class="no-margin text-muted small"><strong>Input Rules:</strong> <code>{{ $variable->rules }}</code></p>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-            </div>
+            <div class="row" id="appendVariablesTo"></div>
         </div>
     </div>
 </form>
@@ -217,7 +194,7 @@
 
             $('#appendVariablesTo').html('');
             $.each(_.get(objectChain, 'variables', []), function (i, item) {
-                var setValue = _.get(Pterodactyl.server_variables, 'env_' + item.id + '.value', item.default_value);
+                var setValue = _.get(Pterodactyl.server_variables, item.env_variable, item.default_value);
                 var isRequired = (item.required === 1) ? '<span class="label label-danger">Required</span> ' : '';
                 var dataAppend = ' \
                     <div class="col-xs-12"> \
@@ -226,7 +203,7 @@
                                 <h3 class="box-title">' + isRequired + item.name + '</h3> \
                             </div> \
                             <div class="box-body"> \
-                                <input data-action="match-regex" name="env_' + item.id + '" class="form-control" type="text" value="' + setValue + '" /> \
+                                <input data-action="match-regex" name="environment[' + item.env_variable + ']" class="form-control" type="text" value="' + setValue + '" /> \
                                 <p class="no-margin small text-muted">' + item.description + '</p> \
                             </div> \
                             <div class="box-footer"> \

@@ -41,6 +41,8 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      *
      * @param  int $id
      * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function findWithVariables($id);
 
@@ -49,7 +51,30 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * default if there is no value defined for the specific server requested.
      *
      * @param  int $id
-     * @return array
+     * @param  bool $returnAsObject
+     * @return array|object
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getVariablesWithValues($id);
+    public function getVariablesWithValues($id, $returnAsObject = false);
+
+    /**
+     * Return enough data to be used for the creation of a server via the daemon.
+     *
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getDataForCreation($id);
+
+    /**
+     * Return a server as well as associated databases and their hosts.
+     *
+     * @param  int $id
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithDatabases($id);
 }

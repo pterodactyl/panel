@@ -28,8 +28,10 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Log;
 use Alert;
 use Javascript;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
@@ -38,14 +40,19 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Repositories\DatabaseRepository;
-use Pterodactyl\Exceptions\AutoDeploymentException;
 use Pterodactyl\Exceptions\DisplayValidationException;
-use Pterodactyl\Services\Servers\ServerService;
+use Pterodactyl\Services\Servers\CreationService;
 
 class ServersController extends Controller
 {
+    /**
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     */
+    protected $allocationRepository;
+
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
@@ -57,9 +64,19 @@ class ServersController extends Controller
     protected $databaseRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     */
+    protected $databaseHostRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
     protected $locationRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    protected $nodeRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
@@ -67,7 +84,7 @@ class ServersController extends Controller
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerService
+     * @var \Pterodactyl\Services\Servers\CreationService
      */
     protected $service;
 
@@ -77,16 +94,22 @@ class ServersController extends Controller
     protected $serviceRepository;
 
     public function __construct(
+        AllocationRepositoryInterface $allocationRepository,
         ConfigRepository $config,
+        CreationService $service,
         DatabaseRepositoryInterface $databaseRepository,
+        DatabaseHostRepository $databaseHostRepository,
         LocationRepositoryInterface $locationRepository,
-        ServerService $service,
+        NodeRepositoryInterface $nodeRepository,
         ServerRepositoryInterface $repository,
         ServiceRepositoryInterface $serviceRepository
     ) {
+        $this->allocationRepository = $allocationRepository;
         $this->config = $config;
         $this->databaseRepository = $databaseRepository;
+        $this->databaseHostRepository = $databaseHostRepository;
         $this->locationRepository = $locationRepository;
+        $this->nodeRepository = $nodeRepository;
         $this->repository = $repository;
         $this->service = $service;
         $this->serviceRepository = $serviceRepository;
@@ -132,35 +155,25 @@ class ServersController extends Controller
     }
 
     /**
-     * Create server controller method.
+     * Handle POST of server creation form.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(Request $request)
+    public function store(ServerFormRequest $request)
     {
-        $this->service->create($request->all());
+        try {
+            $server = $this->service->create($request->except('_token'));
+
+            return redirect()->route('admin.servers.view', $server->id);
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
+        }
 
         return redirect()->route('admin.servers.new')->withInput();
-        //        try {
-//            $repo = new ServerRepository;
-//            $server = $repo->create($request->except('_token'));
-//
-//            return redirect()->route('admin.servers.view', $server->id);
-//        } catch (DisplayValidationException $ex) {
-//            return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-//        } catch (DisplayException $ex) {
-//            Alert::danger($ex->getMessage())->flash();
-//        } catch (AutoDeploymentException $ex) {
-//            Alert::danger('Auto-Deployment Exception: ' . $ex->getMessage())->flash();
-//        } catch (TransferException $ex) {
-//            Log::warning($ex);
-//            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-//        } catch (\Exception $ex) {
-//            Log::error($ex);
-//            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-//        }
-//
-//        return redirect()->route('admin.servers.new')->withInput();
     }
 
     /**
@@ -171,26 +184,7 @@ class ServersController extends Controller
      */
     public function nodes(Request $request)
     {
-        $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
-
-        return $nodes->map(function ($item) {
-            $filtered = $item->allocations->where('server_id', null)->map(function ($map) {
-                return collect($map)->only(['id', 'ip', 'port']);
-            });
-
-            $item->ports = $filtered->map(function ($map) use ($item) {
-                return [
-                    'id' => $map['id'],
-                    'text' => $map['ip'] . ':' . $map['port'],
-                ];
-            })->values();
-
-            return [
-                'id' => $item->id,
-                'text' => $item->name,
-                'allocations' => $item->ports,
-            ];
-        })->values();
+        return $this->nodeRepository->getNodesForLocation($request->input('location'));
     }
 
     /**
@@ -202,7 +196,7 @@ class ServersController extends Controller
      */
     public function viewIndex(Request $request, $id)
     {
-        return view('admin.servers.view.index', ['server' => Models\Server::findOrFail($id)]);
+        return view('admin.servers.view.index', ['server' => $this->repository->find($id)]);
     }
 
     /**
@@ -214,9 +208,12 @@ class ServersController extends Controller
      */
     public function viewDetails(Request $request, $id)
     {
-        $server = Models\Server::where('installed', 1)->findOrFail($id);
-
-        return view('admin.servers.view.details', ['server' => $server]);
+        return view('admin.servers.view.details', [
+            'server' => $this->repository->findFirstWhere([
+                ['id', '=', $id],
+                ['installed', '=', 1],
+            ]),
+        ]);
     }
 
     /**
@@ -228,12 +225,17 @@ class ServersController extends Controller
      */
     public function viewBuild(Request $request, $id)
     {
-        $server = Models\Server::where('installed', 1)->with('node.allocations')->findOrFail($id);
+        $server = $this->repository->findFirstWhere([
+            ['id', '=', $id],
+            ['installed', '=', 1],
+        ]);
+
+        $allocations = $this->allocationRepository->getAllocationsForNode($server->node_id);
 
         return view('admin.servers.view.build', [
             'server' => $server,
-            'assigned' => $server->node->allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
-            'unassigned' => $server->node->allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
+            'assigned' => $allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
+            'unassigned' => $allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
         ]);
     }
 
@@ -246,29 +248,24 @@ class ServersController extends Controller
      */
     public function viewStartup(Request $request, $id)
     {
-        $server = Models\Server::where('installed', 1)->with('option.variables', 'variables')->findOrFail($id);
-        $server->option->variables->transform(function ($item, $key) use ($server) {
-            $item->server_value = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+        $parameters = $this->repository->getVariablesWithValues($id, true);
+        if (! $parameters->server->installed) {
+            abort(404);
+        }
 
-            return $item;
-        });
+        $services = $this->serviceRepository->getWithOptions();
 
-        $services = Models\Service::with('options.packs', 'options.variables')->get();
         Javascript::put([
             'services' => $services->map(function ($item) {
                 return array_merge($item->toArray(), [
                     'options' => $item->options->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
-            'server_variables' => $server->variables->mapWithKeys(function ($item) {
-                return ['env_' . $item->variable_id => [
-                    'value' => $item->variable_value,
-                ]];
-            })->toArray(),
+            'server_variables' => $parameters->data,
         ]);
 
         return view('admin.servers.view.startup', [
-            'server' => $server,
+            'server' => $parameters->server,
             'services' => $services,
         ]);
     }
@@ -282,10 +279,10 @@ class ServersController extends Controller
      */
     public function viewDatabase(Request $request, $id)
     {
-        $server = Models\Server::where('installed', 1)->with('databases.host')->findOrFail($id);
+        $server = $this->repository->getWithDatabases($id);
 
         return view('admin.servers.view.database', [
-            'hosts' => Models\DatabaseHost::all(),
+            'hosts' => $this->databaseHostRepository->all(),
             'server' => $server,
         ]);
     }
@@ -299,7 +296,7 @@ class ServersController extends Controller
      */
     public function viewManage(Request $request, $id)
     {
-        return view('admin.servers.view.manage', ['server' => Models\Server::findOrFail($id)]);
+        return view('admin.servers.view.manage', ['server' => $this->repository->find($id)]);
     }
 
     /**
@@ -311,7 +308,7 @@ class ServersController extends Controller
      */
     public function viewDelete(Request $request, $id)
     {
-        return view('admin.servers.view.delete', ['server' => Models\Server::findOrFail($id)]);
+        return view('admin.servers.view.delete', ['server' => $this->repository->find($id)]);
     }
 
     /**

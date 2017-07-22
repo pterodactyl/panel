@@ -118,7 +118,7 @@ class CreationService
                     $this->repository->dropUser($database->username, $database->remote, 'dynamic');
                     $this->repository->flush('dynamic');
                 }
-            } catch (\Exception $ex) {
+            } catch (\Exception $exTwo) {
                 // ignore an exception
             }
 
@@ -153,7 +153,7 @@ class CreationService
             ]);
 
             $this->repository->dropUser($database->username, $database->remote, 'dynamic');
-            $this->repository->createUser($database->username, $database->remote, $password);
+            $this->repository->createUser($database->username, $database->remote, $password, 'dynamic');
             $this->repository->assignUserToDatabase(
                 $database->database, $database->username, $database->remote, 'dynamic'
             );

@@ -73,7 +73,7 @@ class LocationService
     /**
      * Delete a model from the DB.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

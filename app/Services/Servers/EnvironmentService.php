@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentService
 {

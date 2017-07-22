@@ -37,4 +37,31 @@ class NodeRepository extends SearchableRepository implements NodeRepositoryInter
     {
         return Node::class;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodesForLocation($location)
+    {
+        $instance = $this->getBuilder()->with('allocations')->where('location_id', $location)->get();
+
+        return $instance->map(function ($item) {
+            $filtered = $item->allocations->where('server_id', null)->map(function ($map) {
+                return collect($map)->only(['id', 'ip', 'port']);
+            });
+
+            $item->ports = $filtered->map(function ($map) {
+                return [
+                    'id' => $map['id'],
+                    'text' => sprintf('%s:%s', $map['ip'], $map['port']),
+                ];
+            })->values();
+
+            return [
+                'id' => $item->id,
+                'text' => $item->name,
+                'allocations' => $item->ports,
+            ];
+        })->values();
+    }
 }

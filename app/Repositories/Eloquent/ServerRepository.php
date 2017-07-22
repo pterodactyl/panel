@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
@@ -60,8 +60,8 @@ class ServerRepository extends SearchableRepository implements ServerRepositoryI
     public function findWithVariables($id)
     {
         $instance = $this->getBuilder()->with('option.variables', 'variables')
-            ->where($this->getModel()->getKeyName(), '=', $id)
-            ->first($this->getColumns());
+                         ->where($this->getModel()->getKeyName(), '=', $id)
+                         ->first($this->getColumns());
 
         if (is_null($instance)) {
             throw new RecordNotFoundException();
@@ -73,10 +73,10 @@ class ServerRepository extends SearchableRepository implements ServerRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function getVariablesWithValues($id)
+    public function getVariablesWithValues($id, $returnWithObject = false)
     {
         $instance = $this->getBuilder()->with('variables', 'option.variables')
-            ->find($id, $this->getColumns());
+                         ->find($id, $this->getColumns());
 
         if (! $instance) {
             throw new RecordNotFoundException();
@@ -89,13 +89,39 @@ class ServerRepository extends SearchableRepository implements ServerRepositoryI
             $data[$item->env_variable] = $display ?? $item->default_value;
         });
 
+        if ($returnWithObject) {
+            return (object) [
+                'data' => $data,
+                'server' => $instance,
+            ];
+        }
+
         return $data;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDataForCreation($id)
     {
         $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'option.service')
-            ->find($id, $this->getColumns());
+                         ->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithDatabases($id)
+    {
+        $instance = $this->getBuilder()->with('databases.host')
+                         ->where('installed', 1)
+                         ->find($id, $this->getColumns());
 
         if (! $instance) {
             throw new RecordNotFoundException();

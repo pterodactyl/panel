@@ -79,8 +79,8 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
             array_set($data, $key, $value);
         }
 
-//        $this->getHttpClient()->request('POST', '/servers', [
-//            'json' => $data,
-//        ]);
+        return $this->getHttpClient()->request('POST', '/servers', [
+            'json' => $data,
+        ]);
     }
 }

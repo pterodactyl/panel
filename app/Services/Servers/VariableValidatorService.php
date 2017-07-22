@@ -143,11 +143,11 @@ class VariableValidatorService
 
             if ($validator->fails()) {
                 throw new DisplayValidationException(json_encode(
-                   collect([
-                       'notice' => [
-                           sprintf('There was a validation error with the %s variable.', $item->name),
-                       ],
-                   ])->merge($validator->errors()->toArray())
+                    collect([
+                        'notice' => [
+                            sprintf('There was a validation error with the %s variable.', $item->name),
+                        ],
+                    ])->merge($validator->errors()->toArray())
                 ));
             }
 
