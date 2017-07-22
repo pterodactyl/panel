@@ -150,7 +150,7 @@ class CreationService
             $this->repository->assignUserToDatabase(
                 $database->database, $database->username, $database->remote, 'dynamic'
             );
-            $this->repository->flush();
+            $this->repository->flush('dynamic');
 
             $this->database->commit();
         } catch (\Exception $ex) {

@@ -246,7 +246,7 @@ class CreationServiceTest extends TestCase
             self::TEST_DATA['database'], self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
         )->once()->andReturnNull();
 
-        $this->repository->shouldReceive('flush')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('flush')->with('dynamic')->once()->andReturnNull();
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->changePassword(1, 'new_password');

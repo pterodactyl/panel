@@ -186,7 +186,7 @@ class ServersController extends Controller
     /**
      * Returns a tree of all avaliable nodes in a given location.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Support\Collection
      */
     public function nodes(Request $request)
@@ -197,8 +197,8 @@ class ServersController extends Controller
     /**
      * Display the index when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewIndex(Request $request, $id)
@@ -209,8 +209,8 @@ class ServersController extends Controller
     /**
      * Display the details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewDetails(Request $request, $id)
@@ -226,8 +226,8 @@ class ServersController extends Controller
     /**
      * Display the build details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewBuild(Request $request, $id)
@@ -249,8 +249,8 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewStartup(Request $request, $id)
@@ -297,8 +297,8 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewManage(Request $request, $id)
@@ -309,8 +309,8 @@ class ServersController extends Controller
     /**
      * Display the deletion page for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewDelete(Request $request, $id)
@@ -321,8 +321,8 @@ class ServersController extends Controller
     /**
      * Update the details for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function setDetails(ServerFormRequest $request, Models\Server $server)
@@ -353,8 +353,8 @@ class ServersController extends Controller
     /**
      * Set the new docker container for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function setContainer(Request $request, $id)
@@ -381,8 +381,8 @@ class ServersController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function toggleInstall(Request $request, $id)
@@ -405,8 +405,8 @@ class ServersController extends Controller
     /**
      * Reinstalls the server with the currently assigned pack and service.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function reinstallServer(Request $request, $id)
@@ -429,8 +429,8 @@ class ServersController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function rebuildContainer(Request $request, $id)
@@ -455,8 +455,8 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function manageSuspension(Request $request, $id)
@@ -488,8 +488,8 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function updateBuild(Request $request, $id)
@@ -521,8 +521,8 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete(Request $request, $id)
@@ -550,8 +550,8 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function saveStartup(Request $request, $id)
@@ -584,9 +584,13 @@ class ServersController extends Controller
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function newDatabase(Request $request, $id)
     {
@@ -595,20 +599,6 @@ class ServersController extends Controller
             'remote' => $request->input('remote'),
             'database_host_id' => $request->input('database_host_id'),
         ]);
-//        $repo = new DatabaseRepository;
-//
-//        try {
-//            $repo->create($id, $request->only(['host', 'database', 'connection']));
-//
-//            Alert::success('A new database was assigned to this server successfully.')->flash();
-//        } catch (DisplayValidationException $ex) {
-//            return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
-//        } catch (DisplayException $ex) {
-//            Alert::danger($ex->getMessage())->flash();
-//        } catch (\Exception $ex) {
-//            Log::error($ex);
-//            Alert::danger('An exception occured while attempting to add a new database for this server. This error has been logged.')->flash();
-//        }
 
         return redirect()->route('admin.servers.view.database', $id)->withInput();
     }
@@ -616,47 +606,45 @@ class ServersController extends Controller
     /**
      * Resets the database password for a specific database on this server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function resetDatabasePassword(Request $request, $id)
     {
-        $database = Models\Database::where('server_id', $id)->findOrFail($request->input('database'));
-        $repo = new DatabaseRepository;
+        $database = $this->databaseRepository->findFirstWhere([
+            ['server_id', '=', $id],
+            ['id', '=', $request->input('database')],
+        ]);
 
-        try {
-            $repo->password($database->id, str_random(20));
+        $this->databaseCreationService->changePassword($database->id, str_random(20));
 
-            return response('', 204);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response()->json(['error' => 'A unhandled exception occurred while attempting to reset this password. This error has been logged.'], 503);
-        }
+        return response('', 204);
     }
 
     /**
      * Deletes a database from a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     * @param  int                       $database
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
+     * @param  int                      $database
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function deleteDatabase(Request $request, $id, $database)
     {
-        $database = Models\Database::where('server_id', $id)->findOrFail($database);
-        $repo = new DatabaseRepository;
+        $database = $this->databaseRepository->findFirstWhere([
+            ['server_id', '=', $id],
+            ['id', '=', $database],
+        ]);
 
-        try {
-            $repo->drop($database->id);
+        $this->databaseCreationService->delete($database->id);
 
-            return response('', 204);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response()->json(['error' => 'A unhandled exception occurred while attempting to drop this database. This error has been logged.'], 503);
-        }
+        return response('', 204);
     }
 }
