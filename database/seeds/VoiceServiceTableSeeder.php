@@ -187,7 +187,7 @@ EOF;
         ], [
             'name' => 'Server Version',
             'description' => 'The version of Teamspeak 3 to use when running the server.',
-            'default_value' => '3.0.13.6',
+            'default_value' => '3.0.13.7',
             'user_viewable' => 1,
             'user_editable' => 1,
             'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
