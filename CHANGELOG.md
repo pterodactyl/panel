@@ -5,6 +5,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## Unreleased
 ### Added
+* File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
 
