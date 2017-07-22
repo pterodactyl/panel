@@ -24,11 +24,12 @@
 
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
+use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Database extends Model
+class Database extends Model implements ValidableContract
 {
     use Eloquence, Validable;
 
@@ -52,7 +53,7 @@ class Database extends Model
      * @var array
      */
     protected $fillable = [
-        'server_id', 'database_host_id', 'database', 'username', 'remote',
+        'server_id', 'database_host_id', 'database', 'username', 'password', 'remote',
     ];
 
     /**

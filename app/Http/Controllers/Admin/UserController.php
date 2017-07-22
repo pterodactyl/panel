@@ -28,7 +28,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Services\Administrative\UserService;
+use Pterodactyl\Services\UserService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
@@ -41,7 +41,7 @@ class UserController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Administrative\UserService
+     * @var \Pterodactyl\Services\UserService
      */
     protected $service;
 
@@ -59,7 +59,7 @@ class UserController extends Controller
      * UserController constructor.
      *
      * @param  \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param  \Pterodactyl\Services\Administrative\UserService          $service
+     * @param  \Pterodactyl\Services\UserService                         $service
      * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      * @param  \Pterodactyl\Models\User                                  $model
      */
@@ -178,17 +178,11 @@ class UserController extends Controller
     /**
      * Get a JSON response of users on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Pterodactyl\Models\User
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function json(Request $request)
     {
-        return $this->model->search($request->input('q'))->all([
-            'id', 'email', 'username', 'name_first', 'name_last',
-        ])->transform(function ($item) {
-            $item->md5 = md5(strtolower($item->email));
-
-            return $item;
-        });
+        return $this->repository->filterUsersByQuery($request->input('q'));
     }
 }

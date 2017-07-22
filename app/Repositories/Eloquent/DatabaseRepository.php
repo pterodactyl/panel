@@ -24,32 +24,32 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Models\Database;
 use Illuminate\Foundation\Application;
-use Illuminate\Database\ConnectionResolver;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
 {
     /**
-     * @var \Illuminate\Database\ConnectionResolverInterface
+     * @var \Illuminate\Database\DatabaseManager
      */
-    protected $connection;
+    protected $database;
 
     /**
      * DatabaseRepository constructor.
      *
-     * @param \Illuminate\Foundation\Application      $application
-     * @param \Illuminate\Database\ConnectionResolver $connection
+     * @param \Illuminate\Foundation\Application   $application
+     * @param \Illuminate\Database\DatabaseManager $database
      */
     public function __construct(
         Application $application,
-        ConnectionResolver $connection
+        DatabaseManager $database
     ) {
         parent::__construct($application);
 
-        $this->connection = $connection;
+        $this->database = $database;
     }
 
     /**
@@ -150,6 +150,6 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      */
     protected function runStatement($statement, $connection = null)
     {
-        return $this->connection->connection($connection)->statement($statement);
+        return $this->database->connection($connection)->statement($statement);
     }
 }

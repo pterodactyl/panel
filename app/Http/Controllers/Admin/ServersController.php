@@ -64,6 +64,11 @@ class ServersController extends Controller
     protected $databaseRepository;
 
     /**
+     * @var \Pterodactyl\Services\Database\CreationService
+     */
+    protected $databaseCreationService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     protected $databaseHostRepository;
@@ -97,6 +102,7 @@ class ServersController extends Controller
         AllocationRepositoryInterface $allocationRepository,
         ConfigRepository $config,
         CreationService $service,
+        \Pterodactyl\Services\Database\CreationService $databaseCreationService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
         LocationRepositoryInterface $locationRepository,
@@ -106,6 +112,7 @@ class ServersController extends Controller
     ) {
         $this->allocationRepository = $allocationRepository;
         $this->config = $config;
+        $this->databaseCreationService = $databaseCreationService;
         $this->databaseRepository = $databaseRepository;
         $this->databaseHostRepository = $databaseHostRepository;
         $this->locationRepository = $locationRepository;
@@ -583,20 +590,25 @@ class ServersController extends Controller
      */
     public function newDatabase(Request $request, $id)
     {
-        $repo = new DatabaseRepository;
-
-        try {
-            $repo->create($id, $request->only(['host', 'database', 'connection']));
-
-            Alert::success('A new database was assigned to this server successfully.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An exception occured while attempting to add a new database for this server. This error has been logged.')->flash();
-        }
+        $this->databaseCreationService->create($id, [
+            'database' => $request->input('database'),
+            'remote' => $request->input('remote'),
+            'database_host_id' => $request->input('database_host_id'),
+        ]);
+//        $repo = new DatabaseRepository;
+//
+//        try {
+//            $repo->create($id, $request->only(['host', 'database', 'connection']));
+//
+//            Alert::success('A new database was assigned to this server successfully.')->flash();
+//        } catch (DisplayValidationException $ex) {
+//            return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
+//        } catch (DisplayException $ex) {
+//            Alert::danger($ex->getMessage())->flash();
+//        } catch (\Exception $ex) {
+//            Log::error($ex);
+//            Alert::danger('An exception occured while attempting to add a new database for this server. This error has been logged.')->flash();
+//        }
 
         return redirect()->route('admin.servers.view.database', $id)->withInput();
     }

@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Services\Database;
 
-use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -54,14 +54,14 @@ class DatabaseHostService
     /**
      * DatabaseHostService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      * @param \Illuminate\Database\DatabaseManager                              $database
+     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      * @param \Pterodactyl\Extensions\DynamicDatabaseConnection                 $dynamic
      * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
      */
     public function __construct(
-        DatabaseHostRepositoryInterface $repository,
         DatabaseManager $database,
+        DatabaseHostRepositoryInterface $repository,
         DynamicDatabaseConnection $dynamic,
         Encrypter $encrypter
     ) {
@@ -74,7 +74,7 @@ class DatabaseHostService
     /**
      * Create a new database host and persist it to the database.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Pterodactyl\Models\DatabaseHost
      *
      * @throws \Throwable
@@ -106,11 +106,11 @@ class DatabaseHostService
     /**
      * Update a database host and persist to the database.
      *
-     * @param  int    $id
-     * @param  array  $data
+     * @param  int   $id
+     * @param  array $data
      * @return mixed
      *
-     * @throws \PDOException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function update($id, array $data)
     {
@@ -135,7 +135,7 @@ class DatabaseHostService
     /**
      * Delete a database host if it has no active databases attached to it.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return bool|null
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

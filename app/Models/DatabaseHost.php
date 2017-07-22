@@ -27,8 +27,9 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class DatabaseHost extends Model
+class DatabaseHost extends Model implements ValidableContract
 {
     use Eloquence, Validable;
 
@@ -52,7 +53,7 @@ class DatabaseHost extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
     ];
 
     /**
@@ -79,11 +80,12 @@ class DatabaseHost extends Model
         'node_id' => 'sometimes|required',
     ];
 
-    /**
-     * Validation rules to assign to this model.
-     *
-     * @var array
-     */
+/**
+ * Validation rules to assign to this model.
+ *
+ * @var array
+ */
+    // @todo the node_id field doesn't validate correctly if no node is provided in request
     protected static $dataIntegrityRules = [
         'name' => 'string|max:255',
         'host' => 'ip|unique:database_hosts,host',

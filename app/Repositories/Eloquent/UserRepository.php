@@ -93,4 +93,22 @@ class UserRepository extends SearchableRepository implements UserRepositoryInter
 
         return $user->delete();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function filterUsersByQuery($query)
+    {
+        $this->withColumns([
+            'id', 'email', 'username', 'name_first', 'name_last',
+        ]);
+
+        $instance = $this->getBuilder()->search($query)->get($this->getColumns());
+
+        return $instance->transform(function ($item) {
+            $item->md5 = md5(strtolower($item->email));
+
+            return $item;
+        });
+    }
 }

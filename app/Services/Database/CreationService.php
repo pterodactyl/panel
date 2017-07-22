@@ -24,8 +24,7 @@
 
 namespace Pterodactyl\Services\Database;
 
-use Illuminate\Database\ConnectionResolver;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
@@ -33,12 +32,7 @@ use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 class CreationService
 {
     /**
-     * @var \Illuminate\Database\ConnectionResolver
-     */
-    protected $connection;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\DatabaseManager
      */
     protected $database;
 
@@ -60,20 +54,17 @@ class CreationService
     /**
      * CreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                      $database
-     * @param \Illuminate\Database\ConnectionResolver                       $connection
+     * @param \Illuminate\Database\DatabaseManager                          $database
      * @param \Pterodactyl\Extensions\DynamicDatabaseConnection             $dynamic
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
      * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
      */
     public function __construct(
-        ConnectionInterface $database,
-        ConnectionResolver $connection,
+        DatabaseManager $database,
         DynamicDatabaseConnection $dynamic,
         DatabaseRepositoryInterface $repository,
         Encrypter $encrypter
     ) {
-        $this->connection = $connection;
         $this->database = $database;
         $this->dynamic = $dynamic;
         $this->encrypter = $encrypter;
@@ -83,6 +74,7 @@ class CreationService
     /**
      * Create a new database that is linked to a specific host.
      *
+     * @param  int   $server
      * @param  array $data
      * @return \Illuminate\Database\Eloquent\Model
      *
@@ -90,10 +82,11 @@ class CreationService
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $data)
+    public function create($server, array $data)
     {
-        $data['database'] = sprintf('d%d_%s', $data['server_id'], $data['database']);
-        $data['username'] = sprintf('u%d_%s', $data['server_id'], str_random(10));
+        $data['server_id'] = $server;
+        $data['database'] = sprintf('d%d_%s', $server, $data['database']);
+        $data['username'] = sprintf('u%d_%s', $server, str_random(10));
         $data['password'] = $this->encrypter->encrypt(str_random(16));
 
         $this->database->beginTransaction();

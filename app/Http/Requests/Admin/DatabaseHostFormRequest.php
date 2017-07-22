@@ -33,17 +33,10 @@ class DatabaseHostFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        $this->merge([
-            'node_id' => ($this->input('node_id') < 1) ? null : $this->input('node_id'),
-            'host' => gethostbyname($this->input('host')),
-        ]);
-
-        $rules = app()->make(DatabaseHost::class)->getRules();
-
-        if ($this->method() === 'PATCH') {
-            $rules['host'] = $rules['host'] . ',' . $this->route()->parameter('host')->id;
+        if ($this->method() !== 'POST') {
+            return DatabaseHost::getUpdateRulesForId($this->route()->parameter('host')->id);
         }
 
-        return $rules;
+        return DatabaseHost::getCreateRules();
     }
 }
