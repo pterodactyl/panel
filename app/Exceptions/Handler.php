@@ -5,6 +5,8 @@ namespace Pterodactyl\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Prologue\Alerts\Facades\Alert;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -20,7 +22,9 @@ class Handler extends ExceptionHandler
         \Illuminate\Database\Eloquent\ModelNotFoundException::class,
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
-        \Pterodactyl\Exceptions\Model\DataValidationException::class,
+        DisplayException::class,
+        DisplayValidationException::class,
+        DataValidationException::class,
     ];
 
     /**
@@ -51,7 +55,7 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
             $exception = $this->prepareException($exception);
 
-            if (config('app.debug') || $this->isHttpException($exception)) {
+            if (config('app.debug') || $this->isHttpException($exception) || $exception instanceof DisplayException) {
                 $displayError = $exception->getMessage();
             } else {
                 $displayError = 'An unhandled exception was encountered with this request.';
@@ -64,6 +68,10 @@ class Handler extends ExceptionHandler
             ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
 
             parent::report($exception);
+        } elseif ($exception instanceof DisplayException) {
+            Alert::danger($exception->getMessage())->flash();
+
+            return redirect()->back()->withInput();
         }
 
         return (isset($response)) ? $response : parent::render($request, $exception);
@@ -72,8 +80,8 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request                  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @param  \Illuminate\Http\Request                 $request
+     * @param  \Illuminate\Auth\AuthenticationException $exception
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)

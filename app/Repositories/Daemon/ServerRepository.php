@@ -83,4 +83,14 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
             'json' => $data,
         ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function update(array $data)
+    {
+        return $this->getHttpClient()->request('PATCH', '/server', [
+            'json' => $data,
+        ]);
+    }
 }

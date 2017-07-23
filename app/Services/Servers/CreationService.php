@@ -25,7 +25,7 @@
 namespace Pterodactyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -46,7 +46,7 @@ class CreationService
     protected $daemonServerRepository;
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\DatabaseManager
      */
     protected $database;
 
@@ -84,35 +84,35 @@ class CreationService
      * CreationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
-     * @param \Illuminate\Database\ConnectionInterface                            $database
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \Illuminate\Database\DatabaseManager                                $database
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface           $nodeRepository
-     * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
+     * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
-        ConnectionInterface $database,
-        ServerRepositoryInterface $repository,
         DaemonServerRepositoryInterface $daemonServerRepository,
-        ServerVariableRepositoryInterface $serverVariableRepository,
+        DatabaseManager $database,
         NodeRepositoryInterface $nodeRepository,
-        UsernameGenerationService $usernameService,
+        ServerRepositoryInterface $repository,
+        ServerVariableRepositoryInterface $serverVariableRepository,
         UserRepositoryInterface $userRepository,
+        UsernameGenerationService $usernameService,
         VariableValidatorService $validatorService
     ) {
         $this->allocationRepository = $allocationRepository;
+        $this->daemonServerRepository = $daemonServerRepository;
         $this->database = $database;
-        $this->repository = $repository;
         $this->nodeRepository = $nodeRepository;
+        $this->repository = $repository;
+        $this->serverVariableRepository = $serverVariableRepository;
         $this->userRepository = $userRepository;
         $this->usernameService = $usernameService;
         $this->validatorService = $validatorService;
-        $this->serverVariableRepository = $serverVariableRepository;
-        $this->daemonServerRepository = $daemonServerRepository;
     }
 
     /**
@@ -126,9 +126,6 @@ class CreationService
     public function create(array $data)
     {
         // @todo auto-deployment
-        $data['user_id'] = 1;
-
-        $node = $this->nodeRepository->find($data['node_id']);
         $validator = $this->validatorService->setAdmin()->setFields($data['environment'])->validate($data['option_id']);
         $uniqueShort = bin2hex(random_bytes(4));
 
@@ -136,7 +133,7 @@ class CreationService
 
         $server = $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
-            'uuidShort' => bin2hex(random_bytes(4)),
+            'uuidShort' => $uniqueShort,
             'node_id' => $data['node_id'],
             'name' => $data['name'],
             'description' => $data['description'],
@@ -152,7 +149,7 @@ class CreationService
             'allocation_id' => $data['allocation_id'],
             'service_id' => $data['service_id'],
             'option_id' => $data['option_id'],
-            'pack_id' => ($data['pack_id'] == 0) ? null : $data['pack_id'],
+            'pack_id' => (! isset($data['pack_id']) || $data['pack_id'] == 0) ? null : $data['pack_id'],
             'startup' => $data['startup'],
             'daemonSecret' => bin2hex(random_bytes(18)),
             'image' => $data['docker_image'],
@@ -181,9 +178,7 @@ class CreationService
         $this->serverVariableRepository->insert($records);
 
         // Create the server on the daemon & commit it to the database.
-        $this->daemonServerRepository->setNode($server->node_id)
-                                     ->setAccessToken($node->daemonSecret)
-                                     ->create($server->id);
+        $this->daemonServerRepository->setNode($server->node_id)->create($server->id);
 
         $this->database->commit();
 

@@ -110,8 +110,6 @@ Route::group(['prefix' => 'servers'], function () {
 
     Route::post('/new', 'ServersController@store');
     Route::post('/new/nodes', 'ServersController@nodes')->name('admin.servers.new.nodes');
-    Route::post('/view/{id}/details', 'ServersController@setDetails');
-    Route::post('/view/{id}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
     Route::post('/view/{id}/build', 'ServersController@updateBuild');
     Route::post('/view/{id}/startup', 'ServersController@saveStartup');
     Route::post('/view/{id}/database', 'ServersController@newDatabase');
@@ -121,6 +119,8 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{id}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
     Route::post('/view/{id}/delete', 'ServersController@delete');
 
+    Route::patch('/view/{server}/details', 'ServersController@setDetails');
+    Route::patch('/view/{server}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
     Route::patch('/view/{id}/database', 'ServersController@resetDatabasePassword');
 
     Route::delete('/view/{id}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');

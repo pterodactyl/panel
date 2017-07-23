@@ -27,9 +27,8 @@ namespace Pterodactyl\Services\Servers;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayValidationException;
-use Illuminate\Validation\Factory as ValidationFactory;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Services\Servers\RequiredVariableMissingException;
 
 class VariableValidatorService
 {
@@ -64,10 +63,18 @@ class VariableValidatorService
     protected $serverVariableRepository;
 
     /**
-     * @var \Illuminate\Validation\Factory
+     * @var \Illuminate\Contracts\Validation\Factory
      */
     protected $validator;
 
+    /**
+     * VariableValidatorService constructor.
+     *
+     * @param \Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface $optionVariableRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \Illuminate\Contracts\Validation\Factory                            $validator
+     */
     public function __construct(
         OptionVariableRepositoryInterface $optionVariableRepository,
         ServerRepositoryInterface $serverRepository,
@@ -121,14 +128,6 @@ class VariableValidatorService
         }
 
         $variables->each(function ($item) {
-            if (! isset($this->fields[$item->env_variable]) && $item->required) {
-                if ($item->required) {
-                    throw new RequiredVariableMissingException(
-                        sprintf('Required service option variable %s was missing from this request.', $item->env_variable)
-                    );
-                }
-            }
-
             // Skip doing anything if user is not an admin and variable is not user viewable
             // or editable.
             if (! $this->isAdmin && (! $item->user_editable || ! $item->user_viewable)) {
@@ -145,7 +144,7 @@ class VariableValidatorService
                 throw new DisplayValidationException(json_encode(
                     collect([
                         'notice' => [
-                            sprintf('There was a validation error with the %s variable.', $item->name),
+                            trans('admin/server.exceptions.bad_variable', ['name' => $item->name]),
                         ],
                     ])->merge($validator->errors()->toArray())
                 ));

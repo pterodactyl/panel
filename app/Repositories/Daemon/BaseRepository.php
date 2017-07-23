@@ -88,11 +88,13 @@ class BaseRepository implements BaseRepositoryInterface
     public function getHttpClient($headers = [])
     {
         if (! is_null($this->accessServer)) {
-            $headers[] = ['X-Access-Server' => $this->getAccessServer()];
+            $headers['X-Access-Server'] = $this->getAccessServer();
         }
 
         if (! is_null($this->accessToken)) {
-            $headers[] = ['X-Access-Token' => $this->getAccessToken()];
+            $headers['X-Access-Token'] = $this->getAccessToken();
+        } elseif (! is_null($this->node)) {
+            $headers['X-Access-Token'] = $this->getNode()->daemonSecret;
         }
 
         return new Client([

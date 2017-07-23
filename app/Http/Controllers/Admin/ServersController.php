@@ -28,6 +28,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Log;
 use Alert;
 use Javascript;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
@@ -36,18 +37,23 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Models;
+use Pterodactyl\Models\Server;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Repositories\ServerRepository;
-use Pterodactyl\Repositories\DatabaseRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Services\Servers\CreationService;
+use Pterodactyl\Services\Servers\DetailsModificationService;
 
 class ServersController extends Controller
 {
+    /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
@@ -72,6 +78,11 @@ class ServersController extends Controller
      * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     protected $databaseHostRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\DetailsModificationService
+     */
+    protected $detailsModificationService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
@@ -99,22 +110,26 @@ class ServersController extends Controller
     protected $serviceRepository;
 
     public function __construct(
+        AlertsMessageBag $alert,
         AllocationRepositoryInterface $allocationRepository,
         ConfigRepository $config,
         CreationService $service,
         \Pterodactyl\Services\Database\CreationService $databaseCreationService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
+        DetailsModificationService $detailsModificationService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $nodeRepository,
         ServerRepositoryInterface $repository,
         ServiceRepositoryInterface $serviceRepository
     ) {
+        $this->alert = $alert;
         $this->allocationRepository = $allocationRepository;
         $this->config = $config;
         $this->databaseCreationService = $databaseCreationService;
         $this->databaseRepository = $databaseRepository;
         $this->databaseHostRepository = $databaseHostRepository;
+        $this->detailsModificationService = $detailsModificationService;
         $this->locationRepository = $locationRepository;
         $this->nodeRepository = $nodeRepository;
         $this->repository = $repository;
@@ -321,61 +336,40 @@ class ServersController extends Controller
     /**
      * Update the details for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function setDetails(ServerFormRequest $request, Models\Server $server)
+    public function setDetails(Request $request, Server $server)
     {
-        dd($server);
-        $repo = new ServerRepository;
-        try {
-            $repo->updateDetails($id, array_merge(
-                $request->only('description'),
-                $request->intersect([
-                    'owner_id', 'name', 'reset_token',
-                ])
-            ));
+        $this->detailsModificationService->edit($server, $request->only([
+            'owner_id', 'name', 'description', 'reset_token',
+        ]));
 
-            Alert::success('Server details were successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update this server. This error has been logged.')->flash();
-        }
+        $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();
 
-        return redirect()->route('admin.servers.view.details', $id)->withInput();
+        return redirect()->route('admin.servers.view.details', $server->id);
     }
 
     /**
      * Set the new docker container for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function setContainer(Request $request, $id)
+    public function setContainer(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->detailsModificationService->setDockerImage($server, $request->input('docker_image'));
+        $this->alert->success(trans('admin/server.alerts.docker_image_updated'))->flash();
 
-        try {
-            $repo->updateContainer($id, $request->intersect('docker_image'));
-
-            Alert::success('Successfully updated this server\'s docker image.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.');
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.details', $id);
+        return redirect()->route('admin.servers.view.details', $server->id);
     }
 
     /**

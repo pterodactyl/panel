@@ -36,10 +36,6 @@ class ServerFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        if ($this->method() === 'PATCH') {
-            return Server::getUpdateRulesForId($this->id);
-        }
-
         return Server::getCreateRules();
     }
 

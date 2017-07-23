@@ -35,4 +35,12 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function create($id, $overrides = [], $start = false);
+
+    /**
+     * Update server details on the daemon.
+     *
+     * @param  array $data
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function update(array $data);
 }

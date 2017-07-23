@@ -11,8 +11,36 @@
 |
 */
 
+\Sofa\Eloquence\Model::unsetEventDispatcher();
+
+$factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->randomNumber(),
+        'uuid' => $faker->uuid,
+        'uuidShort' => str_random(8),
+        'name' => $faker->firstName,
+        'description' => implode(' ', $faker->sentences()),
+        'skip_scripts' => 0,
+        'suspended' => 0,
+        'memory' => 512,
+        'swap' => 0,
+        'disk' => 512,
+        'io' => 500,
+        'cpu' => 0,
+        'oom_disabled' => 0,
+        'pack_id' => null,
+        'daemonSecret' => $faker->uuid,
+        'username' => $faker->userName,
+        'sftp_password' => null,
+        'installed' => 1,
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
+    ];
+});
+
 $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $faker) {
     return [
+        'id' => $faker->randomNumber(),
         'external_id' => null,
         'uuid' => $faker->uuid,
         'username' => $faker->userName,
@@ -56,4 +84,27 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
         'daemonSFTP' => 2022,
         'daemonBase' => '/srv/daemon',
     ];
+});
+
+$factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->randomNumber(),
+        'name' => $faker->firstName,
+        'description' => $faker->sentence(),
+        'env_variable' => strtoupper(str_replace(' ', '_', $faker->words(2, true))),
+        'default_value' => $faker->colorName,
+        'user_viewable' => 0,
+        'user_editable' => 0,
+        'rules' => 'required|string',
+        'created_at' => \Carbon\Carbon::now(),
+        'updated_at' => \Carbon\Carbon::now(),
+   ];
+});
+
+$factory->state(Pterodactyl\Models\ServiceVariable::class, 'viewable', function () {
+    return ['user_viewable' => 1];
+});
+
+$factory->state(Pterodactyl\Models\ServiceVariable::class, 'editable', function () {
+    return ['user_editable' => 1];
 });

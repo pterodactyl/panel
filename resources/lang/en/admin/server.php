@@ -22,34 +22,13 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Servers;
-
-class UsernameGenerationService
-{
-    /**
-     * Generate a unique username to be used for SFTP connections and identification
-     * of the server docker container on the host system.
-     *
-     * @param  string $name
-     * @param  null   $identifier
-     * @return string
-     */
-    public function generate($name, $identifier = null)
-    {
-        if (is_null($identifier) || ! ctype_alnum($identifier)) {
-            $unique = bin2hex(random_bytes(4));
-        } else {
-            if (strlen($identifier) < 8) {
-                $unique = $identifier . str_random((8 - strlen($identifier)));
-            } else {
-                $unique = substr($identifier, 0, 8);
-            }
-        }
-
-        // Filter the Server Name
-        $name = trim(preg_replace('/[^A-Za-z0-9]+/', '', $name), '_');
-        $name = (strlen($name) < 1) ? str_random(6) : $name;
-
-        return strtolower(substr($name, 0, 6) . '_' . $unique);
-    }
-}
+return [
+    'exceptions' => [
+        'bad_variable' => 'There was a validation error with the :name variable.',
+        'daemon_exception' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
+    ],
+    'alerts' => [
+        'details_updated' => 'Server details have been successfully updated.',
+        'docker_image_updated' => 'Successfully changed the default Docker image to use for this server. A reboot is required to apply this change.',
+    ],
+];
