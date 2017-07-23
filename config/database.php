@@ -44,19 +44,6 @@ return [
             'prefix'    => '',
             'strict'    => false,
         ],
-
-        'tests' => [
-            'driver'    => 'mysql',
-            'host'      => env('TEST_DB_HOST', 'localhost'),
-            'port'      => env('TEST_DB_PORT', '3306'),
-            'database'  => env('TEST_DB_DATABASE', 'travis'),
-            'username'  => env('TEST_DB_USERNAME', 'root'),
-            'password'  => env('TEST_DB_PASSWORD', ''),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-        ],
     ],
 
     /*
