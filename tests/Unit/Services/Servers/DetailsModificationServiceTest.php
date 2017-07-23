@@ -310,8 +310,7 @@ class DetailsModificationServiceTest extends TestCase
 
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturn(true);
 
-        $response = $this->service->setDockerImage($server, 'new/image');
-        $this->assertTrue($response);
+        $this->service->setDockerImage($server, 'new/image');
     }
 
     /**
@@ -338,8 +337,7 @@ class DetailsModificationServiceTest extends TestCase
 
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturn(true);
 
-        $response = $this->service->setDockerImage($server->id, 'new/image');
-        $this->assertTrue($response);
+        $this->service->setDockerImage($server->id, 'new/image');
     }
 
     /**

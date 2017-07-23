@@ -36,7 +36,6 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
-use Pterodactyl\Models;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\TransferException;
@@ -44,8 +43,12 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Database\CreationService as DatabaseCreationService;
+use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\CreationService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
+use Pterodactyl\Services\Servers\ReinstallService;
+use Pterodactyl\Services\Servers\SuspensionService;
 
 class ServersController extends Controller
 {
@@ -63,6 +66,11 @@ class ServersController extends Controller
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ContainerRebuildService
+     */
+    protected $containerRebuildService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
@@ -95,6 +103,11 @@ class ServersController extends Controller
     protected $nodeRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ReinstallService
+     */
+    protected $reinstallService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
@@ -109,32 +122,62 @@ class ServersController extends Controller
      */
     protected $serviceRepository;
 
+    /**
+     * @var \Pterodactyl\Services\Servers\SuspensionService
+     */
+    protected $suspensionService;
+
+    /**
+     * ServersController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                               $alert
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Illuminate\Contracts\Config\Repository                         $config
+     * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
+     * @param \Pterodactyl\Services\Servers\CreationService                   $service
+     * @param \Pterodactyl\Services\Database\CreationService                  $databaseCreationService
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
+     * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
+     * @param \Pterodactyl\Services\Servers\DetailsModificationService        $detailsModificationService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
+     * @param \Pterodactyl\Services\Servers\ReinstallService                  $reinstallService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface    $serviceRepository
+     * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
+     */
     public function __construct(
         AlertsMessageBag $alert,
         AllocationRepositoryInterface $allocationRepository,
         ConfigRepository $config,
+        ContainerRebuildService $containerRebuildService,
         CreationService $service,
-        \Pterodactyl\Services\Database\CreationService $databaseCreationService,
+        DatabaseCreationService $databaseCreationService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
         DetailsModificationService $detailsModificationService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $nodeRepository,
+        ReinstallService $reinstallService,
         ServerRepositoryInterface $repository,
-        ServiceRepositoryInterface $serviceRepository
+        ServiceRepositoryInterface $serviceRepository,
+        SuspensionService $suspensionService
     ) {
         $this->alert = $alert;
         $this->allocationRepository = $allocationRepository;
         $this->config = $config;
+        $this->containerRebuildService = $containerRebuildService;
         $this->databaseCreationService = $databaseCreationService;
         $this->databaseRepository = $databaseRepository;
         $this->databaseHostRepository = $databaseHostRepository;
         $this->detailsModificationService = $detailsModificationService;
         $this->locationRepository = $locationRepository;
         $this->nodeRepository = $nodeRepository;
+        $this->reinstallService = $reinstallService;
         $this->repository = $repository;
         $this->service = $service;
         $this->serviceRepository = $serviceRepository;
+        $this->suspensionService = $suspensionService;
     }
 
     /**
@@ -192,7 +235,8 @@ class ServersController extends Controller
             return redirect()->route('admin.servers.view', $server->id);
         } catch (TransferException $ex) {
             Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.servers.new')->withInput();
@@ -375,47 +419,41 @@ class ServersController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function toggleInstall(Request $request, $id)
+    public function toggleInstall(Server $server)
     {
-        $repo = new ServerRepository;
-        try {
-            $repo->toggleInstall($id);
-
-            Alert::success('Server install status was successfully toggled.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to toggle this servers status. This error has been logged.')->flash();
+        if ($server->installed > 1) {
+            throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
         }
 
-        return redirect()->route('admin.servers.view.manage', $id);
+        $this->repository->update($server->id, [
+            'installed' => ! $server->installed,
+        ]);
+
+        $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();
+
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
      * Reinstalls the server with the currently assigned pack and service.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int $id
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function reinstallServer(Request $request, $id)
+    public function reinstallServer($id)
     {
-        $repo = new ServerRepository;
-        try {
-            $repo->reinstall($id);
-
-            Alert::success('Server successfully marked for reinstallation.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to perform this reinstallation. This error has been logged.')->flash();
-        }
+        $this->reinstallService->reinstall($id);
+        $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $id);
     }
@@ -423,60 +461,37 @@ class ServersController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function rebuildContainer(Request $request, $id)
+    public function rebuildContainer(Server $server)
     {
-        $server = Models\Server::with('node')->findOrFail($id);
+        $this->containerRebuildService->rebuild($server);
+        $this->alert->success(trans('admin/server.alerts.rebuild_on_boot'))->flash();
 
-        try {
-            $server->node->guzzleClient([
-                'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $server->node->daemonSecret,
-            ])->request('POST', '/server/rebuild');
-
-            Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.manage', $id);
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
      * Manage the suspension status for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function manageSuspension(Request $request, $id)
+    public function manageSuspension(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
-        $action = $request->input('action');
+        $this->suspensionService->toggle($server, $request->input('action'));
+        $this->alert->success(trans('admin/server.alerts.suspension_toggled', [
+            'status' => $request->input('action') . 'ed',
+        ]))->flash();
 
-        if (! in_array($action, ['suspend', 'unsuspend'])) {
-            Alert::danger('Invalid action was passed to function.')->flash();
-
-            return redirect()->route('admin.servers.view.manage', $id);
-        }
-
-        try {
-            $repo->toggleAccess($id, ($action === 'unsuspend'));
-
-            Alert::success('Server has been ' . $action . 'ed.');
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to ' . $action . ' this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.manage', $id);
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
@@ -498,15 +513,20 @@ class ServersController extends Controller
 
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.build', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()
+                ->route('admin.servers.view.build', $id)
+                ->withErrors(json_decode($ex->getMessage()))
+                ->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (TransferException $ex) {
             Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')
+                ->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.servers.view.build', $id);
@@ -532,10 +552,12 @@ class ServersController extends Controller
             Alert::danger($ex->getMessage())->flash();
         } catch (TransferException $ex) {
             Log::warning($ex);
-            Alert::danger('A TransferException occurred while attempting to delete this server from the daemon, please ensure it is running. This error has been logged.')->flash();
+            Alert::danger('A TransferException occurred while attempting to delete this server from the daemon, please ensure it is running. This error has been logged.')
+                ->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.servers.view.delete', $id);
@@ -554,7 +576,8 @@ class ServersController extends Controller
 
         try {
             if ($repo->updateStartup($id, $request->except('_token'), true)) {
-                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')->flash();
+                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')
+                    ->flash();
 
                 return redirect()->route('admin.servers.view', $id);
             } else {
@@ -566,10 +589,12 @@ class ServersController extends Controller
             Alert::danger($ex->getMessage())->flash();
         } catch (TransferException $ex) {
             Log::warning($ex);
-            Alert::danger('A TransferException occurred while attempting to update the startup for this server, please ensure the daemon is running. This error has been logged.')->flash();
+            Alert::danger('A TransferException occurred while attempting to update the startup for this server, please ensure the daemon is running. This error has been logged.')
+                ->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. This error has been logged.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.servers.view.startup', $id);

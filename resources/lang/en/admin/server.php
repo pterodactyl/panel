@@ -24,10 +24,15 @@
 
 return [
     'exceptions' => [
+        'marked_as_failed' => 'This server was marked as having failed a previous installation. Current status cannot be toggled in this state.',
         'bad_variable' => 'There was a validation error with the :name variable.',
         'daemon_exception' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
     ],
     'alerts' => [
+        'suspension_toggled' => 'Server suspension status has been changed to :status.',
+        'rebuild_on_boot' => 'This server has been marked as requiring a Docker Container rebuild. This will happen the next time the server is started.',
+        'install_toggled' => 'The installation status for this server has been toggled.',
+        'server_reinstalled' => 'This server has been queued for a reinstallation beginning now.',
         'details_updated' => 'Server details have been successfully updated.',
         'docker_image_updated' => 'Successfully changed the default Docker image to use for this server. A reboot is required to apply this change.',
     ],

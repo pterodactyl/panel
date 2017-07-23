@@ -146,7 +146,7 @@ class DetailsModificationService
                 ],
             ]);
 
-            return $this->database->commit();
+            $this->database->commit();
         } catch (RequestException $exception) {
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
                 'code' => $exception->getResponse()->getStatusCode(),

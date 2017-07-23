@@ -43,4 +43,32 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(array $data);
+
+    /**
+     * Mark a server to be reinstalled on the system.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function reinstall();
+
+    /**
+     * Mark a server as needing a container rebuild the next time the server is booted.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function rebuild();
+
+    /**
+     * Suspend a server on the daemon.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function suspend();
+
+    /**
+     * Un-suspend a server on the daemon.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function unsuspend();
 }

@@ -93,4 +93,36 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
             'json' => $data,
         ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function reinstall()
+    {
+        return $this->getHttpClient()->request('POST', '/server/reinstall');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rebuild()
+    {
+        return $this->getHttpClient()->request('POST', '/server/rebuild');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function suspend()
+    {
+        return $this->getHttpClient()->request('POST', '/server/suspend');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function unsuspend()
+    {
+        return $this->getHttpClient()->request('POST', '/server/unsuspend');
+    }
 }

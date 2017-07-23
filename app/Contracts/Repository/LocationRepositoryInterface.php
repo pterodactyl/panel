@@ -38,4 +38,21 @@ interface LocationRepositoryInterface extends RepositoryInterface, SearchableInt
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function deleteIfNoNodes($id);
+
+    /**
+     * Return locations with a count of nodes and servers attached to it.
+     *
+     * @return mixed
+     */
+    public function allWithDetails();
+
+    /**
+     * Return all of the nodes and their respective count of servers for a location.
+     *
+     * @param  int $id
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithNodes($id);
 }

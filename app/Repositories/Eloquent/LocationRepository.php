@@ -76,4 +76,26 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
 
         return $location->delete();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function allWithDetails()
+    {
+        return $this->getBuilder()->withCount('nodes', 'servers')->get($this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithNodes($id)
+    {
+        $instance = $this->getBuilder()->with('nodes.servers')->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
 }

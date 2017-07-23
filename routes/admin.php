@@ -100,30 +100,30 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'servers'], function () {
     Route::get('/', 'ServersController@index')->name('admin.servers');
     Route::get('/new', 'ServersController@create')->name('admin.servers.new');
-    Route::get('/view/{id}', 'ServersController@viewIndex')->name('admin.servers.view');
-    Route::get('/view/{id}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
-    Route::get('/view/{id}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
-    Route::get('/view/{id}/startup', 'ServersController@viewStartup')->name('admin.servers.view.startup');
-    Route::get('/view/{id}/database', 'ServersController@viewDatabase')->name('admin.servers.view.database');
-    Route::get('/view/{id}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
-    Route::get('/view/{id}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
+    Route::get('/view/{server}', 'ServersController@viewIndex')->name('admin.servers.view');
+    Route::get('/view/{server}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
+    Route::get('/view/{server}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
+    Route::get('/view/{server}/startup', 'ServersController@viewStartup')->name('admin.servers.view.startup');
+    Route::get('/view/{server}/database', 'ServersController@viewDatabase')->name('admin.servers.view.database');
+    Route::get('/view/{server}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
+    Route::get('/view/{server}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
 
     Route::post('/new', 'ServersController@store');
     Route::post('/new/nodes', 'ServersController@nodes')->name('admin.servers.new.nodes');
-    Route::post('/view/{id}/build', 'ServersController@updateBuild');
-    Route::post('/view/{id}/startup', 'ServersController@saveStartup');
-    Route::post('/view/{id}/database', 'ServersController@newDatabase');
-    Route::post('/view/{id}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
-    Route::post('/view/{id}/manage/rebuild', 'ServersController@rebuildContainer')->name('admin.servers.view.manage.rebuild');
-    Route::post('/view/{id}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
-    Route::post('/view/{id}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
-    Route::post('/view/{id}/delete', 'ServersController@delete');
+    Route::post('/view/{server}/build', 'ServersController@updateBuild');
+    Route::post('/view/{server}/startup', 'ServersController@saveStartup');
+    Route::post('/view/{server}/database', 'ServersController@newDatabase');
+    Route::post('/view/{server}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
+    Route::post('/view/{server}/manage/rebuild', 'ServersController@rebuildContainer')->name('admin.servers.view.manage.rebuild');
+    Route::post('/view/{server}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
+    Route::post('/view/{server}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
+    Route::post('/view/{server}/delete', 'ServersController@delete');
 
     Route::patch('/view/{server}/details', 'ServersController@setDetails');
     Route::patch('/view/{server}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
-    Route::patch('/view/{id}/database', 'ServersController@resetDatabasePassword');
+    Route::patch('/view/{server}/database', 'ServersController@resetDatabasePassword');
 
-    Route::delete('/view/{id}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');
+    Route::delete('/view/{server}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');
 });
 
 /*

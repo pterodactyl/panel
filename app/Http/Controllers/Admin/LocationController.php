@@ -24,12 +24,13 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\LocationRequest;
-use Pterodactyl\Services\Administrative\LocationService;
+use Pterodactyl\Services\LocationService;
 
 class LocationController extends Controller
 {
@@ -39,29 +40,29 @@ class LocationController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Models\Location
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
-    protected $locationModel;
+    protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Administrative\\LocationService
+     * @var \Pterodactyl\Services\\LocationService
      */
     protected $service;
 
     /**
      * LocationController constructor.
      *
-     * @param  \Prologue\Alerts\AlertsMessageBag                    $alert
-     * @param  \Pterodactyl\Models\Location                         $locationModel
-     * @param  \Pterodactyl\Services\Administrative\LocationService $service
+     * @param  \Prologue\Alerts\AlertsMessageBag                             $alert
+     * @param  \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param  \Pterodactyl\Services\LocationService                         $service
      */
     public function __construct(
         AlertsMessageBag $alert,
-        Location $locationModel,
+        LocationRepositoryInterface $repository,
         LocationService $service
     ) {
         $this->alert = $alert;
-        $this->locationModel = $locationModel;
+        $this->repository = $repository;
         $this->service = $service;
     }
 
@@ -73,21 +74,21 @@ class LocationController extends Controller
     public function index()
     {
         return view('admin.locations.index', [
-            'locations' => $this->locationModel->withCount('nodes', 'servers')->get(),
+            'locations' => $this->repository->allWithDetails(),
         ]);
     }
 
     /**
      * Return the location view page.
      *
-     * @param  \Pterodactyl\Models\Location  $location
+     * @param  int $id
      * @return \Illuminate\View\View
      */
-    public function view(Location $location)
+    public function view($id)
     {
-        $location->load('nodes.servers');
-
-        return view('admin.locations.view', ['location' => $location]);
+        return view('admin.locations.view', [
+            'location' => $this->repository->getWithNodes($id),
+        ]);
     }
 
     /**
@@ -132,7 +133,7 @@ class LocationController extends Controller
     /**
      * Delete a location from the system.
      *
-     * @param  \Pterodactyl\Models\Location  $location
+     * @param  \Pterodactyl\Models\Location $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
