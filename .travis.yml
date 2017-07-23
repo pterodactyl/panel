@@ -12,7 +12,7 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS travis;'
 before_script:
-  - phpenv config-rm xdebug.ini
+#  - phpenv config-rm xdebug.ini
   - cp .env.travis .env
   - composer install --no-interaction --prefer-dist --no-suggest --verbose
   - php artisan migrate --seed -v
