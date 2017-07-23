@@ -256,27 +256,25 @@ class ServersController extends Controller
     /**
      * Display the index when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
-    public function viewIndex(Request $request, $id)
+    public function viewIndex(Server $server)
     {
-        return view('admin.servers.view.index', ['server' => $this->repository->find($id)]);
+        return view('admin.servers.view.index', ['server' => $server]);
     }
 
     /**
      * Display the details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int $server
      * @return \Illuminate\View\View
      */
-    public function viewDetails(Request $request, $id)
+    public function viewDetails($server)
     {
         return view('admin.servers.view.details', [
             'server' => $this->repository->findFirstWhere([
-                ['id', '=', $id],
+                ['id', '=', $server],
                 ['installed', '=', 1],
             ]),
         ]);
@@ -285,14 +283,13 @@ class ServersController extends Controller
     /**
      * Display the build details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int $server
      * @return \Illuminate\View\View
      */
-    public function viewBuild(Request $request, $id)
+    public function viewBuild($server)
     {
         $server = $this->repository->findFirstWhere([
-            ['id', '=', $id],
+            ['id', '=', $server],
             ['installed', '=', 1],
         ]);
 
@@ -308,13 +305,12 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int $server
      * @return \Illuminate\View\View
      */
-    public function viewStartup(Request $request, $id)
+    public function viewStartup($server)
     {
-        $parameters = $this->repository->getVariablesWithValues($id, true);
+        $parameters = $this->repository->getVariablesWithValues($server, true);
         if (! $parameters->server->installed) {
             abort(404);
         }
@@ -339,13 +335,12 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int $server
      * @return \Illuminate\View\View
      */
-    public function viewDatabase(Request $request, $id)
+    public function viewDatabase($server)
     {
-        $server = $this->repository->getWithDatabases($id);
+        $server = $this->repository->getWithDatabases($server);
 
         return view('admin.servers.view.database', [
             'hosts' => $this->databaseHostRepository->all(),
@@ -356,32 +351,30 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
-    public function viewManage(Request $request, $id)
+    public function viewManage(Server $server)
     {
-        return view('admin.servers.view.manage', ['server' => $this->repository->find($id)]);
+        return view('admin.servers.view.manage', ['server' => $server]);
     }
 
     /**
      * Display the deletion page for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
-    public function viewDelete(Request $request, $id)
+    public function viewDelete(Server $server)
     {
-        return view('admin.servers.view.delete', ['server' => $this->repository->find($id)]);
+        return view('admin.servers.view.delete', ['server' => $server]);
     }
 
     /**
      * Update the details for a server.
      *
-     * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -443,19 +436,19 @@ class ServersController extends Controller
     /**
      * Reinstalls the server with the currently assigned pack and service.
      *
-     * @param  int $id
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function reinstallServer($id)
+    public function reinstallServer(Server $server)
     {
-        $this->reinstallService->reinstall($id);
+        $this->reinstallService->reinstall($server);
         $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
 
-        return redirect()->route('admin.servers.view.manage', $id);
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
@@ -604,38 +597,38 @@ class ServersController extends Controller
      * Creates a new database assigned to a specific server.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int                      $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function newDatabase(Request $request, $id)
+    public function newDatabase(Request $request, $server)
     {
-        $this->databaseCreationService->create($id, [
+        $this->databaseCreationService->create($server, [
             'database' => $request->input('database'),
             'remote' => $request->input('remote'),
             'database_host_id' => $request->input('database_host_id'),
         ]);
 
-        return redirect()->route('admin.servers.view.database', $id)->withInput();
+        return redirect()->route('admin.servers.view.database', $server)->withInput();
     }
 
     /**
      * Resets the database password for a specific database on this server.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int                      $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function resetDatabasePassword(Request $request, $id)
+    public function resetDatabasePassword(Request $request, $server)
     {
         $database = $this->databaseRepository->findFirstWhere([
-            ['server_id', '=', $id],
+            ['server_id', '=', $server],
             ['id', '=', $request->input('database')],
         ]);
 
@@ -647,18 +640,17 @@ class ServersController extends Controller
     /**
      * Deletes a database from a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
-     * @param  int                      $database
+     * @param  int $server
+     * @param  int $database
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function deleteDatabase(Request $request, $id, $database)
+    public function deleteDatabase($server, $database)
     {
         $database = $this->databaseRepository->findFirstWhere([
-            ['server_id', '=', $id],
+            ['server_id', '=', $server],
             ['id', '=', $database],
         ]);
 
