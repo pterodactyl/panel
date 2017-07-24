@@ -25,6 +25,7 @@
 namespace Tests\Unit\Services\Servers;
 
 use Exception;
+use Illuminate\Log\Writer;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
@@ -66,6 +67,11 @@ class DetailsModificationServiceTest extends TestCase
     protected $service;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -76,6 +82,7 @@ class DetailsModificationServiceTest extends TestCase
         $this->exception = m::mock(RequestException::class)->makePartial();
         $this->daemonServerRepository = m::mock(DaemonServerRepository::class);
         $this->repository = m::mock(ServerRepository::class);
+        $this->writer = m::mock(Writer::class);
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
             ->expects($this->any())->willReturn('randomString');
@@ -83,7 +90,8 @@ class DetailsModificationServiceTest extends TestCase
         $this->service = new DetailsModificationService(
             $this->database,
             $this->daemonServerRepository,
-            $this->repository
+            $this->repository,
+            $this->writer
         );
     }
 
@@ -243,7 +251,7 @@ class DetailsModificationServiceTest extends TestCase
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);
 
-        $this->database->shouldNotReceive('commit');
+        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
         try {
             $this->service->edit($server, $data);
@@ -281,7 +289,6 @@ class DetailsModificationServiceTest extends TestCase
             ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->andThrow(new Exception());
-        $this->database->shouldNotReceive('commit');
 
         $this->service->edit($server, $data);
     }
@@ -357,7 +364,7 @@ class DetailsModificationServiceTest extends TestCase
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);
 
-        $this->database->shouldNotReceive('commit');
+        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
         try {
             $this->service->setDockerImage($server, 'new/image');
@@ -385,7 +392,6 @@ class DetailsModificationServiceTest extends TestCase
             ])->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->andThrow(new Exception());
-        $this->database->shouldNotReceive('commit');
 
         $this->service->setDockerImage($server, 'new/image');
     }

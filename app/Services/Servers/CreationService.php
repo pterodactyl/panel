@@ -24,6 +24,9 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Log\Writer;
+use Pterodactyl\Exceptions\DisplayException;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -81,6 +84,11 @@ class CreationService
     protected $validatorService;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * CreationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
@@ -92,6 +100,7 @@ class CreationService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
      * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     * @param \Illuminate\Log\Writer                                              $writer
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
@@ -102,7 +111,8 @@ class CreationService
         ServerVariableRepositoryInterface $serverVariableRepository,
         UserRepositoryInterface $userRepository,
         UsernameGenerationService $usernameService,
-        VariableValidatorService $validatorService
+        VariableValidatorService $validatorService,
+        Writer $writer
     ) {
         $this->allocationRepository = $allocationRepository;
         $this->daemonServerRepository = $daemonServerRepository;
@@ -113,6 +123,7 @@ class CreationService
         $this->userRepository = $userRepository;
         $this->usernameService = $usernameService;
         $this->validatorService = $validatorService;
+        $this->writer = $writer;
     }
 
     /**
@@ -121,6 +132,7 @@ class CreationService
      * @param  array $data
      * @return mixed
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function create(array $data)
@@ -178,9 +190,17 @@ class CreationService
         $this->serverVariableRepository->insert($records);
 
         // Create the server on the daemon & commit it to the database.
-        $this->daemonServerRepository->setNode($server->node_id)->create($server->id);
+        try {
+            $this->daemonServerRepository->setNode($server->node_id)->create($server->id);
+            $this->database->commit();
+        } catch (RequestException $exception) {
+            $response = $exception->getResponse();
+            $this->writer->warning($exception);
 
-        $this->database->commit();
+            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
+                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
+            ]));
+        }
 
         return $server;
     }

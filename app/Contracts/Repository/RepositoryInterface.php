@@ -83,7 +83,7 @@ interface RepositoryInterface
     /**
      * Delete a given record from the database.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return bool|null
      */
     public function delete($id);
@@ -129,6 +129,17 @@ interface RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update($id, array $fields, $validate = true, $force = false);
+
+    /**
+     * Perform a mass update where matching records are updated using whereIn.
+     * This does not perform any model data validation.
+     *
+     * @param  string $column
+     * @param  array  $values
+     * @param  array  $fields
+     * @return int
+     */
+    public function updateWhereIn($column, array $values, array $fields);
 
     /**
      * Update multiple records matching the passed clauses.

@@ -26,6 +26,7 @@ namespace Pterodactyl\Services\Servers;
 
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Log\Writer;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
@@ -49,20 +50,28 @@ class SuspensionService
     protected $repository;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * SuspensionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $database
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \Illuminate\Log\Writer                                             $writer
      */
     public function __construct(
         ConnectionInterface $database,
         DaemonServerRepositoryInterface $daemonServerRepository,
-        ServerRepositoryInterface $repository
+        ServerRepositoryInterface $repository,
+        Writer $writer
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
         $this->database = $database;
         $this->repository = $repository;
+        $this->writer = $writer;
     }
 
     /**
@@ -106,8 +115,11 @@ class SuspensionService
 
             return true;
         } catch (RequestException $exception) {
+            $response = $exception->getResponse();
+            $this->writer->warning($exception);
+
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => $exception->getResponse()->getStatusCode(),
+                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }
     }

@@ -26,6 +26,7 @@ namespace Pterodactyl\Services\Servers;
 
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Log\Writer;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -49,20 +50,28 @@ class DetailsModificationService
     protected $repository;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * DetailsModificationService constructor.
      *
      * @param \Illuminate\Database\DatabaseManager                $database
      * @param \Pterodactyl\Repositories\Daemon\ServerRepository   $daemonServerRepository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Illuminate\Log\Writer                              $writer
      */
     public function __construct(
         DatabaseManager $database,
         DaemonServerRepository $daemonServerRepository,
-        ServerRepository $repository
+        ServerRepository $repository,
+        Writer $writer
     ) {
         $this->database = $database;
         $this->daemonServerRepository = $daemonServerRepository;
         $this->repository = $repository;
+        $this->writer = $writer;
     }
 
     /**
@@ -114,8 +123,11 @@ class DetailsModificationService
 
             return $this->database->commit();
         } catch (RequestException $exception) {
+            $response = $exception->getResponse();
+            $this->writer->warning($exception);
+
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => $exception->getResponse()->getStatusCode(),
+                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }
     }
@@ -125,7 +137,6 @@ class DetailsModificationService
      *
      * @param  int|\Pterodactyl\Models\Server $server
      * @param  string                         $image
-     * @return bool
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -148,8 +159,11 @@ class DetailsModificationService
 
             $this->database->commit();
         } catch (RequestException $exception) {
+            $response = $exception->getResponse();
+            $this->writer->warning($exception);
+
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => $exception->getResponse()->getStatusCode(),
+                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }
     }

@@ -44,6 +44,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Services\Database\CreationService as DatabaseCreationService;
+use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\CreationService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
@@ -61,6 +62,11 @@ class ServersController extends Controller
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
     protected $allocationRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\BuildModificationService
+     */
+    protected $buildModificationService;
 
     /**
      * @var \Illuminate\Contracts\Config\Repository
@@ -132,6 +138,7 @@ class ServersController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag                               $alert
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Pterodactyl\Services\Servers\BuildModificationService          $buildModificationService
      * @param \Illuminate\Contracts\Config\Repository                         $config
      * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
      * @param \Pterodactyl\Services\Servers\CreationService                   $service
@@ -149,6 +156,7 @@ class ServersController extends Controller
     public function __construct(
         AlertsMessageBag $alert,
         AllocationRepositoryInterface $allocationRepository,
+        BuildModificationService $buildModificationService,
         ConfigRepository $config,
         ContainerRebuildService $containerRebuildService,
         CreationService $service,
@@ -165,6 +173,7 @@ class ServersController extends Controller
     ) {
         $this->alert = $alert;
         $this->allocationRepository = $allocationRepository;
+        $this->buildModificationService = $buildModificationService;
         $this->config = $config;
         $this->containerRebuildService = $containerRebuildService;
         $this->databaseCreationService = $databaseCreationService;
@@ -490,39 +499,22 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @internal param int $id
      */
-    public function updateBuild(Request $request, $id)
+    public function updateBuild(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
-
-        try {
-            $repo->changeBuild($id, $request->intersect([
+        $this->buildModificationService->handle($server, $request->intersect([
                 'allocation_id', 'add_allocations', 'remove_allocations',
                 'memory', 'swap', 'io', 'cpu', 'disk',
-            ]));
+        ]));
+        $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
-            Alert::success('Server details were successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()
-                ->route('admin.servers.view.build', $id)
-                ->withErrors(json_decode($ex->getMessage()))
-                ->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')
-                ->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')
-                ->flash();
-        }
-
-        return redirect()->route('admin.servers.view.build', $id);
+        return redirect()->route('admin.servers.view.build', $server->id);
     }
 
     /**

@@ -148,6 +148,14 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * {@inheritdoc}
      */
+    public function updateWhereIn($column, array $values, array $fields)
+    {
+        return $this->getBuilder()->whereIn($column, $values)->update($fields);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function massUpdate(array $where, array $fields)
     {
         // TODO: Implement massUpdate() method.

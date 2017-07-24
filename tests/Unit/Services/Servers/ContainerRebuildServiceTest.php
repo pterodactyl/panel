@@ -26,6 +26,7 @@ namespace Tests\Unit\Services\Servers;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Log\Writer;
 use Mockery as m;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Server;
@@ -62,6 +63,11 @@ class ContainerRebuildServiceTest extends TestCase
     protected $service;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -71,9 +77,15 @@ class ContainerRebuildServiceTest extends TestCase
         $this->daemonServerRepository = m::mock(DaemonServerRepositoryInterface::class);
         $this->exception = m::mock(RequestException::class)->makePartial();
         $this->repository = m::mock(ServerRepositoryInterface::class);
+        $this->writer = m::mock(Writer::class);
+
         $this->server = factory(Server::class)->make(['node_id' => 1]);
 
-        $this->service = new ContainerRebuildService($this->daemonServerRepository, $this->repository);
+        $this->service = new ContainerRebuildService(
+            $this->daemonServerRepository,
+            $this->repository,
+            $this->writer
+        );
     }
 
     /**
@@ -113,6 +125,8 @@ class ContainerRebuildServiceTest extends TestCase
 
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);
+
+        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
         try {
             $this->service->rebuild($this->server);

@@ -27,6 +27,7 @@ namespace Tests\Unit\Services\Servers;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Log\Writer;
 use Mockery as m;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -68,6 +69,11 @@ class SuspensionServiceTest extends TestCase
     protected $service;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -78,13 +84,15 @@ class SuspensionServiceTest extends TestCase
         $this->database = m::mock(ConnectionInterface::class);
         $this->exception = m::mock(RequestException::class)->makePartial();
         $this->repository = m::mock(ServerRepositoryInterface::class);
+        $this->writer = m::mock(Writer::class);
 
         $this->server = factory(Server::class)->make(['suspended' => 0, 'node_id' => 1]);
 
         $this->service = new SuspensionService(
             $this->database,
             $this->daemonServerRepository,
-            $this->repository
+            $this->repository,
+            $this->writer
         );
     }
 
@@ -175,6 +183,8 @@ class SuspensionServiceTest extends TestCase
 
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);
+
+        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
         try {
             $this->service->toggle($this->server);

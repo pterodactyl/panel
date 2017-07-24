@@ -24,6 +24,7 @@
 
 namespace Tests\Unit\Services\Servers;
 
+use Illuminate\Log\Writer;
 use Mockery as m;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -99,6 +100,11 @@ class CreationServiceTest extends TestCase
     protected $uuid;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -115,6 +121,7 @@ class CreationServiceTest extends TestCase
         $this->usernameService = m::mock(UsernameGenerationService::class);
         $this->validatorService = m::mock(VariableValidatorService::class);
         $this->uuid = m::mock('overload:Ramsey\Uuid\Uuid');
+        $this->writer = m::mock(Writer::class);
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
             ->expects($this->any())->willReturn('randomstring');
@@ -131,7 +138,8 @@ class CreationServiceTest extends TestCase
             $this->serverVariableRepository,
             $this->userRepository,
             $this->usernameService,
-            $this->validatorService
+            $this->validatorService,
+            $this->writer
         );
     }
 

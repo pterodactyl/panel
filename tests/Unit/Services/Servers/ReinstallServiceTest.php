@@ -27,6 +27,7 @@ namespace Tests\Unit\Services\Servers;
 use Exception;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Log\Writer;
 use Mockery as m;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Server;
@@ -68,6 +69,11 @@ class ReinstallServiceTest extends TestCase
     protected $service;
 
     /**
+     * @var \Illuminate\Log\Writer
+     */
+    protected $writer;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -78,12 +84,15 @@ class ReinstallServiceTest extends TestCase
         $this->database = m::mock(ConnectionInterface::class);
         $this->exception = m::mock(RequestException::class)->makePartial();
         $this->repository = m::mock(ServerRepositoryInterface::class);
+        $this->writer = m::mock(Writer::class);
+
         $this->server = factory(Server::class)->make(['node_id' => 1]);
 
         $this->service = new ReinstallService(
             $this->database,
             $this->daemonServerRepository,
-            $this->repository
+            $this->repository,
+            $this->writer
         );
     }
 
@@ -145,6 +154,8 @@ class ReinstallServiceTest extends TestCase
 
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);
+
+        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
         try {
             $this->service->reinstall($this->server);
