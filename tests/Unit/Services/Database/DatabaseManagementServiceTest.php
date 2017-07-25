@@ -25,18 +25,16 @@
 namespace Tests\Unit\Services\Database;
 
 use Exception;
-use Illuminate\Database\DatabaseManager;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Database\CreationService;
-use Illuminate\Database\ConnectionResolver;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Services\Database\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
-class CreationServiceTest extends TestCase
+class DatabaseManagementServiceTest extends TestCase
 {
     use PHPMock;
 
@@ -70,7 +68,7 @@ class CreationServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Database\CreationService
+     * @var \Pterodactyl\Services\Database\DatabaseManagementService
      */
     protected $service;
 
@@ -87,9 +85,9 @@ class CreationServiceTest extends TestCase
         $this->repository = m::mock(DatabaseRepositoryInterface::class);
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Database', 'str_random')
-             ->expects($this->any())->willReturn('str_random');
+            ->expects($this->any())->willReturn('str_random');
 
-        $this->service = new CreationService(
+        $this->service = new DatabaseManagementService(
             $this->database,
             $this->dynamic,
             $this->repository,
@@ -105,8 +103,14 @@ class CreationServiceTest extends TestCase
         $this->encrypter->shouldReceive('encrypt')->with('str_random')->once()->andReturn('enc_password');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
 
-        $this->repository->shouldReceive('createIfNotExists')->with(self::TEST_DATA)->once()->andReturn((object) self::TEST_DATA);
-        $this->dynamic->shouldReceive('set')->with('dynamic', self::TEST_DATA['database_host_id'])->once()->andReturnNull();
+        $this->repository->shouldReceive('createIfNotExists')
+            ->with(self::TEST_DATA)
+            ->once()
+            ->andReturn((object) self::TEST_DATA);
+        $this->dynamic->shouldReceive('set')
+            ->with('dynamic', self::TEST_DATA['database_host_id'])
+            ->once()
+            ->andReturnNull();
         $this->repository->shouldReceive('createDatabase')->with(
             self::TEST_DATA['database'], 'dynamic'
         )->once()->andReturnNull();
@@ -148,7 +152,10 @@ class CreationServiceTest extends TestCase
     {
         $this->encrypter->shouldReceive('encrypt')->with('str_random')->once()->andReturn('enc_password');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('createIfNotExists')->with(self::TEST_DATA)->once()->andThrow(new Exception('Test Message'));
+        $this->repository->shouldReceive('createIfNotExists')
+            ->with(self::TEST_DATA)
+            ->once()
+            ->andThrow(new Exception('Test Message'));
         $this->repository->shouldNotReceive('dropDatabase');
         $this->database->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 
@@ -168,13 +175,22 @@ class CreationServiceTest extends TestCase
     {
         $this->encrypter->shouldReceive('encrypt')->with('str_random')->once()->andReturn('enc_password');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('createIfNotExists')->with(self::TEST_DATA)->once()->andReturn((object) self::TEST_DATA);
-        $this->dynamic->shouldReceive('set')->with('dynamic', self::TEST_DATA['database_host_id'])->once()->andReturnNull();
+        $this->repository->shouldReceive('createIfNotExists')
+            ->with(self::TEST_DATA)
+            ->once()
+            ->andReturn((object) self::TEST_DATA);
+        $this->dynamic->shouldReceive('set')
+            ->with('dynamic', self::TEST_DATA['database_host_id'])
+            ->once()
+            ->andReturnNull();
         $this->repository->shouldReceive('createDatabase')->with(
             self::TEST_DATA['database'], 'dynamic'
         )->once()->andThrow(new Exception('Test Message'));
 
-        $this->repository->shouldReceive('dropDatabase')->with(self::TEST_DATA['database'], 'dynamic')->once()->andReturnNull();
+        $this->repository->shouldReceive('dropDatabase')
+            ->with(self::TEST_DATA['database'], 'dynamic')
+            ->once()
+            ->andReturnNull();
         $this->repository->shouldReceive('dropUser')->with(
             self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
         )->once()->andReturnNull();
@@ -196,14 +212,20 @@ class CreationServiceTest extends TestCase
     {
         $this->encrypter->shouldReceive('encrypt')->with('str_random')->once()->andReturn('enc_password');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('createIfNotExists')->with(self::TEST_DATA)->once()->andReturn((object) self::TEST_DATA);
-        $this->dynamic->shouldReceive('set')->with('dynamic', self::TEST_DATA['database_host_id'])->once()->andReturnNull();
+        $this->repository->shouldReceive('createIfNotExists')
+            ->with(self::TEST_DATA)
+            ->once()
+            ->andReturn((object) self::TEST_DATA);
+        $this->dynamic->shouldReceive('set')
+            ->with('dynamic', self::TEST_DATA['database_host_id'])
+            ->once()
+            ->andReturnNull();
         $this->repository->shouldReceive('createDatabase')->with(
             self::TEST_DATA['database'], 'dynamic'
         )->once()->andThrow(new Exception('Test One'));
 
         $this->repository->shouldReceive('dropDatabase')->with(self::TEST_DATA['database'], 'dynamic')
-                         ->once()->andThrow(new Exception('Test Two'));
+            ->once()->andThrow(new Exception('Test Two'));
 
         $this->database->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 
@@ -225,7 +247,10 @@ class CreationServiceTest extends TestCase
     public function testDatabasePasswordShouldBeChanged()
     {
         $this->repository->shouldReceive('find')->with(1)->once()->andReturn((object) self::TEST_DATA);
-        $this->dynamic->shouldReceive('set')->with('dynamic', self::TEST_DATA['database_host_id'])->once()->andReturnNull();
+        $this->dynamic->shouldReceive('set')
+            ->with('dynamic', self::TEST_DATA['database_host_id'])
+            ->once()
+            ->andReturnNull();
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
 
         $this->encrypter->shouldReceive('encrypt')->with('new_password')->once()->andReturn('new_enc_password');
@@ -262,12 +287,15 @@ class CreationServiceTest extends TestCase
     public function testExceptionThrownWhileChangingDatabasePasswordShouldRollBack()
     {
         $this->repository->shouldReceive('find')->with(1)->once()->andReturn((object) self::TEST_DATA);
-        $this->dynamic->shouldReceive('set')->with('dynamic', self::TEST_DATA['database_host_id'])->once()->andReturnNull();
+        $this->dynamic->shouldReceive('set')
+            ->with('dynamic', self::TEST_DATA['database_host_id'])
+            ->once()
+            ->andReturnNull();
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
 
         $this->encrypter->shouldReceive('encrypt')->with('new_password')->once()->andReturn('new_enc_password');
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-                         ->shouldReceive('update')->with(1, [
+            ->shouldReceive('update')->with(1, [
                 'password' => 'new_enc_password',
             ])->andReturn(true);
 
@@ -286,9 +314,15 @@ class CreationServiceTest extends TestCase
     public function testDatabaseShouldBeDeleted()
     {
         $this->repository->shouldReceive('find')->with(1)->once()->andReturn((object) self::TEST_DATA);
-        $this->dynamic->shouldReceive('set')->with('dynamic', self::TEST_DATA['database_host_id'])->once()->andReturnNull();
+        $this->dynamic->shouldReceive('set')
+            ->with('dynamic', self::TEST_DATA['database_host_id'])
+            ->once()
+            ->andReturnNull();
 
-        $this->repository->shouldReceive('dropDatabase')->with(self::TEST_DATA['database'], 'dynamic')->once()->andReturnNull();
+        $this->repository->shouldReceive('dropDatabase')
+            ->with(self::TEST_DATA['database'], 'dynamic')
+            ->once()
+            ->andReturnNull();
         $this->repository->shouldReceive('dropUser')->with(
             self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
         )->once()->andReturnNull();

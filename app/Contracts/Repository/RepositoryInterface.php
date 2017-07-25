@@ -142,6 +142,19 @@ interface RepositoryInterface
     public function updateWhereIn($column, array $values, array $fields);
 
     /**
+     * Update a record if it exists in the database, otherwise create it.
+     *
+     * @param  array $where
+     * @param  array $fields
+     * @param  bool  $validate
+     * @param  bool  $force
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    public function updateOrCreate(array $where, array $fields, $validate = true, $force = false);
+
+    /**
      * Update multiple records matching the passed clauses.
      *
      * @param  array $where

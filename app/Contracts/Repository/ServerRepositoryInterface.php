@@ -77,4 +77,14 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithDatabases($id);
+
+    /**
+     * Return data about the daemon service in a consumable format.
+     *
+     * @param  int $id
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getDaemonServiceData($id);
 }

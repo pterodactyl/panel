@@ -129,4 +129,22 @@ class ServerRepository extends SearchableRepository implements ServerRepositoryI
 
         return $instance;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDaemonServiceData($id)
+    {
+        $instance = $this->getBuilder()->with('option.service', 'pack')->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return [
+            'type' => $instance->option->service->folder,
+            'option' => $instance->option->tag,
+            'pack' => (! is_null($instance->pack_id)) ? $instance->pack->uuid : null,
+        ];
+    }
 }

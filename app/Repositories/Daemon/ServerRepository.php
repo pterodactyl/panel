@@ -59,7 +59,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
                 'io' => (int) $server->io,
                 'cpu' => (int) $server->cpu,
                 'disk' => (int) $server->disk,
-                'image' => (int) $server->image,
+                'image' => $server->image,
             ],
             'service' => [
                 'type' => $server->option->service->folder,
@@ -97,9 +97,15 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function reinstall()
+    public function reinstall($data = null)
     {
-        return $this->getHttpClient()->request('POST', '/server/reinstall');
+        if (is_null($data)) {
+            return $this->getHttpClient()->request('POST', '/server/reinstall');
+        }
+
+        return $this->getHttpClient()->request('POST', '/server/reinstall', [
+            'json' => $data,
+        ]);
     }
 
     /**
@@ -124,5 +130,13 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     public function unsuspend()
     {
         return $this->getHttpClient()->request('POST', '/server/unsuspend');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete()
+    {
+        return $this->getHttpClient()->request('DELETE', '/servers');
     }
 }

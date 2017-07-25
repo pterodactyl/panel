@@ -110,7 +110,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testSettingAdminShouldReturnInstanceOfSelf()
     {
-        $response = $this->service->setAdmin();
+        $response = $this->service->isAdmin();
 
         $this->assertInstanceOf(VariableValidatorService::class, $response);
     }
@@ -187,7 +187,7 @@ class VariableValidatorServiceTest extends TestCase
                 ->shouldReceive('fails')->withNoArgs()->once()->andReturn(false);
         }
 
-        $response = $this->service->setAdmin()->setFields([
+        $response = $this->service->isAdmin()->setFields([
             $this->variables{0}->env_variable => 'Test_SomeValue_0',
             $this->variables{1}->env_variable => 'Test_SomeValue_1',
             $this->variables{2}->env_variable => 'Test_SomeValue_2',

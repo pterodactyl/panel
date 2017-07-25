@@ -49,7 +49,7 @@
                         </div>
                         <div class="form-group">
                             <label for="pUserId">Server Owner</label>
-                            <select class="form-control" style="padding-left:0;" name="user_id" id="pUserId"></select>
+                            <select class="form-control" style="padding-left:0;" name="owner_id" id="pUserId"></select>
                         </div>
                     </div>
                     <div class="col-md-6">

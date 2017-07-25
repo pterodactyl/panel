@@ -24,15 +24,13 @@
 
 namespace Tests\Unit\Services\Administrative;
 
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Database\ConnectionResolver;
-use Illuminate\Database\DatabaseManager;
 use Mockery as m;
 use Tests\TestCase;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Services\Database\DatabaseHostService;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostServiceTest extends TestCase
 {

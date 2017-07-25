@@ -106,13 +106,18 @@ class BuildModificationService
     }
 
     /**
-     * Return the build array.
+     * Return the build array or an item out of the build array.
      *
-     * @return array
+     * @param  string|null $attribute
+     * @return array|mixed|null
      */
-    public function getBuild()
+    public function getBuild($attribute = null)
     {
-        return $this->build;
+        if (is_null($attribute)) {
+            return $this->build;
+        }
+
+        return array_get($this->build, $attribute);
     }
 
     /**
@@ -133,17 +138,7 @@ class BuildModificationService
         $data['allocation_id'] = array_get($data, 'allocation_id', $server->allocation_id);
         $this->database->beginTransaction();
 
-        $this->setBuild('memory', (int) array_get($data, 'memory', $server->memory));
-        $this->setBuild('swap', (int) array_get($data, 'swap', $server->swap));
-        $this->setBuild('io', (int) array_get($data, 'io', $server->io));
-        $this->setBuild('cpu', (int) array_get($data, 'cpu', $server->cpu));
-        $this->setBuild('disk', (int) array_get($data, 'disk', $server->disk));
-
         $this->processAllocations($server, $data);
-        $allocations = $this->allocationRepository->findWhere([
-            ['server_id', '=', $server->id],
-        ]);
-
         if (isset($data['allocation_id']) && $data['allocation_id'] != $server->allocation_id) {
             try {
                 $allocation = $this->allocationRepository->findFirstWhere([
@@ -157,6 +152,24 @@ class BuildModificationService
             $this->setBuild('default', ['ip' => $allocation->ip, 'port' => $allocation->port]);
         }
 
+        $server = $this->repository->update($server->id, [
+            'memory' => array_get($data, 'memory', $server->memory),
+            'swap' => array_get($data, 'swap', $server->swap),
+            'io' => array_get($data, 'io', $server->io),
+            'cpu' => array_get($data, 'cpu', $server->cpu),
+            'disk' => array_get($data, 'disk', $server->disk),
+            'allocation_id' => array_get($data, 'allocation_id', $server->allocation_id),
+        ]);
+
+        $allocations = $this->allocationRepository->findWhere([
+            ['server_id', '=', $server->id],
+        ]);
+
+        $this->setBuild('memory', (int) $server->memory);
+        $this->setBuild('swap', (int) $server->swap);
+        $this->setBuild('io', (int) $server->io);
+        $this->setBuild('cpu', (int) $server->cpu);
+        $this->setBuild('disk', (int) $server->disk);
         $this->setBuild('ports|overwrite', $allocations->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
         })->toArray());

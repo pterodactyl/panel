@@ -176,4 +176,19 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     {
         return $this->getBuilder()->insert($data);
     }
+
+    /**
+     * {@inheritdoc}
+     * @return bool|\Illuminate\Database\Eloquent\Model
+     */
+    public function updateOrCreate(array $where, array $fields, $validate = true, $force = false)
+    {
+        $instance = $this->withColumns('id')->findWhere($where)->first();
+
+        if (! $instance) {
+            return $this->create(array_merge($where, $fields), $validate, $force);
+        }
+
+        return $this->update($instance->id, $fields, $validate, $force);
+    }
 }

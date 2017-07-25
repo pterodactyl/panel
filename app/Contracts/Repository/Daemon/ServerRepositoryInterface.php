@@ -47,9 +47,10 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     /**
      * Mark a server to be reinstalled on the system.
      *
+     * @param  array|null $data
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function reinstall();
+    public function reinstall($data = null);
 
     /**
      * Mark a server as needing a container rebuild the next time the server is booted.
@@ -71,4 +72,11 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function unsuspend();
+
+    /**
+     * Delete a server on the daemon.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function delete();
 }

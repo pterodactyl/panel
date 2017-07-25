@@ -152,7 +152,7 @@ class CreationServiceTest extends TestCase
             'node_id' => 1,
             'name' => 'SomeName',
             'description' => null,
-            'user_id' => 1,
+            'owner_id' => 1,
             'memory' => 128,
             'disk' => 128,
             'swap' => 0,
@@ -169,7 +169,7 @@ class CreationServiceTest extends TestCase
             'docker_image' => 'some/image',
         ];
 
-        $this->validatorService->shouldReceive('setAdmin')->withNoArgs()->once()->andReturnSelf()
+        $this->validatorService->shouldReceive('isAdmin')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('setFields')->with($data['environment'])->once()->andReturnSelf()
             ->shouldReceive('validate')->with($data['option_id'])->once()->andReturnSelf();
 
@@ -187,7 +187,7 @@ class CreationServiceTest extends TestCase
             'description' => $data['description'],
             'skip_scripts' => false,
             'suspended' => false,
-            'owner_id' => $data['user_id'],
+            'owner_id' => $data['owner_id'],
             'memory' => $data['memory'],
             'swap' => $data['swap'],
             'disk' => $data['disk'],

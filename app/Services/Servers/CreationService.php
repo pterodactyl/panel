@@ -138,7 +138,7 @@ class CreationService
     public function create(array $data)
     {
         // @todo auto-deployment
-        $validator = $this->validatorService->setAdmin()->setFields($data['environment'])->validate($data['option_id']);
+        $validator = $this->validatorService->isAdmin()->setFields($data['environment'])->validate($data['option_id']);
         $uniqueShort = bin2hex(random_bytes(4));
 
         $this->database->beginTransaction();
@@ -151,7 +151,7 @@ class CreationService
             'description' => $data['description'],
             'skip_scripts' => isset($data['skip_scripts']),
             'suspended' => false,
-            'owner_id' => $data['user_id'],
+            'owner_id' => $data['owner_id'],
             'memory' => $data['memory'],
             'swap' => $data['swap'],
             'disk' => $data['disk'],

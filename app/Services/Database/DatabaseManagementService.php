@@ -29,7 +29,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
-class CreationService
+class DatabaseManagementService
 {
     /**
      * @var \Illuminate\Database\DatabaseManager

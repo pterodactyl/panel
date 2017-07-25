@@ -25,7 +25,6 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Log;
 use Alert;
 use Javascript;
 use Prologue\Alerts\AlertsMessageBag;
@@ -38,17 +37,17 @@ use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\Request;
-use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
-use Pterodactyl\Services\Database\CreationService as DatabaseCreationService;
+use Pterodactyl\Services\Database\DatabaseManagementService;
 use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\CreationService;
+use Pterodactyl\Services\Servers\DeletionService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\ReinstallService;
+use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Services\Servers\SuspensionService;
 
 class ServersController extends Controller
@@ -84,14 +83,19 @@ class ServersController extends Controller
     protected $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Services\Database\CreationService
+     * @var \Pterodactyl\Services\Database\DatabaseManagementService
      */
-    protected $databaseCreationService;
+    protected $databaseManagementService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     protected $databaseHostRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\DeletionService
+     */
+    protected $deletionService;
 
     /**
      * @var \Pterodactyl\Services\Servers\DetailsModificationService
@@ -129,6 +133,11 @@ class ServersController extends Controller
     protected $serviceRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\StartupModificationService
+     */
+    private $startupModificationService;
+
+    /**
      * @var \Pterodactyl\Services\Servers\SuspensionService
      */
     protected $suspensionService;
@@ -142,15 +151,17 @@ class ServersController extends Controller
      * @param \Illuminate\Contracts\Config\Repository                         $config
      * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
      * @param \Pterodactyl\Services\Servers\CreationService                   $service
-     * @param \Pterodactyl\Services\Database\CreationService                  $databaseCreationService
+     * @param \Pterodactyl\Services\Database\DatabaseManagementService        $databaseManagementService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
      * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
+     * @param \Pterodactyl\Services\Servers\DeletionService                   $deletionService
      * @param \Pterodactyl\Services\Servers\DetailsModificationService        $detailsModificationService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
      * @param \Pterodactyl\Services\Servers\ReinstallService                  $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
      * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface    $serviceRepository
+     * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
      */
     public function __construct(
@@ -160,15 +171,17 @@ class ServersController extends Controller
         ConfigRepository $config,
         ContainerRebuildService $containerRebuildService,
         CreationService $service,
-        DatabaseCreationService $databaseCreationService,
+        DatabaseManagementService $databaseManagementService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
+        DeletionService $deletionService,
         DetailsModificationService $detailsModificationService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $nodeRepository,
         ReinstallService $reinstallService,
         ServerRepositoryInterface $repository,
         ServiceRepositoryInterface $serviceRepository,
+        StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
     ) {
         $this->alert = $alert;
@@ -176,16 +189,18 @@ class ServersController extends Controller
         $this->buildModificationService = $buildModificationService;
         $this->config = $config;
         $this->containerRebuildService = $containerRebuildService;
-        $this->databaseCreationService = $databaseCreationService;
+        $this->databaseManagementService = $databaseManagementService;
         $this->databaseRepository = $databaseRepository;
         $this->databaseHostRepository = $databaseHostRepository;
         $this->detailsModificationService = $detailsModificationService;
+        $this->deletionService = $deletionService;
         $this->locationRepository = $locationRepository;
         $this->nodeRepository = $nodeRepository;
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
         $this->service = $service;
         $this->serviceRepository = $serviceRepository;
+        $this->startupModificationService = $startupModificationService;
         $this->suspensionService = $suspensionService;
     }
 
@@ -234,21 +249,15 @@ class ServersController extends Controller
      * @param  \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(ServerFormRequest $request)
     {
-        try {
-            $server = $this->service->create($request->except('_token'));
+        $server = $this->service->create($request->except('_token'));
+        $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
-            return redirect()->route('admin.servers.view', $server->id);
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')
-                ->flash();
-        }
-
-        return redirect()->route('admin.servers.new')->withInput();
+        return redirect()->route('admin.servers.view', $server->id);
     }
 
     /**
@@ -508,9 +517,9 @@ class ServersController extends Controller
      */
     public function updateBuild(Request $request, Server $server)
     {
-        $this->buildModificationService->handle($server, $request->intersect([
-                'allocation_id', 'add_allocations', 'remove_allocations',
-                'memory', 'swap', 'io', 'cpu', 'disk',
+        $this->buildModificationService->handle($server, $request->only([
+            'allocation_id', 'add_allocations', 'remove_allocations',
+            'memory', 'swap', 'io', 'cpu', 'disk',
         ]));
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
@@ -520,69 +529,38 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Illuminate\Http\Request   $request
+     * @param  \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(Request $request, $id)
+    public function delete(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->deletionService->withForce($request->has('force_delete'))->handle($server);
+        $this->alert->success(trans('admin/server.alerts.server_deleted'))->flash();
 
-        try {
-            $repo->delete($id, $request->has('force_delete'));
-            Alert::success('Server was successfully deleted from the system.')->flash();
-
-            return redirect()->route('admin.servers');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException occurred while attempting to delete this server from the daemon, please ensure it is running. This error has been logged.')
-                ->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')
-                ->flash();
-        }
-
-        return redirect()->route('admin.servers.view.delete', $id);
+        return redirect()->route('admin.servers');
     }
 
     /**
      * Update the startup command as well as variables.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function saveStartup(Request $request, $id)
+    public function saveStartup(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->startupModificationService->isAdmin()->handle(
+            $server, $request->except('_token')
+        );
+        $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
-        try {
-            if ($repo->updateStartup($id, $request->except('_token'), true)) {
-                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')
-                    ->flash();
-
-                return redirect()->route('admin.servers.view', $id);
-            } else {
-                Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
-            }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.startup', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException occurred while attempting to update the startup for this server, please ensure the daemon is running. This error has been logged.')
-                ->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. This error has been logged.')
-                ->flash();
-        }
-
-        return redirect()->route('admin.servers.view.startup', $id);
+        return redirect()->route('admin.servers.view.startup', $server->id);
     }
 
     /**
@@ -598,7 +576,7 @@ class ServersController extends Controller
      */
     public function newDatabase(Request $request, $server)
     {
-        $this->databaseCreationService->create($server, [
+        $this->databaseManagementService->create($server, [
             'database' => $request->input('database'),
             'remote' => $request->input('remote'),
             'database_host_id' => $request->input('database_host_id'),
@@ -624,7 +602,7 @@ class ServersController extends Controller
             ['id', '=', $request->input('database')],
         ]);
 
-        $this->databaseCreationService->changePassword($database->id, str_random(20));
+        $this->databaseManagementService->changePassword($database->id, str_random(20));
 
         return response('', 204);
     }
@@ -646,7 +624,7 @@ class ServersController extends Controller
             ['id', '=', $database],
         ]);
 
-        $this->databaseCreationService->delete($database->id);
+        $this->databaseManagementService->delete($database->id);
 
         return response('', 204);
     }

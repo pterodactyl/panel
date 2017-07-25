@@ -160,7 +160,6 @@
         $('#pServiceId').on('change', function (event) {
             $('#pOptionId').html('').select2({
                 data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
-                    console.log(item);
                     return {
                         id: item.id,
                         text: item.name,
@@ -182,7 +181,7 @@
             }
 
             $('#pPackId').html('').select2({
-                data: [{ id: 0, text: 'No Service Pack' }].concat(
+                data: [{ id: '', text: 'No Service Pack' }].concat(
                     $.map(_.get(objectChain, 'packs', []), function (item, i) {
                         return {
                             id: item.id,
@@ -190,7 +189,11 @@
                         };
                     })
                 ),
-            }).val('{{ is_null($server->pack_id) ? 0 : $server->pack_id }}');
+            });
+
+            @if(! is_null($server->pack_id))
+                $('#pPackId').val({{ $server->pack_id }});
+            @endif
 
             $('#appendVariablesTo').html('');
             $.each(_.get(objectChain, 'variables', []), function (i, item) {

@@ -103,11 +103,12 @@ class VariableValidatorService
     /**
      * Set this function to be running at the administrative level.
      *
+     * @param  bool $bool
      * @return $this
      */
-    public function setAdmin()
+    public function isAdmin($bool = true)
     {
-        $this->isAdmin = true;
+        $this->isAdmin = $bool;
 
         return $this;
     }
