@@ -26,6 +26,8 @@ services:
       - "443:443"
     links:
       - database
+      - cache
+      - mail
     volumes:
       - "/srv/pterodactyl/var/:/var/www/html/var/"
       - "/srv/pterodactyl/certs/:/root/.caddy/"
