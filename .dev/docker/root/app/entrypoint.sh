@@ -14,7 +14,7 @@ if [ "$1" = "/sbin/tini" ]; then
     elif [ -z $(echo "$APP_URL" | sed "/https:\/\//d") ]; then
         echo "HTTPS is enabled"
         sed -i "s,<domain>,$APP_URL,g" /etc/caddy/caddy.conf
-        sed -i "s,<email>,$ADMIN_EMAIL,g" /etc/caddy/caddy.conf
+        sed -i "s,<email>,$LETSENCRYPT_EMAIL,g" /etc/caddy/caddy.conf
     else
         echo "Your APP_URL is missing a protocol."
         exit 1
@@ -78,9 +78,6 @@ if [ "$1" = "/sbin/tini" ]; then
 
         echo "  Seeding Database"
         php artisan db:seed --force
-
-        echo "  Setting up user"
-        php artisan pterodactyl:user --email=$ADMIN_EMAIL --password=$ADMIN_PASS --username=$ADMIN_USERNAME --firstname=$ADMIN_FIRSTNAME --lastname=$ADMIN_LASTNAME --admin=1
 
     else # Found an env file and testing for panel version
         echo "Found .env file."
