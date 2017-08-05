@@ -141,13 +141,11 @@ class DeletionService
         }
 
         $this->database->beginTransaction();
-
         $this->databaseRepository->withColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
             $this->databaseManagementService->delete($item->id);
         });
 
         $this->repository->delete($server->id);
-
         $this->database->commit();
     }
 }

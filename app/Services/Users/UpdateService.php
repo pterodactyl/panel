@@ -68,8 +68,6 @@ class UpdateService
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        $user = $this->repository->update($id, $data);
-
-        return $user;
+        return $this->repository->update($id, $data);
     }
 }
