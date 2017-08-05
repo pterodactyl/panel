@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\Service;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class ServiceRepository extends EloquentRepository implements ServiceRepositoryInterface
 {

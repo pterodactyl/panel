@@ -24,10 +24,10 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface
 {

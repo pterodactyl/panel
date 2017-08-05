@@ -25,10 +25,10 @@
 namespace Tests\Unit\Services\Nodes;
 
 use Mockery as m;
-use phpmock\phpunit\PHPMock;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Services\Nodes\CreationService;
 use Tests\TestCase;
+use phpmock\phpunit\PHPMock;
+use Pterodactyl\Services\Nodes\CreationService;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class CreationServiceTest extends TestCase
 {

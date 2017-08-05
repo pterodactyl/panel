@@ -25,17 +25,17 @@
 namespace Tests\Unit\Services\Nodes;
 
 use Exception;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Log\Writer;
 use Mockery as m;
-use phpmock\phpunit\PHPMock;
-use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Nodes\CreationService;
-use Pterodactyl\Services\Nodes\UpdateService;
 use Tests\TestCase;
+use Illuminate\Log\Writer;
+use phpmock\phpunit\PHPMock;
+use Pterodactyl\Models\Node;
+use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Nodes\UpdateService;
+use Pterodactyl\Services\Nodes\CreationService;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class UpdateServiceTest extends TestCase
 {

@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Http\Requests\Admin;
 
-use Illuminate\Validation\Rule;
 use Pterodactyl\Models\Server;
+use Illuminate\Validation\Rule;
 
 class ServerFormRequest extends AdminFormRequest
 {

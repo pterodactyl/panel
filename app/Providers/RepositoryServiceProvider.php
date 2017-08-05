@@ -25,34 +25,34 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
-use Pterodactyl\Repositories\Daemon\ServerRepository as DaemonServerRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\UserRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
-use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Repositories\Eloquent\ServiceRepository;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Eloquent\OptionVariableRepository;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
-use Pterodactyl\Repositories\Eloquent\ServiceRepository;
-use Pterodactyl\Repositories\Eloquent\UserRepository;
+use Pterodactyl\Repositories\Eloquent\AllocationRepository;
+use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
+use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\OptionVariableRepository;
+use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
+use Pterodactyl\Repositories\Daemon\ServerRepository as DaemonServerRepository;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

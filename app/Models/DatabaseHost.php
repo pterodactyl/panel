@@ -80,11 +80,11 @@ class DatabaseHost extends Model implements ValidableContract
         'node_id' => 'sometimes|required',
     ];
 
-/**
- * Validation rules to assign to this model.
- *
- * @var array
- */
+    /**
+     * Validation rules to assign to this model.
+     *
+     * @var array
+     */
     // @todo the node_id field doesn't validate correctly if no node is provided in request
     protected static $dataIntegrityRules = [
         'name' => 'string|max:255',

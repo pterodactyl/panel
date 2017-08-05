@@ -28,8 +28,8 @@ use Fractal;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\old_Daemon\PowerRepository;
 use Pterodactyl\Transformers\User\ServerTransformer;
+use Pterodactyl\Repositories\old_Daemon\PowerRepository;
 use Pterodactyl\Repositories\old_Daemon\CommandRepository;
 
 class ServerController extends Controller

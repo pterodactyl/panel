@@ -24,20 +24,20 @@
 
 namespace Tests\Unit\Services\Servers;
 
-use Illuminate\Log\Writer;
 use Mockery as m;
-use phpmock\phpunit\PHPMock;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\Servers\CreationService;
-use Pterodactyl\Services\Servers\UsernameGenerationService;
-use Pterodactyl\Services\Servers\VariableValidatorService;
-use Ramsey\Uuid\Uuid;
 use Tests\TestCase;
+use Ramsey\Uuid\Uuid;
+use Illuminate\Log\Writer;
+use phpmock\phpunit\PHPMock;
 use Illuminate\Database\DatabaseManager;
+use Pterodactyl\Services\Servers\CreationService;
+use Pterodactyl\Services\Servers\VariableValidatorService;
+use Pterodactyl\Services\Servers\UsernameGenerationService;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class CreationServiceTest extends TestCase

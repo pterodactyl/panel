@@ -25,10 +25,10 @@
 namespace Tests\Unit\Services;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
+use Tests\TestCase;
 use Pterodactyl\Models\APIPermission;
 use Pterodactyl\Services\Api\PermissionService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
 
 class PermissionServiceTest extends TestCase
 {

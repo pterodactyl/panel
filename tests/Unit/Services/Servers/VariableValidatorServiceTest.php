@@ -149,15 +149,15 @@ class VariableValidatorServiceTest extends TestCase
         $this->validator->shouldReceive('make')->with([
             'variable_value' => 'Test_SomeValue_0',
         ], [
-            'variable_value' => $this->variables{0}->rules,
+            'variable_value' => $this->variables[0]->rules,
         ])->once()->andReturnSelf()
             ->shouldReceive('fails')->withNoArgs()->once()->andReturn(false);
 
         $response = $this->service->setFields([
-            $this->variables{0}->env_variable => 'Test_SomeValue_0',
-            $this->variables{1}->env_variable => 'Test_SomeValue_1',
-            $this->variables{2}->env_variable => 'Test_SomeValue_2',
-            $this->variables{3}->env_variable => 'Test_SomeValue_3',
+            $this->variables[0]->env_variable => 'Test_SomeValue_0',
+            $this->variables[1]->env_variable => 'Test_SomeValue_1',
+            $this->variables[2]->env_variable => 'Test_SomeValue_2',
+            $this->variables[3]->env_variable => 'Test_SomeValue_3',
         ])->validate(1)->getResults();
 
         $this->assertEquals(1, count($response), 'Assert response has a single item in array.');
@@ -166,8 +166,8 @@ class VariableValidatorServiceTest extends TestCase
         $this->assertArrayHasKey('key', $response[0]);
         $this->assertArrayHasKey('value', $response[0]);
 
-        $this->assertEquals($this->variables{0}->id, $response[0]['id']);
-        $this->assertEquals($this->variables{0}->env_variable, $response[0]['key']);
+        $this->assertEquals($this->variables[0]->id, $response[0]['id']);
+        $this->assertEquals($this->variables[0]->env_variable, $response[0]['key']);
         $this->assertEquals('Test_SomeValue_0', $response[0]['value']);
     }
 
@@ -178,32 +178,32 @@ class VariableValidatorServiceTest extends TestCase
     {
         $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
 
-        foreach($this->variables as $key => $variable) {
+        foreach ($this->variables as $key => $variable) {
             $this->validator->shouldReceive('make')->with([
                 'variable_value' => 'Test_SomeValue_' . $key,
             ], [
-                'variable_value' => $this->variables{$key}->rules,
+                'variable_value' => $this->variables[$key]->rules,
             ])->andReturnSelf()
                 ->shouldReceive('fails')->withNoArgs()->once()->andReturn(false);
         }
 
         $response = $this->service->isAdmin()->setFields([
-            $this->variables{0}->env_variable => 'Test_SomeValue_0',
-            $this->variables{1}->env_variable => 'Test_SomeValue_1',
-            $this->variables{2}->env_variable => 'Test_SomeValue_2',
-            $this->variables{3}->env_variable => 'Test_SomeValue_3',
+            $this->variables[0]->env_variable => 'Test_SomeValue_0',
+            $this->variables[1]->env_variable => 'Test_SomeValue_1',
+            $this->variables[2]->env_variable => 'Test_SomeValue_2',
+            $this->variables[3]->env_variable => 'Test_SomeValue_3',
         ])->validate(1)->getResults();
 
         $this->assertEquals(4, count($response), 'Assert response has all four items in array.');
 
-        foreach($response as $key => $values) {
+        foreach ($response as $key => $values) {
             $this->assertArrayHasKey($key, $response);
             $this->assertArrayHasKey('id', $response[$key]);
             $this->assertArrayHasKey('key', $response[$key]);
             $this->assertArrayHasKey('value', $response[$key]);
 
-            $this->assertEquals($this->variables{$key}->id, $response[$key]['id']);
-            $this->assertEquals($this->variables{$key}->env_variable, $response[$key]['key']);
+            $this->assertEquals($this->variables[$key]->id, $response[$key]['id']);
+            $this->assertEquals($this->variables[$key]->env_variable, $response[$key]['key']);
             $this->assertEquals('Test_SomeValue_' . $key, $response[$key]['value']);
         }
     }
@@ -218,7 +218,7 @@ class VariableValidatorServiceTest extends TestCase
         $this->validator->shouldReceive('make')->with([
             'variable_value' => null,
         ], [
-            'variable_value' => $this->variables{0}->rules,
+            'variable_value' => $this->variables[0]->rules,
         ])->once()->andReturnSelf()
             ->shouldReceive('fails')->withNoArgs()->once()->andReturn(true);
 
@@ -227,7 +227,7 @@ class VariableValidatorServiceTest extends TestCase
 
         try {
             $this->service->setFields([
-                $this->variables{0}->env_variable => null,
+                $this->variables[0]->env_variable => null,
             ])->validate(1);
         } catch (DisplayValidationException $exception) {
             $decoded = json_decode($exception->getMessage());
@@ -235,7 +235,7 @@ class VariableValidatorServiceTest extends TestCase
             $this->assertEquals(0, json_last_error(), 'Assert that response is decodable JSON.');
             $this->assertObjectHasAttribute('notice', $decoded);
             $this->assertEquals(
-                trans('admin/server.exceptions.bad_variable', ['name' => $this->variables{0}->name]),
+                trans('admin/server.exceptions.bad_variable', ['name' => $this->variables[0]->name]),
                 $decoded->notice[0]
             );
         }

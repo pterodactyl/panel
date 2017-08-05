@@ -3,10 +3,10 @@
 namespace Pterodactyl\Exceptions;
 
 use Exception;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Prologue\Alerts\Facades\Alert;
+use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Exceptions\Model\DataValidationException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {

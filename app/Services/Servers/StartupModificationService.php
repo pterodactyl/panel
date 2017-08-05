@@ -24,14 +24,14 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Log\Writer;
+use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\Server;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class StartupModificationService
 {

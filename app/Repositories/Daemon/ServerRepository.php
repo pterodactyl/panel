@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
+use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface as DatabaseServerRepositoryInterface;
-use Pterodactyl\Services\Servers\EnvironmentService;
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {

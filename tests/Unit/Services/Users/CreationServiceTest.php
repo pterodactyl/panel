@@ -25,13 +25,13 @@
 namespace Tests\Unit\Services;
 
 use Mockery as m;
-use Pterodactyl\Services\Users\CreationService;
 use Tests\TestCase;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Notifications\ChannelManager;
 use Pterodactyl\Notifications\AccountCreated;
+use Pterodactyl\Services\Users\CreationService;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 

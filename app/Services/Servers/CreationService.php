@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Log\Writer;
-use Pterodactyl\Exceptions\DisplayException;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Log\Writer;
 use Illuminate\Database\DatabaseManager;
+use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;

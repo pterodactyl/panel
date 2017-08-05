@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Models\Database;
 use Illuminate\Foundation\Application;
+use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
