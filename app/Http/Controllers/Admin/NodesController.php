@@ -24,26 +24,25 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Illuminate\Cache\Repository as CacheRepository;
-use Illuminate\Contracts\Translation\Translator;
 use Log;
 use Alert;
-use Cache;
 use Javascript;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\NodeFormRequest;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Node;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Allocation;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\NodeRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Nodes\UpdateService;
 use Pterodactyl\Services\Nodes\CreationService;
 use Pterodactyl\Services\Nodes\DeletionService;
-use Pterodactyl\Services\Nodes\UpdateService;
+use Illuminate\Contracts\Translation\Translator;
+use Illuminate\Cache\Repository as CacheRepository;
+use Pterodactyl\Http\Requests\Admin\NodeFormRequest;
+use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class NodesController extends Controller
 {

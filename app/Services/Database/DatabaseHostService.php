@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Services\Database;
 
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 

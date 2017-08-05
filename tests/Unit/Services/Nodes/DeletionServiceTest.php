@@ -24,13 +24,13 @@
 
 namespace Tests\Unit\Services\Nodes;
 
-use Illuminate\Contracts\Translation\Translator;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Tests\TestCase;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Nodes\DeletionService;
-use Tests\TestCase;
+use Illuminate\Contracts\Translation\Translator;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class DeletionServiceTest extends TestCase
 {

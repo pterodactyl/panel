@@ -24,11 +24,11 @@
 
 namespace Tests\Unit\Services\Users;
 
-use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\Users\UpdateService;
-use Tests\TestCase;
 use Mockery as m;
+use Tests\TestCase;
+use Illuminate\Contracts\Hashing\Hasher;
+use Pterodactyl\Services\Users\UpdateService;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UpdateServiceTest extends TestCase
 {

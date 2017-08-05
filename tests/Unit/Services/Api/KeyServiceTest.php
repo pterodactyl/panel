@@ -24,14 +24,14 @@
 
 namespace Tests\Unit\Services\Api;
 
-use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Database\ConnectionInterface;
 use Mockery as m;
-use phpmock\phpunit\PHPMock;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
-use Pterodactyl\Services\Api\KeyService;
-use Pterodactyl\Services\Api\PermissionService;
 use Tests\TestCase;
+use phpmock\phpunit\PHPMock;
+use Pterodactyl\Services\Api\KeyService;
+use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Services\Api\PermissionService;
+use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyServiceTest extends TestCase
 {

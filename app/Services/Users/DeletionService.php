@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Users;
 
-use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\User;
+use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Contracts\Translation\Translator;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class DeletionService
 {

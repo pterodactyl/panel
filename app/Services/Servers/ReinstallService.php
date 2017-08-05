@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Log\Writer;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 

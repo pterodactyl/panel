@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\Node;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
 class NodeRepository extends SearchableRepository implements NodeRepositoryInterface

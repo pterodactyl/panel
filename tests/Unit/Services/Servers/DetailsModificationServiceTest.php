@@ -25,9 +25,9 @@
 namespace Tests\Unit\Services\Servers;
 
 use Exception;
-use Illuminate\Log\Writer;
 use Mockery as m;
 use Tests\TestCase;
+use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\DatabaseManager;
@@ -258,7 +258,7 @@ class DetailsModificationServiceTest extends TestCase
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(
-                trans('admin/server.exceptions.daemon_exception', ['code' => 400,]), $exception->getMessage()
+                trans('admin/server.exceptions.daemon_exception', ['code' => 400]), $exception->getMessage()
             );
         }
     }
@@ -371,7 +371,7 @@ class DetailsModificationServiceTest extends TestCase
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(
-                trans('admin/server.exceptions.daemon_exception', ['code' => 400,]), $exception->getMessage()
+                trans('admin/server.exceptions.daemon_exception', ['code' => 400]), $exception->getMessage()
             );
         }
     }

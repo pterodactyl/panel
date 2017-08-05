@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorService
 {

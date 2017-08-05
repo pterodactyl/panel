@@ -26,9 +26,9 @@ namespace Pterodactyl\Repositories\Daemon;
 
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Application;
-use Pterodactyl\Contracts\Repository\Daemon\BaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\Daemon\BaseRepositoryInterface;
 
 class BaseRepository implements BaseRepositoryInterface
 {

@@ -25,16 +25,16 @@
 namespace Tests\Unit\Services\Servers;
 
 use Exception;
+use Mockery as m;
+use Tests\TestCase;
+use Illuminate\Log\Writer;
+use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
-use Mockery as m;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\SuspensionService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SuspensionServiceTest extends TestCase
 {
@@ -127,9 +127,8 @@ class SuspensionServiceTest extends TestCase
         $this->assertTrue($this->service->toggle($this->server));
     }
 
-
     /**
-     * Test that server is unsuspended if action=unsuspend
+     * Test that server is unsuspended if action=unsuspend.
      */
     public function testServerShouldBeUnsuspendedWhenUnsuspendActionIsPassed()
     {
@@ -148,7 +147,7 @@ class SuspensionServiceTest extends TestCase
     }
 
     /**
-     * Test that nothing happens if a server is already unsuspended and action=unsuspend
+     * Test that nothing happens if a server is already unsuspended and action=unsuspend.
      */
     public function testNoActionShouldHappenIfServerIsAlreadyUnsuspendedAndActionIsUnsuspend()
     {
@@ -158,7 +157,7 @@ class SuspensionServiceTest extends TestCase
     }
 
     /**
-     * Test that nothing happens if a server is already suspended and action=suspend
+     * Test that nothing happens if a server is already suspended and action=suspend.
      */
     public function testNoActionShouldHappenIfServerIsAlreadySuspendedAndActionIsSuspend()
     {
@@ -191,7 +190,7 @@ class SuspensionServiceTest extends TestCase
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(
-                trans('admin/server.exceptions.daemon_exception', ['code' => 400,]), $exception->getMessage()
+                trans('admin/server.exceptions.daemon_exception', ['code' => 400]), $exception->getMessage()
             );
         }
     }

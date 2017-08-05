@@ -24,31 +24,30 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Alert;
 use Javascript;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
-use Pterodactyl\Models\Server;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Services\Database\DatabaseManagementService;
-use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\CreationService;
 use Pterodactyl\Services\Servers\DeletionService;
-use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\ReinstallService;
-use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
+use Pterodactyl\Services\Servers\ContainerRebuildService;
+use Pterodactyl\Services\Servers\BuildModificationService;
+use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Servers\DetailsModificationService;
+use Pterodactyl\Services\Servers\StartupModificationService;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServersController extends Controller
 {

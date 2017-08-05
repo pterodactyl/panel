@@ -156,7 +156,7 @@ class DatabaseHostServiceTest extends TestCase
     }
 
     /**
-     * Test that passing no or empty password will skip storing it
+     * Test that passing no or empty password will skip storing it.
      */
     public function test_update_without_password()
     {

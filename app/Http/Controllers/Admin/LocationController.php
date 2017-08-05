@@ -24,13 +24,13 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Services\LocationService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\LocationRequest;
-use Pterodactyl\Services\LocationService;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationController extends Controller
 {

@@ -24,12 +24,12 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Log\Writer;
-use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Node;
+use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class UpdateService
 {

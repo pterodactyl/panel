@@ -25,14 +25,14 @@
 namespace Tests\Unit\Services\Servers;
 
 use Exception;
+use Mockery as m;
+use Tests\TestCase;
+use Illuminate\Log\Writer;
+use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
-use Mockery as m;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\ReinstallService;
-use Tests\TestCase;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
@@ -162,7 +162,7 @@ class ReinstallServiceTest extends TestCase
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(
-                trans('admin/server.exceptions.daemon_exception', ['code' => 400,]), $exception->getMessage()
+                trans('admin/server.exceptions.daemon_exception', ['code' => 400]), $exception->getMessage()
             );
         }
     }
