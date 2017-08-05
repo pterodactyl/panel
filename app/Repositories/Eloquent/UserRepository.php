@@ -27,8 +27,6 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Foundation\Application;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\User;
 use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
@@ -74,24 +72,6 @@ class UserRepository extends SearchableRepository implements UserRepositoryInter
         return $users->paginate(
             $this->config->get('pterodactyl.paginate.admin.users'), $this->getColumns()
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteIfNoServers($id)
-    {
-        $user = $this->getBuilder()->withCount('servers')->where('id', $id)->first();
-
-        if (! $user) {
-            throw new RecordNotFoundException();
-        }
-
-        if ($user->servers_count > 0) {
-            throw new DisplayException('Cannot delete an account that has active servers attached to it.');
-        }
-
-        return $user->delete();
     }
 
     /**

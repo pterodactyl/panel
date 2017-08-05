@@ -22,24 +22,12 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
-
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
-
-interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
-{
-    /**
-     * Return all users with counts of servers and subusers of servers.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllUsersWithCounts();
-
-    /**
-     * Return all matching models for a user in a format that can be used for dropdowns.
-     *
-     * @param  string $query
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function filterUsersByQuery($query);
-}
+return [
+    'exceptions' => [
+        'user_has_servers' => 'Cannot delete a user with active servers attached to their account. Please delete their server\'s before continuing.',
+    ],
+    'notices' => [
+        'account_created' => 'Account has been created successfully.',
+        'account_updated' => 'Account has been successfully updated.',
+    ],
+];

@@ -22,24 +22,54 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Services\Users;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Illuminate\Contracts\Hashing\Hasher;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
+class UpdateService
 {
     /**
-     * Return all users with counts of servers and subusers of servers.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @var \Illuminate\Contracts\Hashing\Hasher
      */
-    public function getAllUsersWithCounts();
+    protected $hasher;
 
     /**
-     * Return all matching models for a user in a format that can be used for dropdowns.
-     *
-     * @param  string $query
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
-    public function filterUsersByQuery($query);
+    protected $repository;
+
+    /**
+     * UpdateService constructor.
+     *
+     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     */
+    public function __construct(
+        Hasher $hasher,
+        UserRepositoryInterface $repository
+    ) {
+        $this->hasher = $hasher;
+        $this->repository = $repository;
+    }
+
+    /**
+     * Update the user model instance.
+     *
+     * @param  int   $id
+     * @param  array $data
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    public function handle($id, array $data)
+    {
+        if (isset($data['password'])) {
+            $data['password'] = $this->hasher->make($data['password']);
+        }
+
+        $user = $this->repository->update($id, $data);
+
+        return $user;
+    }
 }

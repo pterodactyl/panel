@@ -25,13 +25,16 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Services\UserService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Users\UpdateService;
+use Pterodactyl\Services\Users\CreationService;
+use Pterodactyl\Services\Users\DeletionService;
+use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
 {
@@ -41,14 +44,14 @@ class UserController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\UserService
+     * @var \Pterodactyl\Services\Users\CreationService
      */
-    protected $service;
+    protected $creationService;
 
     /**
-     * @var \Pterodactyl\Models\User
+     * @var \Pterodactyl\Services\Users\DeletionService
      */
-    protected $model;
+    protected $deletionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
@@ -56,38 +59,52 @@ class UserController extends Controller
     protected $repository;
 
     /**
+     * @var \Illuminate\Contracts\Translation\Translator
+     */
+    protected $translator;
+
+    /**
+     * @var \Pterodactyl\Services\Users\UpdateService
+     */
+    protected $updateService;
+
+    /**
      * UserController constructor.
      *
      * @param  \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param  \Pterodactyl\Services\UserService                         $service
+     * @param \Pterodactyl\Services\Users\CreationService                $creationService
+     * @param \Pterodactyl\Services\Users\DeletionService                $deletionService
+     * @param \Illuminate\Contracts\Translation\Translator               $translator
+     * @param \Pterodactyl\Services\Users\UpdateService                  $updateService
      * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     * @param  \Pterodactyl\Models\User                                  $model
      */
     public function __construct(
         AlertsMessageBag $alert,
-        UserService $service,
-        UserRepositoryInterface $repository,
-        User $model
+        CreationService $creationService,
+        DeletionService $deletionService,
+        Translator $translator,
+        UpdateService $updateService,
+        UserRepositoryInterface $repository
     ) {
         $this->alert = $alert;
-        $this->service = $service;
-        $this->model = $model;
+        $this->creationService = $creationService;
+        $this->deletionService = $deletionService;
         $this->repository = $repository;
+        $this->translator = $translator;
+        $this->updateService = $updateService;
     }
 
     /**
      * Display user index page.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
         $users = $this->repository->search($request->input('query'))->getAllUsersWithCounts();
 
-        return view('admin.users.index', [
-            'users' => $users,
-        ]);
+        return view('admin.users.index', ['users' => $users]);
     }
 
     /**
@@ -103,21 +120,19 @@ class UserController extends Controller
     /**
      * Display user view page.
      *
-     * @param  \Pterodactyl\Models\User  $user
+     * @param  \Pterodactyl\Models\User $user
      * @return \Illuminate\View\View
      */
     public function view(User $user)
     {
-        return view('admin.users.view', [
-            'user' => $user,
-        ]);
+        return view('admin.users.view', ['user' => $user]);
     }
 
     /**
      * Delete a user from the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Pterodactyl\Models\User  $user
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Pterodactyl\Models\User $user
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -126,16 +141,10 @@ class UserController extends Controller
     public function delete(Request $request, User $user)
     {
         if ($request->user()->id === $user->id) {
-            throw new DisplayException('Cannot delete your own account.');
+            throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
         }
 
-        try {
-            $this->repository->deleteIfNoServers($user->id);
-
-            return redirect()->route('admin.users');
-        } catch (DisplayException $ex) {
-            $this->alert->danger($ex->getMessage())->flash();
-        }
+        $this->deletionService->handle($user);
 
         return redirect()->route('admin.users.view', $user->id);
     }
@@ -143,7 +152,7 @@ class UserController extends Controller
     /**
      * Create a user.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest  $request
+     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -151,9 +160,8 @@ class UserController extends Controller
      */
     public function store(UserFormRequest $request)
     {
-        $user = $this->service->create($request->normalize());
-
-        $this->alert->success('Account has been successfully created.')->flash();
+        $user = $this->creationService->handle($request->normalize());
+        $this->alert->success($this->translator->trans('admin/user.notices.account_created'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
     }
@@ -169,8 +177,8 @@ class UserController extends Controller
      */
     public function update(UserFormRequest $request, User $user)
     {
-        $this->service->update($user->id, $request->normalize());
-        $this->alert->success('User account has been updated.')->flash();
+        $this->updateService->handle($user->id, $request->normalize());
+        $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
     }

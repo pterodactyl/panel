@@ -25,17 +25,17 @@
 namespace Tests\Unit\Services;
 
 use Mockery as m;
+use Pterodactyl\Services\Users\CreationService;
 use Tests\TestCase;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Notifications\ChannelManager;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\UserService;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class UserServiceTest extends TestCase
+class CreationServiceTest extends TestCase
 {
     /**
      * @var \Illuminate\Foundation\Application
@@ -68,7 +68,7 @@ class UserServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\UserService
+     * @var \Pterodactyl\Services\Users\CreationService
      */
     protected $service;
 
@@ -86,7 +86,7 @@ class UserServiceTest extends TestCase
         $this->passwordService = m::mock(TemporaryPasswordService::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
 
-        $this->service = new UserService(
+        $this->service = new CreationService(
             $this->appMock,
             $this->notification,
             $this->database,
@@ -99,7 +99,7 @@ class UserServiceTest extends TestCase
     /**
      * Test that a user is created when a password is passed.
      */
-    public function test_user_creation_with_password()
+    public function testUserIsCreatedWhenPasswordIsProvided()
     {
         $user = (object) [
             'name_first' => 'FirstName',
@@ -122,7 +122,7 @@ class UserServiceTest extends TestCase
 
         $this->notification->shouldReceive('send')->with($user, null)->once()->andReturnNull();
 
-        $response = $this->service->create([
+        $response = $this->service->handle([
             'password' => 'raw-password',
         ]);
 
@@ -134,7 +134,7 @@ class UserServiceTest extends TestCase
     /**
      * Test that a user is created with a random password when no password is provided.
      */
-    public function test_user_creation_without_password()
+    public function testUserIsCreatedWhenNoPasswordIsProvided()
     {
         $user = (object) [
             'name_first' => 'FirstName',
@@ -145,7 +145,10 @@ class UserServiceTest extends TestCase
         $this->hasher->shouldNotReceive('make');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->hasher->shouldReceive('make')->once()->andReturn('created-enc-password');
-        $this->passwordService->shouldReceive('generateReset')->with('user@example.com')->once()->andReturn('random-token');
+        $this->passwordService->shouldReceive('generateReset')
+            ->with('user@example.com')
+            ->once()
+            ->andReturn('random-token');
 
         $this->repository->shouldReceive('create')->with([
             'password' => 'created-enc-password',
@@ -163,7 +166,7 @@ class UserServiceTest extends TestCase
 
         $this->notification->shouldReceive('send')->with($user, null)->once()->andReturnNull();
 
-        $response = $this->service->create([
+        $response = $this->service->handle([
             'email' => 'user@example.com',
         ]);
 
@@ -172,31 +175,4 @@ class UserServiceTest extends TestCase
         $this->assertEquals($user->name_first, 'FirstName');
         $this->assertEquals($user->email, $response->email);
     }
-
-    /**
-     * Test that passing no password will not attempt any hashing.
-     */
-    public function test_user_update_without_password()
-    {
-        $this->hasher->shouldNotReceive('make');
-        $this->repository->shouldReceive('update')->with(1, ['email' => 'new@example.com'])->once()->andReturnNull();
-
-        $response = $this->service->update(1, ['email' => 'new@example.com']);
-
-        $this->assertNull($response);
-    }
-
-    /**
-     * Test that passing a password will hash it before storage.
-     */
-    public function test_user_update_with_password()
-    {
-        $this->hasher->shouldReceive('make')->with('password')->once()->andReturn('enc-password');
-        $this->repository->shouldReceive('update')->with(1, ['password' => 'enc-password'])->once()->andReturnNull();
-
-        $response = $this->service->update(1, ['password' => 'password']);
-
-        $this->assertNull($response);
-    }
-
 }

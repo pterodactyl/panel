@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Pterodactyl\Services\Users;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -32,7 +32,7 @@ use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class UserService
+class CreationService
 {
     /**
      * @var \Illuminate\Foundation\Application
@@ -40,9 +40,9 @@ class UserService
     protected $app;
 
     /**
-     * @var \Illuminate\Database\Connection
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    protected $connection;
 
     /**
      * @var \Illuminate\Contracts\Hashing\Hasher
@@ -65,25 +65,25 @@ class UserService
     protected $repository;
 
     /**
-     * UserService constructor.
+     * CreationService constructor.
      *
-     * @param \Illuminate\Foundation\Application                         $application
-     * @param  \Illuminate\Notifications\ChannelManager                  $notification
-     * @param  \Illuminate\Database\ConnectionInterface                  $database
-     * @param  \Illuminate\Contracts\Hashing\Hasher                      $hasher
-     * @param  \Pterodactyl\Services\Helpers\TemporaryPasswordService    $passwordService
-     * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \Illuminate\Foundation\Application                        $application
+     * @param \Illuminate\Notifications\ChannelManager                  $notification
+     * @param \Illuminate\Database\ConnectionInterface                  $connection
+     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \Pterodactyl\Services\Helpers\TemporaryPasswordService    $passwordService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         Application $application,
         ChannelManager $notification,
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         Hasher $hasher,
         TemporaryPasswordService $passwordService,
         UserRepositoryInterface $repository
     ) {
         $this->app = $application;
-        $this->database = $database;
+        $this->connection = $connection;
         $this->hasher = $hasher;
         $this->notification = $notification;
         $this->passwordService = $passwordService;
@@ -99,25 +99,22 @@ class UserService
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $data)
+    public function handle(array $data)
     {
         if (array_key_exists('password', $data) && ! empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        // Begin Transaction
-        $this->database->beginTransaction();
-
+        $this->connection->beginTransaction();
         if (! isset($data['password']) || empty($data['password'])) {
             $data['password'] = $this->hasher->make(str_random(30));
             $token = $this->passwordService->generateReset($data['email']);
         }
 
         $user = $this->repository->create($data);
+        $this->connection->commit();
 
-        // Persist the data
-        $this->database->commit();
-
+        // @todo fire event, handle notification there
         $this->notification->send($user, $this->app->makeWith(AccountCreated::class, [
             'user' => [
                 'name' => $user->name_first,
@@ -125,26 +122,6 @@ class UserService
                 'token' => $token ?? null,
             ],
         ]));
-
-        return $user;
-    }
-
-    /**
-     * Update the user model instance.
-     *
-     * @param  int   $id
-     * @param  array $data
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-    public function update($id, array $data)
-    {
-        if (isset($data['password'])) {
-            $data['password'] = $this->hasher->make($data['password']);
-        }
-
-        $user = $this->repository->update($id, $data);
 
         return $user;
     }
