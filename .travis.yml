@@ -4,9 +4,10 @@ php:
   - '7.0'
   - '7.1'
 sudo: false
-cache:
-  directories:
-    - $HOME/.composer/cache
+cache: false
+#cache:
+#  directories:
+#    - $HOME/.composer/cache
 services:
   - mysql
 before_install:
