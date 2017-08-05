@@ -25,6 +25,7 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
@@ -36,6 +37,104 @@ class NodeRepository extends SearchableRepository implements NodeRepositoryInter
     public function model()
     {
         return Node::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUsageStats($id)
+    {
+        $node = $this->getBuilder()->select(
+            'nodes.disk_overallocate', 'nodes.memory_overallocate', 'nodes.disk', 'nodes.memory',
+            $this->getBuilder()->raw('SUM(servers.memory) as sum_memory, SUM(servers.disk) as sum_disk')
+        )->join('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('nodes.id', $id)
+            ->first();
+
+        return collect(['disk' => $node->sum_disk, 'memory' => $node->sum_memory])
+            ->mapWithKeys(function ($value, $key) use ($node) {
+                $maxUsage = $node->{$key};
+                if ($node->{$key . '_overallocate'} > 0) {
+                    $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+                }
+
+                $percent = ($value / $maxUsage) * 100;
+
+                return [
+                    $key => [
+                        'value' => number_format($value),
+                        'max' => number_format($maxUsage),
+                        'percent' => $percent,
+                        'css' => ($percent <= 75) ? 'green' : (($percent > 90) ? 'red' : 'yellow'),
+                    ],
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodeListingData($count = 25)
+    {
+        $instance = $this->getBuilder()->with('location')->withCount('servers');
+
+        if ($this->searchTerm) {
+            $instance->search($this->searchTerm);
+        }
+
+        return $instance->paginate($count, $this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSingleNode($id)
+    {
+        $instance = $this->getBuilder()->with('location')->withCount('servers')->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodeAllocations($id)
+    {
+        $instance = $this->getBuilder()->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        $instance->setRelation(
+            'allocations',
+            $this->getModel()->allocations()->orderBy('ip', 'asc')
+                ->orderBy('port', 'asc')
+                ->with('server')
+                ->paginate(50)
+        );
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getNodeServers($id)
+    {
+        $instance = $this->getBuilder()->with('servers.user', 'servers.service', 'servers.option')
+            ->find($id, $this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
     }
 
     /**

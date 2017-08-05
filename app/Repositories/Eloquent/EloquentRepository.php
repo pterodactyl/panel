@@ -106,6 +106,14 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
+     * {@inheritdoc}.
+     */
+    public function findCountWhere(array $fields)
+    {
+        return $this->getBuilder()->where($fields)->count($this->getColumns());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function delete($id, $destroy = false)

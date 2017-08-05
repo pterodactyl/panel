@@ -25,13 +25,15 @@
 namespace Pterodactyl\Models;
 
 use GuzzleHttp\Client;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Nicolaslopezj\Searchable\SearchableTrait;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Node extends Model
+class Node extends Model implements ValidableContract
 {
-    use Notifiable, SearchableTrait;
+    use Eloquence, Notifiable, Validable;
 
     /**
      * The table associated with the model.
@@ -47,20 +49,20 @@ class Node extends Model
      */
     protected $hidden = ['daemonSecret'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'public' => 'integer',
-         'location_id' => 'integer',
-         'memory' => 'integer',
-         'disk' => 'integer',
-         'daemonListen' => 'integer',
-         'daemonSFTP' => 'integer',
-         'behind_proxy' => 'boolean',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'public' => 'integer',
+        'location_id' => 'integer',
+        'memory' => 'integer',
+        'disk' => 'integer',
+        'daemonListen' => 'integer',
+        'daemonSFTP' => 'integer',
+        'behind_proxy' => 'boolean',
+    ];
 
     /**
      * Fields that are mass assignable.
@@ -81,22 +83,67 @@ class Node extends Model
      *
      * @var array
      */
-    protected $searchable = [
-         'columns' => [
-             'nodes.name' => 10,
-             'nodes.fqdn' => 8,
-             'locations.short' => 4,
-             'locations.long' => 4,
-         ],
-         'joins' => [
-            'locations' => ['locations.id', 'nodes.location_id'],
-         ],
-     ];
+    protected $searchableColumns = [
+        'name' => 10,
+        'fqdn' => 8,
+        'location.short' => 4,
+        'location.long' => 4,
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'name' => 'required',
+        'location_id' => 'required',
+        'fqdn' => 'required',
+        'scheme' => 'required',
+        'memory' => 'required',
+        'memory_overallocate' => 'required',
+        'disk' => 'required',
+        'disk_overallocate' => 'required',
+        'daemonBase' => 'sometimes|required',
+        'daemonSFTP' => 'required',
+        'daemonListen' => 'required',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'name' => 'regex:/^([\w .-]{1,100})$/',
+        'location_id' => 'exists:locations,id',
+        'public' => 'boolean',
+        'fqdn' => 'string',
+        'behind_proxy' => 'boolean',
+        'memory' => 'numeric|min:1',
+        'memory_overallocate' => 'numeric|min:-1',
+        'disk' => 'numeric|min:1',
+        'disk_overallocate' => 'numeric|min:-1',
+        'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
+        'daemonSFTP' => 'numeric|between:1024,65535',
+        'daemonListen' => 'numeric|between:1024,65535',
+    ];
+
+    /**
+     * Default values for specific columns that are generally not changed on base installs.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'public' => true,
+        'behind_proxy' => false,
+        'memory_overallocate' => 0,
+        'disk_overallocate' => 0,
+        'daemonBase' => '/srv/daemon-data',
+        'daemonSFTP' => 2022,
+        'daemonListen' => 8080,
+    ];
 
     /**
      * Return an instance of the Guzzle client for this specific node.
      *
-     * @param  array  $headers
+     * @param  array $headers
      * @return \GuzzleHttp\Client
      */
     public function guzzleClient($headers = [])
@@ -112,7 +159,7 @@ class Node extends Model
     /**
      * Returns the configuration in JSON format.
      *
-     * @param  bool  $pretty
+     * @param  bool $pretty
      * @return string
      */
     public function getConfigurationAsJson($pretty = false)

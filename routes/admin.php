@@ -137,21 +137,22 @@ Route::group(['prefix' => 'servers'], function () {
 Route::group(['prefix' => 'nodes'], function () {
     Route::get('/', 'NodesController@index')->name('admin.nodes');
     Route::get('/new', 'NodesController@create')->name('admin.nodes.new');
-    Route::get('/view/{id}', 'NodesController@viewIndex')->name('admin.nodes.view');
-    Route::get('/view/{id}/settings', 'NodesController@viewSettings')->name('admin.nodes.view.settings');
-    Route::get('/view/{id}/configuration', 'NodesController@viewConfiguration')->name('admin.nodes.view.configuration');
-    Route::get('/view/{id}/allocation', 'NodesController@viewAllocation')->name('admin.nodes.view.allocation');
-    Route::get('/view/{id}/servers', 'NodesController@viewServers')->name('admin.nodes.view.servers');
-    Route::get('/view/{id}/settings/token', 'NodesController@setToken')->name('admin.nodes.view.configuration.token');
+    Route::get('/view/{node}', 'NodesController@viewIndex')->name('admin.nodes.view');
+    Route::get('/view/{node}/settings', 'NodesController@viewSettings')->name('admin.nodes.view.settings');
+    Route::get('/view/{node}/configuration', 'NodesController@viewConfiguration')->name('admin.nodes.view.configuration');
+    Route::get('/view/{node}/allocation', 'NodesController@viewAllocation')->name('admin.nodes.view.allocation');
+    Route::get('/view/{node}/servers', 'NodesController@viewServers')->name('admin.nodes.view.servers');
+    Route::get('/view/{node}/settings/token', 'NodesController@setToken')->name('admin.nodes.view.configuration.token');
 
     Route::post('/new', 'NodesController@store');
-    Route::post('/view/{id}/settings', 'NodesController@updateSettings');
-    Route::post('/view/{id}/allocation', 'NodesController@createAllocation');
-    Route::post('/view/{id}/allocation/remove', 'NodesController@allocationRemoveBlock')->name('admin.nodes.view.allocation.removeBlock');
-    Route::post('/view/{id}/allocation/alias', 'NodesController@allocationSetAlias')->name('admin.nodes.view.allocation.setAlias');
+    Route::post('/view/{node}/allocation', 'NodesController@createAllocation');
+    Route::post('/view/{node}/allocation/remove', 'NodesController@allocationRemoveBlock')->name('admin.nodes.view.allocation.removeBlock');
+    Route::post('/view/{node}/allocation/alias', 'NodesController@allocationSetAlias')->name('admin.nodes.view.allocation.setAlias');
 
-    Route::delete('/view/{id}/delete', 'NodesController@delete')->name('admin.nodes.view.delete');
-    Route::delete('/view/{id}/allocation/remove/{allocation}', 'NodesController@allocationRemoveSingle')->name('admin.nodes.view.allocation.removeSingle');
+    Route::patch('/view/{node}/settings', 'NodesController@updateSettings');
+
+    Route::delete('/view/{node}/delete', 'NodesController@delete')->name('admin.nodes.view.delete');
+    Route::delete('/view/{node}/allocation/remove/{allocation}', 'NodesController@allocationRemoveSingle')->name('admin.nodes.view.allocation.removeSingle');
 });
 
 /*

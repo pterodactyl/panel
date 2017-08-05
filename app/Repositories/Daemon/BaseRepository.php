@@ -51,6 +51,7 @@ class BaseRepository implements BaseRepositoryInterface
 
     public function setNode($id)
     {
+        // @todo accept a model
         $this->node = $this->nodeRepository->find($id);
 
         return $this;

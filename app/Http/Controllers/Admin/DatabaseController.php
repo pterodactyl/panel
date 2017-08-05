@@ -132,6 +132,7 @@ class DatabaseController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function update(DatabaseHostFormRequest $request, DatabaseHost $host)
     {

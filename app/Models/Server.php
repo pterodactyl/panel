@@ -67,6 +67,9 @@ class Server extends Model implements ValidableContract
      */
     protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
 
+    /**
+     * @var array
+     */
     protected static $applicationRules = [
         'owner_id' => 'required',
         'name' => 'required',
@@ -83,6 +86,9 @@ class Server extends Model implements ValidableContract
         'skip_scripts' => 'sometimes',
     ];
 
+    /**
+     * @var array
+     */
     protected static $dataIntegrityRules = [
         'owner_id' => 'exists:users,id',
         'name' => 'regex:/^([\w .-]{1,200})$/',
@@ -132,22 +138,15 @@ class Server extends Model implements ValidableContract
      *
      * @var array
      */
-    protected $searchable = [
-        'columns' => [
-            'servers.name' => 10,
-            'servers.username' => 10,
-            'servers.uuidShort' => 9,
-            'servers.uuid' => 8,
-            'packs.name' => 7,
-            'users.email' => 6,
-            'users.username' => 6,
-            'nodes.name' => 2,
-        ],
-        'joins' => [
-            'packs' => ['packs.id', 'servers.pack_id'],
-            'users' => ['users.id', 'servers.owner_id'],
-            'nodes' => ['nodes.id', 'servers.node_id'],
-        ],
+    protected $searchableColumns = [
+        'name' => 10,
+        'username' => 10,
+        'uuidShort' => 9,
+        'uuid' => 8,
+        'pack.name' => 7,
+        'user.email' => 6,
+        'user.username' => 6,
+        'node.name' => 2,
     ];
 
     /**
@@ -155,10 +154,11 @@ class Server extends Model implements ValidableContract
      * DO NOT USE THIS TO MODIFY SERVER DETAILS OR SAVE THOSE DETAILS.
      * YOU WILL OVERWRITE THE SECRET KEY AND BREAK THINGS.
      *
-     * @param  string  $uuid
-     * @param  array   $with
-     * @param  array   $withCount
+     * @param  string $uuid
+     * @param  array  $with
+     * @param  array  $withCount
      * @return \Pterodactyl\Models\Server
+     * @throws \Exception
      * @todo   Remove $with and $withCount due to cache issues, they aren't used anyways.
      */
     public static function byUuid($uuid, array $with = [], array $withCount = [])

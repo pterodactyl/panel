@@ -28,8 +28,9 @@ use Pterodactyl\Models\Location;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
-class LocationRepository extends EloquentRepository implements LocationRepositoryInterface
+class LocationRepository extends SearchableRepository implements LocationRepositoryInterface
 {
     /**
      * @var string
@@ -42,21 +43,6 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     public function model()
     {
         return Location::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function search($term)
-    {
-        if (empty($term)) {
-            return $this;
-        }
-
-        $clone = clone $this;
-        $clone->searchTerm = $term;
-
-        return $clone;
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Mockery as m;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -12,6 +11,5 @@ abstract class TestCase extends BaseTestCase
     public function setUp()
     {
         parent::setUp();
-        m::close();
     }
 }

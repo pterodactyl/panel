@@ -15,7 +15,7 @@
 
 $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $faker) {
     return [
-        'id' => $faker->randomNumber(),
+        'id' => $faker->unique()->randomNumber(),
         'uuid' => $faker->uuid,
         'uuidShort' => str_random(8),
         'name' => $faker->firstName,
@@ -40,7 +40,7 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
 
 $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $faker) {
     return [
-        'id' => $faker->randomNumber(),
+        'id' => $faker->unique()->randomNumber(),
         'external_id' => null,
         'uuid' => $faker->uuid,
         'username' => $faker->userName,
@@ -56,19 +56,21 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $fake
 
 $factory->state(Pterodactyl\Models\User::class, 'admin', function () {
     return [
-       'root_admin' => true,
+        'root_admin' => true,
     ];
 });
 
 $factory->define(Pterodactyl\Models\Location::class, function (Faker\Generator $faker) {
     return [
-       'short' => $faker->domainWord,
-       'long' => $faker->catchPhrase,
-   ];
+        'id' => $faker->unique()->randomNumber(),
+        'short' => $faker->domainWord,
+        'long' => $faker->catchPhrase,
+    ];
 });
 
 $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $faker) {
     return [
+        'id' => $faker->unique()->randomNumber(),
         'public' => true,
         'name' => $faker->firstName,
         'fqdn' => $faker->ipv4,
@@ -88,7 +90,7 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
 
 $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Generator $faker) {
     return [
-        'id' => $faker->randomNumber(),
+        'id' => $faker->unique()->randomNumber(),
         'name' => $faker->firstName,
         'description' => $faker->sentence(),
         'env_variable' => strtoupper(str_replace(' ', '_', $faker->words(2, true))),
@@ -98,7 +100,7 @@ $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Gene
         'rules' => 'required|string',
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
-   ];
+    ];
 });
 
 $factory->state(Pterodactyl\Models\ServiceVariable::class, 'viewable', function () {

@@ -85,7 +85,7 @@ class DeletionServiceTest extends TestCase
         $this->repository->shouldReceive('delete')->with($this->user->id)->once()->andReturn(true);
 
         $this->assertTrue(
-            $this->service->handle($this->user),
+            $this->service->handle($this->user->id),
             'Assert that service responds true.'
         );
     }
@@ -100,20 +100,19 @@ class DeletionServiceTest extends TestCase
         $this->serverRepository->shouldReceive('findWhere')->with([['owner_id', '=', $this->user->id]])->once()->andReturn(['item']);
         $this->translator->shouldReceive('trans')->with('admin/user.exceptions.user_has_servers')->once()->andReturnNull();
 
-        $this->service->handle($this->user);
+        $this->service->handle($this->user->id);
     }
 
     /**
      * Test that the function supports passing in a model or an ID.
      */
-    public function testIntegerCanBePassedInPlaceOfUserModel()
+    public function testModelCanBePassedInPlaceOfUserId()
     {
-        $this->repository->shouldReceive('find')->with($this->user->id)->once()->andReturn($this->user);
         $this->serverRepository->shouldReceive('findWhere')->with([['owner_id', '=', $this->user->id]])->once()->andReturn([]);
         $this->repository->shouldReceive('delete')->with($this->user->id)->once()->andReturn(true);
 
         $this->assertTrue(
-            $this->service->handle($this->user->id),
+            $this->service->handle($this->user),
             'Assert that service responds true.'
         );
     }

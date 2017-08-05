@@ -117,6 +117,14 @@ interface RepositoryInterface
     public function findFirstWhere(array $fields);
 
     /**
+     * Return a count of records matching the passed arguments.
+     *
+     * @param  array $fields
+     * @return int
+     */
+    public function findCountWhere(array $fields);
+
+    /**
      * Update a given ID with the passed array of fields.
      *
      * @param  int   $id

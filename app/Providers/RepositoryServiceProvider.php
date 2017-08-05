@@ -28,6 +28,8 @@ use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
@@ -36,6 +38,8 @@ use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
+use Pterodactyl\Repositories\Daemon\ServerRepository as DaemonServerRepository;
 use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
@@ -71,9 +75,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories
-        $this->app->bind(
-            \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface::class,
-            \Pterodactyl\Repositories\Daemon\ServerRepository::class
-        );
+        $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
+        $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
     }
 }
