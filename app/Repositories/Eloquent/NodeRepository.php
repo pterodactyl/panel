@@ -113,10 +113,8 @@ class NodeRepository extends SearchableRepository implements NodeRepositoryInter
 
         $instance->setRelation(
             'allocations',
-            $this->getModel()->allocations()->orderBy('ip', 'asc')
-                ->orderBy('port', 'asc')
-                ->with('server')
-                ->paginate(50)
+            $instance->allocations()->orderBy('ip', 'asc')->orderBy('port', 'asc')
+                ->with('server')->paginate(50)
         );
 
         return $instance;

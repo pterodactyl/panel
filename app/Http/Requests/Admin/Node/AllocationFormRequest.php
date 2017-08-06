@@ -22,23 +22,21 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Http\Requests\Admin\Node;
 
-use Pterodactyl\Models\Location;
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class LocationRequest extends AdminFormRequest
+class AllocationFormRequest extends AdminFormRequest
 {
     /**
-     * Setup the validation rules to use for these requests.
-     *
      * @return array
      */
     public function rules()
     {
-        if ($this->method() === 'PATCH') {
-            return Location::getUpdateRulesForId($this->location->id);
-        }
-
-        return Location::getCreateRules();
+        return [
+            'allocation_ip' => 'required|string',
+            'allocation_alias' => 'sometimes|string|max:255',
+            'allocation_ports' => 'required|array',
+        ];
     }
 }

@@ -34,7 +34,7 @@ class UserFormRequest extends AdminFormRequest
     public function rules()
     {
         if ($this->method() === 'PATCH') {
-            return User::getUpdateRulesForId($this->user->id);
+            return User::getUpdateRulesForId($this->route()->parameter('user')->id);
         }
 
         return User::getCreateRules();

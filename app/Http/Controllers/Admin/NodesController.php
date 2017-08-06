@@ -24,25 +24,25 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
 use Alert;
 use Javascript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Allocation;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\NodeRepository;
 use Pterodactyl\Services\Nodes\UpdateService;
 use Pterodactyl\Services\Nodes\CreationService;
 use Pterodactyl\Services\Nodes\DeletionService;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Cache\Repository as CacheRepository;
-use Pterodactyl\Http\Requests\Admin\NodeFormRequest;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Allocations\AssignmentService;
+use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
 
 class NodesController extends Controller
 {
@@ -50,6 +50,16 @@ class NodesController extends Controller
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     protected $alert;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     */
+    protected $allocationRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Allocations\AssignmentService
+     */
+    protected $assignmentService;
 
     /**
      * @var \Illuminate\Cache\Repository
@@ -86,8 +96,24 @@ class NodesController extends Controller
      */
     protected $updateService;
 
+    /**
+     * NodesController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                               $alert
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
+     * @param \Illuminate\Cache\Repository                                    $cache
+     * @param \Pterodactyl\Services\Nodes\CreationService                     $creationService
+     * @param \Pterodactyl\Services\Nodes\DeletionService                     $deletionService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
+     * @param \Illuminate\Contracts\Translation\Translator                    $translator
+     * @param \Pterodactyl\Services\Nodes\UpdateService                       $updateService
+     */
     public function __construct(
         AlertsMessageBag $alert,
+        AllocationRepositoryInterface $allocationRepository,
+        AssignmentService $assignmentService,
         CacheRepository $cache,
         CreationService $creationService,
         DeletionService $deletionService,
@@ -97,6 +123,8 @@ class NodesController extends Controller
         UpdateService $updateService
     ) {
         $this->alert = $alert;
+        $this->allocationRepository = $allocationRepository;
+        $this->assignmentService = $assignmentService;
         $this->cache = $cache;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
@@ -139,7 +167,7 @@ class NodesController extends Controller
     /**
      * Post controller to create a new node on the system.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\NodeFormRequest $request
+     * @param  \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -224,8 +252,8 @@ class NodesController extends Controller
     /**
      * Updates settings for a node.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\NodeFormRequest $request
-     * @param \Pterodactyl\Models\Node                          $node
+     * @param  \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
+     * @param  \Pterodactyl\Models\Node                              $node
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -242,12 +270,11 @@ class NodesController extends Controller
     /**
      * Removes a single allocation from a node.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $node
-     * @param  int                      $allocation
+     * @param  int $node
+     * @param  int $allocation
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
-    public function allocationRemoveSingle(Request $request, $node, $allocation)
+    public function allocationRemoveSingle($node, $allocation)
     {
         $query = Allocation::where('node_id', $node)->whereNull('server_id')->where('id', $allocation)->delete();
         if ($query < 1) {
@@ -284,55 +311,35 @@ class NodesController extends Controller
     /**
      * Sets an alias for a specific allocation on a node.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $node
-     * @return \Illuminate\Http\Response
+     * @param  \Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function allocationSetAlias(Request $request, $node)
+    public function allocationSetAlias(AllocationAliasFormRequest $request)
     {
-        if (! $request->input('allocation_id')) {
-            return response('Missing required parameters.', 422);
-        }
+        $this->allocationRepository->update($request->input('allocation_id'), [
+            'ip_alias' => (empty($request->input('alias'))) ? null : $request->input('alias'),
+        ]);
 
-        try {
-            $update = Allocation::findOrFail($request->input('allocation_id'));
-            $update->ip_alias = (empty($request->input('alias'))) ? null : $request->input('alias');
-            $update->save();
-
-            return response('', 204);
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
+        return response('', 204);
     }
 
     /**
      * Creates new allocations on a node.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $node
+     * @param  \Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest $request
+     * @param  int|\Pterodactyl\Models\Node                                $node
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function createAllocation(Request $request, $node)
+    public function createAllocation(AllocationFormRequest $request, Node $node)
     {
-        $repo = new NodeRepository;
+        $this->assignmentService->handle($node, $request->normalize());
+        $this->alert->success($this->translator->trans('admin/node.notices.allocations_added'))->flash();
 
-        try {
-            $repo->addAllocations($node, $request->intersect(['allocation_ip', 'allocation_alias', 'allocation_ports']));
-            Alert::success('Successfully added new allocations!')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()
-                ->route('admin.nodes.view.allocation', $node)
-                ->withErrors(json_decode($ex->getMessage()))
-                ->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attempting to add allocations this node. This error has been logged.')
-                ->flash();
-        }
-
-        return redirect()->route('admin.nodes.view.allocation', $node);
+        return redirect()->route('admin.nodes.view.allocation', $node->id);
     }
 
     /**

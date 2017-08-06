@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Database\Query\Expression;
 use Pterodactyl\Repository\Repository;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
@@ -183,6 +184,44 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     public function insert(array $data)
     {
         return $this->getBuilder()->insert($data);
+    }
+
+    /**
+     * Insert multiple records into the database and ignore duplicates.
+     *
+     * @param  array $values
+     * @return bool
+     */
+    public function insertIgnore(array $values)
+    {
+        if (empty($values)) {
+            return true;
+        }
+
+        if (! is_array(reset($values))) {
+            $values = [$values];
+        } else {
+            foreach ($values as $key => $value) {
+                ksort($value);
+                $values[$key] = $value;
+            }
+        }
+
+        $bindings = array_values(array_filter(array_flatten($values, 1), function ($binding) {
+            return ! $binding instanceof Expression;
+        }));
+
+        $grammar = $this->getBuilder()->toBase()->getGrammar();
+        $table = $grammar->wrapTable($this->getModel()->getTable());
+        $columns = $grammar->columnize(array_keys(reset($values)));
+
+        $parameters = collect($values)->map(function ($record) use ($grammar) {
+            return sprintf('(%s)', $grammar->parameterize($record));
+        })->implode(', ');
+
+        $statement = "insert ignore into $table ($columns) values $parameters";
+
+        return $this->getBuilder()->getConnection()->statement($statement, $bindings);
     }
 
     /**

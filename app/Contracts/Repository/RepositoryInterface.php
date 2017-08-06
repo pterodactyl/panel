@@ -186,4 +186,12 @@ interface RepositoryInterface
      * @return bool
      */
     public function insert(array $data);
+
+    /**
+     * Insert multiple records into the database and ignore duplicates.
+     *
+     * @param  array $values
+     * @return bool
+     */
+    public function insertIgnore(array $values);
 }

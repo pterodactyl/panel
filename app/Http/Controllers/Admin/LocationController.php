@@ -29,7 +29,7 @@ use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\LocationService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\LocationRequest;
+use Pterodactyl\Http\Requests\Admin\LocationFormRequest;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationController extends Controller
@@ -94,13 +94,13 @@ class LocationController extends Controller
     /**
      * Handle request to create new location.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\LocationRequest $request
+     * @param  \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
      * @throws \Watson\Validating\ValidationException
      */
-    public function create(LocationRequest $request)
+    public function create(LocationFormRequest $request)
     {
         $location = $this->service->create($request->normalize());
         $this->alert->success('Location was created successfully.')->flash();
@@ -111,14 +111,14 @@ class LocationController extends Controller
     /**
      * Handle request to update or delete location.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\LocationRequest $request
-     * @param  \Pterodactyl\Models\Location                     $location
+     * @param  \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
+     * @param  \Pterodactyl\Models\Location                         $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
      * @throws \Watson\Validating\ValidationException
      */
-    public function update(LocationRequest $request, Location $location)
+    public function update(LocationFormRequest $request, Location $location)
     {
         if ($request->input('action') === 'delete') {
             return $this->delete($location);
