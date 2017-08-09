@@ -119,11 +119,19 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function delete($id, $destroy = false)
     {
-        if ($destroy) {
-            return $this->getBuilder()->where($this->getModel()->getKeyName(), $id)->forceDelete();
-        }
+        $instance = $this->getBuilder()->where($this->getModel()->getKeyName(), $id);
 
-        return $this->getBuilder()->where($this->getModel()->getKeyName(), $id)->delete();
+        return ($destroy) ? $instance->forceDelete() : $instance->delete();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteWhere(array $attributes, $force = false)
+    {
+        $instance = $this->getBuilder()->where($attributes);
+
+        return ($force) ? $instance->forceDelete() : $instance->delete();
     }
 
     /**

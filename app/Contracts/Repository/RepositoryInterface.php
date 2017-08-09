@@ -84,9 +84,17 @@ interface RepositoryInterface
      * Delete a given record from the database.
      *
      * @param  int $id
-     * @return bool|null
+     * @return int
      */
     public function delete($id);
+
+    /**
+     * Delete records matching the given attributes.
+     *
+     * @param  array $attributes
+     * @return int
+     */
+    public function deleteWhere(array $attributes);
 
     /**
      * Find a model that has the specific ID passed.

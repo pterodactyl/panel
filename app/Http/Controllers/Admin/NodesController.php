@@ -24,17 +24,14 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
 use Javascript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Allocation;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nodes\UpdateService;
 use Pterodactyl\Services\Nodes\CreationService;
 use Pterodactyl\Services\Nodes\DeletionService;
-use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Cache\Repository as CacheRepository;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
@@ -87,11 +84,6 @@ class NodesController extends Controller
     protected $repository;
 
     /**
-     * @var \Illuminate\Contracts\Translation\Translator
-     */
-    protected $translator;
-
-    /**
      * @var \Pterodactyl\Services\Nodes\UpdateService
      */
     protected $updateService;
@@ -107,7 +99,6 @@ class NodesController extends Controller
      * @param \Pterodactyl\Services\Nodes\DeletionService                     $deletionService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
-     * @param \Illuminate\Contracts\Translation\Translator                    $translator
      * @param \Pterodactyl\Services\Nodes\UpdateService                       $updateService
      */
     public function __construct(
@@ -119,7 +110,6 @@ class NodesController extends Controller
         DeletionService $deletionService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $repository,
-        Translator $translator,
         UpdateService $updateService
     ) {
         $this->alert = $alert;
@@ -130,7 +120,6 @@ class NodesController extends Controller
         $this->deletionService = $deletionService;
         $this->locationRepository = $locationRepository;
         $this->repository = $repository;
-        $this->translator = $translator;
         $this->updateService = $updateService;
     }
 
@@ -156,7 +145,7 @@ class NodesController extends Controller
     {
         $locations = $this->locationRepository->all();
         if (count($locations) < 1) {
-            $this->alert->warning($this->translator->trans('admin/node.notices.location_required'))->flash();
+            $this->alert->warning(trans('admin/node.notices.location_required'))->flash();
 
             return redirect()->route('admin.locations');
         }
@@ -175,7 +164,7 @@ class NodesController extends Controller
     public function store(NodeFormRequest $request)
     {
         $node = $this->creationService->handle($request->normalize());
-        $this->alert->info($this->translator->trans('admin/node.notices.node_created'))->flash();
+        $this->alert->info(trans('admin/node.notices.node_created'))->flash();
 
         return redirect()->route('admin.nodes.view.allocation', $node->id);
     }
@@ -262,7 +251,7 @@ class NodesController extends Controller
     public function updateSettings(NodeFormRequest $request, Node $node)
     {
         $this->updateService->handle($node, $request->normalize());
-        $this->alert->success($this->translator->trans('admin/node.notices.node_updated'))->flash();
+        $this->alert->success(trans('admin/node.notices.node_updated'))->flash();
 
         return redirect()->route('admin.nodes.view.settings', $node->id)->withInput();
     }
@@ -276,12 +265,11 @@ class NodesController extends Controller
      */
     public function allocationRemoveSingle($node, $allocation)
     {
-        $query = Allocation::where('node_id', $node)->whereNull('server_id')->where('id', $allocation)->delete();
-        if ($query < 1) {
-            return response()->json([
-                'error' => 'Unable to find an allocation matching those details to delete.',
-            ], 400);
-        }
+        $this->allocationRepository->deleteWhere([
+            ['id', '=', $allocation],
+            ['node_id', '=', $node],
+            ['server_id', '=', null],
+        ]);
 
         return response('', 204);
     }
@@ -295,15 +283,14 @@ class NodesController extends Controller
      */
     public function allocationRemoveBlock(Request $request, $node)
     {
-        $query = Allocation::where('node_id', $node)
-            ->whereNull('server_id')
-            ->where('ip', $request->input('ip'))
-            ->delete();
-        if ($query < 1) {
-            Alert::danger('There was an error while attempting to delete allocations on that IP.')->flash();
-        } else {
-            Alert::success('Deleted all unallocated ports for <code>' . $request->input('ip') . '</code>.')->flash();
-        }
+        $this->allocationRepository->deleteWhere([
+            ['node_id', '=', $node],
+            ['server_id', '=', null],
+            ['ip', '=', $request->input('ip')],
+        ]);
+
+        $this->alert->success(trans('admin/node.notices.unallocated_deleted', ['ip' => $request->input('ip')]))
+            ->flash();
 
         return redirect()->route('admin.nodes.view.allocation', $node);
     }
@@ -337,7 +324,7 @@ class NodesController extends Controller
     public function createAllocation(AllocationFormRequest $request, Node $node)
     {
         $this->assignmentService->handle($node, $request->normalize());
-        $this->alert->success($this->translator->trans('admin/node.notices.allocations_added'))->flash();
+        $this->alert->success(trans('admin/node.notices.allocations_added'))->flash();
 
         return redirect()->route('admin.nodes.view.allocation', $node->id);
     }
@@ -353,7 +340,7 @@ class NodesController extends Controller
     public function delete($node)
     {
         $this->deletionService->handle($node);
-        $this->alert->success($this->translator->trans('admin/node.notices.node_deleted'))->flash();
+        $this->alert->success(trans('admin/node.notices.node_deleted'))->flash();
 
         return redirect()->route('admin.nodes');
     }
