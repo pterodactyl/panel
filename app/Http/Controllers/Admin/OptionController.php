@@ -26,6 +26,12 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Log;
 use Alert;
+use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest;
+use Pterodactyl\Http\Requests\Admin\ServiceOptionFormRequest;
+use Pterodactyl\Services\Services\Options\CreationService;
+use Pterodactyl\Services\Services\Variables\VariableCreationService;
 use Route;
 use Javascript;
 use Illuminate\Http\Request;
@@ -42,100 +48,95 @@ use Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable;
 class OptionController extends Controller
 {
     /**
-     * Store the repository instance.
-     *
-     * @var \Pterodactyl\Repositories\OptionRepository
+     * @var \Prologue\Alerts\AlertsMessageBag
      */
-    protected $repository;
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Services\Options\CreationService
+     */
+    protected $creationService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $serviceRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Services\Variables\VariableCreationService
+     */
+    protected $variableCreationService;
 
     /**
      * OptionController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                                $alert
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface     $serviceRepository
+     * @param \Pterodactyl\Services\Services\Options\CreationService           $creationService
+     * @param \Pterodactyl\Services\Services\Variables\VariableCreationService $variableCreationService
      */
-    public function __construct()
-    {
-        $this->repository = new OptionRepository(Route::current()->parameter('option'));
+    public function __construct(
+        AlertsMessageBag $alert,
+        ServiceRepositoryInterface $serviceRepository,
+        CreationService $creationService,
+        VariableCreationService $variableCreationService
+    ) {
+        $this->alert = $alert;
+        $this->creationService = $creationService;
+        $this->serviceRepository = $serviceRepository;
+        $this->variableCreationService = $variableCreationService;
     }
 
     /**
      * Handles request to view page for adding new option.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create()
     {
-        $services = Service::with('options')->get();
+        $services = $this->serviceRepository->getWithOptions();
         Javascript::put(['services' => $services->keyBy('id')]);
 
         return view('admin.services.options.new', ['services' => $services]);
     }
 
     /**
-     * Handles POST request to create a new option.
+     * Handle adding a new service option.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param  \Pterodactyl\Http\Requests\Admin\ServiceOptionFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(Request $request)
+    public function store(ServiceOptionFormRequest $request)
     {
-        $repo = new OptionRepository;
+        $option = $this->creationService->handle($request->normalize());
+        $this->alert->success(trans('admin/services.options.notices.option_created'))->flash();
 
-        try {
-            $option = $repo->create($request->intersect([
-                'service_id', 'name', 'description', 'tag',
-                'docker_image', 'startup', 'config_from', 'config_startup',
-                'config_logs', 'config_files', 'config_stop',
-            ]));
-            Alert::success('Successfully created new service option.')->flash();
-
-            return redirect()->route('admin.services.option.view', $option->id);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occurred while attempting to create this service. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.services.option.new')->withInput();
+        return redirect()->route('admin.services.option.view', $option->id);
     }
 
     /**
      * Handles POST request to create a new option variable.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
+     * @param  \Pterodactyl\Models\ServiceOption                          $option
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function createVariable(Request $request, $id)
+    public function createVariable(OptionVariableFormRequest $request, ServiceOption $option)
     {
-        $repo = new VariableRepository;
+        $this->variableCreationService->handle($option->id, $request->normalize());
+        $this->alert->success(trans('admin/services.variables.notices.variable_created'))->flash();
 
-        try {
-            $variable = $repo->create($id, $request->intersect([
-                'name', 'description', 'env_variable',
-                'default_value', 'options', 'rules',
-            ]));
-
-            Alert::success('New variable successfully assigned to this service option.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.variables', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.services.option.variables', $id);
+        return redirect()->route('admin.services.option.variables', $option->id);
     }
 
     /**
      * Display option overview page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewConfiguration(Request $request, $id)
@@ -146,13 +147,14 @@ class OptionController extends Controller
     /**
      * Display variable overview page for a service option.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function viewVariables(Request $request, $id)
     {
-        return view('admin.services.options.variables', ['option' => ServiceOption::with('variables')->findOrFail($id)]);
+        return view('admin.services.options.variables', ['option' => ServiceOption::with('variables')
+            ->findOrFail($id), ]);
     }
 
     /**
@@ -179,8 +181,8 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function editConfiguration(Request $request, $id)
@@ -207,7 +209,8 @@ class OptionController extends Controller
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occurred while attempting to perform that action. This error has been logged.')->flash();
+            Alert::danger('An unhandled exception occurred while attempting to perform that action. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.services.option.view', $id);
@@ -216,9 +219,9 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable  $request
-     * @param  int                                                           $option
-     * @param  int                                                           $variable
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable $request
+     * @param  int                                                          $option
+     * @param  int                                                          $variable
      * @return \Illuminate\Http\RedirectResponse
      */
     public function editVariable(StoreOptionVariable $request, $option, $variable)
@@ -237,7 +240,8 @@ class OptionController extends Controller
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();
+            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.services.option.variables', $option);
@@ -259,7 +263,8 @@ class OptionController extends Controller
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')->flash();
+            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')
+                ->flash();
         }
 
         return redirect()->route('admin.services.option.scripts', $id);

@@ -66,9 +66,17 @@ class LocationRepository extends SearchableRepository implements LocationReposit
     /**
      * {@inheritdoc}
      */
-    public function allWithDetails()
+    public function getAllWithDetails()
     {
         return $this->getBuilder()->withCount('nodes', 'servers')->get($this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAllWithNodes()
+    {
+        return $this->getBuilder()->with('nodes')->get($this->getColumns());
     }
 
     /**

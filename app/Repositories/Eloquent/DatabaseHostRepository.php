@@ -42,6 +42,14 @@ class DatabaseHostRepository extends EloquentRepository implements DatabaseHostR
     /**
      * {@inheritdoc}
      */
+    public function getWithViewDetails()
+    {
+        return $this->getBuilder()->withCount('databases')->with('node')->get();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function deleteIfNoDatabases($id)
     {
         $instance = $this->getBuilder()->withCount('databases')->find($id);

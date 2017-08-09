@@ -33,4 +33,9 @@ return [
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
     ],
+    'service' => [
+        'options' => [
+            'must_be_child' => 'The "Configuration From" directive for this option must be a child option for the selected service.',
+        ],
+    ],
 ];

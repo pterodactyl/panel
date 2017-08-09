@@ -22,44 +22,31 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Services\Services\Variables;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
+class VariableCreationService
 {
     /**
-     * Delete a location only if there are no nodes attached to it.
-     *
-     * @param  $id
-     * @return bool|mixed|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
      */
-    public function deleteIfNoNodes($id);
+    protected $serviceOptionRepository;
+
+    public function __construct(ServiceOptionRepositoryInterface $serviceOptionRepository)
+    {
+        $this->serviceOptionRepository = $serviceOptionRepository;
+    }
 
     /**
-     * Return locations with a count of nodes and servers attached to it.
+     * Create a new variable for a given service option.
      *
-     * @return mixed
+     * @param  int $optionId
+     * @param  array $data
+     * @return \Pterodactyl\Models\ServiceVariable
      */
-    public function getAllWithDetails();
-
-    /**
-     * Return all of the available locations with the nodes as a relationship.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllWithNodes();
-
-    /**
-     * Return all of the nodes and their respective count of servers for a location.
-     *
-     * @param  int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodes($id);
+    public function handle($optionId, array $data)
+    {
+        $option = $this->serviceOptionRepository->find($optionId);
+    }
 }

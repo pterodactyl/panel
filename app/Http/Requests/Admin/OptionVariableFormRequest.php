@@ -22,44 +22,36 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Http\Requests\Admin;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Pterodactyl\Models\ServiceVariable;
 
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
+class OptionVariableFormRequest extends AdminFormRequest
 {
     /**
-     * Delete a location only if there are no nodes attached to it.
-     *
-     * @param  $id
-     * @return bool|mixed|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @return array
      */
-    public function deleteIfNoNodes($id);
+    public function rules()
+    {
+        return [
+            'name' => 'required|string|min:1|max:255',
+            'description' => 'sometimes|nullable|string',
+            'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . ServiceVariable::RESERVED_ENV_NAMES,
+            'default_value' => 'string',
+            'options' => 'sometimes|required|array',
+            'rules' => 'bail|required|string',
+        ];
+    }
 
     /**
-     * Return locations with a count of nodes and servers attached to it.
+     * Run validation after the rules above have been applied.
      *
-     * @return mixed
+     * @param \Illuminate\Validation\Validator $validator
      */
-    public function getAllWithDetails();
-
-    /**
-     * Return all of the available locations with the nodes as a relationship.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllWithNodes();
-
-    /**
-     * Return all of the nodes and their respective count of servers for a location.
-     *
-     * @param  int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodes($id);
+    public function withValidator($validator)
+    {
+        $validator->sometimes('default_value', $this->input('rules') ?? null, function ($input) {
+            return $input->default_value;
+        });
+    }
 }

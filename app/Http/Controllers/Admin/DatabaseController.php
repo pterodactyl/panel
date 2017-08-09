@@ -24,12 +24,13 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\DatabaseHost;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Database\DatabaseHostService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseController extends Controller
 {
@@ -39,14 +40,14 @@ class DatabaseController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Models\DatabaseHost
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
-    protected $hostModel;
+    protected $locationRepository;
 
     /**
-     * @var \Pterodactyl\Models\Location
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
      */
-    protected $locationModel;
+    protected $repository;
 
     /**
      * @var \Pterodactyl\Services\Database\DatabaseHostService
@@ -56,21 +57,21 @@ class DatabaseController extends Controller
     /**
      * DatabaseController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                        $alert
-     * @param \Pterodactyl\Models\DatabaseHost                         $hostModel
-     * @param \Pterodactyl\Models\Location                             $locationModel
-     * @param \Pterodactyl\Services\Database\DatabaseHostService $service
+     * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
+     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Database\DatabaseHostService                $service
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface     $locationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
-        DatabaseHost $hostModel,
-        Location $locationModel,
-        DatabaseHostService $service
+        DatabaseHostRepositoryInterface $repository,
+        DatabaseHostService $service,
+        LocationRepositoryInterface $locationRepository
     ) {
         $this->alert = $alert;
-        $this->hostModel = $hostModel;
-        $this->locationModel = $locationModel;
+        $this->repository = $repository;
         $this->service = $service;
+        $this->locationRepository = $locationRepository;
     }
 
     /**
@@ -81,8 +82,8 @@ class DatabaseController extends Controller
     public function index()
     {
         return view('admin.databases.index', [
-            'locations' => $this->locationModel->with('nodes')->get(),
-            'hosts' => $this->hostModel->withCount('databases')->with('node')->get(),
+            'locations' => $this->locationRepository->getAllWithNodes(),
+            'hosts' => $this->repository->getWithViewDetails(),
         ]);
     }
 
@@ -97,7 +98,7 @@ class DatabaseController extends Controller
         $host->load('databases.server');
 
         return view('admin.databases.view', [
-            'locations' => $this->locationModel->with('nodes')->get(),
+            'locations' => $this->locationRepository->getAllWithNodes(),
             'host' => $host,
         ]);
     }

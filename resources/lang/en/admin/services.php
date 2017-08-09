@@ -22,44 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
-
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
-
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
-{
-    /**
-     * Delete a location only if there are no nodes attached to it.
-     *
-     * @param  $id
-     * @return bool|mixed|null
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function deleteIfNoNodes($id);
-
-    /**
-     * Return locations with a count of nodes and servers attached to it.
-     *
-     * @return mixed
-     */
-    public function getAllWithDetails();
-
-    /**
-     * Return all of the available locations with the nodes as a relationship.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllWithNodes();
-
-    /**
-     * Return all of the nodes and their respective count of servers for a location.
-     *
-     * @param  int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodes($id);
-}
+return [
+    'options' => [
+        'notices' => [
+            'option_created' => 'New service option was created successfully. You will need to restart any running daemons to apply this new service.',
+        ],
+    ],
+    'variables' => [
+        'notices' => [
+            'variable_created' => 'New variable has successfully been created and assigned to this service option.',
+        ],
+    ],
+];

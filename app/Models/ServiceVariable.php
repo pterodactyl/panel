@@ -24,10 +24,22 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class ServiceVariable extends Model
+class ServiceVariable extends Model implements ValidableContract
 {
+    use Eloquence, Validable;
+
+    /**
+     * Reserved environment variable names.
+     *
+     * @var array
+     */
+    const RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
+
     /**
      * The table associated with the model.
      *
@@ -54,28 +66,35 @@ class ServiceVariable extends Model
     ];
 
     /**
-     * Reserved environment variable names.
-     *
      * @var array
      */
-    protected static $reservedNames = [
-        'SERVER_MEMORY',
-        'SERVER_IP',
-        'SERVER_PORT',
-        'ENV',
-        'HOME',
-        'USER',
+    protected static $applicationRules = [
+        'name' => 'required',
+        'env_variable' => 'required',
+        'rules' => 'required',
     ];
 
     /**
-     * Returns an array of environment variable names that cannot be used.
-     *
-     * @return array
+     * @var array
      */
-    public static function reservedNames()
-    {
-        return self::$reservedNames;
-    }
+    protected static $dataIntegrityRules = [
+        'option_id' => 'exists:service_options,id',
+        'name' => 'string|between:1,255',
+        'description' => 'nullable|string',
+        'env_variable' => 'regex:/^[\w]{1,255}$/|notIn:' . self::RESERVED_ENV_NAMES,
+        'default_value' => 'string',
+        'user_viewable' => 'boolean',
+        'user_editable' => 'boolean',
+        'rules' => 'string',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $attributes = [
+        'user_editable' => 0,
+        'user_viewable' => 0,
+    ];
 
     /**
      * Returns the display executable for the option and will use the parent

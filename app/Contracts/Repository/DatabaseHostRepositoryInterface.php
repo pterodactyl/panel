@@ -27,6 +27,13 @@ namespace Pterodactyl\Contracts\Repository;
 interface DatabaseHostRepositoryInterface extends RepositoryInterface
 {
     /**
+     * Return database hosts with a count of databases and the node information for which it is attached.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getWithViewDetails();
+
+    /**
      * Delete a database host from the DB if there are no databases using it.
      *
      * @param  int $id

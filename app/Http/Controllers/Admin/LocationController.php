@@ -74,7 +74,7 @@ class LocationController extends Controller
     public function index()
     {
         return view('admin.locations.index', [
-            'locations' => $this->repository->allWithDetails(),
+            'locations' => $this->repository->getAllWithDetails(),
         ]);
     }
 

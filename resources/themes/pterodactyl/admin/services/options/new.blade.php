@@ -146,7 +146,7 @@
         $('#pConfigFrom').select2();
     });
     $('#pServiceId').on('change', function (event) {
-        $('#pConfigFrom').html('<option value="0">None</option>').select2({
+        $('#pConfigFrom').html('<option value="">None</option>').select2({
             data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
                 return {
                     id: item.id,

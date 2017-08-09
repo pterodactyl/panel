@@ -176,10 +176,11 @@ Route::group(['prefix' => 'services'], function () {
     Route::post('/new', 'ServiceController@store');
     Route::post('/view/{option}', 'ServiceController@edit');
     Route::post('/option/new', 'OptionController@store');
-    Route::post('/option/{option}', 'OptionController@editConfiguration');
     Route::post('/option/{option}/scripts', 'OptionController@updateScripts');
     Route::post('/option/{option}/variables', 'OptionController@createVariable');
     Route::post('/option/{option}/variables/{variable}', 'OptionController@editVariable')->name('admin.services.option.variables.edit');
+
+    Route::patch('/option/{option}', 'OptionController@editConfiguration');
 
     Route::delete('/view/{id}', 'ServiceController@delete');
 });

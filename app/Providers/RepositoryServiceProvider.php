@@ -38,6 +38,7 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
+use Pterodactyl\Repositories\Eloquent\ServiceOptionRepository;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\OptionVariableRepository;
@@ -48,6 +49,7 @@ use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
@@ -61,6 +63,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // Eloquent Repositories
         $this->app->bind(AllocationRepositoryInterface::class, AllocationRepository::class);
         $this->app->bind(ApiKeyRepositoryInterface::class, ApiKeyRepository::class);
         $this->app->bind(ApiPermissionRepositoryInterface::class, ApiPermissionRepository::class);
@@ -72,6 +75,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ServerRepositoryInterface::class, ServerRepository::class);
         $this->app->bind(ServerVariableRepositoryInterface::class, ServerVariableRepository::class);
         $this->app->bind(ServiceRepositoryInterface::class, ServiceRepository::class);
+        $this->app->bind(ServiceOptionRepositoryInterface::class, ServiceOptionRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories
