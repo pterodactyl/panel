@@ -20,18 +20,18 @@ class AddForeignServiceVariables extends Migration
         });
     }
 
-     /**
-      * Reverse the migrations.
-      *
-      * @return void
-      */
-     public function down()
-     {
-         Schema::table('service_variables', function (Blueprint $table) {
-             $table->dropForeign('service_variables_option_id_foreign');
-             $table->dropIndex('service_variables_option_id_foreign');
-         });
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('service_variables', function (Blueprint $table) {
+            $table->dropForeign('service_variables_option_id_foreign');
+            $table->dropIndex('service_variables_option_id_foreign');
+        });
 
-         DB::statement('ALTER TABLE service_variables MODIFY option_id MEDIUMINT(8) UNSIGNED NOT NULL');
-     }
+        DB::statement('ALTER TABLE service_variables MODIFY option_id MEDIUMINT(8) UNSIGNED NOT NULL');
+    }
 }

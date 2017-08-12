@@ -67,15 +67,15 @@ class AccountController extends Controller
 
             $data['password'] = $request->input('new_password');
 
-        // Request to update account Email
+            // Request to update account Email
         } elseif ($request->input('do_action') === 'email') {
             $data['email'] = $request->input('new_email');
 
-        // Request to update account Identity
+            // Request to update account Identity
         } elseif ($request->input('do_action') === 'identity') {
             $data = $request->only(['name_first', 'name_last', 'username']);
 
-        // Unknown, hit em with a 404
+            // Unknown, hit em with a 404
         } else {
             return abort(404);
         }

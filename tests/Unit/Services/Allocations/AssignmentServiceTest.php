@@ -87,7 +87,7 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024']
+            'allocation_ports' => ['1024'],
         ];
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
@@ -112,7 +112,7 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024-1026']
+            'allocation_ports' => ['1024-1026'],
         ];
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
@@ -142,7 +142,6 @@ class AssignmentServiceTest extends TestCase
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node->id, $data);
-
     }
 
     /**
@@ -307,7 +306,7 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024']
+            'allocation_ports' => ['1024'],
         ];
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();

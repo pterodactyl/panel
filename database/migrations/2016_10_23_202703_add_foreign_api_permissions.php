@@ -20,18 +20,18 @@ class AddForeignApiPermissions extends Migration
         });
     }
 
-     /**
-      * Reverse the migrations.
-      *
-      * @return void
-      */
-     public function down()
-     {
-         Schema::table('api_permissions', function (Blueprint $table) {
-             $table->dropForeign('api_permissions_key_id_foreign');
-             $table->dropIndex('api_permissions_key_id_foreign');
-         });
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('api_permissions', function (Blueprint $table) {
+            $table->dropForeign('api_permissions_key_id_foreign');
+            $table->dropIndex('api_permissions_key_id_foreign');
+        });
 
-         DB::statement('ALTER TABLE api_permissions MODIFY key_id MEDIUMINT(8) UNSIGNED NOT NULL');
-     }
+        DB::statement('ALTER TABLE api_permissions MODIFY key_id MEDIUMINT(8) UNSIGNED NOT NULL');
+    }
 }
