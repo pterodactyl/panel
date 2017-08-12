@@ -25,14 +25,14 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest;
 use Pterodactyl\Repositories\Eloquent\ServiceVariableRepository;
-use Pterodactyl\Services\Services\Variables\VariableCreationService;
 use Pterodactyl\Services\Services\Variables\VariableUpdateService;
+use Pterodactyl\Services\Services\Variables\VariableCreationService;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
 class VariableController extends Controller
 {
