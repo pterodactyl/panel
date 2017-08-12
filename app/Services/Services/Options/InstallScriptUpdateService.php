@@ -33,16 +33,16 @@ class InstallScriptUpdateService
     /**
      * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
      */
-    protected $serviceOptionRepository;
+    protected $repository;
 
     /**
      * InstallScriptUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $serviceOptionRepository
+     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
      */
-    public function __construct(ServiceOptionRepositoryInterface $serviceOptionRepository)
+    public function __construct(ServiceOptionRepositoryInterface $repository)
     {
-        $this->serviceOptionRepository = $serviceOptionRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -52,21 +52,22 @@ class InstallScriptUpdateService
      * @param  array                                 $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException
      */
     public function handle($option, array $data)
     {
         if (! $option instanceof ServiceOption) {
-            $option = $this->serviceOptionRepository->find($option);
+            $option = $this->repository->find($option);
         }
 
         if (! is_null(array_get($data, 'copy_script_from'))) {
-            if (! $this->serviceOptionRepository->isCopiableScript(array_get($data, 'copy_script_from'), $option->service_id)) {
+            if (! $this->repository->isCopiableScript(array_get($data, 'copy_script_from'), $option->service_id)) {
                 throw new InvalidCopyFromException(trans('admin/exceptions.service.options.invalid_copy_id'));
             }
         }
 
-        $this->serviceOptionRepository->withoutFresh()->update($option->id, [
+        $this->repository->withoutFresh()->update($option->id, [
             'script_install' => array_get($data, 'script_install'),
             'script_is_privileged' => array_get($data, 'script_is_privileged'),
             'script_entry' => array_get($data, 'script_entry'),

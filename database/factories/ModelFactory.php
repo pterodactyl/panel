@@ -88,6 +88,16 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
     ];
 });
 
+$factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'service_id' => $faker->unique()->randomNumber(),
+        'name' => $faker->name,
+        'description' => $faker->sentences(3),
+        'tag' => $faker->unique()->randomNumber(5),
+    ];
+});
+
 $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
