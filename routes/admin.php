@@ -170,19 +170,21 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('/view/{id}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
     Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
     Route::get('/option/{option}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
-    Route::get('/option/{option}/variables', 'OptionController@viewVariables')->name('admin.services.option.variables');
+    Route::get('/option/{option}/variables', 'VariableController@view')->name('admin.services.option.variables');
     Route::get('/option/{option}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
 
     Route::post('/new', 'ServiceController@store');
-    Route::post('/view/{option}', 'ServiceController@edit');
     Route::post('/option/new', 'OptionController@store');
-    Route::post('/option/{option}/scripts', 'OptionController@updateScripts');
-    Route::post('/option/{option}/variables', 'OptionController@createVariable');
-    Route::post('/option/{option}/variables/{variable}', 'OptionController@editVariable')->name('admin.services.option.variables.edit');
+    Route::post('/option/{option}/variables', 'VariableController@store');
 
+    Route::patch('/view/{option}', 'ServiceController@edit');
     Route::patch('/option/{option}', 'OptionController@editConfiguration');
+    Route::patch('/option/{option}/scripts', 'OptionController@updateScripts');
+    Route::patch('/option/{option}/variables/{variable}', 'VariableController@update')->name('admin.services.option.variables.edit');
 
     Route::delete('/view/{id}', 'ServiceController@delete');
+    Route::delete('/option/{option}', 'OptionController@delete');
+    Route::delete('/option/{option}/variables/{variable}', 'VariableController@delete');
 });
 
 /*

@@ -25,7 +25,9 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\ServiceVariableRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -76,6 +78,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ServerVariableRepositoryInterface::class, ServerVariableRepository::class);
         $this->app->bind(ServiceRepositoryInterface::class, ServiceRepository::class);
         $this->app->bind(ServiceOptionRepositoryInterface::class, ServiceOptionRepository::class);
+        $this->app->bind(ServiceVariableRepositoryInterface::class, ServiceVariableRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories

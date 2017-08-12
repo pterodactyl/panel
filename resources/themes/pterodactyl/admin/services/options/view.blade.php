@@ -143,10 +143,10 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button id="deleteButton" type="submit" name="action" value="delete" class="btn btn-danger btn-sm muted muted-hover">
+                    <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-danger btn-sm muted muted-hover">
                         <i class="fa fa-trash-o"></i>
                     </button>
-                    <button type="submit" name="action" value="edit" class="btn btn-primary btn-sm pull-right">Edit Service</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Service</button>
                 </div>
             </div>
         </div>

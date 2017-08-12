@@ -22,26 +22,41 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin\Service;
+namespace Pterodactyl\Http\Requests\Admin;
 
-use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+use Pterodactyl\Models\ServiceVariable;
 
-class StoreOptionVariable extends AdminFormRequest
+class OptionVariableFormRequest extends AdminFormRequest
 {
     /**
-     * Set the rules to be used for data passed to the request.
-     *
      * @return array
      */
     public function rules()
     {
         return [
             'name' => 'required|string|min:1|max:255',
-            'description' => 'nullable|string',
-            'env_variable' => 'required|regex:/^[\w]{1,255}$/',
-            'rules' => 'bail|required|string',
-            'default_value' => explode('|', $this->input('rules')),
+            'description' => 'sometimes|nullable|string',
+            'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . ServiceVariable::RESERVED_ENV_NAMES,
+            'default_value' => 'string',
             'options' => 'sometimes|required|array',
+            'rules' => 'bail|required|string',
         ];
+    }
+
+    /**
+     * Run validation after the rules above have been applied.
+     *
+     * @param \Illuminate\Validation\Validator $validator
+     */
+    public function withValidator($validator)
+    {
+        $rules = $this->input('rules');
+        if ($this->method() === 'PATCH') {
+            $rules = $this->input('rules', $this->route()->parameter('variable')->rules);
+        }
+
+        $validator->sometimes('default_value', $rules, function ($input) {
+            return $input->default_value;
+        });
     }
 }

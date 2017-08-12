@@ -32,6 +32,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Exceptions\DisplayException;
+use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
@@ -40,7 +41,12 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, ValidableContract
+class User extends Model implements
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract,
+    CleansAttributes,
+    ValidableContract
 {
     use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
 
@@ -125,6 +131,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     /**
      * Rules verifying that the data passed in forms is valid and meets application logic rules.
+     *
      * @var array
      */
     protected static $applicationRules = [
@@ -155,7 +162,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Enables or disables TOTP on an account if the token is valid.
      *
-     * @param  int  $token
+     * @param  int $token
      * @return bool
      * @deprecated
      */
@@ -196,7 +203,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
+     * @param  string $token
      * @return void
      */
     public function sendPasswordResetNotification($token)
@@ -218,7 +225,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Returns the user's daemon secret for a given server.
      *
-     * @param  \Pterodactyl\Models\Server  $server
+     * @param  \Pterodactyl\Models\Server $server
      * @return null|string
      */
     public function daemonToken(Server $server)
@@ -248,7 +255,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Change the access level for a given call to `access()` on the user.
      *
-     * @param  string  $level can be all, admin, subuser, owner
+     * @param  string $level can be all, admin, subuser, owner
      * @return $this
      */
     public function setAccessLevel($level = 'all')
@@ -265,7 +272,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
-     * @param  array        $load
+     * @param  array $load
      * @return \Pterodactyl\Models\Server
      */
     public function access(...$load)
@@ -303,7 +310,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Store the username as a lowecase string.
      *
-     * @param  string  $value
+     * @param  string $value
      */
     public function setUsernameAttribute($value)
     {

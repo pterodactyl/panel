@@ -24,10 +24,11 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
+use Pterodactyl\Models\ServiceOption;
 
-class CreationService
+class OptionUpdateService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
@@ -35,7 +36,7 @@ class CreationService
     protected $repository;
 
     /**
-     * CreationService constructor.
+     * OptionUpdateService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
      */
@@ -45,29 +46,32 @@ class CreationService
     }
 
     /**
-     * Create a new service option and assign it to the given service.
+     * Update a service option.
      *
-     * @param  array $data
-     * @return \Pterodactyl\Models\ServiceOption
+     * @param  int|\Pterodactyl\Models\ServiceOption $option
+     * @param  array                                 $data
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException
      */
-    public function handle(array $data)
+    public function handle($option, array $data)
     {
+        if (! $option instanceof ServiceOption) {
+            $option = $this->repository->find($option);
+        }
+
         if (! is_null(array_get($data, 'config_from'))) {
             $results = $this->repository->findCountWhere([
-                ['service_id', '=', array_get($data, 'service_id')],
+                ['service_id', '=', $option->service_id],
                 ['id', '=', array_get($data, 'config_from')],
             ]);
 
             if ($results !== 1) {
-                throw new DisplayException(trans('admin/exceptions.service.options.must_be_child'));
+                throw new NoParentConfigurationFoundException(trans('admin/exceptions.service.options.must_be_child'));
             }
-        } else {
-            $data['config_from'] = null;
         }
 
-        return $this->repository->create($data);
+        $this->repository->withoutFresh()->update($option->id, $data);
     }
 }

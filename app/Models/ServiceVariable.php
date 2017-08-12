@@ -27,16 +27,17 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class ServiceVariable extends Model implements ValidableContract
+class ServiceVariable extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
     /**
      * Reserved environment variable names.
      *
-     * @var array
+     * @var string
      */
     const RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
 

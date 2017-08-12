@@ -22,11 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Services\Servers;
+namespace Pterodactyl\Exceptions\Services\ServiceOption;
 
-use Exception;
-
-class RequiredVariableMissingException extends Exception
+class NoParentConfigurationFoundException extends \Exception
 {
     //
 }

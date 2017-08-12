@@ -24,8 +24,9 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Illuminate\Database\Query\Expression;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Repository\Repository;
+use Illuminate\Database\Query\Expression;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -48,6 +49,9 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function create(array $fields, $validate = true, $force = false)
     {
+        Assert::boolean($validate, 'Second argument passed to create should be boolean, recieved %s.');
+        Assert::boolean($force, 'Third argument passed to create should be boolean, received %s.');
+
         $instance = $this->getBuilder()->newModelInstance();
 
         if ($force) {
@@ -73,6 +77,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function find($id)
     {
+        Assert::integer($id, 'First argument passed to find should be integer, received %s.');
+
         $instance = $this->getBuilder()->find($id, $this->getColumns());
 
         if (! $instance) {
@@ -119,6 +125,9 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function delete($id, $destroy = false)
     {
+        Assert::integer($id, 'First argument passed to delete should be integer, received %s.');
+        Assert::boolean($destroy, 'Second argument passed to delete should be boolean, received %s.');
+
         $instance = $this->getBuilder()->where($this->getModel()->getKeyName(), $id);
 
         return ($destroy) ? $instance->forceDelete() : $instance->delete();
@@ -129,6 +138,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function deleteWhere(array $attributes, $force = false)
     {
+        Assert::boolean($force, 'Second argument passed to deleteWhere should be boolean, received %s.');
+
         $instance = $this->getBuilder()->where($attributes);
 
         return ($force) ? $instance->forceDelete() : $instance->delete();
@@ -139,6 +150,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function update($id, array $fields, $validate = true, $force = false)
     {
+        Assert::integer($id, 'First argument passed to update expected to be integer, received %s.');
+        Assert::boolean($validate, 'Third argument passed to update should be boolean, received %s.');
+        Assert::boolean($force, 'Fourth argument passed to update should be boolean, received %s.');
+
         $instance = $this->getBuilder()->where('id', $id)->first();
 
         if (! $instance) {
@@ -167,6 +182,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function updateWhereIn($column, array $values, array $fields)
     {
+        Assert::stringNotEmpty($column, 'First argument passed to updateWhereIn expected to be a string, received %s.');
+
         return $this->getBuilder()->whereIn($column, $values)->update($fields);
     }
 
@@ -238,6 +255,9 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function updateOrCreate(array $where, array $fields, $validate = true, $force = false)
     {
+        Assert::boolean($validate, 'Third argument passed to updateOrCreate should be boolean, received %s.');
+        Assert::boolean($force, 'Fourth argument passed to updateOrCreate should be boolean, received %s.');
+
         $instance = $this->withColumns('id')->findWhere($where)->first();
 
         if (! $instance) {

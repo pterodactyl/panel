@@ -24,43 +24,16 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 
-class ServiceOptionRepository extends EloquentRepository implements ServiceOptionRepositoryInterface
+class ServiceVariableRepository extends EloquentRepository implements ServiceVariableRepositoryInterface
 {
     /**
      * {@inheritdoc}
      */
     public function model()
     {
-        return ServiceOption::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getWithVariables($id)
-    {
-        return $this->getBuilder()->with('variables')->find($id, $this->getColumns());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getWithCopyFrom($id)
-    {
-        return $this->getBuilder()->with('copyFrom')->find($id, $this->getColumns());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isCopiableScript($copyFromId, $service)
-    {
-        return $this->getBuilder()->whereNull('copy_script_from')
-            ->where('id', '=', $copyFromId)
-            ->where('service_id', '=', $service)
-            ->exists();
+        return ServiceVariable::class;
     }
 }

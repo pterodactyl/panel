@@ -24,26 +24,22 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest;
-use Pterodactyl\Http\Requests\Admin\ServiceOptionFormRequest;
-use Pterodactyl\Services\Services\Options\CreationService;
-use Pterodactyl\Services\Services\Variables\VariableCreationService;
-use Route;
 use Javascript;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Service;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\OptionRepository;
-use Pterodactyl\Repositories\VariableRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
-use Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable;
+use Pterodactyl\Services\Services\Options\OptionUpdateService;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Services\Services\Options\OptionCreationService;
+use Pterodactyl\Services\Services\Options\OptionDeletionService;
+use Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest;
+use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException;
+use Pterodactyl\Exceptions\Services\ServiceOption\HasActiveServersException;
+use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionController extends Controller
 {
@@ -53,9 +49,24 @@ class OptionController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\CreationService
+     * @var \Pterodactyl\Services\Services\Options\InstallScriptUpdateService
      */
-    protected $creationService;
+    protected $installScriptUpdateService;
+
+    /**
+     * @var \Pterodactyl\Services\Services\Options\OptionCreationService
+     */
+    protected $optionCreationService;
+
+    /**
+     * @var \Pterodactyl\Services\Services\Options\OptionDeletionService
+     */
+    protected $optionDeletionService;
+
+    /**
+     * @var \Pterodactyl\Services\Services\Options\OptionUpdateService
+     */
+    protected $optionUpdateService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
@@ -63,28 +74,37 @@ class OptionController extends Controller
     protected $serviceRepository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Variables\VariableCreationService
+     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
      */
-    protected $variableCreationService;
+    protected $serviceOptionRepository;
 
     /**
      * OptionController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                                $alert
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface     $serviceRepository
-     * @param \Pterodactyl\Services\Services\Options\CreationService           $creationService
-     * @param \Pterodactyl\Services\Services\Variables\VariableCreationService $variableCreationService
+     * @param \Prologue\Alerts\AlertsMessageBag                                    $alert
+     * @param \Pterodactyl\Services\Services\Options\InstallScriptUpdateService    $installScriptUpdateService
+     * @param \Pterodactyl\Services\Services\Options\OptionCreationService         $optionCreationService
+     * @param \Pterodactyl\Services\Services\Options\OptionDeletionService         $optionDeletionService
+     * @param \Pterodactyl\Services\Services\Options\OptionUpdateService           $optionUpdateService
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface         $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface   $serviceOptionRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
+        InstallScriptUpdateService $installScriptUpdateService,
+        OptionCreationService $optionCreationService,
+        OptionDeletionService $optionDeletionService,
+        OptionUpdateService $optionUpdateService,
         ServiceRepositoryInterface $serviceRepository,
-        CreationService $creationService,
-        VariableCreationService $variableCreationService
+        ServiceOptionRepositoryInterface $serviceOptionRepository
     ) {
         $this->alert = $alert;
-        $this->creationService = $creationService;
+        $this->installScriptUpdateService = $installScriptUpdateService;
+        $this->optionCreationService = $optionCreationService;
+        $this->optionDeletionService = $optionDeletionService;
+        $this->optionUpdateService = $optionUpdateService;
         $this->serviceRepository = $serviceRepository;
-        $this->variableCreationService = $variableCreationService;
+        $this->serviceOptionRepository = $serviceOptionRepository;
     }
 
     /**
@@ -103,77 +123,77 @@ class OptionController extends Controller
     /**
      * Handle adding a new service option.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\ServiceOptionFormRequest $request
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(ServiceOptionFormRequest $request)
     {
-        $option = $this->creationService->handle($request->normalize());
-        $this->alert->success(trans('admin/services.options.notices.option_created'))->flash();
+        try {
+            $option = $this->optionCreationService->handle($request->normalize());
+            $this->alert->success(trans('admin/services.options.notices.option_created'))->flash();
+        } catch (NoParentConfigurationFoundException $exception) {
+            $this->alert->danger($exception->getMessage())->flash();
+
+            return redirect()->back()->withInput();
+        }
 
         return redirect()->route('admin.services.option.view', $option->id);
     }
 
     /**
-     * Handles POST request to create a new option variable.
+     * Delete a given option from the database.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
-     * @param  \Pterodactyl\Models\ServiceOption                          $option
+     * @param \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function createVariable(OptionVariableFormRequest $request, ServiceOption $option)
+    public function delete(ServiceOption $option)
     {
-        $this->variableCreationService->handle($option->id, $request->normalize());
-        $this->alert->success(trans('admin/services.variables.notices.variable_created'))->flash();
+        try {
+            $this->optionDeletionService->handle($option->id);
+            $this->alert->success()->flash();
+        } catch (HasActiveServersException $exception) {
+            $this->alert->danger($exception->getMessage())->flash();
 
-        return redirect()->route('admin.services.option.variables', $option->id);
+            return redirect()->route('admin.services.option.view', $option->id);
+        }
+
+        return redirect()->route('admin.services.view', $option->service_id);
     }
 
     /**
      * Display option overview page.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\View\View
      */
-    public function viewConfiguration(Request $request, $id)
+    public function viewConfiguration(ServiceOption $option)
     {
-        return view('admin.services.options.view', ['option' => ServiceOption::findOrFail($id)]);
-    }
-
-    /**
-     * Display variable overview page for a service option.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
-     * @return \Illuminate\View\View
-     */
-    public function viewVariables(Request $request, $id)
-    {
-        return view('admin.services.options.variables', ['option' => ServiceOption::with('variables')
-            ->findOrFail($id), ]);
+        return view('admin.services.options.view', ['option' => $option]);
     }
 
     /**
      * Display script management page for an option.
      *
-     * @param  Request $request
-     * @param  int     $id
+     * @param  int $option
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewScripts(Request $request, $id)
+    public function viewScripts($option)
     {
-        $option = ServiceOption::with('copyFrom')->findOrFail($id);
+        $option = $this->serviceOptionRepository->getWithCopyFrom($option);
+        $copyOptions = $this->serviceOptionRepository->findWhere([
+            ['copy_script_from', '=', null],
+            ['service_id', '=', $option->service_id],
+            ['id', '!=', $option],
+        ]);
+        $relyScript = $this->serviceOptionRepository->findWhere([['copy_script_from', '=', $option]]);
 
         return view('admin.services.options.scripts', [
-            'copyFromOptions' => ServiceOption::whereNull('copy_script_from')->where([
-                ['service_id', $option->service_id],
-                ['id', '!=', $option->id],
-            ])->get(),
-            'relyOnScript' => ServiceOption::where('copy_script_from', $option->id)->get(),
+            'copyFromOptions' => $copyOptions,
+            'relyOnScript' => $relyScript,
             'option' => $option,
         ]);
     }
@@ -181,92 +201,44 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Illuminate\Http\Request          $request
+     * @param  \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\Http\RedirectResponse
-     */
-    public function editConfiguration(Request $request, $id)
-    {
-        $repo = new OptionRepository;
-
-        try {
-            if ($request->input('action') !== 'delete') {
-                $repo->update($id, $request->intersect([
-                    'name', 'description', 'tag', 'docker_image', 'startup',
-                    'config_from', 'config_stop', 'config_logs', 'config_files', 'config_startup',
-                ]));
-                Alert::success('Service option configuration has been successfully updated.')->flash();
-            } else {
-                $option = ServiceOption::with('service')->where('id', $id)->first();
-                $repo->delete($id);
-                Alert::success('Successfully deleted service option from the system.')->flash();
-
-                return redirect()->route('admin.services.view', $option->service_id);
-            }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.option.view', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occurred while attempting to perform that action. This error has been logged.')
-                ->flash();
-        }
-
-        return redirect()->route('admin.services.option.view', $id);
-    }
-
-    /**
-     * Handles POST when editing a configration for a service option.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\StoreOptionVariable $request
-     * @param  int                                                          $option
-     * @param  int                                                          $variable
-     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function editVariable(StoreOptionVariable $request, $option, $variable)
+    public function editConfiguration(Request $request, ServiceOption $option)
     {
-        $repo = new VariableRepository;
-
         try {
-            if ($request->input('action') !== 'delete') {
-                $variable = $repo->update($variable, $request->normalize());
-                Alert::success("The service variable '{$variable->name}' has been updated.")->flash();
-            } else {
-                $repo->delete($variable);
-                Alert::success('That service variable has been deleted.')->flash();
-            }
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')
-                ->flash();
+            $this->optionUpdateService->handle($option, $request->all());
+            $this->alert->success(trans('admin/services.options.notices.option_updated'))->flash();
+        } catch (NoParentConfigurationFoundException $exception) {
+            dd('hodor');
+            $this->alert->danger($exception->getMessage())->flash();
         }
 
-        return redirect()->route('admin.services.option.variables', $option);
+        return redirect()->route('admin.services.option.view', $option->id);
     }
 
     /**
      * Handles POST when updating script for a service option.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Service\EditOptionScript $request
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\EditOptionScript $request
+     * @param  \Pterodactyl\Models\ServiceOption                         $option
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function updateScripts(EditOptionScript $request)
+    public function updateScripts(EditOptionScript $request, ServiceOption $option)
     {
         try {
-            $this->repository->scripts($request->normalize());
-
-            Alert::success('Successfully updated option scripts to be run when servers are installed.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception was encountered while attempting to process that request. This error has been logged.')
-                ->flash();
+            $this->installScriptUpdateService->handle($option, $request->normalize());
+            $this->alert->success(trans('admin/services.options.notices.script_updated'))->flash();
+        } catch (InvalidCopyFromException $exception) {
+            $this->alert->danger($exception->getMessage())->flash();
         }
 
-        return redirect()->route('admin.services.option.scripts', $id);
+        return redirect()->route('admin.services.option.scripts', $option->id);
     }
 }

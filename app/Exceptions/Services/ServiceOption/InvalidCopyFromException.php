@@ -22,21 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Exceptions\Services\ServiceOption;
 
-use Pterodactyl\Models\ServiceOption;
-
-class ServiceOptionFormRequest extends AdminFormRequest
+class InvalidCopyFromException extends \Exception
 {
-    /**
-     * @return array
-     */
-    public function rules()
-    {
-        if ($this->method() === 'PATCH') {
-            return ServiceOption::getUpdateRulesForId($this->route()->parameter('option')->id);
-        }
-
-        return ServiceOption::getCreateRules();
-    }
+    //
 }

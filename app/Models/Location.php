@@ -27,9 +27,10 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Location extends Model implements ValidableContract
+class Location extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 

@@ -22,36 +22,18 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Http\Requests\Admin\Service;
 
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class OptionVariableFormRequest extends AdminFormRequest
+class ServiceOptionFormRequest extends AdminFormRequest
 {
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function rules()
     {
-        return [
-            'name' => 'required|string|min:1|max:255',
-            'description' => 'sometimes|nullable|string',
-            'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . ServiceVariable::RESERVED_ENV_NAMES,
-            'default_value' => 'string',
-            'options' => 'sometimes|required|array',
-            'rules' => 'bail|required|string',
-        ];
-    }
-
-    /**
-     * Run validation after the rules above have been applied.
-     *
-     * @param \Illuminate\Validation\Validator $validator
-     */
-    public function withValidator($validator)
-    {
-        $validator->sometimes('default_value', $this->input('rules') ?? null, function ($input) {
-            return $input->default_value;
-        });
+        return ServiceOption::getCreateRules();
     }
 }

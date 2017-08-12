@@ -24,9 +24,7 @@
 
 namespace Pterodactyl\Exceptions\Repository;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-class RecordNotFoundException extends ModelNotFoundException
+class RecordNotFoundException extends \Exception
 {
     //
 }

@@ -24,58 +24,65 @@
 
 namespace Pterodactyl\Services\Services\Variables;
 
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
 
-class VariableCreationService
+class VariableUpdateService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
-     */
-    protected $serviceOptionRepository;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
      */
     protected $serviceVariableRepository;
 
-    public function __construct(
-        ServiceOptionRepositoryInterface $serviceOptionRepository,
-        ServiceVariableRepositoryInterface $serviceVariableRepository
-    ) {
-        $this->serviceOptionRepository = $serviceOptionRepository;
+    public function __construct(ServiceVariableRepositoryInterface $serviceVariableRepository)
+    {
         $this->serviceVariableRepository = $serviceVariableRepository;
     }
 
     /**
-     * Create a new variable for a given service option.
+     * Update a specific service variable.
      *
-     * @param  int   $option
-     * @param  array $data
+     * @param  int|\Pterodactyl\Models\ServiceVariable $variable
+     * @param  array                                   $data
      * @return \Pterodactyl\Models\ServiceVariable
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
      */
-    public function handle($option, array $data)
+    public function handle($variable, array $data)
     {
-        if ($option instanceof ServiceOption) {
-            $option = $option->id;
+        if (! $variable instanceof ServiceVariable) {
+            $variable = $this->serviceVariableRepository->find($variable);
         }
 
-        if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', ServiceVariable::RESERVED_ENV_NAMES))) {
-            throw new ReservedVariableNameException(sprintf('Cannot use the protected name %s for this environment variable.'));
+        if (! is_null(array_get($data, 'env_variable'))) {
+            if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', ServiceVariable::RESERVED_ENV_NAMES))) {
+                throw new ReservedVariableNameException(trans('admin/exceptions.service.variables.reserved_name', [
+                    'name' => array_get($data, 'env_variable'),
+                ]));
+            }
+
+            $search = $this->serviceVariableRepository->withColumns('id')->findCountWhere([
+                ['env_variable', '=', array_get($data, 'env_variable')],
+                ['option_id', '=', $variable->option_id],
+                ['id', '!=', $variable->id],
+            ]);
+
+            if ($search > 0) {
+                throw new DisplayException(trans('admin/exceptions.service.variables.env_not_unique', [
+                    'name' => array_get($data, 'env_variable'),
+                ]));
+            }
         }
 
         $options = array_get($data, 'options', []);
 
-        return $this->serviceVariableRepository->create(array_merge([
-            'option_id' => $option,
-            'user_viewable' => in_array('user_viewable', $options),
-            'user_editable' => in_array('user_editable', $options),
+        return $this->serviceVariableRepository->update($variable->id, array_merge([
+            'user_viewable' => in_array('user_viewable', $options, $variable->user_viewable),
+            'user_editable' => in_array('user_editable', $options, $variable->user_editable),
         ], $data));
     }
 }

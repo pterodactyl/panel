@@ -92,8 +92,8 @@
                     </div>
                     <div class="box-footer">
                         {!! csrf_field() !!}
-                        <button class="btn btn-sm btn-danger pull-left muted muted-hover" data-action="delete" name="action" value="delete" type="submit"><i class="fa fa-trash-o"></i></button>
-                        <button class="btn btn-sm btn-primary pull-right" name="action" value="save" type="submit">Save</button>
+                        <button class="btn btn-sm btn-danger pull-left muted muted-hover" data-action="delete" name="_method" value="DELETE" type="submit"><i class="fa fa-trash-o"></i></button>
+                        <button class="btn btn-sm btn-primary pull-right" name="_method" value="PATCH" type="submit">Save</button>
                     </div>
                 </form>
             </div>

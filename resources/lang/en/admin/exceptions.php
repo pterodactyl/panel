@@ -35,7 +35,13 @@ return [
     ],
     'service' => [
         'options' => [
-            'must_be_child' => 'The "Configuration From" directive for this option must be a child option for the selected service.',
+            'delete_has_servers' => 'A service option with active servers attached to it cannot be deleted from the Panel.',
+            'invalid_copy_id' => 'The service option selected for copying a script from either does not exist, or is copying a script itself.',
+            'must_be_child' => 'The "Copy Settings From" directive for this option must be a child option for the selected service.',
+        ],
+        'variables' => [
+            'env_not_unique' => 'The environment variable :name must be unique to this service option.',
+            'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
         ],
     ],
 ];
