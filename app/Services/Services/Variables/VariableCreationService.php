@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Services\Variables;
 
+use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
 
 class VariableCreationService
 {

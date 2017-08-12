@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
+use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
-use Pterodactyl\Models\ServiceOption;
 
 class OptionUpdateService
 {
