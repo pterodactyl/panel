@@ -116,6 +116,7 @@ class VariableController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
      */
     public function update(OptionVariableFormRequest $request, ServiceOption $option, ServiceVariable $variable)

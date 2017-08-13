@@ -196,6 +196,7 @@ class CreationService
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
             $this->writer->warning($exception);
+            $this->database->rollBack();
 
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),

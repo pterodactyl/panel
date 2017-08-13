@@ -53,8 +53,8 @@ class VariableCreationService
     /**
      * Create a new variable for a given service option.
      *
-     * @param  int   $option
-     * @param  array $data
+     * @param  int|\Pterodactyl\Models\ServiceOption $option
+     * @param  array                                 $data
      * @return \Pterodactyl\Models\ServiceVariable
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -67,7 +67,9 @@ class VariableCreationService
         }
 
         if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', ServiceVariable::RESERVED_ENV_NAMES))) {
-            throw new ReservedVariableNameException(sprintf('Cannot use the protected name %s for this environment variable.'));
+            throw new ReservedVariableNameException(sprintf(
+                'Cannot use the protected name %s for this environment variable.', array_get($data, 'env_variable')
+            ));
         }
 
         $options = array_get($data, 'options', []);

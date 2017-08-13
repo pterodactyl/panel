@@ -24,9 +24,11 @@
 
 namespace Tests\Unit\Services\Servers;
 
+use Exception;
+use GuzzleHttp\Exception\RequestException;
 use Mockery as m;
+use Pterodactyl\Exceptions\DisplayException;
 use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
 use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
 use Illuminate\Database\DatabaseManager;
@@ -55,9 +57,38 @@ class CreationServiceTest extends TestCase
     protected $daemonServerRepository;
 
     /**
+     * @var array
+     */
+    protected $data = [
+        'node_id' => 1,
+        'name' => 'SomeName',
+        'description' => null,
+        'owner_id' => 1,
+        'memory' => 128,
+        'disk' => 128,
+        'swap' => 0,
+        'io' => 500,
+        'cpu' => 0,
+        'allocation_id' => 1,
+        'allocation_additional' => [2, 3],
+        'environment' => [
+            'TEST_VAR_1' => 'var1-value',
+        ],
+        'service_id' => 1,
+        'option_id' => 1,
+        'startup' => 'startup-param',
+        'docker_image' => 'some/image',
+    ];
+
+    /**
      * @var \Illuminate\Database\DatabaseManager
      */
     protected $database;
+
+    /**
+     * @var \GuzzleHttp\Exception\RequestException
+     */
+    protected $exception;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
@@ -114,6 +145,7 @@ class CreationServiceTest extends TestCase
         $this->allocationRepository = m::mock(AllocationRepositoryInterface::class);
         $this->daemonServerRepository = m::mock(DaemonServerRepositoryInterface::class);
         $this->database = m::mock(DatabaseManager::class);
+        $this->exception = m::mock(RequestException::class);
         $this->nodeRepository = m::mock(NodeRepositoryInterface::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
@@ -148,59 +180,38 @@ class CreationServiceTest extends TestCase
      */
     public function testCreateShouldHitAllOfTheNecessaryServicesAndStoreTheServer()
     {
-        $data = [
-            'node_id' => 1,
-            'name' => 'SomeName',
-            'description' => null,
-            'owner_id' => 1,
-            'memory' => 128,
-            'disk' => 128,
-            'swap' => 0,
-            'io' => 500,
-            'cpu' => 0,
-            'allocation_id' => 1,
-            'allocation_additional' => [2, 3],
-            'environment' => [
-                'TEST_VAR_1' => 'var1-value',
-            ],
-            'service_id' => 1,
-            'option_id' => 1,
-            'startup' => 'startup-param',
-            'docker_image' => 'some/image',
-        ];
-
         $this->validatorService->shouldReceive('isAdmin')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('setFields')->with($data['environment'])->once()->andReturnSelf()
-            ->shouldReceive('validate')->with($data['option_id'])->once()->andReturnSelf();
+            ->shouldReceive('setFields')->with($this->data['environment'])->once()->andReturnSelf()
+            ->shouldReceive('validate')->with($this->data['option_id'])->once()->andReturnSelf();
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->uuid->shouldReceive('uuid4')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('toString')->withNoArgs()->once()->andReturn('uuid-0000');
-        $this->usernameService->shouldReceive('generate')->with($data['name'], 'randomstring')
+        $this->usernameService->shouldReceive('generate')->with($this->data['name'], 'randomstring')
             ->once()->andReturn('user_name');
 
         $this->repository->shouldReceive('create')->with([
             'uuid' => 'uuid-0000',
             'uuidShort' => 'randomstring',
-            'node_id' => $data['node_id'],
-            'name' => $data['name'],
-            'description' => $data['description'],
+            'node_id' => $this->data['node_id'],
+            'name' => $this->data['name'],
+            'description' => $this->data['description'],
             'skip_scripts' => false,
             'suspended' => false,
-            'owner_id' => $data['owner_id'],
-            'memory' => $data['memory'],
-            'swap' => $data['swap'],
-            'disk' => $data['disk'],
-            'io' => $data['io'],
-            'cpu' => $data['cpu'],
+            'owner_id' => $this->data['owner_id'],
+            'memory' => $this->data['memory'],
+            'swap' => $this->data['swap'],
+            'disk' => $this->data['disk'],
+            'io' => $this->data['io'],
+            'cpu' => $this->data['cpu'],
             'oom_disabled' => false,
-            'allocation_id' => $data['allocation_id'],
-            'service_id' => $data['service_id'],
-            'option_id' => $data['option_id'],
+            'allocation_id' => $this->data['allocation_id'],
+            'service_id' => $this->data['service_id'],
+            'option_id' => $this->data['option_id'],
             'pack_id' => null,
-            'startup' => $data['startup'],
+            'startup' => $this->data['startup'],
             'daemonSecret' => 'randomstring',
-            'image' => $data['docker_image'],
+            'image' => $this->data['docker_image'],
             'username' => 'user_name',
             'sftp_password' => null,
         ])->once()->andReturn((object) [
@@ -208,7 +219,7 @@ class CreationServiceTest extends TestCase
             'id' => 1,
         ]);
 
-        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->with(1, [1, 2, 3]);
+        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->with(1, [1, 2, 3])->once()->andReturnNull();
         $this->validatorService->shouldReceive('getResults')->withNoArgs()->once()->andReturn([[
             'id' => 1,
             'key' => 'TEST_VAR_1',
@@ -224,9 +235,40 @@ class CreationServiceTest extends TestCase
             ->shouldReceive('create')->with(1)->once()->andReturnNull();
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->create($data);
+        $response = $this->service->create($this->data);
 
         $this->assertEquals(1, $response->id);
         $this->assertEquals(1, $response->node_id);
+    }
+
+    /**
+     * Test handling of node timeout or other daemon error.
+     */
+    public function testExceptionShouldBeThrownIfTheRequestFails()
+    {
+        $this->validatorService->shouldReceive('isAdmin->setFields->validate->getResults')->once()->andReturn([]);
+        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->uuid->shouldReceive('uuid4->toString')->once()->andReturn('uuid-0000');
+        $this->usernameService->shouldReceive('generate')->once()->andReturn('user_name');
+        $this->repository->shouldReceive('create')->once()->andReturn((object) [
+            'node_id' => 1,
+            'id' => 1,
+        ]);
+
+        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturnNull();
+        $this->serverVariableRepository->shouldReceive('insert')->with([])->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setNode->create')->once()->andThrow($this->exception);
+        $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
+        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
+        $this->database->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
+
+        try {
+            $this->service->create($this->data);
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(DisplayException::class, $exception);
+            $this->assertEquals(trans('admin/server.exceptions.daemon_exception', [
+                'code' => 'E_CONN_REFUSED',
+            ]), $exception->getMessage());
+        }
     }
 }

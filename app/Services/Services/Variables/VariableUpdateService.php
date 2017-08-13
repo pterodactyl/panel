@@ -34,11 +34,16 @@ class VariableUpdateService
     /**
      * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
      */
-    protected $serviceVariableRepository;
+    protected $repository;
 
-    public function __construct(ServiceVariableRepositoryInterface $serviceVariableRepository)
+    /**
+     * VariableUpdateService constructor.
+     *
+     * @param \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface $repository
+     */
+    public function __construct(ServiceVariableRepositoryInterface $repository)
     {
-        $this->serviceVariableRepository = $serviceVariableRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -46,16 +51,17 @@ class VariableUpdateService
      *
      * @param  int|\Pterodactyl\Models\ServiceVariable $variable
      * @param  array                                   $data
-     * @return \Pterodactyl\Models\ServiceVariable
+     * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
      */
     public function handle($variable, array $data)
     {
         if (! $variable instanceof ServiceVariable) {
-            $variable = $this->serviceVariableRepository->find($variable);
+            $variable = $this->repository->find($variable);
         }
 
         if (! is_null(array_get($data, 'env_variable'))) {
@@ -65,7 +71,7 @@ class VariableUpdateService
                 ]));
             }
 
-            $search = $this->serviceVariableRepository->withColumns('id')->findCountWhere([
+            $search = $this->repository->withColumns('id')->findCountWhere([
                 ['env_variable', '=', array_get($data, 'env_variable')],
                 ['option_id', '=', $variable->option_id],
                 ['id', '!=', $variable->id],
@@ -80,9 +86,9 @@ class VariableUpdateService
 
         $options = array_get($data, 'options', []);
 
-        return $this->serviceVariableRepository->update($variable->id, array_merge([
-            'user_viewable' => in_array('user_viewable', $options, $variable->user_viewable),
-            'user_editable' => in_array('user_editable', $options, $variable->user_editable),
+        return $this->repository->withoutFresh()->update($variable->id, array_merge([
+            'user_viewable' => in_array('user_viewable', $options),
+            'user_editable' => in_array('user_editable', $options),
         ], $data));
     }
 }

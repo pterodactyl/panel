@@ -37,14 +37,14 @@ use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonS
 class DeletionService
 {
     /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    protected $connection;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $database;
 
     /**
      * @var \Pterodactyl\Services\Database\DatabaseManagementService
@@ -74,7 +74,7 @@ class DeletionService
     /**
      * DeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $database
+     * @param \Illuminate\Database\ConnectionInterface                           $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
      * @param \Pterodactyl\Services\Database\DatabaseManagementService           $databaseManagementService
@@ -82,7 +82,7 @@ class DeletionService
      * @param \Illuminate\Log\Writer                                             $writer
      */
     public function __construct(
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonServerRepository,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseManagementService $databaseManagementService,
@@ -90,7 +90,7 @@ class DeletionService
         Writer $writer
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
-        $this->database = $database;
+        $this->connection = $connection;
         $this->databaseManagementService = $databaseManagementService;
         $this->databaseRepository = $databaseRepository;
         $this->repository = $repository;
@@ -114,7 +114,9 @@ class DeletionService
      * Delete a server from the panel and remove any associated databases from hosts.
      *
      * @param int|\Pterodactyl\Models\Server $server
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($server)
     {
@@ -140,12 +142,12 @@ class DeletionService
             }
         }
 
-        $this->database->beginTransaction();
+        $this->connection->beginTransaction();
         $this->databaseRepository->withColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
             $this->databaseManagementService->delete($item->id);
         });
 
         $this->repository->delete($server->id);
-        $this->database->commit();
+        $this->connection->commit();
     }
 }

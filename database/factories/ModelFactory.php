@@ -93,7 +93,7 @@ $factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Genera
         'id' => $faker->unique()->randomNumber(),
         'service_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
-        'description' => $faker->sentences(3),
+        'description' => implode(' ', $faker->sentences(3)),
         'tag' => $faker->unique()->randomNumber(5),
     ];
 });
