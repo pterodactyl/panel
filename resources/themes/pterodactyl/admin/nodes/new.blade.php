@@ -43,14 +43,18 @@
                 <div class="box-body">
                     <div class="form-group">
                         <label for="pName" class="form-label">Name</label>
-                        <input type="text" name="name" id="pName" class="form-control" />
+                        <input type="text" name="name" id="pName" class="form-control" value="{{ old('name') }}"/>
                         <p class="text-muted small">Character limits: <code>a-zA-Z0-9_.-</code> and <code>[Space]</code> (min 1, max 100 characters).</p>
                     </div>
                     <div class="form-group">
                         <label for="pLocationId" class="form-label">Location</label>
                         <select name="location_id" id="pLocationId">
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}">{{ $location->short }}</option>
+                                @if($location->id == old('location_id'))
+                                    <option value="{{ $location->id }}" selected>{{ $location->short }}</option>
+                                @else
+                                    <option value="{{ $location->id }}">{{ $location->short }}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
@@ -58,6 +62,7 @@
                         <label class="form-label">Node Visibility</label>
                         <div>
                             <div class="radio radio-success radio-inline">
+
                                 <input type="radio" id="pPublicTrue" value="1" name="public" checked>
                                 <label for="pPublicTrue"> Public </label>
                             </div>
@@ -70,7 +75,7 @@
                     </div>
                     <div class="form-group">
                         <label for="pFQDN" class="form-label">FQDN</label>
-                        <input type="text" name="fqdn" id="pFQDN" class="form-control" />
+                        <input type="text" name="fqdn" id="pFQDN" class="form-control" value="{{ old('fqdn') }}"/>
                         <p class="text-muted small">Please enter domain name (e.g <code>node.example.com</code>) to be used for connecting to the daemon. An IP address may be used <em>only</em> if you are not using SSL for this node.</p>
                     </div>
                     <div class="form-group">
@@ -119,14 +124,14 @@
                         <div class="form-group col-md-6">
                             <label for="pMemory" class="form-label">Total Memory</label>
                             <div class="input-group">
-                                <input type="text" name="memory" data-multiplicator="true" class="form-control" id="pMemory"/>
+                                <input type="text" name="memory" data-multiplicator="true" class="form-control" id="pMemory" value="{{ old('memory') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pMemoryOverallocate" class="form-label">Memory Over-Allocation</label>
                             <div class="input-group">
-                                <input type="text" name="memory_overallocate" class="form-control" id="pMemoryOverallocate"/>
+                                <input type="text" name="memory_overallocate" class="form-control" id="pMemoryOverallocate" value="{{ old('memory_overallocate') }}"/>
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
@@ -138,14 +143,14 @@
                         <div class="form-group col-md-6">
                             <label for="pDisk" class="form-label">Total Disk Space</label>
                             <div class="input-group">
-                                <input type="text" name="disk" data-multiplicator="true" class="form-control" id="pDisk"/>
+                                <input type="text" name="disk" data-multiplicator="true" class="form-control" id="pDisk" value="{{ old('disk') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pDiskOverallocate" class="form-label">Disk Over-Allocation</label>
                             <div class="input-group">
-                                <input type="text" name="disk_overallocate" class="form-control" id="pDiskOverallocate"/>
+                                <input type="text" name="disk_overallocate" class="form-control" id="pDiskOverallocate" value="{{ old('disk_overallocate') }}"/>
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>

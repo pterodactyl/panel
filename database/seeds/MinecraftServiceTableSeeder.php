@@ -243,6 +243,43 @@ EOF;
             'startup' => null,
             'script_install' => $script,
         ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
+# Forge Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add curl
+
+GET_VERSIONS=$(curl -sl http://files.minecraftforge.net/maven/net/minecraftforge/forge/ | grep -A1 Latest | grep  -o -e '[1]\.[0-9][0-9] - [0-9][0-9]\.[0-9][0-9]\.[0-9]\.[0-9][0-9][0-9][0-9]')
+LATEST_VERSION=$(echo $GET_VERSIONS | sed 's/ //g')
+
+cd /mnt/server
+
+curl -sS http://files.minecraftforge.net/maven/net/minecraftforge/forge/$LATEST_VERSION/forge-$LATEST_VERSION-installer.jar -o installer.jar
+curl -sS http://files.minecraftforge.net/maven/net/minecraftforge/forge/$LATEST_VERSION/forge-$LATEST_VERSION-universal.jar -o server.jar
+
+java -jar installer.jar --installServer
+rm -rf installer.jar
+EOF;
+
+        $this->option['forge'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'forge',
+        ], [
+            'name' => 'Forge Minecraft',
+            'description' => 'Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.',
+            'docker_image' => 'quay.io/pterodactyl/core:java',
+            'config_startup' => '{"done": ")! For help, type ", "userInteraction": [ "Go to eula.txt for more info."]}',
+            'config_logs' => '{"custom": false, "location": "logs/latest.log"}',
+            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "enable-query": "true", "server-port": "{{server.build.default.port}}", "query.port": "{{server.build.default.port}}"}}}',
+            'config_stop' => 'stop',
+            'config_from' => null,
+            'startup' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',
+            'script_install' => $script,
+            'script_container' => 'frolvlad/alpine-oraclejdk8:cleaned',
+        ]);
     }
 
     private function addVariables()
@@ -251,6 +288,7 @@ EOF;
         $this->addSpigotVariables();
         $this->addSpongeVariables();
         $this->addBungeecordVariables();
+        $this->addForgeVariables();
     }
 
     private function addVanillaVariables()
@@ -367,6 +405,21 @@ EOF;
             'name' => 'Bungeecord Jar File',
             'description' => 'The name of the Jarfile to use when running Bungeecord.',
             'default_value' => 'bungeecord.jar',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
+        ]);
+    }
+
+    private function addForgeVariables()
+    {
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['forge']->id,
+            'env_variable' => 'SERVER_JARFILE',
+        ], [
+            'name' => 'Server Jar File',
+            'description' => 'The name of the Jarfile to use when running Forge Mod.',
+            'default_value' => 'server.jar',
             'user_viewable' => 1,
             'user_editable' => 1,
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
