@@ -25,11 +25,11 @@
 namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
-use Pterodactyl\Services\Services\Options\OptionDeletionService;
 use Tests\TestCase;
+use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Services\Services\Options\OptionDeletionService;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
 class OptionDeletionServiceTest extends TestCase
 {

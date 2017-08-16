@@ -25,13 +25,13 @@
 namespace Tests\Unit\Http\Controllers\Admin;
 
 use Mockery as m;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Http\Controllers\Admin\DatabaseController;
-use Pterodactyl\Services\Database\DatabaseHostService;
-use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\TestCase;
+use Prologue\Alerts\AlertsMessageBag;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Services\Database\DatabaseHostService;
+use Pterodactyl\Http\Controllers\Admin\DatabaseController;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseControllerTest extends TestCase
 {

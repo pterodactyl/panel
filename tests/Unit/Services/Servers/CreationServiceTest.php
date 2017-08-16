@@ -25,13 +25,13 @@
 namespace Tests\Unit\Services\Servers;
 
 use Exception;
-use GuzzleHttp\Exception\RequestException;
 use Mockery as m;
-use Pterodactyl\Exceptions\DisplayException;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
 use Illuminate\Database\DatabaseManager;
+use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Servers\CreationService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Services\Servers\UsernameGenerationService;

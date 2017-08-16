@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
+use Pterodactyl\Exceptions\Services\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
 
 class OptionDeletionService
 {

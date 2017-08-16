@@ -25,13 +25,12 @@
 namespace Tests\Unit\Services\Services\Variables;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException;
+use Tests\TestCase;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Services\Services\Variables\VariableCreationService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 
 class VariableCreationServiceTest extends TestCase
 {

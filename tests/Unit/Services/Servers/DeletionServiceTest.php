@@ -25,18 +25,18 @@
 namespace Tests\Unit\Services\Servers;
 
 use Exception;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Log\Writer;
 use Mockery as m;
-use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Database\DatabaseManagementService;
-use Pterodactyl\Services\Servers\DeletionService;
 use Tests\TestCase;
+use Illuminate\Log\Writer;
+use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Servers\DeletionService;
+use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class DeletionServiceTest extends TestCase
 {
