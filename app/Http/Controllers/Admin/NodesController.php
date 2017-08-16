@@ -46,7 +46,7 @@ class NodesController extends Controller
      */
     public function index(Request $request)
     {
-        $nodes = Models\Node::with('location')->withCount('servers');
+        $nodes = Models\Node::with('location')->withCount('servers')->orderBy('name', 'asc');
 
         if (! is_null($request->input('query'))) {
             $nodes->search($request->input('query'));
