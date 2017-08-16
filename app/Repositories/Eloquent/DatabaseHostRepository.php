@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -47,13 +48,26 @@ class DatabaseHostRepository extends EloquentRepository implements DatabaseHostR
         return $this->getBuilder()->withCount('databases')->with('node')->get();
     }
 
+    public function getWithServers($id)
+    {
+        Assert::numeric($id, 'First argument passed to getWithServers must be numeric, recieved %s.');
+
+        $instance = $this->getBuilder()->with('databases.server')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function deleteIfNoDatabases($id)
     {
-        $instance = $this->getBuilder()->withCount('databases')->find($id);
+        Assert::numeric($id, 'First argument passed to deleteIfNoDatabases must be numeric, recieved %s.');
 
+        $instance = $this->getBuilder()->withCount('databases')->find($id);
         if (! $instance) {
             throw new RecordNotFoundException();
         }

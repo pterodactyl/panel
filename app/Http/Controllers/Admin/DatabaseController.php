@@ -90,16 +90,16 @@ class DatabaseController extends Controller
     /**
      * Display database host to user.
      *
-     * @param  \Pterodactyl\Models\DatabaseHost  $host
+     * @param  int $host
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view(DatabaseHost $host)
+    public function view($host)
     {
-        $host->load('databases.server');
-
         return view('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
-            'host' => $host,
+            'host' => $this->repository->getWithServers($host),
         ]);
     }
 

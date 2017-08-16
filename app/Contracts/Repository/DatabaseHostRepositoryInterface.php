@@ -34,6 +34,16 @@ interface DatabaseHostRepositoryInterface extends RepositoryInterface
     public function getWithViewDetails();
 
     /**
+     * Return a database host with the databases and associated servers that are attached to said databases.
+     *
+     * @param  int $id
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithServers($id);
+
+    /**
      * Delete a database host from the DB if there are no databases using it.
      *
      * @param  int $id
