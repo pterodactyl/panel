@@ -26,11 +26,11 @@ namespace Tests\Unit\Services\Services;
 
 use Exception;
 use Mockery as m;
+use Tests\TestCase;
+use Pterodactyl\Services\Services\ServiceDeletionService;
+use Pterodactyl\Exceptions\Services\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
-use Pterodactyl\Services\Services\ServiceDeletionService;
-use Tests\TestCase;
 
 class ServiceDeletionServiceTest extends TestCase
 {

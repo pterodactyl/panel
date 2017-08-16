@@ -26,11 +26,11 @@ namespace Tests\Unit\Services\Services\Options;
 
 use Exception;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
+use Tests\TestCase;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Services\Services\Options\OptionUpdateService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionUpdateServiceTest extends TestCase
 {

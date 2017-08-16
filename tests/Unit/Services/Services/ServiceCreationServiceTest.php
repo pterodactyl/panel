@@ -25,12 +25,12 @@
 namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Services\Services\ServiceCreationService;
-use Pterodactyl\Traits\Services\CreatesServiceIndex;
 use Tests\TestCase;
+use Pterodactyl\Models\Service;
 use Illuminate\Contracts\Config\Repository;
+use Pterodactyl\Traits\Services\CreatesServiceIndex;
+use Pterodactyl\Services\Services\ServiceCreationService;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class ServiceCreationServiceTest extends TestCase
 {

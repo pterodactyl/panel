@@ -26,11 +26,11 @@ namespace Tests\Unit\Services\Services\Variables;
 
 use Exception;
 use Mockery as m;
-use PhpParser\Node\Expr\Variable;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Models\ServiceVariable;
-use Pterodactyl\Services\Services\Variables\VariableUpdateService;
 use Tests\TestCase;
+use PhpParser\Node\Expr\Variable;
+use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Services\Variables\VariableUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 
 class VariableUpdateServiceTest extends TestCase
@@ -87,7 +87,7 @@ class VariableUpdateServiceTest extends TestCase
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['option_id', '=', $this->model->option_id],
-                ['id', '!=', $this->model->id]
+                ['id', '!=', $this->model->id],
             ])->once()->andReturn(0);
 
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
@@ -109,7 +109,7 @@ class VariableUpdateServiceTest extends TestCase
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['option_id', '=', $this->model->option_id],
-                ['id', '!=', $this->model->id]
+                ['id', '!=', $this->model->id],
             ])->once()->andReturn(1);
 
         try {

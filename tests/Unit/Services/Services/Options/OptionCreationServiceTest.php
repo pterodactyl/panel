@@ -90,7 +90,7 @@ class OptionCreationServiceTest extends TestCase
 
         $this->repository->shouldReceive('findCountWhere')->with([
             ['service_id', '=', $data['service_id']],
-            ['id', '=', $data['config_from']]
+            ['id', '=', $data['config_from']],
         ])->once()->andReturn(1);
 
         $this->repository->shouldReceive('create')->with($data)
@@ -109,7 +109,7 @@ class OptionCreationServiceTest extends TestCase
     {
         $this->repository->shouldReceive('findCountWhere')->with([
             ['service_id', '=', null],
-            ['id', '=', 1]
+            ['id', '=', 1],
         ])->once()->andReturn(0);
 
         try {

@@ -30,6 +30,7 @@ use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
+use Pterodactyl\Exceptions\Services\HasActiveServersException;
 use Pterodactyl\Services\Services\Options\OptionUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionCreationService;
@@ -38,7 +39,6 @@ use Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest;
 use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException;
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
 use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionController extends Controller

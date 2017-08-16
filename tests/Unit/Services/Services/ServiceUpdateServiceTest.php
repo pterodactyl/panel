@@ -25,9 +25,9 @@
 namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Services\Services\ServiceUpdateService;
 use Tests\TestCase;
+use Pterodactyl\Services\Services\ServiceUpdateService;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class ServiceUpdateServiceTest extends TestCase
 {
