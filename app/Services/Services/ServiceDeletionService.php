@@ -22,56 +22,53 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Services\Options;
+namespace Pterodactyl\Services\Services;
 
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
-class OptionDeletionService
+class ServiceDeletionService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
-     */
-    protected $repository;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * OptionDeletionService constructor.
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * ServiceDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
-        ServiceOptionRepositoryInterface $repository
+        ServiceRepositoryInterface $repository
     ) {
-        $this->repository = $repository;
         $this->serverRepository = $serverRepository;
+        $this->repository = $repository;
     }
 
     /**
-     * Delete an option from the database if it has no active servers attached to it.
+     * Delete a service from the system only if there are no servers attached to it.
      *
-     * @param  int $option
+     * @param  int $service
      * @return int
      *
      * @throws \Pterodactyl\Exceptions\Services\HasActiveServersException
      */
-    public function handle($option)
+    public function handle($service)
     {
-        $servers = $this->serverRepository->findCountWhere([
-            ['option_id', '=', $option],
-        ]);
-
-        if ($servers > 0) {
-            throw new HasActiveServersException(trans('admin/exceptions.service.options.delete_has_servers'));
+        $count = $this->serverRepository->findCountWhere([['service_id', '=', $service]]);
+        if ($count > 0) {
+            throw new HasActiveServersException(trans('admin/exceptions.service.delete_has_servers'));
         }
 
-        return $this->repository->delete($option);
+        return $this->repository->delete($service);
     }
 }

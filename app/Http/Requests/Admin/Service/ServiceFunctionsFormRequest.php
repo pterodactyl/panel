@@ -22,23 +22,19 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Http\Requests\Admin\Service;
 
-interface ServiceRepositoryInterface extends RepositoryInterface
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+
+class ServiceFunctionsFormRequest extends AdminFormRequest
 {
     /**
-     * Return a service or all services with their associated options, variables, and packs.
-     *
-     * @param  int $id
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getWithOptions($id = null);
-
-    /**
-     * Return a service along with its associated options and the servers relation on those options.
-     *
-     * @param  int $id
-     * @return mixed
-     */
-    public function getWithOptionServers($id);
+    public function rules()
+    {
+        return [
+            'index_file' => 'required|nullable|string',
+        ];
+    }
 }

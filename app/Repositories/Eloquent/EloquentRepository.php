@@ -49,8 +49,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function create(array $fields, $validate = true, $force = false)
     {
-        Assert::boolean($validate, 'Second argument passed to create should be boolean, recieved %s.');
-        Assert::boolean($force, 'Third argument passed to create should be boolean, received %s.');
+        Assert::boolean($validate, 'Second argument passed to create must be boolean, recieved %s.');
+        Assert::boolean($force, 'Third argument passed to create must be boolean, received %s.');
 
         $instance = $this->getBuilder()->newModelInstance();
 
@@ -77,7 +77,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function find($id)
     {
-        Assert::integer($id, 'First argument passed to find should be integer, received %s.');
+        Assert::numeric($id, 'First argument passed to find must be numeric, received %s.');
 
         $instance = $this->getBuilder()->find($id, $this->getColumns());
 
@@ -125,8 +125,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function delete($id, $destroy = false)
     {
-        Assert::integer($id, 'First argument passed to delete should be integer, received %s.');
-        Assert::boolean($destroy, 'Second argument passed to delete should be boolean, received %s.');
+        Assert::numeric($id, 'First argument passed to delete must be numeric, received %s.');
+        Assert::boolean($destroy, 'Second argument passed to delete must be boolean, received %s.');
 
         $instance = $this->getBuilder()->where($this->getModel()->getKeyName(), $id);
 
@@ -138,7 +138,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function deleteWhere(array $attributes, $force = false)
     {
-        Assert::boolean($force, 'Second argument passed to deleteWhere should be boolean, received %s.');
+        Assert::boolean($force, 'Second argument passed to deleteWhere must be boolean, received %s.');
 
         $instance = $this->getBuilder()->where($attributes);
 
@@ -150,9 +150,9 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function update($id, array $fields, $validate = true, $force = false)
     {
-        Assert::integer($id, 'First argument passed to update expected to be integer, received %s.');
-        Assert::boolean($validate, 'Third argument passed to update should be boolean, received %s.');
-        Assert::boolean($force, 'Fourth argument passed to update should be boolean, received %s.');
+        Assert::numeric($id, 'First argument passed to update must be numeric, received %s.');
+        Assert::boolean($validate, 'Third argument passed to update must be boolean, received %s.');
+        Assert::boolean($force, 'Fourth argument passed to update must be boolean, received %s.');
 
         $instance = $this->getBuilder()->where('id', $id)->first();
 
@@ -182,7 +182,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function updateWhereIn($column, array $values, array $fields)
     {
-        Assert::stringNotEmpty($column, 'First argument passed to updateWhereIn expected to be a string, received %s.');
+        Assert::stringNotEmpty($column, 'First argument passed to updateWhereIn must be a non-empty string, received %s.');
 
         return $this->getBuilder()->whereIn($column, $values)->update($fields);
     }
@@ -255,8 +255,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function updateOrCreate(array $where, array $fields, $validate = true, $force = false)
     {
-        Assert::boolean($validate, 'Third argument passed to updateOrCreate should be boolean, received %s.');
-        Assert::boolean($force, 'Fourth argument passed to updateOrCreate should be boolean, received %s.');
+        Assert::boolean($validate, 'Third argument passed to updateOrCreate must be boolean, received %s.');
+        Assert::boolean($force, 'Fourth argument passed to updateOrCreate must be boolean, received %s.');
 
         $instance = $this->withColumns('id')->findWhere($where)->first();
 

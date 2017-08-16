@@ -24,10 +24,16 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Service extends Model
+class Service extends Model implements CleansAttributes, ValidableContract
 {
+    use Eloquence, Validable;
+
     /**
      * The table associated with the model.
      *
@@ -40,52 +46,31 @@ class Service extends Model
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'description', 'folder', 'startup', 'index_file',
+    protected $fillable = ['name', 'author', 'description', 'folder', 'startup', 'index_file'];
+
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'author' => 'required',
+        'name' => 'required',
+        'description' => 'sometimes',
+        'folder' => 'required',
+        'startup' => 'sometimes',
+        'index_file' => 'required',
     ];
 
     /**
-     * Returns the default contents of the index.js file for a service.
-     *
-     * @return string
+     * @var array
      */
-    public static function defaultIndexFile()
-    {
-        return <<<'EOF'
-'use strict';
-
-/**
- * Pterodactyl - Daemon
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-const rfr = require('rfr');
-const _ = require('lodash');
-
-const Core = rfr('src/services/index.js');
-
-class Service extends Core {}
-
-module.exports = Service;
-EOF;
-    }
+    protected static $dataIntegrityRules = [
+        'author' => 'string|size:36',
+        'name' => 'string|max:255',
+        'description' => 'nullable|string',
+        'folder' => 'string|max:255|regex:/^[\w.-]{1,50}$/|unique:services,folder',
+        'startup' => 'nullable|string',
+        'index_file' => 'string',
+    ];
 
     /**
      * Gets all service options associated with this service.

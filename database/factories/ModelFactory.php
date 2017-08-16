@@ -88,6 +88,17 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
     ];
 });
 
+$factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $faker) {
+    return [
+        'author' => $faker->unique()->uuid,
+        'name' => $faker->word,
+        'description' => null,
+        'folder' => strtolower($faker->unique()->word),
+        'startup' => 'java -jar test.jar',
+        'index_file' => 'indexjs',
+    ];
+});
+
 $factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),

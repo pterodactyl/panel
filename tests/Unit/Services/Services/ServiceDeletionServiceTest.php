@@ -22,65 +22,83 @@
  * SOFTWARE.
  */
 
-namespace Tests\Unit\Services\Services\Options;
+namespace Tests\Unit\Services\Services;
 
+use Exception;
 use Mockery as m;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Exceptions\Services\HasActiveServersException;
-use Pterodactyl\Services\Services\Options\OptionDeletionService;
+use Pterodactyl\Services\Services\ServiceDeletionService;
 use Tests\TestCase;
 
-class OptionDeletionServiceTest extends TestCase
+class ServiceDeletionServiceTest extends TestCase
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
-     */
-    protected $repository;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\OptionDeletionService
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Services\ServiceDeletionService
      */
     protected $service;
 
+    /**
+     * Setup tests.
+     */
     public function setUp()
     {
         parent::setUp();
 
-        $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
+        $this->repository = m::mock(ServiceRepositoryInterface::class);
 
-        $this->service = new OptionDeletionService($this->serverRepository, $this->repository);
+        $this->service = new ServiceDeletionService($this->serverRepository, $this->repository);
     }
 
     /**
-     * Test that option is deleted if no servers are found.
+     * Test that a service is deleted when there are no servers attached to a service.
      */
-    public function testOptionIsDeletedIfNoServersAreFound()
+    public function testServiceIsDeleted()
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(0);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['service_id', '=', 1]])->once()->andReturn(0);
         $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle(1));
     }
 
     /**
-     * Test that option is not deleted if servers are found.
+     * Test that an exception is thrown when there are servers attached to a service.
+     *
+     * @dataProvider serverCountProvider
      */
-    public function testExceptionIsThrownIfServersAreFound()
+    public function testExceptionIsThrownIfServersAreAttached($count)
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(1);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['service_id', '=', 1]])->once()->andReturn($count);
 
         try {
             $this->service->handle(1);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.service.options.delete_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('admin/exceptions.service.delete_has_servers'), $exception->getMessage());
         }
+    }
+
+    /**
+     * Provide assorted server counts to ensure that an exception is always thrown when more than 0 servers are found.
+     *
+     * @return array
+     */
+    public function serverCountProvider()
+    {
+        return [
+            [1], [2], [5], [10],
+        ];
     }
 }

@@ -50,15 +50,14 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Functions Control</h3>
             </div>
-            <form action="{{ route('admin.services.view', $service->id) }}" method="POST">
+            <form action="{{ route('admin.services.view.functions', $service->id) }}" method="POST">
                 <div class="box-body no-padding">
                     <div id="editor_index"style="height:500px">{{ $service->index_file }}</div>
                     <textarea name="index_file" class="hidden"></textarea>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <input type="hidden" name="redirect_to" value="functions" />
-                    <button type="submit" name="action" value="edit" class="btn btn-sm btn-success pull-right">Save File</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-success pull-right">Save File</button>
                 </div>
             </form>
         </div>

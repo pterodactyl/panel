@@ -38,7 +38,7 @@ use Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest;
 use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException;
-use Pterodactyl\Exceptions\Services\ServiceOption\HasActiveServersException;
+use Pterodactyl\Exceptions\Services\HasActiveServersException;
 use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionController extends Controller
@@ -145,14 +145,14 @@ class OptionController extends Controller
     /**
      * Delete a given option from the database.
      *
-     * @param \Pterodactyl\Models\ServiceOption $option
+     * @param  \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function delete(ServiceOption $option)
+    public function destroy(ServiceOption $option)
     {
         try {
             $this->optionDeletionService->handle($option->id);
-            $this->alert->success()->flash();
+            $this->alert->success(trans('admin/services.options.notices.option_deleted'))->flash();
         } catch (HasActiveServersException $exception) {
             $this->alert->danger($exception->getMessage())->flash();
 
@@ -229,6 +229,7 @@ class OptionController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateScripts(EditOptionScript $request, ServiceOption $option)
     {

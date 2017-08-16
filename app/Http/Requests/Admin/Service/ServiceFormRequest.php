@@ -22,23 +22,31 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Http\Requests\Admin\Service;
 
-interface ServiceRepositoryInterface extends RepositoryInterface
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+
+class ServiceFormRequest extends AdminFormRequest
 {
     /**
-     * Return a service or all services with their associated options, variables, and packs.
-     *
-     * @param  int $id
-     * @return \Illuminate\Support\Collection
+     * @return array
      */
-    public function getWithOptions($id = null);
+    public function rules()
+    {
+        $rules = [
+            'name' => 'required|string|min:1|max:255',
+            'description' => 'required|nullable|string',
+            'folder' => 'required|regex:/^[\w.-]{1,50}$/|unique:services,folder',
+            'startup' => 'required|nullable|string',
+        ];
 
-    /**
-     * Return a service along with its associated options and the servers relation on those options.
-     *
-     * @param  int $id
-     * @return mixed
-     */
-    public function getWithOptionServers($id);
+        if ($this->method() === 'PATCH') {
+            $service = $this->route()->parameter('service');
+            $rules['folder'] = $rules['folder'] . ',' . $service->id;
+
+            return $rules;
+        }
+
+        return $rules;
+    }
 }

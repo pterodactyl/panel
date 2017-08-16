@@ -24,37 +24,76 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
-use Pterodactyl\Models;
-use Illuminate\Http\Request;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Models\Service;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\ServiceRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Services\ServiceUpdateService;
+use Pterodactyl\Services\Services\ServiceCreationService;
+use Pterodactyl\Services\Services\ServiceDeletionService;
+use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest;
 
 class ServiceController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Services\ServiceCreationService
+     */
+    protected $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Services\ServiceDeletionService
+     */
+    protected $deletionService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Services\ServiceUpdateService
+     */
+    protected $updateService;
+
+    public function __construct(
+        AlertsMessageBag $alert,
+        ServiceCreationService $creationService,
+        ServiceDeletionService $deletionService,
+        ServiceRepositoryInterface $repository,
+        ServiceUpdateService $updateService
+    ) {
+        $this->alert = $alert;
+        $this->creationService = $creationService;
+        $this->deletionService = $deletionService;
+        $this->repository = $repository;
+        $this->updateService = $updateService;
+    }
+
+    /**
      * Display service overview page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('admin.services.index', [
-            'services' => Models\Service::withCount('servers', 'options', 'packs')->get(),
+            'services' => $this->repository->getWithOptions(),
         ]);
     }
 
     /**
      * Display create service page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create()
     {
         return view('admin.services.new');
     }
@@ -62,91 +101,96 @@ class ServiceController extends Controller
     /**
      * Return base view for a service.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  int $service
      * @return \Illuminate\View\View
      */
-    public function view(Request $request, $id)
+    public function view($service)
     {
         return view('admin.services.view', [
-            'service' => Models\Service::with('options', 'options.servers')->findOrFail($id),
+            'service' => $this->repository->getWithOptionServers($service),
         ]);
     }
 
     /**
      * Return function editing view for a service.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Models\Service $service
      * @return \Illuminate\View\View
      */
-    public function viewFunctions(Request $request, $id)
+    public function viewFunctions(Service $service)
     {
-        return view('admin.services.functions', ['service' => Models\Service::findOrFail($id)]);
+        return view('admin.services.functions', ['service' => $service]);
     }
 
     /**
      * Handle post action for new service.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(Request $request)
+    public function store(ServiceFormRequest $request)
     {
-        $repo = new ServiceRepository;
+        $service = $this->creationService->handle($request->normalize());
+        $this->alert->success(trans('admin/services.notices.service_created', ['name' => $service->name]))->flash();
 
-        try {
-            $service = $repo->create($request->intersect([
-                'name', 'description', 'folder', 'startup',
-            ]));
-            Alert::success('Successfully created new service!')->flash();
-
-            return redirect()->route('admin.services.view', $service->id);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.services.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new service. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.services.new')->withInput();
+        return redirect()->route('admin.services.view', $service->id);
     }
 
     /**
      * Edits configuration for a specific service.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
+     * @param  \Pterodactyl\Models\Service                                 $service
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function update(ServiceFormRequest $request, Service $service)
+    {
+        $this->updateService->handle($service->id, $request->normalize());
+        $this->alert->success(trans('admin/services.notices.service_updated'))->flash();
+
+        return redirect()->route('admin.services.view', $service);
+    }
+
+    /**
+     * Update the functions file for a service.
+     *
+     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest $request
+     * @param  \Pterodactyl\Models\Service                                           $service
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function updateFunctions(ServiceFunctionsFormRequest $request, Service $service)
+    {
+        $this->updateService->handle($service->id, $request->normalize());
+        $this->alert->success(trans('admin/services.notices.functions_updated'))->flash();
+
+        return redirect()->route('admin.services.view.functions', $service->id);
+    }
+
+    /**
+     * Delete a service from the panel.
+     *
+     * @param  \Pterodactyl\Models\Service $service
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function edit(Request $request, $id)
+    public function destroy(Service $service)
     {
-        $repo = new ServiceRepository;
-        $redirectTo = ($request->input('redirect_to')) ? 'admin.services.view.functions' : 'admin.services.view';
-
         try {
-            if ($request->input('action') !== 'delete') {
-                $repo->update($id, $request->intersect([
-                    'name', 'description', 'folder', 'startup', 'index_file',
-                ]));
-                Alert::success('Service has been updated successfully.')->flash();
-            } else {
-                $repo->delete($id);
-                Alert::success('Successfully deleted service from the system.')->flash();
+            $this->deletionService->handle($service->id);
+            $this->alert->success(trans('admin/services.notices.service_deleted'))->flash();
+        } catch (HasActiveServersException $exception) {
+            $this->alert->danger($exception->getMessage())->flash();
 
-                return redirect()->route('admin.services');
-            }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route($redirectTo, $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occurred while attempting to update this service. This error has been logged.')->flash();
+            return redirect()->back();
         }
 
-        return redirect()->route($redirectTo, $id);
+        return redirect()->route('admin.services');
     }
 }

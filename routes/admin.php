@@ -166,8 +166,8 @@ Route::group(['prefix' => 'nodes'], function () {
 Route::group(['prefix' => 'services'], function () {
     Route::get('/', 'ServiceController@index')->name('admin.services');
     Route::get('/new', 'ServiceController@create')->name('admin.services.new');
-    Route::get('/view/{id}', 'ServiceController@view')->name('admin.services.view');
-    Route::get('/view/{id}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
+    Route::get('/view/{service}', 'ServiceController@view')->name('admin.services.view');
+    Route::get('/view/{service}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
     Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
     Route::get('/option/{option}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
     Route::get('/option/{option}/variables', 'VariableController@view')->name('admin.services.option.variables');
@@ -177,13 +177,14 @@ Route::group(['prefix' => 'services'], function () {
     Route::post('/option/new', 'OptionController@store');
     Route::post('/option/{option}/variables', 'VariableController@store');
 
-    Route::patch('/view/{option}', 'ServiceController@edit');
+    Route::patch('/view/{service}', 'ServiceController@update');
+    Route::patch('/view/{service}/functions', 'ServiceController@updateFunctions');
     Route::patch('/option/{option}', 'OptionController@editConfiguration');
     Route::patch('/option/{option}/scripts', 'OptionController@updateScripts');
     Route::patch('/option/{option}/variables/{variable}', 'VariableController@update')->name('admin.services.option.variables.edit');
 
-    Route::delete('/view/{id}', 'ServiceController@delete');
-    Route::delete('/option/{option}', 'OptionController@delete');
+    Route::delete('/view/{service}', 'ServiceController@destroy');
+    Route::delete('/option/{option}', 'OptionController@destroy');
     Route::delete('/option/{option}/variables/{variable}', 'VariableController@delete');
 });
 

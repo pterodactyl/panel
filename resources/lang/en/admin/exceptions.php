@@ -34,6 +34,7 @@ return [
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
     ],
     'service' => [
+        'delete_has_servers' => 'A service with active servers attached to it cannot be deleted from the Panel.',
         'options' => [
             'delete_has_servers' => 'A service option with active servers attached to it cannot be deleted from the Panel.',
             'invalid_copy_id' => 'The service option selected for copying a script from either does not exist, or is copying a script itself.',
