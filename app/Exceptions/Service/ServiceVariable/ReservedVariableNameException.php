@@ -22,9 +22,11 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Services;
+namespace Pterodactyl\Exceptions\Service\ServiceVariable;
 
-class HasActiveServersException extends \Exception
+use Exception;
+
+class ReservedVariableNameException extends Exception
 {
     //
 }

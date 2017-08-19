@@ -22,30 +22,18 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Eloquent\Attributes;
+namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Repositories\Eloquent\EloquentRepository;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-abstract class SearchableRepository extends EloquentRepository implements SearchableInterface
+interface PackRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
     /**
-     * @var bool|string
+     * Return all of the file archives for a given pack.
+     *
+     * @param  int  $id
+     * @param  bool $collection
+     * @return object|\Illuminate\Support\Collection
      */
-    protected $searchTerm = false;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function search($term)
-    {
-        if (empty($term)) {
-            return $this;
-        }
-
-        $clone = clone $this;
-        $clone->searchTerm = $term;
-
-        return $clone;
-    }
+    public function getFileArchives($id, $collection = false);
 }

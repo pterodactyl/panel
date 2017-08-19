@@ -81,7 +81,7 @@ class KeyServiceTest extends TestCase
      */
     public function test_create_function()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'random_bytes')
+        $this->getFunctionMock('\\Pterodactyl\\Service\\Api', 'random_bytes')
             ->expects($this->exactly(2))
             ->willReturnCallback(function ($bytes) {
                 return hex2bin(str_pad('', $bytes * 2, '0'));

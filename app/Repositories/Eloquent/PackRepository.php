@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,52 +22,44 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories;
+namespace Pterodactyl\Repositories\Eloquent;
 
-class HelperRepository
+use Pterodactyl\Models\Pack;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
+use Pterodactyl\Repositories\Concerns\Searchable;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+
+class PackRepository extends EloquentRepository implements PackRepositoryInterface
 {
-    /**
-     * Listing of editable files in the control panel.
-     *
-     * @var array
-     */
-    protected static $editable = [
-        'application/json',
-        'application/javascript',
-        'application/xml',
-        'application/xhtml+xml',
-        'text/xml',
-        'text/css',
-        'text/html',
-        'text/plain',
-        'text/x-perl',
-        'text/x-shellscript',
-        'inode/x-empty',
-    ];
+    use Searchable;
 
     /**
-     * Converts from bytes to the largest possible size that is still readable.
-     *
-     * @param  int  $bytes
-     * @param  int  $decimals
-     * @return string
-     * @deprecated
+     * {@inheritdoc}
      */
-    public static function bytesToHuman($bytes, $decimals = 2)
+    public function model()
     {
-        $sz = explode(',', 'B,KB,MB,GB');
-        $factor = floor((strlen($bytes) - 1) / 3);
-
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . ' ' . $sz[$factor];
+        return Pack::class;
     }
 
     /**
-     * Returns array of editable files.
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public static function editableFiles()
+    public function getFileArchives($id, $collection = false)
     {
-        return self::$editable;
+        $pack = $this->getBuilder()->find($id, ['id', 'uuid']);
+        $storage = $this->app->make(FilesystemFactory::class);
+        $files = collect($storage->disk('default')->files('packs/' . $pack->uuid));
+
+        $files = $files->map(function ($file) {
+            $path = storage_path('app/' . $file);
+
+            return (object) [
+                'name' => basename($file),
+                'hash' => sha1_file($path),
+                'size' => human_readable($path),
+            ];
+        });
+
+        return ($collection) ? $files : (object) $files->all();
     }
 }

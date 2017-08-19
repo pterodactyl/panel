@@ -30,7 +30,7 @@ use Tests\TestCase;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException;
+use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
 
 class InstallScriptUpdateServiceTest extends TestCase
 {

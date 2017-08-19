@@ -24,7 +24,7 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
@@ -60,7 +60,7 @@ class OptionDeletionService
      * @param  int $option
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\Services\HasActiveServersException
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
     public function handle($option)
     {

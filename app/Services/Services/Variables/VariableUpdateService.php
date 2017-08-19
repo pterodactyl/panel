@@ -27,7 +27,7 @@ namespace Pterodactyl\Services\Services\Variables;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException;
+use Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException;
 
 class VariableUpdateService
 {
@@ -56,7 +56,7 @@ class VariableUpdateService
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
     public function handle($variable, array $data)
     {

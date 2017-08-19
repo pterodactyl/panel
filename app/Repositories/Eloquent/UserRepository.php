@@ -26,12 +26,14 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\User;
 use Illuminate\Foundation\Application;
+use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
-class UserRepository extends SearchableRepository implements UserRepositoryInterface
+class UserRepository extends EloquentRepository implements UserRepositoryInterface
 {
+    use Searchable;
+
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */

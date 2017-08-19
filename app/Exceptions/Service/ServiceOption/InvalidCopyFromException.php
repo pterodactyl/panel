@@ -22,11 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Services\Server;
+namespace Pterodactyl\Exceptions\Service\ServiceOption;
 
-use Exception;
-
-class RequiredVariableMissingException extends Exception
+class InvalidCopyFromException extends \Exception
 {
     //
 }

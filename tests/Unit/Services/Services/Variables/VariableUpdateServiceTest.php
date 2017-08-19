@@ -126,7 +126,7 @@ class VariableUpdateServiceTest extends TestCase
      * Test that all of the reserved variables defined in the model trigger an exception.
      *
      * @dataProvider reservedNamesProvider
-     * @expectedException \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
+     * @expectedException \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames($variable)
     {

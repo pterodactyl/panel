@@ -25,7 +25,7 @@
 namespace Pterodactyl\Services\Services\Options;
 
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
+use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionCreationService
 {
@@ -51,7 +51,7 @@ class OptionCreationService
      * @return \Pterodactyl\Models\ServiceOption
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException
      */
     public function handle(array $data)
     {

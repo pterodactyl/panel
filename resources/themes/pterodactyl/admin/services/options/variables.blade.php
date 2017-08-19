@@ -27,7 +27,7 @@
     <h1>{{ $option->name }}<small>Managing variables for this service option.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Services</a></li>
+        <li><a href="{{ route('admin.services') }}">Service</a></li>
         <li><a href="{{ route('admin.services.view', $option->service->id) }}">{{ $option->service->name }}</a></li>
         <li><a href="{{ route('admin.services.option.view', $option->id) }}">{{ $option->name }}</a></li>
         <li class="active">Variables</li>

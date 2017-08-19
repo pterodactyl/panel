@@ -20,14 +20,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services &rarr; Option: {{ $option->name }} &rarr; Scripts
+    Service &rarr; Option: {{ $option->name }} &rarr; Scripts
 @endsection
 
 @section('content-header')
     <h1>{{ $option->name }}<small>Manage install and upgrade scripts for this service option.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Services</a></li>
+        <li><a href="{{ route('admin.services') }}">Service</a></li>
         <li><a href="{{ route('admin.services.view', $option->service->id) }}">{{ $option->service->name }}</a></li>
         <li class="active">{{ $option->name }}</li>
     </ol>

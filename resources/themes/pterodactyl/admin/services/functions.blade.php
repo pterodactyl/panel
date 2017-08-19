@@ -20,14 +20,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services &rarr; {{ $service->name }} &rarr; Functions
+    Service &rarr; {{ $service->name }} &rarr; Functions
 @endsection
 
 @section('content-header')
     <h1>{{ $service->name }}<small>Extend the default daemon functions using this service file.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Services</a></li>
+        <li><a href="{{ route('admin.services') }}">Service</a></li>
         <li><a href="{{ route('admin.services.view', $service->id) }}">{{ $service->name }}</a></li>
         <li class="active">Functions</li>
     </ol>

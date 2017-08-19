@@ -25,12 +25,14 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
 
-class ServerRepository extends SearchableRepository implements ServerRepositoryInterface
+class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {
+    use Searchable;
+
     /**
      * {@inheritdoc}
      */

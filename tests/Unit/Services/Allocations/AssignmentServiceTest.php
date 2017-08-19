@@ -71,7 +71,7 @@ class AssignmentServiceTest extends TestCase
         //
         // This can also be avoided if tests were run in isolated processes, or if that test
         // came first, but neither of those are good solutions, so this is the next best option.
-        PHPMock::defineFunctionMock('\\Pterodactyl\\Services\\Allocations', 'gethostbyname');
+        PHPMock::defineFunctionMock('\\Pterodactyl\\Service\\Allocations', 'gethostbyname');
 
         $this->node = factory(Node::class)->make();
         $this->connection = m::mock(ConnectionInterface::class);
@@ -180,7 +180,7 @@ class AssignmentServiceTest extends TestCase
             'allocation_ports' => ['1024'],
         ];
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Allocations', 'gethostbyname')
+        $this->getFunctionMock('\\Pterodactyl\\Service\\Allocations', 'gethostbyname')
             ->expects($this->once())->willReturn('192.168.1.1');
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();

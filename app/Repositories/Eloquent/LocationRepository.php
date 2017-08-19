@@ -28,10 +28,12 @@ use Pterodactyl\Models\Location;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\Attributes\SearchableRepository;
+use Pterodactyl\Repositories\Concerns\Searchable;
 
-class LocationRepository extends SearchableRepository implements LocationRepositoryInterface
+class LocationRepository extends EloquentRepository implements LocationRepositoryInterface
 {
+    use Searchable;
+
     /**
      * @var string
      */

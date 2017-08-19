@@ -28,7 +28,7 @@ use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException;
+use Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException;
 
 class VariableCreationService
 {
@@ -58,7 +58,7 @@ class VariableCreationService
      * @return \Pterodactyl\Models\ServiceVariable
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
     public function handle($option, array $data)
     {

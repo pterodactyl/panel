@@ -30,7 +30,7 @@ use Tests\TestCase;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Services\Services\Options\OptionUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceOption\NoParentConfigurationFoundException;
+use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionUpdateServiceTest extends TestCase
 {

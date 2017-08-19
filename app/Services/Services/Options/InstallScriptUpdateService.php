@@ -26,7 +26,7 @@ namespace Pterodactyl\Services\Services\Options;
 
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException;
+use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
 
 class InstallScriptUpdateService
 {
@@ -53,7 +53,7 @@ class InstallScriptUpdateService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Services\ServiceOption\InvalidCopyFromException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException
      */
     public function handle($option, array $data)
     {

@@ -84,7 +84,7 @@ class DatabaseManagementServiceTest extends TestCase
         $this->encrypter = m::mock(Encrypter::class);
         $this->repository = m::mock(DatabaseRepositoryInterface::class);
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Database', 'str_random')
+        $this->getFunctionMock('\\Pterodactyl\\Service\\Database', 'str_random')
             ->expects($this->any())->willReturn('str_random');
 
         $this->service = new DatabaseManagementService(

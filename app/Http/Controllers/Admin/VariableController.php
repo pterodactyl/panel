@@ -83,7 +83,7 @@ class VariableController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
     public function store(OptionVariableFormRequest $request, ServiceOption $option)
     {
@@ -117,7 +117,7 @@ class VariableController extends Controller
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Services\ServiceVariable\ReservedVariableNameException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
     public function update(OptionVariableFormRequest $request, ServiceOption $option, ServiceVariable $variable)
     {

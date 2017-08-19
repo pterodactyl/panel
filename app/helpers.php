@@ -22,9 +22,16 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Services\ServiceOption;
-
-class InvalidCopyFromException extends \Exception
-{
-    //
+if (! function_exists('human_readable')) {
+    /**
+     * Generate a human-readable filesize for a given file path.
+     *
+     * @param  string $path
+     * @param  int    $precision
+     * @return string
+     */
+    function human_readable($path, $precision = 2)
+    {
+        return app('file')->humanReadableSize($path, $precision);
+    }
 }

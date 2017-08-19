@@ -99,6 +99,9 @@ class DatabaseControllerTest extends TestCase
         $this->assertViewKeyEquals('hosts', 'getWithViewDetails', $view);
     }
 
+    /**
+     * Test the view controller for displaying a specific database host.
+     */
     public function testViewController()
     {
         $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');

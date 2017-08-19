@@ -30,7 +30,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Services\ServiceUpdateService;
 use Pterodactyl\Services\Services\ServiceCreationService;
 use Pterodactyl\Services\Services\ServiceDeletionService;
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest;

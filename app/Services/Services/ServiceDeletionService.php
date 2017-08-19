@@ -24,7 +24,7 @@
 
 namespace Pterodactyl\Services\Services;
 
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
@@ -60,7 +60,7 @@ class ServiceDeletionService
      * @param  int $service
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\Services\HasActiveServersException
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
     public function handle($service)
     {

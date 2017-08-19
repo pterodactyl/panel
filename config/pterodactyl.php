@@ -137,6 +137,33 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | File Editor
+    |--------------------------------------------------------------------------
+    |
+    | This array includes the MIME filetypes that can be edited via the web.
+    */
+    'files' => [
+        'editable' => [
+            'application/json',
+            'application/javascript',
+            'application/xml',
+            'application/xhtml+xml',
+            'inode/x-empty',
+            'text/xml',
+            'text/css',
+            'text/html',
+            'text/plain',
+            'text/x-perl',
+            'text/x-shellscript',
+        ],
+        'pack_types' => [
+            'application/gzip',
+            'application/x-gzip',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | JSON Response Routes
     |--------------------------------------------------------------------------
     |

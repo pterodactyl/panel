@@ -28,7 +28,7 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Services\Services\ServiceDeletionService;
-use Pterodactyl\Exceptions\Services\HasActiveServersException;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
