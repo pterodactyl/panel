@@ -24,7 +24,9 @@
 
 namespace Pterodactyl\Exceptions\Service\Pack;
 
-class InvalidFileMimeTypeException extends \Exception
+use Pterodactyl\Exceptions\DisplayException;
+
+class InvalidFileMimeTypeException extends DisplayException
 {
     //
 }

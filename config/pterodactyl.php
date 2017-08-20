@@ -156,10 +156,6 @@ return [
             'text/x-perl',
             'text/x-shellscript',
         ],
-        'pack_types' => [
-            'application/gzip',
-            'application/x-gzip',
-        ],
     ],
 
     /*

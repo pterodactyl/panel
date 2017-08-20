@@ -24,20 +24,20 @@
 
 namespace Pterodactyl\Services\Packs;
 
+use Illuminate\Http\UploadedFile;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 
 class PackCreationService
 {
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
+    const VALID_UPLOAD_TYPES = [
+        'application/gzip',
+        'application/x-gzip',
+    ];
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -57,18 +57,15 @@ class PackCreationService
     /**
      * PackCreationService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Illuminate\Database\ConnectionInterface                  $connection
      * @param \Illuminate\Contracts\Filesystem\Factory                  $storage
      * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
      */
     public function __construct(
-        ConfigRepository $config,
         ConnectionInterface $connection,
         FilesystemFactory $storage,
         PackRepositoryInterface $repository
     ) {
-        $this->config = $config;
         $this->connection = $connection;
         $this->repository = $repository;
         $this->storage = $storage;
@@ -85,15 +82,17 @@ class PackCreationService
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
      */
-    public function handle(array $data, $file = null)
+    public function handle(array $data, UploadedFile $file = null)
     {
         if (! is_null($file)) {
             if (! $file->isValid()) {
-                throw new InvalidFileUploadException;
+                throw new InvalidFileUploadException(trans('admin/exceptions.packs.invalid_upload'));
             }
 
-            if (! in_array($file->getMimeType(), $this->config->get('pterodactyl.files.pack_types'))) {
-                throw new InvalidFileMimeTypeException;
+            if (! in_array($file->getMimeType(), self::VALID_UPLOAD_TYPES)) {
+                throw new InvalidFileMimeTypeException(trans('admin/exceptions.packs.invalid_mime', [
+                    'type' => implode(', ', self::VALID_UPLOAD_TYPES),
+                ]));
             }
         }
 
@@ -107,7 +106,7 @@ class PackCreationService
             ['uuid' => Uuid::uuid4()], $data
         ));
 
-        $this->storage->disk('default')->makeDirectory('packs/' . $pack->uuid);
+        $this->storage->disk()->makeDirectory('packs/' . $pack->uuid);
         if (! is_null($file)) {
             $file->storeAs('packs/' . $pack->uuid, 'archive.tar.gz');
         }

@@ -26,6 +26,12 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Log;
 use Alert;
+use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Services\Packs\PackCreationService;
+use Pterodactyl\Services\Packs\PackDeletionService;
+use Pterodactyl\Services\Packs\PackUpdateService;
+use Pterodactyl\Services\Packs\TemplateUploadService;
 use Storage;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Pack;
@@ -38,9 +44,65 @@ use Pterodactyl\Exceptions\DisplayValidationException;
 class PackController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Packs\PackCreationService
+     */
+    protected $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Packs\PackDeletionService
+     */
+    protected $deletionService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Packs\PackUpdateService
+     */
+    protected $packUpdateService;
+
+    /**
+     * @var \Pterodactyl\Services\Packs\TemplateUploadService
+     */
+    protected $templateUploadService;
+
+    /**
+     * PackController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param \Pterodactyl\Services\Packs\PackCreationService           $creationService
+     * @param \Pterodactyl\Services\Packs\PackDeletionService           $deletionService
+     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Packs\PackUpdateService             $packUpdateService
+     * @param \Pterodactyl\Services\Packs\TemplateUploadService         $templateUploadService
+     */
+    public function __construct(
+        AlertsMessageBag $alert,
+        PackCreationService $creationService,
+        PackDeletionService $deletionService,
+        PackRepositoryInterface $repository,
+        PackUpdateService $packUpdateService,
+        TemplateUploadService $templateUploadService
+    ) {
+        $this->alert = $alert;
+        $this->creationService = $creationService;
+        $this->deletionService = $deletionService;
+        $this->repository = $repository;
+        $this->packUpdateService = $packUpdateService;
+        $this->templateUploadService = $templateUploadService;
+    }
+
+    /**
      * Display listing of all packs on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -57,7 +119,7 @@ class PackController extends Controller
     /**
      * Display new pack creation form.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function create(Request $request)
@@ -70,7 +132,7 @@ class PackController extends Controller
     /**
      * Display new pack creation modal for use with template upload.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function newTemplate(Request $request)
@@ -83,42 +145,34 @@ class PackController extends Controller
     /**
      * Handle create pack request and route user to location.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
+     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
+     * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
+     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
      */
     public function store(Request $request)
     {
-        $repo = new PackRepository;
-
-        try {
-            if ($request->input('action') === 'from_template') {
-                $pack = $repo->createWithTemplate($request->intersect(['option_id', 'file_upload']));
-            } else {
-                $pack = $repo->create($request->intersect([
-                    'name', 'description', 'version', 'option_id',
-                    'selectable', 'visible', 'locked', 'file_upload',
-                ]));
-            }
-            Alert::success('Pack successfully created on the system.')->flash();
-
-            return redirect()->route('admin.packs.view', $pack->id);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.packs.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new service pack. This error has been logged.')->flash();
+        if ($request->has('from_template')) {
+            $pack = $this->templateUploadService->handle($request->input('option_id'), $request->input('file_upload'));
+        } else {
+            $pack = $this->creationService->handle($request->normalize(), $request->input('file_upload'));
         }
 
-        return redirect()->route('admin.packs.new')->withInput();
+        $this->alert->success(trans('admin/pack.notices.pack_created'))->flash();
+
+        return redirect()->route('admin.packs.view', $pack->id);
     }
 
     /**
      * Display pack view template to user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\View\View
      */
     public function view(Request $request, $id)
@@ -132,8 +186,8 @@ class PackController extends Controller
     /**
      * Handle updating or deleting pack information.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
@@ -168,9 +222,9 @@ class PackController extends Controller
     /**
      * Creates an archive of the pack and downloads it to the browser.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     * @param  bool                      $files
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
+     * @param  bool                     $files
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function export(Request $request, $id, $files = false)

@@ -45,4 +45,13 @@ return [
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
         ],
     ],
+    'packs' => [
+        'delete_has_servers' => 'Cannot delete a pack that is attached to active servers.',
+        'update_has_servers' => 'Cannot modify the associated option ID when servers are currently attached to a pack.',
+        'invalid_upload' => 'The file provided does not appear to be valid.',
+        'invalid_mime' => 'The file provided does not meet the required type :type',
+        'unreadable' => 'The archive provided could not be opened by the server.',
+        'zip_extraction' => 'An exception was encountered while attempting to extract the archive provided onto the server.',
+        'invalid_archive_exception' => 'The pack archive provided appears to be missing a required archive.tar.gz or import.json file in the base directory.',
+    ],
 ];

@@ -22,11 +22,8 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Service\Pack;
-
-use Pterodactyl\Exceptions\DisplayException;
-
-class InvalidFileUploadException extends DisplayException
-{
-    //
-}
+return [
+    'notices' => [
+        'pack_created' => 'A new pack was successfully created on the system and is now available for deployment to servers.',
+    ],
+];

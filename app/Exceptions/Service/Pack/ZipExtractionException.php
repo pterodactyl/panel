@@ -26,7 +26,6 @@ namespace Pterodactyl\Exceptions\Service\Pack;
 
 use Pterodactyl\Exceptions\DisplayException;
 
-class InvalidFileUploadException extends DisplayException
+class ZipExtractionException extends DisplayException
 {
-    //
 }
