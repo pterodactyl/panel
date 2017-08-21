@@ -131,3 +131,17 @@ $factory->state(Pterodactyl\Models\ServiceVariable::class, 'viewable', function 
 $factory->state(Pterodactyl\Models\ServiceVariable::class, 'editable', function () {
     return ['user_editable' => 1];
 });
+
+$factory->define(Pterodactyl\Models\Pack::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'option_id' => $faker->randomNumber(),
+        'uuid' => $faker->uuid,
+        'name' => $faker->word,
+        'description' => null,
+        'version' => $faker->randomNumber(),
+        'selectable' => 1,
+        'visible' => 1,
+        'locked' => 0,
+    ];
+});
