@@ -30,7 +30,6 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Services\ServiceUpdateService;
 use Pterodactyl\Services\Services\ServiceCreationService;
 use Pterodactyl\Services\Services\ServiceDeletionService;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest;
@@ -179,17 +178,13 @@ class ServiceController extends Controller
      *
      * @param  \Pterodactyl\Models\Service $service
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
     public function destroy(Service $service)
     {
-        try {
-            $this->deletionService->handle($service->id);
-            $this->alert->success(trans('admin/services.notices.service_deleted'))->flash();
-        } catch (HasActiveServersException $exception) {
-            $this->alert->danger($exception->getMessage())->flash();
-
-            return redirect()->back();
-        }
+        $this->deletionService->handle($service->id);
+        $this->alert->success(trans('admin/services.notices.service_deleted'))->flash();
 
         return redirect()->route('admin.services');
     }

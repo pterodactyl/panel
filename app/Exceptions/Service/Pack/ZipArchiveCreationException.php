@@ -22,11 +22,9 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Service;
+namespace Pterodactyl\Exceptions\Service\Pack;
 
-use Pterodactyl\Exceptions\DisplayException;
-
-class HasActiveServersException extends DisplayException
+class ZipArchiveCreationException extends \Exception
 {
     //
 }

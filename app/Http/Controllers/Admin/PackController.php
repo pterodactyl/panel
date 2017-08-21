@@ -24,22 +24,19 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\PackFormRequest;
+use Pterodactyl\Services\Packs\ExportPackService;
 use Pterodactyl\Services\Packs\PackCreationService;
 use Pterodactyl\Services\Packs\PackDeletionService;
 use Pterodactyl\Services\Packs\PackUpdateService;
 use Pterodactyl\Services\Packs\TemplateUploadService;
-use Storage;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Pack;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\PackRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
 
 class PackController extends Controller
 {
@@ -47,6 +44,11 @@ class PackController extends Controller
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     protected $alert;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
 
     /**
      * @var \Pterodactyl\Services\Packs\PackCreationService
@@ -59,6 +61,11 @@ class PackController extends Controller
     protected $deletionService;
 
     /**
+     * @var \Pterodactyl\Services\Packs\ExportPackService
+     */
+    protected $exportService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
@@ -66,7 +73,12 @@ class PackController extends Controller
     /**
      * @var \Pterodactyl\Services\Packs\PackUpdateService
      */
-    protected $packUpdateService;
+    protected $updateService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $serviceRepository;
 
     /**
      * @var \Pterodactyl\Services\Packs\TemplateUploadService
@@ -76,26 +88,35 @@ class PackController extends Controller
     /**
      * PackController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Packs\PackCreationService           $creationService
-     * @param \Pterodactyl\Services\Packs\PackDeletionService           $deletionService
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Packs\PackUpdateService             $packUpdateService
-     * @param \Pterodactyl\Services\Packs\TemplateUploadService         $templateUploadService
+     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
+     * @param \Illuminate\Contracts\Config\Repository                      $config
+     * @param \Pterodactyl\Services\Packs\ExportPackService                $exportService
+     * @param \Pterodactyl\Services\Packs\PackCreationService              $creationService
+     * @param \Pterodactyl\Services\Packs\PackDeletionService              $deletionService
+     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface    $repository
+     * @param \Pterodactyl\Services\Packs\PackUpdateService                $updateService
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $serviceRepository
+     * @param \Pterodactyl\Services\Packs\TemplateUploadService            $templateUploadService
      */
     public function __construct(
         AlertsMessageBag $alert,
+        ConfigRepository $config,
+        ExportPackService $exportService,
         PackCreationService $creationService,
         PackDeletionService $deletionService,
         PackRepositoryInterface $repository,
-        PackUpdateService $packUpdateService,
+        PackUpdateService $updateService,
+        ServiceRepositoryInterface $serviceRepository,
         TemplateUploadService $templateUploadService
     ) {
         $this->alert = $alert;
+        $this->config = $config;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
+        $this->exportService = $exportService;
         $this->repository = $repository;
-        $this->packUpdateService = $packUpdateService;
+        $this->updateService = $updateService;
+        $this->serviceRepository = $serviceRepository;
         $this->templateUploadService = $templateUploadService;
     }
 
@@ -107,45 +128,41 @@ class PackController extends Controller
      */
     public function index(Request $request)
     {
-        $packs = Pack::with('option')->withCount('servers');
-
-        if (! is_null($request->input('query'))) {
-            $packs->search($request->input('query'));
-        }
-
-        return view('admin.packs.index', ['packs' => $packs->paginate(50)]);
+        return view('admin.packs.index', [
+            'packs' => $this->repository->search($request->input('query'))->paginateWithOptionAndServerCount(
+                $this->config->get('pterodactyl.paginate.admin.packs')
+            ),
+        ]);
     }
 
     /**
      * Display new pack creation form.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create()
     {
         return view('admin.packs.new', [
-            'services' => Service::with('options')->get(),
+            'services' => $this->serviceRepository->getWithOptions(),
         ]);
     }
 
     /**
      * Display new pack creation modal for use with template upload.
      *
-     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function newTemplate(Request $request)
+    public function newTemplate()
     {
         return view('admin.packs.modal', [
-            'services' => Service::with('options')->get(),
+            'services' => $this->serviceRepository->getWithOptions(),
         ]);
     }
 
     /**
      * Handle create pack request and route user to location.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -155,12 +172,12 @@ class PackController extends Controller
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
      */
-    public function store(Request $request)
+    public function store(PackFormRequest $request)
     {
         if ($request->has('from_template')) {
-            $pack = $this->templateUploadService->handle($request->input('option_id'), $request->input('file_upload'));
+            $pack = $this->templateUploadService->handle($request->input('option_id'), $request->file('file_upload'));
         } else {
-            $pack = $this->creationService->handle($request->normalize(), $request->input('file_upload'));
+            $pack = $this->creationService->handle($request->normalize(), $request->file('file_upload'));
         }
 
         $this->alert->success(trans('admin/pack.notices.pack_created'))->flash();
@@ -171,98 +188,75 @@ class PackController extends Controller
     /**
      * Display pack view template to user.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  int $pack
      * @return \Illuminate\View\View
      */
-    public function view(Request $request, $id)
+    public function view($pack)
     {
         return view('admin.packs.view', [
-            'pack' => Pack::with('servers.node', 'servers.user')->findOrFail($id),
-            'services' => Service::with('options')->get(),
+            'pack' => $this->repository->getWithServers($pack),
+            'services' => $this->serviceRepository->getWithOptions(),
         ]);
     }
 
     /**
      * Handle updating or deleting pack information.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param  \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
+     * @param  \Pterodactyl\Models\Pack                         $pack
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function update(Request $request, $id)
+    public function update(PackFormRequest $request, Pack $pack)
     {
-        $repo = new PackRepository;
+        $this->updateService->handle($pack, $request->normalize());
+        $this->alert->success(trans('admin/pack.notices.pack_updated'))->flash();
 
-        try {
-            if ($request->input('action') !== 'delete') {
-                $pack = $repo->update($id, $request->intersect([
-                    'name', 'description', 'version',
-                    'option_id', 'selectable', 'visible', 'locked',
-                ]));
-                Alert::success('Pack successfully updated.')->flash();
-            } else {
-                $repo->delete($id);
-                Alert::success('Pack was successfully deleted from the system.')->flash();
+        return redirect()->route('admin.packs.view', $pack->id);
+    }
 
-                return redirect()->route('admin.packs');
-            }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.packs.view', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to edit this service pack. This error has been logged.')->flash();
-        }
+    /**
+     * Delete a pack if no servers are attached to it currently.
+     *
+     * @param  \Pterodactyl\Models\Pack $pack
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     */
+    public function destroy(Pack $pack)
+    {
+        $this->deletionService->handle($pack->id);
+        $this->alert->success(trans('admin/pack.notices.pack_deleted', [
+            'name' => $pack->name,
+        ]))->flash();
 
-        return redirect()->route('admin.packs.view', $id);
+        return redirect()->route('admin.packs');
     }
 
     /**
      * Creates an archive of the pack and downloads it to the browser.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
-     * @param  bool                     $files
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @param  \Pterodactyl\Models\Pack $pack
+     * @param  bool|string              $files
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException
      */
-    public function export(Request $request, $id, $files = false)
+    public function export(Pack $pack, $files = false)
     {
-        $pack = Pack::findOrFail($id);
-        $json = [
-            'name' => $pack->name,
-            'version' => $pack->version,
-            'description' => $pack->description,
-            'selectable' => $pack->selectable,
-            'visible' => $pack->visible,
-            'locked' => $pack->locked,
-        ];
+        $filename = $this->exportService->handle($pack, is_string($files));
 
-        $filename = tempnam(sys_get_temp_dir(), 'pterodactyl_');
-        if ($files === 'with-files') {
-            $zip = new \ZipArchive;
-            if (! $zip->open($filename, \ZipArchive::CREATE)) {
-                abort(503, 'Unable to open file for writing.');
-            }
-
-            $files = Storage::files('packs/' . $pack->uuid);
-            foreach ($files as $file) {
-                $zip->addFile(storage_path('app/' . $file), basename(storage_path('app/' . $file)));
-            }
-
-            $zip->addFromString('import.json', json_encode($json, JSON_PRETTY_PRINT));
-            $zip->close();
-
+        if (is_string($files)) {
             return response()->download($filename, 'pack-' . $pack->name . '.zip')->deleteFileAfterSend(true);
-        } else {
-            $fp = fopen($filename, 'a+');
-            fwrite($fp, json_encode($json, JSON_PRETTY_PRINT));
-            fclose($fp);
-
-            return response()->download($filename, 'pack-' . $pack->name . '.json', [
-                'Content-Type' => 'application/json',
-            ])->deleteFileAfterSend(true);
         }
+
+        return response()->download($filename, 'pack-' . $pack->name . '.json', [
+            'Content-Type' => 'application/json',
+        ])->deleteFileAfterSend(true);
     }
 }

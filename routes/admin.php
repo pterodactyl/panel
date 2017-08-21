@@ -200,9 +200,12 @@ Route::group(['prefix' => 'packs'], function () {
     Route::get('/', 'PackController@index')->name('admin.packs');
     Route::get('/new', 'PackController@create')->name('admin.packs.new');
     Route::get('/new/template', 'PackController@newTemplate')->name('admin.packs.new.template');
-    Route::get('/view/{id}', 'PackController@view')->name('admin.packs.view');
+    Route::get('/view/{pack}', 'PackController@view')->name('admin.packs.view');
 
     Route::post('/new', 'PackController@store');
-    Route::post('/view/{id}', 'PackController@update');
-    Route::post('/view/{id}/export/{files?}', 'PackController@export')->name('admin.packs.view.export');
+    Route::post('/view/{pack}/export/{files?}', 'PackController@export')->name('admin.packs.view.export');
+
+    Route::patch('/view/{pack}', 'PackController@update');
+
+    Route::delete('/view/{pack}', 'PackController@destroy');
 });

@@ -25,9 +25,12 @@ use Illuminate\Database\Seeder;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class SourceServiceTableSeeder extends Seeder
 {
+    use CreatesServiceIndex;
+
     /**
      * The core service ID.
      *
@@ -63,7 +66,7 @@ class SourceServiceTableSeeder extends Seeder
             'name' => 'Source Engine',
             'description' => 'Includes support for most Source Dedicated Server games.',
             'startup' => './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +ip 0.0.0.0 -strictportbind -norestart',
-            'index_file' => Service::defaultIndexFile(),
+            'index_file' => $this->getIndexScript(),
         ]);
     }
 

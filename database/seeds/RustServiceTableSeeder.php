@@ -25,9 +25,12 @@ use Illuminate\Database\Seeder;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class RustServiceTableSeeder extends Seeder
 {
+    use CreatesServiceIndex;
+
     /**
      * The core service ID.
      *
@@ -63,7 +66,7 @@ class RustServiceTableSeeder extends Seeder
             'name' => 'Rust',
             'description' => 'The only aim in Rust is to survive. To do this you will need to overcome struggles such as hunger, thirst and cold. Build a fire. Build a shelter. Kill animals for meat. Protect yourself from other players, and kill them for meat. Create alliances with other players and form a town. Do whatever it takes to survive.',
             'startup' => './RustDedicated -batchmode +server.port {{SERVER_PORT}} +server.identity "rust" +rcon.port {{RCON_PORT}} +rcon.web true +server.hostname \"{{HOSTNAME}}\" +server.level \"{{LEVEL}}\" +server.description \"{{DESCRIPTION}}\" +server.url \"{{URL}}\" +server.headerimage \"{{SERVER_IMG}}\" +server.worldsize \"{{WORLD_SIZE}}\" +server.seed \"{{SEED}}\" +server.maxplayers {{MAX_PLAYERS}} +rcon.password \"{{RCON_PASS}}\" {{ADDITIONAL_ARGS}}',
-            'index_file' => Service::defaultIndexFile(),
+            'index_file' => $this->getIndexScript(),
         ]);
     }
 

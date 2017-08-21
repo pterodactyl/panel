@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Services\Nodes;
 
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -70,7 +70,7 @@ class DeletionService
      * @param int|\Pterodactyl\Models\Node $node
      * @return bool|null
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
     public function handle($node)
     {
@@ -80,7 +80,7 @@ class DeletionService
 
         $servers = $this->serverRepository->withColumns('id')->findCountWhere([['node_id', '=', $node]]);
         if ($servers > 0) {
-            throw new DisplayException($this->translator->trans('admin/exceptions.node.servers_attached'));
+            throw new HasActiveServersException($this->translator->trans('admin/exceptions.node.servers_attached'));
         }
 
         return $this->repository->delete($node);

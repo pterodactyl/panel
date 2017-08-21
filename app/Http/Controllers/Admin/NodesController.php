@@ -174,6 +174,8 @@ class NodesController extends Controller
      *
      * @param  int $node
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewIndex($node)
     {
@@ -213,6 +215,8 @@ class NodesController extends Controller
      *
      * @param  int $node
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewAllocation($node)
     {
@@ -227,6 +231,8 @@ class NodesController extends Controller
      *
      * @param  int $node
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewServers($node)
     {
@@ -299,9 +305,10 @@ class NodesController extends Controller
      * Sets an alias for a specific allocation on a node.
      *
      * @param  \Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest $request
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function allocationSetAlias(AllocationAliasFormRequest $request)
     {

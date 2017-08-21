@@ -30,7 +30,6 @@ use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Services\Services\Options\OptionUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionCreationService;
@@ -81,13 +80,13 @@ class OptionController extends Controller
     /**
      * OptionController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                                    $alert
-     * @param \Pterodactyl\Services\Services\Options\InstallScriptUpdateService    $installScriptUpdateService
-     * @param \Pterodactyl\Services\Services\Options\OptionCreationService         $optionCreationService
-     * @param \Pterodactyl\Services\Services\Options\OptionDeletionService         $optionDeletionService
-     * @param \Pterodactyl\Services\Services\Options\OptionUpdateService           $optionUpdateService
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface         $serviceRepository
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface   $serviceOptionRepository
+     * @param \Prologue\Alerts\AlertsMessageBag                                  $alert
+     * @param \Pterodactyl\Services\Services\Options\InstallScriptUpdateService  $installScriptUpdateService
+     * @param \Pterodactyl\Services\Services\Options\OptionCreationService       $optionCreationService
+     * @param \Pterodactyl\Services\Services\Options\OptionDeletionService       $optionDeletionService
+     * @param \Pterodactyl\Services\Services\Options\OptionUpdateService         $optionUpdateService
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface       $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $serviceOptionRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -147,17 +146,13 @@ class OptionController extends Controller
      *
      * @param  \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
     public function destroy(ServiceOption $option)
     {
-        try {
-            $this->optionDeletionService->handle($option->id);
-            $this->alert->success(trans('admin/services.options.notices.option_deleted'))->flash();
-        } catch (HasActiveServersException $exception) {
-            $this->alert->danger($exception->getMessage())->flash();
-
-            return redirect()->route('admin.services.option.view', $option->id);
-        }
+        $this->optionDeletionService->handle($option->id);
+        $this->alert->success(trans('admin/services.options.notices.option_deleted'))->flash();
 
         return redirect()->route('admin.services.view', $option->service_id);
     }

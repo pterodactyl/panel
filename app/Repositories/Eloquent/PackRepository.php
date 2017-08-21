@@ -24,10 +24,12 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Models\Pack;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Webmozart\Assert\Assert;
 
 class PackRepository extends EloquentRepository implements PackRepositoryInterface
 {
@@ -46,7 +48,14 @@ class PackRepository extends EloquentRepository implements PackRepositoryInterfa
      */
     public function getFileArchives($id, $collection = false)
     {
+        Assert::numeric($id, 'First argument passed to getFileArchives must be numeric, received %s.');
+        Assert::boolean($collection, 'Second argument passed to getFileArchives must be boolean, received %s.');
+
         $pack = $this->getBuilder()->find($id, ['id', 'uuid']);
+        if (! $pack) {
+            throw new ModelNotFoundException;
+        }
+
         $storage = $this->app->make(FilesystemFactory::class);
         $files = collect($storage->disk('default')->files('packs/' . $pack->uuid));
 
@@ -61,5 +70,32 @@ class PackRepository extends EloquentRepository implements PackRepositoryInterfa
         });
 
         return ($collection) ? $files : (object) $files->all();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithServers($id)
+    {
+        Assert::numeric($id, 'First argument passed to getWithServers must be numeric, received %s.');
+
+        $instance = $this->getBuilder()->with('servers.node', 'servers.user')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new ModelNotFoundException;
+        }
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function paginateWithOptionAndServerCount($paginate = 50)
+    {
+        Assert::integer($paginate, 'First argument passed to paginateWithOptionAndServerCount must be integer, received %s.');
+
+        return $this->getBuilder()->with('option')->withCount('servers')
+            ->search($this->searchTerm)
+            ->paginate($paginate, $this->getColumns());
     }
 }
