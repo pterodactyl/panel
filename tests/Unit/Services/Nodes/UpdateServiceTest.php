@@ -97,14 +97,14 @@ class UpdateServiceTest extends TestCase
      */
     public function testNodeIsUpdatedAndDaemonSecretIsReset()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Nodes', 'random_bytes')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'random_bytes')
             ->expects($this->once())->willReturnCallback(function ($bytes) {
                 $this->assertEquals(CreationService::DAEMON_SECRET_LENGTH, $bytes);
 
                 return '\00';
             });
 
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Nodes', 'bin2hex')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'bin2hex')
             ->expects($this->once())->willReturn('hexResponse');
 
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()

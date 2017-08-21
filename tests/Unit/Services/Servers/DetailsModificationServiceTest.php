@@ -84,7 +84,7 @@ class DetailsModificationServiceTest extends TestCase
         $this->repository = m::mock(ServerRepository::class);
         $this->writer = m::mock(Writer::class);
 
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Servers', 'bin2hex')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
             ->expects($this->any())->willReturn('randomString');
 
         $this->service = new DetailsModificationService(

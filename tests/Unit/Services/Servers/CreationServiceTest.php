@@ -155,7 +155,7 @@ class CreationServiceTest extends TestCase
         $this->uuid = m::mock('overload:Ramsey\Uuid\Uuid');
         $this->writer = m::mock(Writer::class);
 
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Servers', 'bin2hex')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
             ->expects($this->any())->willReturn('randomstring');
 
         $this->getFunctionMock('\\Ramsey\\Uuid\\Uuid', 'uuid4')

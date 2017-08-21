@@ -61,7 +61,7 @@ class CreationServiceTest extends TestCase
      */
     public function testNodeIsCreatedAndDaemonSecretIsGenerated()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Nodes', 'bin2hex')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'bin2hex')
             ->expects($this->once())->willReturn('hexResult');
 
         $this->repository->shouldReceive('create')->with([

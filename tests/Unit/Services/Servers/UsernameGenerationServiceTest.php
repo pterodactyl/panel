@@ -46,10 +46,10 @@ class UsernameGenerationServiceTest extends TestCase
 
         $this->service = new UsernameGenerationService();
 
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Servers', 'bin2hex')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
             ->expects($this->any())->willReturn('dddddddd');
 
-        $this->getFunctionMock('\\Pterodactyl\\Service\\Servers', 'str_random')
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
             ->expects($this->any())->willReturnCallback(function ($count) {
                 return str_pad('', $count, 'a');
             });
