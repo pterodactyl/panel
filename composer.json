@@ -21,6 +21,7 @@
         "doctrine/dbal": "2.5.13",
         "edvinaskrucas/settings": "2.0.0",
         "fideloper/proxy": "3.3.3",
+        "friendsofphp/php-cs-fixer": "2.4.0",
         "guzzlehttp/guzzle": "6.2.3",
         "igaster/laravel-theme": "1.16.0",
         "laracasts/utilities": "2.1.0",
@@ -43,12 +44,10 @@
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "2.4.1",
-        "friendsofphp/php-cs-fixer": "1.13.1",
         "fzaninotto/faker": "1.6.0",
         "mockery/mockery": "0.9.9",
         "php-mock/php-mock-phpunit": "1.1.2",
-        "phpunit/phpunit": "5.7.21",
-        "sllh/php-cs-fixer-styleci-bridge": "2.1.1"
+        "phpunit/phpunit": "5.7.21"
     },
     "autoload": {
         "classmap": [
