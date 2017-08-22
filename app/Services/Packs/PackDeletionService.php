@@ -87,7 +87,7 @@ class PackDeletionService
             $pack = $this->repository->withColumns(['id', 'uuid'])->find($pack);
         }
 
-        $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack]]);
+        $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack->id]]);
         if ($count !== 0) {
             throw new HasActiveServersException(trans('admin/exceptions.packs.delete_has_servers'));
         }
