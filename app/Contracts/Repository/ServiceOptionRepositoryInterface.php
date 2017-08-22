@@ -29,7 +29,7 @@ interface ServiceOptionRepositoryInterface extends RepositoryInterface
     /**
      * Return a service option with the variables relation attached.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      */
     public function getWithVariables($id);
@@ -37,7 +37,7 @@ interface ServiceOptionRepositoryInterface extends RepositoryInterface
     /**
      * Return a service option with the copyFrom relation loaded onto the model.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      */
     public function getWithCopyFrom($id);
@@ -45,8 +45,8 @@ interface ServiceOptionRepositoryInterface extends RepositoryInterface
     /**
      * Confirm a copy script belongs to the same service as the item trying to use it.
      *
-     * @param  int $copyFromId
-     * @param  int $service
+     * @param int $copyFromId
+     * @param int $service
      * @return bool
      */
     public function isCopiableScript($copyFromId, $service);

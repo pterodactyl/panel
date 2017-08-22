@@ -75,7 +75,7 @@ class ReinstallService
     }
 
     /**
-     * @param  int|\Pterodactyl\Models\Server $server
+     * @param int|\Pterodactyl\Models\Server $server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

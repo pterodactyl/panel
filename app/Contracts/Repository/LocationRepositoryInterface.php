@@ -56,7 +56,7 @@ interface LocationRepositoryInterface extends RepositoryInterface, SearchableInt
     /**
      * Return all of the nodes and their respective count of servers for a location.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

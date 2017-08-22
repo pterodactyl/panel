@@ -26,5 +26,4 @@ namespace Pterodactyl\Exceptions\Service\ServiceOption;
 
 class InvalidCopyFromException extends \Exception
 {
-    //
 }

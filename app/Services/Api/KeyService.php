@@ -76,9 +76,9 @@ class KeyService
     /**
      * Create a new API Key on the system with the given permissions.
      *
-     * @param  array  $data
-     * @param  array  $permissions
-     * @param  array  $administrative
+     * @param array $data
+     * @param array $permissions
+     * @param array $administrative
      * @return string
      *
      * @throws \Exception
@@ -136,7 +136,7 @@ class KeyService
     /**
      * Delete the API key and associated permissions from the database.
      *
-     * @param  int $id
+     * @param int $id
      * @return bool|null
      */
     public function revoke($id)

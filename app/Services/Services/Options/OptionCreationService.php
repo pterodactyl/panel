@@ -47,7 +47,7 @@ class OptionCreationService
     /**
      * Create a new service option and assign it to the given service.
      *
-     * @param  array $data
+     * @param array $data
      * @return \Pterodactyl\Models\ServiceOption
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

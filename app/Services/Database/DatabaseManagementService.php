@@ -74,8 +74,8 @@ class DatabaseManagementService
     /**
      * Create a new database that is linked to a specific host.
      *
-     * @param  int   $server
-     * @param  array $data
+     * @param int   $server
+     * @param array $data
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @throws \Exception
@@ -96,10 +96,16 @@ class DatabaseManagementService
 
             $this->repository->createDatabase($database->database, 'dynamic');
             $this->repository->createUser(
-                $database->username, $database->remote, $this->encrypter->decrypt($database->password), 'dynamic'
+                $database->username,
+                $database->remote,
+                $this->encrypter->decrypt($database->password),
+                'dynamic'
             );
             $this->repository->assignUserToDatabase(
-                $database->database, $database->username, $database->remote, 'dynamic'
+                $database->database,
+                $database->username,
+                $database->remote,
+                'dynamic'
             );
             $this->repository->flush('dynamic');
 
@@ -125,8 +131,8 @@ class DatabaseManagementService
     /**
      * Change the password for a specific user and database combination.
      *
-     * @param  int    $id
-     * @param  string $password
+     * @param int    $id
+     * @param string $password
      * @return bool
      *
      * @throws \Exception
@@ -148,7 +154,10 @@ class DatabaseManagementService
             $this->repository->dropUser($database->username, $database->remote, 'dynamic');
             $this->repository->createUser($database->username, $database->remote, $password, 'dynamic');
             $this->repository->assignUserToDatabase(
-                $database->database, $database->username, $database->remote, 'dynamic'
+                $database->database,
+                $database->username,
+                $database->remote,
+                'dynamic'
             );
             $this->repository->flush('dynamic');
 
@@ -164,7 +173,7 @@ class DatabaseManagementService
     /**
      * Delete a database from the given host server.
      *
-     * @param  int $id
+     * @param int $id
      * @return bool|null
      */
     public function delete($id)

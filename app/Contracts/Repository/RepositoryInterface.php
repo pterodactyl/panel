@@ -57,7 +57,7 @@ interface RepositoryInterface
     /**
      * An array of columns to filter the response by.
      *
-     * @param  array $columns
+     * @param array $columns
      * @return $this
      */
     public function withColumns($columns = ['*']);
@@ -72,8 +72,8 @@ interface RepositoryInterface
     /**
      * Create a new model instance and persist it to the database.
      *
-     * @param  array $fields
-     * @param  bool  $validate
+     * @param array $fields
+     * @param bool  $validate
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -83,7 +83,7 @@ interface RepositoryInterface
     /**
      * Delete a given record from the database.
      *
-     * @param  int $id
+     * @param int $id
      * @return int
      */
     public function delete($id);
@@ -91,7 +91,7 @@ interface RepositoryInterface
     /**
      * Delete records matching the given attributes.
      *
-     * @param  array $attributes
+     * @param array $attributes
      * @return int
      */
     public function deleteWhere(array $attributes);
@@ -99,7 +99,7 @@ interface RepositoryInterface
     /**
      * Find a model that has the specific ID passed.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -109,7 +109,7 @@ interface RepositoryInterface
     /**
      * Find a model matching an array of where clauses.
      *
-     * @param  array $fields
+     * @param array $fields
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -119,7 +119,7 @@ interface RepositoryInterface
     /**
      * Find and return the first matching instance for the given fields.
      *
-     * @param  array $fields
+     * @param array $fields
      * @return mixed
      */
     public function findFirstWhere(array $fields);
@@ -127,7 +127,7 @@ interface RepositoryInterface
     /**
      * Return a count of records matching the passed arguments.
      *
-     * @param  array $fields
+     * @param array $fields
      * @return int
      */
     public function findCountWhere(array $fields);
@@ -135,10 +135,10 @@ interface RepositoryInterface
     /**
      * Update a given ID with the passed array of fields.
      *
-     * @param  int   $id
-     * @param  array $fields
-     * @param  bool  $validate
-     * @param  bool  $force
+     * @param int   $id
+     * @param array $fields
+     * @param bool  $validate
+     * @param bool  $force
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -150,9 +150,9 @@ interface RepositoryInterface
      * Perform a mass update where matching records are updated using whereIn.
      * This does not perform any model data validation.
      *
-     * @param  string $column
-     * @param  array  $values
-     * @param  array  $fields
+     * @param string $column
+     * @param array  $values
+     * @param array  $fields
      * @return int
      */
     public function updateWhereIn($column, array $values, array $fields);
@@ -160,10 +160,10 @@ interface RepositoryInterface
     /**
      * Update a record if it exists in the database, otherwise create it.
      *
-     * @param  array $where
-     * @param  array $fields
-     * @param  bool  $validate
-     * @param  bool  $force
+     * @param array $where
+     * @param array $fields
+     * @param bool  $validate
+     * @param bool  $force
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -173,8 +173,8 @@ interface RepositoryInterface
     /**
      * Update multiple records matching the passed clauses.
      *
-     * @param  array $where
-     * @param  array $fields
+     * @param array $where
+     * @param array $fields
      * @return mixed
      */
     public function massUpdate(array $where, array $fields);
@@ -190,7 +190,7 @@ interface RepositoryInterface
      * Insert a single or multiple records into the database at once skipping
      * validation and mass assignment checking.
      *
-     * @param  array $data
+     * @param array $data
      * @return bool
      */
     public function insert(array $data);
@@ -198,7 +198,7 @@ interface RepositoryInterface
     /**
      * Insert multiple records into the database and ignore duplicates.
      *
-     * @param  array $values
+     * @param array $values
      * @return bool
      */
     public function insertIgnore(array $values);

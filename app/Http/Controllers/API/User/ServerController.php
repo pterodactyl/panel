@@ -37,8 +37,8 @@ class ServerController extends Controller
     /**
      * Controller to handle base request for individual server information.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return array
      */
     public function index(Request $request, $uuid)
@@ -60,8 +60,8 @@ class ServerController extends Controller
     /**
      * Controller to handle request for server power toggle.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\Response
      */
     public function power(Request $request, $uuid)
@@ -80,8 +80,8 @@ class ServerController extends Controller
     /**
      * Controller to handle base request for individual server information.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\Response
      */
     public function command(Request $request, $uuid)

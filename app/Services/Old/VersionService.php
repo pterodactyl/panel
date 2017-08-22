@@ -38,8 +38,6 @@ class VersionService
 
     /**
      * Version constructor.
-     *
-     * @return void
      */
     public function __construct()
     {

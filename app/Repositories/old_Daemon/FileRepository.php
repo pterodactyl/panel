@@ -42,8 +42,7 @@ class FileRepository
     /**
      * Constructor.
      *
-     * @param  string  $uuid
-     * @return void
+     * @param string $uuid
      */
     public function __construct($uuid)
     {
@@ -53,7 +52,7 @@ class FileRepository
     /**
      * Get the contents of a requested file for the server.
      *
-     * @param  string  $file
+     * @param string $file
      * @return array
      *
      * @throws \GuzzleHttp\Exception\RequestException
@@ -99,8 +98,8 @@ class FileRepository
     /**
      * Save the contents of a requested file on the daemon.
      *
-     * @param  string  $file
-     * @param  string  $content
+     * @param string $file
+     * @param string $content
      * @return bool
      *
      * @throws \GuzzleHttp\Exception\RequestException
@@ -132,7 +131,7 @@ class FileRepository
     /**
      * Returns a listing of all files and folders within a specified directory on the daemon.
      *
-     * @param  string  $directory
+     * @param string $directory
      * @return object
      *
      * @throws \GuzzleHttp\Exception\RequestException

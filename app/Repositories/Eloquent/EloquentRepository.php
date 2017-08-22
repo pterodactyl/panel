@@ -44,7 +44,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * {@inheritdoc}
-     * @param  bool $force
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model|bool
      */
     public function create(array $fields, $validate = true, $force = false)
@@ -214,7 +214,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Insert multiple records into the database and ignore duplicates.
      *
-     * @param  array $values
+     * @param array $values
      * @return bool
      */
     public function insertIgnore(array $values)

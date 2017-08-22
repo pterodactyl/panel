@@ -123,7 +123,7 @@ class PackController extends Controller
     /**
      * Display listing of all packs on the system.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -188,7 +188,7 @@ class PackController extends Controller
     /**
      * Display pack view template to user.
      *
-     * @param  int $pack
+     * @param int $pack
      * @return \Illuminate\View\View
      */
     public function view($pack)
@@ -202,8 +202,8 @@ class PackController extends Controller
     /**
      * Handle updating or deleting pack information.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
-     * @param  \Pterodactyl\Models\Pack                         $pack
+     * @param \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
+     * @param \Pterodactyl\Models\Pack                         $pack
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -221,7 +221,7 @@ class PackController extends Controller
     /**
      * Delete a pack if no servers are attached to it currently.
      *
-     * @param  \Pterodactyl\Models\Pack $pack
+     * @param \Pterodactyl\Models\Pack $pack
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -240,8 +240,8 @@ class PackController extends Controller
     /**
      * Creates an archive of the pack and downloads it to the browser.
      *
-     * @param  \Pterodactyl\Models\Pack $pack
-     * @param  bool|string              $files
+     * @param \Pterodactyl\Models\Pack $pack
+     * @param bool|string              $files
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

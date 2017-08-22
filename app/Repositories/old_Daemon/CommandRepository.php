@@ -48,9 +48,8 @@ class CommandRepository
     /**
      * Constuctor for repository.
      *
-     * @param  \Pterodactyl\Models\Server  $server
-     * @param  \Pterodactyl\Models\User|null   $user
-     * @return void
+     * @param \Pterodactyl\Models\Server    $server
+     * @param \Pterodactyl\Models\User|null $user
      */
     public function __construct(Server $server, User $user = null)
     {
@@ -61,7 +60,7 @@ class CommandRepository
     /**
      * Sends a command to the daemon.
      *
-     * @param  string  $command
+     * @param string $command
      * @return string
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

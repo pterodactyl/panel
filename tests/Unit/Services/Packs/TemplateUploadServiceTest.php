@@ -246,7 +246,7 @@ class TemplateUploadServiceTest extends TestCase
     }
 
     /**
-     * Return values for archive->locateName function, import.json and archive.tar.gz respectively
+     * Return values for archive->locateName function, import.json and archive.tar.gz respectively.
      *
      * @return array
      */

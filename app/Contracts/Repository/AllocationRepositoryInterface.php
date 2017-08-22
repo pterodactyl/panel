@@ -29,8 +29,8 @@ interface AllocationRepositoryInterface extends RepositoryInterface
     /**
      * Set an array of allocation IDs to be assigned to a specific server.
      *
-     * @param  int|null $server
-     * @param  array    $ids
+     * @param int|null $server
+     * @param array    $ids
      * @return int
      */
     public function assignAllocationsToServer($server, array $ids);
@@ -38,7 +38,7 @@ interface AllocationRepositoryInterface extends RepositoryInterface
     /**
      * Return all of the allocations for a specific node.
      *
-     * @param  int $node
+     * @param int $node
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllocationsForNode($node);

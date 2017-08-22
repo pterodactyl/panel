@@ -67,7 +67,7 @@ class TemporaryPasswordService
     /**
      * Store a password reset token for a specific email address.
      *
-     * @param  string $email
+     * @param string $email
      * @return string
      */
     public function generateReset($email)

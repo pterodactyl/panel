@@ -73,7 +73,7 @@ class PackUpdateServiceTest extends TestCase
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,
-                'test-data' => 'value'
+                'test-data' => 'value',
             ])->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle($model, ['test-data' => 'value']));
@@ -108,7 +108,7 @@ class PackUpdateServiceTest extends TestCase
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,
-                'test-data' => 'value'
+                'test-data' => 'value',
             ])->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle($model->id, ['test-data' => 'value']));

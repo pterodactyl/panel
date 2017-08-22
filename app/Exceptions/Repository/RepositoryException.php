@@ -26,5 +26,4 @@ namespace Pterodactyl\Exceptions\Repository;
 
 class RepositoryException extends \Exception
 {
-    //
 }

@@ -26,8 +26,8 @@ if (! function_exists('human_readable')) {
     /**
      * Generate a human-readable filesize for a given file path.
      *
-     * @param  string $path
-     * @param  int    $precision
+     * @param string $path
+     * @param int    $precision
      * @return string
      */
     function human_readable($path, $precision = 2)

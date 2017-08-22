@@ -162,7 +162,7 @@ class User extends Model implements
     /**
      * Enables or disables TOTP on an account if the token is valid.
      *
-     * @param  int $token
+     * @param int $token
      * @return bool
      * @deprecated
      */
@@ -184,9 +184,8 @@ class User extends Model implements
      *      - at least one lowercase character
      *      - at least one number.
      *
-     * @param  string $password
-     * @param  string $regex
-     * @return void
+     * @param string $password
+     * @param string $regex
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @deprecated
      */
@@ -203,8 +202,7 @@ class User extends Model implements
     /**
      * Send the password reset notification.
      *
-     * @param  string $token
-     * @return void
+     * @param string $token
      */
     public function sendPasswordResetNotification($token)
     {
@@ -225,7 +223,7 @@ class User extends Model implements
     /**
      * Returns the user's daemon secret for a given server.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return null|string
      */
     public function daemonToken(Server $server)
@@ -255,7 +253,7 @@ class User extends Model implements
     /**
      * Change the access level for a given call to `access()` on the user.
      *
-     * @param  string $level can be all, admin, subuser, owner
+     * @param string $level can be all, admin, subuser, owner
      * @return $this
      */
     public function setAccessLevel($level = 'all')
@@ -272,7 +270,7 @@ class User extends Model implements
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
-     * @param  array $load
+     * @param array $load
      * @return \Pterodactyl\Models\Server
      */
     public function access(...$load)
@@ -310,7 +308,7 @@ class User extends Model implements
     /**
      * Store the username as a lowecase string.
      *
-     * @param  string $value
+     * @param string $value
      */
     public function setUsernameAttribute($value)
     {

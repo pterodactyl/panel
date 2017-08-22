@@ -157,7 +157,8 @@ class UpdateServiceTest extends TestCase
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(
-                trans('admin/exceptions.node.daemon_off_config_updated', ['code' => 400]), $exception->getMessage()
+                trans('admin/exceptions.node.daemon_off_config_updated', ['code' => 400]),
+                $exception->getMessage()
             );
         }
     }

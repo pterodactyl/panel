@@ -28,5 +28,4 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class HasActiveServersException extends DisplayException
 {
-    //
 }

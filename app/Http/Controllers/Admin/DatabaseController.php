@@ -90,7 +90,7 @@ class DatabaseController extends Controller
     /**
      * Display database host to user.
      *
-     * @param  int $host
+     * @param int $host
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -106,7 +106,7 @@ class DatabaseController extends Controller
     /**
      * Handle request to create a new database host.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -128,8 +128,8 @@ class DatabaseController extends Controller
     /**
      * Handle updating database host.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @param  \Pterodactyl\Models\DatabaseHost                         $host
+     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
+     * @param \Pterodactyl\Models\DatabaseHost                         $host
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -154,7 +154,7 @@ class DatabaseController extends Controller
     /**
      * Handle request to delete a database host.
      *
-     * @param  \Pterodactyl\Models\DatabaseHost  $host
+     * @param \Pterodactyl\Models\DatabaseHost $host
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

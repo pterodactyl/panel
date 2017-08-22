@@ -97,8 +97,8 @@ class BuildModificationService
     /**
      * Set build array parameters.
      *
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
      */
     public function setBuild($key, $value)
     {
@@ -108,7 +108,7 @@ class BuildModificationService
     /**
      * Return the build array or an item out of the build array.
      *
-     * @param  string|null $attribute
+     * @param string|null $attribute
      * @return array|mixed|null
      */
     public function getBuild($attribute = null)
@@ -123,8 +123,8 @@ class BuildModificationService
     /**
      * Change the build details for a specified server.
      *
-     * @param  int|\Pterodactyl\Models\Server $server
-     * @param  array                          $data
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param array                          $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

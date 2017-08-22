@@ -52,9 +52,9 @@ class LocationController extends Controller
     /**
      * LocationController constructor.
      *
-     * @param  \Prologue\Alerts\AlertsMessageBag                             $alert
-     * @param  \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param  \Pterodactyl\Services\LocationService                         $service
+     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \Pterodactyl\Services\LocationService                         $service
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -81,7 +81,7 @@ class LocationController extends Controller
     /**
      * Return the location view page.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\View\View
      */
     public function view($id)
@@ -94,7 +94,7 @@ class LocationController extends Controller
     /**
      * Handle request to create new location.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -111,8 +111,8 @@ class LocationController extends Controller
     /**
      * Handle request to update or delete location.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
-     * @param  \Pterodactyl\Models\Location                         $location
+     * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
+     * @param \Pterodactyl\Models\Location                         $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -133,7 +133,7 @@ class LocationController extends Controller
     /**
      * Delete a location from the system.
      *
-     * @param  \Pterodactyl\Models\Location $location
+     * @param \Pterodactyl\Models\Location $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception

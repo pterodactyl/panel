@@ -144,7 +144,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
     /**
      * Return an instance of the Guzzle client for this specific node.
      *
-     * @param  array $headers
+     * @param array $headers
      * @return \GuzzleHttp\Client
      */
     public function guzzleClient($headers = [])
@@ -160,7 +160,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
     /**
      * Returns the configuration in JSON format.
      *
-     * @param  bool $pretty
+     * @param bool $pretty
      * @return string
      */
     public function getConfigurationAsJson($pretty = false)

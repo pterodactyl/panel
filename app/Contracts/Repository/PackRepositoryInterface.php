@@ -39,7 +39,7 @@ interface PackRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return a pack with the associated server models attached to it.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Database\Eloquent\Collection
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
@@ -49,8 +49,8 @@ interface PackRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return all of the file archives for a given pack.
      *
-     * @param  int  $id
-     * @param  bool $collection
+     * @param int  $id
+     * @param bool $collection
      * @return object|\Illuminate\Support\Collection
      *
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException

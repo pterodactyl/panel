@@ -35,7 +35,7 @@ class LocationController extends Controller
     /**
      * Controller to handle returning all locations on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function index(Request $request)

@@ -46,8 +46,8 @@ class ServiceUpdateService
     /**
      * Update a service and prevent changing the author once it is set.
      *
-     * @param  int   $service
-     * @param  array $data
+     * @param int   $service
+     * @param array $data
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

@@ -67,8 +67,8 @@ class ExportPackService
     /**
      * Prepare a pack for export.
      *
-     * @param  int|\Pterodactyl\Models\Pack $pack
-     * @param  bool                         $files
+     * @param int|\Pterodactyl\Models\Pack $pack
+     * @param bool                         $files
      * @return string
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

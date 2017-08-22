@@ -59,7 +59,7 @@ class ServiceCreationService
     /**
      * Create a new service on the system.
      *
-     * @param  array $data
+     * @param array $data
      * @return \Pterodactyl\Models\Service
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

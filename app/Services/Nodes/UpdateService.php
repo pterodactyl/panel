@@ -68,8 +68,8 @@ class UpdateService
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param  int|\Pterodactyl\Models\Node $node
-     * @param  array                        $data
+     * @param int|\Pterodactyl\Models\Node $node
+     * @param array                        $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

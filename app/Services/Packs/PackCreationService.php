@@ -74,8 +74,8 @@ class PackCreationService
     /**
      * Add a new service pack to the system.
      *
-     * @param  array                              $data
-     * @param  \Illuminate\Http\UploadedFile|null $file
+     * @param array                              $data
+     * @param \Illuminate\Http\UploadedFile|null $file
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -103,7 +103,8 @@ class PackCreationService
 
         $this->connection->beginTransaction();
         $pack = $this->repository->create(array_merge(
-            ['uuid' => Uuid::uuid4()], $data
+            ['uuid' => Uuid::uuid4()],
+            $data
         ));
 
         $this->storage->disk()->makeDirectory('packs/' . $pack->uuid);

@@ -112,16 +112,23 @@ class DatabaseManagementServiceTest extends TestCase
             ->once()
             ->andReturnNull();
         $this->repository->shouldReceive('createDatabase')->with(
-            self::TEST_DATA['database'], 'dynamic'
+            self::TEST_DATA['database'],
+            'dynamic'
         )->once()->andReturnNull();
 
         $this->encrypter->shouldReceive('decrypt')->with('enc_password')->once()->andReturn('str_random');
         $this->repository->shouldReceive('createUser')->with(
-            self::TEST_DATA['username'], self::TEST_DATA['remote'], 'str_random', 'dynamic'
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'str_random',
+            'dynamic'
         )->once()->andReturnNull();
 
         $this->repository->shouldReceive('assignUserToDatabase')->with(
-            self::TEST_DATA['database'], self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
+            self::TEST_DATA['database'],
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'dynamic'
         )->once()->andReturnNull();
 
         $this->repository->shouldReceive('flush')->with('dynamic')->once()->andReturnNull();
@@ -184,7 +191,8 @@ class DatabaseManagementServiceTest extends TestCase
             ->once()
             ->andReturnNull();
         $this->repository->shouldReceive('createDatabase')->with(
-            self::TEST_DATA['database'], 'dynamic'
+            self::TEST_DATA['database'],
+            'dynamic'
         )->once()->andThrow(new Exception('Test Message'));
 
         $this->repository->shouldReceive('dropDatabase')
@@ -192,7 +200,9 @@ class DatabaseManagementServiceTest extends TestCase
             ->once()
             ->andReturnNull();
         $this->repository->shouldReceive('dropUser')->with(
-            self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'dynamic'
         )->once()->andReturnNull();
         $this->repository->shouldReceive('flush')->with('dynamic')->once()->andReturnNull();
 
@@ -221,7 +231,8 @@ class DatabaseManagementServiceTest extends TestCase
             ->once()
             ->andReturnNull();
         $this->repository->shouldReceive('createDatabase')->with(
-            self::TEST_DATA['database'], 'dynamic'
+            self::TEST_DATA['database'],
+            'dynamic'
         )->once()->andThrow(new Exception('Test One'));
 
         $this->repository->shouldReceive('dropDatabase')->with(self::TEST_DATA['database'], 'dynamic')
@@ -260,15 +271,23 @@ class DatabaseManagementServiceTest extends TestCase
             ])->andReturn(true);
 
         $this->repository->shouldReceive('dropUser')->with(
-            self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'dynamic'
         )->once()->andReturnNull();
 
         $this->repository->shouldReceive('createUser')->with(
-            self::TEST_DATA['username'], self::TEST_DATA['remote'], 'new_password', 'dynamic'
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'new_password',
+            'dynamic'
         )->once()->andReturnNull();
 
         $this->repository->shouldReceive('assignUserToDatabase')->with(
-            self::TEST_DATA['database'], self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
+            self::TEST_DATA['database'],
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'dynamic'
         )->once()->andReturnNull();
 
         $this->repository->shouldReceive('flush')->with('dynamic')->once()->andReturnNull();
@@ -300,7 +319,9 @@ class DatabaseManagementServiceTest extends TestCase
             ])->andReturn(true);
 
         $this->repository->shouldReceive('dropUser')->with(
-            self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'dynamic'
         )->once()->andThrow(new Exception());
 
         $this->database->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
@@ -324,7 +345,9 @@ class DatabaseManagementServiceTest extends TestCase
             ->once()
             ->andReturnNull();
         $this->repository->shouldReceive('dropUser')->with(
-            self::TEST_DATA['username'], self::TEST_DATA['remote'], 'dynamic'
+            self::TEST_DATA['username'],
+            self::TEST_DATA['remote'],
+            'dynamic'
         )->once()->andReturnNull();
         $this->repository->shouldReceive('flush')->with('dynamic')->once()->andReturnNull();
         $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(1);

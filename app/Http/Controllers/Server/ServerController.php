@@ -40,8 +40,8 @@ class ServerController extends Controller
     /**
      * Renders server index page for specified server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getIndex(Request $request, $uuid)
@@ -68,8 +68,8 @@ class ServerController extends Controller
     /**
      * Renders server console as an individual item.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getConsole(Request $request, $uuid)
@@ -93,8 +93,8 @@ class ServerController extends Controller
     /**
      * Renders file overview page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getFiles(Request $request, $uuid)
@@ -127,8 +127,8 @@ class ServerController extends Controller
     /**
      * Renders add file page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getAddFile(Request $request, $uuid)
@@ -148,9 +148,9 @@ class ServerController extends Controller
     /**
      * Renders edit file page for a given file.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  string                    $file
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param string                   $file
      * @return \Illuminate\View\View
      */
     public function getEditFile(Request $request, $uuid, $file)
@@ -191,9 +191,9 @@ class ServerController extends Controller
     /**
      * Handles downloading a file for the user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  string                    $file
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param string                   $file
      * @return \Illuminate\View\View
      */
     public function getDownloadFile(Request $request, $uuid, $file)
@@ -213,8 +213,8 @@ class ServerController extends Controller
     /**
      * Returns the allocation overview for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getAllocation(Request $request, $uuid)
@@ -235,8 +235,8 @@ class ServerController extends Controller
     /**
      * Returns the startup overview for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getStartup(Request $request, $uuid)
@@ -280,8 +280,8 @@ class ServerController extends Controller
     /**
      * Returns the database overview for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getDatabases(Request $request, $uuid)
@@ -302,8 +302,8 @@ class ServerController extends Controller
     /**
      * Returns the SFTP overview for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function getSFTP(Request $request, $uuid)
@@ -321,8 +321,8 @@ class ServerController extends Controller
     /**
      * Handles changing the SFTP password for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postSettingsSFTP(Request $request, $uuid)
@@ -349,8 +349,8 @@ class ServerController extends Controller
     /**
      * Handles changing the startup settings for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postSettingsStartup(Request $request, $uuid)

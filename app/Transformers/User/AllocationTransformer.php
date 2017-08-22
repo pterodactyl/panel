@@ -39,8 +39,6 @@ class AllocationTransformer extends TransformerAbstract
 
     /**
      * Setup allocation transformer with access to server data.
-     *
-     * @return void
      */
     public function __construct(Server $server)
     {

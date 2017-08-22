@@ -190,7 +190,8 @@ class SuspensionServiceTest extends TestCase
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(
-                trans('admin/server.exceptions.daemon_exception', ['code' => 400]), $exception->getMessage()
+                trans('admin/server.exceptions.daemon_exception', ['code' => 400]),
+                $exception->getMessage()
             );
         }
     }

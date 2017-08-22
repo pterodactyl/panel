@@ -33,10 +33,9 @@ class APILogService
     /**
      * Log an API Request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  null|string               $error
-     * @param  bool                      $authorized
-     * @return void
+     * @param \Illuminate\Http\Request $request
+     * @param null|string              $error
+     * @param bool                     $authorized
      */
     public static function log(Request $request, $error = null, $authorized = false)
     {

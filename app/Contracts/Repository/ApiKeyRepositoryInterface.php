@@ -26,5 +26,4 @@ namespace Pterodactyl\Contracts\Repository;
 
 interface ApiKeyRepositoryInterface extends RepositoryInterface
 {
-    //
 }

@@ -122,7 +122,7 @@ class OptionController extends Controller
     /**
      * Handle adding a new service option.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -144,7 +144,7 @@ class OptionController extends Controller
     /**
      * Delete a given option from the database.
      *
-     * @param  \Pterodactyl\Models\ServiceOption $option
+     * @param \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
@@ -160,7 +160,7 @@ class OptionController extends Controller
     /**
      * Display option overview page.
      *
-     * @param  \Pterodactyl\Models\ServiceOption $option
+     * @param \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\View\View
      */
     public function viewConfiguration(ServiceOption $option)
@@ -171,7 +171,7 @@ class OptionController extends Controller
     /**
      * Display script management page for an option.
      *
-     * @param  int $option
+     * @param int $option
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -196,8 +196,8 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param  \Illuminate\Http\Request          $request
-     * @param  \Pterodactyl\Models\ServiceOption $option
+     * @param \Illuminate\Http\Request          $request
+     * @param \Pterodactyl\Models\ServiceOption $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -219,8 +219,8 @@ class OptionController extends Controller
     /**
      * Handles POST when updating script for a service option.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\EditOptionScript $request
-     * @param  \Pterodactyl\Models\ServiceOption                         $option
+     * @param \Pterodactyl\Http\Requests\Admin\Service\EditOptionScript $request
+     * @param \Pterodactyl\Models\ServiceOption                         $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

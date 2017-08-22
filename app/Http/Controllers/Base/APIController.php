@@ -71,7 +71,7 @@ class APIController extends Controller
     /**
      * Display base API index page.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -99,7 +99,7 @@ class APIController extends Controller
     /**
      * Handle saving new API key.
      *
-     * @param  \Pterodactyl\Http\Requests\ApiKeyRequest $request
+     * @param \Pterodactyl\Http\Requests\ApiKeyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -128,8 +128,8 @@ class APIController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $key
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $key
      * @return \Illuminate\Http\Response
      *
      * @throws \Exception

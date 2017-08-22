@@ -47,7 +47,10 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     public function getUsageStats($id)
     {
         $node = $this->getBuilder()->select(
-            'nodes.disk_overallocate', 'nodes.memory_overallocate', 'nodes.disk', 'nodes.memory',
+            'nodes.disk_overallocate',
+            'nodes.memory_overallocate',
+            'nodes.disk',
+            'nodes.memory',
             $this->getBuilder()->raw('SUM(servers.memory) as sum_memory, SUM(servers.disk) as sum_disk')
         )->join('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('nodes.id', $id)

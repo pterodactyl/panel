@@ -30,8 +30,8 @@ class UsernameGenerationService
      * Generate a unique username to be used for SFTP connections and identification
      * of the server docker container on the host system.
      *
-     * @param  string $name
-     * @param  null   $identifier
+     * @param string $name
+     * @param null   $identifier
      * @return string
      */
     public function generate($name, $identifier = null)

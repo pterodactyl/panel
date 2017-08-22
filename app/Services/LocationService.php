@@ -46,7 +46,7 @@ class LocationService
     /**
      * Create the location in the database and return it.
      *
-     * @param  array $data
+     * @param array $data
      * @return \Pterodactyl\Models\Location
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -59,8 +59,8 @@ class LocationService
     /**
      * Update location model in the DB.
      *
-     * @param  int   $id
-     * @param  array $data
+     * @param int   $id
+     * @param array $data
      * @return \Pterodactyl\Models\Location
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -73,7 +73,7 @@ class LocationService
     /**
      * Delete a model from the DB.
      *
-     * @param  int $id
+     * @param int $id
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

@@ -90,7 +90,7 @@ class VariableValidatorService
     /**
      * Set the fields with populated data to validate.
      *
-     * @param  array $fields
+     * @param array $fields
      * @return $this
      */
     public function setFields(array $fields)
@@ -103,7 +103,7 @@ class VariableValidatorService
     /**
      * Set this function to be running at the administrative level.
      *
-     * @param  bool $bool
+     * @param bool $bool
      * @return $this
      */
     public function isAdmin($bool = true)
@@ -116,7 +116,7 @@ class VariableValidatorService
     /**
      * Validate all of the passed data aganist the given service option variables.
      *
-     * @param  int $option
+     * @param int $option
      * @return $this
      */
     public function validate($option)

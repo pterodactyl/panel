@@ -245,7 +245,7 @@ class ServersController extends Controller
     /**
      * Handle POST of server creation form.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -262,7 +262,7 @@ class ServersController extends Controller
     /**
      * Returns a tree of all avaliable nodes in a given location.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Support\Collection
      */
     public function nodes(Request $request)
@@ -273,7 +273,7 @@ class ServersController extends Controller
     /**
      * Display the index when viewing a specific server.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
     public function viewIndex(Server $server)
@@ -284,7 +284,7 @@ class ServersController extends Controller
     /**
      * Display the details page when viewing a specific server.
      *
-     * @param  int $server
+     * @param int $server
      * @return \Illuminate\View\View
      */
     public function viewDetails($server)
@@ -300,7 +300,7 @@ class ServersController extends Controller
     /**
      * Display the build details page when viewing a specific server.
      *
-     * @param  int $server
+     * @param int $server
      * @return \Illuminate\View\View
      */
     public function viewBuild($server)
@@ -322,7 +322,7 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param  int $server
+     * @param int $server
      * @return \Illuminate\View\View
      */
     public function viewStartup($server)
@@ -352,7 +352,7 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param  int $server
+     * @param int $server
      * @return \Illuminate\View\View
      */
     public function viewDatabase($server)
@@ -368,7 +368,7 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
     public function viewManage(Server $server)
@@ -379,7 +379,7 @@ class ServersController extends Controller
     /**
      * Display the deletion page for a server.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
     public function viewDelete(Server $server)
@@ -390,8 +390,8 @@ class ServersController extends Controller
     /**
      * Update the details for a server.
      *
-     * @param  \Illuminate\Http\Request   $request
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -411,8 +411,8 @@ class ServersController extends Controller
     /**
      * Set the new docker container for a server.
      *
-     * @param  \Illuminate\Http\Request   $request
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -429,7 +429,7 @@ class ServersController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -453,7 +453,7 @@ class ServersController extends Controller
     /**
      * Reinstalls the server with the currently assigned pack and service.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -471,7 +471,7 @@ class ServersController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -487,8 +487,8 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @param  \Illuminate\Http\Request   $request
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -507,7 +507,7 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request   $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -528,8 +528,8 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @param  \Illuminate\Http\Request   $request
-     * @param  \Pterodactyl\Models\Server $server
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -545,7 +545,7 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request   $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -555,7 +555,8 @@ class ServersController extends Controller
     public function saveStartup(Request $request, Server $server)
     {
         $this->startupModificationService->isAdmin()->handle(
-            $server, $request->except('_token')
+            $server,
+            $request->except('_token')
         );
         $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
@@ -565,8 +566,8 @@ class ServersController extends Controller
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $server
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -587,8 +588,8 @@ class ServersController extends Controller
     /**
      * Resets the database password for a specific database on this server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $server
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -609,8 +610,8 @@ class ServersController extends Controller
     /**
      * Deletes a database from a server.
      *
-     * @param  int $server
-     * @param  int $database
+     * @param int $server
+     * @param int $database
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception

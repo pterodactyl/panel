@@ -129,7 +129,7 @@ class CreationService
     /**
      * Create a server on both the panel and daemon.
      *
-     * @param  array $data
+     * @param array $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

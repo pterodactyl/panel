@@ -135,8 +135,8 @@ class DetailsModificationService
     /**
      * Update the docker container for a specified server.
      *
-     * @param  int|\Pterodactyl\Models\Server $server
-     * @param  string                         $image
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param string                         $image
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

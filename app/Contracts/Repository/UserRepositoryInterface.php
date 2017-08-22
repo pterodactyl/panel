@@ -38,7 +38,7 @@ interface UserRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return all matching models for a user in a format that can be used for dropdowns.
      *
-     * @param  string $query
+     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function filterUsersByQuery($query);

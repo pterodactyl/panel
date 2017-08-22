@@ -26,5 +26,4 @@ namespace Pterodactyl\Exceptions;
 
 class DisplayValidationException extends PterodactylException
 {
-    //
 }

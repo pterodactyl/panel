@@ -70,9 +70,9 @@ class DynamicDatabaseConnection
     /**
      * Adds a dynamic database connection entry to the runtime config.
      *
-     * @param  string                                $connection
-     * @param  \Pterodactyl\Models\DatabaseHost|int  $host
-     * @param  string                                $database
+     * @param string                               $connection
+     * @param \Pterodactyl\Models\DatabaseHost|int $host
+     * @param string                               $database
      */
     public function set($connection, $host, $database = 'mysql')
     {

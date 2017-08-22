@@ -107,7 +107,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
     /**
      * Returns all of the archived files for a given pack.
      *
-     * @param  bool  $collection
+     * @param bool $collection
      * @return \Illuminate\Support\Collection|object
      * @deprecated
      */

@@ -59,8 +59,8 @@ class EnvironmentService
      * Dynamically configure additional environment variables to be assigned
      * with a specific server.
      *
-     * @param  string   $key
-     * @param  callable $closure
+     * @param string   $key
+     * @param callable $closure
      * @return $this
      */
     public function setEnvironmentKey($key, callable $closure)
@@ -74,7 +74,7 @@ class EnvironmentService
      * Take all of the environment variables configured for this server and return
      * them in an easy to process format.
      *
-     * @param  int|\Pterodactyl\Models\Server $server
+     * @param int|\Pterodactyl\Models\Server $server
      * @return array
      */
     public function process($server)

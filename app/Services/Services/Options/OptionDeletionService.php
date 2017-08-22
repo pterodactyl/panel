@@ -57,7 +57,7 @@ class OptionDeletionService
     /**
      * Delete an option from the database if it has no active servers attached to it.
      *
-     * @param  int $option
+     * @param int $option
      * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException

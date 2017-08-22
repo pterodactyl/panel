@@ -30,7 +30,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * Create a new database if it does not already exist on the host with
      * the provided details.
      *
-     * @param  array $data
+     * @param array $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -41,8 +41,8 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Create a new database on a given connection.
      *
-     * @param  string      $database
-     * @param  null|string $connection
+     * @param string      $database
+     * @param null|string $connection
      * @return bool
      */
     public function createDatabase($database, $connection = null);
@@ -50,10 +50,10 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Create a new database user on a given connection.
      *
-     * @param  string      $username
-     * @param  string      $remote
-     * @param  string      $password
-     * @param  null|string $connection
+     * @param string      $username
+     * @param string      $remote
+     * @param string      $password
+     * @param null|string $connection
      * @return bool
      */
     public function createUser($username, $remote, $password, $connection = null);
@@ -61,10 +61,10 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Give a specific user access to a given database.
      *
-     * @param  string      $database
-     * @param  string      $username
-     * @param  string      $remote
-     * @param  null|string $connection
+     * @param string      $database
+     * @param string      $username
+     * @param string      $remote
+     * @param null|string $connection
      * @return bool
      */
     public function assignUserToDatabase($database, $username, $remote, $connection = null);
@@ -72,7 +72,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Flush the privileges for a given connection.
      *
-     * @param  null|string $connection
+     * @param null|string $connection
      * @return mixed
      */
     public function flush($connection = null);
@@ -80,8 +80,8 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Drop a given database on a specific connection.
      *
-     * @param  string      $database
-     * @param  null|string $connection
+     * @param string      $database
+     * @param null|string $connection
      * @return bool
      */
     public function dropDatabase($database, $connection = null);
@@ -89,9 +89,9 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Drop a given user on a specific connection.
      *
-     * @param  string      $username
-     * @param  string      $remote
-     * @param  null|string $connection
+     * @param string      $username
+     * @param string      $remote
+     * @param null|string $connection
      * @return mixed
      */
     public function dropUser($username, $remote, $connection = null);

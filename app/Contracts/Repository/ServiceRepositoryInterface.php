@@ -29,7 +29,7 @@ interface ServiceRepositoryInterface extends RepositoryInterface
     /**
      * Return a service or all services with their associated options, variables, and packs.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Support\Collection
      */
     public function getWithOptions($id = null);
@@ -37,7 +37,7 @@ interface ServiceRepositoryInterface extends RepositoryInterface
     /**
      * Return a service along with its associated options and the servers relation on those options.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      */
     public function getWithOptionServers($id);

@@ -48,7 +48,7 @@ class CreationService
     /**
      * Create a new node on the panel.
      *
-     * @param  array $data
+     * @param array $data
      * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

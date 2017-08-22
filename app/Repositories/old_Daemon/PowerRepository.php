@@ -48,9 +48,8 @@ class PowerRepository
     /**
      * Constuctor for repository.
      *
-     * @param  \Pterodactyl\Models\Server  $server
-     * @param  \Pterodactyl\Models\User|null   $user
-     * @return void
+     * @param \Pterodactyl\Models\Server    $server
+     * @param \Pterodactyl\Models\User|null $user
      */
     public function __construct(Server $server, User $user = null)
     {
@@ -61,7 +60,7 @@ class PowerRepository
     /**
      * Sends a power option to the daemon.
      *
-     * @param  string                    $action
+     * @param string $action
      * @return string
      *
      * @throws \GuzzleHttp\Exception\RequestException
@@ -89,8 +88,6 @@ class PowerRepository
 
     /**
      * Starts a server.
-     *
-     * @return void
      */
     public function start()
     {
@@ -99,8 +96,6 @@ class PowerRepository
 
     /**
      * Stops a server.
-     *
-     * @return void
      */
     public function stop()
     {
@@ -109,8 +104,6 @@ class PowerRepository
 
     /**
      * Restarts a server.
-     *
-     * @return void
      */
     public function restart()
     {
@@ -119,8 +112,6 @@ class PowerRepository
 
     /**
      * Kills a server.
-     *
-     * @return void
      */
     public function kill()
     {

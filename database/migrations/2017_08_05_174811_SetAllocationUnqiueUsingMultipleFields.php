@@ -8,8 +8,6 @@ class SetAllocationUnqiueUsingMultipleFields extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -20,8 +18,6 @@ class SetAllocationUnqiueUsingMultipleFields extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -100,7 +100,7 @@ class DeletionService
     /**
      * Set if the server should be forcibly deleted from the panel (ignoring daemon errors) or not.
      *
-     * @param  bool $bool
+     * @param bool $bool
      * @return $this
      */
     public function withForce($bool = true)

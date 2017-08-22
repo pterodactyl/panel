@@ -107,7 +107,7 @@ class StartupModificationService
     /**
      * Determine if this function should run at an administrative level.
      *
-     * @param  bool $bool
+     * @param bool $bool
      * @return $this
      */
     public function isAdmin($bool = true)
@@ -120,8 +120,8 @@ class StartupModificationService
     /**
      * Process startup modification for a server.
      *
-     * @param  int|\Pterodactyl\Models\Server $server
-     * @param  array                          $data
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param array                          $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

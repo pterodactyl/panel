@@ -48,8 +48,8 @@ class InstallScriptUpdateService
     /**
      * Modify the option install script for a given service option.
      *
-     * @param  int|\Pterodactyl\Models\ServiceOption $option
-     * @param  array                                 $data
+     * @param int|\Pterodactyl\Models\ServiceOption $option
+     * @param array                                 $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

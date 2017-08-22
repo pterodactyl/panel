@@ -78,8 +78,8 @@ class VariableController extends Controller
     /**
      * Handles POST request to create a new option variable.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
-     * @param  \Pterodactyl\Models\ServiceOption                          $option
+     * @param \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
+     * @param \Pterodactyl\Models\ServiceOption                          $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -96,7 +96,7 @@ class VariableController extends Controller
     /**
      * Display variable overview page for a service option.
      *
-     * @param  int $option
+     * @param int $option
      * @return \Illuminate\View\View
      */
     public function view($option)
@@ -109,9 +109,9 @@ class VariableController extends Controller
     /**
      * Handles POST when editing a configration for a service variable.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
-     * @param  \Pterodactyl\Models\ServiceOption                          $option
-     * @param  \Pterodactyl\Models\ServiceVariable                        $variable
+     * @param \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
+     * @param \Pterodactyl\Models\ServiceOption                          $option
+     * @param \Pterodactyl\Models\ServiceVariable                        $variable
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -132,8 +132,8 @@ class VariableController extends Controller
     /**
      * Delete a service variable from the system.
      *
-     * @param  \Pterodactyl\Models\ServiceOption   $option
-     * @param  \Pterodactyl\Models\ServiceVariable $variable
+     * @param \Pterodactyl\Models\ServiceOption   $option
+     * @param \Pterodactyl\Models\ServiceVariable $variable
      * @return \Illuminate\Http\RedirectResponse
      */
     public function delete(ServiceOption $option, ServiceVariable $variable)

@@ -64,8 +64,8 @@ class AssignmentService
     /**
      * Insert allocations into the database and link them to a specific node.
      *
-     * @param  int|\Pterodactyl\Models\Node $node
-     * @param  array                        $data
+     * @param int|\Pterodactyl\Models\Node $node
+     * @param array                        $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */

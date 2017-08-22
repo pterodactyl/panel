@@ -72,7 +72,8 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
         }
 
         return $users->paginate(
-            $this->config->get('pterodactyl.paginate.admin.users'), $this->getColumns()
+            $this->config->get('pterodactyl.paginate.admin.users'),
+            $this->getColumns()
         );
     }
 

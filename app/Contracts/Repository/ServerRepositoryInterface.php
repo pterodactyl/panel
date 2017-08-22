@@ -31,7 +31,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Returns a listing of all servers that exist including relationships.
      *
-     * @param  int $paginate
+     * @param int $paginate
      * @return mixed
      */
     public function getAllServers($paginate);
@@ -39,7 +39,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Return a server model and all variables associated with the server.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -50,8 +50,8 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return all of the server variables possible and default to the variable
      * default if there is no value defined for the specific server requested.
      *
-     * @param  int $id
-     * @param  bool $returnAsObject
+     * @param int  $id
+     * @param bool $returnAsObject
      * @return array|object
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -71,7 +71,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Return a server as well as associated databases and their hosts.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -81,7 +81,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Return data about the daemon service in a consumable format.
      *
-     * @param  int $id
+     * @param int $id
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

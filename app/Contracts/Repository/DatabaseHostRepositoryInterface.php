@@ -36,7 +36,7 @@ interface DatabaseHostRepositoryInterface extends RepositoryInterface
     /**
      * Return a database host with the databases and associated servers that are attached to said databases.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -46,7 +46,7 @@ interface DatabaseHostRepositoryInterface extends RepositoryInterface
     /**
      * Delete a database host from the DB if there are no databases using it.
      *
-     * @param  int $id
+     * @param int $id
      * @return bool|null
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

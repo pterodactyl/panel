@@ -56,8 +56,8 @@ class UpdateService
     /**
      * Update the user model instance.
      *
-     * @param  int   $id
-     * @param  array $data
+     * @param int   $id
+     * @param array $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

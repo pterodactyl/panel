@@ -36,7 +36,7 @@ trait Searchable
     /**
      * Perform a search of the model using the given term.
      *
-     * @param  string $term
+     * @param string $term
      * @return $this
      */
     public function search($term)

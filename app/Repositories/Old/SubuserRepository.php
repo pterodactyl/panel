@@ -52,8 +52,8 @@ class SubuserRepository
     /**
      * Creates a new subuser on the server.
      *
-     * @param  int    $sid
-     * @param  array  $data
+     * @param int   $sid
+     * @param array $data
      * @return \Pterodactyl\Models\Subuser
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -152,8 +152,7 @@ class SubuserRepository
     /**
      * Revokes a users permissions on a server.
      *
-     * @param  int    $id
-     * @return void
+     * @param int $id
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
@@ -193,9 +192,8 @@ class SubuserRepository
     /**
      * Updates permissions for a given subuser.
      *
-     * @param  int    $id
-     * @param  array  $data
-     * @return void
+     * @param int   $id
+     * @param array $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\DisplayValidationException

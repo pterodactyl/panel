@@ -29,7 +29,7 @@ interface BaseRepositoryInterface
     /**
      * Set the node model to be used for this daemon connection.
      *
-     * @param  int $id
+     * @param int $id
      * @return $this
      */
     public function setNode($id);
@@ -44,7 +44,7 @@ interface BaseRepositoryInterface
     /**
      * Set the UUID for the server to be used in the X-Access-Server header for daemon requests.
      *
-     * @param  null|string $server
+     * @param null|string $server
      * @return $this
      */
     public function setAccessServer($server = null);
@@ -59,7 +59,7 @@ interface BaseRepositoryInterface
     /**
      * Set the token to be used in the X-Access-Token header for requests to the daemon.
      *
-     * @param  null|string $token
+     * @param null|string $token
      * @return $this
      */
     public function setAccessToken($token = null);
@@ -74,7 +74,7 @@ interface BaseRepositoryInterface
     /**
      * Return an instance of the Guzzle HTTP Client to be used for requests.
      *
-     * @param  array $headers
+     * @param array $headers
      * @return \GuzzleHttp\Client
      */
     public function getHttpClient($headers = []);

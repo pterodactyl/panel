@@ -57,7 +57,7 @@ class ServiceDeletionService
     /**
      * Delete a service from the system only if there are no servers attached to it.
      *
-     * @param  int $service
+     * @param int $service
      * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException

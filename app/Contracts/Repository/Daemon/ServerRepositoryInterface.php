@@ -29,9 +29,9 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     /**
      * Create a new server on the daemon for the panel.
      *
-     * @param  int   $id
-     * @param  array $overrides
-     * @param  bool  $start
+     * @param int   $id
+     * @param array $overrides
+     * @param bool  $start
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function create($id, $overrides = [], $start = false);
@@ -39,7 +39,7 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     /**
      * Update server details on the daemon.
      *
-     * @param  array $data
+     * @param array $data
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function update(array $data);
@@ -47,7 +47,7 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     /**
      * Mark a server to be reinstalled on the system.
      *
-     * @param  array|null $data
+     * @param array|null $data
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function reinstall($data = null);

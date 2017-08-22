@@ -67,8 +67,8 @@ class TemplateUploadService
     /**
      * Process an uploaded file to create a new pack from a JSON or ZIP format.
      *
-     * @param  int                           $option
-     * @param  \Illuminate\Http\UploadedFile $file
+     * @param int                           $option
+     * @param \Illuminate\Http\UploadedFile $file
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -103,8 +103,8 @@ class TemplateUploadService
     /**
      * Process a ZIP file to create a pack and stored archive.
      *
-     * @param  int                           $option
-     * @param  \Illuminate\Http\UploadedFile $file
+     * @param int                           $option
+     * @param \Illuminate\Http\UploadedFile $file
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

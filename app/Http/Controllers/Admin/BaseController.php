@@ -70,7 +70,7 @@ class BaseController extends Controller
     /**
      * Handle settings post request.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\BaseFormRequest  $request
+     * @param \Pterodactyl\Http\Requests\Admin\BaseFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function postSettings(BaseFormRequest $request)

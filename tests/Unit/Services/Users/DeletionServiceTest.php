@@ -72,7 +72,9 @@ class DeletionServiceTest extends TestCase
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
 
         $this->service = new DeletionService(
-            $this->serverRepository, $this->translator, $this->repository
+            $this->serverRepository,
+            $this->translator,
+            $this->repository
         );
     }
 

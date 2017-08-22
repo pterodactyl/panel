@@ -45,8 +45,6 @@ class SendScheduledTask extends Job implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function __construct(Task $task)
     {
@@ -58,8 +56,6 @@ class SendScheduledTask extends Job implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle()
     {
@@ -96,7 +92,8 @@ class SendScheduledTask extends Job implements ShouldQueue
                 'response' => $ex->getMessage(),
             ]);
         } finally {
-            $cron = Cron::factory(sprintf('%s %s %s %s %s %s',
+            $cron = Cron::factory(sprintf(
+                '%s %s %s %s %s %s',
                 $this->task->minute,
                 $this->task->hour,
                 $this->task->day_of_month,

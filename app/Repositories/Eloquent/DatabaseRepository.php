@@ -85,7 +85,8 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function createDatabase($database, $connection = null)
     {
         return $this->runStatement(
-            sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database), $connection
+            sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database),
+            $connection
         );
     }
 
@@ -95,7 +96,8 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function createUser($username, $remote, $password, $connection = null)
     {
         return $this->runStatement(
-            sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password), $connection
+            sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password),
+            $connection
         );
     }
 
@@ -107,7 +109,9 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
         return $this->runStatement(
             sprintf(
                 'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`',
-                $database, $username, $remote
+                $database,
+                $username,
+                $remote
             ),
             $connection
         );
@@ -127,7 +131,8 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function dropDatabase($database, $connection = null)
     {
         return $this->runStatement(
-            sprintf('DROP DATABASE IF EXISTS `%s`', $database), $connection
+            sprintf('DROP DATABASE IF EXISTS `%s`', $database),
+            $connection
         );
     }
 
@@ -137,15 +142,16 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function dropUser($username, $remote, $connection = null)
     {
         return $this->runStatement(
-            sprintf('DROP USER IF EXISTS `%s`@`%s`', $username, $remote), $connection
+            sprintf('DROP USER IF EXISTS `%s`@`%s`', $username, $remote),
+            $connection
         );
     }
 
     /**
      * Run the provided statement against the database on a given connection.
      *
-     * @param  string      $statement
-     * @param  null|string $connection
+     * @param string      $statement
+     * @param null|string $connection
      * @return bool
      */
     protected function runStatement($statement, $connection = null)

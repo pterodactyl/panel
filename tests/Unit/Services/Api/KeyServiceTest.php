@@ -72,7 +72,10 @@ class KeyServiceTest extends TestCase
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
 
         $this->service = new KeyService(
-            $this->repository, $this->database, $this->encrypter, $this->permissions
+            $this->repository,
+            $this->database,
+            $this->encrypter,
+            $this->permissions
         );
     }
 
@@ -108,7 +111,9 @@ class KeyServiceTest extends TestCase
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->create(
-            ['test-data' => 'test'], ['invalid-node', 'server-list'], ['invalid-node', 'server-create']
+            ['test-data' => 'test'],
+            ['invalid-node', 'server-list'],
+            ['invalid-node', 'server-create']
         );
 
         $this->assertNotEmpty($response);

@@ -29,7 +29,7 @@ interface SearchableInterface
     /**
      * Filter results by search term.
      *
-     * @param  string $term
+     * @param string $term
      * @return $this
      */
     public function search($term);

@@ -28,5 +28,4 @@ use Exception;
 
 class ReservedVariableNameException extends Exception
 {
-    //
 }

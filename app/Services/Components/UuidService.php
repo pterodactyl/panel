@@ -33,9 +33,9 @@ class UuidService
      * Generate a unique UUID validating against specified table and column.
      * Defaults to `users.uuid`.
      *
-     * @param  string  $table
-     * @param  string  $field
-     * @param  int     $type
+     * @param string $table
+     * @param string $field
+     * @param int    $type
      * @return string
      * @deprecated
      */
@@ -55,9 +55,9 @@ class UuidService
     /**
      * Generates a ShortUUID code which is 8 characters long and is used for identifying servers in the system.
      *
-     * @param  string       $table
-     * @param  string       $field
-     * @param  null|string  $attachedUuid
+     * @param string      $table
+     * @param string      $field
+     * @param null|string $attachedUuid
      * @return string
      * @deprecated
      */

@@ -58,8 +58,8 @@ class PackUpdateService
     /**
      * Update a pack.
      *
-     * @param  int|\Pterodactyl\Models\Pack $pack
-     * @param  array                        $data
+     * @param int|\Pterodactyl\Models\Pack $pack
+     * @param array                        $data
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

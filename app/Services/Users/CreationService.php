@@ -93,7 +93,7 @@ class CreationService
     /**
      * Create a new user on the system.
      *
-     * @param  array $data
+     * @param array $data
      * @return \Pterodactyl\Models\User
      *
      * @throws \Exception

@@ -26,5 +26,4 @@ namespace Pterodactyl\Exceptions\Service\ServiceOption;
 
 class NoParentConfigurationFoundException extends \Exception
 {
-    //
 }

@@ -26,5 +26,4 @@ namespace Pterodactyl\Contracts\Repository;
 
 interface ServiceVariableRepositoryInterface extends RepositoryInterface
 {
-    //
 }

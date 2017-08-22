@@ -64,7 +64,7 @@ abstract class Repository implements RepositoryInterface
     /**
      * Take the provided model and make it accessible to the rest of the repository.
      *
-     * @param  string|array $model
+     * @param string|array $model
      * @return mixed
      */
     protected function setModel($model)
@@ -77,7 +77,8 @@ abstract class Repository implements RepositoryInterface
             }
 
             return $this->model = call_user_func(
-                $model[1], $this->app->make($model[0])
+                $model[1],
+                $this->app->make($model[0])
             );
         }
 
@@ -102,7 +103,7 @@ abstract class Repository implements RepositoryInterface
     /**
      * Setup column selection functionality.
      *
-     * @param  array $columns
+     * @param array $columns
      * @return $this
      */
     public function withColumns($columns = ['*'])

@@ -49,8 +49,8 @@ class VariableUpdateService
     /**
      * Update a specific service variable.
      *
-     * @param  int|\Pterodactyl\Models\ServiceVariable $variable
-     * @param  array                                   $data
+     * @param int|\Pterodactyl\Models\ServiceVariable $variable
+     * @param array                                   $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

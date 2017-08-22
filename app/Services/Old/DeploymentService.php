@@ -70,8 +70,7 @@ class DeploymentService
     /**
      * Set the location to use when auto-deploying.
      *
-     * @param  int|\Pterodactyl\Models\Location  $location
-     * @return void
+     * @param int|\Pterodactyl\Models\Location $location
      */
     public function setLocation($location)
     {
@@ -90,8 +89,7 @@ class DeploymentService
     /**
      * Set the node to use when auto-deploying.
      *
-     * @param  int|\Pterodactyl\Models\Node  $node
-     * @return void
+     * @param int|\Pterodactyl\Models\Node $node
      */
     public function setNode($node)
     {
@@ -108,8 +106,7 @@ class DeploymentService
     /**
      * Set the amount of disk space to be used by the new server.
      *
-     * @param  int  $disk
-     * @return void
+     * @param int $disk
      */
     public function setDisk(int $disk)
     {
@@ -121,8 +118,7 @@ class DeploymentService
     /**
      * Set the amount of memory to be used by the new server.
      *
-     * @param  int  $memory
-     * @return void
+     * @param int $memory
      */
     public function setMemory(int $memory)
     {
@@ -134,8 +130,7 @@ class DeploymentService
     /**
      * Return a random location model.
      *
-     * @param  array  $exclude
-     * @return void;
+     * @param array $exclude
      */
     protected function findLocation(array $exclude = [])
     {
@@ -154,8 +149,6 @@ class DeploymentService
 
     /**
      * Return a model instance of a random node.
-     *
-     * @return void;
      */
     protected function findNode(array $exclude = [])
     {
@@ -240,8 +233,6 @@ class DeploymentService
 
     /**
      * Select and return the node to be used by the auto-deployment system.
-     *
-     * @return void
      */
     public function select()
     {

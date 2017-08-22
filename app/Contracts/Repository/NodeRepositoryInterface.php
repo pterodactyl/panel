@@ -31,7 +31,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return the usage stats for a single node.
      *
-     * @param  int $id
+     * @param int $id
      * @return array
      */
     public function getUsageStats($id);
@@ -39,7 +39,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return all available nodes with a searchable interface.
      *
-     * @param  int $count
+     * @param int $count
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function getNodeListingData($count = 25);
@@ -47,7 +47,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return a single node with location and server information.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -57,7 +57,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return a node with all of the associated allocations and servers that are attached to said allocations.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -67,7 +67,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return a node with all of the servers attached to that node.
      *
-     * @param  int $id
+     * @param int $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -77,7 +77,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return a collection of nodes beloning to a specific location for use on frontend display.
      *
-     * @param  int $location
+     * @param int $location
      * @return mixed
      */
     public function getNodesForLocation($location);

@@ -47,9 +47,8 @@ class FailedCaptcha
     /**
      * Create a new event instance.
      *
-     * @param  string  $ip
-     * @param  string  $domain
-     * @return void
+     * @param string $ip
+     * @param string $domain
      */
     public function __construct($ip, $domain)
     {

@@ -71,12 +71,12 @@ class UserController extends Controller
     /**
      * UserController constructor.
      *
-     * @param  \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Users\CreationService                $creationService
-     * @param \Pterodactyl\Services\Users\DeletionService                $deletionService
-     * @param \Illuminate\Contracts\Translation\Translator               $translator
-     * @param \Pterodactyl\Services\Users\UpdateService                  $updateService
-     * @param  \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param \Pterodactyl\Services\Users\CreationService               $creationService
+     * @param \Pterodactyl\Services\Users\DeletionService               $deletionService
+     * @param \Illuminate\Contracts\Translation\Translator              $translator
+     * @param \Pterodactyl\Services\Users\UpdateService                 $updateService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -97,7 +97,7 @@ class UserController extends Controller
     /**
      * Display user index page.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -120,7 +120,7 @@ class UserController extends Controller
     /**
      * Display user view page.
      *
-     * @param  \Pterodactyl\Models\User $user
+     * @param \Pterodactyl\Models\User $user
      * @return \Illuminate\View\View
      */
     public function view(User $user)
@@ -131,8 +131,8 @@ class UserController extends Controller
     /**
      * Delete a user from the system.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Pterodactyl\Models\User $user
+     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Models\User $user
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -152,7 +152,7 @@ class UserController extends Controller
     /**
      * Create a user.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -169,8 +169,8 @@ class UserController extends Controller
     /**
      * Update a user on the system.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
-     * @param  \Pterodactyl\Models\User                         $user
+     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
+     * @param \Pterodactyl\Models\User                         $user
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -186,7 +186,7 @@ class UserController extends Controller
     /**
      * Get a JSON response of users on the system.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function json(Request $request)

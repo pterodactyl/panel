@@ -26,5 +26,4 @@ namespace Pterodactyl\Exceptions\Service\Pack;
 
 class ZipArchiveCreationException extends \Exception
 {
-    //
 }

@@ -49,7 +49,7 @@ abstract class AdminFormRequest extends FormRequest
      * Return only the fields that we are interested in from the request.
      * This will include empty fields as a null value.
      *
-     * @param  array $only
+     * @param array $only
      * @return array
      */
     public function normalize($only = [])

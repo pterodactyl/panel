@@ -40,8 +40,7 @@ class UserObserver
     /**
      * Listen to the User creating event.
      *
-     * @param  \Pterodactyl\Models\User  $user
-     * @return void
+     * @param \Pterodactyl\Models\User $user
      */
     public function creating(User $user)
     {
@@ -53,8 +52,7 @@ class UserObserver
     /**
      * Listen to the User created event.
      *
-     * @param  \Pterodactyl\Models\User  $user
-     * @return void
+     * @param \Pterodactyl\Models\User $user
      */
     public function created(User $user)
     {
@@ -64,8 +62,7 @@ class UserObserver
     /**
      * Listen to the User deleting event.
      *
-     * @param  \Pterodactyl\Models\User  $user
-     * @return void
+     * @param \Pterodactyl\Models\User $user
      */
     public function deleting(User $user)
     {
@@ -75,8 +72,7 @@ class UserObserver
     /**
      * Listen to the User deleted event.
      *
-     * @param  \Pterodactyl\Models\User  $user
-     * @return void
+     * @param \Pterodactyl\Models\User $user
      */
     public function deleted(User $user)
     {

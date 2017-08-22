@@ -28,5 +28,4 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class InvalidFileMimeTypeException extends DisplayException
 {
-    //
 }

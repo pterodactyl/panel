@@ -46,8 +46,8 @@ class PermissionService
     /**
      * Store a permission key in the database.
      *
-     * @param  string  $key
-     * @param  string  $permission
+     * @param string $key
+     * @param string $permission
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

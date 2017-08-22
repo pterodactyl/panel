@@ -100,7 +100,7 @@ class ServiceController extends Controller
     /**
      * Return base view for a service.
      *
-     * @param  int $service
+     * @param int $service
      * @return \Illuminate\View\View
      */
     public function view($service)
@@ -113,7 +113,7 @@ class ServiceController extends Controller
     /**
      * Return function editing view for a service.
      *
-     * @param  \Pterodactyl\Models\Service $service
+     * @param \Pterodactyl\Models\Service $service
      * @return \Illuminate\View\View
      */
     public function viewFunctions(Service $service)
@@ -124,7 +124,7 @@ class ServiceController extends Controller
     /**
      * Handle post action for new service.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -140,8 +140,8 @@ class ServiceController extends Controller
     /**
      * Edits configuration for a specific service.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
-     * @param  \Pterodactyl\Models\Service                                 $service
+     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
+     * @param \Pterodactyl\Models\Service                                 $service
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -158,8 +158,8 @@ class ServiceController extends Controller
     /**
      * Update the functions file for a service.
      *
-     * @param  \Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest $request
-     * @param  \Pterodactyl\Models\Service                                           $service
+     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest $request
+     * @param \Pterodactyl\Models\Service                                          $service
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -176,7 +176,7 @@ class ServiceController extends Controller
     /**
      * Delete a service from the panel.
      *
-     * @param  \Pterodactyl\Models\Service $service
+     * @param \Pterodactyl\Models\Service $service
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException

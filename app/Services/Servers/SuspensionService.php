@@ -77,8 +77,8 @@ class SuspensionService
     /**
      * Suspends a server on the system.
      *
-     * @param  int|\Pterodactyl\Models\Server $server
-     * @param  string                         $action
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param string                         $action
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -93,7 +93,8 @@ class SuspensionService
 
         if (! in_array($action, ['suspend', 'unsuspend'])) {
             throw new \InvalidArgumentException(sprintf(
-                'Action must be either suspend or unsuspend, %s passed.', $action
+                'Action must be either suspend or unsuspend, %s passed.',
+                $action
             ));
         }
 
