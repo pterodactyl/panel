@@ -22,7 +22,9 @@ class SetAllocationUnqiueUsingMultipleFields extends Migration
     public function down()
     {
         Schema::table('allocations', function (Blueprint $table) {
+            $table->dropForeign(['node_id']);
             $table->dropUnique(['node_id', 'ip', 'port']);
+            $table->foreign('node_id')->references('id')->on('nodes');
         });
     }
 }
