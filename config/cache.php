@@ -80,5 +80,5 @@ return [
     |
     */
 
-    'prefix' => 'laravel',
+    'prefix' => 'pterodactyl',
 ];

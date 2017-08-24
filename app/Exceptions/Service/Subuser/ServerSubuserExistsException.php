@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,19 +22,10 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Facades;
+namespace Pterodactyl\Exceptions\Service\Subuser;
 
-use Illuminate\Support\Facades\Facade;
+use Pterodactyl\Exceptions\DisplayException;
 
-class Version extends Facade
+class ServerSubuserExistsException extends DisplayException
 {
-    /**
-     * Returns the facade accessor class.
-     *
-     * @return strig
-     */
-    protected static function getFacadeAccessor()
-    {
-        return '\Pterodactyl\Services\VersionService';
-    }
 }

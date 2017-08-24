@@ -145,3 +145,12 @@ $factory->define(Pterodactyl\Models\Pack::class, function (Faker\Generator $fake
         'locked' => 0,
     ];
 });
+
+$factory->define(Pterodactyl\Models\Subuser::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'user_id' => $faker->randomNumber(),
+        'server_id' => $faker->randomNumber(),
+        'daemonSecret' => $faker->unique()->uuid,
+    ];
+});

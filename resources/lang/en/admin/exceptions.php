@@ -54,4 +54,8 @@ return [
         'zip_extraction' => 'An exception was encountered while attempting to extract the archive provided onto the server.',
         'invalid_archive_exception' => 'The pack archive provided appears to be missing a required archive.tar.gz or import.json file in the base directory.',
     ],
+    'subusers' => [
+        'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
+        'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
+    ],
 ];

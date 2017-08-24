@@ -119,7 +119,7 @@ return [
     | if panel is up to date.
     */
     'cdn' => [
-        'cache' => 60,
+        'cache_time' => 60,
         'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
     ],
 

@@ -87,6 +87,20 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     /**
      * {@inheritdoc}
      */
+    public function setSubuserKey($key, array $permissions)
+    {
+        return $this->getHttpClient()->request('PATCH', '/server', [
+            'json' => [
+                'keys' => [
+                    $key => $permissions,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function update(array $data)
     {
         return $this->getHttpClient()->request('PATCH', '/server', [

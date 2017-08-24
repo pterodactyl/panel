@@ -26,10 +26,14 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 
-class Subuser extends Model
+class Subuser extends Model implements CleansAttributes, ValidableContract
 {
-    use Notifiable;
+    use Eloquence, Notifiable, Validable;
 
     /**
      * The table associated with the model.
@@ -60,6 +64,24 @@ class Subuser extends Model
     protected $casts = [
         'user_id' => 'integer',
         'server_id' => 'integer',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'user_id' => 'required',
+        'server_id' => 'required',
+        'daemonSecret' => 'required',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'user_id' => 'numeric|exists:users,id',
+        'server_id' => 'numeric|exists:servers,id',
+        'daemonSecret' => 'string',
     ];
 
     /**

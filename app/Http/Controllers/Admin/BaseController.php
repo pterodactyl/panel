@@ -28,6 +28,7 @@ use Krucas\Settings\Settings;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\BaseFormRequest;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
 
 class BaseController extends Controller
 {
@@ -41,10 +42,26 @@ class BaseController extends Controller
      */
     protected $settings;
 
-    public function __construct(AlertsMessageBag $alert, Settings $settings)
-    {
+    /**
+     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     */
+    protected $version;
+
+    /**
+     * BaseController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                    $alert
+     * @param \Krucas\Settings\Settings                            $settings
+     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $version
+     */
+    public function __construct(
+        AlertsMessageBag $alert,
+        Settings $settings,
+        SoftwareVersionService $version
+    ) {
         $this->alert = $alert;
         $this->settings = $settings;
+        $this->version = $version;
     }
 
     /**
@@ -54,7 +71,7 @@ class BaseController extends Controller
      */
     public function getIndex()
     {
-        return view('admin.index');
+        return view('admin.index', ['version' => $this->version]);
     }
 
     /**

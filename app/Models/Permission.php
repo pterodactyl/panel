@@ -25,9 +25,13 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Eloquence;
 
-class Permission extends Model
+class Permission extends Model implements CleansAttributes
 {
+    use Eloquence;
+
     /**
      * Should timestamps be used on this model.
      *
@@ -118,12 +122,12 @@ class Permission extends Model
     /**
      * Return a collection of permissions available.
      *
-     * @param array $single
-     * @return \Illuminate\Support\Collection|array
+     * @param bool $array
+     * @return array|\Illuminate\Support\Collection
      */
-    public static function listPermissions($single = false)
+    public static function getPermissions($array = false)
     {
-        if ($single) {
+        if ($array) {
             return collect(self::$permissions)->mapWithKeys(function ($item) {
                 return $item;
             })->all();
