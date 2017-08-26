@@ -48,7 +48,7 @@ class VariableRepository
         $option = ServiceOption::select('id')->findOrFail($option);
 
         // If there is not a rules present let's populate it with the default/placeholder value.
-        if(!array_key_exists('rules',$data) || empty($data['rules'])){
+        if (! array_key_exists('rules', $data) || empty($data['rules'])) {
             $data['rules'] = 'required|string|max:20';
         }
 
