@@ -22,26 +22,24 @@
  * SOFTWARE.
  */
 
-if (! function_exists('human_readable')) {
+namespace Pterodactyl\Repositories\Daemon;
+
+use Webmozart\Assert\Assert;
+use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
+
+class CommandRepository extends BaseRepository implements CommandRepositoryInterface
+{
     /**
-     * Generate a human-readable filesize for a given file path.
-     *
-     * @param string $path
-     * @param int    $precision
-     * @return string
+     * {@inheritdoc}
      */
-    function human_readable($path, $precision = 2)
+    public function send($command)
     {
-        if (is_numeric($path)) {
-            $i = 0;
-            while (($path / 1024) > 0.9) {
-                $path = $path / 1024;
-                ++$i;
-            }
+        Assert::stringNotEmpty($command, 'First argument passed to send must be a non-empty string, received %s.');
 
-            return round($path, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
-        }
-
-        return app('file')->humanReadableSize($path, $precision);
+        return $this->getHttpClient()->request('POST', '/server/command', [
+            'json' => [
+                'command' => $command,
+            ],
+        ]);
     }
 }

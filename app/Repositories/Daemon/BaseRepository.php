@@ -29,16 +29,47 @@ use Illuminate\Foundation\Application;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\Daemon\BaseRepositoryInterface;
+use Webmozart\Assert\Assert;
 
 class BaseRepository implements BaseRepositoryInterface
 {
+    /**
+     * @var \Illuminate\Foundation\Application
+     */
     protected $app;
+
+    /**
+     * @var
+     */
     protected $accessServer;
+
+    /**
+     * @var
+     */
     protected $accessToken;
+
+    /**
+     * @var
+     */
     protected $node;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
     protected $config;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
     protected $nodeRepository;
 
+    /**
+     * BaseRepository constructor.
+     *
+     * @param \Illuminate\Foundation\Application                        $app
+     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
+     */
     public function __construct(
         Application $app,
         ConfigRepository $config,
@@ -49,44 +80,70 @@ class BaseRepository implements BaseRepositoryInterface
         $this->nodeRepository = $nodeRepository;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setNode($id)
     {
-        // @todo accept a model
+        Assert::numeric($id, 'The first argument passed to setNode must be numeric, received %s.');
+
         $this->node = $this->nodeRepository->find($id);
 
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getNode()
     {
         return $this->node;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setAccessServer($server = null)
     {
+        Assert::nullOrString($server, 'The first argument passed to setAccessServer must be null or a string, received %s.');
+
         $this->accessServer = $server;
 
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAccessServer()
     {
         return $this->accessServer;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setAccessToken($token = null)
     {
+        Assert::nullOrString($token, 'The first argument passed to setAccessToken must be null or a string, received %s.');
+
         $this->accessToken = $token;
 
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getAccessToken()
     {
         return $this->accessToken;
     }
 
-    public function getHttpClient($headers = [])
+    /**
+     * {@inheritdoc}
+     */
+    public function getHttpClient(array $headers = [])
     {
         if (! is_null($this->accessServer)) {
             $headers['X-Access-Server'] = $this->getAccessServer();

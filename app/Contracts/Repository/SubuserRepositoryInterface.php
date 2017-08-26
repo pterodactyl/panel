@@ -27,6 +27,16 @@ namespace Pterodactyl\Contracts\Repository;
 interface SubuserRepositoryInterface extends RepositoryInterface
 {
     /**
+     * Return a subuser with the associated server relationship.
+     *
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Collection
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithServer($id);
+
+    /**
      * Find a subuser and return with server and permissions relationships.
      *
      * @param int $id

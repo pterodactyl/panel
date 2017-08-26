@@ -22,26 +22,34 @@
  * SOFTWARE.
  */
 
-if (! function_exists('human_readable')) {
+namespace Pterodactyl\Repositories\Daemon;
+
+use Webmozart\Assert\Assert;
+use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException;
+
+class PowerRepository extends BaseRepository implements PowerRepositoryInterface
+{
     /**
-     * Generate a human-readable filesize for a given file path.
-     *
-     * @param string $path
-     * @param int    $precision
-     * @return string
+     * {@inheritdoc}
      */
-    function human_readable($path, $precision = 2)
+    public function sendSignal($signal)
     {
-        if (is_numeric($path)) {
-            $i = 0;
-            while (($path / 1024) > 0.9) {
-                $path = $path / 1024;
-                ++$i;
-            }
+        Assert::stringNotEmpty($signal, 'The first argument passed to sendSignal must be a non-empty string, received %s.');
 
-            return round($path, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
+        switch ($signal) {
+            case self::SIGNAL_START:
+            case self::SIGNAL_STOP:
+            case self::SIGNAL_RESTART:
+            case self::SIGNAL_KILL:
+                return $this->getHttpClient()->request('PUT', '/server/power', [
+                    'json' => [
+                        'action' => $signal,
+                    ],
+                ]);
+                break;
+            default:
+                throw new InvalidPowerSignalException('The signal ' . $signal . ' is not defined and could not be processed.');
         }
-
-        return app('file')->humanReadableSize($path, $precision);
     }
 }

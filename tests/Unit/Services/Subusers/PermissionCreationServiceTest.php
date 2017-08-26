@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,50 +22,51 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Tests\Unit\Services\Subusers;
 
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Models\Subuser;
-use Webmozart\Assert\Assert;
+use Mockery as m;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
+use Pterodactyl\Services\Subusers\PermissionCreationService;
+use Tests\TestCase;
 
-class SubuserRepository extends EloquentRepository implements SubuserRepositoryInterface
+class PermissionCreationServiceTest extends TestCase
 {
     /**
-     * {@inheritdoc}
+     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
      */
-    public function model()
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     */
+    protected $service;
+
+    /**
+     * Setup tests.
+     */
+    public function setUp()
     {
-        return Subuser::class;
+        parent::setUp();
+
+        $this->repository = m::mock(PermissionRepositoryInterface::class);
+        $this->service = new PermissionCreationService($this->repository);
     }
 
     /**
-     * {@inheritdoc}
+     * Test that permissions can be assigned correctly.
      */
-    public function getWithServer($id)
+    public function testPermissionsAreAssignedCorrectly()
     {
-        Assert::numeric($id, 'First argument passed to getWithServer must be numeric, received %s.');
+        $permissions = ['reset-sftp', 'view-sftp'];
 
-        $instance = $this->getBuilder()->with('server')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
-        }
+        $this->repository->shouldReceive('insert')->with([
+            ['subuser_id' => 1, 'permission' => 'reset-sftp'],
+            ['subuser_id' => 1, 'permission' => 'view-sftp'],
+        ]);
 
-        return $instance;
-    }
+        $response = $this->service->handle(1, $permissions);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getWithServerAndPermissions($id)
-    {
-        Assert::numeric($id, 'First argument passed to getWithServerAndPermissions must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with(['server', 'permission'])->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
-        }
-
-        return $instance;
+        $this->assertNotEmpty($response);
+        $this->assertEquals(['s:get', 's:console', 's:set-password'], $response);
     }
 }

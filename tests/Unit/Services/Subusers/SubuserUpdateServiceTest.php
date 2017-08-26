@@ -28,15 +28,17 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Log\Writer;
 use Mockery as m;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Services\Subusers\SubuserDeletionService;
+use Pterodactyl\Services\Subusers\PermissionCreationService;
+use Pterodactyl\Services\Subusers\SubuserUpdateService;
 use Tests\TestCase;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class SubuserDeletionServiceTest extends TestCase
+class SubuserUpdateServiceTest extends TestCase
 {
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -54,12 +56,22 @@ class SubuserDeletionServiceTest extends TestCase
     protected $exception;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
+     */
+    protected $permissionRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     */
+    protected $permissionService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserDeletionService
+     * @var \Pterodactyl\Services\Subusers\SubuserUpdateService
      */
     protected $service;
 
@@ -78,41 +90,47 @@ class SubuserDeletionServiceTest extends TestCase
         $this->connection = m::mock(ConnectionInterface::class);
         $this->daemonRepository = m::mock(DaemonServerRepositoryInterface::class);
         $this->exception = m::mock(RequestException::class);
+        $this->permissionRepository = m::mock(PermissionRepositoryInterface::class);
+        $this->permissionService = m::mock(PermissionCreationService::class);
         $this->repository = m::mock(SubuserRepositoryInterface::class);
         $this->writer = m::mock(Writer::class);
 
-        $this->service = new SubuserDeletionService(
+        $this->service = new SubuserUpdateService(
             $this->connection,
             $this->daemonRepository,
+            $this->permissionService,
+            $this->permissionRepository,
             $this->repository,
             $this->writer
         );
     }
 
     /**
-     * Test that a subuser is deleted correctly.
+     * Test that permissions are updated in the database.
      */
-    public function testSubuserIsDeleted()
+    public function testPermissionsAreUpdated()
     {
         $subuser = factory(Subuser::class)->make();
         $subuser->server = factory(Server::class)->make();
 
         $this->repository->shouldReceive('getWithServer')->with($subuser->id)->once()->andReturn($subuser);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($subuser->id)->once()->andReturn(1);
+        $this->permissionRepository->shouldReceive('deleteWhere')->with([
+            ['subuser_id', '=', $subuser->id],
+        ])->once()->andReturnNull();
+        $this->permissionService->shouldReceive('handle')->with($subuser->id, ['some-permission'])->once()->andReturn(['test:1', 'test:2']);
 
         $this->daemonRepository->shouldReceive('setNode')->with($subuser->server->node_id)->once()->andReturnSelf()
             ->shouldReceive('setAccessServer')->with($subuser->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setSubuserKey')->with($subuser->daemonSecret, [])->once()->andReturnNull();
+            ->shouldReceive('setSubuserKey')->with($subuser->daemonSecret, ['test:1', 'test:2'])->once()->andReturnNull();
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($subuser->id);
-        $this->assertEquals(1, $response);
+        $this->service->handle($subuser->id, ['some-permission']);
     }
 
     /**
-     * Test that an exception caused by the daemon is properly handled.
+     * Test that an exception is thrown if the daemon connection fails.
      */
     public function testExceptionIsThrownIfDaemonConnectionFails()
     {
@@ -121,19 +139,20 @@ class SubuserDeletionServiceTest extends TestCase
 
         $this->repository->shouldReceive('getWithServer')->with($subuser->id)->once()->andReturn($subuser);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($subuser->id)->once()->andReturn(1);
+        $this->permissionRepository->shouldReceive('deleteWhere')->with([
+            ['subuser_id', '=', $subuser->id],
+        ])->once()->andReturnNull();
+        $this->permissionService->shouldReceive('handle')->with($subuser->id, [])->once()->andReturn([]);
 
-        $this->daemonRepository->shouldReceive('setNode->setAccessServer->setSubuserKey')->once()->andThrow($this->exception);
-
+        $this->daemonRepository->shouldReceive('setNode')->once()->andThrow($this->exception);
         $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
-        $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
         $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
+        $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
 
         try {
-            $this->service->handle($subuser->id);
+            $this->service->handle($subuser->id, []);
         } catch (DisplayException $exception) {
             $this->assertEquals(trans('admin/exceptions.daemon_connection_failed', ['code' => 'E_CONN_REFUSED']), $exception->getMessage());
         }
     }
-
 }

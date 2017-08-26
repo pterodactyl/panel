@@ -28,24 +28,17 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Log\Writer;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Users\CreationService;
 
 class SubuserCreationService
 {
-    const CORE_DAEMON_PERMISSIONS = [
-        's:get',
-        's:console',
-    ];
-
     const DAEMON_SECRET_BYTES = 18;
 
     /**
@@ -59,9 +52,9 @@ class SubuserCreationService
     protected $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
+     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
      */
-    protected $permissionRepository;
+    protected $permissionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
@@ -92,7 +85,7 @@ class SubuserCreationService
         ConnectionInterface $connection,
         CreationService $userCreationService,
         DaemonServerRepositoryInterface $daemonRepository,
-        PermissionRepositoryInterface $permissionRepository,
+        PermissionCreationService $permissionService,
         ServerRepositoryInterface $serverRepository,
         SubuserRepositoryInterface $subuserRepository,
         UserRepositoryInterface $userRepository,
@@ -100,7 +93,7 @@ class SubuserCreationService
     ) {
         $this->connection = $connection;
         $this->daemonRepository = $daemonRepository;
-        $this->permissionRepository = $permissionRepository;
+        $this->permissionService = $permissionService;
         $this->subuserRepository = $subuserRepository;
         $this->serverRepository = $serverRepository;
         $this->userRepository = $userRepository;
@@ -154,21 +147,7 @@ class SubuserCreationService
             'daemonSecret' => bin2hex(random_bytes(self::DAEMON_SECRET_BYTES)),
         ]);
 
-        $permissionMappings = Permission::getPermissions(true);
-        $daemonPermissions = self::CORE_DAEMON_PERMISSIONS;
-
-        foreach ($permissions as $permission) {
-            if (array_key_exists($permission, $permissionMappings)) {
-                if (! is_null($permissionMappings[$permission])) {
-                    array_push($daemonPermissions, $permissionMappings[$permission]);
-                }
-
-                $this->permissionRepository->create([
-                    'subuser_id' => $subuser->id,
-                    'permission' => $permission,
-                ]);
-            }
-        }
+        $daemonPermissions = $this->permissionService->handle($subuser->id, $permissions);
 
         try {
             $this->daemonRepository->setNode($server->node_id)->setAccessServer($server->uuid)
@@ -178,9 +157,9 @@ class SubuserCreationService
             return $subuser;
         } catch (RequestException $exception) {
             $this->connection->rollBack();
-            $response = $exception->getResponse();
             $this->writer->warning($exception);
 
+            $response = $exception->getResponse();
             throw new DisplayException(trans('admin/exceptions.daemon_connection_failed', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));

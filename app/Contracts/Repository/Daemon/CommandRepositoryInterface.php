@@ -22,26 +22,15 @@
  * SOFTWARE.
  */
 
-if (! function_exists('human_readable')) {
+namespace Pterodactyl\Contracts\Repository\Daemon;
+
+interface CommandRepositoryInterface extends BaseRepositoryInterface
+{
     /**
-     * Generate a human-readable filesize for a given file path.
+     * Send a command to a server.
      *
-     * @param string $path
-     * @param int    $precision
-     * @return string
+     * @param string $command
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    function human_readable($path, $precision = 2)
-    {
-        if (is_numeric($path)) {
-            $i = 0;
-            while (($path / 1024) > 0.9) {
-                $path = $path / 1024;
-                ++$i;
-            }
-
-            return round($path, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
-        }
-
-        return app('file')->humanReadableSize($path, $precision);
-    }
+    public function send($command);
 }

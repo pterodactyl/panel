@@ -27,6 +27,7 @@ namespace Pterodactyl\Repositories\Daemon;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface as DatabaseServerRepositoryInterface;
+use Webmozart\Assert\Assert;
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {
@@ -35,8 +36,11 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function create($id, $overrides = [], $start = false)
+    public function create($id, array $overrides = [], $start = false)
     {
+        Assert::numeric($id, 'First argument passed to create must be numeric, received %s.');
+        Assert::boolean($start, 'Third argument passed to create must be boolean, received %s.');
+
         $repository = $this->app->make(DatabaseServerRepositoryInterface::class);
         $environment = $this->app->make(EnvironmentService::class);
 
@@ -89,6 +93,8 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function setSubuserKey($key, array $permissions)
     {
+        Assert::stringNotEmpty($key, 'First argument passed to setSubuserKey must be a non-empty string, received %s.');
+
         return $this->getHttpClient()->request('PATCH', '/server', [
             'json' => [
                 'keys' => [
@@ -113,6 +119,8 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function reinstall($data = null)
     {
+        Assert::nullOrIsArray($data, 'First argument passed to reinstall must be null or an array, received %s.');
+
         if (is_null($data)) {
             return $this->getHttpClient()->request('POST', '/server/reinstall');
         }

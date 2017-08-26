@@ -31,6 +31,8 @@ interface BaseRepositoryInterface
      *
      * @param int $id
      * @return $this
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function setNode($id);
 
@@ -77,5 +79,5 @@ interface BaseRepositoryInterface
      * @param array $headers
      * @return \GuzzleHttp\Client
      */
-    public function getHttpClient($headers = []);
+    public function getHttpClient(array $headers = []);
 }

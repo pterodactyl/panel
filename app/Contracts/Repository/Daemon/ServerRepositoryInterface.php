@@ -34,7 +34,7 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @param bool  $start
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function create($id, $overrides = [], $start = false);
+    public function create($id, array $overrides = [], $start = false);
 
     /**
      * Set an access token and associated permissions for a server.

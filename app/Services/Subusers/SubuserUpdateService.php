@@ -24,14 +24,15 @@
 
 namespace Pterodactyl\Services\Subusers;
 
-use Illuminate\Log\Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Log\Writer;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
 
-class SubuserDeletionService
+class SubuserUpdateService
 {
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -44,6 +45,16 @@ class SubuserDeletionService
     protected $daemonRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
+     */
+    protected $permissionRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     */
+    protected $permissionService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
     protected $repository;
@@ -54,47 +65,53 @@ class SubuserDeletionService
     protected $writer;
 
     /**
-     * SubuserDeletionService constructor.
+     * SubuserUpdateService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
+     * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface    $permissionRepository
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $repository
      * @param \Illuminate\Log\Writer                                             $writer
      */
     public function __construct(
         ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonRepository,
+        PermissionCreationService $permissionService,
+        PermissionRepositoryInterface $permissionRepository,
         SubuserRepositoryInterface $repository,
         Writer $writer
     ) {
         $this->connection = $connection;
         $this->daemonRepository = $daemonRepository;
+        $this->permissionRepository = $permissionRepository;
+        $this->permissionService = $permissionService;
         $this->repository = $repository;
         $this->writer = $writer;
     }
 
     /**
-     * Delete a subuser and their associated permissions from the Panel and Daemon.
+     * Update permissions for a given subuser.
      *
-     * @param int $subuser
-     * @return int|null
+     * @param int   $subuser
+     * @param array $permissions
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($subuser)
+    public function handle($subuser, array $permissions)
     {
         $subuser = $this->repository->getWithServer($subuser);
 
         $this->connection->beginTransaction();
-        $response = $this->repository->delete($subuser->id);
+        $this->permissionRepository->deleteWhere([['subuser_id', '=', $subuser->id]]);
+        $daemonPermissions = $this->permissionService->handle($subuser->id, $permissions);
 
         try {
             $this->daemonRepository->setNode($subuser->server->node_id)->setAccessServer($subuser->server->uuid)
-                ->setSubuserKey($subuser->daemonSecret, []);
+                ->setSubuserKey($subuser->daemonSecret, $daemonPermissions);
             $this->connection->commit();
-
-            return $response;
         } catch (RequestException $exception) {
             $this->connection->rollBack();
             $this->writer->warning($exception);

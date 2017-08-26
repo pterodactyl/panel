@@ -22,26 +22,40 @@
  * SOFTWARE.
  */
 
-if (! function_exists('human_readable')) {
+namespace Pterodactyl\Contracts\Repository\Daemon;
+
+interface FileRepositoryInterface extends BaseRepositoryInterface
+{
     /**
-     * Generate a human-readable filesize for a given file path.
+     * Return stat information for a given file.
      *
      * @param string $path
-     * @param int    $precision
-     * @return string
+     * @return object
      */
-    function human_readable($path, $precision = 2)
-    {
-        if (is_numeric($path)) {
-            $i = 0;
-            while (($path / 1024) > 0.9) {
-                $path = $path / 1024;
-                ++$i;
-            }
+    public function getFileStat($path);
 
-            return round($path, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
-        }
+    /**
+     * Return the contents of a given file if it can be edited in the Panel.
+     *
+     * @param string $path
+     * @return object
+     */
+    public function getContent($path);
 
-        return app('file')->humanReadableSize($path, $precision);
-    }
+    /**
+     * Save new contents to a given file.
+     *
+     * @param string $path
+     * @param string $content
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function putContent($path, $content);
+
+    /**
+     * Return a directory listing for a given path.
+     *
+     * @param string $path
+     * @return array
+     */
+    public function getDirectory($path);
 }
