@@ -25,9 +25,9 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Alert;
-use Auth;
 use Log;
+use Auth;
+use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\APIKey;
 use Pterodactyl\Models\APIPermission;
