@@ -16,7 +16,8 @@
 $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'uuid' => $faker->uuid,
+        'node_id' => $faker->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
         'uuidShort' => str_random(8),
         'name' => $faker->firstName,
         'description' => implode(' ', $faker->sentences()),

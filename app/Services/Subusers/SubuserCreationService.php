@@ -177,6 +177,7 @@ class SubuserCreationService
 
             return $subuser;
         } catch (RequestException $exception) {
+            $this->connection->rollBack();
             $response = $exception->getResponse();
             $this->writer->warning($exception);
 

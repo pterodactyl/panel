@@ -25,7 +25,9 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\Subuser;
+use Webmozart\Assert\Assert;
 
 class SubuserRepository extends EloquentRepository implements SubuserRepositoryInterface
 {
@@ -35,5 +37,20 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     public function model()
     {
         return Subuser::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithServerAndPermissions($id)
+    {
+        Assert::numeric($id, 'First argument passed to getWithServerAndPermissions must be numeric, received %s.');
+
+        $instance = $this->getBuilder()->with(['server', 'permission'])->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
     }
 }
