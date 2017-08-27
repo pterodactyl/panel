@@ -83,6 +83,8 @@ class LocationController extends Controller
      *
      * @param int $id
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view($id)
     {

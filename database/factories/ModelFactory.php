@@ -91,6 +91,7 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
 
 $factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $faker) {
     return [
+        'id' => $faker->unique()->randomNumber(),
         'author' => $faker->unique()->uuid,
         'name' => $faker->word,
         'description' => null,
@@ -153,5 +154,26 @@ $factory->define(Pterodactyl\Models\Subuser::class, function (Faker\Generator $f
         'user_id' => $faker->randomNumber(),
         'server_id' => $faker->randomNumber(),
         'daemonSecret' => $faker->unique()->uuid,
+    ];
+});
+
+$factory->define(Pterodactyl\Models\Allocation::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'node_id' => $faker->randomNumber(),
+        'ip' => $faker->ipv4,
+        'port' => $faker->randomNumber(5),
+    ];
+});
+
+$factory->define(Pterodactyl\Models\DatabaseHost::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'name' => $faker->colorName,
+        'host' => $faker->unique()->ipv4,
+        'port' => 3306,
+        'username' => $faker->colorName,
+        'password' => Crypt::encrypt($faker->word),
+        'node_id' => $faker->randomNumber(),
     ];
 });

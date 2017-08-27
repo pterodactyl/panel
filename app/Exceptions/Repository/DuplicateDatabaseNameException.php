@@ -22,43 +22,10 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Pterodactyl\Exceptions\Repository;
 
-use Webmozart\Assert\Assert;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
 
-class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface
+class DuplicateDatabaseNameException extends DisplayException
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function model()
-    {
-        return DatabaseHost::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getWithViewDetails()
-    {
-        return $this->getBuilder()->withCount('databases')->with('node')->get();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getWithServers($id)
-    {
-        Assert::numeric($id, 'First argument passed to getWithServers must be numeric, recieved %s.');
-
-        $instance = $this->getBuilder()->with('databases.server')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
-        }
-
-        return $instance;
-    }
 }

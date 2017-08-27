@@ -25,7 +25,13 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Repositories\Daemon\CommandRepository;
+use Pterodactyl\Repositories\Daemon\FileRepository;
+use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\PackRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
@@ -71,8 +77,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AllocationRepositoryInterface::class, AllocationRepository::class);
         $this->app->bind(ApiKeyRepositoryInterface::class, ApiKeyRepository::class);
         $this->app->bind(ApiPermissionRepositoryInterface::class, ApiPermissionRepository::class);
-        $this->app->bind(DatabaseHostRepositoryInterface::class, DatabaseHostRepository::class);
         $this->app->bind(DatabaseRepositoryInterface::class, DatabaseRepository::class);
+        $this->app->bind(DatabaseHostRepositoryInterface::class, DatabaseHostRepository::class);
         $this->app->bind(LocationRepositoryInterface::class, LocationRepository::class);
         $this->app->bind(NodeRepositoryInterface::class, NodeRepository::class);
         $this->app->bind(OptionVariableRepositoryInterface::class, OptionVariableRepository::class);
@@ -86,6 +92,9 @@ class RepositoryServiceProvider extends ServiceProvider
 
         // Daemon Repositories
         $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
+        $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
         $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
+        $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
+        $this->app->bind(PowerRepositoryInterface::class, PowerRepository::class);
     }
 }

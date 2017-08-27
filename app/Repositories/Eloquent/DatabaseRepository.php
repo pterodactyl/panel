@@ -24,10 +24,10 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 use Pterodactyl\Models\Database;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
@@ -67,13 +67,13 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function createIfNotExists(array $data)
     {
         $instance = $this->getBuilder()->where([
-            ['server_id', $data['server_id']],
-            ['database_host_id', $data['database_host_id']],
-            ['database', $data['database']],
+            ['server_id', '=', array_get($data, 'server_id')],
+            ['database_host_id', '=', array_get($data, 'database_host_id')],
+            ['database', '=', array_get($data, 'database')],
         ])->count();
 
         if ($instance > 0) {
-            throw new DisplayException('A database with those details already exists for the specified server.');
+            throw new DuplicateDatabaseNameException('A database with those details already exists for the specified server.');
         }
 
         return $this->create($data);

@@ -26,6 +26,8 @@ namespace Pterodactyl\Services\Database;
 
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -35,6 +37,11 @@ class DatabaseHostService
      * @var \Illuminate\Database\DatabaseManager
      */
     protected $database;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     */
+    protected $databaseRepository;
 
     /**
      * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
@@ -55,17 +62,20 @@ class DatabaseHostService
      * DatabaseHostService constructor.
      *
      * @param \Illuminate\Database\DatabaseManager                              $database
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      * @param \Pterodactyl\Extensions\DynamicDatabaseConnection                 $dynamic
      * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
      */
     public function __construct(
         DatabaseManager $database,
+        DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepositoryInterface $repository,
         DynamicDatabaseConnection $dynamic,
         Encrypter $encrypter
     ) {
         $this->database = $database;
+        $this->databaseRepository = $databaseRepository;
         $this->dynamic = $dynamic;
         $this->encrypter = $encrypter;
         $this->repository = $repository;
@@ -111,6 +121,7 @@ class DatabaseHostService
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update($id, array $data)
     {
@@ -142,6 +153,11 @@ class DatabaseHostService
      */
     public function delete($id)
     {
-        return $this->repository->deleteIfNoDatabases($id);
+        $count = $this->databaseRepository->findCountWhere([['database_host_id', '=', $id]]);
+        if ($count > 0) {
+            throw new DisplayException(trans('admin/exceptions.databases.delete_has_databases'));
+        }
+
+        return $this->repository->delete($id);
     }
 }

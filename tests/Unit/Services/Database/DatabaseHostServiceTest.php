@@ -25,6 +25,8 @@
 namespace Tests\Unit\Services\Administrative;
 
 use Mockery as m;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Tests\TestCase;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -38,6 +40,11 @@ class DatabaseHostServiceTest extends TestCase
      * @var \Illuminate\Database\DatabaseManager
      */
     protected $database;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     */
+    protected $databaseRepository;
 
     /**
      * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
@@ -67,12 +74,14 @@ class DatabaseHostServiceTest extends TestCase
         parent::setUp();
 
         $this->database = m::mock(DatabaseManager::class);
+        $this->databaseRepository = m::mock(DatabaseRepositoryInterface::class);
         $this->dynamic = m::mock(DynamicDatabaseConnection::class);
         $this->encrypter = m::mock(Encrypter::class);
         $this->repository = m::mock(DatabaseHostRepositoryInterface::class);
 
         $this->service = new DatabaseHostService(
             $this->database,
+            $this->databaseRepository,
             $this->repository,
             $this->dynamic,
             $this->encrypter
@@ -82,7 +91,7 @@ class DatabaseHostServiceTest extends TestCase
     /**
      * Test that creating a host returns the correct data.
      */
-    public function test_create_host_function()
+    public function testHostIsCreated()
     {
         $data = [
             'password' => 'raw-password',
@@ -130,7 +139,7 @@ class DatabaseHostServiceTest extends TestCase
     /**
      * Test that passing a password will store an encrypted version in the DB.
      */
-    public function test_update_with_password()
+    public function testHostIsUpdatedWithPasswordProvided()
     {
         $finalData = (object) ['password' => 'enc-pass', 'host' => '123.456.78.9'];
 
@@ -158,7 +167,7 @@ class DatabaseHostServiceTest extends TestCase
     /**
      * Test that passing no or empty password will skip storing it.
      */
-    public function test_update_without_password()
+    public function testHostIsUpdatedWithoutPassword()
     {
         $finalData = (object) ['host' => '123.456.78.9'];
 
@@ -182,12 +191,27 @@ class DatabaseHostServiceTest extends TestCase
     /**
      * Test that a database host can be deleted.
      */
-    public function test_delete_function()
+    public function testHostIsDeleted()
     {
-        $this->repository->shouldReceive('deleteIfNoDatabases')->with(1)->once()->andReturn(true);
+        $this->databaseRepository->shouldReceive('findCountWhere')->with([['database_host_id', '=', 1]])->once()->andReturn(0);
+        $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(true);
 
         $response = $this->service->delete(1);
 
         $this->assertTrue($response, 'Assert that response is true.');
+    }
+
+    /**
+     * Test exception is thrown when there are databases attached to a host.
+     */
+    public function testExceptionIsThrownIfHostHasDatabases()
+    {
+        $this->databaseRepository->shouldReceive('findCountWhere')->with([['database_host_id', '=', 1]])->once()->andReturn(2);
+
+        try {
+            $this->service->delete(1);
+        } catch (DisplayException $exception) {
+            $this->assertEquals(trans('admin/exceptions.databases.delete_has_databases'), $exception->getMessage());
+        }
     }
 }

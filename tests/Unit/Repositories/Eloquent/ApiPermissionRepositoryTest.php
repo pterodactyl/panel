@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,43 +22,44 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Tests\Unit\Repositories\Eloquent;
 
-use Webmozart\Assert\Assert;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Mockery as m;
+use Pterodactyl\Models\APIPermission;
+use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
+use Tests\TestCase;
 
-class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface
+class ApiPermissionRepositoryTest extends TestCase
 {
     /**
-     * {@inheritdoc}
+     * @var \Illuminate\Database\Eloquent\Builder
      */
-    public function model()
+    protected $builder;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\ApiPermissionRepository
+     */
+    protected $repository;
+
+    /**
+     * Setup tests.
+     */
+    public function setUp()
     {
-        return DatabaseHost::class;
+        parent::setUp();
+
+        $this->builder = m::mock(Builder::class);
+        $this->repository = m::mock(ApiPermissionRepository::class)->makePartial();
+
+        $this->repository->shouldReceive('getBuilder')->withNoArgs()->andReturn($this->builder);
     }
 
     /**
-     * {@inheritdoc}
+     * Test that we are returning the correct model.
      */
-    public function getWithViewDetails()
+    public function testCorrectModelIsAssigned()
     {
-        return $this->getBuilder()->withCount('databases')->with('node')->get();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getWithServers($id)
-    {
-        Assert::numeric($id, 'First argument passed to getWithServers must be numeric, recieved %s.');
-
-        $instance = $this->getBuilder()->with('databases.server')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
-        }
-
-        return $instance;
+        $this->assertEquals(APIPermission::class, $this->repository->model());
     }
 }

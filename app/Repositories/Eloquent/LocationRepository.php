@@ -49,6 +49,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
 
     /**
      * {@inheritdoc}
+     * @todo remove this, do logic in service
      */
     public function deleteIfNoNodes($id)
     {
