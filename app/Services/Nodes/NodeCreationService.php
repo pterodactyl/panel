@@ -22,52 +22,41 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Users;
+namespace Pterodactyl\Services\Nodes;
 
-use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
-class UpdateService
+class NodeCreationService
 {
-    /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    protected $hasher;
+    const DAEMON_SECRET_LENGTH = 18;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
-     * UpdateService constructor.
+     * CreationService constructor.
      *
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
-    public function __construct(
-        Hasher $hasher,
-        UserRepositoryInterface $repository
-    ) {
-        $this->hasher = $hasher;
+    public function __construct(NodeRepositoryInterface $repository)
+    {
         $this->repository = $repository;
     }
 
     /**
-     * Update the user model instance.
+     * Create a new node on the panel.
      *
-     * @param int   $id
      * @param array $data
-     * @return mixed
+     * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle($id, array $data)
+    public function handle(array $data)
     {
-        if (isset($data['password'])) {
-            $data['password'] = $this->hasher->make($data['password']);
-        }
+        $data['daemonSecret'] = bin2hex(random_bytes(self::DAEMON_SECRET_LENGTH));
 
-        return $this->repository->update($id, $data);
+        return $this->repository->create($data);
     }
 }

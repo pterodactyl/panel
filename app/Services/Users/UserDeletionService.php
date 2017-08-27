@@ -22,25 +22,20 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Nodes;
+namespace Pterodactyl\Services\Users;
 
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
+use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
-class DeletionService
+class UserDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
     protected $repository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    protected $serverRepository;
 
     /**
      * @var \Illuminate\Contracts\Translation\Translator
@@ -48,41 +43,46 @@ class DeletionService
     protected $translator;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $serverRepository;
+
+    /**
      * DeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface   $repository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      * @param \Illuminate\Contracts\Translation\Translator                $translator
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface   $repository
      */
     public function __construct(
-        NodeRepositoryInterface $repository,
         ServerRepositoryInterface $serverRepository,
-        Translator $translator
+        Translator $translator,
+        UserRepositoryInterface $repository
     ) {
         $this->repository = $repository;
-        $this->serverRepository = $serverRepository;
         $this->translator = $translator;
+        $this->serverRepository = $serverRepository;
     }
 
     /**
-     * Delete a node from the panel if no servers are attached to it.
+     * Delete a user from the panel only if they have no servers attached to their account.
      *
-     * @param int|\Pterodactyl\Models\Node $node
+     * @param int|\Pterodactyl\Models\User $user
      * @return bool|null
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle($node)
+    public function handle($user)
     {
-        if ($node instanceof Node) {
-            $node = $node->id;
+        if ($user instanceof User) {
+            $user = $user->id;
         }
 
-        $servers = $this->serverRepository->withColumns('id')->findCountWhere([['node_id', '=', $node]]);
+        $servers = $this->serverRepository->withColumns('id')->findCountWhere([['owner_id', '=', $user]]);
         if ($servers > 0) {
-            throw new HasActiveServersException($this->translator->trans('admin/exceptions.node.servers_attached'));
+            throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
         }
 
-        return $this->repository->delete($node);
+        return $this->repository->delete($user);
     }
 }

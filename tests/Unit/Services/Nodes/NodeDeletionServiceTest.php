@@ -27,12 +27,12 @@ namespace Tests\Unit\Services\Nodes;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Nodes\DeletionService;
+use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
-class DeletionServiceTest extends TestCase
+class NodeDeletionServiceTest extends TestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
@@ -50,7 +50,7 @@ class DeletionServiceTest extends TestCase
     protected $translator;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\DeletionService
+     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
      */
     protected $service;
 
@@ -65,7 +65,7 @@ class DeletionServiceTest extends TestCase
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
         $this->translator = m::mock(Translator::class);
 
-        $this->service = new DeletionService(
+        $this->service = new NodeDeletionService(
             $this->repository,
             $this->serverRepository,
             $this->translator

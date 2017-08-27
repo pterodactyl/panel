@@ -32,12 +32,12 @@ use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Nodes\UpdateService;
-use Pterodactyl\Services\Nodes\CreationService;
+use Pterodactyl\Services\Nodes\NodeUpdateService;
+use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
-class UpdateServiceTest extends TestCase
+class NodeUpdateServiceTest extends TestCase
 {
     use PHPMock;
 
@@ -62,7 +62,7 @@ class UpdateServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\UpdateService
+     * @var \Pterodactyl\Services\Nodes\NodeUpdateService
      */
     protected $service;
 
@@ -85,7 +85,7 @@ class UpdateServiceTest extends TestCase
         $this->repository = m::mock(NodeRepositoryInterface::class);
         $this->writer = m::mock(Writer::class);
 
-        $this->service = new UpdateService(
+        $this->service = new NodeUpdateService(
             $this->configRepository,
             $this->repository,
             $this->writer
@@ -99,7 +99,7 @@ class UpdateServiceTest extends TestCase
     {
         $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'random_bytes')
             ->expects($this->once())->willReturnCallback(function ($bytes) {
-                $this->assertEquals(CreationService::DAEMON_SECRET_LENGTH, $bytes);
+                $this->assertEquals(NodeCreationService::DAEMON_SECRET_LENGTH, $bytes);
 
                 return '\00';
             });

@@ -27,10 +27,10 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Services\Users\UpdateService;
+use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class UpdateServiceTest extends TestCase
+class UserUpdateServiceTest extends TestCase
 {
     /**
      * @var \Illuminate\Contracts\Hashing\Hasher
@@ -43,7 +43,7 @@ class UpdateServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Users\UpdateService
+     * @var \Pterodactyl\Services\Users\UserUpdateService
      */
     protected $service;
 
@@ -57,7 +57,7 @@ class UpdateServiceTest extends TestCase
         $this->hasher = m::mock(Hasher::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
 
-        $this->service = new UpdateService($this->hasher, $this->repository);
+        $this->service = new UserUpdateService($this->hasher, $this->repository);
     }
 
     /**

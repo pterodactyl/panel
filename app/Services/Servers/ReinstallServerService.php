@@ -32,7 +32,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class ReinstallService
+class ReinstallServerService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface

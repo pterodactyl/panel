@@ -32,13 +32,13 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Servers\DeletionService;
+use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Database\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class DeletionServiceTest extends TestCase
+class ServerDeletionServiceTest extends TestCase
 {
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -76,7 +76,7 @@ class DeletionServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\DeletionService
+     * @var \Pterodactyl\Services\Servers\ServerDeletionService
      */
     protected $service;
 
@@ -101,7 +101,7 @@ class DeletionServiceTest extends TestCase
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->writer = m::mock(Writer::class);
 
-        $this->service = new DeletionService(
+        $this->service = new ServerDeletionService(
             $this->connection,
             $this->daemonServerRepository,
             $this->databaseRepository,
@@ -118,7 +118,7 @@ class DeletionServiceTest extends TestCase
     {
         $response = $this->service->withForce(true);
 
-        $this->assertInstanceOf(DeletionService::class, $response);
+        $this->assertInstanceOf(ServerDeletionService::class, $response);
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,13 +22,17 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Nodes;
+namespace Tests\Unit\Services\Nodes;
 
+use Mockery as m;
+use Tests\TestCase;
+use phpmock\phpunit\PHPMock;
+use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
-class CreationService
+class NodeCreationServiceTest extends TestCase
 {
-    const DAEMON_SECRET_LENGTH = 18;
+    use PHPMock;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
@@ -36,27 +40,35 @@ class CreationService
     protected $repository;
 
     /**
-     * CreationService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @var \Pterodactyl\Services\Nodes\NodeCreationService
      */
-    public function __construct(NodeRepositoryInterface $repository)
+    protected $service;
+
+    /**
+     * Setup tests.
+     */
+    public function setUp()
     {
-        $this->repository = $repository;
+        parent::setUp();
+
+        $this->repository = m::mock(NodeRepositoryInterface::class);
+
+        $this->service = new NodeCreationService($this->repository);
     }
 
     /**
-     * Create a new node on the panel.
-     *
-     * @param array $data
-     * @return \Pterodactyl\Models\Node
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * Test that a node is created and a daemon secret token is created.
      */
-    public function handle(array $data)
+    public function testNodeIsCreatedAndDaemonSecretIsGenerated()
     {
-        $data['daemonSecret'] = bin2hex(random_bytes(self::DAEMON_SECRET_LENGTH));
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'bin2hex')
+            ->expects($this->once())->willReturn('hexResult');
 
-        return $this->repository->create($data);
+        $this->repository->shouldReceive('create')->with([
+            'name' => 'NodeName',
+            'daemonSecret' => 'hexResult',
+        ])->once()->andReturnNull();
+
+        $this->assertNull($this->service->handle(['name' => 'NodeName']));
     }
 }

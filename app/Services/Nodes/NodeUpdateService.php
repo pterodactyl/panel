@@ -31,7 +31,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
-class UpdateService
+class NodeUpdateService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface
@@ -74,6 +74,7 @@ class UpdateService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($node, array $data)
     {
@@ -82,7 +83,7 @@ class UpdateService
         }
 
         if (! is_null(array_get($data, 'reset_secret'))) {
-            $data['daemonSecret'] = bin2hex(random_bytes(CreationService::DAEMON_SECRET_LENGTH));
+            $data['daemonSecret'] = bin2hex(random_bytes(NodeCreationService::DAEMON_SECRET_LENGTH));
             unset($data['reset_secret']);
         }
 

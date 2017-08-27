@@ -34,7 +34,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class DeletionService
+class ServerDeletionService
 {
     /**
      * @var \Illuminate\Database\ConnectionInterface

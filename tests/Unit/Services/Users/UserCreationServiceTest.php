@@ -31,11 +31,11 @@ use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Notifications\ChannelManager;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\Users\CreationService;
+use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class CreationServiceTest extends TestCase
+class UserCreationServiceTest extends TestCase
 {
     /**
      * @var \Illuminate\Foundation\Application
@@ -68,7 +68,7 @@ class CreationServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Users\CreationService
+     * @var \Pterodactyl\Services\Users\UserCreationService
      */
     protected $service;
 
@@ -86,7 +86,7 @@ class CreationServiceTest extends TestCase
         $this->passwordService = m::mock(TemporaryPasswordService::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
 
-        $this->service = new CreationService(
+        $this->service = new UserCreationService(
             $this->appMock,
             $this->notification,
             $this->database,

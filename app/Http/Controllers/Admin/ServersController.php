@@ -30,9 +30,9 @@ use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\CreationService;
-use Pterodactyl\Services\Servers\DeletionService;
-use Pterodactyl\Services\Servers\ReinstallService;
+use Pterodactyl\Services\Servers\ServerCreationService;
+use Pterodactyl\Services\Servers\ServerDeletionService;
+use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Services\Servers\ContainerRebuildService;
@@ -92,7 +92,7 @@ class ServersController extends Controller
     protected $databaseHostRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\DeletionService
+     * @var \Pterodactyl\Services\Servers\ServerDeletionService
      */
     protected $deletionService;
 
@@ -112,7 +112,7 @@ class ServersController extends Controller
     protected $nodeRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ReinstallService
+     * @var \Pterodactyl\Services\Servers\ReinstallServerService
      */
     protected $reinstallService;
 
@@ -122,7 +122,7 @@ class ServersController extends Controller
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\CreationService
+     * @var \Pterodactyl\Services\Servers\ServerCreationService
      */
     protected $service;
 
@@ -149,15 +149,15 @@ class ServersController extends Controller
      * @param \Pterodactyl\Services\Servers\BuildModificationService          $buildModificationService
      * @param \Illuminate\Contracts\Config\Repository                         $config
      * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
-     * @param \Pterodactyl\Services\Servers\CreationService                   $service
+     * @param \Pterodactyl\Services\Servers\ServerCreationService             $service
      * @param \Pterodactyl\Services\Database\DatabaseManagementService        $databaseManagementService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
      * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
-     * @param \Pterodactyl\Services\Servers\DeletionService                   $deletionService
+     * @param \Pterodactyl\Services\Servers\ServerDeletionService             $deletionService
      * @param \Pterodactyl\Services\Servers\DetailsModificationService        $detailsModificationService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
-     * @param \Pterodactyl\Services\Servers\ReinstallService                  $reinstallService
+     * @param \Pterodactyl\Services\Servers\ReinstallServerService            $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
      * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface    $serviceRepository
      * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
@@ -169,15 +169,15 @@ class ServersController extends Controller
         BuildModificationService $buildModificationService,
         ConfigRepository $config,
         ContainerRebuildService $containerRebuildService,
-        CreationService $service,
+        ServerCreationService $service,
         DatabaseManagementService $databaseManagementService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
-        DeletionService $deletionService,
+        ServerDeletionService $deletionService,
         DetailsModificationService $detailsModificationService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $nodeRepository,
-        ReinstallService $reinstallService,
+        ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository,
         ServiceRepositoryInterface $serviceRepository,
         StartupModificationService $startupModificationService,

@@ -29,9 +29,9 @@ use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Users\UpdateService;
-use Pterodactyl\Services\Users\CreationService;
-use Pterodactyl\Services\Users\DeletionService;
+use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Services\Users\UserDeletionService;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -44,12 +44,12 @@ class UserController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Users\CreationService
+     * @var \Pterodactyl\Services\Users\UserCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Users\DeletionService
+     * @var \Pterodactyl\Services\Users\UserDeletionService
      */
     protected $deletionService;
 
@@ -64,7 +64,7 @@ class UserController extends Controller
     protected $translator;
 
     /**
-     * @var \Pterodactyl\Services\Users\UpdateService
+     * @var \Pterodactyl\Services\Users\UserUpdateService
      */
     protected $updateService;
 
@@ -72,18 +72,18 @@ class UserController extends Controller
      * UserController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Users\CreationService               $creationService
-     * @param \Pterodactyl\Services\Users\DeletionService               $deletionService
+     * @param \Pterodactyl\Services\Users\UserCreationService           $creationService
+     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
      * @param \Illuminate\Contracts\Translation\Translator              $translator
-     * @param \Pterodactyl\Services\Users\UpdateService                 $updateService
+     * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         AlertsMessageBag $alert,
-        CreationService $creationService,
-        DeletionService $deletionService,
+        UserCreationService $creationService,
+        UserDeletionService $deletionService,
         Translator $translator,
-        UpdateService $updateService,
+        UserUpdateService $updateService,
         UserRepositoryInterface $repository
     ) {
         $this->alert = $alert;

@@ -30,11 +30,14 @@ use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\oldUserRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AccountController extends Controller
 {
+    public function __construct()
+    {
+    }
+
     /**
      * Display base account information page.
      *

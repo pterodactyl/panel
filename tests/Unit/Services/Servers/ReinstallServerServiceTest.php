@@ -32,11 +32,11 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Servers\ReinstallService;
+use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class ReinstallServiceTest extends TestCase
+class ReinstallServerServiceTest extends TestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
@@ -64,7 +64,7 @@ class ReinstallServiceTest extends TestCase
     protected $server;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ReinstallService
+     * @var \Pterodactyl\Services\Servers\ReinstallServerService
      */
     protected $service;
 
@@ -88,7 +88,7 @@ class ReinstallServiceTest extends TestCase
 
         $this->server = factory(Server::class)->make(['node_id' => 1]);
 
-        $this->service = new ReinstallService(
+        $this->service = new ReinstallServerService(
             $this->database,
             $this->daemonServerRepository,
             $this->repository,

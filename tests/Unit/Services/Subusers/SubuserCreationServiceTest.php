@@ -33,7 +33,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Users\CreationService;
+use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Services\Subusers\PermissionCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -78,7 +78,7 @@ class SubuserCreationServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Pterodactyl\Services\Users\CreationService
+     * @var \Pterodactyl\Services\Users\UserCreationService
      */
     protected $userCreationService;
 
@@ -106,7 +106,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->permissionService = m::mock(PermissionCreationService::class);
         $this->subuserRepository = m::mock(SubuserRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
-        $this->userCreationService = m::mock(CreationService::class);
+        $this->userCreationService = m::mock(UserCreationService::class);
         $this->userRepository = m::mock(UserRepositoryInterface::class);
         $this->writer = m::mock(Writer::class);
 

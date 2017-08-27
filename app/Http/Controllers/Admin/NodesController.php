@@ -29,9 +29,9 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Nodes\UpdateService;
-use Pterodactyl\Services\Nodes\CreationService;
-use Pterodactyl\Services\Nodes\DeletionService;
+use Pterodactyl\Services\Nodes\NodeUpdateService;
+use Pterodactyl\Services\Nodes\NodeCreationService;
+use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Illuminate\Cache\Repository as CacheRepository;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
@@ -64,12 +64,12 @@ class NodesController extends Controller
     protected $cache;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\CreationService
+     * @var \Pterodactyl\Services\Nodes\NodeCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\DeletionService
+     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
      */
     protected $deletionService;
 
@@ -84,7 +84,7 @@ class NodesController extends Controller
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\UpdateService
+     * @var \Pterodactyl\Services\Nodes\NodeUpdateService
      */
     protected $updateService;
 
@@ -95,22 +95,22 @@ class NodesController extends Controller
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
      * @param \Illuminate\Cache\Repository                                    $cache
-     * @param \Pterodactyl\Services\Nodes\CreationService                     $creationService
-     * @param \Pterodactyl\Services\Nodes\DeletionService                     $deletionService
+     * @param \Pterodactyl\Services\Nodes\NodeCreationService                 $creationService
+     * @param \Pterodactyl\Services\Nodes\NodeDeletionService                 $deletionService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
-     * @param \Pterodactyl\Services\Nodes\UpdateService                       $updateService
+     * @param \Pterodactyl\Services\Nodes\NodeUpdateService                   $updateService
      */
     public function __construct(
         AlertsMessageBag $alert,
         AllocationRepositoryInterface $allocationRepository,
         AssignmentService $assignmentService,
         CacheRepository $cache,
-        CreationService $creationService,
-        DeletionService $deletionService,
+        NodeCreationService $creationService,
+        NodeDeletionService $deletionService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $repository,
-        UpdateService $updateService
+        NodeUpdateService $updateService
     ) {
         $this->alert = $alert;
         $this->allocationRepository = $allocationRepository;

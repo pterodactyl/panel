@@ -29,7 +29,7 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Users\CreationService;
+use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
@@ -67,7 +67,7 @@ class SubuserCreationService
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Users\CreationService
+     * @var \Pterodactyl\Services\Users\UserCreationService
      */
     protected $userCreationService;
 
@@ -83,7 +83,7 @@ class SubuserCreationService
 
     public function __construct(
         ConnectionInterface $connection,
-        CreationService $userCreationService,
+        UserCreationService $userCreationService,
         DaemonServerRepositoryInterface $daemonRepository,
         PermissionCreationService $permissionService,
         ServerRepositoryInterface $serverRepository,

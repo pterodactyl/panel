@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,53 +22,52 @@
  * SOFTWARE.
  */
 
-namespace Tests\Unit\Services\Nodes;
+namespace Pterodactyl\Services\Users;
 
-use Mockery as m;
-use Tests\TestCase;
-use phpmock\phpunit\PHPMock;
-use Pterodactyl\Services\Nodes\CreationService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Illuminate\Contracts\Hashing\Hasher;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class CreationServiceTest extends TestCase
+class UserUpdateService
 {
-    use PHPMock;
+    /**
+     * @var \Illuminate\Contracts\Hashing\Hasher
+     */
+    protected $hasher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\CreationService
+     * UpdateService constructor.
+     *
+     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
-    protected $service;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->repository = m::mock(NodeRepositoryInterface::class);
-
-        $this->service = new CreationService($this->repository);
+    public function __construct(
+        Hasher $hasher,
+        UserRepositoryInterface $repository
+    ) {
+        $this->hasher = $hasher;
+        $this->repository = $repository;
     }
 
     /**
-     * Test that a node is created and a daemon secret token is created.
+     * Update the user model instance.
+     *
+     * @param int   $id
+     * @param array $data
+     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function testNodeIsCreatedAndDaemonSecretIsGenerated()
+    public function handle($id, array $data)
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'bin2hex')
-            ->expects($this->once())->willReturn('hexResult');
+        if (isset($data['password'])) {
+            $data['password'] = $this->hasher->make($data['password']);
+        }
 
-        $this->repository->shouldReceive('create')->with([
-            'name' => 'NodeName',
-            'daemonSecret' => 'hexResult',
-        ])->once()->andReturnNull();
-
-        $this->assertNull($this->service->handle(['name' => 'NodeName']));
+        return $this->repository->update($id, $data);
     }
 }

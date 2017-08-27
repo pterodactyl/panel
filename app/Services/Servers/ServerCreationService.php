@@ -36,7 +36,7 @@ use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class CreationService
+class ServerCreationService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface

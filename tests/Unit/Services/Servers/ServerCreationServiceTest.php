@@ -32,7 +32,7 @@ use phpmock\phpunit\PHPMock;
 use Illuminate\Database\DatabaseManager;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Servers\CreationService;
+use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Services\Servers\UsernameGenerationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -42,7 +42,7 @@ use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class CreationServiceTest extends TestCase
+class ServerCreationServiceTest extends TestCase
 {
     use PHPMock;
 
@@ -106,7 +106,7 @@ class CreationServiceTest extends TestCase
     protected $serverVariableRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\CreationService
+     * @var \Pterodactyl\Services\Servers\ServerCreationService
      */
     protected $service;
 
@@ -161,7 +161,7 @@ class CreationServiceTest extends TestCase
         $this->getFunctionMock('\\Ramsey\\Uuid\\Uuid', 'uuid4')
             ->expects($this->any())->willReturn('s');
 
-        $this->service = new CreationService(
+        $this->service = new ServerCreationService(
             $this->allocationRepository,
             $this->daemonServerRepository,
             $this->database,

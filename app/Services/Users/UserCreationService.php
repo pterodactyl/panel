@@ -32,7 +32,7 @@ use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class CreationService
+class UserCreationService
 {
     /**
      * @var \Illuminate\Foundation\Application
