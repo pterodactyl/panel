@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -24,106 +24,32 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\ConnectException;
-use Pterodactyl\Exceptions\DisplayException;
+use Webmozart\Assert\Assert;
+use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException;
 
-class PowerRepository
+class PowerRepository extends BaseRepository implements PowerRepositoryInterface
 {
     /**
-     * The Eloquent Model associated with the requested server.
-     *
-     * @var \Pterodactyl\Models\Server
+     * {@inheritdoc}
      */
-    protected $server;
-
-    /**
-     * The Eloquent Model associated with the user to run the request as.
-     *
-     * @var \Pterodactyl\Models\User|null
-     */
-    protected $user;
-
-    /**
-     * Constuctor for repository.
-     *
-     * @param  \Pterodactyl\Models\Server  $server
-     * @param  \Pterodactyl\Models\User|null   $user
-     * @return void
-     */
-    public function __construct(Server $server, User $user = null)
+    public function sendSignal($signal)
     {
-        $this->server = $server;
-        $this->user = $user;
-    }
+        Assert::stringNotEmpty($signal, 'The first argument passed to sendSignal must be a non-empty string, received %s.');
 
-    /**
-     * Sends a power option to the daemon.
-     *
-     * @param  string                    $action
-     * @return string
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     */
-    public function do($action)
-    {
-        try {
-            $response = $this->server->guzzleClient($this->user)->request('PUT', '/server/power', [
-                'http_errors' => false,
-                'json' => [
-                    'action' => $action,
-                ],
-            ]);
-
-            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                throw new DisplayException('Power toggle endpoint responded with a non-200 error code (HTTP/' . $response->getStatusCode() . ').');
-            }
-
-            return $response->getBody();
-        } catch (ConnectException $ex) {
-            throw $ex;
+        switch ($signal) {
+            case self::SIGNAL_START:
+            case self::SIGNAL_STOP:
+            case self::SIGNAL_RESTART:
+            case self::SIGNAL_KILL:
+                return $this->getHttpClient()->request('PUT', '/server/power', [
+                    'json' => [
+                        'action' => $signal,
+                    ],
+                ]);
+                break;
+            default:
+                throw new InvalidPowerSignalException('The signal ' . $signal . ' is not defined and could not be processed.');
         }
-    }
-
-    /**
-     * Starts a server.
-     *
-     * @return void
-     */
-    public function start()
-    {
-        $this->do('start');
-    }
-
-    /**
-     * Stops a server.
-     *
-     * @return void
-     */
-    public function stop()
-    {
-        $this->do('stop');
-    }
-
-    /**
-     * Restarts a server.
-     *
-     * @return void
-     */
-    public function restart()
-    {
-        $this->do('restart');
-    }
-
-    /**
-     * Kills a server.
-     *
-     * @return void
-     */
-    public function kill()
-    {
-        $this->do('kill');
     }
 }

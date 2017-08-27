@@ -173,7 +173,7 @@ return [
                 'service_header' => 'Service Control',
                 'service' => [
                     'list' => [
-                        'title' => 'List Services',
+                        'title' => 'List Service',
                         'desc' => 'Allows listing of all services configured on the system.',
                     ],
                     'view' => [

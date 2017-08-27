@@ -39,8 +39,7 @@ class AdminAuthenticate
     /**
      * Create a new filter instance.
      *
-     * @param  \Illuminate\Contracts\Auth\Guard  $auth
-     * @return void
+     * @param \Illuminate\Contracts\Auth\Guard $auth
      */
     public function __construct(Guard $auth)
     {
@@ -50,8 +49,8 @@ class AdminAuthenticate
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure                  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
      * @return mixed
      */
     public function handle($request, Closure $next)

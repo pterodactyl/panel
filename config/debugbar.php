@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
      |--------------------------------------------------------------------------
      | Debugbar Settings
@@ -82,26 +81,26 @@ return [
      */
 
     'collectors' => [
-        'phpinfo'         => true,  // Php version
-        'messages'        => true,  // Messages
-        'time'            => true,  // Time Datalogger
-        'memory'          => true,  // Memory usage
-        'exceptions'      => true,  // Exception displayer
-        'log'             => true,  // Logs from Monolog (merged in messages if enabled)
-        'db'              => true,  // Show database (PDO) queries and bindings
-        'views'           => true,  // Views with their data
-        'route'           => true,  // Current route information
-        'laravel'         => false, // Laravel version and environment
-        'events'          => true, // All events fired
+        'phpinfo' => true,  // Php version
+        'messages' => true,  // Messages
+        'time' => true,  // Time Datalogger
+        'memory' => true,  // Memory usage
+        'exceptions' => true,  // Exception displayer
+        'log' => true,  // Logs from Monolog (merged in messages if enabled)
+        'db' => true,  // Show database (PDO) queries and bindings
+        'views' => true,  // Views with their data
+        'route' => true,  // Current route information
+        'laravel' => false, // Laravel version and environment
+        'events' => true, // All events fired
         'default_request' => false, // Regular or special Symfony request logger
         'symfony_request' => true,  // Only one can be enabled..
-        'mail'            => true,  // Catch mail messages
-        'logs'            => false, // Add the latest log messages
-        'files'           => false, // Show the included files
-        'config'          => false, // Display config settings
-        'auth'            => false, // Display Laravel authentication status
-        'gate'            => false, // Display Laravel Gate checks
-        'session'         => true,  // Display session data
+        'mail' => true,  // Catch mail messages
+        'logs' => false, // Add the latest log messages
+        'files' => false, // Show the included files
+        'config' => false, // Display config settings
+        'auth' => false, // Display Laravel authentication status
+        'gate' => false, // Display Laravel Gate checks
+        'session' => true,  // Display session data
     ],
 
     /*
@@ -118,14 +117,14 @@ return [
             'show_name' => false,   // Also show the users name/email in the debugbar
         ],
         'db' => [
-            'with_params'       => true,   // Render SQL with the parameters substituted
-            'timeline'          => true,  // Add the queries to the timeline
-            'backtrace'         => true,  // EXPERIMENTAL: Use a backtrace to find the origin of the query in your files.
+            'with_params' => true,   // Render SQL with the parameters substituted
+            'timeline' => true,  // Add the queries to the timeline
+            'backtrace' => true,  // EXPERIMENTAL: Use a backtrace to find the origin of the query in your files.
             'explain' => [            // EXPERIMENTAL: Show EXPLAIN output on queries
                 'enabled' => false,
                 'types' => ['SELECT', 'INSERT', 'UPDATE', 'DELETE'], // array('SELECT', 'INSERT', 'UPDATE', 'DELETE'); for MySQL 5.6.3+
             ],
-            'hints'             => false,    // Show hints for common mistakes
+            'hints' => false,    // Show hints for common mistakes
         ],
         'mail' => [
             'full_log' => false,
@@ -165,5 +164,4 @@ return [
      |
      */
     'route_prefix' => '_debugbar',
-
 ];

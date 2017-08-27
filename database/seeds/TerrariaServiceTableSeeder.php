@@ -25,9 +25,12 @@ use Illuminate\Database\Seeder;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class TerrariaServiceTableSeeder extends Seeder
 {
+    use CreatesServiceIndex;
+
     /**
      * The core service ID.
      *
@@ -44,8 +47,6 @@ class TerrariaServiceTableSeeder extends Seeder
 
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run()
     {
@@ -63,7 +64,7 @@ class TerrariaServiceTableSeeder extends Seeder
             'name' => 'Terraria',
             'description' => 'Terraria is a land of adventure! A land of mystery! A land that\'s yours to shape, defend, and enjoy. Your options in Terraria are limitless. Are you an action gamer with an itchy trigger finger? A master builder? A collector? An explorer? There\'s something for everyone.',
             'startup' => 'mono TerrariaServer.exe -port {{SERVER_PORT}} -autocreate 2 -worldname World',
-            'index_file' => Service::defaultIndexFile(),
+            'index_file' => $this->getIndexScript(),
         ]);
     }
 

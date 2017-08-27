@@ -34,8 +34,6 @@ class AppServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -49,8 +47,6 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register()
     {
@@ -73,7 +69,10 @@ class AppServiceProvider extends ServiceProvider
         return Cache::remember('git-version', 5, function () {
             if (file_exists(base_path('.git/HEAD'))) {
                 $head = explode(' ', file_get_contents(base_path('.git/HEAD')));
-                $path = base_path('.git/' . trim($head[1]));
+
+                if (array_key_exists(1, $head)) {
+                    $path = base_path('.git/' . trim($head[1]));
+                }
             }
 
             if (isset($path) && file_exists($path)) {

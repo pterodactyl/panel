@@ -41,8 +41,7 @@ class Created
     /**
      * Create a new event instance.
      *
-     * @param  \Pterodactyl\Models\User  $user
-     * @return void
+     * @param \Pterodactyl\Models\User $user
      */
     public function __construct(User $user)
     {

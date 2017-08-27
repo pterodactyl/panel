@@ -89,6 +89,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    {!! method_field('PATCH') !!}
                     <input type="submit" class="btn btn-sm btn-primary" value="Update Details" />
                 </div>
             </form>
@@ -102,13 +103,14 @@
             <form action="{{ route('admin.servers.view.details.container', $server->id) }}" method="POST">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="name" class="control-label">Docker Container Image</label>
+                        <label for="name" class="control-label">Docker Image</label>
                         <input type="text" name="docker_image" value="{{ $server->image }}" class="form-control" />
                         <p class="text-muted small">The docker image to use for this server. The default image for this service and option combination is <code>{{ $server->option->docker_image }}</code>.</p>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    {!! method_field('PATCH') !!}
                     <input type="submit" class="btn btn-sm btn-primary" value="Update Docker Container" />
                 </div>
             </form>

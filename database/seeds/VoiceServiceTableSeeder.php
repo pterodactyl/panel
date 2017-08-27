@@ -25,9 +25,12 @@ use Illuminate\Database\Seeder;
 use Pterodactyl\Models\Service;
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class VoiceServiceTableSeeder extends Seeder
 {
+    use CreatesServiceIndex;
+
     /**
      * The core service ID.
      *
@@ -44,8 +47,6 @@ class VoiceServiceTableSeeder extends Seeder
 
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run()
     {
@@ -63,7 +64,7 @@ class VoiceServiceTableSeeder extends Seeder
             'name' => 'Voice Servers',
             'description' => 'Voice servers such as Mumble and Teamspeak 3.',
             'startup' => '',
-            'index_file' => Service::defaultIndexFile(),
+            'index_file' => $this->getIndexScript(),
         ]);
     }
 

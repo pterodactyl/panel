@@ -34,7 +34,7 @@ class CoreController extends Controller
     /**
      * Controller to handle base user request for all of their servers.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function index(Request $request)

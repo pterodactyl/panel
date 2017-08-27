@@ -49,7 +49,7 @@
                         </div>
                         <div class="form-group">
                             <label for="pUserId">Server Owner</label>
-                            <select class="form-control" style="padding-left:0;" name="user_id" id="pUserId"></select>
+                            <select class="form-control" style="padding-left:0;" name="owner_id" id="pUserId"></select>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -83,7 +83,7 @@
                             @foreach($locations as $location)
                                 <option value="{{ $location->id }}"
                                     @if($location->id === old('location_id'))
-                                        selected="selected"
+                                        selected
                                     @endif
                                 >{{ $location->long }} ({{ $location->short }})</option>
                             @endforeach
@@ -229,14 +229,9 @@
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
-                        <label for="pDefaultContainer">Default Container</label>
-                        <input type="text" id="pDefaultContainer" readonly class="form-control" />
+                        <label for="pDefaultContainer">Process Container</label>
+                        <input id="pDefaultContainer" name="docker_image" value="{{ old('docker_image') }}" class="form-control" />
                         <p class="small text-muted no-margin">This is the default Docker container that will be used to run this server.</p>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <label for="pCustomContainer">Custom Container</label>
-                        <input type="text" name="custom_container" value="{{ old('custom_container') }}" id="pCustomContainer" class="form-control" />
-                        <p class="small text-muted no-margin">If you would like to use a custom Docker container please enter it here, otherwise leave empty.</p>
                     </div>
                 </div>
             </div>

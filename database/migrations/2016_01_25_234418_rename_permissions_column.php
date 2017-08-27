@@ -7,8 +7,6 @@ class RenamePermissionsColumn extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,13 +17,10 @@ class RenamePermissionsColumn extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
         Schema::table('permissions', function (Blueprint $table) {
-            //
         });
     }
 }

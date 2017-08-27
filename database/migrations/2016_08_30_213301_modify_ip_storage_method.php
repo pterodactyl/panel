@@ -7,8 +7,6 @@ class ModifyIpStorageMethod extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -48,8 +46,6 @@ class ModifyIpStorageMethod extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -30,7 +30,7 @@ use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Repositories\oldUserRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AccountController extends Controller
@@ -38,7 +38,7 @@ class AccountController extends Controller
     /**
      * Display base account information page.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -49,7 +49,7 @@ class AccountController extends Controller
     /**
      * Update details for a users account.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
@@ -67,15 +67,15 @@ class AccountController extends Controller
 
             $data['password'] = $request->input('new_password');
 
-        // Request to update account Email
+            // Request to update account Email
         } elseif ($request->input('do_action') === 'email') {
             $data['email'] = $request->input('new_email');
 
-        // Request to update account Identity
+            // Request to update account Identity
         } elseif ($request->input('do_action') === 'identity') {
             $data = $request->only(['name_first', 'name_last', 'username']);
 
-        // Unknown, hit em with a 404
+            // Unknown, hit em with a 404
         } else {
             return abort(404);
         }
@@ -90,7 +90,7 @@ class AccountController extends Controller
         }
 
         try {
-            $repo = new UserRepository;
+            $repo = new oldUserRepository;
             $repo->update($request->user()->id, $data);
             Alert::success('Your account details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {

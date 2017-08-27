@@ -30,7 +30,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Repositories\oldUserRepository;
 use Pterodactyl\Transformers\Admin\UserTransformer;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -40,7 +40,7 @@ class UserController extends Controller
     /**
      * Controller to handle returning all users on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function index(Request $request)
@@ -63,8 +63,8 @@ class UserController extends Controller
     /**
      * Display information about a single user on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return array
      */
     public function view(Request $request, $id)
@@ -84,14 +84,14 @@ class UserController extends Controller
     /**
      * Create a new user on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse|array
      */
     public function store(Request $request)
     {
         $this->authorize('user-create', $request->apiKey());
 
-        $repo = new UserRepository;
+        $repo = new oldUserRepository;
         try {
             $user = $repo->create($request->only([
                 'custom_id', 'email', 'password', 'name_first',
@@ -120,15 +120,15 @@ class UserController extends Controller
     /**
      * Update a user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $user
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $user
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $user)
     {
         $this->authorize('user-edit', $request->apiKey());
 
-        $repo = new UserRepository;
+        $repo = new oldUserRepository;
         try {
             $user = $repo->update($user, $request->intersect([
                 'email', 'password', 'name_first',
@@ -157,15 +157,15 @@ class UserController extends Controller
     /**
      * Delete a user from the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function delete(Request $request, $id)
     {
         $this->authorize('user-delete', $request->apiKey());
 
-        $repo = new UserRepository;
+        $repo = new oldUserRepository;
         try {
             $repo->delete($id);
 

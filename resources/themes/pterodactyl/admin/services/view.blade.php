@@ -20,14 +20,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services &rarr; {{ $service->name }}
+    Service &rarr; {{ $service->name }}
 @endsection
 
 @section('content-header')
     <h1>{{ $service->name }}<small>{{ str_limit($service->description, 50) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Services</a></li>
+        <li><a href="{{ route('admin.services') }}">Service</a></li>
         <li class="active">{{ $service->name }}</li>
     </ol>
 @endsection
@@ -71,7 +71,7 @@
                         <label class="control-label">Folder Name</label>
                         <div>
                             <input type="text" name="folder" class="form-control" value="{{ $service->folder }}" />
-                            <p class="text-muted"><small>Services are downloaded by the daemon and stored in a folder using this name. The storage location is <code>/srv/daemon/services/{NAME}</code> by default.</small></p>
+                            <p class="text-muted"><small>Service are downloaded by the daemon and stored in a folder using this name. The storage location is <code>/srv/daemon/services/{NAME}</code> by default.</small></p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -84,8 +84,8 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button id="deleteButton" type="input" name="action" value="delete" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
-                    <button type="input" class="btn btn-primary btn-sm pull-right">Edit Service</button>
+                    <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Service</button>
                 </div>
             </div>
         </div>

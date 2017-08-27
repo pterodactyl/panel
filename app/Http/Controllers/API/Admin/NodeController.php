@@ -40,7 +40,7 @@ class NodeController extends Controller
     /**
      * Controller to handle returning all nodes on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function index(Request $request)
@@ -63,8 +63,8 @@ class NodeController extends Controller
     /**
      * Display information about a single node on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return array
      */
     public function view(Request $request, $id)
@@ -84,8 +84,8 @@ class NodeController extends Controller
     /**
      * Display information about a single node on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function viewConfig(Request $request, $id)
@@ -100,7 +100,7 @@ class NodeController extends Controller
     /**
      * Create a new node on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse|array
      */
     public function store(Request $request)
@@ -146,8 +146,8 @@ class NodeController extends Controller
     /**
      * Delete a node from the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function delete(Request $request, $id)

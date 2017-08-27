@@ -38,8 +38,8 @@ class TaskController extends Controller
     /**
      * Display task index page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function index(Request $request, $uuid)
@@ -62,8 +62,8 @@ class TaskController extends Controller
     /**
      * Display new task page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function create(Request $request, $uuid)
@@ -81,8 +81,8 @@ class TaskController extends Controller
     /**
      * Handle creation of new task.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $uuid)
@@ -112,9 +112,9 @@ class TaskController extends Controller
     /**
      * Handle deletion of a task.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Request $request, $uuid, $id)
@@ -146,9 +146,9 @@ class TaskController extends Controller
     /**
      * Toggle the status of a task.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function toggle(Request $request, $uuid, $id)

@@ -41,8 +41,7 @@ class Created
     /**
      * Create a new event instance.
      *
-     * @param  \Pterodactyl\Models\Server  $server
-     * @return void
+     * @param \Pterodactyl\Models\Server $server
      */
     public function __construct(Server $server)
     {

@@ -8,8 +8,6 @@ class CreateNodeConfigurationTokensTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -25,8 +23,6 @@ class CreateNodeConfigurationTokensTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

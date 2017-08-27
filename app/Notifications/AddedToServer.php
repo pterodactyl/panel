@@ -41,8 +41,7 @@ class AddedToServer extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param  array  $server
-     * @return void
+     * @param array $server
      */
     public function __construct(array $server)
     {
@@ -52,7 +51,7 @@ class AddedToServer extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -63,7 +62,7 @@ class AddedToServer extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)

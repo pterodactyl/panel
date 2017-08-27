@@ -61,9 +61,9 @@ class APIKeyPolicy
     /**
      * Determine if a user has permission to perform this action against the system.
      *
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  string                      $permission
-     * @param  \Pterodactyl\Models\APIKey  $key
+     * @param \Pterodactyl\Models\User   $user
+     * @param string                     $permission
+     * @param \Pterodactyl\Models\APIKey $key
      * @return bool
      */
     public function before(User $user, $permission, Key $key)

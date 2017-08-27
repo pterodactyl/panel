@@ -26,14 +26,13 @@ namespace Pterodactyl\Exceptions;
 
 use Log;
 
-class DisplayException extends \Exception
+class DisplayException extends PterodactylException
 {
     /**
      * Exception constructor.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @param string $message
+     * @param mixed  $log
      */
     public function __construct($message, $log = null)
     {

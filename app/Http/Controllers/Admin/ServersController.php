@@ -24,49 +24,210 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
 use Javascript;
-use Pterodactyl\Models;
 use Illuminate\Http\Request;
-use GuzzleHttp\Exception\TransferException;
+use Pterodactyl\Models\Server;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\ServerRepository;
-use Pterodactyl\Repositories\DatabaseRepository;
-use Pterodactyl\Exceptions\AutoDeploymentException;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Servers\CreationService;
+use Pterodactyl\Services\Servers\DeletionService;
+use Pterodactyl\Services\Servers\ReinstallService;
+use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
+use Pterodactyl\Services\Servers\ContainerRebuildService;
+use Pterodactyl\Services\Servers\BuildModificationService;
+use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Servers\DetailsModificationService;
+use Pterodactyl\Services\Servers\StartupModificationService;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServersController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     */
+    protected $allocationRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\BuildModificationService
+     */
+    protected $buildModificationService;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ContainerRebuildService
+     */
+    protected $containerRebuildService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     */
+    protected $databaseRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Database\DatabaseManagementService
+     */
+    protected $databaseManagementService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     */
+    protected $databaseHostRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\DeletionService
+     */
+    protected $deletionService;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\DetailsModificationService
+     */
+    protected $detailsModificationService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     */
+    protected $locationRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    protected $nodeRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ReinstallService
+     */
+    protected $reinstallService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\CreationService
+     */
+    protected $service;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     */
+    protected $serviceRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\StartupModificationService
+     */
+    private $startupModificationService;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\SuspensionService
+     */
+    protected $suspensionService;
+
+    /**
+     * ServersController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                               $alert
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Pterodactyl\Services\Servers\BuildModificationService          $buildModificationService
+     * @param \Illuminate\Contracts\Config\Repository                         $config
+     * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
+     * @param \Pterodactyl\Services\Servers\CreationService                   $service
+     * @param \Pterodactyl\Services\Database\DatabaseManagementService        $databaseManagementService
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
+     * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
+     * @param \Pterodactyl\Services\Servers\DeletionService                   $deletionService
+     * @param \Pterodactyl\Services\Servers\DetailsModificationService        $detailsModificationService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
+     * @param \Pterodactyl\Services\Servers\ReinstallService                  $reinstallService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface    $serviceRepository
+     * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
+     * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
+     */
+    public function __construct(
+        AlertsMessageBag $alert,
+        AllocationRepositoryInterface $allocationRepository,
+        BuildModificationService $buildModificationService,
+        ConfigRepository $config,
+        ContainerRebuildService $containerRebuildService,
+        CreationService $service,
+        DatabaseManagementService $databaseManagementService,
+        DatabaseRepositoryInterface $databaseRepository,
+        DatabaseHostRepository $databaseHostRepository,
+        DeletionService $deletionService,
+        DetailsModificationService $detailsModificationService,
+        LocationRepositoryInterface $locationRepository,
+        NodeRepositoryInterface $nodeRepository,
+        ReinstallService $reinstallService,
+        ServerRepositoryInterface $repository,
+        ServiceRepositoryInterface $serviceRepository,
+        StartupModificationService $startupModificationService,
+        SuspensionService $suspensionService
+    ) {
+        $this->alert = $alert;
+        $this->allocationRepository = $allocationRepository;
+        $this->buildModificationService = $buildModificationService;
+        $this->config = $config;
+        $this->containerRebuildService = $containerRebuildService;
+        $this->databaseManagementService = $databaseManagementService;
+        $this->databaseRepository = $databaseRepository;
+        $this->databaseHostRepository = $databaseHostRepository;
+        $this->detailsModificationService = $detailsModificationService;
+        $this->deletionService = $deletionService;
+        $this->locationRepository = $locationRepository;
+        $this->nodeRepository = $nodeRepository;
+        $this->reinstallService = $reinstallService;
+        $this->repository = $repository;
+        $this->service = $service;
+        $this->serviceRepository = $serviceRepository;
+        $this->startupModificationService = $startupModificationService;
+        $this->suspensionService = $suspensionService;
+    }
+
+    /**
      * Display the index page with all servers currently on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        $servers = Models\Server::with('node', 'user', 'allocation');
-
-        if (! is_null($request->input('query'))) {
-            $servers->search($request->input('query'));
-        }
-
         return view('admin.servers.index', [
-            'servers' => $servers->paginate(25),
+            'servers' => $this->repository->getAllServers(
+                $this->config->get('pterodactyl.paginate.admin.servers')
+            ),
         ]);
     }
 
     /**
      * Display create new server page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
+     *
+     * @throws \Exception
      */
-    public function create(Request $request)
+    public function create()
     {
-        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        $services = $this->serviceRepository->getWithOptions();
+
         Javascript::put([
             'services' => $services->map(function ($item) {
                 return array_merge($item->toArray(), [
@@ -76,147 +237,114 @@ class ServersController extends Controller
         ]);
 
         return view('admin.servers.new', [
-            'locations' => Models\Location::all(),
+            'locations' => $this->locationRepository->all(),
             'services' => $services,
         ]);
     }
 
     /**
-     * Create server controller method.
+     * Handle POST of server creation form.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Response\RedirectResponse
+     * @param \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(Request $request)
+    public function store(ServerFormRequest $request)
     {
-        try {
-            $repo = new ServerRepository;
-            $server = $repo->create($request->except('_token'));
+        $server = $this->service->create($request->except('_token'));
+        $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
-            return redirect()->route('admin.servers.view', $server->id);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (AutoDeploymentException $ex) {
-            Alert::danger('Auto-Deployment Exception: ' . $ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-        }
-
-        return redirect()->route('admin.servers.new')->withInput();
+        return redirect()->route('admin.servers.view', $server->id);
     }
 
     /**
      * Returns a tree of all avaliable nodes in a given location.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Support\Collection
      */
     public function nodes(Request $request)
     {
-        $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
-
-        return $nodes->map(function ($item) {
-            $filtered = $item->allocations->where('server_id', null)->map(function ($map) {
-                return collect($map)->only(['id', 'ip', 'port']);
-            });
-
-            $item->ports = $filtered->map(function ($map) use ($item) {
-                return [
-                    'id' => $map['id'],
-                    'text' => $map['ip'] . ':' . $map['port'],
-                ];
-            })->values();
-
-            return [
-                'id' => $item->id,
-                'text' => $item->name,
-                'allocations' => $item->ports,
-            ];
-        })->values();
+        return $this->nodeRepository->getNodesForLocation($request->input('location'));
     }
 
     /**
      * Display the index when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
-    public function viewIndex(Request $request, $id)
+    public function viewIndex(Server $server)
     {
-        return view('admin.servers.view.index', ['server' => Models\Server::findOrFail($id)]);
+        return view('admin.servers.view.index', ['server' => $server]);
     }
 
     /**
      * Display the details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param int $server
      * @return \Illuminate\View\View
      */
-    public function viewDetails(Request $request, $id)
+    public function viewDetails($server)
     {
-        $server = Models\Server::where('installed', 1)->findOrFail($id);
-
-        return view('admin.servers.view.details', ['server' => $server]);
+        return view('admin.servers.view.details', [
+            'server' => $this->repository->findFirstWhere([
+                ['id', '=', $server],
+                ['installed', '=', 1],
+            ]),
+        ]);
     }
 
     /**
      * Display the build details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param int $server
      * @return \Illuminate\View\View
      */
-    public function viewBuild(Request $request, $id)
+    public function viewBuild($server)
     {
-        $server = Models\Server::where('installed', 1)->with('node.allocations')->findOrFail($id);
+        $server = $this->repository->findFirstWhere([
+            ['id', '=', $server],
+            ['installed', '=', 1],
+        ]);
+
+        $allocations = $this->allocationRepository->getAllocationsForNode($server->node_id);
 
         return view('admin.servers.view.build', [
             'server' => $server,
-            'assigned' => $server->node->allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
-            'unassigned' => $server->node->allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
+            'assigned' => $allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
+            'unassigned' => $allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
         ]);
     }
 
     /**
      * Display startup configuration page for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param int $server
      * @return \Illuminate\View\View
      */
-    public function viewStartup(Request $request, $id)
+    public function viewStartup($server)
     {
-        $server = Models\Server::where('installed', 1)->with('option.variables', 'variables')->findOrFail($id);
-        $server->option->variables->transform(function ($item, $key) use ($server) {
-            $item->server_value = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+        $parameters = $this->repository->getVariablesWithValues($server, true);
+        if (! $parameters->server->installed) {
+            abort(404);
+        }
 
-            return $item;
-        });
+        $services = $this->serviceRepository->getWithOptions();
 
-        $services = Models\Service::with('options.packs', 'options.variables')->get();
         Javascript::put([
             'services' => $services->map(function ($item) {
                 return array_merge($item->toArray(), [
                     'options' => $item->options->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
-            'server_variables' => $server->variables->mapWithKeys(function ($item) {
-                return ['env_' . $item->variable_id => [
-                    'value' => $item->variable_value,
-                ]];
-            })->toArray(),
+            'server_variables' => $parameters->data,
         ]);
 
         return view('admin.servers.view.startup', [
-            'server' => $server,
+            'server' => $parameters->server,
             'services' => $services,
         ]);
     }
@@ -224,16 +352,15 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int                      $id
+     * @param int $server
      * @return \Illuminate\View\View
      */
-    public function viewDatabase(Request $request, $id)
+    public function viewDatabase($server)
     {
-        $server = Models\Server::where('installed', 1)->with('databases.host')->findOrFail($id);
+        $server = $this->repository->getWithDatabases($server);
 
         return view('admin.servers.view.database', [
-            'hosts' => Models\DatabaseHost::all(),
+            'hosts' => $this->databaseHostRepository->all(),
             'server' => $server,
         ]);
     }
@@ -241,360 +368,268 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
-    public function viewManage(Request $request, $id)
+    public function viewManage(Server $server)
     {
-        return view('admin.servers.view.manage', ['server' => Models\Server::findOrFail($id)]);
+        return view('admin.servers.view.manage', ['server' => $server]);
     }
 
     /**
      * Display the deletion page for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      */
-    public function viewDelete(Request $request, $id)
+    public function viewDelete(Server $server)
     {
-        return view('admin.servers.view.delete', ['server' => Models\Server::findOrFail($id)]);
+        return view('admin.servers.view.delete', ['server' => $server]);
     }
 
     /**
      * Update the details for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function setDetails(Request $request, $id)
+    public function setDetails(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
-        try {
-            $repo->updateDetails($id, array_merge(
-                $request->only('description'),
-                $request->intersect([
-                    'owner_id', 'name', 'reset_token',
-                ])
-            ));
+        $this->detailsModificationService->edit($server, $request->only([
+            'owner_id', 'name', 'description', 'reset_token',
+        ]));
 
-            Alert::success('Server details were successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update this server. This error has been logged.')->flash();
-        }
+        $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();
 
-        return redirect()->route('admin.servers.view.details', $id)->withInput();
+        return redirect()->route('admin.servers.view.details', $server->id);
     }
 
     /**
      * Set the new docker container for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function setContainer(Request $request, $id)
+    public function setContainer(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->detailsModificationService->setDockerImage($server, $request->input('docker_image'));
+        $this->alert->success(trans('admin/server.alerts.docker_image_updated'))->flash();
 
-        try {
-            $repo->updateContainer($id, $request->intersect('docker_image'));
-
-            Alert::success('Successfully updated this server\'s docker image.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.');
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.details', $id);
+        return redirect()->route('admin.servers.view.details', $server->id);
     }
 
     /**
      * Toggles the install status for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function toggleInstall(Request $request, $id)
+    public function toggleInstall(Server $server)
     {
-        $repo = new ServerRepository;
-        try {
-            $repo->toggleInstall($id);
-
-            Alert::success('Server install status was successfully toggled.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to toggle this servers status. This error has been logged.')->flash();
+        if ($server->installed > 1) {
+            throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
         }
 
-        return redirect()->route('admin.servers.view.manage', $id);
+        $this->repository->update($server->id, [
+            'installed' => ! $server->installed,
+        ]);
+
+        $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();
+
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
      * Reinstalls the server with the currently assigned pack and service.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function reinstallServer(Request $request, $id)
+    public function reinstallServer(Server $server)
     {
-        $repo = new ServerRepository;
-        try {
-            $repo->reinstall($id);
+        $this->reinstallService->reinstall($server);
+        $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
 
-            Alert::success('Server successfully marked for reinstallation.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to perform this reinstallation. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.manage', $id);
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function rebuildContainer(Request $request, $id)
+    public function rebuildContainer(Server $server)
     {
-        $server = Models\Server::with('node')->findOrFail($id);
+        $this->containerRebuildService->rebuild($server);
+        $this->alert->success(trans('admin/server.alerts.rebuild_on_boot'))->flash();
 
-        try {
-            $server->node->guzzleClient([
-                'X-Access-Server' => $server->uuid,
-                'X-Access-Token' => $server->node->daemonSecret,
-            ])->request('POST', '/server/rebuild');
-
-            Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.manage', $id);
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
      * Manage the suspension status for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function manageSuspension(Request $request, $id)
+    public function manageSuspension(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
-        $action = $request->input('action');
+        $this->suspensionService->toggle($server, $request->input('action'));
+        $this->alert->success(trans('admin/server.alerts.suspension_toggled', [
+            'status' => $request->input('action') . 'ed',
+        ]))->flash();
 
-        if (! in_array($action, ['suspend', 'unsuspend'])) {
-            Alert::danger('Invalid action was passed to function.')->flash();
-
-            return redirect()->route('admin.servers.view.manage', $id);
-        }
-
-        try {
-            $repo->toggleAccess($id, ($action === 'unsuspend'));
-
-            Alert::success('Server has been ' . $action . 'ed.');
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to ' . $action . ' this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.manage', $id);
+        return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
     /**
      * Update the build configuration for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @internal param int $id
      */
-    public function updateBuild(Request $request, $id)
+    public function updateBuild(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->buildModificationService->handle($server, $request->only([
+            'allocation_id', 'add_allocations', 'remove_allocations',
+            'memory', 'swap', 'io', 'cpu', 'disk',
+        ]));
+        $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
-        try {
-            $repo->changeBuild($id, $request->intersect([
-                'allocation_id', 'add_allocations', 'remove_allocations',
-                'memory', 'swap', 'io', 'cpu', 'disk',
-            ]));
-
-            Alert::success('Server details were successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.build', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.build', $id);
+        return redirect()->route('admin.servers.view.build', $server->id);
     }
 
     /**
      * Start the server deletion process.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete(Request $request, $id)
+    public function delete(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->deletionService->withForce($request->has('force_delete'))->handle($server);
+        $this->alert->success(trans('admin/server.alerts.server_deleted'))->flash();
 
-        try {
-            $repo->delete($id, $request->has('force_delete'));
-            Alert::success('Server was successfully deleted from the system.')->flash();
-
-            return redirect()->route('admin.servers');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException occurred while attempting to delete this server from the daemon, please ensure it is running. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.delete', $id);
+        return redirect()->route('admin.servers');
     }
 
     /**
      * Update the startup command as well as variables.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request   $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function saveStartup(Request $request, $id)
+    public function saveStartup(Request $request, Server $server)
     {
-        $repo = new ServerRepository;
+        $this->startupModificationService->isAdmin()->handle(
+            $server,
+            $request->except('_token')
+        );
+        $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
-        try {
-            if ($repo->updateStartup($id, $request->except('_token'), true)) {
-                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')->flash();
-
-                return redirect()->route('admin.servers.view', $id);
-            } else {
-                Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
-            }
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.startup', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('A TransferException occurred while attempting to update the startup for this server, please ensure the daemon is running. This error has been logged.')->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.startup', $id);
+        return redirect()->route('admin.servers.view.startup', $server->id);
     }
 
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function newDatabase(Request $request, $id)
+    public function newDatabase(Request $request, $server)
     {
-        $repo = new DatabaseRepository;
+        $this->databaseManagementService->create($server, [
+            'database' => $request->input('database'),
+            'remote' => $request->input('remote'),
+            'database_host_id' => $request->input('database_host_id'),
+        ]);
 
-        try {
-            $repo->create($id, $request->only(['host', 'database', 'connection']));
-
-            Alert::success('A new database was assigned to this server successfully.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An exception occured while attempting to add a new database for this server. This error has been logged.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view.database', $id)->withInput();
+        return redirect()->route('admin.servers.view.database', $server)->withInput();
     }
 
     /**
      * Resets the database password for a specific database on this server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function resetDatabasePassword(Request $request, $id)
+    public function resetDatabasePassword(Request $request, $server)
     {
-        $database = Models\Database::where('server_id', $id)->findOrFail($request->input('database'));
-        $repo = new DatabaseRepository;
+        $database = $this->databaseRepository->findFirstWhere([
+            ['server_id', '=', $server],
+            ['id', '=', $request->input('database')],
+        ]);
 
-        try {
-            $repo->password($database->id, str_random(20));
+        $this->databaseManagementService->changePassword($database->id, str_random(20));
 
-            return response('', 204);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response()->json(['error' => 'A unhandled exception occurred while attempting to reset this password. This error has been logged.'], 503);
-        }
+        return response('', 204);
     }
 
     /**
      * Deletes a database from a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
-     * @param  int                       $database
+     * @param int $server
+     * @param int $database
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function deleteDatabase(Request $request, $id, $database)
+    public function deleteDatabase($server, $database)
     {
-        $database = Models\Database::where('server_id', $id)->findOrFail($database);
-        $repo = new DatabaseRepository;
+        $database = $this->databaseRepository->findFirstWhere([
+            ['server_id', '=', $server],
+            ['id', '=', $database],
+        ]);
 
-        try {
-            $repo->drop($database->id);
+        $this->databaseManagementService->delete($database->id);
 
-            return response('', 204);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response()->json(['error' => 'A unhandled exception occurred while attempting to drop this database. This error has been logged.'], 503);
-        }
+        return response('', 204);
     }
 }

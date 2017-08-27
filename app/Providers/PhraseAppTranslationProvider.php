@@ -32,8 +32,6 @@ class PhraseAppTranslationProvider extends TranslationServiceProvider
 {
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
