@@ -24,11 +24,11 @@
 
 namespace Tests\Unit\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder;
 use Mockery as m;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Tests\TestCase;
+use Pterodactyl\Models\DatabaseHost;
+use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 
 class DatabaseHostRepositoryTest extends TestCase
 {

@@ -25,12 +25,12 @@
 namespace Tests\Unit\Services\Packs;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
+use Tests\TestCase;
 use Pterodactyl\Models\Pack;
 use Pterodactyl\Services\Packs\PackUpdateService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class PackUpdateServiceTest extends TestCase
 {

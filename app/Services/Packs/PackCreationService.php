@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Services\Packs;
 
-use Illuminate\Http\UploadedFile;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;

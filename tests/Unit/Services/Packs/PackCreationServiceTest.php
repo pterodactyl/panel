@@ -25,16 +25,16 @@
 namespace Tests\Unit\Services\Packs;
 
 use Exception;
-use Illuminate\Contracts\Filesystem\Factory;
-use Illuminate\Http\UploadedFile;
 use Mockery as m;
-use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
-use Pterodactyl\Models\Pack;
-use Pterodactyl\Services\Packs\PackCreationService;
 use Tests\TestCase;
+use Pterodactyl\Models\Pack;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Contracts\Filesystem\Factory;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Services\Packs\PackCreationService;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
+use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 
 class PackCreationServiceTest extends TestCase
 {

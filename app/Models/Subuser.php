@@ -24,12 +24,12 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
 
 class Subuser extends Model implements CleansAttributes, ValidableContract
 {

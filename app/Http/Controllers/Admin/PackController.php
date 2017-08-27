@@ -24,19 +24,19 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\PackFormRequest;
-use Pterodactyl\Services\Packs\ExportPackService;
-use Pterodactyl\Services\Packs\PackCreationService;
-use Pterodactyl\Services\Packs\PackDeletionService;
-use Pterodactyl\Services\Packs\PackUpdateService;
-use Pterodactyl\Services\Packs\TemplateUploadService;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Pack;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Packs\ExportPackService;
+use Pterodactyl\Services\Packs\PackUpdateService;
+use Pterodactyl\Services\Packs\PackCreationService;
+use Pterodactyl\Services\Packs\PackDeletionService;
+use Pterodactyl\Http\Requests\Admin\PackFormRequest;
+use Pterodactyl\Services\Packs\TemplateUploadService;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class PackController extends Controller
 {

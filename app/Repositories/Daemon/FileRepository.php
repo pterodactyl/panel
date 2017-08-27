@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Webmozart\Assert\Assert;
+use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 
 class FileRepository extends BaseRepository implements FileRepositoryInterface
 {

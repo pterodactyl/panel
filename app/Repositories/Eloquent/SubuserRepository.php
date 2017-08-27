@@ -24,10 +24,10 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Models\Subuser;
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 
 class SubuserRepository extends EloquentRepository implements SubuserRepositoryInterface
 {

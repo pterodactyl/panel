@@ -24,12 +24,12 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Models\Pack;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
-use Pterodactyl\Repositories\Concerns\Searchable;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 use Webmozart\Assert\Assert;
+use Pterodactyl\Repositories\Concerns\Searchable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class PackRepository extends EloquentRepository implements PackRepositoryInterface
 {

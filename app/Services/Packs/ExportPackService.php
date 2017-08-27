@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Packs;
 
-use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException;
-use Pterodactyl\Models\Pack;
 use ZipArchive;
+use Pterodactyl\Models\Pack;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
+use Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException;
 
 class ExportPackService
 {

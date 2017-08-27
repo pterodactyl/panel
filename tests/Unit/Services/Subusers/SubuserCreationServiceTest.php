@@ -24,23 +24,23 @@
 
 namespace Tests\Unit\Services\Subusers;
 
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
 use Mockery as m;
+use Tests\TestCase;
+use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
-use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
-use Pterodactyl\Services\Subusers\SubuserCreationService;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Users\CreationService;
-use Tests\TestCase;
+use Pterodactyl\Services\Subusers\SubuserCreationService;
+use Pterodactyl\Services\Subusers\PermissionCreationService;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
+use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserCreationServiceTest extends TestCase
@@ -200,7 +200,7 @@ class SubuserCreationServiceTest extends TestCase
     }
 
     /**
-     * Test that an exception gets thrown if the subuser is actually the server owner
+     * Test that an exception gets thrown if the subuser is actually the server owner.
      */
     public function testExceptionIsThrownIfUserIsServerOwner()
     {
@@ -237,6 +237,5 @@ class SubuserCreationServiceTest extends TestCase
             $this->assertInstanceOf(ServerSubuserExistsException::class, $exception);
             $this->assertEquals(trans('admin/exceptions.subusers.subuser_exists'), $exception->getMessage());
         }
-
     }
 }

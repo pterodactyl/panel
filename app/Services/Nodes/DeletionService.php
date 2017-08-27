@@ -24,10 +24,10 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Models\Node;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class DeletionService
