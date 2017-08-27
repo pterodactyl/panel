@@ -24,11 +24,11 @@
 
 namespace Tests\Unit\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder;
 use Mockery as m;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Tests\TestCase;
+use Pterodactyl\Models\Allocation;
+use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 
 class AllocationRepositoryTest extends TestCase
 {

@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Eloquence;
 
 class Permission extends Model implements CleansAttributes
 {

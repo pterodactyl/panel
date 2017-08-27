@@ -24,11 +24,11 @@
 
 namespace Tests\Unit\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder;
 use Mockery as m;
-use Pterodactyl\Models\APIPermission;
-use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
 use Tests\TestCase;
+use Pterodactyl\Models\APIPermission;
+use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
 
 class ApiPermissionRepositoryTest extends TestCase
 {

@@ -24,10 +24,10 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface as DatabaseServerRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {

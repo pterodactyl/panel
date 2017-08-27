@@ -24,18 +24,18 @@
 
 namespace Tests\Unit\Services\Subusers;
 
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
+use Tests\TestCase;
+use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Subusers\SubuserUpdateService;
-use Tests\TestCase;
+use Pterodactyl\Services\Subusers\PermissionCreationService;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserUpdateServiceTest extends TestCase

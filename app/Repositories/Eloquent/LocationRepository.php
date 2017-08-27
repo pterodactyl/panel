@@ -26,9 +26,9 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Location;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Repositories\Concerns\Searchable;
 
 class LocationRepository extends EloquentRepository implements LocationRepositoryInterface
 {

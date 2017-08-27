@@ -24,18 +24,18 @@
 
 namespace Pterodactyl\Services\Subusers;
 
+use Illuminate\Log\Writer;
+use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Users\CreationService;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Users\CreationService;
+use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserCreationService
 {

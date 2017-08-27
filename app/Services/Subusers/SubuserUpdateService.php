@@ -24,13 +24,13 @@
 
 namespace Pterodactyl\Services\Subusers;
 
+use Illuminate\Log\Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserUpdateService
 {

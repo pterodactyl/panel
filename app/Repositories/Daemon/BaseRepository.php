@@ -25,11 +25,11 @@
 namespace Pterodactyl\Repositories\Daemon;
 
 use GuzzleHttp\Client;
+use Webmozart\Assert\Assert;
 use Illuminate\Foundation\Application;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\Daemon\BaseRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 class BaseRepository implements BaseRepositoryInterface
 {

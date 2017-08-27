@@ -24,11 +24,11 @@
 
 namespace Tests\Unit\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder;
 use Mockery as m;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
 use Tests\TestCase;
+use Pterodactyl\Models\Location;
+use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Repositories\Eloquent\LocationRepository;
 
 class LocationRepositoryTest extends TestCase
 {

@@ -24,14 +24,14 @@
 
 namespace Tests\Unit\Services\Packs;
 
-use Illuminate\Contracts\Filesystem\Factory;
-use Mockery as m;
-use phpmock\phpunit\PHPMock;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Models\Pack;
-use Pterodactyl\Services\Packs\ExportPackService;
-use Tests\TestCase;
 use ZipArchive;
+use Mockery as m;
+use Tests\TestCase;
+use phpmock\phpunit\PHPMock;
+use Pterodactyl\Models\Pack;
+use Illuminate\Contracts\Filesystem\Factory;
+use Pterodactyl\Services\Packs\ExportPackService;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 
 class ExportPackServiceTest extends TestCase
 {

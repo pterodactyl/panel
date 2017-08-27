@@ -25,10 +25,10 @@
 namespace Tests\Unit\Services\Helpers;
 
 use Closure;
-use GuzzleHttp\Client;
 use Mockery as m;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Tests\TestCase;
+use GuzzleHttp\Client;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
@@ -64,7 +64,7 @@ class SoftwareVersionServiceTest extends TestCase
     protected $service;
 
     /**
-     * Setup tests
+     * Setup tests.
      */
     public function setUp()
     {

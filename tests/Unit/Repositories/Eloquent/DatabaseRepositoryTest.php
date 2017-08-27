@@ -24,13 +24,13 @@
 
 namespace Tests\Unit\Repositories\Eloquent;
 
-use Illuminate\Database\Eloquent\Builder;
 use Mockery as m;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Tests\TestCase;
+use Pterodactyl\Models\Database;
+use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
+use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 
 class DatabaseRepositoryTest extends TestCase
 {

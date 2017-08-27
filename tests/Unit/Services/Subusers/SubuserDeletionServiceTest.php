@@ -24,16 +24,16 @@
 
 namespace Tests\Unit\Services\Subusers;
 
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Log\Writer;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
+use Tests\TestCase;
+use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Subusers\SubuserDeletionService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserDeletionServiceTest extends TestCase
@@ -135,5 +135,4 @@ class SubuserDeletionServiceTest extends TestCase
             $this->assertEquals(trans('admin/exceptions.daemon_connection_failed', ['code' => 'E_CONN_REFUSED']), $exception->getMessage());
         }
     }
-
 }

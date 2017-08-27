@@ -25,10 +25,10 @@
 namespace Pterodactyl\Services\Database;
 
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostService

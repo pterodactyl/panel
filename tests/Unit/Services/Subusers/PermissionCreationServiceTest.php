@@ -25,9 +25,9 @@
 namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
 use Tests\TestCase;
+use Pterodactyl\Services\Subusers\PermissionCreationService;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 
 class PermissionCreationServiceTest extends TestCase
 {

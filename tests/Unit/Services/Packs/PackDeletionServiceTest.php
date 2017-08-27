@@ -25,15 +25,15 @@
 namespace Tests\Unit\Services\Packs;
 
 use Exception;
+use Mockery as m;
+use Tests\TestCase;
+use Pterodactyl\Models\Pack;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\ConnectionInterface;
-use Mockery as m;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Models\Pack;
 use Pterodactyl\Services\Packs\PackDeletionService;
-use Tests\TestCase;
+use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class PackDeletionServiceTest extends TestCase
 {

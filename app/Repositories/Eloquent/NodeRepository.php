@@ -25,9 +25,9 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Node;
+use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Repositories\Concerns\Searchable;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
 {

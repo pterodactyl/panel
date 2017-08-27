@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 use Pterodactyl\Models\Database;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
 {
