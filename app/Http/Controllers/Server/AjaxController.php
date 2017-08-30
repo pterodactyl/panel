@@ -52,8 +52,8 @@ class AjaxController extends Controller
     /**
      * Returns a listing of files in a given directory for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View|\Illuminate\Http\Response
      */
     public function postDirectoryList(Request $request, $uuid)
@@ -79,7 +79,7 @@ class AjaxController extends Controller
             $prevDir['link_show'] = implode('/', $goBack) . '/';
         }
 
-        $controller = new Repositories\Daemon\FileRepository($uuid);
+        $controller = new Repositories\old_Daemon\FileRepository($uuid);
 
         try {
             $directoryContents = $controller->returnDirectoryListing($this->directory);
@@ -103,8 +103,8 @@ class AjaxController extends Controller
     /**
      * Handles a POST request to save a file.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\Response
      */
     public function postSaveFile(Request $request, $uuid)
@@ -112,7 +112,7 @@ class AjaxController extends Controller
         $server = Models\Server::byUuid($uuid);
         $this->authorize('save-files', $server);
 
-        $controller = new Repositories\Daemon\FileRepository($uuid);
+        $controller = new Repositories\old_Daemon\FileRepository($uuid);
 
         try {
             $controller->saveFileContents($request->input('file'), $request->input('contents'));
@@ -130,8 +130,8 @@ class AjaxController extends Controller
     /**
      * Sets the primary allocation for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\JsonResponse
      * @deprecated
      */
@@ -180,8 +180,8 @@ class AjaxController extends Controller
     /**
      * Resets a database password for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\JsonResponse
      * @deprecated
      */

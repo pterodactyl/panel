@@ -128,7 +128,7 @@
                         <li class="header">SERVICE MANAGEMENT</li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.services') ?: 'active' }}">
                             <a href="{{ route('admin.services') }}">
-                                <i class="fa fa-th-large"></i> <span>Services</span>
+                                <i class="fa fa-th-large"></i> <span>Service</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">

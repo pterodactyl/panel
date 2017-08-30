@@ -8,8 +8,6 @@ class AddForeignServiceOptions extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -20,18 +18,16 @@ class AddForeignServiceOptions extends Migration
         });
     }
 
-     /**
-      * Reverse the migrations.
-      *
-      * @return void
-      */
-     public function down()
-     {
-         Schema::table('service_options', function (Blueprint $table) {
-             $table->dropForeign('service_options_parent_service_foreign');
-             $table->dropIndex('service_options_parent_service_foreign');
-         });
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::table('service_options', function (Blueprint $table) {
+            $table->dropForeign('service_options_parent_service_foreign');
+            $table->dropIndex('service_options_parent_service_foreign');
+        });
 
-         DB::statement('ALTER TABLE service_options MODIFY parent_service MEDIUMINT(8) UNSIGNED NOT NULL');
-     }
+        DB::statement('ALTER TABLE service_options MODIFY parent_service MEDIUMINT(8) UNSIGNED NOT NULL');
+    }
 }

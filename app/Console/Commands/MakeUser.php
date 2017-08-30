@@ -25,7 +25,7 @@
 namespace Pterodactyl\Console\Commands;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Repositories\oldUserRepository;
 
 class MakeUser extends Command
 {
@@ -51,8 +51,6 @@ class MakeUser extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -80,7 +78,7 @@ class MakeUser extends Command
         $data['root_admin'] = is_null($this->option('admin')) ? $this->confirm('Is this user a root administrator?') : $this->option('admin');
 
         try {
-            $user = new UserRepository;
+            $user = new oldUserRepository;
             $user->create($data);
 
             return $this->info('User successfully created.');

@@ -68,8 +68,6 @@ class HMACAuthorization
 
     /**
      * Construct class instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -80,8 +78,8 @@ class HMACAuthorization
     /**
      * Handle an incoming request for the API.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure                  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -101,7 +99,6 @@ class HMACAuthorization
     /**
      * Checks that the Bearer token is provided and in a valid format.
      *
-     * @return void
      *
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
@@ -126,7 +123,6 @@ class HMACAuthorization
      * Determine if the request contains a valid public API key
      * as well as permissions for the resource.
      *
-     * @return void
      *
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
@@ -164,7 +160,6 @@ class HMACAuthorization
      * Determine if the HMAC sent in the request matches the one generated
      * on the panel side.
      *
-     * @return void
      *
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      */

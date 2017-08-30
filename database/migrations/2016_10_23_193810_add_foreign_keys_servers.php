@@ -8,8 +8,6 @@ class AddForeignKeysServers extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -33,8 +31,6 @@ class AddForeignKeysServers extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

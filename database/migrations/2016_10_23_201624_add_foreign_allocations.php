@@ -8,8 +8,6 @@ class AddForeignAllocations extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -24,24 +22,22 @@ class AddForeignAllocations extends Migration
         });
     }
 
-     /**
-      * Reverse the migrations.
-      *
-      * @return void
-      */
-     public function down()
-     {
-         Schema::table('allocations', function (Blueprint $table) {
-             $table->dropForeign('allocations_assigned_to_foreign');
-             $table->dropForeign('allocations_node_foreign');
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::table('allocations', function (Blueprint $table) {
+            $table->dropForeign('allocations_assigned_to_foreign');
+            $table->dropForeign('allocations_node_foreign');
 
-             $table->dropIndex('allocations_assigned_to_foreign');
-             $table->dropIndex('allocations_node_foreign');
-         });
+            $table->dropIndex('allocations_assigned_to_foreign');
+            $table->dropIndex('allocations_node_foreign');
+        });
 
-         DB::statement('ALTER TABLE allocations
+        DB::statement('ALTER TABLE allocations
              MODIFY COLUMN assigned_to MEDIUMINT(8) UNSIGNED NULL,
              MODIFY COLUMN node MEDIUMINT(8) UNSIGNED NOT NULL
          ');
-     }
+    }
 }

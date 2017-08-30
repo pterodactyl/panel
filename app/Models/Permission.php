@@ -24,10 +24,14 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
 
-class Permission extends Model
+class Permission extends Model implements CleansAttributes
 {
+    use Eloquence;
+
     /**
      * Should timestamps be used on this model.
      *
@@ -81,7 +85,7 @@ class Permission extends Model
         'server' => [
             'set-connection' => null,
             'view-startup' => null,
-            'edit-startup'  => null,
+            'edit-startup' => null,
         ],
         'sftp' => [
             'view-sftp' => null,
@@ -118,12 +122,12 @@ class Permission extends Model
     /**
      * Return a collection of permissions available.
      *
-     * @param  array  $single
-     * @return \Illuminate\Support\Collection|array
+     * @param bool $array
+     * @return array|\Illuminate\Support\Collection
      */
-    public static function listPermissions($single = false)
+    public static function getPermissions($array = false)
     {
-        if ($single) {
+        if ($array) {
             return collect(self::$permissions)->mapWithKeys(function ($item) {
                 return $item;
             })->all();
@@ -135,8 +139,8 @@ class Permission extends Model
     /**
      * Find permission by permission node.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
-     * @param  string                             $permission
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param string                             $permission
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopePermission($query, $permission)
@@ -147,8 +151,8 @@ class Permission extends Model
     /**
      * Filter permission by server.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
-     * @param  \Pterodactyl\Models\Server         $server
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param \Pterodactyl\Models\Server         $server
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopeServer($query, Server $server)

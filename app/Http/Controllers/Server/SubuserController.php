@@ -39,8 +39,8 @@ class SubuserController extends Controller
     /**
      * Displays the subuser overview index.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function index(Request $request, $uuid)
@@ -60,9 +60,9 @@ class SubuserController extends Controller
     /**
      * Displays the a single subuser overview.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\View\View
      */
     public function view(Request $request, $uuid, $id)
@@ -89,9 +89,9 @@ class SubuserController extends Controller
     /**
      * Handles editing a subuser.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $uuid, $id)
@@ -135,8 +135,8 @@ class SubuserController extends Controller
     /**
      * Display new subuser creation page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function create(Request $request, $uuid)
@@ -155,8 +155,8 @@ class SubuserController extends Controller
     /**
      * Handles creating a new subuser.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $uuid)
@@ -190,9 +190,9 @@ class SubuserController extends Controller
     /**
      * Handles deleting a subuser.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function delete(Request $request, $uuid, $id)

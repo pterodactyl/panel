@@ -47,9 +47,8 @@ class AllocationTransformer extends TransformerAbstract
     /**
      * Setup request object for transformer.
      *
-     * @param  \Illuminate\Http\Request|bool  $request
-     * @param  bool                           $filter
-     * @return void
+     * @param \Illuminate\Http\Request|bool $request
+     * @param bool                          $filter
      */
     public function __construct($request = false, $filter = false)
     {

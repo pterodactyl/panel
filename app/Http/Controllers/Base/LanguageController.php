@@ -51,8 +51,8 @@ class LanguageController extends Controller
     /**
      * Sets the language for a user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $language
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $language
      * @return \Illuminate\Http\RedirectResponse
      */
     public function setLanguage(Request $request, $language)

@@ -85,8 +85,6 @@ EOF;
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -107,8 +105,6 @@ EOF;
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -34,7 +34,7 @@ class IndexController extends Controller
     /**
      * Returns listing of user's servers.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function getIndex(Request $request)
@@ -53,8 +53,8 @@ class IndexController extends Controller
     /**
      * Generate a random string.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $length
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $length
      * @return string
      * @deprecated
      */
@@ -76,8 +76,8 @@ class IndexController extends Controller
     /**
      * Returns status of the server in a JSON response used for populating active status list.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\JsonResponse
      */
     public function status(Request $request, $uuid)
@@ -102,7 +102,6 @@ class IndexController extends Controller
                 return response()->json(json_decode($res->getBody()));
             }
         } catch (\Exception $e) {
-            //
         }
 
         return response()->json([]);

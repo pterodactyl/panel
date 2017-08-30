@@ -1,8 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,43 +24,95 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Services\Users\UserDeletionService;
+use Illuminate\Contracts\Translation\Translator;
+use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Users\UserCreationService
+     */
+    protected $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Users\UserDeletionService
+     */
+    protected $deletionService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Illuminate\Contracts\Translation\Translator
+     */
+    protected $translator;
+
+    /**
+     * @var \Pterodactyl\Services\Users\UserUpdateService
+     */
+    protected $updateService;
+
+    /**
+     * UserController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param \Pterodactyl\Services\Users\UserCreationService           $creationService
+     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
+     * @param \Illuminate\Contracts\Translation\Translator              $translator
+     * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     */
+    public function __construct(
+        AlertsMessageBag $alert,
+        UserCreationService $creationService,
+        UserDeletionService $deletionService,
+        Translator $translator,
+        UserUpdateService $updateService,
+        UserRepositoryInterface $repository
+    ) {
+        $this->alert = $alert;
+        $this->creationService = $creationService;
+        $this->deletionService = $deletionService;
+        $this->repository = $repository;
+        $this->translator = $translator;
+        $this->updateService = $updateService;
+    }
+
+    /**
      * Display user index page.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
-        $users = User::withCount('servers', 'subuserOf');
+        $users = $this->repository->search($request->input('query'))->getAllUsersWithCounts();
 
-        if (! is_null($request->input('query'))) {
-            $users->search($request->input('query'));
-        }
-
-        return view('admin.users.index', [
-            'users' => $users->paginate(25),
-        ]);
+        return view('admin.users.index', ['users' => $users]);
     }
 
     /**
      * Display new user page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create()
     {
         return view('admin.users.new');
     }
@@ -69,112 +120,77 @@ class UserController extends Controller
     /**
      * Display user view page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Models\User $user
      * @return \Illuminate\View\View
      */
-    public function view(Request $request, $id)
+    public function view(User $user)
     {
-        return view('admin.users.view', [
-            'user' => User::with('servers.node')->findOrFail($id),
-        ]);
+        return view('admin.users.view', ['user' => $user]);
     }
 
     /**
-     * Delete a user.
+     * Delete a user from the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Models\User $user
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(Request $request, $id)
+    public function delete(Request $request, User $user)
     {
-        try {
-            $repo = new UserRepository;
-            $repo->delete($id);
-            Alert::success('Successfully deleted user from system.')->flash();
-
-            return redirect()->route('admin.users');
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An exception was encountered while attempting to delete this user.')->flash();
+        if ($request->user()->id === $user->id) {
+            throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
         }
 
-        return redirect()->route('admin.users.view', $id);
+        $this->deletionService->handle($user);
+
+        return redirect()->route('admin.users.view', $user->id);
     }
 
     /**
      * Create a user.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Exception
+     * @throws \Throwable
      */
-    public function store(Request $request)
+    public function store(UserFormRequest $request)
     {
-        try {
-            $user = new UserRepository;
-            $userid = $user->create($request->only([
-                'email', 'password', 'name_first',
-                'name_last', 'username', 'root_admin',
-            ]));
-            Alert::success('Account has been successfully created.')->flash();
+        $user = $this->creationService->handle($request->normalize());
+        $this->alert->success($this->translator->trans('admin/user.notices.account_created'))->flash();
 
-            return redirect()->route('admin.users.view', $userid);
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.new')->withErrors(json_decode($ex->getMessage()))->withInput();
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to add a new user.')->flash();
-
-            return redirect()->route('admin.users.new');
-        }
+        return redirect()->route('admin.users.view', $user->id);
     }
 
     /**
-     * Update a user.
+     * Update a user on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
+     * @param \Pterodactyl\Models\User                         $user
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function update(Request $request, $id)
+    public function update(UserFormRequest $request, User $user)
     {
-        try {
-            $repo = new UserRepository;
-            $user = $repo->update($id, array_merge(
-                $request->only('root_admin'),
-                $request->intersect([
-                    'email', 'password', 'name_first',
-                    'name_last', 'username',
-                ])
-            ));
-            Alert::success('User account was successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.users.view', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error occured while attempting to update this user.')->flash();
-        }
+        $this->updateService->handle($user->id, $request->normalize());
+        $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();
 
-        return redirect()->route('admin.users.view', $id);
+        return redirect()->route('admin.users.view', $user->id);
     }
 
     /**
      * Get a JSON response of users on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Pterodactyl\Models\User
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function json(Request $request)
     {
-        return User::select('id', 'email', 'username', 'name_first', 'name_last')
-            ->search($request->input('q'))
-            ->get()->transform(function ($item) {
-                $item->md5 = md5(strtolower($item->email));
-
-                return $item;
-            });
+        return $this->repository->filterUsersByQuery($request->input('q'));
     }
 }

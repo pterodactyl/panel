@@ -24,12 +24,16 @@
 
 namespace Pterodactyl\Models;
 
-use Crypt;
-use Config;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class DatabaseHost extends Model
+class DatabaseHost extends Model implements CleansAttributes, ValidableContract
 {
+    use Eloquence, Validable;
+
     /**
      * The table associated with the model.
      *
@@ -50,7 +54,7 @@ class DatabaseHost extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
     ];
 
     /**
@@ -65,24 +69,32 @@ class DatabaseHost extends Model
     ];
 
     /**
-     * Sets the database connection name with the details of the host.
+     * Application validation rules.
      *
-     * @param  string  $connection
-     * @return void
+     * @var array
      */
-    public function setDynamicConnection($connection = 'dynamic')
-    {
-        Config::set('database.connections.' . $connection, [
-            'driver' => 'mysql',
-            'host' => $this->host,
-            'port' => $this->port,
-            'database' => 'mysql',
-            'username' => $this->username,
-            'password' => Crypt::decrypt($this->password),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-        ]);
-    }
+    protected static $applicationRules = [
+        'name' => 'required',
+        'host' => 'required',
+        'port' => 'required',
+        'username' => 'required',
+        'node_id' => 'sometimes|required',
+    ];
+
+    /**
+     * Validation rules to assign to this model.
+     *
+     * @var array
+     * @todo the node_id field doesn't validate correctly if no node is provided in request
+     */
+    protected static $dataIntegrityRules = [
+        'name' => 'string|max:255',
+        'host' => 'ip|unique:database_hosts,host',
+        'port' => 'numeric|between:1,65535',
+        'username' => 'string|max:32',
+        'password' => 'nullable|string',
+        'node_id' => 'nullable|exists:nodes,id',
+    ];
 
     /**
      * Gets the node associated with a database host.

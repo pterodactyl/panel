@@ -41,7 +41,7 @@ class ServerController extends Controller
     /**
      * Controller to handle returning all servers on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function index(Request $request)
@@ -64,8 +64,8 @@ class ServerController extends Controller
     /**
      * Controller to handle returning information on a single server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return array
      */
     public function view(Request $request, $id)
@@ -87,7 +87,7 @@ class ServerController extends Controller
     /**
      * Create a new server on the system.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse|array
      */
     public function store(Request $request)
@@ -130,8 +130,8 @@ class ServerController extends Controller
     /**
      * Delete a server from the system.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function delete(Request $request, $id)
@@ -165,8 +165,8 @@ class ServerController extends Controller
     /**
      * Update the details for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse|array
      */
     public function details(Request $request, $id)
@@ -205,8 +205,8 @@ class ServerController extends Controller
     /**
      * Set the new docker container for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\RedirectResponse|array
      */
     public function container(Request $request, $id)
@@ -245,8 +245,8 @@ class ServerController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function install(Request $request, $id)
@@ -274,8 +274,8 @@ class ServerController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function rebuild(Request $request, $id)
@@ -302,8 +302,8 @@ class ServerController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function suspend(Request $request, $id)
@@ -344,8 +344,8 @@ class ServerController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse|array
      */
     public function build(Request $request, $id)
@@ -391,8 +391,8 @@ class ServerController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
      * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function startup(Request $request, $id)

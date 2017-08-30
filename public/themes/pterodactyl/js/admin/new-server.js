@@ -179,7 +179,7 @@ $('#pOptionId').on('change', function (event) {
         var dataAppend = ' \
             <div class="form-group col-sm-6"> \
                 <label for="var_ref_' + item.id + '" class="control-label">' + isRequired + item.name + '</label> \
-                <input type="text" id="var_ref_' + item.id + '" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" /> \
+                <input type="text" id="var_ref_' + item.id + '" autocomplete="off" name="environment[' + item.env_variable + ']" class="form-control" value="' + item.default_value + '" /> \
                 <p class="text-muted small">' + item.description + '<br /> \
                 <strong>Access in Startup:</strong> <code>{{' + item.env_variable + '}}</code><br /> \
                 <strong>Validation Rules:</strong> <code>' + item.rules + '</code></small></p> \

@@ -31,10 +31,10 @@ class PhraseAppTranslator extends LaravelTranslator
     /**
      * Get the translation for the given key.
      *
-     * @param  string       $key
-     * @param  array        $replace
-     * @param  string|null  $locale
-     * @param  bool         $fallback
+     * @param string      $key
+     * @param array       $replace
+     * @param string|null $locale
+     * @param bool        $fallback
      * @return string
      */
     public function get($key, array $replace = [], $locale = null, $fallback = true)

@@ -24,10 +24,16 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Allocation extends Model
+class Allocation extends Model implements CleansAttributes, ValidableContract
 {
+    use Eloquence, Validable;
+
     /**
      * The table associated with the model.
      *
@@ -42,46 +48,66 @@ class Allocation extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'node_id' => 'integer',
-         'port' => 'integer',
-         'server_id' => 'integer',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'node_id' => 'integer',
+        'port' => 'integer',
+        'server_id' => 'integer',
+    ];
 
-     /**
-      * Accessor to automatically provide the IP alias if defined.
-      *
-      * @param  null|string  $value
-      * @return string
-      */
-     public function getAliasAttribute($value)
-     {
-         return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
-     }
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'node_id' => 'required',
+        'ip' => 'required',
+        'port' => 'required',
+    ];
 
-     /**
-      * Accessor to quickly determine if this allocation has an alias.
-      *
-      * @param  null|string  $value
-      * @return bool
-      */
-     public function getHasAliasAttribute($value)
-     {
-         return ! is_null($this->ip_alias);
-     }
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'node_id' => 'exists:nodes,id',
+        'ip' => 'ip',
+        'port' => 'numeric|between:1024,65553',
+        'alias' => 'string',
+        'server_id' => 'nullable|exists:servers,id',
+    ];
 
-     /**
-      * Gets information for the server associated with this allocation.
-      *
-      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-      */
-     public function server()
-     {
-         return $this->belongsTo(Server::class);
-     }
+    /**
+     * Accessor to automatically provide the IP alias if defined.
+     *
+     * @param null|string $value
+     * @return string
+     */
+    public function getAliasAttribute($value)
+    {
+        return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
+    }
+
+    /**
+     * Accessor to quickly determine if this allocation has an alias.
+     *
+     * @param null|string $value
+     * @return bool
+     */
+    public function getHasAliasAttribute($value)
+    {
+        return ! is_null($this->ip_alias);
+    }
+
+    /**
+     * Gets information for the server associated with this allocation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class);
+    }
 }
