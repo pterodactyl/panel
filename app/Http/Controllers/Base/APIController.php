@@ -25,6 +25,7 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Auth;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\APIPermission;
@@ -91,7 +92,7 @@ class APIController extends Controller
         return view('base.api.new', [
             'permissions' => [
                 'user' => collect(APIPermission::CONST_PERMISSIONS)->pull('_user'),
-                'admin' => collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
+                'admin' => Auth::user()->isRootAdmin() ? collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray() : [],
             ],
         ]);
     }

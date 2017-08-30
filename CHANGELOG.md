@@ -9,6 +9,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
 
+### Fixed
+* Only show admin API permissions to Admins.
+
 ## v0.6.4 (Courageous Carniadactylus)
 ### Fixed
 * Fixed the console rendering on page load, I guess people don't like watching it load line-by-line for 10 minutes. Who would have guessed...
