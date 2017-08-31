@@ -28,7 +28,7 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
-class KeyService
+class KeyCreationService
 {
     const PUB_CRYPTO_BYTES = 8;
     const PRIV_CRYPTO_BYTES = 32;
@@ -36,7 +36,7 @@ class KeyService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    protected $connection;
 
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
@@ -57,18 +57,18 @@ class KeyService
      * ApiKeyService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Database\ConnectionInterface                    $database
+     * @param \Illuminate\Database\ConnectionInterface                    $connection
      * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      * @param \Pterodactyl\Services\Api\PermissionService                 $permissionService
      */
     public function __construct(
         ApiKeyRepositoryInterface $repository,
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         Encrypter $encrypter,
         PermissionService $permissionService
     ) {
         $this->repository = $repository;
-        $this->database = $database;
+        $this->connection = $connection;
         $this->encrypter = $encrypter;
         $this->permissionService = $permissionService;
     }
@@ -84,13 +84,13 @@ class KeyService
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $data, array $permissions, array $administrative = [])
+    public function handle(array $data, array $permissions, array $administrative = [])
     {
         $publicKey = bin2hex(random_bytes(self::PUB_CRYPTO_BYTES));
         $secretKey = bin2hex(random_bytes(self::PRIV_CRYPTO_BYTES));
 
         // Start a Transaction
-        $this->database->beginTransaction();
+        $this->connection->beginTransaction();
 
         $data = array_merge($data, [
             'public' => $publicKey,
@@ -128,19 +128,8 @@ class KeyService
             $this->permissionService->create($instance->id, $permission);
         }
 
-        $this->database->commit();
+        $this->connection->commit();
 
         return $secretKey;
-    }
-
-    /**
-     * Delete the API key and associated permissions from the database.
-     *
-     * @param int $id
-     * @return bool|null
-     */
-    public function revoke($id)
-    {
-        return $this->repository->delete($id);
     }
 }

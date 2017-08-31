@@ -83,4 +83,13 @@ trait ControllerAssertionsTrait
     {
         PHPUnit_Framework_Assert::assertEquals($value, array_get($view->getData(), $attribute));
     }
+
+    /**
+     * @param string $route
+     * @param \Illuminate\Http\RedirectResponse $response
+     */
+    public function assertRouteRedirectEquals($route, $response)
+    {
+        PHPUnit_Framework_Assert::assertEquals(route($route), $response->getTargetUrl());
+    }
 }

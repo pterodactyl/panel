@@ -33,6 +33,7 @@ return [
             'header_sub' => 'Manage your API access keys.',
             'list' => 'API Keys',
             'create_new' => 'Create New API key',
+            'keypair_created' => 'An API Key-Pair has been generated. Your API secret token is <code>:token</code>. Please take note of this key as it will not be displayed again.',
         ],
         'new' => [
             'header' => 'New API Key',
@@ -207,6 +208,8 @@ return [
         ],
     ],
     'account' => [
+        'details_updated' => 'Your account details have been successfully updated.',
+        'invalid_password' => 'The password provided for your account was not valid.',
         'header' => 'Your Account',
         'header_sub' => 'Manage your account details.',
         'update_pass' => 'Update Password',
@@ -219,10 +222,9 @@ return [
         'last_name' => 'Last Name',
         'update_identitity' => 'Update Identity',
         'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
-        'invalid_pass' => 'The password provided was not valid for this account.',
-        'exception' => 'An error occurred while attempting to update your account.',
     ],
     'security' => [
+        'session_mgmt_disabled' => 'Your host has not enabled the ability to manage account sessions via this interface.',
         'header' => 'Account Security',
         'header_sub' => 'Control active sessions and 2-Factor Authentication.',
         'sessions' => 'Active Sessions',
@@ -234,5 +236,6 @@ return [
         'enable_2fa' => 'Enable 2-Factor Authentication',
         '2fa_qr' => 'Confgure 2FA on Your Device',
         '2fa_checkpoint_help' => 'Use the 2FA application on your phone to take a picture of the QR code to the left, or manually enter the code under it. Once you have done so, generate a token and enter it below.',
+        '2fa_disable_error' => 'The 2FA token provided was not valid. Protection has not been disabled for this account.',
     ],
 ];

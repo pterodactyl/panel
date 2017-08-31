@@ -22,53 +22,34 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Users;
+namespace Pterodactyl\Repositories\Eloquent;
 
-use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Models\Session;
+use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
 
-class UserUpdateService
+class SessionRepository extends EloquentRepository implements SessionRepositoryInterface
 {
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * {@inheritdoc}
      */
-    protected $hasher;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * UpdateService constructor.
-     *
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     */
-    public function __construct(
-        Hasher $hasher,
-        UserRepositoryInterface $repository
-    ) {
-        $this->hasher = $hasher;
-        $this->repository = $repository;
+    public function model()
+    {
+        return Session::class;
     }
 
     /**
-     * Update the user model instance.
-     *
-     * @param int   $id
-     * @param array $data
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * {@inheritdoc}
      */
-    public function handle($id, array $data)
+    public function getUserSessions($user)
     {
-        if (isset($data['password'])) {
-            $data['password'] = $this->hasher->make($data['password']);
-        }
+        return $this->getBuilder()->where('user_id', $user)->get($this->getColumns());
+    }
 
-        return $this->repository->update($id, $data);
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteUserSession($user, $session)
+    {
+        return $this->getBuilder()->where('user_id', $user)->where('id', $session)->delete();
     }
 }

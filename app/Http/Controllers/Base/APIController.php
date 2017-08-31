@@ -27,12 +27,11 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Http\Requests\Base\ApiKeyFormRequest;
 use Pterodactyl\Models\APIPermission;
-use Pterodactyl\Services\ApiKeyService;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\ApiKeyRequest;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use Pterodactyl\Services\Api\KeyCreationService;
 
 class APIController extends Controller
 {
@@ -42,30 +41,30 @@ class APIController extends Controller
     protected $alert;
 
     /**
+     * @var \Pterodactyl\Services\Api\KeyCreationService
+     */
+    protected $keyService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
      */
     protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\ApiKeyService
-     */
-    protected $service;
 
     /**
      * APIController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                           $alert
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\ApiKeyService                         $service
+     * @param \Pterodactyl\Services\Api\KeyCreationService                $keyService
      */
     public function __construct(
         AlertsMessageBag $alert,
         ApiKeyRepositoryInterface $repository,
-        ApiKeyService $service
+        KeyCreationService $keyService
     ) {
         $this->alert = $alert;
+        $this->keyService = $keyService;
         $this->repository = $repository;
-        $this->service = $service;
     }
 
     /**
@@ -73,6 +72,8 @@ class APIController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(Request $request)
     {
@@ -84,14 +85,15 @@ class APIController extends Controller
     /**
      * Display API key creation page.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(Request $request)
     {
         return view('base.api.new', [
             'permissions' => [
                 'user' => collect(APIPermission::CONST_PERMISSIONS)->pull('_user'),
-                'admin' => collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
+                'admin' => ! $request->user()->root_admin ?: collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
             ],
         ]);
     }
@@ -99,30 +101,25 @@ class APIController extends Controller
     /**
      * Handle saving new API key.
      *
-     * @param \Pterodactyl\Http\Requests\ApiKeyRequest $request
+     * @param \Pterodactyl\Http\Requests\Base\ApiKeyFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(ApiKeyRequest $request)
+    public function store(ApiKeyFormRequest $request)
     {
         $adminPermissions = [];
-        if ($request->user()->isRootAdmin()) {
+        if ($request->user()->root_admin) {
             $adminPermissions = $request->input('admin_permissions') ?? [];
         }
 
-        $secret = $this->service->create([
+        $secret = $this->keyService->handle([
             'user_id' => $request->user()->id,
             'allowed_ips' => $request->input('allowed_ips'),
             'memo' => $request->input('memo'),
-        ], $request->input('permissions') ?? [], $adminPermissions);
+        ], $request->input('permissions', []), $adminPermissions);
 
-        $this->alert->success(
-            "An API Key-Pair has successfully been generated. The API secret
-            for this public key is shown below and will not be shown again.
-            <br /><br /><code>{$secret}</code>"
-        )->flash();
+        $this->alert->success(trans('base.api.index.keypair_created', ['token' => $secret]))->flash();
 
         return redirect()->route('account.api');
     }
@@ -136,16 +133,10 @@ class APIController extends Controller
      */
     public function revoke(Request $request, $key)
     {
-        try {
-            $key = $this->repository->withColumns('id')->findFirstWhere([
-                ['user_id', '=', $request->user()->id],
-                ['public', $key],
-            ]);
-
-            $this->service->revoke($key->id);
-        } catch (RecordNotFoundException $ex) {
-            return abort(404);
-        }
+        $this->repository->deleteWhere([
+            ['user_id', '=', $request->user()->id],
+            ['public', '=', $key],
+        ]);
 
         return response('', 204);
     }

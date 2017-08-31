@@ -25,83 +25,69 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Log;
-use Alert;
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
+use Pterodactyl\Services\Users\UserUpdateService;
 
 class AccountController extends Controller
 {
-    public function __construct()
-    {
+    /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Users\UserUpdateService
+     */
+    protected $updateService;
+
+    /**
+     * AccountController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag             $alert
+     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
+     */
+    public function __construct(
+        AlertsMessageBag $alert,
+        UserUpdateService $updateService
+    ) {
+        $this->alert = $alert;
+        $this->updateService = $updateService;
     }
 
     /**
      * Display base account information page.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('base.account');
     }
 
     /**
-     * Update details for a users account.
+     * Update details for a user's account.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Http\Requests\Base\AccountDataFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(Request $request)
+    public function update(AccountDataFormRequest $request)
     {
         $data = [];
-
-        // Request to update account Password
         if ($request->input('do_action') === 'password') {
-            $this->validate($request, [
-                'current_password' => 'required',
-                'new_password' => 'required|confirmed|' . User::PASSWORD_RULES,
-                'new_password_confirmation' => 'required',
-            ]);
-
             $data['password'] = $request->input('new_password');
-
-            // Request to update account Email
         } elseif ($request->input('do_action') === 'email') {
             $data['email'] = $request->input('new_email');
-
-            // Request to update account Identity
         } elseif ($request->input('do_action') === 'identity') {
             $data = $request->only(['name_first', 'name_last', 'username']);
-
-            // Unknown, hit em with a 404
-        } else {
-            return abort(404);
         }
 
-        if (
-            in_array($request->input('do_action'), ['email', 'password'])
-            && ! password_verify($request->input('current_password'), $request->user()->password)
-        ) {
-            Alert::danger(trans('base.account.invalid_pass'))->flash();
-
-            return redirect()->route('account');
-        }
-
-        try {
-            $repo = new oldUserRepository;
-            $repo->update($request->user()->id, $data);
-            Alert::success('Your account details were successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('account')->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger(trans('base.account.exception'))->flash();
-        }
+        $this->updateService->handle($request->user()->id, $data);
+        $this->alert->success(trans('base.account.details_updated'))->flash();
 
         return redirect()->route('account');
     }

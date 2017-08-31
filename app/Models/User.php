@@ -51,21 +51,6 @@ class User extends Model implements
     use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
 
     /**
-     * The rules for user passwords.
-     *
-     * @var string
-     * @deprecated
-     */
-    const PASSWORD_RULES = 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
-
-    /**
-     * The regex rules for usernames.
-     *
-     * @var string
-     */
-    const USERNAME_RULES = 'regex:/^([\w\d\.\-]{1,255})$/';
-
-    /**
      * Level of servers to display when using access() on a user.
      *
      * @var string
@@ -92,9 +77,9 @@ class User extends Model implements
      * @var array
      */
     protected $casts = [
-        'root_admin' => 'integer',
-        'use_totp' => 'integer',
-        'gravatar' => 'integer',
+        'root_admin' => 'boolean',
+        'use_totp' => 'boolean',
+        'gravatar' => 'boolean',
     ];
 
     /**
@@ -135,11 +120,11 @@ class User extends Model implements
      * @var array
      */
     protected static $applicationRules = [
-        'email' => 'required|email',
-        'username' => 'required|alpha_dash',
-        'name_first' => 'required|string',
-        'name_last' => 'required|string',
-        'password' => 'sometimes|regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})',
+        'email' => 'required',
+        'username' => 'required',
+        'name_first' => 'required',
+        'name_last' => 'required',
+        'password' => 'sometimes',
     ];
 
     /**
@@ -148,10 +133,10 @@ class User extends Model implements
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'email' => 'unique:users,email',
-        'username' => 'between:1,255|unique:users,username',
-        'name_first' => 'between:1,255',
-        'name_last' => 'between:1,255',
+        'email' => 'email|unique:users,email',
+        'username' => 'alpha_dash|between:1,255|unique:users,username',
+        'name_first' => 'string|between:1,255',
+        'name_last' => 'string|between:1,255',
         'password' => 'nullable|string',
         'root_admin' => 'boolean',
         'language' => 'string|between:2,5',

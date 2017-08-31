@@ -161,4 +161,12 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     {
         return $this->getHttpClient()->request('DELETE', '/servers');
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function details()
+    {
+        return $this->getHttpClient()->request('GET', '/servers');
+    }
 }

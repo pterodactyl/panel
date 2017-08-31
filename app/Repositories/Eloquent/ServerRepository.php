@@ -28,6 +28,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Webmozart\Assert\Assert;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {
@@ -148,5 +149,74 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             'option' => $instance->option->tag,
             'pack' => (! is_null($instance->pack_id)) ? $instance->pack->uuid : null,
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUserAccessServers($user)
+    {
+        Assert::numeric($user, 'First argument passed to getUserAccessServers must be numeric, received %s.');
+
+        $subuser = $this->app->make(SubuserRepository::class);
+
+        return $this->getBuilder()->select('id')->where('owner_id', $user)->union(
+            $subuser->getBuilder()->select('server_id')->where('user_id', $user)
+        )->pluck('id')->all();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function filterUserAccessServers($user, $admin = false, $level = 'all', array $relations = [])
+    {
+        Assert::numeric($user, 'First argument passed to filterUserAccessServers must be numeric, received %s.');
+        Assert::boolean($admin, 'Second argument passed to filterUserAccessServers must be boolean, received %s.');
+        Assert::stringNotEmpty($level, 'Third argument passed to filterUserAccessServers must be a non-empty string, received %s.');
+
+        $instance = $this->getBuilder()->with($relations);
+
+        // If access level is set to owner, only display servers
+        // that the user owns.
+        if ($level === 'owner') {
+            $instance->where('owner_id', $user);
+        }
+
+        // If set to all, display all servers they can access, including
+        // those they access as an admin.
+        //
+        // If set to subuser, only return the servers they can access because
+        // they are owner, or marked as a subuser of the server.
+        if (($level === 'all' && ! $admin) || $level === 'subuser') {
+            $instance->whereIn('id', $this->getUserAccessServers($user));
+        }
+
+        // If set to admin, only display the servers a user can access
+        // as an administrator (leaves out owned and subuser of).
+        if ($level === 'admin' && $admin) {
+            $instance->whereIn('id', $this->getUserAccessServers($user));
+        }
+
+        return $instance->search($this->searchTerm)->paginate(
+            $this->app->make('config')->get('pterodactyl.paginate.frontend.servers')
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getByUuid($uuid)
+    {
+        Assert::stringNotEmpty($uuid, 'First argument passed to getByUuid must be a non-empty string, received %s.');
+
+        $instance = $this->getBuilder()->with('service', 'node')->where(function ($query) use ($uuid) {
+            $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+        })->first($this->getColumns());
+
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
     }
 }

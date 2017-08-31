@@ -25,10 +25,16 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Repositories\Daemon\FileRepository;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\PackRepository;
+use Pterodactyl\Repositories\Eloquent\PermissionRepository;
+use Pterodactyl\Repositories\Eloquent\SessionRepository;
+use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
 use Pterodactyl\Repositories\Daemon\CommandRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
@@ -83,11 +89,14 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(NodeRepositoryInterface::class, NodeRepository::class);
         $this->app->bind(OptionVariableRepositoryInterface::class, OptionVariableRepository::class);
         $this->app->bind(PackRepositoryInterface::class, PackRepository::class);
+        $this->app->bind(PermissionRepositoryInterface::class, PermissionRepository::class);
         $this->app->bind(ServerRepositoryInterface::class, ServerRepository::class);
         $this->app->bind(ServerVariableRepositoryInterface::class, ServerVariableRepository::class);
         $this->app->bind(ServiceRepositoryInterface::class, ServiceRepository::class);
         $this->app->bind(ServiceOptionRepositoryInterface::class, ServiceOptionRepository::class);
         $this->app->bind(ServiceVariableRepositoryInterface::class, ServiceVariableRepository::class);
+        $this->app->bind(SessionRepositoryInterface::class, SessionRepository::class);
+        $this->app->bind(SubuserRepositoryInterface::class, SubuserRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories

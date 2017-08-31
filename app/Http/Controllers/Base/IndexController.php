@@ -26,11 +26,45 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Servers\ServerAccessHelperService;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexController extends Controller
 {
+    /**
+     * @var \Pterodactyl\Services\Servers\ServerAccessHelperService
+     */
+    protected $access;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     */
+    protected $daemonRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * IndexController constructor.
+     *
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \Pterodactyl\Services\Servers\ServerAccessHelperService            $access
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     */
+    public function __construct(
+        DaemonServerRepositoryInterface $daemonRepository,
+        ServerAccessHelperService $access,
+        ServerRepositoryInterface $repository
+    ) {
+        $this->access = $access;
+        $this->daemonRepository = $daemonRepository;
+        $this->repository = $repository;
+    }
+
     /**
      * Returns listing of user's servers.
      *
@@ -39,38 +73,11 @@ class IndexController extends Controller
      */
     public function getIndex(Request $request)
     {
-        $servers = $request->user()->access()->with('user');
+        $servers = $this->repository->search($request->input('query'))->filterUserAccessServers(
+            $request->user()->id, $request->user()->root_admin, 'all', ['user']
+        );
 
-        if (! is_null($request->input('query'))) {
-            $servers->search($request->input('query'));
-        }
-
-        return view('base.index', [
-            'servers' => $servers->paginate(config('pterodactyl.paginate.frontend.servers')),
-        ]);
-    }
-
-    /**
-     * Generate a random string.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $length
-     * @return string
-     * @deprecated
-     */
-    public function getPassword(Request $request, $length = 16)
-    {
-        $length = ($length < 8) ? 8 : $length;
-
-        $returnable = false;
-        while (! $returnable) {
-            $generated = str_random($length);
-            if (preg_match('/[A-Z]+[a-z]+[0-9]+/', $generated)) {
-                $returnable = true;
-            }
-        }
-
-        return $generated;
+        return view('base.index', ['servers' => $servers]);
     }
 
     /**
@@ -79,31 +86,23 @@ class IndexController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param string                   $uuid
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function status(Request $request, $uuid)
     {
-        $server = Server::byUuid($uuid);
-
-        if (! $server) {
-            return response()->json([], 404);
-        }
+        $server = $this->access->handle($uuid, $request->user());
 
         if (! $server->installed) {
             return response()->json(['status' => 20]);
-        }
-
-        if ($server->suspended) {
+        } elseif ($server->suspended) {
             return response()->json(['status' => 30]);
         }
 
-        try {
-            $res = $server->guzzleClient()->request('GET', '/server');
-            if ($res->getStatusCode() === 200) {
-                return response()->json(json_decode($res->getBody()));
-            }
-        } catch (\Exception $e) {
-        }
+        $response = $this->daemonRepository->setNode($server->node_id)
+            ->setAccessServer($server->uuid)
+            ->setAccessToken($server->daemonSecret)
+            ->details();
 
-        return response()->json([]);
+        return response()->json(json_decode($response->getBody()));
     }
 }

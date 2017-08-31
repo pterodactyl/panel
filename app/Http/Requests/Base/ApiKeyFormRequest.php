@@ -22,11 +22,12 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Requests;
+namespace Pterodactyl\Http\Requests\Base;
 
 use IPTools\Network;
+use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 
-class ApiKeyRequest extends BaseFormRequest
+class ApiKeyFormRequest extends FrontendUserFormRequest
 {
     /**
      * Rules applied to data passed in this request.
@@ -58,7 +59,7 @@ class ApiKeyRequest extends BaseFormRequest
             }
         }
 
-        $this->merge(['allowed_ips' => $loop], $this->except('allowed_ips'));
+        $this->merge(['allowed_ips' => $loop]);
     }
 
     /**
@@ -69,12 +70,11 @@ class ApiKeyRequest extends BaseFormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            /* @var \Illuminate\Validation\Validator $validator */
             if (empty($this->input('permissions')) && empty($this->input('admin_permissions'))) {
                 $validator->errors()->add('permissions', 'At least one permission must be selected.');
             }
-        });
 
-        $validator->after(function ($validator) {
             foreach ($this->input('allowed_ips') as $ip) {
                 $ip = trim($ip);
 

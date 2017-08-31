@@ -87,4 +87,33 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getDaemonServiceData($id);
+
+    /**
+     * Return an array of server IDs that a given user can access based on owner and subuser permissions.
+     *
+     * @param int $user
+     * @return array
+     */
+    public function getUserAccessServers($user);
+
+    /**
+     * Return a paginated list of servers that a user can access at a given level.
+     *
+     * @param int    $user
+     * @param string $level
+     * @param bool   $admin
+     * @param array  $relations
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function filterUserAccessServers($user, $admin = false, $level = 'all', array $relations = []);
+
+    /**
+     * Return a server by UUID.
+     *
+     * @param string $uuid
+     * @return \Illuminate\Database\Eloquent\Collection
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getByUuid($uuid);
 }

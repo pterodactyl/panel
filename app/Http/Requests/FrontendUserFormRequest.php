@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,50 +22,34 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\Base;
+namespace Pterodactyl\Http\Requests;
 
-use Auth;
-use Session;
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Foundation\Http\FormRequest;
 
-class LanguageController extends Controller
+abstract class FrontendUserFormRequest extends FormRequest
 {
-    /**
-     * A list of supported languages on the panel.
-     *
-     * @var array
-     */
-    protected $languages = [
-        'de' => 'German',
-        'en' => 'English',
-        'et' => 'Estonian',
-        'nb' => 'Norwegian',
-        'nl' => 'Dutch',
-        'pt' => 'Portuguese',
-        'ro' => 'Romanian',
-        'ru' => 'Russian',
-    ];
+    abstract public function rules();
 
     /**
-     * Sets the language for a user.
+     * Determine if a user is authorized to access this endpoint.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $language
-     * @return \Illuminate\Http\RedirectResponse
+     * @return bool
      */
-    public function setLanguage(Request $request, $language)
+    public function authorize()
     {
-        if (array_key_exists($language, $this->languages)) {
-            if (Auth::check()) {
-                $user = User::findOrFail(Auth::user()->id);
-                $user->language = $language;
-                $user->save();
-            }
-            Session::put('applocale', $language);
-        }
+        return ! is_null($this->user());
+    }
 
-        return redirect()->back();
+    /**
+     * Return only the fields that we are interested in from the request.
+     * This will include empty fields as a null value.
+     *
+     * @return array
+     */
+    public function normalize()
+    {
+        return $this->only(
+            array_keys($this->rules())
+        );
     }
 }

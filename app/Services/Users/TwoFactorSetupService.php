@@ -24,15 +24,22 @@
 
 namespace Pterodactyl\Services\Users;
 
-use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use PragmaRX\Google2FA\Contracts\Google2FA;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Models\User;
 
-class UserUpdateService
+class TwoFactorSetupService
 {
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \Illuminate\Contracts\Config\Repository
      */
-    protected $hasher;
+    protected $config;
+
+    /**
+     * @var \PragmaRX\Google2FA\Contracts\Google2FA
+     */
+    protected $google2FA;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
@@ -40,35 +47,45 @@ class UserUpdateService
     protected $repository;
 
     /**
-     * UpdateService constructor.
+     * TwoFactorSetupService constructor.
      *
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \PragmaRX\Google2FA\Contracts\Google2FA                   $google2FA
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
-        Hasher $hasher,
+        ConfigRepository $config,
+        Google2FA $google2FA,
         UserRepositoryInterface $repository
     ) {
-        $this->hasher = $hasher;
+        $this->config = $config;
+        $this->google2FA = $google2FA;
         $this->repository = $repository;
     }
 
     /**
-     * Update the user model instance.
+     * Generate a 2FA token and store it in the database.
      *
-     * @param int   $id
-     * @param array $data
-     * @return mixed
+     * @param int|\Pterodactyl\Models\User $user
+     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($id, array $data)
+    public function handle($user)
     {
-        if (isset($data['password'])) {
-            $data['password'] = $this->hasher->make($data['password']);
+        if (! $user instanceof User) {
+            $user = $this->repository->find($user);
         }
 
-        return $this->repository->update($id, $data);
+        $secret = $this->google2FA->generateSecretKey();
+        $image = $this->google2FA->getQRCodeGoogleUrl($this->config->get('app.name'), $user->email, $secret);
+
+        $this->repository->withoutFresh()->update($user->id, ['totp_secret' => $secret]);
+
+        return [
+            'qrImage' => $image,
+            'secret' => $secret,
+        ];
     }
 }

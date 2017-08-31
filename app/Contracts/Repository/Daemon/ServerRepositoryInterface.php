@@ -88,4 +88,11 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function delete();
+
+    /**
+     * Return detials on a specific server.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function details();
 }

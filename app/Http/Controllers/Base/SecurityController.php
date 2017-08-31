@@ -25,14 +25,64 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Alert;
-use Google2FA;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Session;
+use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
+use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Pterodactyl\Services\Users\TwoFactorSetupService;
 
 class SecurityController extends Controller
 {
+    /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\SessionRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Illuminate\Contracts\Session\Session
+     */
+    protected $session;
+
+    /**
+     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
+     */
+    protected $toggleTwoFactorService;
+
+    /**
+     * @var \Pterodactyl\Services\Users\TwoFactorSetupService
+     */
+    protected $twoFactorSetupService;
+
+    public function __construct(
+        AlertsMessageBag $alert,
+        ConfigRepository $config,
+        Session $session,
+        SessionRepositoryInterface $repository,
+        ToggleTwoFactorService $toggleTwoFactorService,
+        TwoFactorSetupService $twoFactorSetupService
+    ) {
+        $this->alert = $alert;
+        $this->config = $config;
+        $this->repository = $repository;
+        $this->session = $session;
+        $this->toggleTwoFactorService = $toggleTwoFactorService;
+        $this->twoFactorSetupService = $twoFactorSetupService;
+    }
+
     /**
      * Returns Security Management Page.
      *
@@ -41,8 +91,12 @@ class SecurityController extends Controller
      */
     public function index(Request $request)
     {
+        if ($this->config->get('session.driver') === 'database') {
+            $activeSessions = $this->repository->getUserSessions($request->user()->id);
+        }
+
         return view('base.security', [
-            'sessions' => Session::where('user_id', $request->user()->id)->get(),
+            'sessions' => $activeSessions ?? null,
         ]);
     }
 
@@ -52,22 +106,13 @@ class SecurityController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function generateTotp(Request $request)
     {
-        $user = $request->user();
-
-        $user->totp_secret = Google2FA::generateSecretKey();
-        $user->save();
-
-        return response()->json([
-            'qrImage' => Google2FA::getQRCodeGoogleUrl(
-                'Pterodactyl',
-                $user->email,
-                $user->totp_secret
-            ),
-            'secret' => $user->totp_secret,
-        ]);
+        return response()->json($this->twoFactorSetupService->handle($request->user()));
     }
 
     /**
@@ -78,18 +123,13 @@ class SecurityController extends Controller
      */
     public function setTotp(Request $request)
     {
-        if (! $request->has('token')) {
-            return response()->json([
-                'error' => 'Request is missing token parameter.',
-            ], 500);
-        }
+        try {
+            $this->toggleTwoFactorService->handle($request->user(), $request->input('token'));
 
-        $user = $request->user();
-        if ($user->toggleTotp($request->input('token'))) {
             return response('true');
+        } catch (TwoFactorAuthenticationTokenInvalid $exception) {
+            return response('false');
         }
-
-        return response('false');
     }
 
     /**
@@ -100,18 +140,11 @@ class SecurityController extends Controller
      */
     public function disableTotp(Request $request)
     {
-        if (! $request->has('token')) {
-            Alert::danger('Missing required `token` field in request.')->flash();
-
-            return redirect()->route('account.security');
+        try {
+            $this->toggleTwoFactorService->handle($request->user(), $request->input('token'), false);
+        } catch (TwoFactorAuthenticationTokenInvalid $exception) {
+            $this->alert->danger(trans('base.security.2fa_disable_error'))->flash();
         }
-
-        $user = $request->user();
-        if ($user->toggleTotp($request->input('token'))) {
-            return redirect()->route('account.security');
-        }
-
-        Alert::danger('The TOTP token provided was invalid.')->flash();
 
         return redirect()->route('account.security');
     }
@@ -125,7 +158,7 @@ class SecurityController extends Controller
      */
     public function revoke(Request $request, $id)
     {
-        Session::where('user_id', $request->user()->id)->findOrFail($id)->delete();
+        $this->repository->deleteUserSession($request->user()->id, $id);
 
         return redirect()->route('account.security');
     }

@@ -25,6 +25,10 @@ return PhpCsFixer\Config::create()
         'declare_equal_normalize' => ['space' => 'single'],
         'heredoc_to_nowdoc' => true,
         'linebreak_after_opening_tag' => true,
+        'method_argument_space' => [
+            'ensure_fully_multiline' => false,
+            'keep_multiple_spaces_after_comma' => false,
+        ],
         'new_with_braces' => false,
         'no_alias_functions' => true,
         'no_multiline_whitespace_before_semicolons' => true,

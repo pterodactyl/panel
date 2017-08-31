@@ -74,11 +74,12 @@ interface RepositoryInterface
      *
      * @param array $fields
      * @param bool  $validate
+     * @param bool  $force
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $fields, $validate = true);
+    public function create(array $fields, $validate = true, $force = false);
 
     /**
      * Delete a given record from the database.

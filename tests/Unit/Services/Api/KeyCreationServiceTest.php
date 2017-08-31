@@ -27,20 +27,20 @@ namespace Tests\Unit\Services\Api;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Services\Api\KeyService;
+use Pterodactyl\Services\Api\KeyCreationService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\PermissionService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
-class KeyServiceTest extends TestCase
+class KeyCreationServiceTest extends TestCase
 {
     use PHPMock;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    protected $connection;
 
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
@@ -58,7 +58,7 @@ class KeyServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Api\KeyService
+     * @var \Pterodactyl\Services\Api\KeyCreationService
      */
     protected $service;
 
@@ -66,14 +66,14 @@ class KeyServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->database = m::mock(ConnectionInterface::class);
+        $this->connection = m::mock(ConnectionInterface::class);
         $this->encrypter = m::mock(Encrypter::class);
         $this->permissions = m::mock(PermissionService::class);
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
 
-        $this->service = new KeyService(
+        $this->service = new KeyCreationService(
             $this->repository,
-            $this->database,
+            $this->connection,
             $this->encrypter,
             $this->permissions
         );
@@ -82,21 +82,17 @@ class KeyServiceTest extends TestCase
     /**
      * Test that the service is able to create a keypair and assign the correct permissions.
      */
-    public function test_create_function()
+    public function testKeyIsCreated()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'random_bytes')
-            ->expects($this->exactly(2))
-            ->willReturnCallback(function ($bytes) {
-                return hex2bin(str_pad('', $bytes * 2, '0'));
-            });
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'bin2hex')
+            ->expects($this->exactly(2))->willReturn('bin2hex');
 
-        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->encrypter->shouldReceive('encrypt')->with(str_pad('', 64, '0'))
-            ->once()->andReturn('encrypted-secret');
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->encrypter->shouldReceive('encrypt')->with('bin2hex')->once()->andReturn('encrypted-secret');
 
         $this->repository->shouldReceive('create')->with([
             'test-data' => 'test',
-            'public' => str_pad('', 16, '0'),
+            'public' => 'bin2hex',
             'secret' => 'encrypted-secret',
         ], true, true)->once()->andReturn((object) ['id' => 1]);
 
@@ -108,25 +104,15 @@ class KeyServiceTest extends TestCase
         $this->permissions->shouldReceive('create')->with(1, 'user.server-list')->once()->andReturnNull();
         $this->permissions->shouldReceive('create')->with(1, 'server-create')->once()->andReturnNull();
 
-        $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->create(
+        $response = $this->service->handle(
             ['test-data' => 'test'],
             ['invalid-node', 'server-list'],
             ['invalid-node', 'server-create']
         );
 
         $this->assertNotEmpty($response);
-        $this->assertEquals(str_pad('', 64, '0'), $response);
-    }
-
-    /**
-     * Test that an API key can be revoked.
-     */
-    public function test_revoke_function()
-    {
-        $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(true);
-
-        $this->assertTrue($this->service->revoke(1));
+        $this->assertEquals('bin2hex', $response);
     }
 }

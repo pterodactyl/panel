@@ -24,15 +24,17 @@
 
 namespace Pterodactyl\Services\Users;
 
-use Illuminate\Contracts\Hashing\Hasher;
+use PragmaRX\Google2FA\Contracts\Google2FA;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use Pterodactyl\Models\User;
 
-class UserUpdateService
+class ToggleTwoFactorService
 {
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \PragmaRX\Google2FA\Contracts\Google2FA
      */
-    protected $hasher;
+    protected $google2FA;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
@@ -40,35 +42,43 @@ class UserUpdateService
     protected $repository;
 
     /**
-     * UpdateService constructor.
+     * ToggleTwoFactorService constructor.
      *
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \PragmaRX\Google2FA\Contracts\Google2FA                   $google2FA
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
-        Hasher $hasher,
+        Google2FA $google2FA,
         UserRepositoryInterface $repository
     ) {
-        $this->hasher = $hasher;
+        $this->google2FA = $google2FA;
         $this->repository = $repository;
     }
 
     /**
-     * Update the user model instance.
-     *
-     * @param int   $id
-     * @param array $data
-     * @return mixed
+     * @param int|\Pterodactyl\Models\User $user
+     * @param string                       $token
+     * @param null|bool                    $toggleState
+     * @return bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
-    public function handle($id, array $data)
+    public function handle($user, $token, $toggleState = null)
     {
-        if (isset($data['password'])) {
-            $data['password'] = $this->hasher->make($data['password']);
+        if (! $user instanceof User) {
+            $user = $this->repository->find($user);
         }
 
-        return $this->repository->update($id, $data);
+        if (! $this->google2FA->verifyKey($user->totp_secret, $token, 2)) {
+            throw new TwoFactorAuthenticationTokenInvalid;
+        }
+
+        $this->repository->withoutFresh()->update($user->id, [
+            'use_totp' => (is_null($toggleState) ? ! $user->use_totp : $toggleState),
+        ]);
+
+        return true;
     }
 }
