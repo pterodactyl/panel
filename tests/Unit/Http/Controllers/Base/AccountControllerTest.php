@@ -25,12 +25,12 @@
 namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
+use Tests\TestCase;
 use Prologue\Alerts\AlertsMessageBag;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Http\Controllers\Base\AccountController;
 use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
-use Pterodactyl\Services\Users\UserUpdateService;
-use Tests\Assertions\ControllerAssertionsTrait;
-use Tests\TestCase;
 
 class AccountControllerTest extends TestCase
 {

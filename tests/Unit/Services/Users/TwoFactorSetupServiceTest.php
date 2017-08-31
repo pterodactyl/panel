@@ -24,13 +24,13 @@
 
 namespace Tests\Unit\Services\Users;
 
-use Illuminate\Contracts\Config\Repository;
 use Mockery as m;
-use PragmaRX\Google2FA\Contracts\Google2FA;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
+use Illuminate\Contracts\Config\Repository;
+use PragmaRX\Google2FA\Contracts\Google2FA;
+use Pterodactyl\Services\Users\TwoFactorSetupService;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class TwoFactorSetupServiceTest extends TestCase
 {

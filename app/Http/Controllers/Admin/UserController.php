@@ -29,10 +29,10 @@ use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 

@@ -24,10 +24,10 @@
 
 namespace Pterodactyl\Services\Users;
 
+use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Contracts\Google2FA;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
-use Pterodactyl\Models\User;
 
 class ToggleTwoFactorService
 {
