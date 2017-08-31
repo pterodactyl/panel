@@ -27,8 +27,8 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountController extends Controller
 {

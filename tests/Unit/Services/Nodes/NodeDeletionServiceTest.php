@@ -27,8 +27,8 @@ namespace Tests\Unit\Services\Nodes;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Illuminate\Contracts\Translation\Translator;
+use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 

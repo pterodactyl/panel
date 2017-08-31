@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\User;
 use Illuminate\Cache\Repository as CacheRepository;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Models\User;
 
 class ServerAccessHelperService
 {

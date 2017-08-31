@@ -27,10 +27,10 @@ namespace Tests\Unit\Services\Api;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Services\Api\KeyCreationService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\PermissionService;
+use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationServiceTest extends TestCase

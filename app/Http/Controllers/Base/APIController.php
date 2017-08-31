@@ -27,11 +27,11 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Requests\Base\ApiKeyFormRequest;
 use Pterodactyl\Models\APIPermission;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Services\Api\KeyCreationService;
+use Pterodactyl\Http\Requests\Base\ApiKeyFormRequest;
+use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class APIController extends Controller
 {

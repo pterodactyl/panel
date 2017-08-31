@@ -27,8 +27,8 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\UserDeletionService;
 use Illuminate\Contracts\Translation\Translator;
+use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
