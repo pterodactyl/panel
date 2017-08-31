@@ -110,35 +110,37 @@
             @endif
         @endforeach
     </div>
-    <div class="row">
-        @foreach($permissions['admin'] as $block => $perms)
-            <div class="col-lg-4 col-sm-6">
-                <div class="box box-danger">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">@lang('base.api.permissions.admin.' . $block . '_header')</h3>
-                    </div>
-                    <div class="box-body">
-                        @foreach($perms as $permission)
-                            <div class="form-group">
-                                <div class="checkbox {{ $permission === 'delete' ? 'checkbox-danger' : 'checkbox-primary' }} no-margin-bottom">
-                                    <input id="{{ $block . '-' . $permission }}" name="admin_permissions[]" type="checkbox" value="{{ $block . '-' . $permission }}"/>
-                                    <label for="{{ $block . '-' . $permission }}" class="strong">
-                                        @lang('base.api.permissions.admin.' . $block . '.' . $permission . '.title')
-                                    </label>
+    @if(Auth::user()->root_admin)
+        <div class="row">
+            @foreach($permissions['admin'] as $block => $perms)
+                <div class="col-lg-4 col-sm-6">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@lang('base.api.permissions.admin.' . $block . '_header')</h3>
+                        </div>
+                        <div class="box-body">
+                            @foreach($perms as $permission)
+                                <div class="form-group">
+                                    <div class="checkbox {{ $permission === 'delete' ? 'checkbox-danger' : 'checkbox-primary' }} no-margin-bottom">
+                                        <input id="{{ $block . '-' . $permission }}" name="admin_permissions[]" type="checkbox" value="{{ $block . '-' . $permission }}"/>
+                                        <label for="{{ $block . '-' . $permission }}" class="strong">
+                                            @lang('base.api.permissions.admin.' . $block . '.' . $permission . '.title')
+                                        </label>
+                                    </div>
+                                    <p class="text-muted small">@lang('base.api.permissions.admin.' . $block . '.' . $permission . '.desc')</p>
                                 </div>
-                                <p class="text-muted small">@lang('base.api.permissions.admin.' . $block . '.' . $permission . '.desc')</p>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
-            @if ($loop->iteration % 3 === 0)
-                <div class="clearfix visible-lg-block"></div>
-            @endif
-            @if ($loop->iteration % 2 === 0)
-                <div class="clearfix visible-md-block visible-sm-block"></div>
-            @endif
-        @endforeach
-    </div>
+                @if ($loop->iteration % 3 === 0)
+                    <div class="clearfix visible-lg-block"></div>
+                @endif
+                @if ($loop->iteration % 2 === 0)
+                    <div class="clearfix visible-md-block visible-sm-block"></div>
+                @endif
+            @endforeach
+        </div>
+    @endif
 </form>
 @endsection
