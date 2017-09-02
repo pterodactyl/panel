@@ -25,15 +25,15 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Session\Session;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Users\TwoFactorSetupService;
+use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
 
 class SecurityController extends Controller
 {

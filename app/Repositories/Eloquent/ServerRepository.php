@@ -24,11 +24,11 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Webmozart\Assert\Assert;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {

@@ -20,5 +20,13 @@ script:
   - vendor/bin/phpunit --coverage-clover coverage.xml
 notifications:
   email: false
+  webhooks:
+    urls:
+      - https://misc.schrej.net/travistodiscord/pterodev.php
+    on_success: change
+    on_failure: always
+    on_error: always
+    on_cancel: always
+    on_start: never
 after_success:
   - bash <(curl -s https://codecov.io/bash)

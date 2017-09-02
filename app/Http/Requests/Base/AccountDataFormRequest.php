@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Http\Requests\Base;
 
-use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
+use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 
 class AccountDataFormRequest extends FrontendUserFormRequest
 {

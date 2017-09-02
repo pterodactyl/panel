@@ -26,9 +26,9 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\ServerAccessHelperService;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexController extends Controller

@@ -25,11 +25,11 @@
 namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
-use PragmaRX\Google2FA\Contracts\Google2FA;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
+use PragmaRX\Google2FA\Contracts\Google2FA;
+use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class ToggleTwoFactorServiceTest extends TestCase
 {
