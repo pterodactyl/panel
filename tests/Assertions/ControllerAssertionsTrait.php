@@ -24,6 +24,8 @@
 
 namespace Tests\Assertions;
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\View\View;
 use PHPUnit_Framework_Assert;
 use Illuminate\Http\RedirectResponse;
@@ -31,39 +33,75 @@ use Illuminate\Http\RedirectResponse;
 trait ControllerAssertionsTrait
 {
     /**
+     * Assert that a response is an instance of Illuminate View.
+     *
+     * @param mixed $response
+     */
+    public function assertIsViewResponse($response)
+    {
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $response);
+    }
+
+    /**
+     * Assert that a response is an instance of Illuminate Redirect Response.
+     *
+     * @param mixed $response
+     */
+    public function assertIsRedirectResponse($response)
+    {
+        PHPUnit_Framework_Assert::assertInstanceOf(RedirectResponse::class, $response);
+    }
+
+    /**
+     * Assert that a response is an instance of Illuminate Json Response.
+     *
+     * @param mixed $response
+     */
+    public function assertIsJsonResponse($response)
+    {
+        PHPUnit_Framework_Assert::assertInstanceOf(JsonResponse::class, $response);
+    }
+
+    /**
+     * Assert that a response is an instance of Illuminate Response.
+     *
+     * @param mixed $response
+     */
+    public function assertIsResponse($response)
+    {
+        PHPUnit_Framework_Assert::assertInstanceOf(Response::class, $response);
+    }
+
+    /**
      * Assert that a view name equals the passed name.
      *
-     * @param string                $name
-     * @param \Illuminate\View\View $view
+     * @param string $name
+     * @param mixed  $view
      */
     public function assertViewNameEquals($name, $view)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
         PHPUnit_Framework_Assert::assertEquals($name, $view->getName());
     }
 
     /**
      * Assert that a view name does not equal a provided name.
      *
-     * @param string                $name
-     * @param \Illuminate\View\View $view
+     * @param string $name
+     * @param mixed  $view
      */
     public function assertViewNameNotEquals($name, $view)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
         PHPUnit_Framework_Assert::assertNotEquals($name, $view->getName());
     }
 
     /**
      * Assert that a view has an attribute passed into it.
      *
-     * @param string                $attribute
-     * @param \Illuminate\View\View $view
+     * @param string $attribute
+     * @param mixed  $view
      */
     public function assertViewHasKey($attribute, $view)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
-
         if (str_contains($attribute, '.')) {
             PHPUnit_Framework_Assert::assertNotEquals(
                 '__TEST__FAIL',
@@ -77,13 +115,11 @@ trait ControllerAssertionsTrait
     /**
      * Assert that a view does not have a specific attribute passed in.
      *
-     * @param string                $attribute
-     * @param \Illuminate\View\View $view
+     * @param string $attribute
+     * @param mixed  $view
      */
     public function assertViewNotHasKey($attribute, $view)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
-
         if (str_contains($attribute, '.')) {
             PHPUnit_Framework_Assert::assertEquals(
                 '__TEST__PASS',
@@ -97,36 +133,78 @@ trait ControllerAssertionsTrait
     /**
      * Assert that a view attribute equals a given parameter.
      *
-     * @param string                $attribute
-     * @param mixed                 $value
-     * @param \Illuminate\View\View $view
+     * @param string $attribute
+     * @param mixed  $value
+     * @param mixed  $view
      */
     public function assertViewKeyEquals($attribute, $value, $view)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
         PHPUnit_Framework_Assert::assertEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**
      * Assert that a view attribute does not equal a given parameter.
      *
-     * @param string                $attribute
-     * @param mixed                 $value
-     * @param \Illuminate\View\View $view
+     * @param string $attribute
+     * @param mixed  $value
+     * @param mixed  $view
      */
     public function assertViewKeyNotEquals($attribute, $value, $view)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
         PHPUnit_Framework_Assert::assertNotEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**
-     * @param string                            $route
-     * @param \Illuminate\Http\RedirectResponse $response
+     * Assert that a route redirect equals a given route name.
+     *
+     * @param string $route
+     * @param mixed  $response
      */
     public function assertRouteRedirectEquals($route, $response)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(RedirectResponse::class, $response);
         PHPUnit_Framework_Assert::assertEquals(route($route), $response->getTargetUrl());
+    }
+
+    /**
+     * Assert that a response code equals a given code.
+     *
+     * @param int   $code
+     * @param mixed $response
+     */
+    public function assertResponseCodeEquals($code, $response)
+    {
+        PHPUnit_Framework_Assert::assertEquals($code, $response->getStatusCode());
+    }
+
+    /**
+     * Assert that a response code does not equal a given code.
+     *
+     * @param int   $code
+     * @param mixed $response
+     */
+    public function assertResponseCodeNotEquals($code, $response)
+    {
+        PHPUnit_Framework_Assert::assertNotEquals($code, $response->getStatusCode());
+    }
+
+    /**
+     * Assert that a response is in a JSON format.
+     *
+     * @param mixed $response
+     */
+    public function assertResponseHasJsonHeaders($response)
+    {
+        PHPUnit_Framework_Assert::assertEquals('application/json', $response->headers->get('content-type'));
+    }
+
+    /**
+     * Assert that response JSON matches a given JSON string.
+     *
+     * @param array|string $json
+     * @param mixed        $response
+     */
+    public function assertResponseJsonEquals($json, $response)
+    {
+        PHPUnit_Framework_Assert::assertEquals(is_array($json) ? json_encode($json) : $json, $response->getContent());
     }
 }

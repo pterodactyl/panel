@@ -28,7 +28,6 @@ use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Pterodactyl\Services\Api\KeyCreationService;
@@ -91,6 +90,7 @@ class APIControllerTest extends TestCase
         $this->repository->shouldReceive('findWhere')->with([['user_id', '=', $model->id]])->once()->andReturn(['testkeys']);
 
         $response = $this->controller->index($this->request);
+        $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.api.index', $response);
         $this->assertViewHasKey('keys', $response);
         $this->assertViewKeyEquals('keys', ['testkeys'], $response);
@@ -107,6 +107,7 @@ class APIControllerTest extends TestCase
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($model);
 
         $response = $this->controller->create($this->request);
+        $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.api.new', $response);
         $this->assertViewHasKey('permissions.user', $response);
         $this->assertViewHasKey('permissions.admin', $response);
@@ -147,6 +148,7 @@ class APIControllerTest extends TestCase
             ->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->controller->store($this->request);
+        $this->assertIsRedirectResponse($response);
         $this->assertRouteRedirectEquals('account.api', $response);
     }
 
@@ -164,9 +166,9 @@ class APIControllerTest extends TestCase
         ])->once()->andReturnNull();
 
         $response = $this->controller->revoke($this->request, 'testKey123');
-        $this->assertInstanceOf(Response::class, $response);
+        $this->assertIsResponse($response);
         $this->assertEmpty($response->getContent());
-        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertResponseCodeEquals(204, $response);
     }
 
     /**

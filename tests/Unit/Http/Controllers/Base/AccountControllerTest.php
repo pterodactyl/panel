@@ -77,6 +77,7 @@ class AccountControllerTest extends TestCase
     {
         $response = $this->controller->index();
 
+        $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.account', $response);
     }
 
@@ -93,6 +94,7 @@ class AccountControllerTest extends TestCase
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->controller->update($this->request);
+        $this->assertIsRedirectResponse($response);
         $this->assertRouteRedirectEquals('account', $response);
     }
 
@@ -109,6 +111,7 @@ class AccountControllerTest extends TestCase
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->controller->update($this->request);
+        $this->assertIsRedirectResponse($response);
         $this->assertRouteRedirectEquals('account', $response);
     }
 
@@ -127,6 +130,7 @@ class AccountControllerTest extends TestCase
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->controller->update($this->request);
+        $this->assertIsRedirectResponse($response);
         $this->assertRouteRedirectEquals('account', $response);
     }
 }

@@ -67,6 +67,16 @@ class SecurityController extends Controller
      */
     protected $twoFactorSetupService;
 
+    /**
+     * SecurityController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
+     * @param \Illuminate\Contracts\Config\Repository                      $config
+     * @param \Illuminate\Contracts\Session\Session                        $session
+     * @param \Pterodactyl\Contracts\Repository\SessionRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Users\ToggleTwoFactorService           $toggleTwoFactorService
+     * @param \Pterodactyl\Services\Users\TwoFactorSetupService            $twoFactorSetupService
+     */
     public function __construct(
         AlertsMessageBag $alert,
         ConfigRepository $config,
@@ -120,6 +130,9 @@ class SecurityController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function setTotp(Request $request)
     {
@@ -137,6 +150,9 @@ class SecurityController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function disableTotp(Request $request)
     {

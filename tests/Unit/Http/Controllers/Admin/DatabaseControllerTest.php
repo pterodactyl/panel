@@ -90,13 +90,14 @@ class DatabaseControllerTest extends TestCase
         $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');
         $this->repository->shouldReceive('getWithViewDetails')->withNoArgs()->once()->andReturn('getWithViewDetails');
 
-        $view = $this->controller->index();
+        $response = $this->controller->index();
 
-        $this->assertViewNameEquals('admin.databases.index', $view);
-        $this->assertViewHasKey('locations', $view);
-        $this->assertViewHasKey('hosts', $view);
-        $this->assertViewKeyEquals('locations', 'getAllWithNodes', $view);
-        $this->assertViewKeyEquals('hosts', 'getWithViewDetails', $view);
+        $this->assertIsViewResponse($response);
+        $this->assertViewNameEquals('admin.databases.index', $response);
+        $this->assertViewHasKey('locations', $response);
+        $this->assertViewHasKey('hosts', $response);
+        $this->assertViewKeyEquals('locations', 'getAllWithNodes', $response);
+        $this->assertViewKeyEquals('hosts', 'getWithViewDetails', $response);
     }
 
     /**
@@ -107,12 +108,13 @@ class DatabaseControllerTest extends TestCase
         $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');
         $this->repository->shouldReceive('getWithServers')->with(1)->once()->andReturn('getWithServers');
 
-        $view = $this->controller->view(1);
+        $response = $this->controller->view(1);
 
-        $this->assertViewNameEquals('admin.databases.view', $view);
-        $this->assertViewHasKey('locations', $view);
-        $this->assertViewHasKey('host', $view);
-        $this->assertViewKeyEquals('locations', 'getAllWithNodes', $view);
-        $this->assertViewKeyEquals('host', 'getWithServers', $view);
+        $this->assertIsViewResponse($response);
+        $this->assertViewNameEquals('admin.databases.view', $response);
+        $this->assertViewHasKey('locations', $response);
+        $this->assertViewHasKey('host', $response);
+        $this->assertViewKeyEquals('locations', 'getAllWithNodes', $response);
+        $this->assertViewKeyEquals('host', 'getWithServers', $response);
     }
 }
