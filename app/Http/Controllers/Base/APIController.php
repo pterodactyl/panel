@@ -93,7 +93,7 @@ class APIController extends Controller
         return view('base.api.new', [
             'permissions' => [
                 'user' => collect(APIPermission::CONST_PERMISSIONS)->pull('_user'),
-                'admin' => ! $request->user()->root_admin ?: collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
+                'admin' => ! $request->user()->root_admin ? null : collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
             ],
         ]);
     }
@@ -103,6 +103,7 @@ class APIController extends Controller
      *
      * @param \Pterodactyl\Http\Requests\Base\ApiKeyFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -110,7 +111,7 @@ class APIController extends Controller
     {
         $adminPermissions = [];
         if ($request->user()->root_admin) {
-            $adminPermissions = $request->input('admin_permissions') ?? [];
+            $adminPermissions = $request->input('admin_permissions', []);
         }
 
         $secret = $this->keyService->handle([

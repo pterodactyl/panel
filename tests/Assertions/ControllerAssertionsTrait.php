@@ -24,7 +24,9 @@
 
 namespace Tests\Assertions;
 
+use Illuminate\View\View;
 use PHPUnit_Framework_Assert;
+use Illuminate\Http\RedirectResponse;
 
 trait ControllerAssertionsTrait
 {
@@ -36,6 +38,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewNameEquals($name, $view)
     {
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
         PHPUnit_Framework_Assert::assertEquals($name, $view->getName());
     }
 
@@ -47,6 +50,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewNameNotEquals($name, $view)
     {
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
         PHPUnit_Framework_Assert::assertNotEquals($name, $view->getName());
     }
 
@@ -58,7 +62,16 @@ trait ControllerAssertionsTrait
      */
     public function assertViewHasKey($attribute, $view)
     {
-        PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $view->getData());
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
+
+        if (str_contains($attribute, '.')) {
+            PHPUnit_Framework_Assert::assertNotEquals(
+                '__TEST__FAIL',
+                array_get($view->getData(), $attribute, '__TEST__FAIL')
+            );
+        } else {
+            PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $view->getData());
+        }
     }
 
     /**
@@ -69,7 +82,16 @@ trait ControllerAssertionsTrait
      */
     public function assertViewNotHasKey($attribute, $view)
     {
-        PHPUnit_Framework_Assert::assertArrayNotHasKey($attribute, $view->getData());
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
+
+        if (str_contains($attribute, '.')) {
+            PHPUnit_Framework_Assert::assertEquals(
+                '__TEST__PASS',
+                array_get($view->getData(), $attribute, '__TEST__PASS')
+            );
+        } else {
+            PHPUnit_Framework_Assert::assertArrayNotHasKey($attribute, $view->getData());
+        }
     }
 
     /**
@@ -81,15 +103,30 @@ trait ControllerAssertionsTrait
      */
     public function assertViewKeyEquals($attribute, $value, $view)
     {
-        PHPUnit_Framework_Assert::assertEquals($value, array_get($view->getData(), $attribute));
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
+        PHPUnit_Framework_Assert::assertEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**
-     * @param string $route
+     * Assert that a view attribute does not equal a given parameter.
+     *
+     * @param string                $attribute
+     * @param mixed                 $value
+     * @param \Illuminate\View\View $view
+     */
+    public function assertViewKeyNotEquals($attribute, $value, $view)
+    {
+        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $view);
+        PHPUnit_Framework_Assert::assertNotEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
+    }
+
+    /**
+     * @param string                            $route
      * @param \Illuminate\Http\RedirectResponse $response
      */
     public function assertRouteRedirectEquals($route, $response)
     {
+        PHPUnit_Framework_Assert::assertInstanceOf(RedirectResponse::class, $response);
         PHPUnit_Framework_Assert::assertEquals(route($route), $response->getTargetUrl());
     }
 }
