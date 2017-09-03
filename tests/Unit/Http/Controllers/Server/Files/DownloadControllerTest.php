@@ -25,14 +25,14 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
-use Illuminate\Cache\Repository;
-use Illuminate\Contracts\Session\Session;
+use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Http\Controllers\Server\Files\DownloadController;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
+use Illuminate\Cache\Repository;
+use Illuminate\Contracts\Session\Session;
 use Tests\Assertions\ControllerAssertionsTrait;
-use Tests\TestCase;
+use Pterodactyl\Http\Controllers\Server\Files\DownloadController;
 
 class DownloadControllerTest extends TestCase
 {

@@ -24,15 +24,15 @@
 
 namespace Pterodactyl\Http\Requests\Server;
 
+use Illuminate\Log\Writer;
+use Illuminate\Contracts\Session\Session;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Log\Writer;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
-use Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException;
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
+use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException;
 
 class UpdateFileContentsFormRequest extends FrontendUserFormRequest
 {

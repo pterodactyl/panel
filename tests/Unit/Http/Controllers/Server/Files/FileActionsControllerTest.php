@@ -24,18 +24,18 @@
 
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Http\Request;
-use Illuminate\Log\Writer;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Server\Files\FileActionsController;
-use Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest;
-use Pterodactyl\Models\Server;
-use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\TestCase;
+use Illuminate\Log\Writer;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Illuminate\Contracts\Session\Session;
+use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\DisplayException;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest;
+use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Http\Controllers\Server\Files\FileActionsController;
 
 class FileActionsControllerTest extends TestCase
 {
