@@ -63,7 +63,7 @@ class InstallScriptUpdateService
 
         if (! is_null(array_get($data, 'copy_script_from'))) {
             if (! $this->repository->isCopiableScript(array_get($data, 'copy_script_from'), $option->service_id)) {
-                throw new InvalidCopyFromException(trans('admin/exceptions.service.options.invalid_copy_id'));
+                throw new InvalidCopyFromException(trans('exceptions.service.options.invalid_copy_id'));
             }
         }
 

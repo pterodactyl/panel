@@ -95,7 +95,7 @@ class AccountControllerTest extends TestCase
 
         $response = $this->controller->update($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account', $response);
+        $this->assertRedirectRouteEquals('account', $response);
     }
 
     /**
@@ -112,7 +112,7 @@ class AccountControllerTest extends TestCase
 
         $response = $this->controller->update($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account', $response);
+        $this->assertRedirectRouteEquals('account', $response);
     }
 
     /**
@@ -131,6 +131,6 @@ class AccountControllerTest extends TestCase
 
         $response = $this->controller->update($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account', $response);
+        $this->assertRedirectRouteEquals('account', $response);
     }
 }

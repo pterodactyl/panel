@@ -165,6 +165,7 @@ return [
         Pterodactyl\Providers\MacroServiceProvider::class,
         Pterodactyl\Providers\PhraseAppTranslationProvider::class,
         Pterodactyl\Providers\RepositoryServiceProvider::class,
+        Pterodactyl\Providers\ViewComposerServiceProvider::class,
 
         /*
          * Additional Dependencies

@@ -86,11 +86,11 @@ class PackCreationService
     {
         if (! is_null($file)) {
             if (! $file->isValid()) {
-                throw new InvalidFileUploadException(trans('admin/exceptions.packs.invalid_upload'));
+                throw new InvalidFileUploadException(trans('exceptions.packs.invalid_upload'));
             }
 
             if (! in_array($file->getMimeType(), self::VALID_UPLOAD_TYPES)) {
-                throw new InvalidFileMimeTypeException(trans('admin/exceptions.packs.invalid_mime', [
+                throw new InvalidFileMimeTypeException(trans('exceptions.packs.invalid_mime', [
                     'type' => implode(', ', self::VALID_UPLOAD_TYPES),
                 ]));
             }

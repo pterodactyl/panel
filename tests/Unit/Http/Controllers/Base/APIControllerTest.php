@@ -149,7 +149,7 @@ class APIControllerTest extends TestCase
 
         $response = $this->controller->store($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account.api', $response);
+        $this->assertRedirectRouteEquals('account.api', $response);
     }
 
     /**

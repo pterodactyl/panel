@@ -211,7 +211,7 @@ class DatabaseHostServiceTest extends TestCase
         try {
             $this->service->delete(1);
         } catch (DisplayException $exception) {
-            $this->assertEquals(trans('admin/exceptions.databases.delete_has_databases'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.databases.delete_has_databases'), $exception->getMessage());
         }
     }
 }

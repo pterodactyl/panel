@@ -116,7 +116,7 @@ class VariableUpdateServiceTest extends TestCase
             $this->service->handle($this->model, ['env_variable' => 'TEST_VAR_123']);
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.service.variables.env_not_unique', [
+            $this->assertEquals(trans('exceptions.service.variables.env_not_unique', [
                 'name' => 'TEST_VAR_123',
             ]), $exception->getMessage());
         }

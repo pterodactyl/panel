@@ -86,7 +86,7 @@ class ServiceDeletionServiceTest extends TestCase
             $this->service->handle(1);
         } catch (Exception $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.service.delete_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.service.delete_has_servers'), $exception->getMessage());
         }
     }
 

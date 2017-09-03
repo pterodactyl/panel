@@ -99,7 +99,7 @@ class InstallScriptUpdateServiceTest extends TestCase
             $this->service->handle($this->model, $this->data);
         } catch (Exception $exception) {
             $this->assertInstanceOf(InvalidCopyFromException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.service.options.invalid_copy_id'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.service.options.invalid_copy_id'), $exception->getMessage());
         }
     }
 

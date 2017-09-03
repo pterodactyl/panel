@@ -247,7 +247,7 @@ class AssignmentServiceTest extends TestCase
             $this->service->handle($this->node->id, $data);
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.allocations.cidr_out_of_range'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.allocations.cidr_out_of_range'), $exception->getMessage());
         }
     }
 
@@ -271,7 +271,7 @@ class AssignmentServiceTest extends TestCase
             }
 
             $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.allocations.too_many_ports'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.allocations.too_many_ports'), $exception->getMessage());
         }
     }
 
@@ -295,7 +295,7 @@ class AssignmentServiceTest extends TestCase
             }
 
             $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.allocations.invalid_mapping', ['port' => 'test123']), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.allocations.invalid_mapping', ['port' => 'test123']), $exception->getMessage());
         }
     }
 

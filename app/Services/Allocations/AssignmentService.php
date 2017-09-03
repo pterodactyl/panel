@@ -78,7 +78,7 @@ class AssignmentService
         $explode = explode('/', $data['allocation_ip']);
         if (count($explode) !== 1) {
             if (! ctype_digit($explode[1]) || ($explode[1] > self::CIDR_MIN_BITS || $explode[1] < self::CIDR_MAX_BITS)) {
-                throw new DisplayException(trans('admin/exceptions.allocations.cidr_out_of_range'));
+                throw new DisplayException(trans('exceptions.allocations.cidr_out_of_range'));
             }
         }
 
@@ -86,7 +86,7 @@ class AssignmentService
         foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
             foreach ($data['allocation_ports'] as $port) {
                 if (! ctype_digit($port) && ! preg_match(self::PORT_RANGE_REGEX, $port)) {
-                    throw new DisplayException(trans('admin/exceptions.allocations.invalid_mapping', ['port' => $port]));
+                    throw new DisplayException(trans('exceptions.allocations.invalid_mapping', ['port' => $port]));
                 }
 
                 $insertData = [];
@@ -94,7 +94,7 @@ class AssignmentService
                     $block = range($matches[1], $matches[2]);
 
                     if (count($block) > self::PORT_RANGE_LIMIT) {
-                        throw new DisplayException(trans('admin/exceptions.allocations.too_many_ports'));
+                        throw new DisplayException(trans('exceptions.allocations.too_many_ports'));
                     }
 
                     foreach ($block as $unit) {

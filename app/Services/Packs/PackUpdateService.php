@@ -76,7 +76,7 @@ class PackUpdateService
             $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack->id]]);
 
             if ($count !== 0) {
-                throw new HasActiveServersException(trans('admin/exceptions.packs.update_has_servers'));
+                throw new HasActiveServersException(trans('exceptions.packs.update_has_servers'));
             }
         }
 

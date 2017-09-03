@@ -80,7 +80,7 @@ class OptionDeletionServiceTest extends TestCase
             $this->service->handle(1);
         } catch (\Exception $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.service.options.delete_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.service.options.delete_has_servers'), $exception->getMessage());
         }
     }
 }

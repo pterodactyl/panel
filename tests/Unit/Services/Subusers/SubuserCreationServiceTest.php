@@ -213,7 +213,7 @@ class SubuserCreationServiceTest extends TestCase
             $this->service->handle($server, $user->email, []);
         } catch (DisplayException $exception) {
             $this->assertInstanceOf(UserIsServerOwnerException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.subusers.user_is_owner'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.subusers.user_is_owner'), $exception->getMessage());
         }
     }
 
@@ -235,7 +235,7 @@ class SubuserCreationServiceTest extends TestCase
             $this->service->handle($server, $user->email, []);
         } catch (DisplayException $exception) {
             $this->assertInstanceOf(ServerSubuserExistsException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.subusers.subuser_exists'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.subusers.subuser_exists'), $exception->getMessage());
         }
     }
 }

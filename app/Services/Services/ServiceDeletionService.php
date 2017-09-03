@@ -66,7 +66,7 @@ class ServiceDeletionService
     {
         $count = $this->serverRepository->findCountWhere([['service_id', '=', $service]]);
         if ($count > 0) {
-            throw new HasActiveServersException(trans('admin/exceptions.service.delete_has_servers'));
+            throw new HasActiveServersException(trans('exceptions.service.delete_has_servers'));
         }
 
         return $this->repository->delete($service);

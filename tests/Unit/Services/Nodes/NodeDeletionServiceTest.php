@@ -96,7 +96,7 @@ class NodeDeletionServiceTest extends TestCase
     {
         $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', 1]])->once()->andReturn(1);
-        $this->translator->shouldReceive('trans')->with('admin/exceptions.node.servers_attached')->once()->andReturnNull();
+        $this->translator->shouldReceive('trans')->with('exceptions.node.servers_attached')->once()->andReturnNull();
         $this->repository->shouldNotReceive('delete');
 
         $this->service->handle(1);

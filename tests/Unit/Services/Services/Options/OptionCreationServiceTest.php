@@ -116,7 +116,7 @@ class OptionCreationServiceTest extends TestCase
             $this->service->handle(['config_from' => 1]);
         } catch (Exception $exception) {
             $this->assertInstanceOf(NoParentConfigurationFoundException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.service.options.must_be_child'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.service.options.must_be_child'), $exception->getMessage());
         }
     }
 }

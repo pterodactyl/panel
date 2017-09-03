@@ -90,7 +90,7 @@ class PackUpdateServiceTest extends TestCase
         try {
             $this->service->handle($model, ['option_id' => 0]);
         } catch (HasActiveServersException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.update_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.update_has_servers'), $exception->getMessage());
         }
     }
 

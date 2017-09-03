@@ -89,7 +89,7 @@ class PackDeletionService
 
         $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack->id]]);
         if ($count !== 0) {
-            throw new HasActiveServersException(trans('admin/exceptions.packs.delete_has_servers'));
+            throw new HasActiveServersException(trans('exceptions.packs.delete_has_servers'));
         }
 
         $this->connection->beginTransaction();

@@ -95,7 +95,7 @@ class NodeUpdateService
             $response = $exception->getResponse();
             $this->writer->warning($exception);
 
-            throw new DisplayException(trans('admin/exceptions.node.daemon_off_config_updated', [
+            throw new DisplayException(trans('exceptions.node.daemon_off_config_updated', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }

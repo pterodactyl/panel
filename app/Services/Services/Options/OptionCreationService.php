@@ -62,7 +62,7 @@ class OptionCreationService
             ]);
 
             if ($results !== 1) {
-                throw new NoParentConfigurationFoundException(trans('admin/exceptions.service.options.must_be_child'));
+                throw new NoParentConfigurationFoundException(trans('exceptions.service.options.must_be_child'));
             }
         } else {
             $data['config_from'] = null;

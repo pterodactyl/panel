@@ -51,17 +51,13 @@ Route::group(['prefix' => 'settings'], function () {
 |
 */
 Route::group(['prefix' => 'files'], function () {
-    Route::get('/', 'ServerController@getFiles')->name('server.files.index');
-    Route::get('/add', 'ServerController@getAddFile')->name('server.files.add');
-    Route::get('/edit/{file}', 'ServerController@getEditFile')
-        ->name('server.files.edit')
-        ->where('file', '.*');
-    Route::get('/download/{file}', 'ServerController@getDownloadFile')
-         ->name('server.files.edit')
-         ->where('file', '.*');
+    Route::get('/', 'Files\FileActionsController@index')->name('server.files.index');
+    Route::get('/add', 'Files\FileActionsController@create')->name('server.files.add');
+    Route::get('/edit/{file}', 'Files\FileActionsController@update')->name('server.files.edit')->where('file', '.*');
+    Route::get('/download/{file}', 'Files\DownloadController@index')->name('server.files.edit')->where('file', '.*');
 
-    Route::post('/directory-list', 'AjaxController@postDirectoryList')->name('server.files.directory-list');
-    Route::post('/save', 'AjaxController@postSaveFile')->name('server.files.save');
+    Route::post('/directory-list', 'Files\RemoteRequestController@directory')->name('server.files.directory-list');
+    Route::post('/save', 'Files\RemoteRequestController@store')->name('server.files.save');
 });
 
 /*

@@ -59,7 +59,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
             rawurlencode($file['dirname'] . $file['basename'])
         ));
 
-        return json_decode($response->getBody());
+        return object_get(json_decode($response->getBody()), 'content');
     }
 
     /**

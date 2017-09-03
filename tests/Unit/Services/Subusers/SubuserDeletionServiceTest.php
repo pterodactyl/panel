@@ -132,7 +132,7 @@ class SubuserDeletionServiceTest extends TestCase
         try {
             $this->service->handle($subuser->id);
         } catch (DisplayException $exception) {
-            $this->assertEquals(trans('admin/exceptions.daemon_connection_failed', ['code' => 'E_CONN_REFUSED']), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.daemon_connection_failed', ['code' => 'E_CONN_REFUSED']), $exception->getMessage());
         }
     }
 }

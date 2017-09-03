@@ -167,7 +167,7 @@ class SecurityControllerTest extends TestCase
 
         $response = $this->controller->disableTotp($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account.security', $response);
+        $this->assertRedirectRouteEquals('account.security', $response);
     }
 
     /**
@@ -186,7 +186,7 @@ class SecurityControllerTest extends TestCase
 
         $response = $this->controller->disableTotp($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account.security', $response);
+        $this->assertRedirectRouteEquals('account.security', $response);
     }
 
     /**
@@ -201,6 +201,6 @@ class SecurityControllerTest extends TestCase
 
         $response = $this->controller->revoke($this->request, 123);
         $this->assertIsRedirectResponse($response);
-        $this->assertRouteRedirectEquals('account.security', $response);
+        $this->assertRedirectRouteEquals('account.security', $response);
     }
 }

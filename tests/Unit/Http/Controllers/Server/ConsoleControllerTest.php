@@ -27,7 +27,6 @@ namespace Tests\Unit\Http\Controllers\Server;
 use Illuminate\Contracts\Session\Session;
 use Mockery as m;
 use Pterodactyl\Http\Controllers\Server\ConsoleController;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\TestCase;
@@ -73,10 +72,10 @@ class ConsoleControllerTest extends TestCase
     public function testAllControllers($function, $view)
     {
         $server = factory(Server::class)->make();
-        $node = factory(Node::class)->make();
-        $server->node = $node;
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
+        if ($function === 'index') {
+            $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
+        }
         $this->config->shouldReceive('get')->with('pterodactyl.console.count')->once()->andReturn(100);
         $this->config->shouldReceive('get')->with('pterodactyl.console.frequency')->once()->andReturn(10);
         $this->controller->shouldReceive('injectJavascript')->once()->andReturnNull();
@@ -84,10 +83,6 @@ class ConsoleControllerTest extends TestCase
         $response = $this->controller->$function();
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals($view, $response);
-        $this->assertViewHasKey('server', $response);
-        $this->assertViewHasKey('node', $response);
-        $this->assertViewKeyEquals('server', $server, $response);
-        $this->assertViewKeyEquals('node', $node, $response);
     }
 
     /**

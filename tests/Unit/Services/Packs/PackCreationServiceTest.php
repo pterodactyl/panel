@@ -152,7 +152,7 @@ class PackCreationServiceTest extends TestCase
             $this->service->handle([], $this->file);
         } catch (Exception $exception) {
             $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('admin/exceptions.packs.invalid_upload'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.invalid_upload'), $exception->getMessage());
         }
     }
 
@@ -169,7 +169,7 @@ class PackCreationServiceTest extends TestCase
         try {
             $this->service->handle([], $this->file);
         } catch (InvalidFileMimeTypeException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.invalid_mime', [
+            $this->assertEquals(trans('exceptions.packs.invalid_mime', [
                 'type' => implode(', ', PackCreationService::VALID_UPLOAD_TYPES),
             ]), $exception->getMessage());
         }

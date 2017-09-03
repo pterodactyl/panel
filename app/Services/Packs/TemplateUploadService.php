@@ -81,11 +81,11 @@ class TemplateUploadService
     public function handle($option, UploadedFile $file)
     {
         if (! $file->isValid()) {
-            throw new InvalidFileUploadException(trans('admin/exceptions.packs.invalid_upload'));
+            throw new InvalidFileUploadException(trans('exceptions.packs.invalid_upload'));
         }
 
         if (! in_array($file->getMimeType(), self::VALID_UPLOAD_TYPES)) {
-            throw new InvalidFileMimeTypeException(trans('admin/exceptions.packs.invalid_mime', [
+            throw new InvalidFileMimeTypeException(trans('exceptions.packs.invalid_mime', [
                 'type' => implode(', ', self::VALID_UPLOAD_TYPES),
             ]));
         }
@@ -117,11 +117,11 @@ class TemplateUploadService
     protected function handleArchive($option, $file)
     {
         if (! $this->archive->open($file->getRealPath())) {
-            throw new UnreadableZipArchiveException(trans('admin/exceptions.packs.unreadable'));
+            throw new UnreadableZipArchiveException(trans('exceptions.packs.unreadable'));
         }
 
         if (! $this->archive->locateName('import.json') || ! $this->archive->locateName('archive.tar.gz')) {
-            throw new InvalidPackArchiveFormatException(trans('admin/exceptions.packs.invalid_archive_exception'));
+            throw new InvalidPackArchiveFormatException(trans('exceptions.packs.invalid_archive_exception'));
         }
 
         $json = json_decode($this->archive->getFromName('import.json'), true);
@@ -130,7 +130,7 @@ class TemplateUploadService
         $pack = $this->creationService->handle($json);
         if (! $this->archive->extractTo(storage_path('app/packs/' . $pack->uuid), 'archive.tar.gz')) {
             // @todo delete the pack that was created.
-            throw new ZipExtractionException(trans('admin/exceptions.packs.zip_extraction'));
+            throw new ZipExtractionException(trans('exceptions.packs.zip_extraction'));
         }
 
         $this->archive->close();

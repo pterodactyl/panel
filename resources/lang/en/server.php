@@ -203,6 +203,11 @@ return [
         ],
     ],
     'files' => [
+        'exceptions' => [
+            'invalid_mime' => 'This type of file cannot be edited via the Panel\'s built-in editor.',
+            'max_size' => 'This file is too large to edit via the Panel\'s built-in editor.',
+            'list_directory' => 'An error was encountered while attempting to get the contents of this directory. Please try again.',
+        ],
         'header' => 'File Manager',
         'header_sub' => 'Manage all of your files directly from the web.',
         'loading' => 'Loading initial file structure, this could take a few seconds.',

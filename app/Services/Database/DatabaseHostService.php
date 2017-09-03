@@ -155,7 +155,7 @@ class DatabaseHostService
     {
         $count = $this->databaseRepository->findCountWhere([['database_host_id', '=', $id]]);
         if ($count > 0) {
-            throw new DisplayException(trans('admin/exceptions.databases.delete_has_databases'));
+            throw new DisplayException(trans('exceptions.databases.delete_has_databases'));
         }
 
         return $this->repository->delete($id);

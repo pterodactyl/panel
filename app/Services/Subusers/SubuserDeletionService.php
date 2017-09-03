@@ -100,7 +100,7 @@ class SubuserDeletionService
             $this->writer->warning($exception);
 
             $response = $exception->getResponse();
-            throw new DisplayException(trans('admin/exceptions.daemon_connection_failed', [
+            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }

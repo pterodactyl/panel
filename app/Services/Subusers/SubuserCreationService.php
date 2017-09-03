@@ -131,12 +131,12 @@ class SubuserCreationService
             ]);
         } else {
             if ($server->owner_id === $user->id) {
-                throw new UserIsServerOwnerException(trans('admin/exceptions.subusers.user_is_owner'));
+                throw new UserIsServerOwnerException(trans('exceptions.subusers.user_is_owner'));
             }
 
             $subuserCount = $this->subuserRepository->findCountWhere([['user_id', '=', $user->id], ['server_id', '=', $server->id]]);
             if ($subuserCount !== 0) {
-                throw new ServerSubuserExistsException(trans('admin/exceptions.subusers.subuser_exists'));
+                throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
             }
         }
 
@@ -160,7 +160,7 @@ class SubuserCreationService
             $this->writer->warning($exception);
 
             $response = $exception->getResponse();
-            throw new DisplayException(trans('admin/exceptions.daemon_connection_failed', [
+            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }

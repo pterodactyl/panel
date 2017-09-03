@@ -22,48 +22,39 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository\Daemon;
+namespace Pterodactyl\Http\ViewComposers\Server;
 
-interface FileRepositoryInterface extends BaseRepositoryInterface
+use Illuminate\View\View;
+use Illuminate\Contracts\Session\Session;
+
+class ServerDataComposer
 {
     /**
-     * Return stat information for a given file.
-     *
-     * @param string $path
-     * @return object
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @var \Illuminate\Contracts\Session\Session
      */
-    public function getFileStat($path);
+    protected $session;
 
     /**
-     * Return the contents of a given file if it can be edited in the Panel.
+     * ServerDataComposer constructor.
      *
-     * @param string $path
-     * @return object
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @param \Illuminate\Contracts\Session\Session $session
      */
-    public function getContent($path);
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
 
     /**
-     * Save new contents to a given file.
+     * Attach server data to a view automatically.
      *
-     * @param string $path
-     * @param string $content
-     * @return \Psr\Http\Message\ResponseInterface
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @param \Illuminate\View\View $view
      */
-    public function putContent($path, $content);
+    public function compose(View $view)
+    {
+        $data = $this->session->get('server_data');
 
-    /**
-     * Return a directory listing for a given path.
-     *
-     * @param string $path
-     * @return array
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
-     */
-    public function getDirectory($path);
+        $view->with('server', array_get($data, 'model'));
+        $view->with('node', object_get($data['model'], 'node'));
+        $view->with('daemon_token', array_get($data, 'token'));
+    }
 }

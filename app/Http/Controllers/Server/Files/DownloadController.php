@@ -22,43 +22,55 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Traits\Controllers;
+namespace Pterodactyl\Http\Controllers\Server\Files;
 
-use Javascript;
+use Illuminate\Cache\Repository;
+use Illuminate\Contracts\Session\Session;
+use Pterodactyl\Http\Controllers\Controller;
 
-trait ServerToJavascript
+class DownloadController extends Controller
 {
+    /**
+     * @var \Illuminate\Cache\Repository
+     */
+    protected $cache;
+
     /**
      * @var \Illuminate\Contracts\Session\Session
      */
     protected $session;
 
     /**
-     * Injects server javascript into the page to be used by other services.
+     * DownloadController constructor.
      *
-     * @param array $args
-     * @param bool  $overwrite
-     * @return mixed
+     * @param \Illuminate\Cache\Repository          $cache
+     * @param \Illuminate\Contracts\Session\Session $session
      */
-    public function injectJavascript($args = [], $overwrite = false)
+    public function __construct(Repository $cache, Session $session)
+    {
+        $this->cache = $cache;
+        $this->session = $session;
+    }
+
+    /**
+     * Setup a unique download link for a user to download a file from.
+     *
+     * @param string $uuid
+     * @param string $file
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function index($uuid, $file)
     {
         $server = $this->session->get('server_data.model');
-        $token = $this->session->get('server_data.token');
+        $this->authorize('download-files', $server);
 
-        $response = array_merge([
-            'server' => [
-                'uuid' => $server->uuid,
-                'uuidShort' => $server->uuidShort,
-                'daemonSecret' => $token,
-                'username' => $server->username,
-            ],
-            'node' => [
-                'fqdn' => $server->node->fqdn,
-                'scheme' => $server->node->scheme,
-                'daemonListen' => $server->node->daemonListen,
-            ],
-        ], $args);
+        $token = str_random(40);
+        $this->cache->tags(['Server:Downloads'])->put($token, ['server' => $server->uuid, 'path' => $file], 5);
 
-        return Javascript::put($overwrite ? $args : $response);
+        return redirect(sprintf(
+            '%s://%s:%s/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, $token
+        ));
     }
 }

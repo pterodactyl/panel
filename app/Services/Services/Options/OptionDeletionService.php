@@ -69,7 +69,7 @@ class OptionDeletionService
         ]);
 
         if ($servers > 0) {
-            throw new HasActiveServersException(trans('admin/exceptions.service.options.delete_has_servers'));
+            throw new HasActiveServersException(trans('exceptions.service.options.delete_has_servers'));
         }
 
         return $this->repository->delete($option);

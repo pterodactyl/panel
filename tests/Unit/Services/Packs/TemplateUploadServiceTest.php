@@ -128,7 +128,7 @@ class TemplateUploadServiceTest extends TestCase
         try {
             $this->service->handle(1, $this->file);
         } catch (InvalidFileUploadException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.invalid_upload'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.invalid_upload'), $exception->getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ class TemplateUploadServiceTest extends TestCase
         try {
             $this->service->handle(1, $this->file);
         } catch (InvalidFileMimeTypeException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.invalid_mime', [
+            $this->assertEquals(trans('exceptions.packs.invalid_mime', [
                 'type' => implode(', ', TemplateUploadService::VALID_UPLOAD_TYPES),
             ]), $exception->getMessage());
         }
@@ -165,7 +165,7 @@ class TemplateUploadServiceTest extends TestCase
         try {
             $this->service->handle(1, $this->file);
         } catch (UnreadableZipArchiveException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.unreadable'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.unreadable'), $exception->getMessage());
         }
     }
 
@@ -190,7 +190,7 @@ class TemplateUploadServiceTest extends TestCase
         try {
             $this->service->handle(1, $this->file);
         } catch (InvalidPackArchiveFormatException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.invalid_archive_exception'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.invalid_archive_exception'), $exception->getMessage());
         }
     }
 
@@ -214,7 +214,7 @@ class TemplateUploadServiceTest extends TestCase
         try {
             $this->service->handle(1, $this->file);
         } catch (ZipExtractionException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.zip_extraction'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.zip_extraction'), $exception->getMessage());
         }
     }
 

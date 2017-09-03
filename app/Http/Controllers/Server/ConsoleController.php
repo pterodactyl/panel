@@ -26,12 +26,12 @@ namespace Pterodactyl\Http\Controllers\Server;
 
 use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Controllers\ServerToJavascript;
+use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class ConsoleController extends Controller
 {
-    use ServerToJavascript;
+    use JavascriptInjection;
 
     /**
      * @var \Illuminate\Contracts\Config\Repository
@@ -77,7 +77,7 @@ class ConsoleController extends Controller
             ],
         ]);
 
-        return view('server.index', ['server' => $server, 'node' => $server->node]);
+        return view('server.index');
     }
 
     /**
@@ -87,13 +87,11 @@ class ConsoleController extends Controller
      */
     public function console()
     {
-        $server = $this->session->get('server_data.model');
-
         $this->injectJavascript(['config' => [
             'console_count' => $this->config->get('pterodactyl.console.count'),
             'console_freq' => $this->config->get('pterodactyl.console.frequency'),
         ]]);
 
-        return view('server.console', ['server' => $server, 'node' => $server->node]);
+        return view('server.console');
     }
 }

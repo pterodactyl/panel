@@ -160,9 +160,20 @@ trait ControllerAssertionsTrait
      * @param string $route
      * @param mixed  $response
      */
-    public function assertRouteRedirectEquals($route, $response)
+    public function assertRedirectRouteEquals($route, $response)
     {
         PHPUnit_Framework_Assert::assertEquals(route($route), $response->getTargetUrl());
+    }
+
+    /**
+     * Assert that a route redirect URL equals as passed URL.
+     *
+     * @param string $url
+     * @param mixed  $response
+     */
+    public function assertRedirectUrlEquals($url, $response)
+    {
+        PHPUnit_Framework_Assert::assertEquals($url, $response->getTargetUrl());
     }
 
     /**

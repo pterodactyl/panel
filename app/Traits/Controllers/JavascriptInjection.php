@@ -22,48 +22,43 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository\Daemon;
+namespace Pterodactyl\Traits\Controllers;
 
-interface FileRepositoryInterface extends BaseRepositoryInterface
+use Javascript;
+
+trait JavascriptInjection
 {
     /**
-     * Return stat information for a given file.
-     *
-     * @param string $path
-     * @return object
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @var \Illuminate\Contracts\Session\Session
      */
-    public function getFileStat($path);
+    protected $session;
 
     /**
-     * Return the contents of a given file if it can be edited in the Panel.
+     * Injects server javascript into the page to be used by other services.
      *
-     * @param string $path
-     * @return object
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @param array $args
+     * @param bool  $overwrite
+     * @return mixed
      */
-    public function getContent($path);
+    public function injectJavascript($args = [], $overwrite = false)
+    {
+        $server = $this->session->get('server_data.model');
+        $token = $this->session->get('server_data.token');
 
-    /**
-     * Save new contents to a given file.
-     *
-     * @param string $path
-     * @param string $content
-     * @return \Psr\Http\Message\ResponseInterface
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
-     */
-    public function putContent($path, $content);
+        $response = array_merge([
+            'server' => [
+                'uuid' => $server->uuid,
+                'uuidShort' => $server->uuidShort,
+                'daemonSecret' => $token,
+                'username' => $server->username,
+            ],
+            'node' => [
+                'fqdn' => $server->node->fqdn,
+                'scheme' => $server->node->scheme,
+                'daemonListen' => $server->node->daemonListen,
+            ],
+        ], $args);
 
-    /**
-     * Return a directory listing for a given path.
-     *
-     * @param string $path
-     * @return array
-     *
-     * @throws \GuzzleHttp\Exception\RequestException
-     */
-    public function getDirectory($path);
+        return Javascript::put($overwrite ? $args : $response);
+    }
 }

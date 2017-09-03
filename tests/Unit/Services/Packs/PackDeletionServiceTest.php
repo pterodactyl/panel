@@ -130,7 +130,7 @@ class PackDeletionServiceTest extends TestCase
         try {
             $this->service->handle($model);
         } catch (HasActiveServersException $exception) {
-            $this->assertEquals(trans('admin/exceptions.packs.delete_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.packs.delete_has_servers'), $exception->getMessage());
         }
     }
 }
