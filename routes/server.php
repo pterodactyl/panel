@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-Route::get('/', 'ServerController@getIndex')->name('server.index');
-Route::get('/console', 'ServerController@getConsole')->name('server.console');
+Route::get('/', 'ConsoleController@index')->name('server.index');
+Route::get('/console', 'ConsoleController@console')->name('server.console');
 
 /*
 |--------------------------------------------------------------------------

@@ -74,9 +74,9 @@
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>
-                            </li>
+                            {{--<li>--}}
+                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>--}}
+                            {{--</li>--}}
                             @if(Auth::user()->isRootAdmin())
                                 <li>
                                     <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
@@ -241,27 +241,28 @@
             <aside class="control-sidebar control-sidebar-dark">
                 <div class="tab-content">
                     <ul class="control-sidebar-menu">
-                        @foreach (Auth::user()->access(null)->get() as $s)
-                            <li>
-                                <a
-                                    @if(isset($server) && isset($node))
-                                        @if($server->uuidShort === $s->uuidShort)
-                                            class="active"
-                                        @endif
-                                    @endif
-                                href="{{ route('server.index', $s->uuidShort) }}">
-                                    @if($s->owner_id === Auth::user()->id)
-                                        <i class="menu-icon fa fa-user bg-blue"></i>
-                                    @else
-                                        <i class="menu-icon fa fa-user-o bg-gray"></i>
-                                    @endif
-                                    <div class="menu-info">
-                                        <h4 class="control-sidebar-subheading">{{ $s->name }}</h4>
-                                        <p>{{ $s->username }}</p>
-                                    </div>
-                                </a>
-                            </li>
-                        @endforeach
+                        {{-- @todo replace this with better logic, or just remove it entirely? --}}
+                        {{--@foreach (Auth::user()->access(null)->get() as $s)--}}
+                            {{--<li>--}}
+                                {{--<a--}}
+                                    {{--@if(isset($server) && isset($node))--}}
+                                        {{--@if($server->uuidShort === $s->uuidShort)--}}
+                                            {{--class="active"--}}
+                                        {{--@endif--}}
+                                    {{--@endif--}}
+                                {{--href="{{ route('server.index', $s->uuidShort) }}">--}}
+                                    {{--@if($s->owner_id === Auth::user()->id)--}}
+                                        {{--<i class="menu-icon fa fa-user bg-blue"></i>--}}
+                                    {{--@else--}}
+                                        {{--<i class="menu-icon fa fa-user-o bg-gray"></i>--}}
+                                    {{--@endif--}}
+                                    {{--<div class="menu-info">--}}
+                                        {{--<h4 class="control-sidebar-subheading">{{ $s->name }}</h4>--}}
+                                        {{--<p>{{ $s->username }}</p>--}}
+                                    {{--</div>--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
+                        {{--@endforeach--}}
                     </ul>
                 </div>
             </aside>

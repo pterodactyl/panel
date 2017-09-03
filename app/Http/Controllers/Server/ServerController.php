@@ -31,65 +31,10 @@ use Pterodactyl\Models;
 use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Exceptions\DisplayValidationException;
-use Pterodactyl\Repositories\old_Daemon\FileRepository;
 
 class ServerController extends Controller
 {
-    /**
-     * Renders server index page for specified server.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
-     * @return \Illuminate\View\View
-     */
-    public function getIndex(Request $request, $uuid)
-    {
-        $server = Models\Server::byUuid($uuid);
-
-        $server->js([
-            'meta' => [
-                'saveFile' => route('server.files.save', $server->uuidShort),
-                'csrfToken' => csrf_token(),
-            ],
-            'config' => [
-                'console_count' => config('pterodactyl.console.count'),
-                'console_freq' => config('pterodactyl.console.frequency'),
-            ],
-        ]);
-
-        return view('server.index', [
-            'server' => $server,
-            'node' => $server->node,
-        ]);
-    }
-
-    /**
-     * Renders server console as an individual item.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
-     * @return \Illuminate\View\View
-     */
-    public function getConsole(Request $request, $uuid)
-    {
-        \Debugbar::disable();
-        $server = Models\Server::byUuid($uuid);
-
-        $server->js([
-            'config' => [
-                'console_count' => config('pterodactyl.console.count'),
-                'console_freq' => config('pterodactyl.console.frequency'),
-            ],
-        ]);
-
-        return view('server.console', [
-            'server' => $server,
-            'node' => $server->node,
-        ]);
-    }
-
     /**
      * Renders file overview page.
      *

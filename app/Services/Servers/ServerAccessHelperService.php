@@ -24,6 +24,8 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
 use Illuminate\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -44,28 +46,37 @@ class ServerAccessHelperService
         $this->userRepository = $userRepository;
     }
 
-    public function handle($uuid, $user)
+    /**
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param int|\Pterodactyl\Models\User   $user
+     * @return string
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException
+     */
+    public function handle($server, $user)
     {
+        if (! $server instanceof Server) {
+            $server = $this->repository->find($server);
+        }
+
         if (! $user instanceof User) {
             $user = $this->userRepository->find($user);
         }
 
-        $server = $this->repository->getByUuid($uuid);
-        if (! $user->root_admin) {
-            if (! in_array($server->id, $this->repository->getUserAccessServers($user->id))) {
-                throw new \Exception('User does not have access.');
-            }
-
-            if ($server->owner_id !== $user->id) {
-                $subuser = $this->subuserRepository->withColumns('daemonSecret')->findWhere([
-                    ['user_id', '=', $user->id],
-                    ['server_id', '=', $server->id],
-                ]);
-
-                $server->daemonSecret = $subuser->daemonToken;
-            }
+        if ($user->root_admin || $server->owner_id === $user->id) {
+            return $server->daemonSecret;
         }
 
-        return $server;
+        if (! in_array($server->id, $this->repository->getUserAccessServers($user->id))) {
+            throw new UserNotLinkedToServerException;
+        }
+
+        $subuser = $this->subuserRepository->withColumns('daemonSecret')->findWhere([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ]);
+
+        return $subuser->daemonSecret;
     }
 }

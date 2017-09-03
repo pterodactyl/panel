@@ -50,7 +50,7 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace . '\Auth')
              ->group(base_path('routes/auth.php'));
 
-        Route::middleware(['web', 'auth', 'server', 'csrf'])->prefix('/server/{server}')
+        Route::middleware(['web', 'csrf', 'auth', 'server', 'subuser'])->prefix('/server/{server}')
              ->namespace($this->namespace . '\Server')
              ->group(base_path('routes/server.php'));
 

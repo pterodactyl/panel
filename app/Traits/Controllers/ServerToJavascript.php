@@ -22,10 +22,43 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Service\Server;
+namespace Pterodactyl\Traits\Controllers;
 
-use Pterodactyl\Exceptions\PterodactylException;
+use Javascript;
 
-class RequiredVariableMissingException extends PterodactylException
+trait ServerToJavascript
 {
+    /**
+     * @var \Illuminate\Contracts\Session\Session
+     */
+    protected $session;
+
+    /**
+     * Injects server javascript into the page to be used by other services.
+     *
+     * @param array $args
+     * @param bool  $overwrite
+     * @return mixed
+     */
+    public function injectJavascript($args = [], $overwrite = false)
+    {
+        $server = $this->session->get('server_data.model');
+        $token = $this->session->get('server_data.token');
+
+        $response = array_merge([
+            'server' => [
+                'uuid' => $server->uuid,
+                'uuidShort' => $server->uuidShort,
+                'daemonSecret' => $token,
+                'username' => $server->username,
+            ],
+            'node' => [
+                'fqdn' => $server->node->fqdn,
+                'scheme' => $server->node->scheme,
+                'daemonListen' => $server->node->daemonListen,
+            ],
+        ], $args);
+
+        return Javascript::put($overwrite ? $args : $response);
+    }
 }
