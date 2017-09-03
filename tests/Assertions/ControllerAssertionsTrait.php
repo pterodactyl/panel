@@ -24,10 +24,10 @@
 
 namespace Tests\Assertions;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
+use Illuminate\Http\Response;
 use PHPUnit_Framework_Assert;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
 trait ControllerAssertionsTrait

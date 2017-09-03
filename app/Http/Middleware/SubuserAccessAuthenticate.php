@@ -25,11 +25,11 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\AuthenticationException;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
-use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
+use Illuminate\Contracts\Session\Session;
+use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Services\Servers\ServerAccessHelperService;
+use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
 
 class SubuserAccessAuthenticate
 {

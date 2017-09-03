@@ -24,16 +24,16 @@
 
 namespace Tests\Unit\Http\Controllers\Base;
 
-use Illuminate\Http\Request;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Http\Controllers\Base\IndexController;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Servers\ServerAccessHelperService;
-use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\TestCase;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Http\Controllers\Base\IndexController;
+use Pterodactyl\Services\Servers\ServerAccessHelperService;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexControllerTest extends TestCase
 {

@@ -24,13 +24,13 @@
 
 namespace Tests\Unit\Http\Controllers\Server;
 
-use Illuminate\Contracts\Session\Session;
 use Mockery as m;
-use Pterodactyl\Http\Controllers\Server\ConsoleController;
-use Pterodactyl\Models\Server;
-use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\TestCase;
+use Pterodactyl\Models\Server;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Config\Repository;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Http\Controllers\Server\ConsoleController;
 
 class ConsoleControllerTest extends TestCase
 {

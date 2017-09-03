@@ -24,19 +24,19 @@
 
 namespace Tests\Unit\Http\Controllers\Base;
 
-use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Http\Request;
 use Mockery as m;
+use Tests\TestCase;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Session\Session;
+use Illuminate\Contracts\Config\Repository;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Services\Users\TwoFactorSetupService;
+use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Pterodactyl\Http\Controllers\Base\SecurityController;
 use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
-use Pterodactyl\Http\Controllers\Base\SecurityController;
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
-use Tests\Assertions\ControllerAssertionsTrait;
-use Tests\TestCase;
 
 class SecurityControllerTest extends TestCase
 {
