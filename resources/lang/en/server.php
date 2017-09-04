@@ -44,6 +44,8 @@ return [
         'list' => 'Accounts with Access',
         'add' => 'Add New Subuser',
         'update' => 'Update Subuser',
+        'user_assigned' => 'Successfully assigned a new subuser to this server.',
+        'user_updated' => 'Successfully updated permissions.',
         'edit' => [
             'header' => 'Edit Subuser',
             'header_sub' => 'Modify user\'s access to server.',

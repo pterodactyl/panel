@@ -112,8 +112,6 @@ interface RepositoryInterface
      *
      * @param array $fields
      * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function findWhere(array $fields);
 

@@ -77,7 +77,7 @@
                             {{--<li>--}}
                                 {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>--}}
                             {{--</li>--}}
-                            @if(Auth::user()->isRootAdmin())
+                            @if(Auth::user()->root_admin)
                                 <li>
                                     <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
                                 </li>
