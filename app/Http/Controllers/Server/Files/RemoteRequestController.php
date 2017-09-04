@@ -110,14 +110,11 @@ class RemoteRequestController extends Controller
                 ->getDirectory($requestDirectory);
         } catch (RequestException $exception) {
             $this->writer->warning($exception);
+            $response = $exception->getResponse();
 
-            if (! is_null($exception->getResponse())) {
-                return response()->json(
-                    ['error' => $exception->getResponse()->getBody()], $exception->getResponse()->getStatusCode()
-                );
-            } else {
-                return response()->json(['error' => trans('server.files.exceptions.list_directory')], 500);
-            }
+            return response()->json(['error' => trans('exceptions.daemon_connection_failed', [
+                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
+            ])], 500);
         }
 
         return view('server.files.list', [
@@ -151,16 +148,12 @@ class RemoteRequestController extends Controller
 
             return response('', 204);
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
             $this->writer->warning($exception);
+            $response = $exception->getResponse();
 
-            if (! is_null($response)) {
-                return response()->json(['error' => $response->getBody()], $response->getStatusCode());
-            } else {
-                return response()->json(['error' => trans('exceptions.daemon_connection_failed', [
-                    'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-                ])], 500);
-            }
+            return response()->json(['error' => trans('exceptions.daemon_connection_failed', [
+                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
+            ])], 500);
         }
     }
 }
