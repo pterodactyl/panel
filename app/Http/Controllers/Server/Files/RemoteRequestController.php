@@ -24,13 +24,13 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Files;
 
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Http\Request;
 use Illuminate\Log\Writer;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Illuminate\Http\Request;
+use Illuminate\Contracts\Session\Session;
+use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 
 class RemoteRequestController extends Controller
 {

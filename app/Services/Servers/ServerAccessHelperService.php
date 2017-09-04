@@ -24,13 +24,13 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Illuminate\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
 
 class ServerAccessHelperService
 {
