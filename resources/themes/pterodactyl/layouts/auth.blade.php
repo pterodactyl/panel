@@ -47,7 +47,7 @@
             <![endif]-->
         @show
     </head>
-    <body id="particles-js" class="hold-transition login-page" style="background: #303f9f;">
+    <body id="particles-js" class="hold-transition login-page">
         <div class="login-box">
             <div class="login-logo">
                 {{ Settings::get('company', 'Pterodactyl') }}
