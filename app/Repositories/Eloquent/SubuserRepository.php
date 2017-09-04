@@ -46,7 +46,22 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     {
         Assert::numeric($id, 'First argument passed to getWithServer must be numeric, received %s.');
 
-        $instance = $this->getBuilder()->with('server')->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with('server', 'user')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithPermissions($id)
+    {
+        Assert::numeric($id, 'First argument passed to getWithPermissions must be numeric, received %s.');
+
+        $instance = $this->getBuilder()->with('permissions', 'user')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
         }
@@ -61,7 +76,7 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     {
         Assert::numeric($id, 'First argument passed to getWithServerAndPermissions must be numeric, received %s.');
 
-        $instance = $this->getBuilder()->with(['server', 'permission'])->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with('server', 'permission', 'user')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
         }

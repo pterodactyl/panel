@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+use Pterodactyl\Http\Middleware\Server\SubuserAccess;
+
 Route::get('/', 'ConsoleController@index')->name('server.index');
 Route::get('/console', 'ConsoleController@console')->name('server.console');
 
@@ -71,12 +73,13 @@ Route::group(['prefix' => 'files'], function () {
 Route::group(['prefix' => 'users'], function () {
     Route::get('/', 'SubuserController@index')->name('server.subusers');
     Route::get('/new', 'SubuserController@create')->name('server.subusers.new');
-    Route::get('/view/{id}', 'SubuserController@view')->name('server.subusers.view');
+    Route::get('/view/{subuser}', 'SubuserController@view')->middleware(SubuserAccess::class)->name('server.subusers.view');
 
     Route::post('/new', 'SubuserController@store');
-    Route::post('/view/{id}', 'SubuserController@update');
 
-    Route::delete('/delete/{id}', 'SubuserController@delete')->name('server.subusers.delete');
+    Route::patch('/view/{subuser}', 'SubuserController@update')->middleware(SubuserAccess::class);
+
+    Route::delete('/delete/{subuser}', 'SubuserController@delete')->middleware(SubuserAccess::class)->name('server.subusers.delete');
 });
 
 /*

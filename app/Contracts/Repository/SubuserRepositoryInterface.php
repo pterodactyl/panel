@@ -37,6 +37,16 @@ interface SubuserRepositoryInterface extends RepositoryInterface
     public function getWithServer($id);
 
     /**
+     * Return a subuser with the associated permissions relationship.
+     *
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Collection
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithPermissions($id);
+
+    /**
      * Find a subuser and return with server and permissions relationships.
      *
      * @param int $id

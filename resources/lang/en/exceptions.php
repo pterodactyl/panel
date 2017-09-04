@@ -55,6 +55,7 @@ return [
         'invalid_archive_exception' => 'The pack archive provided appears to be missing a required archive.tar.gz or import.json file in the base directory.',
     ],
     'subusers' => [
+        'editing_self' => 'Editing your own subuser account is not permitted.',
         'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
         'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
     ],

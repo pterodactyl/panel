@@ -25,6 +25,7 @@
 namespace Pterodactyl\Services\Subusers;
 
 use Illuminate\Log\Writer;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -81,6 +82,18 @@ class SubuserCreationService
      */
     protected $writer;
 
+    /**
+     * SubuserCreationService constructor.
+     *
+     * @param \Illuminate\Database\ConnectionInterface                           $connection
+     * @param \Pterodactyl\Services\Users\UserCreationService                    $userCreationService
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $subuserRepository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface          $userRepository
+     * @param \Illuminate\Log\Writer                                             $writer
+     */
     public function __construct(
         ConnectionInterface $connection,
         UserCreationService $userCreationService,
@@ -120,16 +133,10 @@ class SubuserCreationService
             $server = $this->serverRepository->find($server);
         }
 
-        $user = $this->userRepository->findWhere([['email', '=', $email]]);
-        if (is_null($user)) {
-            $user = $this->userCreationService->handle([
-                'email' => $email,
-                'username' => substr(strtok($email, '@'), 0, 8),
-                'name_first' => 'Server',
-                'name_last' => 'Subuser',
-                'root_admin' => false,
-            ]);
-        } else {
+        $this->connection->beginTransaction();
+        try {
+            $user = $this->userRepository->findFirstWhere([['email', '=', $email]]);
+
             if ($server->owner_id === $user->id) {
                 throw new UserIsServerOwnerException(trans('exceptions.subusers.user_is_owner'));
             }
@@ -138,9 +145,16 @@ class SubuserCreationService
             if ($subuserCount !== 0) {
                 throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
             }
+        } catch (RecordNotFoundException $exception) {
+            $user = $this->userCreationService->handle([
+                'email' => $email,
+                'username' => substr(strtok($email, '@'), 0, 8) . '_' . str_random(6),
+                'name_first' => 'Server',
+                'name_last' => 'Subuser',
+                'root_admin' => false,
+            ]);
         }
 
-        $this->connection->beginTransaction();
         $subuser = $this->subuserRepository->create([
             'user_id' => $user->id,
             'server_id' => $server->id,

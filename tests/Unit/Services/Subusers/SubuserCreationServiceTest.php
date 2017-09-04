@@ -25,6 +25,7 @@
 namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
@@ -100,6 +101,7 @@ class SubuserCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'bin2hex')->expects($this->any())->willReturn('bin2hex');
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'str_random')->expects($this->any())->willReturn('123456');
 
         $this->connection = m::mock(ConnectionInterface::class);
         $this->daemonRepository = m::mock(DaemonServerRepositoryInterface::class);
@@ -132,16 +134,16 @@ class SubuserCreationServiceTest extends TestCase
         $user = factory(User::class)->make();
         $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
 
-        $this->userRepository->shouldReceive('findWhere')->with([['email', '=', $user->email]])->once()->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andThrow(new RecordNotFoundException);
         $this->userCreationService->shouldReceive('handle')->with([
             'email' => $user->email,
-            'username' => substr(strtok($user->email, '@'), 0, 8),
+            'username' => substr(strtok($user->email, '@'), 0, 8) . '_' . '123456',
             'name_first' => 'Server',
             'name_last' => 'Subuser',
             'root_admin' => false,
         ])->once()->andReturn($user);
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->subuserRepository->shouldReceive('create')->with([
             'user_id' => $user->id,
             'server_id' => $server->id,
@@ -172,13 +174,13 @@ class SubuserCreationServiceTest extends TestCase
         $user = factory(User::class)->make();
         $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
 
-        $this->userRepository->shouldReceive('findWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
         $this->subuserRepository->shouldReceive('findCountWhere')->with([
             ['user_id', '=', $user->id],
             ['server_id', '=', $server->id],
         ])->once()->andReturn(0);
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->subuserRepository->shouldReceive('create')->with([
             'user_id' => $user->id,
             'server_id' => $server->id,
@@ -207,7 +209,8 @@ class SubuserCreationServiceTest extends TestCase
         $user = factory(User::class)->make();
         $server = factory(Server::class)->make(['owner_id' => $user->id]);
 
-        $this->userRepository->shouldReceive('findWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
 
         try {
             $this->service->handle($server, $user->email, []);
@@ -225,7 +228,8 @@ class SubuserCreationServiceTest extends TestCase
         $user = factory(User::class)->make();
         $server = factory(Server::class)->make();
 
-        $this->userRepository->shouldReceive('findWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
         $this->subuserRepository->shouldReceive('findCountWhere')->with([
             ['user_id', '=', $user->id],
             ['server_id', '=', $server->id],
