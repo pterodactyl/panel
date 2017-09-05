@@ -24,17 +24,17 @@
 
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
+use Mockery as m;
+use Tests\TestCase;
+use Illuminate\Log\Writer;
+use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Illuminate\Contracts\Session\Session;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Http\Request;
-use Illuminate\Log\Writer;
-use Mockery as m;
+use Tests\Assertions\ControllerAssertionsTrait;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Http\Controllers\Server\Files\RemoteRequestController;
-use Pterodactyl\Models\Server;
-use Tests\Assertions\ControllerAssertionsTrait;
-use Tests\TestCase;
 
 class RemoteRequestControllerTest extends TestCase
 {

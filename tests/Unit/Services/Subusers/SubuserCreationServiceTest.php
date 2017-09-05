@@ -25,7 +25,6 @@
 namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
@@ -38,6 +37,7 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Services\Subusers\PermissionCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;

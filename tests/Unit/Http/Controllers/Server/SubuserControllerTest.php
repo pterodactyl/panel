@@ -24,20 +24,20 @@
 
 namespace Tests\Unit\Http\Controllers\Server;
 
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Http\Request;
 use Mockery as m;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Http\Controllers\Server\SubuserController;
-use Pterodactyl\Models\Permission;
+use Tests\TestCase;
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Permission;
+use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Session\Session;
+use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Services\Subusers\SubuserUpdateService;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Services\Subusers\SubuserDeletionService;
-use Pterodactyl\Services\Subusers\SubuserUpdateService;
-use Tests\Assertions\ControllerAssertionsTrait;
-use Tests\TestCase;
+use Pterodactyl\Http\Controllers\Server\SubuserController;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 
 class SubuserControllerTest extends TestCase
 {

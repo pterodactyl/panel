@@ -35,6 +35,9 @@ return PhpCsFixer\Config::create()
         'no_unreachable_default_argument_value' => true,
         'no_useless_return' => true,
         'not_operator_with_successor_space' => true,
+        'ordered_imports' => [
+            'sortAlgorithm' => 'length',
+        ],
         'phpdoc_align' => ['tags' => ['param']],
         'phpdoc_separation' => false,
         'protected_to_private' => false,

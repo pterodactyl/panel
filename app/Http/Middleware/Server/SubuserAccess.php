@@ -26,8 +26,8 @@ namespace Pterodactyl\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Contracts\Session\Session;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SubuserAccess

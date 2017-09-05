@@ -24,16 +24,16 @@
 
 namespace Pterodactyl\Http\Controllers\Server;
 
-use Illuminate\Contracts\Session\Session;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Services\Subusers\SubuserDeletionService;
+use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Session\Session;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Subusers\SubuserUpdateService;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
+use Pterodactyl\Services\Subusers\SubuserCreationService;
+use Pterodactyl\Services\Subusers\SubuserDeletionService;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 
 class SubuserController extends Controller
 {
