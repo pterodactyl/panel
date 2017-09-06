@@ -33,12 +33,12 @@ Note: If your `APP_URL` starts with `https://` you need to provide an `LETSENCRY
 | ------------------- | ------------------------------------------------------------------------------ | -------- |
 | `APP_URL`           | The URL the panel will be reachable with (including protocol)                  | yes      |
 | `LETSENCRYPT_EMAIL` | The email used for letsencrypt certificate generation                          | yes      |
-| `DB_HOST`           | The host of the mysql instance to use                                          | yes      |
-| `DB_PORT`           | The port of the mysql instance to use                                          | yes      |
-| `DB_DATABASE`       | The name of the mysql database to use                                          | yes      |
-| `DB_USERNAME`       | The mysql user to use                                                          | yes      |
+| `DB_HOST`           | The host of the mysql instance                                                 | yes      |
+| `DB_PORT`           | The port of the mysql instance                                                 | yes      |
+| `DB_DATABASE`       | The name of the mysql database                                                 | yes      |
+| `DB_USERNAME`       | The mysql user                                                                 | yes      |
 | `DB_PASSWORD`       | The mysql password for the specified user                                      | yes      |
-| `CACHE_DRIVER`      | The cache driver to use (see [Cache drivers](#cache-drivers) for detais)       | yes      |
+| `CACHE_DRIVER`      | The cache driver        (see [Cache drivers](#cache-drivers) for detais)       | yes      |
 | `MAIL_DRIVER`       | The email driver (see [Mail drivers](#mail-drivers) for details)               | yes      |
 | `MAIL_FROM`         | The email that should be used as the sender email                              | yes      |
 | `MAIL_HOST`         | The host of your mail driver instance                                          | maybe    |
