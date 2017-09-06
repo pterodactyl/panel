@@ -1,7 +1,6 @@
 version: '2'
 services:
   database:
-    hostname: database
     image: mariadb
     volumes:
       - "/srv/pterodactyl/database:/var/lib/mysql"
@@ -13,11 +12,6 @@ services:
 
   cache:
     image: redis:alpine
-
-  mail:
-    image: mailhog/mailhog
-    ports:
-      - 8025:8025
 
   panel:
     image: quay.io/pterodactyl/panel:latest
@@ -42,12 +36,12 @@ services:
       - "CACHE_DRIVER=redis"
       - "REDIS_HOST=cache"
       - "MAIL_DRIVER=smtp"
-      - "MAIL_FROM=noreply@pterodactyl.io"
+      - "MAIL_FROM=noreply@example.com"
       - "MAIL_FROM_NAME='Pterodactyl Panel'"
       - "MAIL_USERNAME=''"
       - "MAIL_PASSWORD=''"
       - "MAIL_PORT=1025"
       - "MAIL_HOST=mail"
-      - "MAIL_ENCRYPTION=false"
-      - "LETSENCRYPT_EMAIL=admin@pterodactyl.io"
+      - "MAIL_ENCRYPTION=true"
+      - "LETSENCRYPT_EMAIL=admin@example.com"
       - "SSL=false"
