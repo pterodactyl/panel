@@ -21,7 +21,6 @@ services:
     links:
       - database
       - cache
-      - mail
     volumes:
       - "/srv/pterodactyl/var/:/var/www/html/var/"
       - "/srv/pterodactyl/certs/:/root/.caddy/"
@@ -34,7 +33,7 @@ services:
       - "APP_URL=http://localhost"
       - "APP_TIMEZONE=UTC"
       - "CACHE_DRIVER=redis"
-      - "REDIS_HOST=cache"
+      - "REDIS_HOST=cache_1"
       - "MAIL_DRIVER=smtp"
       - "MAIL_FROM=noreply@example.com"
       - "MAIL_FROM_NAME='Pterodactyl Panel'"
