@@ -161,6 +161,7 @@ return [
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
+        Pterodactyl\Providers\HashidsServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
         Pterodactyl\Providers\MacroServiceProvider::class,
         Pterodactyl\Providers\PhraseAppTranslationProvider::class,
@@ -237,7 +238,6 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
-        'Version' => Pterodactyl\Facades\Version::class,
         'View' => Illuminate\Support\Facades\View::class,
     ],
 ];

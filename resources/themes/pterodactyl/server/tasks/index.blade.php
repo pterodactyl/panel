@@ -46,9 +46,9 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>@lang('strings.action')</th>
-                            <th>@lang('strings.data')</th>
-                            <th>@lang('strings.queued')</th>
+                            <th>@lang('strings.name')</th>
+                            <th class="text-center">@lang('strings.queued')</th>
+                            <th class="text-center">@lang('strings.child_tasks')</th>
                             <th>@lang('strings.last_run')</th>
                             <th>@lang('strings.next_run')</th>
                             <th></th>
@@ -56,25 +56,35 @@
                         </tr>
                         @foreach($tasks as $task)
                             <tr @if(! $task->active)class="muted muted-hover"@endif>
-                                <td class="middle">{{ $actions[$task->action] }}</td>
-                                <td class="middle"><code>{{ $task->data }}</code></td>
                                 <td class="middle">
+                                    @can('edit-task', $server)
+                                        <a href="{{ route('server.tasks.view', ['server' => $server->uuidShort, 'task' => $task->hashid]) }}">{{ $task->name }}</a>
+                                    @else
+                                        {{ $task->name }}
+                                    @endcan
+                                </td>
+                                <td class="middle text-center">
                                     @if ($task->queued)
                                         <span class="label label-success">@lang('strings.yes')</span>
                                     @else
                                         <span class="label label-default">@lang('strings.no')</span>
                                     @endif
                                 </td>
+                                <td class="middle text-center"><span class="label label-primary">{{ $task->chained_count }}</span></td>
                                 <td class="middle">
                                 @if($task->last_run)
                                     {{ Carbon::parse($task->last_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->last_run)->diffForHumans() }})</span>
-                                @else 
-                                    @lang('strings.not_run_yet')
+                                @else
+                                    <em class="text-muted">@lang('strings.not_run_yet')</em>
                                 @endif
                                 </td>
                                 <td class="middle">
                                     @if($task->active !== 0)
-                                        {{ Carbon::parse($task->next_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->next_run)->diffForHumans() }})</span>
+                                        @if($task->last_run)
+                                            {{ Carbon::parse($task->next_run)->toDayDateTimeString() }}<br /><span class="text-muted small">({{ Carbon::parse($task->next_run)->diffForHumans() }})</span>
+                                        @else
+                                            <em class="text-muted">@lang('strings.not_run_yet')</em>
+                                        @endif
                                     @else
                                         <em>n/a</em>
                                     @endif

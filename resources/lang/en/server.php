@@ -19,6 +19,7 @@ return [
         'new' => [
             'header' => 'New Task',
             'header_sub' => 'Create a new scheduled task for this server.',
+            'task_name' => 'Task Name',
             'day_of_week' => 'Day of Week',
             'custom' => 'Custom Value',
             'day_of_month' => 'Day of Month',
@@ -33,8 +34,15 @@ return [
             'sat' => 'Saturday',
             'submit' => 'Create Task',
             'type' => 'Task Type',
+            'chain_then' => 'Then, After',
+            'chain_do' => 'Do',
+            'chain_arguments' => 'With Arguments',
             'payload' => 'Task Payload',
             'payload_help' => 'For example, if you selected <code>Send Command</code> enter the command here. If you selected <code>Send Power Option</code> put the power action here (e.g. <code>restart</code>).',
+        ],
+        'edit' => [
+            'header' => 'Manage Task',
+            'submit' => 'Update Task',
         ],
     ],
     'users' => [

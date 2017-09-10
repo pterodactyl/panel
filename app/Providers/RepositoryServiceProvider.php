@@ -29,6 +29,7 @@ use Pterodactyl\Repositories\Daemon\FileRepository;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\PackRepository;
+use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
 use Pterodactyl\Repositories\Daemon\CommandRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
@@ -43,6 +44,7 @@ use Pterodactyl\Repositories\Eloquent\PermissionRepository;
 use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
@@ -97,6 +99,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ServiceVariableRepositoryInterface::class, ServiceVariableRepository::class);
         $this->app->bind(SessionRepositoryInterface::class, SessionRepository::class);
         $this->app->bind(SubuserRepositoryInterface::class, SubuserRepository::class);
+        $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories

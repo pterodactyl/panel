@@ -146,7 +146,7 @@
                             @endcan
                             @can('list-subusers', $server)
                                 <li
-                                    @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
+                                    @if(starts_with(Route::currentRouteName(), 'server.subusers'))
                                         class="active"
                                     @endif
                                 >
@@ -157,7 +157,7 @@
                             @endcan
                             @can('list-tasks', $server)
                                 <li
-                                    @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
+                                    @if(starts_with(Route::currentRouteName(), 'server.tasks'))
                                         class="active"
                                     @endif
                                 >
@@ -171,7 +171,7 @@
                             @endcan
                             @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
                                 <li class="treeview
-                                    @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
+                                    @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active
                                     @endif
                                 ">

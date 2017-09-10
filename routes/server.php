@@ -79,7 +79,7 @@ Route::group(['prefix' => 'users'], function () {
 
     Route::patch('/view/{subuser}', 'SubuserController@update')->middleware(SubuserAccess::class);
 
-    Route::delete('/delete/{subuser}', 'SubuserController@delete')->middleware(SubuserAccess::class)->name('server.subusers.delete');
+    Route::delete('/view/{subuser}/delete', 'SubuserController@delete')->middleware(SubuserAccess::class)->name('server.subusers.delete');
 });
 
 /*
@@ -91,13 +91,16 @@ Route::group(['prefix' => 'users'], function () {
 |
 */
 Route::group(['prefix' => 'tasks'], function () {
-    Route::get('/', 'TaskController@index')->name('server.tasks');
-    Route::get('/new', 'TaskController@create')->name('server.tasks.new');
+    Route::get('/', 'Tasks\TaskManagementController@index')->name('server.tasks');
+    Route::get('/new', 'Tasks\TaskManagementController@create')->name('server.tasks.new');
+    Route::get('/view/{task}', 'Tasks\TaskManagementController@view')->name('server.tasks.view');
 
-    Route::post('/new', 'TaskController@store');
-    Route::post('/toggle/{id}', 'TaskController@toggle')->name('server.tasks.toggle');
+    Route::post('/new', 'Tasks\TaskManagementController@store');
 
-    Route::delete('/delete/{id}', 'TaskController@delete')->name('server.tasks.delete');
+    Route::patch('/view/{task}', 'Tasks\TaskManagementController@update');
+    Route::patch('/view/{task}/toggle', 'Tasks\ToggleTaskController@index')->name('server.tasks.toggle');
+
+    Route::delete('/view/{task}/delete', 'Tasks\TaskManagementController@delete')->name('server.tasks.delete');
 });
 
 /*
@@ -109,6 +112,5 @@ Route::group(['prefix' => 'tasks'], function () {
 |
 */
 Route::group(['prefix' => 'ajax'], function () {
-    Route::post('/set-primary', 'AjaxController@postSetPrimary')->name('server.ajax.set-primary');
     Route::post('/settings/reset-database-password', 'AjaxController@postResetDatabasePassword')->name('server.ajax.reset-database-password');
 });

@@ -73,6 +73,8 @@ class DynamicDatabaseConnection
      * @param string                               $connection
      * @param \Pterodactyl\Models\DatabaseHost|int $host
      * @param string                               $database
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function set($connection, $host, $database = 'mysql')
     {

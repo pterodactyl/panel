@@ -20,7 +20,7 @@
 @extends('layouts.master')
 
 @section('title')
-    @lang('server.tasks.new.header')
+    @lang('server.tasks.edit.header')
 @endsection
 
 @section('scripts')
@@ -30,17 +30,17 @@
 @endsection
 
 @section('content-header')
-    <h1>@lang('server.tasks.new.header')<small>@lang('server.tasks.new.header_sub')</small></h1>
+    <h1>@lang('server.tasks.edit.header')<small>{{ $task->name }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
         <li><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></li>
         <li><a href="{{ route('server.tasks', $server->uuidShort) }}">@lang('navigation.server.task_management')</a></li>
-        <li class="active">@lang('server.tasks.new_task')</li>
+        <li class="active">@lang('server.users.update')</li>
     </ol>
 @endsection
 
 @section('content')
-<form action="{{ route('server.tasks.new', $server->uuidShort) }}" method="POST">
+<form action="{{ route('server.tasks.view', ['server' => $server->uuidShort, 'task' => $task->hashid]) }}" method="POST">
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-primary">
@@ -49,7 +49,7 @@
                         <div class="form-group col-xs-12">
                             <label class="control-label">@lang('server.tasks.new.task_name'):</label>
                             <div>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" />
+                                <input type="text" name="name" class="form-control" value="{{ old('name', $task->name) }}" />
                             </div>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                         <div class="form-group col-md-12">
                             <label class="control-label">@lang('server.tasks.new.custom')</label>
                             <div>
-                                <input type="text" class="form-control" name="day_of_week" />
+                                <input type="text" class="form-control" name="day_of_week" value="{{ old('day_of_week', $task->day_of_week) }}"/>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                         <div class="form-group col-md-12">
                             <label class="control-label">@lang('server.tasks.new.custom')</label>
                             <div>
-                                <input type="text" class="form-control" name="day_of_month" />
+                                <input type="text" class="form-control" name="day_of_month" value="{{ old('day_of_month', $task->day_of_month) }}"/>
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@
                         <div class="form-group col-md-12">
                             <label class="control-label">@lang('server.tasks.new.custom')</label>
                             <div>
-                                <input type="text" class="form-control" name="hour" />
+                                <input type="text" class="form-control" name="hour" value="{{ old('hour', $task->hour) }}"/>
                             </div>
                         </div>
                     </div>
@@ -161,7 +161,7 @@
                         <div class="form-group col-md-12">
                             <label class="control-label">@lang('server.tasks.new.custom')</label>
                             <div>
-                                <input type="text" class="form-control" name="minute" />
+                                <input type="text" class="form-control" name="minute" value="{{ old('minute', $task->minute) }}"/>
                             </div>
                         </div>
                     </div>
@@ -178,15 +178,15 @@
                             <label class="control-label">@lang('server.tasks.new.type'):</label>
                             <div>
                                 <select name="action" class="form-control">
-                                    <option value="command">@lang('server.tasks.actions.command')</option>
-                                    <option value="power">@lang('server.tasks.actions.power')</option>
+                                    <option value="command" @if($task->action === 'command')selected @endif>@lang('server.tasks.actions.command')</option>
+                                    <option value="power" @if($task->action === 'power')selected @endif>@lang('server.tasks.actions.power')</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group col-md-8">
                             <label class="control-label">@lang('server.tasks.new.payload'):</label>
                             <div>
-                                <input type="text" name="data" class="form-control" value="{{ old('data') }}">
+                                <input type="text" name="data" class="form-control" value="{{ old('data', $task->data) }}">
                                 <span class="text-muted small">@lang('server.tasks.new.payload_help')</span>
                             </div>
                         </div>
@@ -199,7 +199,7 @@
                     <div class="pull-right">
                         {!! csrf_field() !!}
                         <button type="button" class="btn btn-sm btn-default" data-action="add-chain"><i class="fa fa-plus"></i> New Chain Argument</button>
-                        <button type="submit" class="btn btn-sm btn-success">@lang('server.tasks.new.submit')</button>
+                        <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-success">@lang('server.tasks.edit.submit')</button>
                     </div>
                 </div>
             </div>
@@ -214,4 +214,17 @@
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/select2/select2.full.min.js') !!}
     {!! Theme::js('js/frontend/tasks.js') !!}
+    <script>
+        $(document).ready(function () {
+            $.each(Pterodactyl.chained, function (index, value) {
+                var element = $('button[data-action="add-chain"]').trigger('click').data('element');
+                var timeValue = (value.chain_delay > 60) ? value.chain_delay / 60 : value.chain_delay;
+                var timeInterval = (value.chain_delay > 60) ? 'm' : 's';
+                element.find('select[name="chain[time_value][]"]').val(timeValue).trigger('change');
+                element.find('select[name="chain[time_interval][]"]').val(timeInterval).trigger('change');
+                element.find('select[name="chain[action][]"]').val(value.action).trigger('change');
+                element.find('input[name="chain[payload][]"]').val(value.data);
+            });
+        });
+    </script>
 @endsection
