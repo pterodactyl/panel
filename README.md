@@ -1,5 +1,7 @@
 [![Logo Image](https://cdn.pterodactyl.io/logos/Banner%20Logo%20Black@2x.png)](https://pterodactyl.io)
 
+[![Build Status](https://travis-ci.org/Pterodactyl/Panel.svg?branch=develop)](https://travis-ci.org/Pterodactyl/Panel) [![StyleCI](https://styleci.io/repos/47508644/shield?branch=develop)](https://styleci.io/repos/47508644) [![codecov](https://codecov.io/gh/Pterodactyl/Panel/branch/develop/graph/badge.svg)](https://codecov.io/gh/Pterodactyl/Panel)
+
 ## Pterodactyl Panel
 Pterodactyl Panel is the free, open-source, game agnostic, self-hosted control panel for users, networks, and game service providers. Pterodactyl supports games and servers such as Minecraft (including Spigot, Bungeecord, and Sponge), ARK: Evolution Evolved, CS:GO, Team Fortress 2, Insurgency, Teamspeak 3, Mumble, and many more. Control all of your games from one unified interface.
 
