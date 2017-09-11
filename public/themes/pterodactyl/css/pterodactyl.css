@@ -23,19 +23,44 @@
  @import 'checkbox.css';
 
 .login-page {
-    height: auto;
+    background: #10529f;
+}
+
+.login-logo {
+    color: white;
+    font-weight: bold;
+}
+
+.login-copyright {
+    color: white;
+}
+
+.login-copyright a, .login-copyright a:hover {
+    color: white;
+    font-weight: bold;
+}
+
+.particles-js-canvas-el {
+    position: absolute;
 }
 
 .login-box, .register-box {
-    width: 40%;
-    max-width: 500px;
-    margin: 7% auto;
+    position: absolute;
+    margin: -180px 0 0 -180px;
+    left: 50%;
+    top: 50%;
+    height: 360px;
+    width: 360px;
+    z-index: 100;
 }
 
 @media (max-width:768px) {
-    .login-box, .register-box {
+    .login-box {
         width: 90%;
-        margin-top: 20px
+        margin-top: 20px;
+        margin: 5%;
+        left: 0;
+        top: 0;
     }
 }
 
@@ -282,6 +307,7 @@ tr:hover + tr.server-description {
     position: absolute;
     bottom: 5px;
     right: 10px;
+    color: white;
 }
 
 input.form-autocomplete-stop[readonly] {
