@@ -22,20 +22,35 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Providers;
+namespace Pterodactyl\Http\ViewComposers;
 
-use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Http\ViewComposers\VersionComposer;
-use Pterodactyl\Http\ViewComposers\Server\ServerDataComposer;
+use Illuminate\View\View;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
 
-class ViewComposerServiceProvider extends ServiceProvider
+class VersionComposer
 {
     /**
-     * Register bindings in the container.
+     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
      */
-    public function boot()
+    protected $version;
+
+    /**
+     * VersionComposer constructor.
+     *
+     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $version
+     */
+    public function __construct(SoftwareVersionService $version)
     {
-        $this->app->make('view')->composer('server.*', ServerDataComposer::class);
-        $this->app->make('view')->composer('*', VersionComposer::class);
+        $this->version = $version;
+    }
+
+    /**
+     * Attach server data to a view automatically.
+     *
+     * @param \Illuminate\View\View $view
+     */
+    public function compose(View $view)
+    {
+        $view->with('version', $this->version);
     }
 }

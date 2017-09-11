@@ -58,7 +58,7 @@
                         <table class="table table-hover">
                             <tr>
                                 <td>Daemon Version</td>
-                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ Version::getDaemon() }}</code>)</td>
+                                <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ $version->getDaemon() }}</code>)</td>
                             </tr>
                             <tr>
                                 <td>System Information</td>
