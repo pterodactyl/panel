@@ -60,7 +60,7 @@ class ServerPolicy
      */
     public function before(User $user, $ability, Server $server)
     {
-        if ($user->isRootAdmin() || $server->owner_id === $user->id) {
+        if ($user->root_admin || $server->owner_id === $user->id) {
             return true;
         }
 

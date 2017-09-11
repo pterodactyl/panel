@@ -202,7 +202,7 @@ class User extends Model implements
      */
     public function isRootAdmin()
     {
-        return $this->root_admin === 1;
+        return $this->root_admin;
     }
 
     /**
