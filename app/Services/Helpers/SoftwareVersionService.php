@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Services\Helpers;
 
+use stdClass;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -142,7 +143,7 @@ class SoftwareVersionService
 
                 throw new CdnVersionFetchingException;
             } catch (Exception $exception) {
-                return (object) [];
+                return new stdClass();
             }
         });
     }
