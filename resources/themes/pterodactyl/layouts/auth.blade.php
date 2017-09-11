@@ -47,23 +47,31 @@
             <![endif]-->
         @show
     </head>
-    <body class="hold-transition login-page">
+    <body id="particles-js" class="hold-transition login-page">
         <div class="login-box">
             <div class="login-logo">
                 {{ Settings::get('company', 'Pterodactyl') }}
             </div>
             @yield('content')
-            <p class="small text-muted">
+            <p class="small login-copyright text-center">
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/" target="_blank">Pterodactyl Software</a>.<br />
             </p>
-            <div class="login-corner-info muted small">
-                <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
-                <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
-            </div>
         </div>
+        <div class="login-corner-info small">
+            <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
+            <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
+        </div>
+
         {!! Theme::js('vendor/jquery/jquery.min.js') !!}
         {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
         {!! Theme::js('js/autocomplete.js') !!}
+        {!! Theme::js('vendor/particlesjs/particles.min.js') !!}
+        <script type="text/javascript">
+            /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
+            $(function () {
+                particlesJS.load('particles-js', '{!! Theme::url('vendor/particlesjs/particles.json') !!}', function() {});
+            })
+        </script>
 
         @if(config('pterodactyl.lang.in_context')) {!! Theme::js('vendor/phraseapp/phraseapp.js') !!} @endif
     </body>
