@@ -25,7 +25,6 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Http\ViewComposers\VersionComposer;
 use Pterodactyl\Http\ViewComposers\Server\ServerDataComposer;
 
 class ViewComposerServiceProvider extends ServiceProvider
@@ -36,6 +35,5 @@ class ViewComposerServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->make('view')->composer('server.*', ServerDataComposer::class);
-        $this->app->make('view')->composer('*', VersionComposer::class);
     }
 }

@@ -34,6 +34,7 @@ use Illuminate\Cache\Repository as CacheRepository;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Services\Allocations\AssignmentService;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
@@ -89,6 +90,11 @@ class NodesController extends Controller
     protected $updateService;
 
     /**
+     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     */
+    protected $versionService;
+
+    /**
      * NodesController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                               $alert
@@ -100,6 +106,7 @@ class NodesController extends Controller
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
      * @param \Pterodactyl\Services\Nodes\NodeUpdateService                   $updateService
+     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService            $versionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -110,7 +117,8 @@ class NodesController extends Controller
         NodeDeletionService $deletionService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $repository,
-        NodeUpdateService $updateService
+        NodeUpdateService $updateService,
+        SoftwareVersionService $versionService
     ) {
         $this->alert = $alert;
         $this->allocationRepository = $allocationRepository;
@@ -121,6 +129,7 @@ class NodesController extends Controller
         $this->locationRepository = $locationRepository;
         $this->repository = $repository;
         $this->updateService = $updateService;
+        $this->versionService = $versionService;
     }
 
     /**
@@ -182,6 +191,7 @@ class NodesController extends Controller
         return view('admin.nodes.view.index', [
             'node' => $this->repository->getSingleNode($node),
             'stats' => $this->repository->getUsageStats($node),
+            'version' => $this->versionService,
         ]);
     }
 
