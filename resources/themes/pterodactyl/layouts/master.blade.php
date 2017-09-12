@@ -60,7 +60,7 @@
                     <span>{{ Settings::get('company', 'Pterodactyl') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -74,10 +74,10 @@
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>
-                            </li>
-                            @if(Auth::user()->isRootAdmin())
+                            {{--<li>--}}
+                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>--}}
+                            {{--</li>--}}
+                            @if(Auth::user()->root_admin)
                                 <li>
                                     <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
                                 </li>
@@ -146,7 +146,7 @@
                             @endcan
                             @can('list-subusers', $server)
                                 <li
-                                    @if(in_array(Route::currentRouteName(), ['server.subusers', 'server.subusers.new', 'server.subusers.view']))
+                                    @if(starts_with(Route::currentRouteName(), 'server.subusers'))
                                         class="active"
                                     @endif
                                 >
@@ -157,7 +157,7 @@
                             @endcan
                             @can('list-tasks', $server)
                                 <li
-                                    @if(in_array(Route::currentRouteName(), ['server.tasks', 'server.tasks.new']))
+                                    @if(starts_with(Route::currentRouteName(), 'server.tasks'))
                                         class="active"
                                     @endif
                                 >
@@ -171,7 +171,7 @@
                             @endcan
                             @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
                                 <li class="treeview
-                                    @if(in_array(Route::currentRouteName(), ['server.settings.sftp', 'server.settings.databases', 'server.settings.startup', 'server.settings.allocation']))
+                                    @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active
                                     @endif
                                 ">
@@ -241,27 +241,28 @@
             <aside class="control-sidebar control-sidebar-dark">
                 <div class="tab-content">
                     <ul class="control-sidebar-menu">
-                        @foreach (Auth::user()->access(null)->get() as $s)
-                            <li>
-                                <a
-                                    @if(isset($server) && isset($node))
-                                        @if($server->uuidShort === $s->uuidShort)
-                                            class="active"
-                                        @endif
-                                    @endif
-                                href="{{ route('server.index', $s->uuidShort) }}">
-                                    @if($s->owner_id === Auth::user()->id)
-                                        <i class="menu-icon fa fa-user bg-blue"></i>
-                                    @else
-                                        <i class="menu-icon fa fa-user-o bg-gray"></i>
-                                    @endif
-                                    <div class="menu-info">
-                                        <h4 class="control-sidebar-subheading">{{ $s->name }}</h4>
-                                        <p>{{ $s->username }}</p>
-                                    </div>
-                                </a>
-                            </li>
-                        @endforeach
+                        {{-- @todo replace this with better logic, or just remove it entirely? --}}
+                        {{--@foreach (Auth::user()->access(null)->get() as $s)--}}
+                            {{--<li>--}}
+                                {{--<a--}}
+                                    {{--@if(isset($server) && isset($node))--}}
+                                        {{--@if($server->uuidShort === $s->uuidShort)--}}
+                                            {{--class="active"--}}
+                                        {{--@endif--}}
+                                    {{--@endif--}}
+                                {{--href="{{ route('server.index', $s->uuidShort) }}">--}}
+                                    {{--@if($s->owner_id === Auth::user()->id)--}}
+                                        {{--<i class="menu-icon fa fa-user bg-blue"></i>--}}
+                                    {{--@else--}}
+                                        {{--<i class="menu-icon fa fa-user-o bg-gray"></i>--}}
+                                    {{--@endif--}}
+                                    {{--<div class="menu-info">--}}
+                                        {{--<h4 class="control-sidebar-subheading">{{ $s->name }}</h4>--}}
+                                        {{--<p>{{ $s->username }}</p>--}}
+                                    {{--</div>--}}
+                                {{--</a>--}}
+                            {{--</li>--}}
+                        {{--@endforeach--}}
                     </ul>
                 </div>
             </aside>

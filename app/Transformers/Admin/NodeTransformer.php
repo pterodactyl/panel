@@ -51,8 +51,7 @@ class NodeTransformer extends TransformerAbstract
     /**
      * Setup request object for transformer.
      *
-     * @param  \Illuminate\Http\Request|bool  $request
-     * @return void
+     * @param \Illuminate\Http\Request|bool $request
      */
     public function __construct($request = false)
     {

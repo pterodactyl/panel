@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Service Author
@@ -38,6 +37,11 @@ return [
     'paginate' => [
         'frontend' => [
             'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
+        ],
+        'admin' => [
+            'servers' => env('APP_PAGINATE_ADMIN_SERVERS', 25),
+            'users' => env('APP_PAGINATE_ADMIN_USERS', 25),
+            'packs' => env('APP_PAGINATE_ADMIN_PACKS', 50),
         ],
         'api' => [
             'nodes' => env('APP_PAGINATE_API_NODES', 25),
@@ -115,7 +119,7 @@ return [
     | if panel is up to date.
     */
     'cdn' => [
-        'cache' => 60,
+        'cache_time' => 60,
         'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
     ],
 
@@ -129,6 +133,30 @@ return [
     */
     'lang' => [
         'in_context' => env('PHRASE_IN_CONTEXT', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | File Editor
+    |--------------------------------------------------------------------------
+    |
+    | This array includes the MIME filetypes that can be edited via the web.
+    */
+    'files' => [
+        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 50000),
+        'editable' => [
+            'application/json',
+            'application/javascript',
+            'application/xml',
+            'application/xhtml+xml',
+            'inode/x-empty',
+            'text/xml',
+            'text/css',
+            'text/html',
+            'text/plain',
+            'text/x-perl',
+            'text/x-shellscript',
+        ],
     ],
 
     /*

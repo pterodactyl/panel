@@ -61,7 +61,7 @@
                     <span>{{ Settings::get('company', 'Pterodactyl') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -128,7 +128,7 @@
                         <li class="header">SERVICE MANAGEMENT</li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.services') ?: 'active' }}">
                             <a href="{{ route('admin.services') }}">
-                                <i class="fa fa-th-large"></i> <span>Services</span>
+                                <i class="fa fa-th-large"></i> <span>Service</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">

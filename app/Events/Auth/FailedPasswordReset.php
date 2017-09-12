@@ -47,9 +47,8 @@ class FailedPasswordReset
     /**
      * Create a new event instance.
      *
-     * @param  string  $ip
-     * @param  string  $email
-     * @return void
+     * @param string $ip
+     * @param string $email
      */
     public function __construct($ip, $email)
     {

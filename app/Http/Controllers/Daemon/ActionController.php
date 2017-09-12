@@ -35,7 +35,7 @@ class ActionController extends Controller
     /**
      * Handles download request from daemon.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function authenticateDownload(Request $request)
@@ -57,7 +57,7 @@ class ActionController extends Controller
     /**
      * Handles install toggle request from daemon.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function markInstall(Request $request)
@@ -87,8 +87,8 @@ class ActionController extends Controller
     /**
      * Handles configuration data request from daemon.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $token
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $token
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
     public function configuration(Request $request, $token)

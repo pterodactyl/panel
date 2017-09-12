@@ -6,8 +6,6 @@ class RenameDoubleInsurgency extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -22,11 +20,8 @@ class RenameDoubleInsurgency extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {
-        //
     }
 }

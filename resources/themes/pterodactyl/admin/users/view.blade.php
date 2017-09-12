@@ -68,6 +68,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    {!! method_field('PATCH') !!}
                     <input type="submit" value="Update User" class="btn btn-primary btn-sm">
                 </div>
             </div>

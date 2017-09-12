@@ -55,6 +55,7 @@
                             <a id="selectAllCheckboxes" class="btn btn-sm btn-default">@lang('strings.select_all')</a>
                             <a id="unselectAllCheckboxes" class="btn btn-sm btn-default">@lang('strings.select_none')</a>
                         </div>
+                        {!! method_field('PATCH') !!}
                         <input type="submit" name="submit" value="@lang('server.users.update')" class="pull-right btn btn-sm btn-primary" />
                     </div>
                 @endcan

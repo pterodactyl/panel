@@ -20,14 +20,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services &rarr; New Option
+    Service &rarr; New Option
 @endsection
 
 @section('content-header')
     <h1>New Option<small>Create a new service option to assign to servers.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Services</a></li>
+        <li><a href="{{ route('admin.services') }}">Service</a></li>
         <li class="active">New Service Option</li>
     </ol>
 @endsection
@@ -146,7 +146,7 @@
         $('#pConfigFrom').select2();
     });
     $('#pServiceId').on('change', function (event) {
-        $('#pConfigFrom').html('<option value="0">None</option>').select2({
+        $('#pConfigFrom').html('<option value="">None</option>').select2({
             data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
                 return {
                     id: item.id,

@@ -42,6 +42,22 @@
 @section('content')
 <form action="{{ route('server.tasks.new', $server->uuidShort) }}" method="POST">
     <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="form-group col-xs-12">
+                            <label class="control-label">@lang('server.tasks.new.task_name'):</label>
+                            <div>
+                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-3 col-sm-6">
             <div class="box">
                 <div class="box-header with-border">
@@ -176,33 +192,26 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer with-border">
-                    {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-sm btn-success">@lang('server.tasks.new.submit')</button>
+                <div class="box-footer with-border" id="chainLastSegment">
+                    <div class="pull-left">
+                        <p class="text-muted small">Times for chain arguments are relative to the previous argument.</p>
+                    </div>
+                    <div class="pull-right">
+                        {!! csrf_field() !!}
+                        <button type="button" class="btn btn-sm btn-default" data-action="add-chain"><i class="fa fa-plus"></i> New Chain Argument</button>
+                        <button type="submit" class="btn btn-sm btn-success">@lang('server.tasks.new.submit')</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</form>
+@include('partials.tasks.chain-template')
 @endsection
 
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/select2/select2.full.min.js') !!}
-    <script>
-    $('select[name="action"]').select2();
-    $('[data-action="update-field"]').on('change', function (event) {
-        event.preventDefault();
-        var updateField = $(this).data('field');
-        var selected = $(this).map(function (i, opt) {
-            return $(opt).val();
-        }).toArray();
-        if (selected.length === $(this).find('option').length) {
-            $('input[name=' + updateField + ']').val('*');
-        } else {
-            $('input[name=' + updateField + ']').val(selected.join(','));
-        }
-    });
-    </script>
+    {!! Theme::js('js/frontend/tasks.js') !!}
 @endsection

@@ -26,35 +26,29 @@ namespace Pterodactyl\Models;
 
 use Hash;
 use Google2FA;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Exceptions\DisplayException;
-use Nicolaslopezj\Searchable\SearchableTrait;
+use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class User extends Model implements
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract,
+    CleansAttributes,
+    ValidableContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Notifiable, SearchableTrait;
-
-    /**
-     * The rules for user passwords.
-     *
-     * @var string
-     */
-    const PASSWORD_RULES = 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
-
-    /**
-     * The regex rules for usernames.
-     *
-     * @var string
-     */
-    const USERNAME_RULES = 'regex:/^([\w\d\.\-]{1,255})$/';
+    use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
 
     /**
      * Level of servers to display when using access() on a user.
@@ -83,9 +77,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $casts = [
-        'root_admin' => 'integer',
-        'use_totp' => 'integer',
-        'gravatar' => 'integer',
+        'root_admin' => 'boolean',
+        'use_totp' => 'boolean',
+        'gravatar' => 'boolean',
     ];
 
     /**
@@ -100,23 +94,62 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $searchable = [
-        'columns' => [
-            'email' => 10,
-            'username' => 9,
-            'name_first' => 6,
-            'name_last' => 6,
-            'uuid' => 1,
-        ],
+    protected $searchableColumns = [
+        'email' => 10,
+        'username' => 9,
+        'name_first' => 6,
+        'name_last' => 6,
+        'uuid' => 1,
     ];
 
-    protected $query;
+    /**
+     * Default values for specific fields in the database.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'root_admin' => false,
+        'language' => 'en',
+        'use_totp' => false,
+        'totp_secret' => null,
+    ];
+
+    /**
+     * Rules verifying that the data passed in forms is valid and meets application logic rules.
+     *
+     * @var array
+     */
+    protected static $applicationRules = [
+        'email' => 'required',
+        'username' => 'required',
+        'name_first' => 'required',
+        'name_last' => 'required',
+        'password' => 'sometimes',
+    ];
+
+    /**
+     * Rules verifying that the data being stored matches the expectations of the database.
+     *
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'email' => 'email|unique:users,email',
+        'username' => 'alpha_dash|between:1,255|unique:users,username',
+        'name_first' => 'string|between:1,255',
+        'name_last' => 'string|between:1,255',
+        'password' => 'nullable|string',
+        'root_admin' => 'boolean',
+        'language' => 'string|between:2,5',
+        'use_totp' => 'boolean',
+        'totp_secret' => 'nullable|string',
+    ];
 
     /**
      * Enables or disables TOTP on an account if the token is valid.
      *
-     * @param  int  $token
+     * @param int $token
      * @return bool
+     * @deprecated
      */
     public function toggleTotp($token)
     {
@@ -136,9 +169,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *      - at least one lowercase character
      *      - at least one number.
      *
-     * @param  string  $password
-     * @param  string  $regex
-     * @return void
+     * @param string $password
+     * @param string $regex
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @deprecated
      */
     public function setPassword($password, $regex = '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})')
     {
@@ -153,8 +187,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
-     * @return void
+     * @param string $token
      */
     public function sendPasswordResetNotification($token)
     {
@@ -165,16 +198,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Return true or false depending on wether the user is root admin or not.
      *
      * @return bool
+     * @deprecated
      */
     public function isRootAdmin()
     {
-        return $this->root_admin === 1;
+        return $this->root_admin;
     }
 
     /**
      * Returns the user's daemon secret for a given server.
      *
-     * @param  \Pterodactyl\Models\Server  $server
+     * @param \Pterodactyl\Models\Server $server
      * @return null|string
      */
     public function daemonToken(Server $server)
@@ -204,8 +238,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     /**
      * Change the access level for a given call to `access()` on the user.
      *
-     * @param  string  $level can be all, admin, subuser, owner
-     * @return void
+     * @param string $level can be all, admin, subuser, owner
+     * @return $this
      */
     public function setAccessLevel($level = 'all')
     {
@@ -221,8 +255,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * Returns an array of all servers a user is able to access.
      * Note: does not account for user admin status.
      *
-     * @param  array        $load
-     * @return \Illuiminate\Database\Eloquent\Builder
+     * @param array $load
+     * @return \Pterodactyl\Models\Server
      */
     public function access(...$load)
     {
@@ -254,6 +288,16 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         }
 
         return $query;
+    }
+
+    /**
+     * Store the username as a lowecase string.
+     *
+     * @param string $value
+     */
+    public function setUsernameAttribute($value)
+    {
+        $this->attributes['username'] = strtolower($value);
     }
 
     /**

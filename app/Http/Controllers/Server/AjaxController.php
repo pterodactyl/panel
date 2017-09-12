@@ -30,7 +30,6 @@ use Illuminate\Http\Request;
 use Pterodactyl\Repositories;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Exceptions\DisplayValidationException;
 
 class AjaxController extends Controller
 {
@@ -50,138 +49,10 @@ class AjaxController extends Controller
     protected $directory;
 
     /**
-     * Returns a listing of files in a given directory for a server.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @return \Illuminate\View\View|\Illuminate\Http\Response
-     */
-    public function postDirectoryList(Request $request, $uuid)
-    {
-        $server = Models\Server::byUuid($uuid);
-        $this->authorize('list-files', $server);
-
-        $this->directory = '/' . trim(urldecode($request->input('directory', '/')), '/');
-        $prevDir = [
-            'header' => ($this->directory !== '/') ? $this->directory : '',
-        ];
-        if ($this->directory !== '/') {
-            $prevDir['first'] = true;
-        }
-
-        // Determine if we should show back links in the file browser.
-        // This code is strange, and could probably be rewritten much better.
-        $goBack = explode('/', trim($this->directory, '/'));
-        if (! empty(array_filter($goBack)) && count($goBack) >= 2) {
-            $prevDir['show'] = true;
-            array_pop($goBack);
-            $prevDir['link'] = '/' . implode('/', $goBack);
-            $prevDir['link_show'] = implode('/', $goBack) . '/';
-        }
-
-        $controller = new Repositories\Daemon\FileRepository($uuid);
-
-        try {
-            $directoryContents = $controller->returnDirectoryListing($this->directory);
-        } catch (DisplayException $ex) {
-            return response($ex->getMessage(), 500);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response('An error occured while attempting to load the requested directory, please try again.', 500);
-        }
-
-        return view('server.files.list', [
-            'server' => $server,
-            'files' => $directoryContents->files,
-            'folders' => $directoryContents->folders,
-            'editableMime' => Repositories\HelperRepository::editableFiles(),
-            'directory' => $prevDir,
-        ]);
-    }
-
-    /**
-     * Handles a POST request to save a file.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @return \Illuminate\Http\Response
-     */
-    public function postSaveFile(Request $request, $uuid)
-    {
-        $server = Models\Server::byUuid($uuid);
-        $this->authorize('save-files', $server);
-
-        $controller = new Repositories\Daemon\FileRepository($uuid);
-
-        try {
-            $controller->saveFileContents($request->input('file'), $request->input('contents'));
-
-            return response(null, 204);
-        } catch (DisplayException $ex) {
-            return response($ex->getMessage(), 500);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response('An error occured while attempting to save this file, please try again.', 500);
-        }
-    }
-
-    /**
-     * Sets the primary allocation for a server.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @return \Illuminate\Http\JsonResponse
-     * @deprecated
-     */
-    public function postSetPrimary(Request $request, $uuid)
-    {
-        $server = Models\Server::byUuid($uuid)->load('allocations');
-        $this->authorize('set-connection', $server);
-
-        if ((int) $request->input('allocation') === $server->allocation_id) {
-            return response()->json([
-                'error' => 'You are already using this as your default connection.',
-            ], 409);
-        }
-
-        try {
-            $allocation = $server->allocations->where('id', $request->input('allocation'))->where('server_id', $server->id)->first();
-            if (! $allocation) {
-                return response()->json([
-                    'error' => 'No allocation matching your request was found in the system.',
-                ], 422);
-            }
-
-            $repo = new Repositories\ServerRepository;
-            $repo->changeBuild($server->id, [
-                'default' => $allocation->ip . ':' . $allocation->port,
-            ]);
-
-            return response('The default connection for this server has been updated. Please be aware that you will need to restart your server for this change to go into effect.');
-        } catch (DisplayValidationException $ex) {
-            return response()->json([
-                'error' => json_decode($ex->getMessage(), true),
-            ], 422);
-        } catch (DisplayException $ex) {
-            return response()->json([
-                'error' => $ex->getMessage(),
-            ], 503);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-
-            return response()->json([
-                'error' => 'An unhandled exception occured while attemping to modify the default connection for this server.',
-            ], 503);
-        }
-    }
-
-    /**
      * Resets a database password for a server.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\JsonResponse
      * @deprecated
      */

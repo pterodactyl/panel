@@ -26,6 +26,7 @@ namespace Pterodactyl\Console\Commands;
 
 use Illuminate\Console\Command;
 use Pterodactyl\Repositories\UserRepository;
+use Pterodactyl\Services\Users\UserCreationService;
 
 class MakeUser extends Command
 {
@@ -50,13 +51,19 @@ class MakeUser extends Command
     protected $description = 'Create a user within the panel.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
+     * @var \Pterodactyl\Services\Users\UserCreationService
      */
-    public function __construct()
+    protected $creationService;
+
+    /**
+     * Create a new command instance.
+     */
+    public function __construct(
+        UserCreationService $creationService
+    )
     {
         parent::__construct();
+        $this->creationService = $creationService;
     }
 
     /**
@@ -80,8 +87,8 @@ class MakeUser extends Command
         $data['root_admin'] = is_null($this->option('admin')) ? $this->confirm('Is this user a root administrator?') : $this->option('admin');
 
         try {
-            $user = new UserRepository;
-            $user->create($data);
+
+            $this->creationService->handle($data);
 
             return $this->info('User successfully created.');
         } catch (\Exception $ex) {

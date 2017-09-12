@@ -53,14 +53,14 @@ class ServerPolicy
     /**
      * Runs before any of the functions are called. Used to determine if user is root admin, if so, ignore permissions.
      *
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  string                      $ability
-     * @param  \Pterodactyl\Models\Server  $server
+     * @param \Pterodactyl\Models\User   $user
+     * @param string                     $ability
+     * @param \Pterodactyl\Models\Server $server
      * @return bool
      */
     public function before(User $user, $ability, Server $server)
     {
-        if ($user->isRootAdmin() || $server->owner_id === $user->id) {
+        if ($user->root_admin || $server->owner_id === $user->id) {
             return true;
         }
 

@@ -91,8 +91,8 @@
             <form action="{{ route('admin.servers.view.database', $server->id) }}" method="POST">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pDatabaseHost" class="control-label">Database Host</label>
-                        <select id="pDatabaseHost" name="host" class="form-control">
+                        <label for="pDatabaseHostId" class="control-label">Database Host</label>
+                        <select id="pDatabaseHostId" name="database_host_id" class="form-control">
                             @foreach($hosts as $host)
                                 <option value="{{ $host->id }}">{{ $host->name }}</option>
                             @endforeach
@@ -107,8 +107,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pConnections" class="control-label">Connections</label>
-                        <input id="pConnections" type="text" name="connection" class="form-control" placeholder="%" value="%" />
+                        <label for="pRemote" class="control-label">Connections</label>
+                        <input id="pRemote" type="text" name="remote" class="form-control" value="%" />
                         <p class="text-muted small">This should reflect the IP address that connections are allowed from. Uses standard MySQL notation. If unsure leave as <code>%</code>.</p>
                     </div>
                 </div>

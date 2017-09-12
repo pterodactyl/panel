@@ -39,30 +39,36 @@
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('base.security.sessions')</h3>
             </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <tbody>
-                        <tr>
-                            <th>@lang('strings.id')</th>
-                            <th>@lang('strings.ip')</th>
-                            <th>@lang('strings.last_activity')</th>
-                            <th></th>
-                        </tr>
-                        @foreach($sessions as $session)
+            @if(!is_null($sessions))
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tbody>
                             <tr>
-                                <td><code>{{ substr($session->id, 0, 6) }}</code></td>
-                                <td>{{ $session->ip_address }}</td>
-                                <td>{{ Carbon::createFromTimestamp($session->last_activity)->diffForHumans() }}</td>
-                                <td>
-                                    <a href="{{ route('account.security.revoke', $session->id) }}">
-                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> @lang('strings.revoke')</button>
-                                    </a>
-                                </td>
+                                <th>@lang('strings.id')</th>
+                                <th>@lang('strings.ip')</th>
+                                <th>@lang('strings.last_activity')</th>
+                                <th></th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            @foreach($sessions as $session)
+                                <tr>
+                                    <td><code>{{ substr($session->id, 0, 6) }}</code></td>
+                                    <td>{{ $session->ip_address }}</td>
+                                    <td>{{ Carbon::createFromTimestamp($session->last_activity)->diffForHumans() }}</td>
+                                    <td>
+                                        <a href="{{ route('account.security.revoke', $session->id) }}">
+                                            <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> @lang('strings.revoke')</button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="box-body">
+                    <p class="text-muted">@lang('base.security.session_mgmt_disabled')</p>
+                </div>
+            @endif
         </div>
     </div>
     <div class="col-md-6">

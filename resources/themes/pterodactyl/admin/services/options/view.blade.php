@@ -20,14 +20,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services &rarr; Option: {{ $option->name }}
+    Service &rarr; Option: {{ $option->name }}
 @endsection
 
 @section('content-header')
     <h1>{{ $option->name }}<small>{{ str_limit($option->description, 50) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Services</a></li>
+        <li><a href="{{ route('admin.services') }}">Service</a></li>
         <li><a href="{{ route('admin.services.view', $option->service->id) }}">{{ $option->service->name }}</a></li>
         <li class="active">{{ $option->name }}</li>
     </ol>
@@ -143,10 +143,10 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button id="deleteButton" type="submit" name="action" value="delete" class="btn btn-danger btn-sm muted muted-hover">
+                    <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-danger btn-sm muted muted-hover">
                         <i class="fa fa-trash-o"></i>
                     </button>
-                    <button type="submit" name="action" value="edit" class="btn btn-primary btn-sm pull-right">Edit Service</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Service</button>
                 </div>
             </div>
         </div>

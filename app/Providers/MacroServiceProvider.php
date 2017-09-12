@@ -30,13 +30,12 @@ use Carbon;
 use Request;
 use Pterodactyl\Models\APIKey;
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Services\ApiKeyService;
 
 class MacroServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -47,7 +46,7 @@ class MacroServiceProvider extends ServiceProvider
             $i = 0;
             while (($size / 1024) > 0.9) {
                 $size = $size / 1024;
-                $i++;
+                ++$i;
             }
 
             return round($size, ($i < 2) ? 0 : $precision) . ' ' . $units[$i];
@@ -60,7 +59,7 @@ class MacroServiceProvider extends ServiceProvider
 
             $parts = explode('.', Request::bearerToken());
 
-            if (count($parts) === 2 && strlen($parts[0]) === APIKey::PUBLIC_KEY_LEN) {
+            if (count($parts) === 2 && strlen($parts[0]) === ApiKeyService::PUB_CRYPTO_BYTES * 2) {
                 // Because the key itself isn't changing frequently, we simply cache this for
                 // 15 minutes to speed up the API and keep requests flowing.
                 return Cache::tags([

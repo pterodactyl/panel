@@ -24,10 +24,16 @@
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class ServiceOption extends Model
+class ServiceOption extends Model implements CleansAttributes, ValidableContract
 {
+    use Eloquence, Validable;
+
     /**
      * The table associated with the model.
      *
@@ -42,15 +48,61 @@ class ServiceOption extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
-         'service_id' => 'integer',
-         'script_is_privileged' => 'boolean',
-     ];
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'service_id' => 'integer',
+        'script_is_privileged' => 'boolean',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'service_id' => 'required',
+        'name' => 'required',
+        'description' => 'required',
+        'tag' => 'required',
+        'docker_image' => 'sometimes',
+        'startup' => 'sometimes',
+        'config_from' => 'sometimes',
+        'config_stop' => 'required_without:config_from',
+        'config_startup' => 'required_without:config_from',
+        'config_logs' => 'required_without:config_from',
+        'config_files' => 'required_without:config_from',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'service_id' => 'numeric|exists:services,id',
+        'name' => 'string|max:255',
+        'description' => 'string',
+        'tag' => 'alpha_num|max:60|unique:service_options,tag',
+        'docker_image' => 'string|max:255',
+        'startup' => 'nullable|string',
+        'config_from' => 'nullable|numeric|exists:service_options,id',
+        'config_stop' => 'nullable|string|max:255',
+        'config_startup' => 'nullable|json',
+        'config_logs' => 'nullable|json',
+        'config_files' => 'nullable|json',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $attributes = [
+        'config_stop' => null,
+        'config_startup' => null,
+        'config_logs' => null,
+        'config_files' => null,
+        'startup' => null,
+        'docker_image' => null,
+    ];
 
     /**
      * Returns the display startup string for the option and will use the parent
@@ -136,6 +188,11 @@ class ServiceOption extends Model
         return $this->hasMany(Pack::class, 'option_id');
     }
 
+    /**
+     * Get the parent service option from which to copy scripts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function copyFrom()
     {
         return $this->belongsTo(self::class, 'copy_script_from');

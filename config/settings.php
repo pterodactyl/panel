@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Settings Driver
@@ -57,13 +56,11 @@ return [
     */
 
     'repositories' => [
-
         'database' => [
             'driver' => 'database',
             'connection' => env('DB_CONNECTION', 'mysql'),
             'table' => 'settings',
         ],
-
     ],
 
     /*
@@ -112,7 +109,5 @@ return [
     */
 
     'override' => [
-
     ],
-
 ];

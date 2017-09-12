@@ -26,12 +26,15 @@ namespace Pterodactyl\Models;
 
 use File;
 use Storage;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
-use Nicolaslopezj\Searchable\SearchableTrait;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Pack extends Model
+class Pack extends Model implements CleansAttributes, ValidableContract
 {
-    use SearchableTrait;
+    use Eloquence, Validable;
 
     /**
      * The table associated with the model.
@@ -46,7 +49,33 @@ class Pack extends Model
      * @var array
      */
     protected $fillable = [
-        'option_id', 'name', 'version', 'description', 'selectable', 'visible', 'locked',
+        'option_id', 'uuid', 'name', 'version', 'description', 'selectable', 'visible', 'locked',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'name' => 'required',
+        'version' => 'required',
+        'description' => 'sometimes',
+        'selectable' => 'sometimes|required',
+        'visible' => 'sometimes|required',
+        'locked' => 'sometimes|required',
+        'option_id' => 'required',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'name' => 'string',
+        'version' => 'string',
+        'description' => 'nullable|string',
+        'selectable' => 'boolean',
+        'visible' => 'boolean',
+        'locked' => 'boolean',
+        'option_id' => 'exists:service_options,id',
     ];
 
     /**
@@ -66,25 +95,21 @@ class Pack extends Model
      *
      * @var array
      */
-    protected $searchable = [
-        'columns' => [
-            'packs.name' => 10,
-            'packs.uuid' => 8,
-            'service_options.name' => 6,
-            'service_options.tag' => 5,
-            'service_options.docker_image' => 5,
-            'packs.version' => 2,
-        ],
-        'joins' => [
-            'service_options' => ['packs.option_id', 'service_options.id'],
-        ],
+    protected $searchableColumns = [
+        'name' => 10,
+        'uuid' => 8,
+        'option.name' => 6,
+        'option.tag' => 5,
+        'option.docker_image' => 5,
+        'version' => 2,
     ];
 
     /**
      * Returns all of the archived files for a given pack.
      *
-     * @param  bool  $collection
+     * @param bool $collection
      * @return \Illuminate\Support\Collection|object
+     * @deprecated
      */
     public function files($collection = false)
     {

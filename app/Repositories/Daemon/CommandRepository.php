@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -24,68 +24,22 @@
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\ConnectException;
-use Pterodactyl\Exceptions\DisplayException;
+use Webmozart\Assert\Assert;
+use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
 
-class CommandRepository
+class CommandRepository extends BaseRepository implements CommandRepositoryInterface
 {
     /**
-     * The Eloquent Model associated with the requested server.
-     *
-     * @var \Pterodactyl\Models\Server
-     */
-    protected $server;
-
-    /**
-     * The Eloquent Model associated with the user to run the request as.
-     *
-     * @var \Pterodactyl\Models\User|null
-     */
-    protected $user;
-
-    /**
-     * Constuctor for repository.
-     *
-     * @param  \Pterodactyl\Models\Server  $server
-     * @param  \Pterodactyl\Models\User|null   $user
-     * @return void
-     */
-    public function __construct(Server $server, User $user = null)
-    {
-        $this->server = $server;
-        $this->user = $user;
-    }
-
-    /**
-     * Sends a command to the daemon.
-     *
-     * @param  string  $command
-     * @return string
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \GuzzleHttp\Exception\RequestException
+     * {@inheritdoc}
      */
     public function send($command)
     {
-        // We don't use the user's specific daemon secret here since we
-        // are assuming that a call to this function has been validated.
-        try {
-            $response = $this->server->guzzleClient($this->user)->request('POST', '/server/command', [
-                'http_errors' => false,
-                'json' => [
-                    'command' => $command,
-                ],
-            ]);
+        Assert::stringNotEmpty($command, 'First argument passed to send must be a non-empty string, received %s.');
 
-            if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
-                throw new DisplayException('Command sending responded with a non-200 error code (HTTP/' . $response->getStatusCode() . ').');
-            }
-
-            return $response->getBody();
-        } catch (ConnectException $ex) {
-            throw $ex;
-        }
+        return $this->getHttpClient()->request('POST', '/server/command', [
+            'json' => [
+                'command' => $command,
+            ],
+        ]);
     }
 }

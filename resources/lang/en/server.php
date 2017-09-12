@@ -19,6 +19,7 @@ return [
         'new' => [
             'header' => 'New Task',
             'header_sub' => 'Create a new scheduled task for this server.',
+            'task_name' => 'Task Name',
             'day_of_week' => 'Day of Week',
             'custom' => 'Custom Value',
             'day_of_month' => 'Day of Month',
@@ -33,8 +34,15 @@ return [
             'sat' => 'Saturday',
             'submit' => 'Create Task',
             'type' => 'Task Type',
+            'chain_then' => 'Then, After',
+            'chain_do' => 'Do',
+            'chain_arguments' => 'With Arguments',
             'payload' => 'Task Payload',
             'payload_help' => 'For example, if you selected <code>Send Command</code> enter the command here. If you selected <code>Send Power Option</code> put the power action here (e.g. <code>restart</code>).',
+        ],
+        'edit' => [
+            'header' => 'Manage Task',
+            'submit' => 'Update Task',
         ],
     ],
     'users' => [
@@ -44,6 +52,8 @@ return [
         'list' => 'Accounts with Access',
         'add' => 'Add New Subuser',
         'update' => 'Update Subuser',
+        'user_assigned' => 'Successfully assigned a new subuser to this server.',
+        'user_updated' => 'Successfully updated permissions.',
         'edit' => [
             'header' => 'Edit Subuser',
             'header_sub' => 'Modify user\'s access to server.',
@@ -203,6 +213,10 @@ return [
         ],
     ],
     'files' => [
+        'exceptions' => [
+            'invalid_mime' => 'This type of file cannot be edited via the Panel\'s built-in editor.',
+            'max_size' => 'This file is too large to edit via the Panel\'s built-in editor.',
+        ],
         'header' => 'File Manager',
         'header_sub' => 'Manage all of your files directly from the web.',
         'loading' => 'Loading initial file structure, this could take a few seconds.',

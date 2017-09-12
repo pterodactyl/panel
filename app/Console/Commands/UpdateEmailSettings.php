@@ -51,8 +51,6 @@ class UpdateEmailSettings extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -163,7 +161,7 @@ class UpdateEmailSettings extends Command
         file_put_contents($file, $envContents);
         $bar->finish();
 
-        $this->line('Updating evironment configuration cache file.');
+        $this->line('Updating environment configuration cache file.');
         $this->call('config:cache');
         echo "\n";
     }

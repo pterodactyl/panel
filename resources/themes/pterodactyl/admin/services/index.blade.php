@@ -20,14 +20,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Services
+    Service
 @endsection
 
 @section('content-header')
-    <h1>Services<small>All services currently available on this system.</small></h1>
+    <h1>Service<small>All services currently available on this system.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Services</li>
+        <li class="active">Service</li>
     </ol>
 @endsection
 
@@ -36,7 +36,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Configured Services</h3>
+                <h3 class="box-title">Configured Service</h3>
                 <div class="box-tools">
                     <a href="{{ route('admin.services.new') }}"><button class="btn btn-primary btn-sm">Create New</button></a>
                 </div>

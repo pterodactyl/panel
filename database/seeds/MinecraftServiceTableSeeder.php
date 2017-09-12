@@ -85,8 +85,6 @@ EOF;
 
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run()
     {
@@ -140,7 +138,7 @@ EOF;
             'docker_image' => 'quay.io/pterodactyl/core:java',
             'config_startup' => '{"done": ")! For help, type ", "userInteraction": [ "Go to eula.txt for more info."]}',
             'config_logs' => '{"custom": false, "location": "logs/latest.log"}',
-            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "enable-query": "true", "server-port": "{{server.build.default.port}}", "query.port": "{{server.build.default.port}}"}}}',
+            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "server-port": "{{server.build.default.port}}"}}}',
             'config_stop' => 'stop',
             'config_from' => null,
             'startup' => null,
@@ -236,7 +234,7 @@ EOF;
             'description' => 'For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community\'s full potential.',
             'docker_image' => 'quay.io/pterodactyl/core:java',
             'config_startup' => '{"done": "Listening on ", "userInteraction": [ "Listening on /0.0.0.0:25577"]}',
-            'config_files' => '{"config.yml":{"parser": "yaml", "find":{"listeners[0].query_enabled": true, "listeners[0].query_port": "{{server.build.default.port}}", "listeners[0].host": "0.0.0.0:{{server.build.default.port}}", "servers.*.address":{"127.0.0.1": "{{config.docker.interface}}", "localhost": "{{config.docker.interface}}"}}}}',
+            'config_files' => '{"config.yml":{"parser": "yaml", "find":{"listeners[0].host": "0.0.0.0:{{server.build.default.port}}", "servers.*.address":{"127.0.0.1": "{{config.docker.interface}}", "localhost": "{{config.docker.interface}}"}}}}',
             'config_logs' => '{"custom": false, "location": "proxy.log.0"}',
             'config_stop' => 'end',
             'config_from' => null,
@@ -273,7 +271,7 @@ EOF;
             'docker_image' => 'quay.io/pterodactyl/core:java',
             'config_startup' => '{"done": ")! For help, type ", "userInteraction": [ "Go to eula.txt for more info."]}',
             'config_logs' => '{"custom": false, "location": "logs/latest.log"}',
-            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "enable-query": "true", "server-port": "{{server.build.default.port}}", "query.port": "{{server.build.default.port}}"}}}',
+            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "server-port": "{{server.build.default.port}}"}}}',
             'config_stop' => 'stop',
             'config_from' => null,
             'startup' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',

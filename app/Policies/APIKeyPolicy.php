@@ -43,7 +43,7 @@ class APIKeyPolicy
     protected function checkPermission(User $user, Key $key, $permission)
     {
         // Non-administrative users cannot use administrative routes.
-        if (! starts_with($key, 'user.') && ! $user->isRootAdmin()) {
+        if (! starts_with($key, 'user.') && ! $user->root_admin) {
             return false;
         }
 
@@ -61,9 +61,9 @@ class APIKeyPolicy
     /**
      * Determine if a user has permission to perform this action against the system.
      *
-     * @param  \Pterodactyl\Models\User    $user
-     * @param  string                      $permission
-     * @param  \Pterodactyl\Models\APIKey  $key
+     * @param \Pterodactyl\Models\User   $user
+     * @param string                     $permission
+     * @param \Pterodactyl\Models\APIKey $key
      * @return bool
      */
     public function before(User $user, $permission, Key $key)
