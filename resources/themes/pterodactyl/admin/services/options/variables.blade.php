@@ -139,7 +139,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Input Rules</label>
-                        <input type="text" name="rules" class="form-control" placeholder="required|string|max:20" />
+                        <input type="text" name="rules" class="form-control" value="required|string|max:20" placeholder="required|string|max:20" />
                         <p class="text-muted small">These rules are defined using standard Laravel Framework validation rules.</p>
                     </div>
                 </div>
