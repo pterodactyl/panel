@@ -213,7 +213,7 @@
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/select2/select2.full.min.js') !!}
-    {!! Theme::js('js/frontend/tasks.js') !!}
+    {!! Theme::js('js/frontend/tasks/view-actions.js') !!}
     <script>
         $(document).ready(function () {
             $.each(Pterodactyl.chained, function (index, value) {

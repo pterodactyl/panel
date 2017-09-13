@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-use Pterodactyl\Http\Middleware\Server\SubuserAccess;
+use Pterodactyl\Http\Middleware\Server\ScheduleAccess;
 
 Route::get('/', 'ConsoleController@index')->name('server.index');
 Route::get('/console', 'ConsoleController@console')->name('server.console');
@@ -90,17 +90,17 @@ Route::group(['prefix' => 'users'], function () {
 | Endpoint: /server/{server}/tasks
 |
 */
-Route::group(['prefix' => 'tasks'], function () {
+Route::group(['prefix' => 'schedules'], function () {
     Route::get('/', 'Tasks\TaskManagementController@index')->name('server.tasks');
     Route::get('/new', 'Tasks\TaskManagementController@create')->name('server.tasks.new');
-    Route::get('/view/{task}', 'Tasks\TaskManagementController@view')->name('server.tasks.view');
+    Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->middleware(ScheduleAccess::class)->name('server.tasks.view');
 
     Route::post('/new', 'Tasks\TaskManagementController@store');
 
-    Route::patch('/view/{task}', 'Tasks\TaskManagementController@update');
-    Route::patch('/view/{task}/toggle', 'Tasks\ToggleTaskController@index')->name('server.tasks.toggle');
+    Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update')->middleware(ScheduleAccess::class);
+    Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware(ScheduleAccess::class)->name('server.tasks.toggle');
 
-    Route::delete('/view/{task}/delete', 'Tasks\TaskManagementController@delete')->name('server.tasks.delete');
+    Route::delete('/view/{schedule}/delete', 'Tasks\TaskManagementController@delete')->middleware(ScheduleAccess::class)->name('server.tasks.delete');
 });
 
 /*

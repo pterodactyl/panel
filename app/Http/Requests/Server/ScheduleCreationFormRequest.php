@@ -26,7 +26,7 @@ namespace Pterodactyl\Http\Requests\Server;
 
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 
-class TaskCreationFormRequest extends FrontendUserFormRequest
+class ScheduleCreationFormRequest extends FrontendUserFormRequest
 {
     /**
      * Validation rules to apply to the request.
@@ -37,21 +37,19 @@ class TaskCreationFormRequest extends FrontendUserFormRequest
     {
         return [
             'name' => 'string|max:255',
-            'day_of_week' => 'required|string',
-            'day_of_month' => 'required|string',
-            'hour' => 'required|string',
-            'minute' => 'required|string',
-            'action' => 'required|string|in:power,command',
-            'data' => 'required|string',
-            'chain' => 'sometimes|array|size:4',
-            'chain.time_value' => 'required_with:chain|max:5',
-            'chain.time_interval' => 'required_with:chain|max:5',
-            'chain.action' => 'required_with:chain|max:5',
-            'chain.payload' => 'required_with:chain|max:5',
-            'chain.time_value.*' => 'numeric|between:1,60',
-            'chain.time_interval.*' => 'string|in:s,m',
-            'chain.action.*' => 'string|in:power,command',
-            'chain.payload.*' => 'string',
+            'cron_day_of_week' => 'required|string',
+            'cron_day_of_month' => 'required|string',
+            'cron_hour' => 'required|string',
+            'cron_minute' => 'required|string',
+            'tasks' => 'sometimes|array|size:4',
+            'tasks.time_value' => 'required_with:chain|max:5',
+            'tasks.time_interval' => 'required_with:chain|max:5',
+            'tasks.action' => 'required_with:chain|max:5',
+            'tasks.payload' => 'required_with:chain|max:5',
+            'tasks.time_value.*' => 'numeric|between:1,60',
+            'tasks.time_interval.*' => 'string|in:s,m',
+            'tasks.action.*' => 'string|in:power,command',
+            'tasks.payload.*' => 'string',
         ];
     }
 
@@ -62,18 +60,18 @@ class TaskCreationFormRequest extends FrontendUserFormRequest
      */
     public function normalize()
     {
-        return $this->only('name', 'day_of_week', 'day_of_month', 'hour', 'minute', 'action', 'data');
+        return $this->only('name', 'cron_day_of_week', 'cron_day_of_month', 'cron_hour', 'cron_minute');
     }
 
     /**
-     * Return the chained tasks provided in the request.
+     * Return the tasks provided in the request that are associated with this schedule.
      *
      * @return array|null
      */
-    public function getChainedTasks()
+    public function getTasks()
     {
         $restructured = [];
-        foreach (array_get($this->all(), 'chain', []) as $key => $values) {
+        foreach (array_get($this->all(), 'tasks', []) as $key => $values) {
             for ($i = 0; $i < count($values); ++$i) {
                 $restructured[$i][$key] = $values[$i];
             }

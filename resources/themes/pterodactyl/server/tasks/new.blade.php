@@ -30,12 +30,12 @@
 @endsection
 
 @section('content-header')
-    <h1>@lang('server.tasks.new.header')<small>@lang('server.tasks.new.header_sub')</small></h1>
+    <h1>@lang('server.schedule.new.header')<small>@lang('server.schedule.new.header_sub')</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
         <li><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></li>
         <li><a href="{{ route('server.tasks', $server->uuidShort) }}">@lang('navigation.server.task_management')</a></li>
-        <li class="active">@lang('server.tasks.new_task')</li>
+        <li class="active">@lang('server.schedule.new.header')</li>
     </ol>
 @endsection
 
@@ -44,174 +44,116 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@lang('server.schedule.setup')</h3>
+                </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="form-group col-xs-12">
-                            <label class="control-label">@lang('server.tasks.new.task_name'):</label>
+                            <label class="control-label" for="scheduleName">@lang('strings.name') <span class="field-optional"></span></label>
                             <div>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" />
+                                <input type="text" name="name" id="scheduleName" class="form-control" value="{{ old('name') }}" />
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3 col-sm-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">@lang('server.tasks.new.day_of_week')</h3>
-                </div>
-                <div class="box-body">
                     <div class="row">
-                        <div class="form-group col-md-12">
-                            <div>
-                                <select data-action="update-field" data-field="day_of_week" class="form-control" multiple>
-                                    <option value="0">@lang('server.tasks.new.sun')</option>
-                                    <option value="1">@lang('server.tasks.new.mon')</option>
-                                    <option value="2">@lang('server.tasks.new.tues')</option>
-                                    <option value="3">@lang('server.tasks.new.wed')</option>
-                                    <option value="4">@lang('server.tasks.new.thurs')</option>
-                                    <option value="5">@lang('server.tasks.new.fri')</option>
-                                    <option value="6">@lang('server.tasks.new.sat')</option>
-                                </select>
+                        <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                                <label for="scheduleDayOfWeek" class="control-label">@lang('server.schedule.day_of_week')</label>
+                                <div>
+                                    <select data-action="update-field" data-field="day_of_week" class="form-control" multiple>
+                                        <option value="0">@lang('server.tasks.new.sun')</option>
+                                        <option value="1">@lang('server.tasks.new.mon')</option>
+                                        <option value="2">@lang('server.tasks.new.tues')</option>
+                                        <option value="3">@lang('server.tasks.new.wed')</option>
+                                        <option value="4">@lang('server.tasks.new.thurs')</option>
+                                        <option value="5">@lang('server.tasks.new.fri')</option>
+                                        <option value="6">@lang('server.tasks.new.sat')</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="scheduleDayOfWeek" class="form-control" name="day_of_week" value="{{ old('day_of_week') }}" />
                             </div>
                         </div>
-                        <div class="form-group col-md-12">
-                            <label class="control-label">@lang('server.tasks.new.custom')</label>
-                            <div>
-                                <input type="text" class="form-control" name="day_of_week" />
+                        <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                                <label for="scheduleDayOfMonth" class="control-label">@lang('server.schedule.day_of_month')</label>
+                                <div>
+                                    <select data-action="update-field" data-field="day_of_month" class="form-control" multiple>
+                                        @foreach(range(1, 31) as $i)
+                                            <option value="{{ $i }}">{{ $i }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="scheduleDayOfMonth" class="form-control" name="day_of_month" value="{{ old('day_of_month') }}" />
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">@lang('server.tasks.new.day_of_month')</h3>
-                </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <div>
-                                <select data-action="update-field" data-field="day_of_month" class="form-control" multiple>
-                                    @foreach(range(1, 31) as $i)
-                                        <option value="{{ $i }}">{{ $i }}</option>
-                                    @endforeach
-                                </select>
+                        <div class="col-xs-6 col-md-3">
+                            <div class="form-group col-md-12">
+                                <label for="scheduleHour" class="control-label">@lang('server.schedule.hour')</label>
+                                <div>
+                                    <select data-action="update-field" data-field="hour" class="form-control" multiple>
+                                        @foreach(range(0, 23) as $i)
+                                            <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}:00</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="text" id="scheduleHour" class="form-control" name="hour" value="{{ old('hour') }}" />
                             </div>
                         </div>
-                        <div class="form-group col-md-12">
-                            <label class="control-label">@lang('server.tasks.new.custom')</label>
-                            <div>
-                                <input type="text" class="form-control" name="day_of_month" />
+                        <div class="col-xs-6 col-md-3">
+                            <div class="form-group">
+                                <label for="scheduleMinute" class="control-label">@lang('server.schedule.minute')</label>
+                                <div>
+                                    <select data-action="update-field" data-field="minute" class="form-control" multiple>
+                                        @foreach(range(0, 55) as $i)
+                                            @if($i % 5 === 0)
+                                                <option value="{{ $i }}">_ _:{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">@lang('server.tasks.new.hour')</h3>
-                </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <div>
-                                <select data-action="update-field" data-field="hour" class="form-control" multiple>
-                                    @foreach(range(0, 23) as $i)
-                                        <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}:00</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <label class="control-label">@lang('server.tasks.new.custom')</label>
-                            <div>
-                                <input type="text" class="form-control" name="hour" />
+                            <div class="form-group">
+                                <input type="text" id="scheduleMinute" class="form-control" name="minute" value="{{ old('minute') }}" />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">@lang('server.tasks.new.minute')</h3>
-                </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <div>
-                                <select data-action="update-field" data-field="minute" class="form-control" multiple>
-                                    @foreach(range(0, 55) as $i)
-                                        @if($i % 5 === 0)
-                                            <option value="{{ $i }}">_ _:{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-12">
-                            <label class="control-label">@lang('server.tasks.new.custom')</label>
-                            <div>
-                                <input type="text" class="form-control" name="minute" />
-                            </div>
-                        </div>
-                    </div>
+                <div class="box-footer with-border">
+                    <p class="small text-muted no-margin-bottom">@lang('server.schedule.time_help')</p>
                 </div>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-primary">
-                <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="control-label">@lang('server.tasks.new.type'):</label>
-                            <div>
-                                <select name="action" class="form-control">
-                                    <option value="command">@lang('server.tasks.actions.command')</option>
-                                    <option value="power">@lang('server.tasks.actions.power')</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-8">
-                            <label class="control-label">@lang('server.tasks.new.payload'):</label>
-                            <div>
-                                <input type="text" name="data" class="form-control" value="{{ old('data') }}">
-                                <span class="text-muted small">@lang('server.tasks.new.payload_help')</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-footer with-border" id="chainLastSegment">
+            <div class="box box-primary" id="containsTaskList">
+                @include('partials.schedules.task-template')
+                <div class="box-footer with-border" id="taskAppendBefore">
                     <div class="pull-left">
-                        <p class="text-muted small">Times for chain arguments are relative to the previous argument.</p>
+                        <p class="text-muted small">@lang('server.schedule.task_help')</p>
                     </div>
                     <div class="pull-right">
                         {!! csrf_field() !!}
-                        <button type="button" class="btn btn-sm btn-default" data-action="add-chain"><i class="fa fa-plus"></i> New Chain Argument</button>
-                        <button type="submit" class="btn btn-sm btn-success">@lang('server.tasks.new.submit')</button>
+                        <button type="button" class="btn btn-sm btn-default" data-action="add-new-task"><i class="fa fa-plus"></i> @lang('server.schedule.task.add_more')</button>
+                        <button type="submit" class="btn btn-sm btn-success">@lang('server.schedule.new.submit')</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
-@include('partials.tasks.chain-template')
 @endsection
 
 @section('footer-scripts')
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
     {!! Theme::js('vendor/select2/select2.full.min.js') !!}
-    {!! Theme::js('js/frontend/tasks.js') !!}
+    {!! Theme::js('js/frontend/tasks/view-actions.js') !!}
 @endsection

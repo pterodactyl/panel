@@ -22,26 +22,10 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\Tasks;
+namespace Pterodactyl\Exceptions\Service\Schedule\Task;
 
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
 
-class TaskUpdateService
+class TaskIntervalTooLongException extends DisplayException
 {
-    protected $repository;
-
-    protected $serverRepository;
-
-    public function __construct(
-        ServerRepositoryInterface $serverRepository,
-        TaskRepositoryInterface $repository
-    ) {
-        $this->repository = $repository;
-        $this->serverRepository = $serverRepository;
-    }
-
-    public function handle($server, array $data, array $chain = null)
-    {
-    }
 }

@@ -22,8 +22,34 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Repositories\Eloquent;
 
-interface TaskRepositoryInterface extends RepositoryInterface
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+
+class ScheduleRepository extends EloquentRepository implements ScheduleRepositoryInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function model()
+    {
+        return Schedule::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServerSchedules($server)
+    {
+        return $this->getBuilder()->withCount('tasks')->where('server_id', '=', $server)->get($this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getScheduleWithTasks($schedule)
+    {
+        return $this->getBuilder()->with('tasks')->find($schedule, $this->getColumns());
+    }
 }

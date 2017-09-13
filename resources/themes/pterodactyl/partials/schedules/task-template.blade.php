@@ -1,12 +1,12 @@
 @section('tasks::chain-template')
-<div class="box-footer with-border hidden" data-target="chain-clone">
+<div class="box-footer with-border task-list-item" data-target="task-clone">
     <div class="row">
         <div class="form-group col-md-3">
-            <label class="control-label">@lang('server.tasks.new.chain_then'):</label>
+            <label class="control-label">@lang('server.schedule.task.time')</label>
             <div class="row">
                 <div class="col-xs-4">
                     <select name="chain[time_value][]" class="form-control">
-                        @foreach(range(1, 60) as $number)
+                        @foreach(range(0, 59) as $number)
                             <option value="{{ $number }}">{{ $number }}</option>
                         @endforeach
                     </select>
@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="form-group col-md-3">
-            <label class="control-label">@lang('server.tasks.new.chain_do'):</label>
+            <label class="control-label">@lang('server.schedule.task.action')</label>
             <div>
                 <select name="chain[action][]" class="form-control">
                     <option value="command">@lang('server.tasks.actions.command')</option>
@@ -29,11 +29,11 @@
             </div>
         </div>
         <div class="form-group col-md-6">
-            <label class="control-label">@lang('server.tasks.new.chain_arguments'):</label>
-            <div class="input-group">
+            <label class="control-label">@lang('server.schedule.task.payload')</label>
+            <div data-attribute="remove-task-element">
                 <input type="text" name="chain[payload][]" class="form-control">
-                <div class="input-group-btn">
-                    <button type="button" class="btn btn-danger" data-action="remove-chain-element"><i class="fa fa-close"></i></button>
+                <div class="input-group-btn hidden">
+                    <button type="button" class="btn btn-danger" data-action="remove-task"><i class="fa fa-close"></i></button>
                 </div>
             </div>
         </div>

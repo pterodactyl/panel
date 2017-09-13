@@ -19,32 +19,6 @@
 // SOFTWARE.
 
 $(document).ready(function () {
-    $('select[name="action"]').select2();
-    $('[data-action="update-field"]').on('change', function (event) {
-        event.preventDefault();
-        var updateField = $(this).data('field');
-        var selected = $(this).map(function (i, opt) {
-            return $(opt).val();
-        }).toArray();
-        if (selected.length === $(this).find('option').length) {
-            $('input[name=' + updateField + ']').val('*');
-        } else {
-            $('input[name=' + updateField + ']').val(selected.join(','));
-        }
-    });
-
-    $('button[data-action="add-chain"]').on('click', function () {
-        var clone = $('div[data-target="chain-clone"]').clone();
-        clone.insertBefore('#chainLastSegment').removeAttr('data-target').removeClass('hidden');
-        clone.find('select[name="chain[time_value][]"]').select2();
-        clone.find('select[name="chain[time_interval][]"]').select2();
-        clone.find('select[name="chain[action][]"]').select2();
-        clone.find('button[data-action="remove-chain-element"]').on('click', function () {
-            clone.remove();
-        });
-        $(this).data('element', clone);
-    });
-
     $('[data-action="delete-task"]').click(function () {
         var self = $(this);
         swal({
@@ -62,7 +36,7 @@ $(document).ready(function () {
                 method: 'DELETE',
                 url: Router.route('server.tasks.delete', {
                     server: Pterodactyl.server.uuidShort,
-                    id: self.data('id'),
+                    task: self.data('taskid'),
                 }),
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
@@ -101,7 +75,7 @@ $(document).ready(function () {
                 method: 'POST',
                 url: Router.route('server.tasks.toggle', {
                     server: Pterodactyl.server.uuidShort,
-                    id: self.data('id'),
+                    task: self.data('taskid'),
                 }),
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),

@@ -343,3 +343,20 @@ input.form-autocomplete-stop[readonly] {
     bottom: 1px;
     margin-right: 5px !important;
 }
+
+label.control-label > span {
+    font-size: 80%;
+    font-weight: 400;
+    font-style: italic;
+    color: #dd4b39;
+}
+
+label.control-label > span.field-required:before {
+    content: "required";
+    color: #dd4b39;
+}
+
+label.control-label > span.field-optional:before {
+    content: "optional";
+    color: #bbbbbb;
+}

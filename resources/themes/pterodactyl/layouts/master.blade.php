@@ -164,7 +164,7 @@
                                     <a href="{{ route('server.tasks', $server->uuidShort)}}">
                                         <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
                                         <span class="pull-right-container">
-                                            <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Task::select('id')->where('server_id', $server->id)->where('active', 1)->count() }}</span>
+                                            <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Schedule::select('id')->where('server_id', $server->id)->where('is_active', 1)->count() }}</span>
                                         </span>
                                     </a>
                                 </li>

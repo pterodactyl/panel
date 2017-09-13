@@ -62,4 +62,7 @@ return [
     'databases' => [
         'delete_has_databases' => 'Cannot delete a database host server that has active databases linked to it.',
     ],
+    'tasks' => [
+        'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
+    ],
 ];

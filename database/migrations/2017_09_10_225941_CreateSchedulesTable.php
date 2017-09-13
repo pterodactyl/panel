@@ -21,8 +21,8 @@ class CreateSchedulesTable extends Migration
             $table->string('cron_minute');
             $table->boolean('is_active');
             $table->boolean('is_processing');
-            $table->timestamp('last_run_at');
-            $table->timestamp('next_run_at');
+            $table->timestamp('last_run_at')->nullable();
+            $table->timestamp('next_run_at')->nullable();
             $table->timestamps();
 
             $table->foreign('server_id')->references('id')->on('servers')->onDelete('cascade');

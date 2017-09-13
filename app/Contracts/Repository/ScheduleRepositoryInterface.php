@@ -24,6 +24,21 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-interface TaskRepositoryInterface extends RepositoryInterface
+interface ScheduleRepositoryInterface extends RepositoryInterface
 {
+    /**
+     * Return all of the schedules for a given server.
+     *
+     * @param int $server
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getServerSchedules($server);
+
+    /**
+     * Return a schedule model with all of the associated tasks as a relationship.
+     *
+     * @param int $schedule
+     * @return \Illuminate\Support\Collection
+     */
+    public function getScheduleWithTasks($schedule);
 }

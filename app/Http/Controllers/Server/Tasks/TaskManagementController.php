@@ -24,20 +24,27 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Tasks;
 
+use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Http\Requests\Request;
 use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Tasks\TaskCreationService;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Http\Requests\Server\TaskCreationFormRequest;
+use Pterodactyl\Services\Schedules\ScheduleCreationService;
+use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest;
 
 class TaskManagementController extends Controller
 {
     use JavascriptInjection;
 
     /**
-     * @var \Pterodactyl\Services\Tasks\TaskCreationService
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Schedules\ScheduleCreationService
      */
     protected $creationService;
 
@@ -47,7 +54,7 @@ class TaskManagementController extends Controller
     protected $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
 
@@ -59,17 +66,20 @@ class TaskManagementController extends Controller
     /**
      * TaskManagementController constructor.
      *
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface        $hashids
-     * @param \Illuminate\Contracts\Session\Session                     $session
-     * @param \Pterodactyl\Services\Tasks\TaskCreationService           $creationService
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $repository
+     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
+     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface            $hashids
+     * @param \Illuminate\Contracts\Session\Session                         $session
+     * @param \Pterodactyl\Services\Schedules\ScheduleCreationService       $creationService
+     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(
+        AlertsMessageBag $alert,
         HashidsInterface $hashids,
         Session $session,
-        TaskCreationService $creationService,
-        TaskRepositoryInterface $repository
+        ScheduleCreationService $creationService,
+        ScheduleRepositoryInterface $repository
     ) {
+        $this->alert = $alert;
         $this->creationService = $creationService;
         $this->hashids = $hashids;
         $this->repository = $repository;
@@ -86,11 +96,11 @@ class TaskManagementController extends Controller
     public function index()
     {
         $server = $this->session->get('server_data.model');
-        $this->authorize('list-tasks', $server);
+        $this->authorize('list-schedules', $server);
         $this->injectJavascript();
 
         return view('server.tasks.index', [
-            'tasks' => $this->repository->getParentTasksWithChainCount($server->id),
+            'schedules' => $this->repository->getServerSchedules($server->id),
             'actions' => [
                 'command' => trans('server.tasks.actions.command'),
                 'power' => trans('server.tasks.actions.power'),
@@ -108,64 +118,95 @@ class TaskManagementController extends Controller
     public function create()
     {
         $server = $this->session->get('server_data.model');
-        $this->authorize('create-task', $server);
+        $this->authorize('create-schedule', $server);
         $this->injectJavascript();
 
         return view('server.tasks.new');
     }
 
     /**
-     * @param \Pterodactyl\Http\Requests\Server\TaskCreationFormRequest $request
-     *
+     * @param \Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Exception
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
-    public function store(TaskCreationFormRequest $request)
+    public function store(ScheduleCreationFormRequest $request)
     {
         $server = $this->session->get('server_data.model');
-        $this->authorize('create-task', $server);
+        $this->authorize('create-schedule', $server);
 
-        $task = $this->creationService->handle($server, $request->normalize(), $request->getChainedTasks());
+        $schedule = $this->creationService->handle($server, $request->normalize(), $request->getTasks());
+        $this->alert->success(trans('server.tasks.task_created'))->flash();
 
         return redirect()->route('server.tasks.view', [
             'server' => $server->uuidShort,
-            'task' => $task->id,
+            'task' => $schedule->hashid,
         ]);
     }
 
     /**
-     * Return a view to modify task settings.
+     * Return a view to modify a schedule.
      *
-     * @param string $uuid
-     * @param string $task
+     * @param \Pterodactyl\Http\Requests\Request $request
      * @return \Illuminate\View\View
-     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view($uuid, $task)
+    public function view(Request $request)
     {
         $server = $this->session->get('server_data.model');
-        $this->authorize('edit-task', $server);
-        $task = $this->repository->getTaskForServer($this->hashids->decodeFirst($task, 0), $server->id);
+        $schedule = $request->attributes->get('schedule');
+        $this->authorize('view-schedule', $server);
 
         $this->injectJavascript([
-            'chained' => $task->chained->map(function ($chain) {
-                return collect($chain->toArray())->only('action', 'chain_delay', 'data')->all();
+            'tasks' => $schedule->tasks->map(function ($schedule) {
+                return collect($schedule->toArray())->only('action', 'time_offset', 'payload')->all();
             }),
         ]);
 
-        return view('server.tasks.view', ['task' => $task]);
+        return view('server.tasks.view', ['schedule' => $schedule]);
     }
 
-    public function update(TaskCreationFormRequest $request, $uuid, $task)
+    /**
+     * Update a specific parent task on the system.
+     *
+     * @param \Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function update(ScheduleCreationFormRequest $request)
     {
         $server = $this->session->get('server_data.model');
-        $this->authorize('edit-task', $server);
-        $task = $this->repository->getTaskForServer($this->hashids->decodeFirst($task, 0), $server->id);
+        $schedule = $request->attributes->get('schedule');
+        $this->authorize('edit-schedule', $server);
+
+        //        $this->updateService->handle($task, $request->normalize(), $request->getChainedTasks());
+        $this->alert->success(trans('server.tasks.task_updated'))->flash();
+
+        return redirect()->route('server.tasks.view', [
+            'server' => $server->uuidShort,
+            'task' => $schedule->hashid,
+        ]);
+    }
+
+    /**
+     * Delete a parent task from the Panel.
+     *
+     * @param \Pterodactyl\Http\Requests\Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function delete(Request $request)
+    {
+        $server = $this->session->get('server_data.model');
+        $schedule = $request->attributes->get('schedule');
+        $this->authorize('delete-schedule', $server);
+
+        $this->repository->delete($task->id);
+
+        return response('', 204);
     }
 }

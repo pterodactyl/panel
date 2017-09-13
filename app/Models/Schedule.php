@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Task extends Model implements CleansAttributes, ValidableContract
+class Schedule extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
@@ -39,76 +39,90 @@ class Task extends Model implements CleansAttributes, ValidableContract
      *
      * @var string
      */
-    protected $table = 'tasks';
+    protected $table = 'schedules';
 
     /**
-     * Relationships to be updated when this model is updated.
-     *
-     * @var array
-     */
-    protected $touches = ['schedule'];
-
-    /**
-     * Fields that are mass assignable.
+     * Mass assignable attributes on this model.
      *
      * @var array
      */
     protected $fillable = [
-        'schedule_id',
-        'squence_id',
-        'action',
-        'payload',
-        'time_offset',
-        'is_queued',
+        'server_id',
+        'name',
+        'cron_day_of_week',
+        'cron_day_of_month',
+        'cron_hour',
+        'cron_minute',
+        'is_active',
+        'is_processing',
+        'last_run_at',
+        'next_run_at',
     ];
 
     /**
-     * Cast values to correct type.
-     *
      * @var array
      */
     protected $casts = [
         'id' => 'integer',
-        'schedule_id' => 'integer',
-        'squence_id' => 'integer',
-        'time_offset' => 'integer',
-        'is_queued' => 'boolean',
+        'server_id' => 'integer',
+        'is_active' => 'boolean',
+        'is_processing' => 'boolean',
     ];
 
     /**
-     * Default attributes when creating a new model.
+     * Columns to mutate to a date.
      *
      * @var array
      */
+    protected $dates = [
+        self::CREATED_AT,
+        self::UPDATED_AT,
+        'last_run_at',
+        'next_run_at',
+    ];
+
+    /**
+     * @var array
+     */
     protected $attributes = [
-        'is_queued' => false,
+        'name' => null,
+        'cron_day_of_week' => '*',
+        'cron_day_of_month' => '*',
+        'cron_hour' => '*',
+        'cron_minute' => '*',
+        'is_active' => true,
+        'is_processing' => false,
     ];
 
     /**
      * @var array
      */
     protected static $applicationRules = [
-        'schedule_id' => 'required',
-        'squence_id' => 'required',
-        'action' => 'required',
-        'payload' => 'required',
-        'time_offset' => 'required',
+        'server_id' => 'required',
+        'cron_day_of_week' => 'required',
+        'cron_day_of_month' => 'required',
+        'cron_hour' => 'required',
+        'cron_minute' => 'required',
     ];
 
     /**
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'schedule_id' => 'numeric|exists:schedules,id',
-        'squence_id' => 'numeric|min:1',
-        'action' => 'string',
-        'payload' => 'string',
-        'time_offset' => 'numeric|between:0,900',
-        'is_queued' => 'boolean',
+        'server_id' => 'exists:servers,id',
+        'name' => 'nullable|string|max:255',
+        'cron_day_of_week' => 'string',
+        'cron_day_of_month' => 'string',
+        'cron_hour' => 'string',
+        'cron_minute' => 'string',
+        'is_active' => 'boolean',
+        'is_processing' => 'boolean',
+        'last_run_at' => 'nullable|timestamp',
+        'next_run_at' => 'nullable|timestamp',
     ];
 
     /**
-     * Return a hashid encoded string to represent the ID of the task.
+     * Return a hashid encoded string to represent the ID of the schedule.
      *
      * @return string
      */
@@ -118,26 +132,22 @@ class Task extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Return the schedule that a task belongs to.
+     * Return tasks belonging to a schedule.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function schedule()
+    public function tasks()
     {
-        return $this->belongsTo(Schedule::class);
+        return $this->hasMany(Task::class);
     }
 
     /**
-     * Return the server a task is assigned to, acts as a belongsToThrough.
+     * Return the server model that a schedule belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function server()
     {
-        if ($schedule = $this->schedule) {
-            return $schedule->server();
-        } else {
-            throw new \InvalidArgumentException('Instance of Task must have an associated Schedule in the database.');
-        }
+        return $this->belongsTo(Server::class);
     }
 }
