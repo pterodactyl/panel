@@ -146,8 +146,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer no-border" style="padding: 0 10px 10px;">
-                    <div class="callout callout-info callout-slim no-margin">
+                <div class="box-footer no-border no-pad-top no-pad-bottom">
+                    <div class="alert alert-info">
                         <p class="small no-margin">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.<p>
                     </div>
                 </div>
@@ -174,8 +174,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer no-border" style="padding: 0 10px 10px;">
-                    <div class="callout callout-info callout-slim">
+                <div class="box-footer no-border no-pad-top no-pad-bottom">
+                    <div class="alert alert-info">
                         <p class="small no-margin">If you do not want to limit CPU usage set the value to <code>0</code>. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/engine/reference/run/#/block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.<p>
                     </div>
                 </div>
