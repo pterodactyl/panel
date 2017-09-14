@@ -33,7 +33,6 @@ use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
-use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
@@ -97,20 +96,13 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testNodeIsUpdatedAndDaemonSecretIsReset()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'random_bytes')
-            ->expects($this->once())->willReturnCallback(function ($bytes) {
-                $this->assertEquals(NodeCreationService::DAEMON_SECRET_LENGTH, $bytes);
-
-                return '\00';
-            });
-
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'bin2hex')
-            ->expects($this->once())->willReturn('hexResponse');
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
+            ->expects($this->once())->willReturn('random_string');
 
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
-                'daemonSecret' => 'hexResponse',
+                'daemonSecret' => 'random_string',
             ])->andReturn(true);
 
         $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()

@@ -30,8 +30,8 @@ use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
-    const PUB_CRYPTO_BYTES = 8;
-    const PRIV_CRYPTO_BYTES = 32;
+    const PUB_CRYPTO_LENGTH = 16;
+    const PRIV_CRYPTO_LENGTH = 64;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -86,8 +86,8 @@ class KeyCreationService
      */
     public function handle(array $data, array $permissions, array $administrative = [])
     {
-        $publicKey = bin2hex(random_bytes(self::PUB_CRYPTO_BYTES));
-        $secretKey = bin2hex(random_bytes(self::PRIV_CRYPTO_BYTES));
+        $publicKey = str_random(self::PUB_CRYPTO_LENGTH);
+        $secretKey = str_random(self::PRIV_CRYPTO_LENGTH);
 
         // Start a Transaction
         $this->connection->beginTransaction();

@@ -29,6 +29,7 @@ use Pterodactyl\Models\Server;
 use Illuminate\Database\DatabaseManager;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Daemon\ServerRepository as DaemonServerRepository;
 
@@ -83,6 +84,7 @@ class DetailsModificationService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function edit($server, array $data)
     {
@@ -97,7 +99,7 @@ class DetailsModificationService
             (isset($data['reset_token']) && ! is_null($data['reset_token'])) ||
             (isset($data['owner_id']) && $data['owner_id'] != $server->owner_id)
         ) {
-            $data['daemonSecret'] = bin2hex(random_bytes(18));
+            $data['daemonSecret'] = str_random(NodeCreationService::DAEMON_SECRET_LENGTH);
             $shouldUpdate = true;
         }
 

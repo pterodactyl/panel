@@ -84,15 +84,15 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testKeyIsCreated()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'bin2hex')
-            ->expects($this->exactly(2))->willReturn('bin2hex');
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+            ->expects($this->exactly(2))->willReturn('random_string');
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->encrypter->shouldReceive('encrypt')->with('bin2hex')->once()->andReturn('encrypted-secret');
+        $this->encrypter->shouldReceive('encrypt')->with('random_string')->once()->andReturn('encrypted-secret');
 
         $this->repository->shouldReceive('create')->with([
             'test-data' => 'test',
-            'public' => 'bin2hex',
+            'public' => 'random_string',
             'secret' => 'encrypted-secret',
         ], true, true)->once()->andReturn((object) ['id' => 1]);
 
@@ -113,6 +113,6 @@ class KeyCreationServiceTest extends TestCase
         );
 
         $this->assertNotEmpty($response);
-        $this->assertEquals('bin2hex', $response);
+        $this->assertEquals('random_string', $response);
     }
 }

@@ -46,12 +46,9 @@ class UsernameGenerationServiceTest extends TestCase
 
         $this->service = new UsernameGenerationService();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
-            ->expects($this->any())->willReturn('dddddddd');
-
         $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
             ->expects($this->any())->willReturnCallback(function ($count) {
-                return str_pad('', $count, 'a');
+                return str_pad('', $count, '0');
             });
     }
 
@@ -62,7 +59,7 @@ class UsernameGenerationServiceTest extends TestCase
     {
         $response = $this->service->generate('testname');
 
-        $this->assertEquals('testna_dddddddd', $response);
+        $this->assertEquals('testna_00000000', $response);
     }
 
     /**
@@ -82,7 +79,7 @@ class UsernameGenerationServiceTest extends TestCase
     {
         $response = $this->service->generate('testname', 'xyz');
 
-        $this->assertEquals('testna_xyzaaaaa', $response);
+        $this->assertEquals('testna_xyz00000', $response);
     }
 
     /**
@@ -102,7 +99,7 @@ class UsernameGenerationServiceTest extends TestCase
     {
         $response = $this->service->generate('');
 
-        $this->assertEquals('aaaaaa_dddddddd', $response);
+        $this->assertEquals('000000_00000000', $response);
     }
 
     /**
@@ -112,7 +109,7 @@ class UsernameGenerationServiceTest extends TestCase
     {
         $response = $this->service->generate('$%#*#(@#(#*$&#(#!#@');
 
-        $this->assertEquals('aaaaaa_dddddddd', $response);
+        $this->assertEquals('000000_00000000', $response);
     }
 
     /**

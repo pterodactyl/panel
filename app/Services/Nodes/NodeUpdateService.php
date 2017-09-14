@@ -83,7 +83,7 @@ class NodeUpdateService
         }
 
         if (! is_null(array_get($data, 'reset_secret'))) {
-            $data['daemonSecret'] = bin2hex(random_bytes(NodeCreationService::DAEMON_SECRET_LENGTH));
+            $data['daemonSecret'] = str_random(NodeCreationService::DAEMON_SECRET_LENGTH);
             unset($data['reset_secret']);
         }
 

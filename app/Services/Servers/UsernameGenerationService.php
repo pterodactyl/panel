@@ -37,7 +37,7 @@ class UsernameGenerationService
     public function generate($name, $identifier = null)
     {
         if (is_null($identifier) || ! ctype_alnum($identifier)) {
-            $unique = bin2hex(random_bytes(4));
+            $unique = str_random(8);
         } else {
             if (strlen($identifier) < 8) {
                 $unique = $identifier . str_random((8 - strlen($identifier)));

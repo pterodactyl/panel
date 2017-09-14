@@ -84,8 +84,8 @@ class DetailsModificationServiceTest extends TestCase
         $this->repository = m::mock(ServerRepository::class);
         $this->writer = m::mock(Writer::class);
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
-            ->expects($this->any())->willReturn('randomString');
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
+            ->expects($this->any())->willReturn('random_string');
 
         $this->service = new DetailsModificationService(
             $this->database,
@@ -171,7 +171,7 @@ class DetailsModificationServiceTest extends TestCase
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
                 'description' => $data['description'],
-                'daemonSecret' => 'randomString',
+                'daemonSecret' => 'random_string',
             ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
@@ -179,7 +179,7 @@ class DetailsModificationServiceTest extends TestCase
             ->shouldReceive('update')->with([
                 'keys' => [
                     $server->daemonSecret => [],
-                    'randomString' => DaemonServerRepository::DAEMON_PERMISSIONS,
+                    'random_string' => DaemonServerRepository::DAEMON_PERMISSIONS,
                 ],
             ])->once()->andReturnNull();
 
@@ -206,7 +206,7 @@ class DetailsModificationServiceTest extends TestCase
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
                 'description' => $data['description'],
-                'daemonSecret' => 'randomString',
+                'daemonSecret' => 'random_string',
             ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
@@ -214,7 +214,7 @@ class DetailsModificationServiceTest extends TestCase
             ->shouldReceive('update')->with([
                 'keys' => [
                     $server->daemonSecret => [],
-                    'randomString' => DaemonServerRepository::DAEMON_PERMISSIONS,
+                    'random_string' => DaemonServerRepository::DAEMON_PERMISSIONS,
                 ],
             ])->once()->andReturnNull();
 
@@ -244,7 +244,7 @@ class DetailsModificationServiceTest extends TestCase
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
                 'description' => $data['description'],
-                'daemonSecret' => 'randomString',
+                'daemonSecret' => 'random_string',
             ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->andThrow($this->exception);
@@ -286,7 +286,7 @@ class DetailsModificationServiceTest extends TestCase
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
                 'description' => $data['description'],
-                'daemonSecret' => 'randomString',
+                'daemonSecret' => 'random_string',
             ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->andThrow(new Exception());

@@ -29,6 +29,7 @@ use Illuminate\Log\Writer;
 use Illuminate\Database\DatabaseManager;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -134,12 +135,13 @@ class ServerCreationService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function create(array $data)
     {
         // @todo auto-deployment
         $validator = $this->validatorService->isAdmin()->setFields($data['environment'])->validate($data['option_id']);
-        $uniqueShort = bin2hex(random_bytes(4));
+        $uniqueShort = str_random(8);
 
         $this->database->beginTransaction();
 
@@ -163,7 +165,7 @@ class ServerCreationService
             'option_id' => $data['option_id'],
             'pack_id' => (! isset($data['pack_id']) || $data['pack_id'] == 0) ? null : $data['pack_id'],
             'startup' => $data['startup'],
-            'daemonSecret' => bin2hex(random_bytes(18)),
+            'daemonSecret' => str_random(NodeCreationService::DAEMON_SECRET_LENGTH),
             'image' => $data['docker_image'],
             'username' => $this->usernameService->generate($data['name'], $uniqueShort),
             'sftp_password' => null,

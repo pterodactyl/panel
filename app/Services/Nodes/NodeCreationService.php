@@ -28,7 +28,7 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationService
 {
-    const DAEMON_SECRET_LENGTH = 18;
+    const DAEMON_SECRET_LENGTH = 36;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
@@ -55,7 +55,7 @@ class NodeCreationService
      */
     public function handle(array $data)
     {
-        $data['daemonSecret'] = bin2hex(random_bytes(self::DAEMON_SECRET_LENGTH));
+        $data['daemonSecret'] = str_random(self::DAEMON_SECRET_LENGTH);
 
         return $this->repository->create($data);
     }

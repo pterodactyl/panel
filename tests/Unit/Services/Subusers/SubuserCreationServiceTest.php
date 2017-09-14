@@ -100,8 +100,7 @@ class SubuserCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'bin2hex')->expects($this->any())->willReturn('bin2hex');
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'str_random')->expects($this->any())->willReturn('123456');
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'str_random')->expects($this->any())->willReturn('random_string');
 
         $this->connection = m::mock(ConnectionInterface::class);
         $this->daemonRepository = m::mock(DaemonServerRepositoryInterface::class);
@@ -138,7 +137,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andThrow(new RecordNotFoundException);
         $this->userCreationService->shouldReceive('handle')->with([
             'email' => $user->email,
-            'username' => substr(strtok($user->email, '@'), 0, 8) . '_' . '123456',
+            'username' => substr(strtok($user->email, '@'), 0, 8) . '_' . 'random_string',
             'name_first' => 'Server',
             'name_last' => 'Subuser',
             'root_admin' => false,
@@ -147,7 +146,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->subuserRepository->shouldReceive('create')->with([
             'user_id' => $user->id,
             'server_id' => $server->id,
-            'daemonSecret' => 'bin2hex',
+            'daemonSecret' => 'random_string',
         ])->once()->andReturn($subuser);
 
         $this->permissionService->shouldReceive('handle')->with($subuser->id, array_keys($permissions))->once()
@@ -184,7 +183,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->subuserRepository->shouldReceive('create')->with([
             'user_id' => $user->id,
             'server_id' => $server->id,
-            'daemonSecret' => 'bin2hex',
+            'daemonSecret' => 'random_string',
         ])->once()->andReturn($subuser);
 
         $this->permissionService->shouldReceive('handle')->with($subuser->id, $permissions)->once()

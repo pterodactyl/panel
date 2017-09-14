@@ -29,6 +29,7 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -40,8 +41,6 @@ use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonS
 
 class SubuserCreationService
 {
-    const DAEMON_SECRET_BYTES = 18;
-
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
@@ -158,7 +157,7 @@ class SubuserCreationService
         $subuser = $this->subuserRepository->create([
             'user_id' => $user->id,
             'server_id' => $server->id,
-            'daemonSecret' => bin2hex(random_bytes(self::DAEMON_SECRET_BYTES)),
+            'daemonSecret' => str_random(NodeCreationService::DAEMON_SECRET_LENGTH),
         ]);
 
         $daemonPermissions = $this->permissionService->handle($subuser->id, $permissions);

@@ -155,8 +155,8 @@ class ServerCreationServiceTest extends TestCase
         $this->uuid = m::mock('overload:Ramsey\Uuid\Uuid');
         $this->writer = m::mock(Writer::class);
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'bin2hex')
-            ->expects($this->any())->willReturn('randomstring');
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
+            ->expects($this->any())->willReturn('random_string');
 
         $this->getFunctionMock('\\Ramsey\\Uuid\\Uuid', 'uuid4')
             ->expects($this->any())->willReturn('s');
@@ -187,12 +187,12 @@ class ServerCreationServiceTest extends TestCase
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->uuid->shouldReceive('uuid4')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('toString')->withNoArgs()->once()->andReturn('uuid-0000');
-        $this->usernameService->shouldReceive('generate')->with($this->data['name'], 'randomstring')
+        $this->usernameService->shouldReceive('generate')->with($this->data['name'], 'random_string')
             ->once()->andReturn('user_name');
 
         $this->repository->shouldReceive('create')->with([
             'uuid' => 'uuid-0000',
-            'uuidShort' => 'randomstring',
+            'uuidShort' => 'random_string',
             'node_id' => $this->data['node_id'],
             'name' => $this->data['name'],
             'description' => $this->data['description'],
@@ -210,7 +210,7 @@ class ServerCreationServiceTest extends TestCase
             'option_id' => $this->data['option_id'],
             'pack_id' => null,
             'startup' => $this->data['startup'],
-            'daemonSecret' => 'randomstring',
+            'daemonSecret' => 'random_string',
             'image' => $this->data['docker_image'],
             'username' => 'user_name',
             'sftp_password' => null,
