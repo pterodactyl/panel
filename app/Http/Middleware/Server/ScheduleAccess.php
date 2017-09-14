@@ -77,10 +77,10 @@ class ScheduleAccess
     {
         $server = $this->session->get('server_data.model');
 
-        $scheduleId = $this->hashids->decodeFirst($request->route()->parameter('task'), 0);
+        $scheduleId = $this->hashids->decodeFirst($request->route()->parameter('schedule'), 0);
         $schedule = $this->repository->getScheduleWithTasks($scheduleId);
 
-        if ($schedule->server_id !== $server->id) {
+        if (object_get($schedule, 'server_id') !== $server->id) {
             abort(404);
         }
 

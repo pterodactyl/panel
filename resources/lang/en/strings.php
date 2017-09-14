@@ -74,4 +74,13 @@ return [
     'tasks' => 'Tasks',
     'seconds' => 'Seconds',
     'minutes' => 'Minutes',
+    'days' => [
+        'sun' => 'Sunday',
+        'mon' => 'Monday',
+        'tues' => 'Tuesday',
+        'wed' => 'Wednesday',
+        'thurs' => 'Thursday',
+        'fri' => 'Friday',
+        'sat' => 'Saturday',
+    ],
 ];

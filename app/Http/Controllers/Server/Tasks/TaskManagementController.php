@@ -24,8 +24,8 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Tasks;
 
+use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Requests\Request;
 use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
@@ -99,11 +99,11 @@ class TaskManagementController extends Controller
         $this->authorize('list-schedules', $server);
         $this->injectJavascript();
 
-        return view('server.tasks.index', [
+        return view('server.schedules.index', [
             'schedules' => $this->repository->getServerSchedules($server->id),
             'actions' => [
-                'command' => trans('server.tasks.actions.command'),
-                'power' => trans('server.tasks.actions.power'),
+                'command' => trans('server.schedule.actions.command'),
+                'power' => trans('server.schedule.actions.power'),
             ],
         ]);
     }
@@ -121,7 +121,7 @@ class TaskManagementController extends Controller
         $this->authorize('create-schedule', $server);
         $this->injectJavascript();
 
-        return view('server.tasks.new');
+        return view('server.schedules.new');
     }
 
     /**
@@ -138,9 +138,9 @@ class TaskManagementController extends Controller
         $this->authorize('create-schedule', $server);
 
         $schedule = $this->creationService->handle($server, $request->normalize(), $request->getTasks());
-        $this->alert->success(trans('server.tasks.task_created'))->flash();
+        $this->alert->success(trans('server.schedules.task_created'))->flash();
 
-        return redirect()->route('server.tasks.view', [
+        return redirect()->route('server.schedules.view', [
             'server' => $server->uuidShort,
             'task' => $schedule->hashid,
         ]);
@@ -149,7 +149,7 @@ class TaskManagementController extends Controller
     /**
      * Return a view to modify a schedule.
      *
-     * @param \Pterodactyl\Http\Requests\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
@@ -165,7 +165,7 @@ class TaskManagementController extends Controller
             }),
         ]);
 
-        return view('server.tasks.view', ['schedule' => $schedule]);
+        return view('server.schedules.view', ['schedule' => $schedule]);
     }
 
     /**
@@ -183,9 +183,9 @@ class TaskManagementController extends Controller
         $this->authorize('edit-schedule', $server);
 
         //        $this->updateService->handle($task, $request->normalize(), $request->getChainedTasks());
-        $this->alert->success(trans('server.tasks.task_updated'))->flash();
+        //        $this->alert->success(trans('server.schedules.task_updated'))->flash();
 
-        return redirect()->route('server.tasks.view', [
+        return redirect()->route('server.schedules.view', [
             'server' => $server->uuidShort,
             'task' => $schedule->hashid,
         ]);
@@ -194,7 +194,7 @@ class TaskManagementController extends Controller
     /**
      * Delete a parent task from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -205,7 +205,7 @@ class TaskManagementController extends Controller
         $schedule = $request->attributes->get('schedule');
         $this->authorize('delete-schedule', $server);
 
-        $this->repository->delete($task->id);
+        $this->repository->delete($schedule->id);
 
         return response('', 204);
     }

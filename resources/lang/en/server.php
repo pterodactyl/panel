@@ -7,10 +7,18 @@ return [
         'header_sub' => 'Control your server in real time.',
     ],
     'schedule' => [
+        'header' => 'Schedule Manager',
+        'header_sub' => 'Manage all of this server\'s schedules in one place.',
+        'current' => 'Current Schedules',
         'new' => [
             'header' => 'Create New Schedule',
             'header_sub' => 'Create a new set of scheduled tasks for this server.',
             'submit' => 'Create Schedule',
+        ],
+        'manage' => [
+            'header' => 'Manage Schedule',
+            'submit' => 'Update Schedule',
+            'delete' => 'Delete Schedule',
         ],
         'task' => [
             'time' => 'After',
@@ -18,6 +26,11 @@ return [
             'payload' => 'With Payload',
             'add_more' => 'Add Another Task',
         ],
+        'actions' => [
+            'command' => 'Send Command',
+            'power' => 'Power Action',
+        ],
+        'unnamed' => 'Unnamed Schedule',
         'setup' => 'Schedule Setup',
         'day_of_week' => 'Day of Week',
         'day_of_month' => 'Day of Month',
@@ -89,7 +102,7 @@ return [
             'file_header' => 'File Management',
             'subuser_header' => 'Subuser Management',
             'server_header' => 'Server Management',
-            'task_header' => 'Task Management',
+            'task_header' => 'Schedule Management',
             'sftp_header' => 'SFTP Management',
             'database_header' => 'Database Management',
             'power_start' => [
@@ -188,29 +201,33 @@ return [
                 'title' => 'Edit Startup Command',
                 'description' => 'Allows a user to modify startup variables for a server.',
             ],
-            'list_tasks' => [
-                'title' => 'List Tasks',
-                'description' => 'Allows a user to list all tasks (enabled and disabled) on a server.',
+            'list_schedules' => [
+                'title' => 'List Schedules',
+                'description' => 'Allows a user to list all schedules (enabled and disabled)  for this server.',
             ],
-            'view_task' => [
-                'title' => 'View Task',
-                'description' => 'Allows a user to view a specific task\'s details.',
+            'view_schedule' => [
+                'title' => 'View Schedule',
+                'description' => 'Allows a user to view a specific schedule\'s details including all of the assigned tasks.',
             ],
-            'toggle_task' => [
-                'title' => 'Toggle Task',
-                'description' => 'Allows a user to toggle a task on or off.',
+            'toggle_schedule' => [
+                'title' => 'Toggle Schedule',
+                'description' => 'Allows a user to toggle a schedule to be active or inactive.',
             ],
-            'queue_task' => [
-                'title' => 'Queue Task',
-                'description' => 'Allows a user to queue a task to run on next cycle.',
+            'queue_schedule' => [
+                'title' => 'Queue Schedule',
+                'description' => 'Allows a user to queue a schedule to run it\'s tasks on the next process cycle.',
             ],
-            'create_task' => [
-                'title' => 'Create Task',
-                'description' => 'Allows a user to create new tasks.',
+            'edit_schedule' => [
+                'title' => 'Edit Schedule',
+                'description' => 'Allows a user to edit a schedule including all of the schedule\'s tasks. This will allow the user to remove individual tasks, but not delete the schedule itself.',
             ],
-            'delete_task' => [
-                'title' => 'Delete Task',
-                'description' => 'Allows a user to delete a task.',
+            'create_schedule' => [
+                'title' => 'Create Schedule',
+                'description' => 'Allows a user to create a new schedule.',
+            ],
+            'delete_schedule' => [
+                'title' => 'Delete Schedule',
+                'description' => 'Allows a user to delete a schedule from the server.',
             ],
             'view_sftp' => [
                 'title' => 'View SFTP Details',

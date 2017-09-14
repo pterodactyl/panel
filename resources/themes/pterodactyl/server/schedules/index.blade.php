@@ -20,15 +20,15 @@
 @extends('layouts.master')
 
 @section('title')
-    @lang('server.tasks.header')
+    @lang('server.schedules.header')
 @endsection
 
 @section('content-header')
-    <h1>@lang('server.tasks.header')<small>@lang('server.tasks.header_sub')</small></h1>
+    <h1>@lang('server.schedule.header')<small>@lang('server.schedule.header_sub')</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('index') }}">@lang('strings.home')</a></li>
         <li><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></li>
-        <li class="active">@lang('navigation.server.task_management')</li>
+        <li class="active">@lang('navigation.server.schedules')</li>
     </ol>
 @endsection
 
@@ -37,9 +37,9 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">@lang('server.tasks.current')</h3>
+                <h3 class="box-title">@lang('server.schedule.current')</h3>
                 <div class="box-tools">
-                    <a href="{{ route('server.tasks.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                    <a href="{{ route('server.schedules.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
                 </div>
             </div>
             <div class="box-body table-responsive no-padding">
@@ -58,9 +58,9 @@
                             <tr @if(! $schedule->is_active)class="muted muted-hover"@endif>
                                 <td class="middle">
                                     @can('edit-schedule', $server)
-                                        <a href="{{ route('server.tasks.view', ['server' => $server->uuidShort, '$schedule' => $schedule->hashid]) }}">{{ $schedule->name }}</a>
+                                        <a href="{{ route('server.schedules.view', ['server' => $server->uuidShort, '$schedule' => $schedule->hashid]) }}">{{ $schedule->name }}</a>
                                     @else
-                                        {{ $schedule->name }}
+                                        {{ $schedule->name ?? trans('server.schedule.unnamed') }}
                                     @endcan
                                 </td>
                                 <td class="middle text-center">
@@ -90,10 +90,10 @@
                                     @endif
                                 </td>
                                 @can('delete-schedule', $server)
-                                    <td class="text-center middle"><a href="#" data-action="delete-task" data-taskid="{{ $schedule->hashid }}"><i class="fa fa-fw fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="@lang('strings.delete')"></i></a></td>
+                                    <td class="text-center middle"><a href="#" data-action="delete-schedule" data-schedule-id="{{ $schedule->hashid }}"><i class="fa fa-fw fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="@lang('strings.delete')"></i></a></td>
                                 @endcan
                                 @can('toggle-schedule', $server)
-                                    <td class="text-center middle"><a href="#" data-action="toggle-task" data-active="{{ $schedule->active }}" data-taskid="{{ $schedule->hashid }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="@lang('server.tasks.toggle')"></i></a></td>
+                                    <td class="text-center middle"><a href="#" data-action="toggle-schedule" data-active="{{ $schedule->active }}" data-schedule-id="{{ $schedule->hashid }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="@lang('server.schedules.toggle')"></i></a></td>
                                 @endcan
                             </tr>
                         @endforeach

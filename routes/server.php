@@ -91,16 +91,16 @@ Route::group(['prefix' => 'users'], function () {
 |
 */
 Route::group(['prefix' => 'schedules'], function () {
-    Route::get('/', 'Tasks\TaskManagementController@index')->name('server.tasks');
-    Route::get('/new', 'Tasks\TaskManagementController@create')->name('server.tasks.new');
-    Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->middleware(ScheduleAccess::class)->name('server.tasks.view');
+    Route::get('/', 'Tasks\TaskManagementController@index')->name('server.schedules');
+    Route::get('/new', 'Tasks\TaskManagementController@create')->name('server.schedules.new');
+    Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->middleware(ScheduleAccess::class)->name('server.schedules.view');
 
     Route::post('/new', 'Tasks\TaskManagementController@store');
 
     Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update')->middleware(ScheduleAccess::class);
-    Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware(ScheduleAccess::class)->name('server.tasks.toggle');
+    Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware(ScheduleAccess::class)->name('server.schedules.toggle');
 
-    Route::delete('/view/{schedule}/delete', 'Tasks\TaskManagementController@delete')->middleware(ScheduleAccess::class)->name('server.tasks.delete');
+    Route::delete('/view/{schedule}/delete', 'Tasks\TaskManagementController@delete')->middleware(ScheduleAccess::class)->name('server.schedules.delete');
 });
 
 /*

@@ -20,9 +20,9 @@
 
 $(document).ready(function () {
     function setupSelect2() {
-        $('select[name="chain[time_value][]"]').select2();
-        $('select[name="chain[time_interval][]"]').select2();
-        $('select[name="chain[action][]"]').select2();
+        $('select[name="tasks[time_value][]"]').select2();
+        $('select[name="tasks[time_interval][]"]').select2();
+        $('select[name="tasks[action][]"]').select2();
     }
 
     setupSelect2();

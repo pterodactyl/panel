@@ -19,24 +19,24 @@
 // SOFTWARE.
 
 $(document).ready(function () {
-    $('[data-action="delete-task"]').click(function () {
+    $('[data-action="delete-schedule"]').click(function () {
         var self = $(this);
         swal({
             type: 'error',
-            title: 'Delete Task?',
-            text: 'Are you sure you want to delete this task? There is no undo.',
+            title: 'Delete Schedule?',
+            text: 'Are you sure you want to delete this schedule? There is no undo.',
             showCancelButton: true,
             allowOutsideClick: true,
             closeOnConfirm: false,
-            confirmButtonText: 'Delete Task',
+            confirmButtonText: 'Delete Schedule',
             confirmButtonColor: '#d9534f',
             showLoaderOnConfirm: true
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('server.tasks.delete', {
+                url: Router.route('server.schedules.delete', {
                     server: Pterodactyl.server.uuidShort,
-                    task: self.data('taskid'),
+                    schedule: self.data('schedule-id'),
                 }),
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
@@ -45,7 +45,7 @@ $(document).ready(function () {
                 swal({
                     type: 'success',
                     title: '',
-                    text: 'Task has been deleted.'
+                    text: 'Schedule has been deleted.'
                 });
                 self.parent().parent().slideUp();
             }).fail(function (jqXHR) {
@@ -53,18 +53,18 @@ $(document).ready(function () {
                 swal({
                     type: 'error',
                     title: 'Whoops!',
-                    text: 'An error occured while attempting to delete this task.'
+                    text: 'An error occured while attempting to delete this schedule.'
                 });
             });
         });
     });
 
-    $('[data-action="toggle-task"]').click(function (event) {
+    $('[data-action="toggle-schedule"]').click(function (event) {
         var self = $(this);
         swal({
             type: 'info',
-            title: 'Toggle Task',
-            text: 'This will toggle the selected task.',
+            title: 'Toggle Schedule',
+            text: 'This will toggle the selected schedule.',
             showCancelButton: true,
             allowOutsideClick: true,
             closeOnConfirm: false,
@@ -73,9 +73,9 @@ $(document).ready(function () {
         }, function () {
             $.ajax({
                 method: 'POST',
-                url: Router.route('server.tasks.toggle', {
+                url: Router.route('server.schedules.toggle', {
                     server: Pterodactyl.server.uuidShort,
-                    task: self.data('taskid'),
+                    schedule: self.data('schedule-id'),
                 }),
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
@@ -84,7 +84,7 @@ $(document).ready(function () {
                 swal({
                     type: 'success',
                     title: '',
-                    text: 'Task has been toggled.'
+                    text: 'Schedule has been toggled.'
                 });
                 if (data.status !== 1) {
                     self.parent().parent().addClass('muted muted-hover');
@@ -96,7 +96,7 @@ $(document).ready(function () {
                 swal({
                     type: 'error',
                     title: 'Whoops!',
-                    text: 'An error occured while attempting to toggle this task.'
+                    text: 'An error occured while attempting to toggle this schedule.'
                 });
             });
         });

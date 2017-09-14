@@ -55,7 +55,7 @@ class Task extends Model implements CleansAttributes, ValidableContract
      */
     protected $fillable = [
         'schedule_id',
-        'squence_id',
+        'sequence_id',
         'action',
         'payload',
         'time_offset',
@@ -70,7 +70,7 @@ class Task extends Model implements CleansAttributes, ValidableContract
     protected $casts = [
         'id' => 'integer',
         'schedule_id' => 'integer',
-        'squence_id' => 'integer',
+        'sequence_id' => 'integer',
         'time_offset' => 'integer',
         'is_queued' => 'boolean',
     ];
@@ -89,7 +89,7 @@ class Task extends Model implements CleansAttributes, ValidableContract
      */
     protected static $applicationRules = [
         'schedule_id' => 'required',
-        'squence_id' => 'required',
+        'sequence_id' => 'required',
         'action' => 'required',
         'payload' => 'required',
         'time_offset' => 'required',
@@ -100,7 +100,7 @@ class Task extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'schedule_id' => 'numeric|exists:schedules,id',
-        'squence_id' => 'numeric|min:1',
+        'sequence_id' => 'numeric|min:1',
         'action' => 'string',
         'payload' => 'string',
         'time_offset' => 'numeric|between:0,900',

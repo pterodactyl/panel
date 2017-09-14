@@ -48,13 +48,13 @@ class TaskController extends Controller
         $this->authorize('list-tasks', $server);
         $server->js();
 
-        return view('server.tasks.index', [
+        return view('server.schedules.index', [
             'server' => $server,
             'node' => $server->node,
             'tasks' => $server->tasks,
             'actions' => [
-                'command' => trans('server.tasks.actions.command'),
-                'power' => trans('server.tasks.actions.power'),
+                'command' => trans('server.schedules.actions.command'),
+                'power' => trans('server.schedules.actions.power'),
             ],
         ]);
     }
@@ -72,7 +72,7 @@ class TaskController extends Controller
         $this->authorize('create-task', $server);
         $server->js();
 
-        return view('server.tasks.new', [
+        return view('server.schedules.new', [
             'server' => $server,
             'node' => $server->node,
         ]);
@@ -96,9 +96,9 @@ class TaskController extends Controller
                 '_token',
             ]));
 
-            return redirect()->route('server.tasks', $uuid);
+            return redirect()->route('server.schedules', $uuid);
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('server.tasks.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('server.schedules.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
@@ -106,7 +106,7 @@ class TaskController extends Controller
             Alert::danger('An unknown error occured while attempting to create this task.')->flash();
         }
 
-        return redirect()->route('server.tasks.new', $uuid);
+        return redirect()->route('server.schedules.new', $uuid);
     }
 
     /**

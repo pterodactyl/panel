@@ -157,12 +157,12 @@
                             @endcan
                             @can('list-tasks', $server)
                                 <li
-                                    @if(starts_with(Route::currentRouteName(), 'server.tasks'))
+                                    @if(starts_with(Route::currentRouteName(), 'server.schedules'))
                                         class="active"
                                     @endif
                                 >
-                                    <a href="{{ route('server.tasks', $server->uuidShort)}}">
-                                        <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.task_management')</span>
+                                    <a href="{{ route('server.schedules', $server->uuidShort)}}">
+                                        <i class="fa fa-clock-o"></i> <span>@lang('navigation.server.schedules')</span>
                                         <span class="pull-right-container">
                                             <span class="label label-primary pull-right">{{ \Pterodactyl\Models\Schedule::select('id')->where('server_id', $server->id)->where('is_active', 1)->count() }}</span>
                                         </span>
