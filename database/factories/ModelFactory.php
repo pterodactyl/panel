@@ -177,3 +177,23 @@ $factory->define(Pterodactyl\Models\DatabaseHost::class, function (Faker\Generat
         'node_id' => $faker->randomNumber(),
     ];
 });
+
+$factory->define(Pterodactyl\Models\Schedule::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'server_id' => $faker->randomNumber(),
+        'name' => $faker->firstName(),
+    ];
+});
+
+$factory->define(Pterodactyl\Models\Task::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'schedule_id' => $faker->randomNumber(),
+        'sequence_id' => $faker->randomNumber(1),
+        'action' => 'command',
+        'payload' => 'test command',
+        'time_offset' => 120,
+        'is_queued' => false,
+    ];
+});

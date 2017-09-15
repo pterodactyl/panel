@@ -59,16 +59,15 @@ class TaskCreationService
      */
     public function handle($schedule, array $data, $returnModel = true)
     {
-        Assert::true(($schedule instanceof Schedule || is_numeric($schedule)),
+        Assert::true(($schedule instanceof Schedule || is_digit($schedule)),
             'First argument passed to handle must be numeric or instance of \Pterodactyl\Models\Schedule, received %s.'
         );
 
         $schedule = ($schedule instanceof Schedule) ? $schedule->id : $schedule;
-        if ($data['time_interval'] === 'm' && $data['time_value'] > 15) {
+        $delay = $data['time_interval'] === 'm' ? $data['time_value'] * 60 : $data['time_value'];
+        if ($delay > 900) {
             throw new TaskIntervalTooLongException(trans('exceptions.tasks.chain_interval_too_long'));
         }
-
-        $delay = $data['time_interval'] === 'm' ? $data['time_value'] * 60 : $data['time_value'];
 
         $repository = ($returnModel) ? $this->repository : $this->repository->withoutFresh();
         $task = $repository->create([

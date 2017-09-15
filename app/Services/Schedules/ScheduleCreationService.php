@@ -77,7 +77,7 @@ class ScheduleCreationService
      */
     public function handle($server, array $data, array $tasks = [])
     {
-        Assert::true(($server instanceof Server || is_numeric($server)),
+        Assert::true(($server instanceof Server || is_digit($server)),
             'First argument passed to handle must be numeric or instance of \Pterodactyl\Models\Server, received %s.'
         );
 
