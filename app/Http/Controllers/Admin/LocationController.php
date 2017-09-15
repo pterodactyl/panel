@@ -26,10 +26,12 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Pterodactyl\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Services\LocationService;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\LocationFormRequest;
+use Pterodactyl\Services\Locations\LocationUpdateService;
+use Pterodactyl\Services\Locations\LocationCreationService;
+use Pterodactyl\Services\Locations\LocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationController extends Controller
@@ -40,30 +42,46 @@ class LocationController extends Controller
     protected $alert;
 
     /**
+     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     */
+    protected $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Locations\LocationDeletionService
+     */
+    protected $deletionService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\\LocationService
+     * @var \Pterodactyl\Services\Locations\LocationUpdateService
      */
-    protected $service;
+    protected $updateService;
 
     /**
      * LocationController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                             $alert
+     * @param \Pterodactyl\Services\Locations\LocationCreationService       $creationService
+     * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\LocationService                         $service
+     * @param \Pterodactyl\Services\Locations\LocationUpdateService         $updateService
      */
     public function __construct(
         AlertsMessageBag $alert,
+        LocationCreationService $creationService,
+        LocationDeletionService $deletionService,
         LocationRepositoryInterface $repository,
-        LocationService $service
+        LocationUpdateService $updateService
     ) {
         $this->alert = $alert;
+        $this->creationService = $creationService;
+        $this->deletionService = $deletionService;
         $this->repository = $repository;
-        $this->service = $service;
+        $this->updateService = $updateService;
     }
 
     /**
@@ -104,7 +122,7 @@ class LocationController extends Controller
      */
     public function create(LocationFormRequest $request)
     {
-        $location = $this->service->create($request->normalize());
+        $location = $this->creationService->handle($request->normalize());
         $this->alert->success('Location was created successfully.')->flash();
 
         return redirect()->route('admin.locations.view', $location->id);
@@ -126,7 +144,7 @@ class LocationController extends Controller
             return $this->delete($location);
         }
 
-        $this->service->update($location->id, $request->normalize());
+        $this->updateService->handle($location->id, $request->normalize());
         $this->alert->success('Location was updated successfully.')->flash();
 
         return redirect()->route('admin.locations.view', $location->id);
@@ -144,7 +162,7 @@ class LocationController extends Controller
     public function delete(Location $location)
     {
         try {
-            $this->service->delete($location->id);
+            $this->deletionService->handle($location->id);
 
             return redirect()->route('admin.locations');
         } catch (DisplayException $ex) {

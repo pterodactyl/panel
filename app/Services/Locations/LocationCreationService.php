@@ -22,43 +22,37 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Services\Locations;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
+class LocationCreationService
 {
     /**
-     * Return locations with a count of nodes and servers attached to it.
-     *
-     * @return mixed
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
-    public function getAllWithDetails();
+    protected $repository;
 
     /**
-     * Return all of the available locations with the nodes as a relationship.
+     * LocationCreationService constructor.
      *
-     * @return \Illuminate\Support\Collection
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
      */
-    public function getAllWithNodes();
+    public function __construct(LocationRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Return all of the nodes and their respective count of servers for a location.
+     * Create a new location.
      *
-     * @param int $id
-     * @return mixed
+     * @param array $data
+     * @return \Pterodactyl\Models\Location
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function getWithNodes($id);
-
-    /**
-     * Return a location and the count of nodes in that location.
-     *
-     * @param int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodeCount($id);
+    public function handle(array $data)
+    {
+        return $this->repository->create($data);
+    }
 }

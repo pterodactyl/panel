@@ -22,43 +22,10 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Exceptions\Service\Location;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Pterodactyl\Exceptions\DisplayException;
 
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
+class HasActiveNodesException extends DisplayException
 {
-    /**
-     * Return locations with a count of nodes and servers attached to it.
-     *
-     * @return mixed
-     */
-    public function getAllWithDetails();
-
-    /**
-     * Return all of the available locations with the nodes as a relationship.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllWithNodes();
-
-    /**
-     * Return all of the nodes and their respective count of servers for a location.
-     *
-     * @param int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodes($id);
-
-    /**
-     * Return a location and the count of nodes in that location.
-     *
-     * @param int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodeCount($id);
 }

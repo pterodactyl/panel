@@ -22,43 +22,42 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Pterodactyl\Services\Locations;
 
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
+class LocationUpdateService
 {
     /**
-     * Return locations with a count of nodes and servers attached to it.
-     *
-     * @return mixed
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
-    public function getAllWithDetails();
+    protected $repository;
 
     /**
-     * Return all of the available locations with the nodes as a relationship.
+     * LocationUpdateService constructor.
      *
-     * @return \Illuminate\Support\Collection
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
      */
-    public function getAllWithNodes();
+    public function __construct(LocationRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Return all of the nodes and their respective count of servers for a location.
+     * Update an existing location.
      *
-     * @param int $id
-     * @return mixed
+     * @param int|\Pterodactyl\Models\Location $location
+     * @param array                            $data
+     * @return \Pterodactyl\Models\Location
      *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithNodes($id);
+    public function handle($location, array $data)
+    {
+        $location = ($location instanceof Location) ? $location->id : $location;
 
-    /**
-     * Return a location and the count of nodes in that location.
-     *
-     * @param int $id
-     * @return mixed
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithNodeCount($id);
+        return $this->repository->update($location, $data);
+    }
 }

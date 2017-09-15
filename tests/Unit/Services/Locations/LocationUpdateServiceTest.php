@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,14 +22,15 @@
  * SOFTWARE.
  */
 
-namespace Tests\Unit\Services;
+namespace Tests\Unit\Services\Locations;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\LocationService;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
-class LocationServiceTest extends TestCase
+class LocationUpdateServiceTest extends TestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
@@ -37,7 +38,7 @@ class LocationServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\LocationService
+     * @var \Pterodactyl\Services\Locations\LocationUpdateService
      */
     protected $service;
 
@@ -50,52 +51,32 @@ class LocationServiceTest extends TestCase
 
         $this->repository = m::mock(LocationRepositoryInterface::class);
 
-        $this->service = new LocationService($this->repository);
+        $this->service = new LocationUpdateService($this->repository);
     }
 
     /**
-     * Test that creating a location returns the correct information.
+     * Test location is updated.
      */
-    public function test_create_location()
+    public function testLocationIsUpdated()
     {
-        $data = ['short' => 'shortCode', 'long' => 'longCode'];
+        $model = factory(Location::class)->make(['id' => 123]);
+        $this->repository->shouldReceive('update')->with(123, ['test_data' => 'test_value'])->once()->andReturn($model);
 
-        $this->repository->shouldReceive('create')->with($data)->once()->andReturn((object) $data);
-
-        $response = $this->service->create($data);
-
-        $this->assertNotNull($response);
-        $this->assertObjectHasAttribute('short', $response);
-        $this->assertObjectHasAttribute('long', $response);
-        $this->assertEquals('shortCode', $response->short);
-        $this->assertEquals('longCode', $response->long);
+        $response = $this->service->handle($model->id, ['test_data' => 'test_value']);
+        $this->assertNotEmpty($response);
+        $this->assertInstanceOf(Location::class, $response);
     }
 
     /**
-     * Test that updating a location updates it correctly.
+     * Test that a model can be passed in place of an ID.
      */
-    public function test_update_location()
+    public function testModelCanBePassedToFunction()
     {
-        $data = ['short' => 'newShort'];
+        $model = factory(Location::class)->make(['id' => 123]);
+        $this->repository->shouldReceive('update')->with(123, ['test_data' => 'test_value'])->once()->andReturn($model);
 
-        $this->repository->shouldReceive('update')->with(1, $data)->once()->andReturn((object) $data);
-
-        $response = $this->service->update(1, $data);
-
-        $this->assertNotNull($response);
-        $this->assertObjectHasAttribute('short', $response);
-        $this->assertEquals('newShort', $response->short);
-    }
-
-    /**
-     * Test that a location deletion returns valid data.
-     */
-    public function test_delete_location()
-    {
-        $this->repository->shouldReceive('deleteIfNoNodes')->with(1)->once()->andReturn(true);
-
-        $response = $this->service->delete(1);
-
-        $this->assertTrue($response);
+        $response = $this->service->handle($model, ['test_data' => 'test_value']);
+        $this->assertNotEmpty($response);
+        $this->assertInstanceOf(Location::class, $response);
     }
 }

@@ -25,7 +25,6 @@
 namespace Pterodactyl\Console\Commands;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Repositories\LocationRepository;
 
 class AddLocation extends Command
 {

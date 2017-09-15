@@ -25,7 +25,6 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Location;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
@@ -45,25 +44,6 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     public function model()
     {
         return Location::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @todo remove this, do logic in service
-     */
-    public function deleteIfNoNodes($id)
-    {
-        $location = $this->getBuilder()->with('nodes')->find($id);
-
-        if (! $location) {
-            throw new RecordNotFoundException();
-        }
-
-        if ($location->nodes_count > 0) {
-            throw new DisplayException('Cannot delete a location that has nodes assigned to it.');
-        }
-
-        return $location->delete();
     }
 
     /**
@@ -88,9 +68,21 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     public function getWithNodes($id)
     {
         $instance = $this->getBuilder()->with('nodes.servers')->find($id, $this->getColumns());
-
         if (! $instance) {
-            throw new RecordNotFoundException();
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithNodeCount($id)
+    {
+        $instance = $this->getBuilder()->withCount('nodes')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
         }
 
         return $instance;

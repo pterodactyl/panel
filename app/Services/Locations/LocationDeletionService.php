@@ -22,64 +22,57 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services;
+namespace Pterodactyl\Services\Locations;
 
+use Webmozart\Assert\Assert;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
 
-class LocationService
+class LocationDeletionService
 {
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    protected $nodeRepository;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
-     * LocationService constructor.
+     * LocationDeletionService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface     $nodeRepository
      */
-    public function __construct(LocationRepositoryInterface $repository)
-    {
+    public function __construct(
+        LocationRepositoryInterface $repository,
+        NodeRepositoryInterface $nodeRepository
+    ) {
+        $this->nodeRepository = $nodeRepository;
         $this->repository = $repository;
     }
 
     /**
-     * Create the location in the database and return it.
+     * Delete an existing location.
      *
-     * @param array $data
-     * @return \Pterodactyl\Models\Location
+     * @param int $location
+     * @return int|null
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
-    public function create(array $data)
+    public function handle($location)
     {
-        return $this->repository->create($data);
-    }
+        Assert::integerish($location, 'First argument passed to handle must be numeric, received %s.');
 
-    /**
-     * Update location model in the DB.
-     *
-     * @param int   $id
-     * @param array $data
-     * @return \Pterodactyl\Models\Location
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-    public function update($id, array $data)
-    {
-        return $this->repository->update($id, $data);
-    }
+        $count = $this->nodeRepository->findCountWhere([['location_id', '=', $location]]);
+        if ($count > 0) {
+            throw new HasActiveNodesException(trans('exceptions.locations.has_nodes'));
+        }
 
-    /**
-     * Delete a model from the DB.
-     *
-     * @param int $id
-     * @return bool
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     */
-    public function delete($id)
-    {
-        return $this->repository->deleteIfNoNodes($id);
+        return $this->repository->delete($location);
     }
 }
