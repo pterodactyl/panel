@@ -48,9 +48,7 @@ class DeleteLocationCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'p:location:delete
-                            {--minimal : Passing this flag will hide the list of current locations.}
-                            {--short= : The short code of the location to delete.}';
+    protected $signature = 'p:location:delete {--short= : The short code of the location to delete.}';
 
     /**
      * DeleteLocationCommand constructor.
@@ -76,7 +74,7 @@ class DeleteLocationCommand extends Command
      */
     public function handle()
     {
-        $this->locations = $this->locations ?? $this->repository->getAllWithNodes();
+        $this->locations = $this->locations ?? $this->repository->all();
         $short = $this->option('short') ?? $this->anticipate(
             trans('command/messages.location.ask_short'), $this->locations->pluck('short')->toArray()
         );
@@ -84,14 +82,14 @@ class DeleteLocationCommand extends Command
         $location = $this->locations->where('short', $short)->first();
         if (is_null($location)) {
             $this->error(trans('command/messages.location.no_location_found'));
-            if (is_null($this->option('short')) && ! $this->option('no-interaction')) {
+            if ($this->input->isInteractive()) {
                 $this->handle();
             }
 
             return;
         }
 
-        $this->line(trans('command/messages.location.deleted'));
         $this->deletionService->handle($location->id);
+        $this->line(trans('command/messages.location.deleted'));
     }
 }
