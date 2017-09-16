@@ -37,6 +37,7 @@ return [
         'confirm_delete' => 'Are you sure you want to delete this user from the Panel?',
         'no_users_found' => 'No users were found for the search term provided.',
         'multiple_found' => 'Multiple accounts were found for the user provided, unable to delete a user because of the --no-interaction flag.',
+        'ask_admin' => 'Is this user an administrator?',
         'ask_email' => 'Email Address',
         'ask_username' => 'Username',
         'ask_name_first' => 'First Name',

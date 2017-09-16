@@ -34,7 +34,10 @@ class MakeUserCommand extends Command
      */
     protected $creationService;
 
-    protected $signature = 'p:user:make {--email=} {--username=} {--name-first=} {--name-last=} {--password=} {--no-password}';
+    /**
+     * @var string
+     */
+    protected $signature = 'p:user:make {--email=} {--username=} {--name-first=} {--name-last=} {--password=} {--admin=} {--no-password}';
 
     /**
      * MakeUserCommand constructor.
@@ -56,6 +59,7 @@ class MakeUserCommand extends Command
      */
     public function handle()
     {
+        $root_admin = $this->option('admin') ?? $this->confirm(trans('command/messages.user.ask_admin'));
         $email = $this->option('email') ?? $this->ask(trans('command/messages.user.ask_email'));
         $username = $this->option('username') ?? $this->ask(trans('command/messages.user.ask_username'));
         $name_first = $this->option('name-first') ?? $this->ask(trans('command/messages.user.ask_name_first'));
@@ -67,12 +71,13 @@ class MakeUserCommand extends Command
             $password = $this->secret(trans('command/messages.user.ask_password'));
         }
 
-        $user = $this->creationService->handle(compact('email', 'username', 'name_first', 'name_last', 'password'));
+        $user = $this->creationService->handle(compact('email', 'username', 'name_first', 'name_last', 'password', 'root_admin'));
         $this->table(['Field', 'Value'], [
             ['UUID', $user->uuid],
             ['Email', $user->email],
             ['Username', $user->username],
             ['Name', $user->name],
+            ['Admin', $user->root_admin ? 'Yes' : 'No'],
         ]);
     }
 }

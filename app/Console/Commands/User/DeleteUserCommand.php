@@ -51,6 +51,12 @@ class DeleteUserCommand extends Command
      */
     protected $signature = 'p:user:delete {--user=}';
 
+    /**
+     * DeleteUserCommand constructor.
+     *
+     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     */
     public function __construct(
         UserDeletionService $deletionService,
         UserRepositoryInterface $repository
