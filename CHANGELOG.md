@@ -3,14 +3,24 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## Unreleased
+## v0.7.0 (Derelict Dermodactylus)
 ### Added
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
+* Added test suite for core aspects of the project (Services, Repositories, Commands, etc.) to lessen the chances for bugs to escape into releases.
+* New CLI command to disabled 2-Factor Auth. on an account if necessary.
+* Ability to delete users and locations via the CLI.
+
+### Changed
+* Theme colors and login pages updated to give a more unique feel to the project.
+* Massive overhaul to the backend code that allows for much easier updating of core functionality as well as support for better testing. This overhaul also reduces complex code logic, and allows for faster response times in the application.
+* CLI commands updated to be easier to type, now stored in the `p:` namespace.
 
 ### Fixed
+* Unable to change the daemon secret for a server via the Admin CP.
 * Using default value in rules when creating a new variable if the rules is empty.
+* Fixes a design-flaw in the allocation management part of nodes that would run a MySQL query for each port being allocated. This behavior is now changed to only execute one query to add multiple ports at once.
 
 ## v0.6.4 (Courageous Carniadactylus)
 ### Fixed
