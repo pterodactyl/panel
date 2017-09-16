@@ -30,6 +30,7 @@ use Illuminate\Database\Query\Expression;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 abstract class EloquentRepository extends Repository implements RepositoryInterface
 {
@@ -106,7 +107,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         $instance = $this->getBuilder()->where($fields)->first($this->getColumns());
 
         if (! $instance) {
-            throw new RecordNotFoundException();
+            throw new RecordNotFoundException;
         }
 
         return $instance;
@@ -200,7 +201,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function all()
     {
-        return $this->getBuilder()->get($this->getColumns());
+        $instance = $this->getBuilder();
+        if (interface_exists(SearchableInterface::class)) {
+            $instance = $instance->search($this->searchTerm);
+        }
+
+        return $instance->get($this->getColumns());
     }
 
     /**

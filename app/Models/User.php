@@ -301,6 +301,16 @@ class User extends Model implements
     }
 
     /**
+     * Return a concated result for the accounts full name.
+     *
+     * @return string
+     */
+    public function getNameAttribute()
+    {
+        return $this->name_first . ' ' . $this->name_last;
+    }
+
+    /**
      * Returns all permissions that a user has.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough

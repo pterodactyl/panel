@@ -3,7 +3,11 @@
 namespace Pterodactyl\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Pterodactyl\Console\Commands\User\MakeUserCommand;
+use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
+use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,17 +17,21 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \Pterodactyl\Console\Commands\MakeUser::class,
-        \Pterodactyl\Console\Commands\ShowVersion::class,
-        \Pterodactyl\Console\Commands\UpdateEnvironment::class,
-        \Pterodactyl\Console\Commands\RunTasks::class,
-        \Pterodactyl\Console\Commands\ClearTasks::class,
-        \Pterodactyl\Console\Commands\ClearServices::class,
-        \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
-        \Pterodactyl\Console\Commands\CleanServiceBackup::class,
-        \Pterodactyl\Console\Commands\AddNode::class,
-        \Pterodactyl\Console\Commands\AddLocation::class,
-        \Pterodactyl\Console\Commands\RebuildServer::class,
+        DeleteLocationCommand::class,
+        DeleteUserCommand::class,
+        MakeLocationCommand::class,
+        MakeUserCommand::class,
+//        \Pterodactyl\Console\Commands\MakeUser::class,
+//        \Pterodactyl\Console\Commands\ShowVersion::class,
+//        \Pterodactyl\Console\Commands\UpdateEnvironment::class,
+//        \Pterodactyl\Console\Commands\RunTasks::class,
+//        \Pterodactyl\Console\Commands\ClearTasks::class,
+//        \Pterodactyl\Console\Commands\ClearServices::class,
+//        \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
+//        \Pterodactyl\Console\Commands\CleanServiceBackup::class,
+//        \Pterodactyl\Console\Commands\AddNode::class,
+//        \Pterodactyl\Console\Commands\MakeLocationCommand::class,
+//        \Pterodactyl\Console\Commands\RebuildServer::class,
     ];
 
     /**

@@ -22,51 +22,56 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Console\Commands;
+namespace Pterodactyl\Console\Commands\Location;
 
 use Illuminate\Console\Command;
+use Pterodactyl\Services\Locations\LocationCreationService;
 
-class AddLocation extends Command
+class MakeLocationCommand extends Command
 {
-    protected $data = [];
+    /**
+     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     */
+    protected $creationService;
 
     /**
-     * The name and signature of the console command.
-     *
      * @var string
      */
-    protected $signature = 'pterodactyl:location
-                             {--short= : The shortcode name of this location (ex. us1).}
-                             {--long= : A longer description of this location.}';
+    protected $signature = 'p:location:make
+                            {--short= : The shortcode name of this location (ex. us1).}
+                            {--long= : A longer description of this location.}';
 
     /**
-     * The console command description.
-     *
      * @var string
      */
     protected $description = 'Creates a new location on the system via the CLI.';
 
     /**
      * Create a new command instance.
+     *
+     * @param \Pterodactyl\Services\Locations\LocationCreationService $creationService
      */
-    public function __construct()
+    public function __construct(LocationCreationService $creationService)
     {
         parent::__construct();
+
+        $this->creationService = $creationService;
     }
 
     /**
-     * Execute the console command.
+     * Handle the command execution process.
      *
-     * @return mixed
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function handle()
     {
-        $this->data['short'] = (is_null($this->option('short'))) ? $this->ask('Location Short Code') : $this->option('short');
-        $this->data['long'] = (is_null($this->option('long'))) ? $this->ask('Location Description') : $this->option('long');
+        $short = $this->option('short') ?? $this->ask(trans('command/messages.location.ask_short'));
+        $long = $this->option('long') ?? $this->ask(trans('command/messages.location.ask_long'));
 
-        $repo = new LocationRepository;
-        $id = $repo->create($this->data);
-
-        $this->info('Location ' . $this->data['short'] . ' created with ID: ' . $id);
+        $location = $this->creationService->handle(compact('short', 'long'));
+        $this->line(trans('command/messages.location.created', [
+            'name' => $location->short,
+            'id' => $location->id,
+        ]));
     }
 }
