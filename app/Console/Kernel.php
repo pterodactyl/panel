@@ -7,6 +7,7 @@ use Pterodactyl\Console\Commands\User\MakeUserCommand;
 use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
+use Pterodactyl\Console\Commands\User\DisableTwoFactorCommand;
 use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
 
 class Kernel extends ConsoleKernel
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         DeleteLocationCommand::class,
         DeleteUserCommand::class,
+        DisableTwoFactorCommand::class,
         MakeLocationCommand::class,
         MakeUserCommand::class,
 //        \Pterodactyl\Console\Commands\MakeUser::class,

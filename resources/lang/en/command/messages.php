@@ -45,5 +45,10 @@ return [
         'ask_password' => 'Password',
         'ask_password_tip' => 'If you would like to create an account with a random password emailed to the user, re-run this command (CTRL+C) and pass the `--no-password` flag.',
         'ask_password_help' => 'Passwords must be at least 8 characters in length and contain at least one capital letter and number.',
+        '2fa_help_text' => [
+            'This command will disable 2-factor authentication for a user\'s account if it is enabled. This should only be used as an account recovery command if the user is locked out of their account.',
+            'If this is not what you wanted to do, press CTRL+C to exit this process.',
+        ],
+        '2fa_disabled' => '2-Factor authentication has been disabled for :email.',
     ],
 ];
