@@ -79,14 +79,14 @@ class DeleteUserCommand extends Command
         $results = $this->repository->search($search)->all();
         if (count($results) < 1) {
             $this->error(trans('command/messages.user.no_users_found'));
-            if (! $this->option('no-interaction')) {
+            if ($this->input->isInteractive()) {
                 return $this->handle();
             }
 
             return false;
         }
 
-        if (! $this->option('no-interaction')) {
+        if ($this->input->isInteractive()) {
             $tableValues = [];
             foreach ($results as $user) {
                 $tableValues[] = [$user->id, $user->email, $user->name];
@@ -106,7 +106,7 @@ class DeleteUserCommand extends Command
             $deleteUser = $results->first();
         }
 
-        if ($this->confirm(trans('command/messages.user.confirm_delete')) || $this->option('no-interaction')) {
+        if ($this->confirm(trans('command/messages.user.confirm_delete')) || ! $this->input->isInteractive()) {
             $this->deletionService->handle($deleteUser);
             $this->info(trans('command/messages.user.deleted'));
         }

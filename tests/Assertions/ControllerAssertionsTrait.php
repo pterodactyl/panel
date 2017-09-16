@@ -26,7 +26,7 @@ namespace Tests\Assertions;
 
 use Illuminate\View\View;
 use Illuminate\Http\Response;
-use PHPUnit_Framework_Assert;
+use PHPUnit\Framework\Assert;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
@@ -39,7 +39,7 @@ trait ControllerAssertionsTrait
      */
     public function assertIsViewResponse($response)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(View::class, $response);
+        Assert::assertInstanceOf(View::class, $response);
     }
 
     /**
@@ -49,7 +49,7 @@ trait ControllerAssertionsTrait
      */
     public function assertIsRedirectResponse($response)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(RedirectResponse::class, $response);
+        Assert::assertInstanceOf(RedirectResponse::class, $response);
     }
 
     /**
@@ -59,7 +59,7 @@ trait ControllerAssertionsTrait
      */
     public function assertIsJsonResponse($response)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(JsonResponse::class, $response);
+        Assert::assertInstanceOf(JsonResponse::class, $response);
     }
 
     /**
@@ -69,7 +69,7 @@ trait ControllerAssertionsTrait
      */
     public function assertIsResponse($response)
     {
-        PHPUnit_Framework_Assert::assertInstanceOf(Response::class, $response);
+        Assert::assertInstanceOf(Response::class, $response);
     }
 
     /**
@@ -80,7 +80,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewNameEquals($name, $view)
     {
-        PHPUnit_Framework_Assert::assertEquals($name, $view->getName());
+        Assert::assertEquals($name, $view->getName());
     }
 
     /**
@@ -91,7 +91,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewNameNotEquals($name, $view)
     {
-        PHPUnit_Framework_Assert::assertNotEquals($name, $view->getName());
+        Assert::assertNotEquals($name, $view->getName());
     }
 
     /**
@@ -103,12 +103,12 @@ trait ControllerAssertionsTrait
     public function assertViewHasKey($attribute, $view)
     {
         if (str_contains($attribute, '.')) {
-            PHPUnit_Framework_Assert::assertNotEquals(
+            Assert::assertNotEquals(
                 '__TEST__FAIL',
                 array_get($view->getData(), $attribute, '__TEST__FAIL')
             );
         } else {
-            PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $view->getData());
+            Assert::assertArrayHasKey($attribute, $view->getData());
         }
     }
 
@@ -121,12 +121,12 @@ trait ControllerAssertionsTrait
     public function assertViewNotHasKey($attribute, $view)
     {
         if (str_contains($attribute, '.')) {
-            PHPUnit_Framework_Assert::assertEquals(
+            Assert::assertEquals(
                 '__TEST__PASS',
                 array_get($view->getData(), $attribute, '__TEST__PASS')
             );
         } else {
-            PHPUnit_Framework_Assert::assertArrayNotHasKey($attribute, $view->getData());
+            Assert::assertArrayNotHasKey($attribute, $view->getData());
         }
     }
 
@@ -139,7 +139,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewKeyEquals($attribute, $value, $view)
     {
-        PHPUnit_Framework_Assert::assertEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
+        Assert::assertEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**
@@ -151,7 +151,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewKeyNotEquals($attribute, $value, $view)
     {
-        PHPUnit_Framework_Assert::assertNotEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
+        Assert::assertNotEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**
@@ -163,7 +163,7 @@ trait ControllerAssertionsTrait
      */
     public function assertRedirectRouteEquals($route, $response, array $args = [])
     {
-        PHPUnit_Framework_Assert::assertEquals(route($route, $args), $response->getTargetUrl());
+        Assert::assertEquals(route($route, $args), $response->getTargetUrl());
     }
 
     /**
@@ -174,7 +174,7 @@ trait ControllerAssertionsTrait
      */
     public function assertRedirectUrlEquals($url, $response)
     {
-        PHPUnit_Framework_Assert::assertEquals($url, $response->getTargetUrl());
+        Assert::assertEquals($url, $response->getTargetUrl());
     }
 
     /**
@@ -185,7 +185,7 @@ trait ControllerAssertionsTrait
      */
     public function assertResponseCodeEquals($code, $response)
     {
-        PHPUnit_Framework_Assert::assertEquals($code, $response->getStatusCode());
+        Assert::assertEquals($code, $response->getStatusCode());
     }
 
     /**
@@ -196,7 +196,7 @@ trait ControllerAssertionsTrait
      */
     public function assertResponseCodeNotEquals($code, $response)
     {
-        PHPUnit_Framework_Assert::assertNotEquals($code, $response->getStatusCode());
+        Assert::assertNotEquals($code, $response->getStatusCode());
     }
 
     /**
@@ -206,7 +206,7 @@ trait ControllerAssertionsTrait
      */
     public function assertResponseHasJsonHeaders($response)
     {
-        PHPUnit_Framework_Assert::assertEquals('application/json', $response->headers->get('content-type'));
+        Assert::assertEquals('application/json', $response->headers->get('content-type'));
     }
 
     /**
@@ -217,6 +217,6 @@ trait ControllerAssertionsTrait
      */
     public function assertResponseJsonEquals($json, $response)
     {
-        PHPUnit_Framework_Assert::assertEquals(is_array($json) ? json_encode($json) : $json, $response->getContent());
+        Assert::assertEquals(is_array($json) ? json_encode($json) : $json, $response->getContent());
     }
 }

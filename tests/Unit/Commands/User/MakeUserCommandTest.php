@@ -29,6 +29,7 @@ use Tests\TestCase;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Users\UserCreationService;
 use Symfony\Component\Console\Tester\CommandTester;
+use Pterodactyl\Console\Commands\User\MakeUserCommand;
 
 class MakeUserCommandTest extends TestCase
 {
@@ -51,7 +52,7 @@ class MakeUserCommandTest extends TestCase
 
         $this->creationService = m::mock(UserCreationService::class);
 
-        $this->command = m::mock('\Pterodactyl\Console\Commands\User\MakeUserCommand[confirm, ask, secret]', [$this->creationService]);
+        $this->command = new MakeUserCommand($this->creationService);
         $this->command->setLaravel($this->app);
     }
 
@@ -61,13 +62,6 @@ class MakeUserCommandTest extends TestCase
     public function testCommandWithNoPassedOptions()
     {
         $user = factory(User::class)->make(['root_admin' => true]);
-
-        $this->command->shouldReceive('confirm')->with(trans('command/messages.user.ask_admin'))->once()->andReturn($user->root_admin);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_email'))->once()->andReturn($user->email);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_username'))->once()->andReturn($user->username);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_name_first'))->once()->andReturn($user->name_first);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_name_last'))->once()->andReturn($user->name_last);
-        $this->command->shouldReceive('secret')->with(trans('command/messages.user.ask_password'))->once()->andReturn('Password123');
 
         $this->creationService->shouldReceive('handle')->with([
             'email' => $user->email,
@@ -79,6 +73,9 @@ class MakeUserCommandTest extends TestCase
         ])->once()->andReturn($user);
 
         $response = new CommandTester($this->command);
+        $response->setInputs([
+            'yes', $user->email, $user->username, $user->name_first, $user->name_last, 'Password123',
+        ]);
         $response->execute([]);
 
         $display = $response->getDisplay();
@@ -98,13 +95,6 @@ class MakeUserCommandTest extends TestCase
     {
         $user = factory(User::class)->make(['root_admin' => true]);
 
-        $this->command->shouldReceive('confirm')->with(trans('command/messages.user.ask_admin'))->once()->andReturn($user->root_admin);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_email'))->once()->andReturn($user->email);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_username'))->once()->andReturn($user->username);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_name_first'))->once()->andReturn($user->name_first);
-        $this->command->shouldReceive('ask')->with(trans('command/messages.user.ask_name_last'))->once()->andReturn($user->name_last);
-        $this->command->shouldNotReceive('secret');
-
         $this->creationService->shouldReceive('handle')->with([
             'email' => $user->email,
             'username' => $user->username,
@@ -115,6 +105,9 @@ class MakeUserCommandTest extends TestCase
         ])->once()->andReturn($user);
 
         $response = new CommandTester($this->command);
+        $response->setInputs([
+            'yes', $user->email, $user->username, $user->name_first, $user->name_last,
+        ]);
         $response->execute(['--no-password' => true]);
 
         $display = $response->getDisplay();
@@ -128,10 +121,6 @@ class MakeUserCommandTest extends TestCase
     public function testCommandWithOptionsPassed()
     {
         $user = factory(User::class)->make(['root_admin' => false]);
-
-        $this->command->shouldNotReceive('confirm');
-        $this->command->shouldNotReceive('ask');
-        $this->command->shouldNotReceive('secret');
 
         $this->creationService->shouldReceive('handle')->with([
             'email' => $user->email,
