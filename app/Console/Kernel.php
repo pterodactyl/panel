@@ -3,6 +3,7 @@
 namespace Pterodactyl\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Pterodactyl\Console\Commands\InfoCommand;
 use Pterodactyl\Console\Commands\User\MakeUserCommand;
 use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         DeleteLocationCommand::class,
         DeleteUserCommand::class,
         DisableTwoFactorCommand::class,
+        InfoCommand::class,
         MakeLocationCommand::class,
         MakeUserCommand::class,
 //        \Pterodactyl\Console\Commands\MakeUser::class,
