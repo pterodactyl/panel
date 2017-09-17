@@ -52,4 +52,15 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     {
         return $this->getBuilder()->with('tasks')->find($schedule, $this->getColumns());
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSchedulesToProcess($timestamp)
+    {
+        return $this->getBuilder()->with('tasks')
+            ->where('is_active', true)
+            ->where('next_run_at', '<=', $timestamp)
+            ->get($this->getColumns());
+    }
 }

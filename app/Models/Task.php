@@ -27,12 +27,13 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
 class Task extends Model implements CleansAttributes, ValidableContract
 {
-    use Eloquence, Validable;
+    use BelongsToThrough, Eloquence, Validable;
 
     /**
      * The table associated with the model.
@@ -130,14 +131,11 @@ class Task extends Model implements CleansAttributes, ValidableContract
     /**
      * Return the server a task is assigned to, acts as a belongsToThrough.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
+     * @throws \Exception
      */
     public function server()
     {
-        if ($schedule = $this->schedule) {
-            return $schedule->server();
-        } else {
-            throw new \InvalidArgumentException('Instance of Task must have an associated Schedule in the database.');
-        }
+        return $this->belongsToThrough(Server::class, Schedule::class);
     }
 }

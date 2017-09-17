@@ -51,4 +51,7 @@ return [
         ],
         '2fa_disabled' => '2-Factor authentication has been disabled for :email.',
     ],
+    'schedule' => [
+        'output_line' => 'Dispatching job for first task in `:schedule` (:hash).',
+    ],
 ];

@@ -41,4 +41,12 @@ interface ScheduleRepositoryInterface extends RepositoryInterface
      * @return \Illuminate\Support\Collection
      */
     public function getScheduleWithTasks($schedule);
+
+    /**
+     * Return all of the schedules that should be processed.
+     *
+     * @param string $timestamp
+     * @return \Illuminate\Support\Collection
+     */
+    public function getSchedulesToProcess($timestamp);
 }

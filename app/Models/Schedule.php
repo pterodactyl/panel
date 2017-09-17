@@ -117,8 +117,8 @@ class Schedule extends Model implements CleansAttributes, ValidableContract
         'cron_minute' => 'string',
         'is_active' => 'boolean',
         'is_processing' => 'boolean',
-        'last_run_at' => 'nullable|timestamp',
-        'next_run_at' => 'nullable|timestamp',
+        'last_run_at' => 'nullable|date',
+        'next_run_at' => 'nullable|date',
     ];
 
     /**

@@ -22,48 +22,54 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Pterodactyl\Services\Schedules\Tasks;
 
 use Pterodactyl\Models\Task;
-use Webmozart\Assert\Assert;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
-class TaskRepository extends EloquentRepository implements TaskRepositoryInterface
+class RunTaskService
 {
     /**
-     * {@inheritdoc}
+     * @var \Illuminate\Contracts\Bus\Dispatcher
      */
-    public function model()
-    {
-        return Task::class;
+    protected $dispatcher;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * RunTaskService constructor.
+     *
+     * @param \Illuminate\Contracts\Bus\Dispatcher                      $dispatcher
+     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $repository
+     */
+    public function __construct(
+        Dispatcher $dispatcher,
+        TaskRepositoryInterface $repository
+    ) {
+        $this->dispatcher = $dispatcher;
+        $this->repository = $repository;
     }
 
     /**
-     * {@inheritdoc}
+     * Push a single task onto the queue.
+     *
+     * @param int|\Pterodactyl\Models\Task $task
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getTaskWithServer($id)
+    public function handle($task)
     {
-        Assert::integerish($id, 'First argument passed to getTaskWithServer must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with('server')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
+        if (! $task instanceof Task) {
+            $task = $this->repository->find($task);
         }
 
-        return $instance;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getNextTask($schedule, $index)
-    {
-        Assert::integerish($schedule, 'First argument passed to getNextTask must be integer, received %s.');
-        Assert::integerish($index, 'Second argument passed to getNextTask must be integer, received %s.');
-
-        return $this->getBuilder()->where('schedule_id', '=', $schedule)
-            ->where('sequence_id', '=', $index + 1)
-            ->first($this->getColumns());
+        $this->repository->update($task->id, ['is_queued' => true]);
+        $this->dispatcher->dispatch((new RunTaskJob($task->id, $task->schedule_id))->delay($task->time_offset));
     }
 }

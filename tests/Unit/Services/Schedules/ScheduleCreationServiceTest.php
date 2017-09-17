@@ -42,6 +42,11 @@ class ScheduleCreationServiceTest extends TestCase
     protected $connection;
 
     /**
+     * @var \Cron\CronExpression
+     */
+    protected $cron;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
@@ -64,6 +69,7 @@ class ScheduleCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->connection = m::mock(ConnectionInterface::class);
+        $this->cron = m::mock('overload:\Cron\CronExpression');
         $this->repository = m::mock(ScheduleRepositoryInterface::class);
         $this->taskCreationService = m::mock(TaskCreationService::class);
 
@@ -78,8 +84,14 @@ class ScheduleCreationServiceTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $server = factory(Server::class)->make();
 
+        $this->cron->shouldReceive('factory')->with('* * * * * *')->once()->andReturnSelf()
+            ->shouldReceive('getNextRunDate')->withNoArgs()->once()->andReturn('nextDate');
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('create')->with(['server_id' => $server->id, 'test_data' => 'test_value'])->once()->andReturn($schedule);
+        $this->repository->shouldReceive('create')->with([
+            'server_id' => $server->id,
+            'next_run_at' => 'nextDate',
+            'test_data' => 'test_value',
+        ])->once()->andReturn($schedule);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->handle($server, ['test_data' => 'test_value']);
@@ -96,8 +108,14 @@ class ScheduleCreationServiceTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $server = factory(Server::class)->make();
 
+        $this->cron->shouldReceive('factory')->with('* * * * * *')->once()->andReturnSelf()
+            ->shouldReceive('getNextRunDate')->withNoArgs()->once()->andReturn('nextDate');
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('create')->with(['server_id' => $server->id, 'test_data' => 'test_value'])->once()->andReturn($schedule);
+        $this->repository->shouldReceive('create')->with([
+            'next_run_at' => 'nextDate',
+            'server_id' => $server->id,
+            'test_data' => 'test_value',
+        ])->once()->andReturn($schedule);
         $this->taskCreationService->shouldReceive('handle')->with($schedule, [
             'time_interval' => 'm',
             'time_value' => 10,
@@ -123,8 +141,14 @@ class ScheduleCreationServiceTest extends TestCase
     {
         $schedule = factory(Schedule::class)->make();
 
+        $this->cron->shouldReceive('factory')->with('* * * * * *')->once()->andReturnSelf()
+            ->shouldReceive('getNextRunDate')->withNoArgs()->once()->andReturn('nextDate');
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('create')->with(['server_id' => 1234, 'test_data' => 'test_value'])->once()->andReturn($schedule);
+        $this->repository->shouldReceive('create')->with([
+            'next_run_at' => 'nextDate',
+            'server_id' => 1234,
+            'test_data' => 'test_value',
+        ])->once()->andReturn($schedule);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->handle(1234, ['test_data' => 'test_value']);

@@ -39,7 +39,8 @@
         "spatie/laravel-fractal": "^4.0",
         "watson/validating": "^3.0",
         "webmozart/assert": "^1.2",
-        "webpatser/laravel-uuid": "^2.0"
+        "webpatser/laravel-uuid": "^2.0",
+        "znck/belongs-to-through": "^2.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^2.4",

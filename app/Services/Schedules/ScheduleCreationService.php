@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Services\Schedules;
 
+use Cron\CronExpression;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
@@ -83,6 +84,7 @@ class ScheduleCreationService
 
         $server = ($server instanceof Server) ? $server->id : $server;
         $data['server_id'] = $server;
+        $data['next_run_at'] = $this->getCronTimestamp($data);
 
         $this->connection->beginTransaction();
         $schedule = $this->repository->create($data);
@@ -102,5 +104,23 @@ class ScheduleCreationService
         $this->connection->commit();
 
         return $schedule;
+    }
+
+    /**
+     * Return a DateTime object after parsing the cron data provided.
+     *
+     * @param array $data
+     * @return \DateTime
+     */
+    private function getCronTimestamp(array $data)
+    {
+        $formattedCron = sprintf('%s %s %s * %s *',
+            array_get($data, 'cron_minute', '*'),
+            array_get($data, 'cron_hour', '*'),
+            array_get($data, 'cron_day_of_month', '*'),
+            array_get($data, 'cron_day_of_week', '*')
+        );
+
+        return CronExpression::factory($formattedCron)->getNextRunDate();
     }
 }
