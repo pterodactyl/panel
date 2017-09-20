@@ -190,12 +190,12 @@ apk add curl
 
 cd /mnt/server
 
-curl -sSL "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/${SPONGE_VANILLA_VERSION}/spongevanilla-${SPONGE_VANILLA_VERSION}.jar" -o ${SERVER_JARFILE}
+curl -sSL "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/${SPONGE_VERSION}/spongevanilla-${SPONGE_VERSION}.jar" -o ${SERVER_JARFILE}
 EOF;
 
-        $this->option['sponge_vanilla'] = ServiceOption::updateOrCreate([
+        $this->option['sponge'] = ServiceOption::updateOrCreate([
             'service_id' => $this->service->id,
-            'tag' => 'sponge_vanilla',
+            'tag' => 'sponge',
         ], [
             'name' => 'Sponge (SpongeVanilla)',
             'description' => 'SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.',
@@ -354,7 +354,7 @@ EOF;
     {
         $this->addVanillaVariables();
         $this->addSpigotVariables();
-        $this->addSpongeVanillaVariables();
+        $this->addSpongeVariables();
         $this->addSpongeForgeVariables();
         $this->addBungeecordVariables();
         $this->addForgeVariables();
@@ -427,22 +427,22 @@ EOF;
         ]);
     }
 
-    private function addSpongeVanillaVariables()
+    private function addSpongeVariables()
     {
         ServiceVariable::updateOrCreate([
-            'option_id' => $this->option['sponge_vanilla']->id,
-            'env_variable' => 'SPONGE_VANILLA_VERSION',
+            'option_id' => $this->option['sponge']->id,
+            'env_variable' => 'SPONGE_VERSION',
         ], [
             'name' => 'SpongeVanilla Version',
             'description' => 'The version of SpongeVanilla to download and use.',
-            'default_value' => '1.11.2-6.1.0-BETA-19',
+            'default_value' => '1.10.2-5.2.0-BETA-381',
             'user_viewable' => 1,
             'user_editable' => 0,
             'rules' => 'required|regex:/^([a-zA-Z0-9.\-_]+)$/',
         ]);
 
         ServiceVariable::updateOrCreate([
-            'option_id' => $this->option['sponge_vanilla']->id,
+            'option_id' => $this->option['sponge']->id,
             'env_variable' => 'SERVER_JARFILE',
         ], [
             'name' => 'Server Jar File',
