@@ -433,7 +433,7 @@ EOF;
             'option_id' => $this->option['sponge']->id,
             'env_variable' => 'SPONGE_VERSION',
         ], [
-            'name' => 'SpongeVanilla Version',
+            'name' => 'Sponge Version',
             'description' => 'The version of SpongeVanilla to download and use.',
             'default_value' => '1.10.2-5.2.0-BETA-381',
             'user_viewable' => 1,
