@@ -47,13 +47,30 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getAllServers($paginate = 25)
     {
-        $instance = $this->getBuilder()->with('node', 'user', 'allocation');
+        Assert::nullOrIntegerish($paginate, 'First argument passed to getAllServers must be integer or null, received %s.');
 
-        if ($this->searchTerm) {
-            $instance->search($this->searchTerm);
+        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->searchTerm);
+
+        return is_null($paginate) ? $instance->get($this->getColumns()) : $instance->paginate($paginate, $this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDataForRebuild($server = null, $node = null)
+    {
+        Assert::nullOrIntegerish($server, 'First argument passed to getDataForRebuild must be null or integer, received %s.');
+        Assert::nullOrIntegerish($node, 'Second argument passed to getDataForRebuild must be null or integer, received %s.');
+
+        $instance = $this->getBuilder()->with('node', 'option.service', 'pack');
+
+        if (! is_null($server) && is_null($node)) {
+            $instance = $instance->where('id', '=', $server);
+        } elseif (is_null($server) && ! is_null($node)) {
+            $instance = $instance->where('node_id', '=', $node);
         }
 
-        return $instance->paginate($paginate);
+        return $instance->get($this->getColumns());
     }
 
     /**
@@ -62,6 +79,8 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function findWithVariables($id)
     {
+        Assert::integerish($id, 'First argument passed to findWithVariables must be integer, received %s.');
+
         $instance = $this->getBuilder()->with('option.variables', 'variables')
                          ->where($this->getModel()->getKeyName(), '=', $id)
                          ->first($this->getColumns());

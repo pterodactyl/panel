@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,57 +22,61 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Console\Commands;
+namespace Pterodactyl\Console\Commands\Maintenance;
 
-use Carbon;
-use Pterodactyl\Models;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
-class ClearTasks extends Command
+class CleanServiceBackupFilesCommand extends Command
 {
-    use DispatchesJobs;
+    /**
+     * @var \Carbon\Carbon
+     */
+    protected $carbon;
 
     /**
-     * The name and signature of the console command.
-     *
      * @var string
      */
-    protected $signature = 'pterodactyl:tasks:clearlog';
+    protected $description = 'Clean orphaned .bak files created when modifying services.';
 
     /**
-     * The console command description.
-     *
+     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    protected $disk;
+
+    /**
      * @var string
      */
-    protected $description = 'Clears old log entires (> 2 months) from the last log.';
+    protected $signature = 'p:maintenance:clean-service-backups';
 
     /**
-     * Create a new command instance.
+     * CleanServiceBackupFilesCommand constructor.
+     *
+     * @param \Carbon\Carbon                           $carbon
+     * @param \Illuminate\Contracts\Filesystem\Factory $filesystem
      */
-    public function __construct()
+    public function __construct(Carbon $carbon, FilesystemFactory $filesystem)
     {
         parent::__construct();
+
+        $this->carbon = $carbon;
+        $this->disk = $filesystem->disk();
     }
 
     /**
-     * Execute the console command.
-     *
-     * @return mixed
+     * Handle command execution.
      */
     public function handle()
     {
-        $entries = Models\TaskLog::where('run_time', '<=', Carbon::now()->subHours(config('pterodactyl.tasks.clear_log'))->toAtomString())->get();
+        $files = $this->disk->files('services/.bak');
 
-        $this->info(sprintf('Preparing to delete %d old task log entries.', count($entries)));
-        $bar = $this->output->createProgressBar(count($entries));
-
-        foreach ($entries as &$entry) {
-            $entry->delete();
-            $bar->advance();
-        }
-
-        $bar->finish();
-        $this->info("\nFinished deleting old logs.");
+        collect($files)->each(function ($file) {
+            $lastModified = $this->carbon->timestamp($this->disk->lastModified($file));
+            if ($lastModified->diffInMinutes($this->carbon->now()) > 5) {
+                $this->disk->delete($file);
+                $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => $file]));
+            }
+        });
     }
 }

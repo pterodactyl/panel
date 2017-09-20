@@ -87,23 +87,22 @@ class ProcessRunnableCommand extends Command
         $schedules = $this->repository->getSchedulesToProcess($this->carbon->now()->toAtomString());
 
         $bar = $this->output->createProgressBar(count($schedules));
-        foreach ($schedules as $schedule) {
-            if (! $schedule->tasks instanceof Collection || count($schedule->tasks) < 1) {
-                $bar->advance();
+        $schedules->each(function ($schedule) use ($bar) {
+            if ($schedule->tasks instanceof Collection && count($schedule->tasks) > 0) {
+                $this->processScheduleService->handle($schedule);
 
-                return;
-            }
-
-            $this->processScheduleService->handle($schedule);
-            if ($this->input->isInteractive()) {
-                $this->line(trans('command/messages.schedule.output_line', [
-                    'schedule' => $schedule->name,
-                    'hash' => $schedule->hashid,
-                ]));
+                if ($this->input->isInteractive()) {
+                    $bar->clear();
+                    $this->line(trans('command/messages.schedule.output_line', [
+                        'schedule' => $schedule->name,
+                        'hash' => $schedule->hashid,
+                    ]));
+                }
             }
 
             $bar->advance();
-        }
+            $bar->display();
+        });
 
         $this->line('');
     }

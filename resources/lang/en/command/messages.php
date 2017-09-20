@@ -54,4 +54,10 @@ return [
     'schedule' => [
         'output_line' => 'Dispatching job for first task in `:schedule` (:hash).',
     ],
+    'maintenance' => [
+        'deleting_service_backup' => 'Deleting service backup file :file.',
+    ],
+    'server' => [
+        'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
+    ],
 ];

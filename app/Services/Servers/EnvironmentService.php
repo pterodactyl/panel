@@ -76,16 +76,12 @@ class EnvironmentService
      *
      * @param int|\Pterodactyl\Models\Server $server
      * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function process($server)
     {
         if (! $server instanceof Server) {
-            if (! is_numeric($server)) {
-                throw new \InvalidArgumentException(
-                    'First argument passed to process() must be an instance of \\Pterodactyl\\Models\\Server or numeric.'
-                );
-            }
-
             $server = $this->repository->find($server);
         }
 

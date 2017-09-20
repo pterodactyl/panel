@@ -7,10 +7,12 @@ use Pterodactyl\Console\Commands\InfoCommand;
 use Pterodactyl\Console\Commands\User\MakeUserCommand;
 use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Pterodactyl\Console\Commands\Server\RebuildServerCommand;
 use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
 use Pterodactyl\Console\Commands\User\DisableTwoFactorCommand;
 use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
 use Pterodactyl\Console\Commands\Schedule\ProcessRunnableCommand;
+use Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -20,6 +22,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        CleanServiceBackupFilesCommand::class,
         DeleteLocationCommand::class,
         DeleteUserCommand::class,
         DisableTwoFactorCommand::class,
@@ -27,6 +30,7 @@ class Kernel extends ConsoleKernel
         MakeLocationCommand::class,
         MakeUserCommand::class,
         ProcessRunnableCommand::class,
+        RebuildServerCommand::class,
     ];
 
     /**
@@ -36,8 +40,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //        $schedule->command('pterodactyl:tasks')->everyMinute()->withoutOverlapping();
-//        $schedule->command('pterodactyl:tasks:clearlog')->twiceDaily(3, 15);
-//        $schedule->command('pterodactyl:cleanservices')->twiceDaily(1, 13);
+        $schedule->command('p:process:runnable')->everyMinute()->withoutOverlapping();
+        $schedule->command('p:maintenance:clean-service-backups')->daily();
     }
 }

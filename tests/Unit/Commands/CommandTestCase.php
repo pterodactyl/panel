@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,51 +22,34 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Console\Commands;
+namespace Tests\Unit\Commands;
 
-use Carbon;
-use Storage;
+use Tests\TestCase;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Foundation\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 
-class CleanServiceBackup extends Command
+abstract class CommandTestCase extends TestCase
 {
     /**
-     * The name and signature of the console command.
+     * Return the display from running a command.
      *
-     * @var string
+     * @param \Illuminate\Console\Command $command
+     * @param array                       $args
+     * @param array                       $inputs
+     * @param array                       $opts
+     * @return string
      */
-    protected $signature = 'pterodactyl:cleanservices';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Cleans .bak files assocaited with service backups whene editing files through the panel.';
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
+    protected function runCommand(Command $command, array $args = [], array $inputs = [], array $opts = [])
     {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $files = Storage::files('services/.bak');
-
-        foreach ($files as $file) {
-            $lastModified = Carbon::createFromTimestamp(Storage::lastModified($file));
-            if ($lastModified->diffInMinutes(Carbon::now()) > 5) {
-                $this->info('Deleting ' . $file);
-                Storage::delete($file);
-            }
+        if (! $command->getLaravel() instanceof Application) {
+            $command->setLaravel($this->app);
         }
+
+        $response = new CommandTester($command);
+        $response->setInputs($inputs);
+        $response->execute($args, $opts);
+
+        return $response->getDisplay();
     }
 }

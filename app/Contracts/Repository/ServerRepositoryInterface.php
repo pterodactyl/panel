@@ -31,10 +31,19 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Returns a listing of all servers that exist including relationships.
      *
-     * @param int $paginate
+     * @param int|null $paginate
      * @return mixed
      */
     public function getAllServers($paginate);
+
+    /**
+     * Return a collection of servers with their associated data for rebuild operations.
+     *
+     * @param int|null $server
+     * @param int|null $node
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getDataForRebuild($server = null, $node = null);
 
     /**
      * Return a server model and all variables associated with the server.
