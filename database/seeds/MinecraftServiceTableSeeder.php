@@ -181,7 +181,7 @@ EOF;
 
         $script = <<<'EOF'
 #!/bin/ash
-# SpongeVanilla Installation Script
+# Sponge Installation Script
 #
 # Server Files: /mnt/server
 
