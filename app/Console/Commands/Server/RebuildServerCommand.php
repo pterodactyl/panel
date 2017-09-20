@@ -86,9 +86,8 @@ class RebuildServerCommand extends Command
     {
         $servers = $this->getServersToProcess();
         $bar = $this->output->createProgressBar(count($servers));
-        $results = [];
 
-        $servers->each(function ($server) use ($bar, &$results) {
+        $servers->each(function ($server) use ($bar) {
             $bar->clear();
             $json = [
                 'build' => [

@@ -142,14 +142,4 @@ class EnvironmentServiceTest extends TestCase
 
         $this->assertTrue(is_array($response), 'Assert that response is an array.');
     }
-
-    /**
-     * Test that an exception is thrown when no model or valid ID is provided.
-     *
-     * @expectedException \InvalidArgumentException
-     */
-    public function testProcessShouldThrowExceptionIfInvalidServerIsProvided()
-    {
-        $this->service->process('abcd');
-    }
 }
