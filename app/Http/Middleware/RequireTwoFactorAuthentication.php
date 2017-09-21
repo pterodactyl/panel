@@ -18,6 +18,12 @@ class RequireTwoFactorAuthentication
      */
     protected $settings;
 
+    /**
+     * RequireTwoFactorAuthentication constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Krucas\Settings\Settings         $settings
+     */
     public function __construct(Settings $settings, AlertsMessageBag $alert)
     {
         $this->settings = $settings;
