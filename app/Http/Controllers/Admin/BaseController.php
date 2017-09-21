@@ -93,6 +93,7 @@ class BaseController extends Controller
     public function postSettings(BaseFormRequest $request)
     {
         $this->settings->set('company', $request->input('company'));
+        $this->settings->set('2fa', $request->input('2fa'));
 
         $this->alert->success('Settings have been successfully updated.')->flash();
 

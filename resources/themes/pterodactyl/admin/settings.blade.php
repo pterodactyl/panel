@@ -66,6 +66,23 @@
                                 <p class="text-muted"><small>This is the default language that all clients will use unless they manually change it.</small></p>
                             </div>
                         </div> --}}
+                        <div class="form-group col-md-6">
+                            <label class="control-label">2FA Required</label>
+                            <div>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 0) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="0" @if (old('2fa', Settings::get('2fa', 0)) == 0) checked @endif> Nobody
+                                    </label>
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 1) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="1" @if (old('2fa', Settings::get('2fa', 0)) == 1) checked @endif> Admins
+                                    </label>
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 2) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="2" @if (old('2fa', Settings::get('2fa', 0)) == 2) checked @endif> Everybody
+                                    </label>
+                                </div>
+                                <p class="text-muted"><small>Require your administrators or users to have 2FA enabled.</small></p>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
