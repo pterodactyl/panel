@@ -10,7 +10,8 @@ class RequireTwoFactorAuthentication
 {
     const NOBODY = 0;
     const ADMINISTRATORS = 1;
-    const EVERYBODY = 2;
+    const USERS = 2;
+    const EVERYBODY = 3;
 
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -73,6 +74,12 @@ class RequireTwoFactorAuthentication
 
             case self::ADMINISTRATORS:
                 if (! $request->user()->root_admin) {
+                    return $next($request);
+                }
+                break;
+
+            case self::USERS:
+                if ($request->user()->accessLevel === 'subuser') {
                     return $next($request);
                 }
                 break;

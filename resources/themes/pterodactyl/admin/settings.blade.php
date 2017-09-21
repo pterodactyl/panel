@@ -77,10 +77,13 @@
                                         <input type="radio" name="2fa" autocomplete="off" value="1" @if (old('2fa', Settings::get('2fa', 0)) == 1) checked @endif> Admins
                                     </label>
                                     <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 2) active @endif">
-                                        <input type="radio" name="2fa" autocomplete="off" value="2" @if (old('2fa', Settings::get('2fa', 0)) == 2) checked @endif> Everybody
+                                        <input type="radio" name="2fa" autocomplete="off" value="2" @if (old('2fa', Settings::get('2fa', 0)) == 2) checked @endif> Users
+                                    </label>
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 3) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="3" @if (old('2fa', Settings::get('2fa', 0)) == 3) checked @endif> Everybody
                                     </label>
                                 </div>
-                                <p class="text-muted"><small>Require your administrators or users to have 2FA enabled.</small></p>
+                                <p class="text-muted"><small>Require your administrators or users to have 2FA enabled. Users include Admins. Everybody includes Sub Users.</small></p>
                             </div>
                         </div>
                     </div>
