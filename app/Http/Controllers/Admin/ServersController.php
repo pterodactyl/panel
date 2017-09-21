@@ -226,6 +226,13 @@ class ServersController extends Controller
      */
     public function create()
     {
+        $nodes = $this->nodeRepository->all();
+        if (count($nodes) < 1) {
+            $this->alert->warning(trans('admin/server.alerts.node_required'))->flash();
+
+            return redirect()->route('admin.nodes');
+        }
+
         $services = $this->serviceRepository->getWithOptions();
 
         Javascript::put([
