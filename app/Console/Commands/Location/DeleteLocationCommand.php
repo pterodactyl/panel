@@ -36,6 +36,11 @@ class DeleteLocationCommand extends Command
     protected $deletionService;
 
     /**
+     * @var string
+     */
+    protected $description = 'Deletes a location from the Panel.';
+
+    /**
      * @var \Illuminate\Support\Collection
      */
     protected $locations;
