@@ -31,6 +31,11 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 class InfoCommand extends Command
 {
     /**
+     * @var string
+     */
+    protected $description = 'Displays the application, database, and email configurations along with the panel version.';
+
+    /**
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
