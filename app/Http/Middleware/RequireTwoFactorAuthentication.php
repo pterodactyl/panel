@@ -67,6 +67,9 @@ class RequireTwoFactorAuthentication
         $tfa = (int) $this->settings->get('2fa', 0);
 
         switch ($tfa) {
+            case self::NOBODY:
+                return $next($request);
+
             case self::ADMINISTRATORS:
                 if (! $request->user()->root_admin) {
                     return $next($request);
@@ -78,15 +81,9 @@ class RequireTwoFactorAuthentication
                     return $next($request);
                 }
                 break;
-
-            case self::NOBODY:
-            default:
-                return $next($request);
         }
 
-
         $this->alert->danger('The administrator has required 2FA to be enabled. You must enable it before you can do any other action.')->flash();
-
         return redirect()->route('account.security');
     }
 }
