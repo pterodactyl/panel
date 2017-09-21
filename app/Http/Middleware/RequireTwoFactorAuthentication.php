@@ -40,7 +40,7 @@ class RequireTwoFactorAuthentication
     public function handle($request, Closure $next)
     {
         // Ignore non-users
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return $next($request);
         }
 
@@ -65,15 +65,15 @@ class RequireTwoFactorAuthentication
         switch ($tfa) {
             // Admins Only
             case 1:
-                if (!$request->user()->root_admin) {
+                if (! $request->user()->root_admin) {
                     break;
                 }
 
             // Everybody
             case 2:
-                if (!$request->user()->use_totp) {
-
+                if (! $request->user()->use_totp) {
                     $this->alert->danger('The administrator has required 2FA to be enabled. You must enable it before you can do any other action.')->flash();
+
                     return redirect()->route('account.security');
                 }
 
