@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'recaptcha' => \Pterodactyl\Http\Middleware\VerifyReCaptcha::class,
+        'schedule' => \Pterodactyl\Http\Middleware\Server\ScheduleAccess::class,
     ];
 }
