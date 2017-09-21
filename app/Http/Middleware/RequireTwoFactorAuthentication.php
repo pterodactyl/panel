@@ -48,6 +48,7 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
+        // All TOTP related routes
         $validRoutes = [
             'account.security',
             'account.security.revoke',
