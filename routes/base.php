@@ -69,7 +69,7 @@ Route::group(['prefix' => 'account/security'], function () {
 
     Route::put('/totp', 'SecurityController@generateTotp')->name('account.security.totp');
 
-    Route::post('/totp', 'SecurityController@setTotp');
+    Route::post('/totp', 'SecurityController@setTotp')->name('account.security.totp.set');
 
-    Route::delete('/totp', 'SecurityController@disableTotp');
+    Route::delete('/totp', 'SecurityController@disableTotp')->name('account.security.totp.disable');
 });

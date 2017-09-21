@@ -38,8 +38,16 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
+        $validRoutes = [
+            'account.security',
+            'account.security.revoke',
+            'account.security.totp',
+            'account.security.totp.set',
+            'account.security.totp.disable',
+        ];
+
         // Only allow 2FA page
-        if ($request->routeIs('account.security')) {
+        if (in_array($request->route()->getName(), $validRoutes)) {
             return $next($request);
         }
 
