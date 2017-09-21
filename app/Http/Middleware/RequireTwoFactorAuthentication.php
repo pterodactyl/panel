@@ -44,6 +44,8 @@ class RequireTwoFactorAuthentication
             'account.security.totp',
             'account.security.totp.set',
             'account.security.totp.disable',
+            'auth.totp',
+            'auth.logout',
         ];
 
         // Only allow 2FA page
