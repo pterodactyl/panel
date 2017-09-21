@@ -92,6 +92,7 @@ class RequireTwoFactorAuthentication
         }
 
         $this->alert->danger('The administrator has required 2FA to be enabled. You must enable it before you can do any other action.')->flash();
+
         return redirect()->route('account.security');
     }
 }
