@@ -84,9 +84,9 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
         'server_id' => 'numeric|exists:servers,id',
         'daemonSecret' => 'string',
     ];
-    
+
     /**
-     * Registering event listeners
+     * Registering event listeners.
      *
      * @var array
      */

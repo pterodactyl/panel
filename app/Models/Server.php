@@ -152,7 +152,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Registering event listeners
+     * Registering event listeners.
      *
      * @var array
      */

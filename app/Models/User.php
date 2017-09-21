@@ -146,7 +146,7 @@ class User extends Model implements
     ];
 
     /**
-     * Registering event listeners
+     * Registering event listeners.
      *
      * @var array
      */
