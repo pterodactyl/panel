@@ -8,6 +8,10 @@ use Prologue\Alerts\AlertsMessageBag;
 
 class RequireTwoFactorAuthentication
 {
+    const NOBODY = 0;
+    const ADMINISTRATORS = 1;
+    const EVERYBODY = 2;
+
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
@@ -54,7 +58,7 @@ class RequireTwoFactorAuthentication
             'auth.logout',
         ];
 
-        // Only allow 2FA page
+        // Only allow 2FA pages
         if (in_array($request->route()->getName(), $validRoutes)) {
             return $next($request);
         }
@@ -63,24 +67,26 @@ class RequireTwoFactorAuthentication
         $tfa = (int) $this->settings->get('2fa', 0);
 
         switch ($tfa) {
-            // Admins Only
-            case 1:
+            case self::ADMINISTRATORS:
                 if (! $request->user()->root_admin) {
-                    break;
+                    return $next($request);
                 }
+                break;
 
-            // Everybody
-            case 2:
-                if (! $request->user()->use_totp) {
-                    $this->alert->danger('The administrator has required 2FA to be enabled. You must enable it before you can do any other action.')->flash();
-
-                    return redirect()->route('account.security');
+            case self::EVERYBODY:
+                if ($request->user()->use_totp) {
+                    return $next($request);
                 }
+                break;
 
-            // Nobody
-            case 0:
+            case self::NOBODY:
             default:
                 return $next($request);
         }
+
+
+        $this->alert->danger('The administrator has required 2FA to be enabled. You must enable it before you can do any other action.')->flash();
+
+        return redirect()->route('account.security');
     }
 }
