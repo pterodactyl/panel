@@ -196,9 +196,18 @@
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();
-                        if (confirm('Are you sure you want to logout?')) {
-                            window.location = $(this).attr('href');
-                        }
+
+                        var that = this;
+                        swal({
+                            title: 'Do you want to log out?',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d9534f',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Log out'
+                        }, function () {
+                            window.location = $(that).attr('href');
+                        });
                     });
                 </script>
             @endif
