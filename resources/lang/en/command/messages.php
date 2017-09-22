@@ -60,4 +60,20 @@ return [
     'server' => [
         'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
     ],
+    'environment' => [
+        'mail' => [
+            'ask_smtp_host' => 'SMTP Host (e.g. smtp.google.com)',
+            'ask_smtp_port' => 'SMTP Port',
+            'ask_smtp_username' => 'SMTP Username',
+            'ask_smtp_password' => 'SMTP Password',
+            'ask_mailgun_domain' => 'Mailgun Domain',
+            'ask_mailgun_secret' => 'Mailgun Secret',
+            'ask_mandrill_secret' => 'Mandrill Secret',
+            'ask_postmark_username' => 'Postmark API Key',
+            'ask_driver' => 'Which driver should be used for sending emails?',
+            'ask_mail_from' => 'Email address emails should originate from',
+            'ask_mail_name' => 'Name that emails should appear from',
+            'ask_encryption' => 'Encryption method to use',
+        ],
+    ],
 ];

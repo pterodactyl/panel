@@ -32,6 +32,23 @@ use Symfony\Component\Console\Tester\CommandTester;
 abstract class CommandTestCase extends TestCase
 {
     /**
+     * @var bool
+     */
+    protected $commandIsInteractive = true;
+
+    /**
+     * Set a command to be non-interactive for testing purposes.
+     *
+     * @return $this
+     */
+    public function withoutInteraction()
+    {
+        $this->commandIsInteractive = false;
+
+        return $this;
+    }
+
+    /**
      * Return the display from running a command.
      *
      * @param \Illuminate\Console\Command $command
@@ -48,6 +65,8 @@ abstract class CommandTestCase extends TestCase
 
         $response = new CommandTester($command);
         $response->setInputs($inputs);
+
+        $opts = array_merge($opts, ['interactive' => $this->commandIsInteractive]);
         $response->execute($args, $opts);
 
         return $response->getDisplay();

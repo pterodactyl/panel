@@ -26,16 +26,15 @@ namespace Tests\Unit\Commands\Maintenance;
 
 use Mockery as m;
 use Carbon\Carbon;
-use Tests\TestCase;
+use Tests\Unit\Commands\CommandTestCase;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Symfony\Component\Console\Tester\CommandTester;
 use Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 
-class CleanServiceBackupFilesCommandTest extends TestCase
+class CleanServiceBackupFilesCommandTest extends CommandTestCase
 {
     /**
-     * @var \Carbon\Carbon
+     * @var \Carbon\Carbon|\Mockery\Mock
      */
     protected $carbon;
 
@@ -45,12 +44,12 @@ class CleanServiceBackupFilesCommandTest extends TestCase
     protected $command;
 
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
+     * @var \Illuminate\Contracts\Filesystem\Filesystem|\Mockery\Mock
      */
     protected $disk;
 
     /**
-     * @var \Illuminate\Contracts\Filesystem\Factory
+     * @var \Illuminate\Contracts\Filesystem\Factory|\Mockery\Mock
      */
     protected $filesystem;
 
@@ -82,10 +81,8 @@ class CleanServiceBackupFilesCommandTest extends TestCase
         $this->carbon->shouldReceive('diffInMinutes')->with(null)->once()->andReturn(10);
         $this->disk->shouldReceive('delete')->with('testfile.txt')->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->execute([]);
+        $display = $this->runCommand($this->command);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.maintenance.deleting_service_backup', ['file' => 'testfile.txt']), $display);
     }
@@ -101,10 +98,8 @@ class CleanServiceBackupFilesCommandTest extends TestCase
         $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnNull();
         $this->carbon->shouldReceive('diffInMinutes')->with(null)->once()->andReturn(2);
 
-        $response = new CommandTester($this->command);
-        $response->execute([]);
+        $display = $this->runCommand($this->command);
 
-        $display = $response->getDisplay();
         $this->assertEmpty($display);
     }
 }

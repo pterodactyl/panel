@@ -12,6 +12,7 @@ use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
 use Pterodactyl\Console\Commands\User\DisableTwoFactorCommand;
 use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
 use Pterodactyl\Console\Commands\Schedule\ProcessRunnableCommand;
+use Pterodactyl\Console\Commands\Environment\EmailSettingsCommand;
 use Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 
 class Kernel extends ConsoleKernel
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
         DeleteLocationCommand::class,
         DeleteUserCommand::class,
         DisableTwoFactorCommand::class,
+        EmailSettingsCommand::class,
         InfoCommand::class,
         MakeLocationCommand::class,
         MakeUserCommand::class,
