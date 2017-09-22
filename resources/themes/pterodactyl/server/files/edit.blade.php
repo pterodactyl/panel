@@ -40,7 +40,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">{{ $file }}</h3>
                 <div class="pull-right box-tools">
-                    <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="pull-right"><button class="btn btn-default btn-sm">{{ trans('server.files.edit.return') }}</button></a>
+                    <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="pull-right"><button class="btn btn-default btn-sm">@lang('server.files.edit.return')</button></a>
                 </div>
             </div>
             <input type="hidden" name="file" value="{{ $file }}" />
@@ -49,7 +49,7 @@
             <div class="box-body" style="height:500px;" id="editor"></div>
             <div class="box-footer with-border">
                 <button class="btn btn-sm btn-primary" id="save_file"><i class="fa fa-fw fa-save"></i> &nbsp;@lang('server.files.edit.save')</button>
-                <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="pull-right"><button class="btn btn-default btn-sm">{{ trans('server.files.edit.return') }}</button></a>
+                <a href="/server/{{ $server->uuidShort }}/files#{{ rawurlencode($directory) }}" class="pull-right"><button class="btn btn-default btn-sm">@lang('server.files.edit.return')</button></a>
             </div>
         </div>
     </div>

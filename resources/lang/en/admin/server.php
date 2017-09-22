@@ -41,5 +41,6 @@ return [
         'server_reinstalled' => 'This server has been queued for a reinstallation beginning now.',
         'details_updated' => 'Server details have been successfully updated.',
         'docker_image_updated' => 'Successfully changed the default Docker image to use for this server. A reboot is required to apply this change.',
+        'node_required' => 'You must have at least one node configured before you can add a server to this panel.',
     ],
 ];

@@ -75,15 +75,15 @@
                                 </a>
                             </li>
                             {{--<li>--}}
-                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>--}}
+                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.servers')"><i class="fa fa-server"></i></a>--}}
                             {{--</li>--}}
                             @if(Auth::user()->root_admin)
                                 <li>
-                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
+                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.admin_cp')"><i class="fa fa-gears"></i></a></li>
                                 </li>
                             @endif
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.logout')"><i class="fa fa-sign-out"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -289,9 +289,18 @@
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();
-                        if (confirm('Are you sure you want to logout?')) {
-                            window.location = $(this).attr('href');
-                        }
+
+                        var that = this;
+                        swal({
+                            title: 'Do you want to log out?',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d9534f',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Log out'
+                        }, function () {
+                            window.location = $(that).attr('href');
+                        });
                     });
                 </script>
             @endif
