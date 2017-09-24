@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('p:process:runnable')->everyMinute()->withoutOverlapping();
+        $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
         $schedule->command('p:maintenance:clean-service-backups')->daily();
     }
 }
