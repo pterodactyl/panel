@@ -26,4 +26,11 @@ namespace Pterodactyl\Exceptions\Repository;
 
 class RecordNotFoundException extends \Exception
 {
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return 404;
+    }
 }

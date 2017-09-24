@@ -11,6 +11,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -28,6 +29,7 @@ class Handler extends ExceptionHandler
         DisplayValidationException::class,
         HttpException::class,
         ModelNotFoundException::class,
+        RecordNotFoundException::class,
         TokenMismatchException::class,
         ValidationException::class,
     ];
@@ -69,7 +71,7 @@ class Handler extends ExceptionHandler
             $response = response()->json(
                 [
                     'error' => $displayError,
-                    'http_code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
+                    'http_code' => (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : 500,
                     'trace' => (! config('app.debug')) ? null : $exception->getTrace(),
                 ],
                 $this->isHttpException($exception) ? $exception->getStatusCode() : 500,
