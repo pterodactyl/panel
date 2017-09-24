@@ -2,7 +2,9 @@
 
 namespace Pterodactyl\Http;
 
+use Pterodactyl\Http\Middleware\DaemonAuthenticate;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class Kernel extends HttpKernel
 {
@@ -43,6 +45,10 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
         ],
+        'daemon' => [
+            \Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate::class,
+            SubstituteBindings::class,
+        ],
     ];
 
     /**
@@ -57,7 +63,7 @@ class Kernel extends HttpKernel
         'server' => \Pterodactyl\Http\Middleware\ServerAuthenticate::class,
         'subuser' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
-        'daemon' => \Pterodactyl\Http\Middleware\DaemonAuthenticate::class,
+        'daemon-old' => DaemonAuthenticate::class,
         'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,

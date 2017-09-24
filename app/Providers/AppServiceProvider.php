@@ -28,6 +28,7 @@ use View;
 use Cache;
 use Pterodactyl\Models;
 use Pterodactyl\Observers;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(191);
+
         Models\User::observe(Observers\UserObserver::class);
         Models\Server::observe(Observers\ServerObserver::class);
         Models\Subuser::observe(Observers\SubuserObserver::class);

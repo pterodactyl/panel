@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -27,31 +27,19 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Subuser extends Model implements CleansAttributes, ValidableContract
+class DaemonKey extends Model implements CleansAttributes, ValidableContract
 {
-    use Eloquence, Notifiable, Validable;
+    use Eloquence, Validable;
 
     /**
-     * The table associated with the model.
-     *
      * @var string
      */
-    protected $table = 'subusers';
+    protected $table = 'daemon_keys';
 
     /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Cast values to correct type.
-     *
      * @var array
      */
     protected $casts = [
@@ -62,9 +50,25 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
     /**
      * @var array
      */
+    protected $dates = [
+        self::CREATED_AT,
+        self::UPDATED_AT,
+        'expires_at',
+    ];
+
+    /**
+     * @var array
+     */
+    protected $fillable = ['user_id', 'server_id', 'secret', 'expires_at'];
+
+    /**
+     * @var array
+     */
     protected static $applicationRules = [
         'user_id' => 'required',
         'server_id' => 'required',
+        'secret' => 'required',
+        'expires_at' => 'required',
     ];
 
     /**
@@ -73,10 +77,12 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
     protected static $dataIntegrityRules = [
         'user_id' => 'numeric|exists:users,id',
         'server_id' => 'numeric|exists:servers,id',
+        'secret' => 'string|min:20',
+        'expires_at' => 'date',
     ];
 
     /**
-     * Gets the server associated with a subuser.
+     * Return the server relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -86,22 +92,12 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets the user associated with a subuser.
+     * Return the user relation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Gets the permissions associated with a subuser.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions()
-    {
-        return $this->hasMany(Permission::class);
     }
 }

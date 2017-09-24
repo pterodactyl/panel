@@ -22,15 +22,14 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace Pterodactyl\Transformers\Daemon;
 
-use Closure;
-use Illuminate\Contracts\Session\Session;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Models\DaemonKey;
+use Pterodactyl\Models\Permission;
+use League\Fractal\TransformerAbstract;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class SubuserAccess
+class ApiKeyTransformer extends TransformerAbstract
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
@@ -38,48 +37,46 @@ class SubuserAccess
     protected $repository;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
-     * SubuserAccess constructor.
+     * ApiKeyTransformer constructor.
      *
-     * @param \Illuminate\Contracts\Session\Session                        $session
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
-    public function __construct(Session $session, SubuserRepositoryInterface $repository)
+    public function __construct(SubuserRepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->session = $session;
     }
 
     /**
-     * Determine if a user has permission to access a subuser.
+     * Return a listing of servers that a daemon key can access.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
-     * @return mixed
+     * @param \Pterodactyl\Models\DaemonKey $key
+     * @return array
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function handle($request, Closure $next)
+    public function transform(DaemonKey $key)
     {
-        $server = $this->session->get('server_data.model');
-
-        $subuser = $this->repository->find($request->route()->parameter('subuser', 0));
-        if ($subuser->server_id !== $server->id) {
-            throw new NotFoundHttpException;
+        if ($key->user_id === $key->server->owner_id) {
+            return [
+                'id' => $key->server->uuid,
+                'permissions' => ['s:*'],
+            ];
         }
 
-        if ($request->method() === 'PATCH') {
-            if ($subuser->user_id === $request->user()->id) {
-                throw new DisplayException(trans('exceptions.subusers.editing_self'));
+        $subuser = $this->repository->getWithPermissionsUsingUserAndServer($key->user_id, $key->server_id);
+
+        $permissions = $subuser->permissions->pluck('permission')->toArray();
+        $mappings = Permission::getPermissions(true);
+        $daemonPermissions = [];
+
+        foreach ($permissions as $permission) {
+            if (! is_null($mappings[$permission])) {
+                $daemonPermissions[] = $mappings[$permission];
             }
         }
 
-        return $next($request);
+        return [
+            $key->server->uuid => $daemonPermissions,
+        ];
     }
 }

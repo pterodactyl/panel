@@ -47,6 +47,17 @@ interface SubuserRepositoryInterface extends RepositoryInterface
     public function getWithPermissions($id);
 
     /**
+     * Return a subuser and associated permissions given a user_id and server_id.
+     *
+     * @param int $user
+     * @param int $server
+     * @return \Pterodactyl\Models\Subuser
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithPermissionsUsingUserAndServer($user, $server);
+
+    /**
      * Find a subuser and return with server and permissions relationships.
      *
      * @param int $id
@@ -55,4 +66,15 @@ interface SubuserRepositoryInterface extends RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithServerAndPermissions($id);
+
+    /**
+     * Return a subuser and their associated connection key for a server.
+     *
+     * @param int $user
+     * @param int $server
+     * @return \Pterodactyl\Models\Subuser
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithKey($user, $server);
 }

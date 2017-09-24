@@ -66,11 +66,16 @@ class Handler extends ExceptionHandler
                 $displayError = 'An unhandled exception was encountered with this request.';
             }
 
-            $response = response()->json([
-                'error' => $displayError,
-                'http_code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
-                'trace' => (! config('app.debug')) ? null : class_basename($exception) . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine(),
-            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
+            $response = response()->json(
+                [
+                    'error' => $displayError,
+                    'http_code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
+                    'trace' => (! config('app.debug')) ? null : $exception->getTrace(),
+                ],
+                $this->isHttpException($exception) ? $exception->getStatusCode() : 500,
+                $this->isHttpException($exception) ? $exception->getHeaders() : [],
+                JSON_UNESCAPED_SLASHES
+            );
 
             parent::report($exception);
         } elseif ($exception instanceof DisplayException) {

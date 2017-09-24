@@ -29,24 +29,54 @@ use Pterodactyl\Models\Server;
 use Illuminate\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
 
 class ServerAccessHelperService
 {
+    /**
+     * @var \Illuminate\Cache\Repository
+     */
+    protected $cache;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     */
+    protected $daemonKeyRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     */
+    protected $userRepository;
+
+    /**
+     * ServerAccessHelperService constructor.
+     *
+     * @param \Illuminate\Cache\Repository                                   $cache
+     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $daemonKeyRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface    $repository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface      $userRepository
+     */
     public function __construct(
         CacheRepository $cache,
+        DaemonKeyRepositoryInterface $daemonKeyRepository,
         ServerRepositoryInterface $repository,
-        SubuserRepositoryInterface $subuserRepository,
         UserRepositoryInterface $userRepository
     ) {
         $this->cache = $cache;
+        $this->daemonKeyRepository = $daemonKeyRepository;
         $this->repository = $repository;
-        $this->subuserRepository = $subuserRepository;
         $this->userRepository = $userRepository;
     }
 
     /**
+     * Return the daemon secret to use when making a connection.
+     *
      * @param int|\Pterodactyl\Models\Server $server
      * @param int|\Pterodactyl\Models\User   $user
      * @return string
@@ -64,19 +94,17 @@ class ServerAccessHelperService
             $user = $this->userRepository->find($user);
         }
 
-        if ($user->root_admin || $server->owner_id === $user->id) {
-            return $server->daemonSecret;
+        $keys = $server->relationLoaded('keys') ? $server->keys : $this->daemonKeyRepository->getServerKeys($server->id);
+
+        $key = array_get($keys->where('user_id', $user->id)->first(null, []), 'secret');
+        if ($user->root_admin) {
+            $key = array_get($keys->where('user_id', $server->owner_id)->first(null, []), 'secret');
         }
 
-        if (! in_array($server->id, $this->repository->getUserAccessServers($user->id))) {
+        if (is_null($key)) {
             throw new UserNotLinkedToServerException;
         }
 
-        $subuser = $this->subuserRepository->withColumns('daemonSecret')->findWhere([
-            ['user_id', '=', $user->id],
-            ['server_id', '=', $server->id],
-        ]);
-
-        return $subuser->daemonSecret;
+        return $key;
     }
 }

@@ -22,69 +22,60 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace Pterodactyl\Http\Middleware\Daemon;
 
 use Closure;
-use Illuminate\Contracts\Session\Session;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
-class ScheduleAccess
+class DaemonAuthenticate
 {
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
+     * @var array
      */
-    protected $hashids;
+    protected $except = ['daemon.configuration'];
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
-     * TaskAccess constructor.
+     * DaemonAuthenticate constructor.
      *
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface            $hashids
-     * @param \Illuminate\Contracts\Session\Session                         $session
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
-    public function __construct(
-        HashidsInterface $hashids,
-        Session $session,
-        ScheduleRepositoryInterface $repository
-    ) {
-        $this->hashids = $hashids;
+    public function __construct(NodeRepositoryInterface $repository)
+    {
         $this->repository = $repository;
-        $this->session = $session;
     }
 
     /**
-     * Determine if a task is assigned to the active server.
+     * Check if a request from the daemon can be properly attributed back to a single node instance.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
      * @return mixed
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $server = $this->session->get('server_data.model');
+        $token = $request->bearerToken();
 
-        $scheduleId = $this->hashids->decodeFirst($request->route()->parameter('schedule'), 0);
-        $schedule = $this->repository->getScheduleWithTasks($scheduleId);
-
-        if (object_get($schedule, 'server_id') !== $server->id) {
-            abort(404);
+        if (is_null($token)) {
+            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
         }
 
-        $request->attributes->set('schedule', $schedule);
+        try {
+            $node = $this->repository->findFirstWhere([['daemonSecret', '=', $token]]);
+        } catch (RecordNotFoundException $exception) {
+            throw new HttpException(403);
+        }
+
+        $request->attributes->set('node.model', $node);
 
         return $next($request);
     }

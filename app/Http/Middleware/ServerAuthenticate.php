@@ -82,6 +82,8 @@ class ServerAuthenticate
      *
      * @throws \Illuminate\Auth\AuthenticationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function handle(Request $request, Closure $next)
     {

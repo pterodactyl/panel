@@ -54,7 +54,11 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace . '\Server')
              ->group(base_path('routes/server.php'));
 
-        Route::middleware(['web', 'daemon'])->prefix('/daemon')
+        Route::middleware(['daemon'])->prefix('/api/remote')
+            ->namespace($this->namespace . '\API\Remote')
+            ->group(base_path('routes/api-remote.php'));
+
+        Route::middleware(['web', 'daemon-old'])->prefix('/daemon')
              ->namespace($this->namespace . '\Daemon')
              ->group(base_path('routes/daemon.php'));
     }
