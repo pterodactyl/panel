@@ -59,6 +59,7 @@ return [
     */
     'api' => [
         'include_on_list' => env('API_INCLUDE_ON_LIST', false),
+        'key_expire_time' => env('API_KEY_EXPIRE_TIME', 60 * 12),
     ],
 
     /*

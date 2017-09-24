@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Transformers\Daemon;
 
+use Carbon\Carbon;
 use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Models\Permission;
 use League\Fractal\TransformerAbstract;
@@ -32,6 +33,11 @@ use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 class ApiKeyTransformer extends TransformerAbstract
 {
     /**
+     * @var \Carbon\Carbon
+     */
+    protected $carbon;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
     protected $repository;
@@ -39,10 +45,12 @@ class ApiKeyTransformer extends TransformerAbstract
     /**
      * ApiKeyTransformer constructor.
      *
+     * @param \Carbon\Carbon                                               $carbon
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
-    public function __construct(SubuserRepositoryInterface $repository)
+    public function __construct(Carbon $carbon, SubuserRepositoryInterface $repository)
     {
+        $this->carbon = $carbon;
         $this->repository = $repository;
     }
 
@@ -59,6 +67,8 @@ class ApiKeyTransformer extends TransformerAbstract
         if ($key->user_id === $key->server->owner_id) {
             return [
                 'id' => $key->server->uuid,
+                'is_temporary' => true,
+                'expires_in' => max($this->carbon->now()->diffInSeconds($key->expires_at, false), 0),
                 'permissions' => ['s:*'],
             ];
         }
@@ -76,7 +86,10 @@ class ApiKeyTransformer extends TransformerAbstract
         }
 
         return [
-            $key->server->uuid => $daemonPermissions,
+            'id' => $key->server->uuid,
+            'is_temporary' => true,
+            'expires_in' => max($this->carbon->now()->diffInSeconds($key->expires_at, false), 0),
+            'permissions' => $daemonPermissions,
         ];
     }
 }

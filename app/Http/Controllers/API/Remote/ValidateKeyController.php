@@ -30,6 +30,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\HttpException;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Pterodactyl\Transformers\Daemon\ApiKeyTransformer;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class ValidateKeyController extends Controller
@@ -77,7 +78,7 @@ class ValidateKeyController extends Controller
      */
     public function index($token)
     {
-        if (! starts_with($token, 'i_')) {
+        if (! starts_with($token, DaemonKeyUpdateService::INTERNAL_TOKEN_IDENTIFIER)) {
             throw new HttpException(501);
         }
 

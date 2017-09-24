@@ -24,9 +24,12 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\DaemonKey;
 use Illuminate\Cache\Repository as CacheRepository;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
@@ -40,9 +43,19 @@ class ServerAccessHelperService
     protected $cache;
 
     /**
+     * @var \Carbon\Carbon
+     */
+    protected $carbon;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     protected $daemonKeyRepository;
+
+    /**
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService
+     */
+    protected $daemonKeyUpdateService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
@@ -58,18 +71,24 @@ class ServerAccessHelperService
      * ServerAccessHelperService constructor.
      *
      * @param \Illuminate\Cache\Repository                                   $cache
+     * @param \Carbon\Carbon                                                 $carbon
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $daemonKeyRepository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $daemonKeyUpdateService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface    $repository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface      $userRepository
      */
     public function __construct(
         CacheRepository $cache,
+        Carbon $carbon,
         DaemonKeyRepositoryInterface $daemonKeyRepository,
+        DaemonKeyUpdateService $daemonKeyUpdateService,
         ServerRepositoryInterface $repository,
         UserRepositoryInterface $userRepository
     ) {
         $this->cache = $cache;
+        $this->carbon = $carbon;
         $this->daemonKeyRepository = $daemonKeyRepository;
+        $this->daemonKeyUpdateService = $daemonKeyUpdateService;
         $this->repository = $repository;
         $this->userRepository = $userRepository;
     }
@@ -81,8 +100,10 @@ class ServerAccessHelperService
      * @param int|\Pterodactyl\Models\User   $user
      * @return string
      *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException
+     * @throws \RuntimeException
      */
     public function handle($server, $user)
     {
@@ -95,16 +116,16 @@ class ServerAccessHelperService
         }
 
         $keys = $server->relationLoaded('keys') ? $server->keys : $this->daemonKeyRepository->getServerKeys($server->id);
-
-        $key = array_get($keys->where('user_id', $user->id)->first(null, []), 'secret');
-        if ($user->root_admin) {
-            $key = array_get($keys->where('user_id', $server->owner_id)->first(null, []), 'secret');
-        }
+        $key = $keys->where('user_id', $user->root_admin ? $server->owner_id : $user->id)->first();
 
         if (is_null($key)) {
             throw new UserNotLinkedToServerException;
         }
 
-        return $key;
+        if (max($this->carbon->now()->diffInSeconds($key->expires_at, false), 0) === 0) {
+            $key = $this->daemonKeyUpdateService->handle($key);
+        }
+
+        return ($key instanceof DaemonKey) ? $key->secret : $key;
     }
 }
