@@ -55,7 +55,8 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
         'server' => \Pterodactyl\Http\Middleware\ServerAuthenticate::class,
-        'subuser' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
+        'subuser.auth' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
+        'subuser' => \Pterodactyl\Http\Middleware\Server\SubuserAccess::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
         'daemon' => \Pterodactyl\Http\Middleware\DaemonAuthenticate::class,
         'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
@@ -63,5 +64,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'recaptcha' => \Pterodactyl\Http\Middleware\VerifyReCaptcha::class,
+        'schedule' => \Pterodactyl\Http\Middleware\Server\ScheduleAccess::class,
     ];
 }
