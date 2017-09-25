@@ -44,7 +44,11 @@ class RequireTwoFactorAuthentication
      */
     protected $settings;
 
-        // All TOTP related routes
+    /**
+     * All TOTP related routes
+     *
+     * @var array
+     */
     protected $ignoreRoutes = [
             'account.security',
             'account.security.revoke',
@@ -61,10 +65,10 @@ class RequireTwoFactorAuthentication
      * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Krucas\Settings\Settings         $settings
      */
-    public function __construct(Settings $settings, AlertsMessageBag $alert)
+    public function __construct(AlertsMessageBag $alert, Settings $settings)
     {
-        $this->settings = $settings;
         $this->alert = $alert;
+        $this->settings = $settings;
     }
 
     /**
