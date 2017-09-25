@@ -27,6 +27,11 @@ namespace Pterodactyl\Contracts\Repository;
 interface DaemonKeyRepositoryInterface extends RepositoryInterface
 {
     /**
+     * String prepended to keys to identify that they are managed internally and not part of the user API.
+     */
+    const INTERNAL_KEY_IDENTIFIER = 'i_';
+
+    /**
      * Gets the daemon keys associated with a specific server.
      *
      * @param int $server

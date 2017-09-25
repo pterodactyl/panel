@@ -90,7 +90,7 @@ class NodeUpdateService
         $updateResponse = $this->repository->withoutFresh()->update($node->id, $data);
 
         try {
-            $this->configRepository->setNode($node->id)->setAccessToken($node->daemonSecret)->update();
+            $this->configRepository->setNode($node->id)->update();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
             $this->writer->warning($exception);

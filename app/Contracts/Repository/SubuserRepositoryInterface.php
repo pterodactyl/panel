@@ -30,7 +30,7 @@ interface SubuserRepositoryInterface extends RepositoryInterface
      * Return a subuser with the associated server relationship.
      *
      * @param int $id
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Pterodactyl\Models\Subuser
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

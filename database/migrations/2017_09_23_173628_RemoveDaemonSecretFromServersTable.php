@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class RemoveDaemonSecretFromServersTable extends Migration
 {
@@ -20,10 +21,10 @@ class RemoveDaemonSecretFromServersTable extends Migration
             $inserts[] = [
                 'user_id' => $server->owner_id,
                 'server_id' => $server->id,
-                'secret' => 'i_' . str_random(40),
-                'expires_at' => Carbon::now()->addHours(24),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'secret' => DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40),
+                'expires_at' => Carbon::now()->addMinutes(config('pterodactyl.api.key_expire_time', 720))->toDateTimeString(),
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' => Carbon::now()->toDateTimeString(),
             ];
         });
 

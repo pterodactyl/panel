@@ -98,9 +98,9 @@ return [
             'using_redis' => 'You\'ve selected the Redis driver for one or more options, please provide valid connection information below. In most cases you can use the defaults provided unless you have modified your setup.',
             'redis_host' => 'Redis Host',
             'redis_password' => 'Redis Password',
+            'redis_pass_help' => 'By default a Redis server instance has no password as it is running locally and inaccessable to the outside world. If this is the case, simply hit enter without entering a value.',
             'redis_port' => 'Redis Port',
             'redis_pass_defined' => 'It seems a password is already defined for Redis, would you like to change it?',
-            'redis_pass_help' => 'By default a Redis server instance has no password as it is running locally and inaccessable to the outside world. If this is the case, simply hit enter without entering a value.',
         ],
     ],
 ];

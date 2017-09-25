@@ -24,12 +24,9 @@
 
 namespace Pterodactyl\Services\Subusers;
 
-use Illuminate\Log\Writer;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserDeletionService
 {
@@ -39,9 +36,9 @@ class SubuserDeletionService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService
      */
-    protected $daemonRepository;
+    protected $keyDeletionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
@@ -49,35 +46,26 @@ class SubuserDeletionService
     protected $repository;
 
     /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
-
-    /**
      * SubuserDeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $repository
-     * @param \Illuminate\Log\Writer                                             $writer
+     * @param \Illuminate\Database\ConnectionInterface                     $connection
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService    $keyDeletionService
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepositoryInterface $daemonRepository,
-        SubuserRepositoryInterface $repository,
-        Writer $writer
+        DaemonKeyDeletionService $keyDeletionService,
+        SubuserRepositoryInterface $repository
     ) {
         $this->connection = $connection;
-        $this->daemonRepository = $daemonRepository;
+        $this->keyDeletionService = $keyDeletionService;
         $this->repository = $repository;
-        $this->writer = $writer;
     }
 
     /**
      * Delete a subuser and their associated permissions from the Panel and Daemon.
      *
      * @param int $subuser
-     * @return int|null
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -87,22 +75,8 @@ class SubuserDeletionService
         $subuser = $this->repository->getWithServer($subuser);
 
         $this->connection->beginTransaction();
-        $response = $this->repository->delete($subuser->id);
-
-        try {
-            $this->daemonRepository->setNode($subuser->server->node_id)->setAccessServer($subuser->server->uuid)
-                ->setSubuserKey($subuser->daemonSecret, []);
-            $this->connection->commit();
-
-            return $response;
-        } catch (RequestException $exception) {
-            $this->connection->rollBack();
-            $this->writer->warning($exception);
-
-            $response = $exception->getResponse();
-            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
-        }
+        $this->keyDeletionService->handle($subuser->server_id, $subuser->user_id);
+        $this->repository->delete($subuser->id);
+        $this->connection->commit();
     }
 }

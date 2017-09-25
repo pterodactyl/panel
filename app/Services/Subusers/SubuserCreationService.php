@@ -24,20 +24,16 @@
 
 namespace Pterodactyl\Services\Subusers;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserCreationService
 {
@@ -47,9 +43,9 @@ class SubuserCreationService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
      */
-    protected $daemonRepository;
+    protected $keyCreationService;
 
     /**
      * @var \Pterodactyl\Services\Subusers\PermissionCreationService
@@ -77,40 +73,32 @@ class SubuserCreationService
     protected $userRepository;
 
     /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
-
-    /**
      * SubuserCreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Services\Users\UserCreationService                    $userCreationService
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $subuserRepository
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface          $userRepository
-     * @param \Illuminate\Log\Writer                                             $writer
+     * @param \Illuminate\Database\ConnectionInterface                     $connection
+     * @param \Pterodactyl\Services\Users\UserCreationService              $userCreationService
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService    $keyCreationService
+     * @param \Pterodactyl\Services\Subusers\PermissionCreationService     $permissionService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
      */
     public function __construct(
         ConnectionInterface $connection,
         UserCreationService $userCreationService,
-        DaemonServerRepositoryInterface $daemonRepository,
+        DaemonKeyCreationService $keyCreationService,
         PermissionCreationService $permissionService,
         ServerRepositoryInterface $serverRepository,
         SubuserRepositoryInterface $subuserRepository,
-        UserRepositoryInterface $userRepository,
-        Writer $writer
+        UserRepositoryInterface $userRepository
     ) {
         $this->connection = $connection;
-        $this->daemonRepository = $daemonRepository;
+        $this->keyCreationService = $keyCreationService;
         $this->permissionService = $permissionService;
         $this->subuserRepository = $subuserRepository;
         $this->serverRepository = $serverRepository;
         $this->userRepository = $userRepository;
         $this->userCreationService = $userCreationService;
-        $this->writer = $writer;
     }
 
     /**
@@ -120,7 +108,6 @@ class SubuserCreationService
      * @return \Pterodactyl\Models\Subuser
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
@@ -154,28 +141,11 @@ class SubuserCreationService
             ]);
         }
 
-        $subuser = $this->subuserRepository->create([
-            'user_id' => $user->id,
-            'server_id' => $server->id,
-            'daemonSecret' => str_random(NodeCreationService::DAEMON_SECRET_LENGTH),
-        ]);
+        $subuser = $this->subuserRepository->create(['user_id' => $user->id, 'server_id' => $server->id]);
+        $this->keyCreationService->handle($server->id, $user->id);
+        $this->permissionService->handle($subuser->id, $permissions);
+        $this->connection->commit();
 
-        $daemonPermissions = $this->permissionService->handle($subuser->id, $permissions);
-
-        try {
-            $this->daemonRepository->setNode($server->node_id)->setAccessServer($server->uuid)
-                ->setSubuserKey($subuser->daemonSecret, $daemonPermissions);
-            $this->connection->commit();
-
-            return $subuser;
-        } catch (RequestException $exception) {
-            $this->connection->rollBack();
-            $this->writer->warning($exception);
-
-            $response = $exception->getResponse();
-            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
-        }
+        return $subuser;
     }
 }

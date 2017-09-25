@@ -59,6 +59,13 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $dates = ['deleted_at'];
 
     /**
+     * Always eager load these relationships on the model.
+     *
+     * @var array
+     */
+    protected $with = ['key'];
+
+    /**
      * Fields that are not mass assignable.
      *
      * @var array
@@ -286,7 +293,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function ownerKey()
+    public function key()
     {
         return $this->hasOne(DaemonKey::class, 'user_id', 'owner_id');
     }

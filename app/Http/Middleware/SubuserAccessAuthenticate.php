@@ -28,15 +28,15 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Auth\AuthenticationException;
-use Pterodactyl\Services\Servers\ServerAccessHelperService;
-use Pterodactyl\Exceptions\Service\Server\UserNotLinkedToServerException;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class SubuserAccessAuthenticate
 {
     /**
-     * @var \Pterodactyl\Services\Servers\ServerAccessHelperService
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
      */
-    protected $accessHelperService;
+    protected $keyProviderService;
 
     /**
      * @var \Illuminate\Contracts\Session\Session
@@ -46,23 +46,26 @@ class SubuserAccessAuthenticate
     /**
      * SubuserAccessAuthenticate constructor.
      *
-     * @param \Pterodactyl\Services\Servers\ServerAccessHelperService $accessHelperService
-     * @param \Illuminate\Contracts\Session\Session                   $session
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
+     * @param \Illuminate\Contracts\Session\Session                     $session
      */
     public function __construct(
-        ServerAccessHelperService $accessHelperService,
+        DaemonKeyProviderService $keyProviderService,
         Session $session
     ) {
-        $this->accessHelperService = $accessHelperService;
+        $this->keyProviderService = $keyProviderService;
         $this->session = $session;
     }
 
     /**
+     * Determine if a subuser has permissions to access a server, if so set thier access token.
+     *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
      * @return mixed
      *
      * @throws \Illuminate\Auth\AuthenticationException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Request $request, Closure $next)
@@ -70,9 +73,9 @@ class SubuserAccessAuthenticate
         $server = $this->session->get('server_data.model');
 
         try {
-            $token = $this->accessHelperService->handle($server, $request->user());
+            $token = $this->keyProviderService->handle($server->id, $request->user()->id);
             $this->session->now('server_data.token', $token);
-        } catch (UserNotLinkedToServerException $exception) {
+        } catch (RecordNotFoundException $exception) {
             throw new AuthenticationException('This account does not have permission to access this server.');
         }
 

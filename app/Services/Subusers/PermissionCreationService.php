@@ -24,16 +24,12 @@
 
 namespace Pterodactyl\Services\Subusers;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 
 class PermissionCreationService
 {
-    const CORE_DAEMON_PERMISSIONS = [
-        's:get',
-        's:console',
-    ];
-
     /**
      * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
      */
@@ -54,21 +50,19 @@ class PermissionCreationService
      *
      * @param int   $subuser
      * @param array $permissions
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function handle($subuser, array $permissions)
     {
+        Assert::integerish($subuser, 'First argument passed to handle must be an integer, received %s.');
+
         $permissionMappings = Permission::getPermissions(true);
-        $daemonPermissions = self::CORE_DAEMON_PERMISSIONS;
         $insertPermissions = [];
 
         foreach ($permissions as $permission) {
             if (array_key_exists($permission, $permissionMappings)) {
-                if (! is_null($permissionMappings[$permission])) {
-                    array_push($daemonPermissions, $permissionMappings[$permission]);
-                }
+                Assert::stringNotEmpty($permission, 'Permission argument provided must be a non-empty string, received %s.');
 
                 array_push($insertPermissions, [
                     'subuser_id' => $subuser,
@@ -77,8 +71,6 @@ class PermissionCreationService
             }
         }
 
-        $this->repository->insert($insertPermissions);
-
-        return $daemonPermissions;
+        $this->repository->withoutFresh()->insert($insertPermissions);
     }
 }

@@ -104,4 +104,14 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
     {
         return $this->hasMany(Permission::class);
     }
+
+    /**
+     * Return the key that belongs to this subuser for the server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function key()
+    {
+        return $this->hasOne(DaemonKey::class, 'server_id', 'server_id')->where('daemon_keys.user_id', '=', $this->user_id);
+    }
 }

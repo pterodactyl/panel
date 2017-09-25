@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class RemoveDaemonSecretFromSubusersTable extends Migration
 {
@@ -18,10 +19,10 @@ class RemoveDaemonSecretFromSubusersTable extends Migration
             $inserts[] = [
                 'user_id' => $subuser->user_id,
                 'server_id' => $subuser->server_id,
-                'secret' => 'i_' . str_random(40),
-                'expires_at' => Carbon::now()->addHours(24),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
+                'secret' => DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40),
+                'expires_at' => Carbon::now()->addMinutes(config('pterodactyl.api.key_expire_time', 720))->toDateTimeString(),
+                'created_at' => Carbon::now()->toDateTimeString(),
+                'updated_at' => Carbon::now()->toDateTimeString(),
             ];
         });
 
@@ -46,7 +47,7 @@ class RemoveDaemonSecretFromSubusersTable extends Migration
 
         $subusers = DB::table('subusers')->get();
         $subusers->each(function ($subuser) {
-            DB::table('daemon_keys')->delete($subuser->id);
+            DB::table('daemon_keys')->where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
         });
     }
 }

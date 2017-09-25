@@ -104,10 +104,7 @@ class RebuildServerCommand extends Command
             ];
 
             try {
-                $this->daemonRepository->setNode($server->node_id)
-                    ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->node->daemonSecret)
-                    ->update($json);
+                $this->daemonRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($json);
             } catch (RequestException $exception) {
                 $this->output->error(trans('command/messages.server.rebuild_failed', [
                     'name' => $server->name,

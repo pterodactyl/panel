@@ -192,7 +192,7 @@
             {!! Theme::js('js/admin/functions.js') !!}
             {!! Theme::js('js/autocomplete.js') !!}
 
-            @if(Auth::user()->isRootAdmin())
+            @if(Auth::user()->root_admin)
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();

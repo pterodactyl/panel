@@ -72,7 +72,7 @@
                                 <td class="text-center">
                                     @if($server->user->id === Auth::user()->id)
                                         <span class="label bg-purple">@lang('strings.owner')</span>
-                                    @elseif(Auth::user()->isRootAdmin())
+                                    @elseif(Auth::user()->root_admin)
                                         <span class="label bg-maroon">@lang('strings.admin')</span>
                                     @else
                                         <span class="label bg-blue">@lang('strings.subuser')</span>

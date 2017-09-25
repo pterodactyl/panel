@@ -29,7 +29,7 @@ use Webmozart\Assert\Assert;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
-class DaemonKeyUpdateService
+class DaemonKeyCreationService
 {
     /**
      * @var \Carbon\Carbon
@@ -47,7 +47,7 @@ class DaemonKeyUpdateService
     protected $repository;
 
     /**
-     * DaemonKeyUpdateService constructor.
+     * DaemonKeyCreationService constructor.
      *
      * @param \Carbon\Carbon                                                 $carbon
      * @param \Illuminate\Contracts\Config\Repository                        $config
@@ -64,21 +64,24 @@ class DaemonKeyUpdateService
     }
 
     /**
-     * Update a daemon key to expire the previous one.
+     * Create a new daemon key to be used when connecting to a daemon.
      *
-     * @param int $key
+     * @param int $server
+     * @param int $user
      * @return string
      *
-     * @throws \RuntimeException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($key)
+    public function handle($server, $user)
     {
-        Assert::integerish($key, 'First argument passed to handle must be an integer, received %s.');
+        Assert::integerish($server, 'First argument passed to handle must be an integer, received %s.');
+        Assert::integerish($user, 'Second argument passed to handle must be an integer, received %s.');
 
         $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40);
-        $this->repository->withoutFresh()->update($key, [
+
+        $this->repository->withoutFresh()->create([
+            'user_id' => $user,
+            'server_id' => $server,
             'secret' => $secret,
             'expires_at' => $this->carbon->now()->addMinutes($this->config->get('pterodactyl.api.key_expire_time'))->toDateTimeString(),
         ]);

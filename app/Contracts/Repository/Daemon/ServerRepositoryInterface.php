@@ -37,15 +37,6 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     public function create($id, array $overrides = [], $start = false);
 
     /**
-     * Set an access token and associated permissions for a server.
-     *
-     * @param string $key
-     * @param array  $permissions
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function setSubuserKey($key, array $permissions);
-
-    /**
      * Update server details on the daemon.
      *
      * @param array $data
@@ -95,4 +86,12 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function details();
+
+    /**
+     * Revoke an access key on the daemon before the time is expired.
+     *
+     * @param string $key
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function revokeAccessKey($key);
 }

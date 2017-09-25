@@ -285,7 +285,7 @@
                 {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
             @endif
 
-            @if(Auth::user()->isRootAdmin())
+            @if(Auth::user()->root_admin)
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();

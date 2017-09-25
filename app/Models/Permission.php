@@ -25,12 +25,14 @@
 namespace Pterodactyl\Models;
 
 use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Permission extends Model implements CleansAttributes
+class Permission extends Model implements CleansAttributes, ValidableContract
 {
-    use Eloquence;
+    use Eloquence, Validable;
 
     /**
      * Should timestamps be used on this model.
@@ -60,6 +62,22 @@ class Permission extends Model implements CleansAttributes
      */
     protected $casts = [
         'subuser_id' => 'integer',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'subuser_id' => 'required',
+        'permission' => 'required',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'subuser_id' => 'numeric|min:1',
+        'permission' => 'string',
     ];
 
     /**

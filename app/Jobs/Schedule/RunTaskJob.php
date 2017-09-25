@@ -110,13 +110,13 @@ class RunTaskJob extends Job implements ShouldQueue
             case 'power':
                 $this->powerRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->daemonSecret)
+                    ->setAccessToken($server->accessToken->secret)
                     ->sendSignal($task->payload);
                 break;
             case 'command':
                 $this->commandRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->daemonSecret)
+                    ->setAccessToken($server->accessToken->secret)
                     ->send($task->payload);
                 break;
             default:

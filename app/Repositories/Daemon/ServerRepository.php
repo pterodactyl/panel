@@ -31,8 +31,6 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface as DatabaseServer
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {
-    const DAEMON_PERMISSIONS = ['s:*'];
-
     /**
      * {@inheritdoc}
      */
@@ -73,9 +71,6 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
             ],
             'rebuild' => false,
             'start_on_completion' => $start,
-            'keys' => [
-                (string) $server->daemonSecret => self::DAEMON_PERMISSIONS,
-            ],
         ];
 
         // Loop through overrides.
@@ -85,22 +80,6 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
 
         return $this->getHttpClient()->request('POST', '/servers', [
             'json' => $data,
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSubuserKey($key, array $permissions)
-    {
-        Assert::stringNotEmpty($key, 'First argument passed to setSubuserKey must be a non-empty string, received %s.');
-
-        return $this->getHttpClient()->request('PATCH', '/server', [
-            'json' => [
-                'keys' => [
-                    $key => $permissions,
-                ],
-            ],
         ]);
     }
 
@@ -168,5 +147,15 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     public function details()
     {
         return $this->getHttpClient()->request('GET', '/servers');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function revokeAccessKey($key)
+    {
+        Assert::stringNotEmpty($key, 'First argument passed to revokeAccessKey must be a non-empty string, received %s.');
+
+        return $this->getHttpClient()->request('DELETE', '/keys/' . $key);
     }
 }
