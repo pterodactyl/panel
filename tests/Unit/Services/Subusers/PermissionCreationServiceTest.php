@@ -32,7 +32,7 @@ use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 class PermissionCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -59,14 +59,13 @@ class PermissionCreationServiceTest extends TestCase
     {
         $permissions = ['reset-sftp', 'view-sftp'];
 
-        $this->repository->shouldReceive('insert')->with([
-            ['subuser_id' => 1, 'permission' => 'reset-sftp'],
-            ['subuser_id' => 1, 'permission' => 'view-sftp'],
-        ]);
+        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('insert')->with([
+                ['subuser_id' => 1, 'permission' => 'reset-sftp'],
+                ['subuser_id' => 1, 'permission' => 'view-sftp'],
+            ])->once()->andReturnNull();
 
-        $response = $this->service->handle(1, $permissions);
-
-        $this->assertNotEmpty($response);
-        $this->assertEquals(['s:get', 's:console', 's:set-password'], $response);
+        $this->service->handle(1, $permissions);
+        $this->assertTrue(true);
     }
 }

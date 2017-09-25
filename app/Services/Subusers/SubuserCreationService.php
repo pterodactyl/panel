@@ -76,27 +76,27 @@ class SubuserCreationService
      * SubuserCreationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                     $connection
-     * @param \Pterodactyl\Services\Users\UserCreationService              $userCreationService
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService    $keyCreationService
      * @param \Pterodactyl\Services\Subusers\PermissionCreationService     $permissionService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
+     * @param \Pterodactyl\Services\Users\UserCreationService              $userCreationService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
      */
     public function __construct(
         ConnectionInterface $connection,
-        UserCreationService $userCreationService,
         DaemonKeyCreationService $keyCreationService,
         PermissionCreationService $permissionService,
         ServerRepositoryInterface $serverRepository,
         SubuserRepositoryInterface $subuserRepository,
+        UserCreationService $userCreationService,
         UserRepositoryInterface $userRepository
     ) {
         $this->connection = $connection;
         $this->keyCreationService = $keyCreationService;
         $this->permissionService = $permissionService;
-        $this->subuserRepository = $subuserRepository;
         $this->serverRepository = $serverRepository;
+        $this->subuserRepository = $subuserRepository;
         $this->userRepository = $userRepository;
         $this->userCreationService = $userCreationService;
     }

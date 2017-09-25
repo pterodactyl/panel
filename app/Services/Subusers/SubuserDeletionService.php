@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Services\Subusers;
 
+use Pterodactyl\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
@@ -65,14 +66,16 @@ class SubuserDeletionService
     /**
      * Delete a subuser and their associated permissions from the Panel and Daemon.
      *
-     * @param int $subuser
+     * @param int|\Pterodactyl\Models\Subuser $subuser
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($subuser)
     {
-        $subuser = $this->repository->getWithServer($subuser);
+        if (! $subuser instanceof Subuser) {
+            $subuser = $this->repository->find($subuser);
+        }
 
         $this->connection->beginTransaction();
         $this->keyDeletionService->handle($subuser->server_id, $subuser->user_id);

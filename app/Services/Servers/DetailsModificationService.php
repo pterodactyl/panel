@@ -54,7 +54,7 @@ class DetailsModificationService
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService
      */
-    private $keyDeletionService;
+    protected $keyDeletionService;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\ServerRepository

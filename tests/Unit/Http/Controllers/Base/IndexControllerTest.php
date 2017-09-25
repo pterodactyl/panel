@@ -31,7 +31,7 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Pterodactyl\Http\Controllers\Base\IndexController;
-use Pterodactyl\Services\Servers\ServerAccessHelperService;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
@@ -40,27 +40,27 @@ class IndexControllerTest extends TestCase
     use ControllerAssertionsTrait;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerAccessHelperService
-     */
-    protected $access;
-
-    /**
      * @var \Pterodactyl\Http\Controllers\Base\IndexController
      */
     protected $controller;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     */
+    protected $keyProviderService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Illuminate\Http\Request
+     * @var \Illuminate\Http\Request|\Mockery\Mock
      */
     protected $request;
 
@@ -71,12 +71,12 @@ class IndexControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->access = m::mock(ServerAccessHelperService::class);
         $this->daemonRepository = m::mock(DaemonServerRepositoryInterface::class);
+        $this->keyProviderService = m::mock(DaemonKeyProviderService::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->request = m::mock(Request::class);
 
-        $this->controller = new IndexController($this->daemonRepository, $this->access, $this->repository);
+        $this->controller = new IndexController($this->keyProviderService, $this->daemonRepository, $this->repository);
     }
 
     /**
@@ -109,16 +109,17 @@ class IndexControllerTest extends TestCase
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 1]);
 
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
-        $this->access->shouldReceive('handle')->with($server->uuid, $user)->once()->andReturn($server);
+        $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
+        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('test123');
 
         $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
             ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with($server->daemonSecret)->once()->andReturnSelf()
+            ->shouldReceive('setAccessToken')->with('test123')->once()->andReturnSelf()
             ->shouldReceive('details')->withNoArgs()->once()->andReturnSelf();
 
         $this->daemonRepository->shouldReceive('getBody')->withNoArgs()->once()->andReturn('["test"]');
 
-        $response = $this->controller->status($this->request, $server->uuid);
+        $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);
         $this->assertResponseJsonEquals(['test'], $response);
     }
@@ -132,9 +133,10 @@ class IndexControllerTest extends TestCase
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 0]);
 
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
-        $this->access->shouldReceive('handle')->with($server->uuid, $user)->once()->andReturn($server);
+        $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
+        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('test123');
 
-        $response = $this->controller->status($this->request, $server->uuid);
+        $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);
         $this->assertResponseCodeEquals(200, $response);
         $this->assertResponseJsonEquals(['status' => 20], $response);
@@ -149,9 +151,10 @@ class IndexControllerTest extends TestCase
         $server = factory(Server::class)->make(['suspended' => 1, 'installed' => 1]);
 
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
-        $this->access->shouldReceive('handle')->with($server->uuid, $user)->once()->andReturn($server);
+        $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
+        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('test123');
 
-        $response = $this->controller->status($this->request, $server->uuid);
+        $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);
         $this->assertResponseCodeEquals(200, $response);
         $this->assertResponseJsonEquals(['status' => 30], $response);

@@ -26,7 +26,6 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
@@ -37,39 +36,39 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Services\Subusers\PermissionCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserCreationServiceTest extends TestCase
 {
     use PHPMock;
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
      */
-    protected $daemonRepository;
+    protected $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     * @var \Pterodactyl\Services\Subusers\PermissionCreationService|\Mockery\Mock
      */
     protected $permissionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     protected $subuserRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
@@ -79,19 +78,14 @@ class SubuserCreationServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
+     * @var \Pterodactyl\Services\Users\UserCreationService|\Mockery\Mock
      */
     protected $userCreationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $userRepository;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
 
     /**
      * Setup tests.
@@ -103,23 +97,21 @@ class SubuserCreationServiceTest extends TestCase
         $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'str_random')->expects($this->any())->willReturn('random_string');
 
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->daemonRepository = m::mock(DaemonServerRepositoryInterface::class);
+        $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
         $this->permissionService = m::mock(PermissionCreationService::class);
         $this->subuserRepository = m::mock(SubuserRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
         $this->userCreationService = m::mock(UserCreationService::class);
         $this->userRepository = m::mock(UserRepositoryInterface::class);
-        $this->writer = m::mock(Writer::class);
 
         $this->service = new SubuserCreationService(
             $this->connection,
-            $this->userCreationService,
-            $this->daemonRepository,
+            $this->keyCreationService,
             $this->permissionService,
             $this->serverRepository,
             $this->subuserRepository,
-            $this->userRepository,
-            $this->writer
+            $this->userCreationService,
+            $this->userRepository
         );
     }
 
@@ -143,22 +135,13 @@ class SubuserCreationServiceTest extends TestCase
             'root_admin' => false,
         ])->once()->andReturn($user);
 
-        $this->subuserRepository->shouldReceive('create')->with([
-            'user_id' => $user->id,
-            'server_id' => $server->id,
-            'daemonSecret' => 'random_string',
-        ])->once()->andReturn($subuser);
-
-        $this->permissionService->shouldReceive('handle')->with($subuser->id, array_keys($permissions))->once()
-            ->andReturn(['s:get', 's:console', 'test:1']);
-
-        $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setSubuserKey')->with($subuser->daemonSecret, ['s:get', 's:console', 'test:1'])->once()->andReturnSelf();
+        $this->subuserRepository->shouldReceive('create')->with(['user_id' => $user->id, 'server_id' => $server->id])
+            ->once()->andReturn($subuser);
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturnNull();
+        $this->permissionService->shouldReceive('handle')->with($subuser->id, array_keys($permissions))->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->handle($server, $user->email, array_keys($permissions));
-
         $this->assertInstanceOf(Subuser::class, $response);
         $this->assertSame($subuser, $response);
     }
@@ -180,22 +163,13 @@ class SubuserCreationServiceTest extends TestCase
             ['server_id', '=', $server->id],
         ])->once()->andReturn(0);
 
-        $this->subuserRepository->shouldReceive('create')->with([
-            'user_id' => $user->id,
-            'server_id' => $server->id,
-            'daemonSecret' => 'random_string',
-        ])->once()->andReturn($subuser);
-
-        $this->permissionService->shouldReceive('handle')->with($subuser->id, $permissions)->once()
-            ->andReturn(['s:get', 's:console', 's:set-password']);
-
-        $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setSubuserKey')->with($subuser->daemonSecret, ['s:get', 's:console', 's:set-password'])->once()->andReturnSelf();
+        $this->subuserRepository->shouldReceive('create')->with(['user_id' => $user->id, 'server_id' => $server->id])
+            ->once()->andReturn($subuser);
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturnNull();
+        $this->permissionService->shouldReceive('handle')->with($subuser->id, $permissions)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->handle($server, $user->email, $permissions);
-
         $this->assertInstanceOf(Subuser::class, $response);
         $this->assertSame($subuser, $response);
     }

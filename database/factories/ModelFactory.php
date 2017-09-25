@@ -30,7 +30,6 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
         'cpu' => 0,
         'oom_disabled' => 0,
         'pack_id' => null,
-        'daemonSecret' => $faker->uuid,
         'username' => $faker->userName,
         'sftp_password' => null,
         'installed' => 1,
@@ -153,7 +152,6 @@ $factory->define(Pterodactyl\Models\Subuser::class, function (Faker\Generator $f
         'id' => $faker->unique()->randomNumber(),
         'user_id' => $faker->randomNumber(),
         'server_id' => $faker->randomNumber(),
-        'daemonSecret' => $faker->unique()->uuid,
     ];
 });
 
@@ -195,5 +193,15 @@ $factory->define(Pterodactyl\Models\Task::class, function (Faker\Generator $fake
         'payload' => 'test command',
         'time_offset' => 120,
         'is_queued' => false,
+    ];
+});
+
+$factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'server_id' => $faker->randomNumber(),
+        'user_id' => $faker->randomNumber(),
+        'secret' => 'i_' . str_random(40),
+        'expires_at' => \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString(),
     ];
 });

@@ -41,12 +41,12 @@ class NodeUpdateServiceTest extends TestCase
     use PHPMock;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface|\Mockery\Mock
      */
     protected $configRepository;
 
     /**
-     * @var \GuzzleHttp\Exception\RequestException
+     * @var \GuzzleHttp\Exception\RequestException|\Mockery\Mock
      */
     protected $exception;
 
@@ -56,7 +56,7 @@ class NodeUpdateServiceTest extends TestCase
     protected $node;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -66,7 +66,7 @@ class NodeUpdateServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Illuminate\Log\Writer
+     * @var \Illuminate\Log\Writer|\Mockery\Mock
      */
     protected $writer;
 
@@ -106,7 +106,6 @@ class NodeUpdateServiceTest extends TestCase
             ])->andReturn(true);
 
         $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with($this->node->daemonSecret)->once()->andReturnSelf()
             ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
 
         $this->assertTrue($this->service->handle($this->node, ['name' => 'NewName', 'reset_secret' => true]));
@@ -123,7 +122,6 @@ class NodeUpdateServiceTest extends TestCase
             ])->andReturn(true);
 
         $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with($this->node->daemonSecret)->once()->andReturnSelf()
             ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
 
         $this->assertTrue($this->service->handle($this->node, ['name' => 'NewName']));
@@ -167,7 +165,6 @@ class NodeUpdateServiceTest extends TestCase
             ])->andReturn(true);
 
         $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with($this->node->daemonSecret)->once()->andReturnSelf()
             ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
 
         $this->assertTrue($this->service->handle($this->node->id, ['name' => 'NewName']));
