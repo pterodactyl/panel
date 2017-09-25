@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 use Pterodactyl\Http\Middleware\Server\SubuserAccess;
 use Pterodactyl\Http\Middleware\Server\ScheduleAccess;
 
