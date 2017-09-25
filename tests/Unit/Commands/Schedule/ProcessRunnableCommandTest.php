@@ -83,6 +83,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $this->processScheduleService->shouldReceive('handle')->with($schedule)->once()->andReturnNull();
 
         $display = $this->runCommand($this->command);
+
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.schedule.output_line', [
             'schedule' => $schedule->name,
@@ -103,6 +104,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $this->repository->shouldReceive('getSchedulesToProcess')->with('00:00:00')->once()->andReturn(collect([$schedule]));
 
         $display = $this->runCommand($this->command);
+
         $this->assertNotEmpty($display);
         $this->assertNotContains(trans('command/messages.schedule.output_line', [
             'schedule' => $schedule->name,
@@ -122,6 +124,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $this->repository->shouldReceive('getSchedulesToProcess')->with('00:00:00')->once()->andReturn(collect([$schedule]));
 
         $display = $this->runCommand($this->command);
+
         $this->assertNotEmpty($display);
         $this->assertNotContains(trans('command/messages.schedule.output_line', [
             'schedule' => $schedule->name,

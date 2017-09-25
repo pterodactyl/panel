@@ -81,6 +81,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'disk' => 'required',
         'service_id' => 'required',
         'option_id' => 'required',
+        'node_id' => 'required',
+        'allocation_id' => 'required',
         'pack_id' => 'sometimes',
         'auto_deploy' => 'sometimes',
         'custom_id' => 'sometimes',

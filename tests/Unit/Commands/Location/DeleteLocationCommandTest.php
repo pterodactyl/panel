@@ -25,14 +25,13 @@
 namespace Tests\Unit\Commands\Location;
 
 use Mockery as m;
-use Tests\TestCase;
 use Pterodactyl\Models\Location;
-use Symfony\Component\Console\Tester\CommandTester;
+use Tests\Unit\Commands\CommandTestCase;
 use Pterodactyl\Services\Locations\LocationDeletionService;
 use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
-class DeleteLocationCommandTest extends TestCase
+class DeleteLocationCommandTest extends CommandTestCase
 {
     /**
      * @var \Pterodactyl\Console\Commands\Location\DeleteLocationCommand
@@ -40,12 +39,12 @@ class DeleteLocationCommandTest extends TestCase
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
+     * @var \Pterodactyl\Services\Locations\LocationDeletionService|\Mockery\Mock
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -76,11 +75,8 @@ class DeleteLocationCommandTest extends TestCase
         $this->repository->shouldReceive('all')->withNoArgs()->once()->andReturn($locations);
         $this->deletionService->shouldReceive('handle')->with($location2->id)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([$location2->short]);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], [$location2->short]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.location.deleted'), $display);
     }
@@ -98,12 +94,10 @@ class DeleteLocationCommandTest extends TestCase
         $this->repository->shouldReceive('all')->withNoArgs()->once()->andReturn($locations);
         $this->deletionService->shouldReceive('handle')->with($location2->id)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->execute([
+        $display = $this->withoutInteraction()->runCommand($this->command, [
             '--short' => $location2->short,
         ]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.location.deleted'), $display);
     }
@@ -121,11 +115,8 @@ class DeleteLocationCommandTest extends TestCase
         $this->repository->shouldReceive('all')->withNoArgs()->once()->andReturn($locations);
         $this->deletionService->shouldReceive('handle')->with($location2->id)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->setInputs(['123_not_exist', 'another_not_exist', $location2->short]);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], ['123_not_exist', 'another_not_exist', $location2->short]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.location.no_location_found'), $display);
         $this->assertContains(trans('command/messages.location.deleted'), $display);
@@ -144,10 +135,8 @@ class DeleteLocationCommandTest extends TestCase
         $this->repository->shouldReceive('all')->withNoArgs()->once()->andReturn($locations);
         $this->deletionService->shouldNotReceive('handle');
 
-        $response = new CommandTester($this->command);
-        $response->execute(['--short' => 'randomTestString'], ['interactive' => false]);
+        $display = $this->withoutInteraction()->runCommand($this->command, ['--short' => 'randomTestString']);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.location.no_location_found'), $display);
     }

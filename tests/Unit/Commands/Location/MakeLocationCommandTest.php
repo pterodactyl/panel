@@ -25,13 +25,12 @@
 namespace Tests\Unit\Commands\Location;
 
 use Mockery as m;
-use Tests\TestCase;
 use Pterodactyl\Models\Location;
-use Symfony\Component\Console\Tester\CommandTester;
+use Tests\Unit\Commands\CommandTestCase;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
 
-class MakeLocationCommandTest extends TestCase
+class MakeLocationCommandTest extends CommandTestCase
 {
     /**
      * @var \Pterodactyl\Console\Commands\Location\MakeLocationCommand
@@ -39,7 +38,7 @@ class MakeLocationCommandTest extends TestCase
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     * @var \Pterodactyl\Services\Locations\LocationCreationService|\Mockery\Mock
      */
     protected $creationService;
 
@@ -68,11 +67,8 @@ class MakeLocationCommandTest extends TestCase
             'long' => $location->long,
         ])->once()->andReturn($location);
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([$location->short, $location->long]);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], [$location->short, $location->long]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.location.created', [
             'name' => $location->short,
@@ -92,13 +88,11 @@ class MakeLocationCommandTest extends TestCase
             'long' => $location->long,
         ])->once()->andReturn($location);
 
-        $response = new CommandTester($this->command);
-        $response->execute([
+        $display = $this->withoutInteraction()->runCommand($this->command, [
             '--short' => $location->short,
             '--long' => $location->long,
         ]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.location.created', [
             'name' => $location->short,

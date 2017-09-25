@@ -78,21 +78,20 @@
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-sm-4">
-                        <label for="pLocationId">Location</label>
-                        <select name="location_id" id="pLocationId" class="form-control">
+                        <label for="pNodeId">Node</label>
+                        <select name="node_id" id="pNodeId" class="form-control">
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}"
-                                    @if($location->id === old('location_id'))
-                                        selected
-                                    @endif
-                                >{{ $location->long }} ({{ $location->short }})</option>
+                                <optgroup label="{{ $location->long }} ({{ $location->short }})">
+                                @foreach($location->nodes as $node)
+
+                                <option value="{{ $node->id }}"
+                                    @if($location->id === old('location_id')) selected @endif
+                                >{{ $node->name }}</option>
+
+                                @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
-                        <p class="small text-muted no-margin">The location in which this server will be deployed.</p>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label for="pNodeId">Node</label>
-                        <select name="node_id" id="pNodeId" class="form-control"></select>
                         <p class="small text-muted no-margin">The node which this server will be deployed to.</p>
                     </div>
                     <div class="form-group col-sm-4">
@@ -100,7 +99,7 @@
                         <select name="allocation_id" id="pAllocation" class="form-control"></select>
                         <p class="small text-muted no-margin">The main allocation that will be assigned to this server.</p>
                     </div>
-                    <div class="form-group col-sm-12">
+                    <div class="form-group col-sm-4">
                         <label for="pAllocationAdditional">Additional Allocation(s)</label>
                         <select name="allocation_additional[]" id="pAllocationAdditional" class="form-control" multiple></select>
                         <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>

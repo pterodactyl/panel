@@ -25,13 +25,12 @@
 namespace Tests\Unit\Commands\User;
 
 use Mockery as m;
-use Tests\TestCase;
 use Pterodactyl\Models\User;
+use Tests\Unit\Commands\CommandTestCase;
 use Pterodactyl\Services\Users\UserCreationService;
-use Symfony\Component\Console\Tester\CommandTester;
 use Pterodactyl\Console\Commands\User\MakeUserCommand;
 
-class MakeUserCommandTest extends TestCase
+class MakeUserCommandTest extends CommandTestCase
 {
     /**
      * @var \Pterodactyl\Console\Commands\User\MakeUserCommand
@@ -72,13 +71,10 @@ class MakeUserCommandTest extends TestCase
             'root_admin' => $user->root_admin,
         ])->once()->andReturn($user);
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([
+        $display = $this->runCommand($this->command, [], [
             'yes', $user->email, $user->username, $user->name_first, $user->name_last, 'Password123',
         ]);
-        $response->execute([]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.ask_password_help'), $display);
         $this->assertContains($user->uuid, $display);
@@ -104,13 +100,10 @@ class MakeUserCommandTest extends TestCase
             'root_admin' => $user->root_admin,
         ])->once()->andReturn($user);
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([
+        $display = $this->runCommand($this->command, ['--no-password' => true], [
             'yes', $user->email, $user->username, $user->name_first, $user->name_last,
         ]);
-        $response->execute(['--no-password' => true]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertNotContains(trans('command/messages.user.ask_password_help'), $display);
     }
@@ -131,8 +124,7 @@ class MakeUserCommandTest extends TestCase
             'root_admin' => $user->root_admin,
         ])->once()->andReturn($user);
 
-        $response = new CommandTester($this->command);
-        $response->execute([
+        $display = $this->withoutInteraction()->runCommand($this->command, [
             '--email' => $user->email,
             '--username' => $user->username,
             '--name-first' => $user->name_first,
@@ -141,7 +133,6 @@ class MakeUserCommandTest extends TestCase
             '--admin' => 0,
         ]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertNotContains(trans('command/messages.user.ask_password_help'), $display);
         $this->assertContains($user->uuid, $display);

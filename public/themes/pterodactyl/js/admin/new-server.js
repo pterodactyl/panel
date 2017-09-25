@@ -27,9 +27,6 @@ $(document).ready(function() {
     $('#pPackId').select2({
         placeholder: 'Select a Service Pack',
     });
-    $('#pLocationId').select2({
-        placeholder: 'Select a Location',
-    }).change();
     $('#pNodeId').select2({
         placeholder: 'Select a Node',
     });
@@ -100,28 +97,8 @@ $(document).on('click', function (event) {
     lastActiveBox.addClass('box-primary');
 });
 
-var currentLocation = null;
 var curentNode = null;
 var NodeData = [];
-
-$('#pLocationId').on('change', function (event) {
-    showLoader();
-    currentLocation = $(this).val();
-    currentNode = null;
-
-    $.ajax({
-        method: 'POST',
-        url: Router.route('admin.servers.new.nodes'),
-        headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
-        data: { location: currentLocation },
-    }).done(function (data) {
-        NodeData = data;
-        $('#pNodeId').html('').select2({data: data}).change();
-    }).fail(function (jqXHR) {
-        cosole.error(jqXHR);
-        currentLocation = null;
-    }).always(hideLoader);
-});
 
 $('#pNodeId').on('change', function (event) {
     currentNode = $(this).val();

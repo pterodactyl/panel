@@ -25,13 +25,12 @@
 namespace Tests\Unit\Commands\User;
 
 use Mockery as m;
-use Tests\TestCase;
 use Pterodactyl\Models\User;
-use Symfony\Component\Console\Tester\CommandTester;
+use Tests\Unit\Commands\CommandTestCase;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Console\Commands\User\DisableTwoFactorCommand;
 
-class DisableTwoFactorCommandTest extends TestCase
+class DisableTwoFactorCommandTest extends CommandTestCase
 {
     /**
      * @var \Pterodactyl\Console\Commands\User\DisableTwoFactorCommand
@@ -39,10 +38,13 @@ class DisableTwoFactorCommandTest extends TestCase
     protected $command;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
+    /**
+     * Setup tests.
+     */
     public function setUp()
     {
         parent::setUp();
@@ -68,11 +70,8 @@ class DisableTwoFactorCommandTest extends TestCase
                 'totp_secret' => null,
             ])->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([$user->email]);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], [$user->email]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.2fa_disabled', ['email' => $user->email]), $display);
     }
@@ -92,12 +91,7 @@ class DisableTwoFactorCommandTest extends TestCase
                 'totp_secret' => null,
             ])->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->execute([
-            '--email' => $user->email,
-        ]);
-
-        $display = $response->getDisplay();
+        $display = $this->withoutInteraction()->runCommand($this->command, ['--email' => $user->email]);
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.2fa_disabled', ['email' => $user->email]), $display);
     }
