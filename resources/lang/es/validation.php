@@ -115,6 +115,6 @@ return [
 
     'attributes' => [
         'username' => 'usuario',
-        'password' => 'contraseña'
+        'password' => 'contraseña',
     ],
 ];
