@@ -90,8 +90,8 @@ class Service extends Model implements CleansAttributes, ValidableContract
     public function packs()
     {
         return $this->hasManyThrough(
-            'Pterodactyl\Models\Pack',
-            'Pterodactyl\Models\ServiceOption',
+            Pack::class,
+            ServiceOption::class,
             'service_id',
             'option_id'
         );
