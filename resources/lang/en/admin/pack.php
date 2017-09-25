@@ -24,8 +24,8 @@
 
 return [
     'notices' => [
-        'pack_updated' => 'Pack has been successfully updated.',
-        'pack_deleted' => 'Successfully deleted the pack ":name" from the system.',
-        'pack_created' => 'A new pack was successfully created on the system and is now available for deployment to servers.',
+        'pack_updated' => 'Paquete ha sido actualizado correctamente.',
+        'pack_deleted' => 'Se eliminó correctamente el paquete ":name" del sistema.',
+        'pack_created' => 'Un nuevo paquete se creó con éxito en el sistema y ahora está disponible para la implementación en los servidores.',
     ],
 ];
