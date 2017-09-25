@@ -71,13 +71,13 @@ Route::group(['prefix' => 'files'], function () {
 Route::group(['prefix' => 'users'], function () {
     Route::get('/', 'SubuserController@index')->name('server.subusers');
     Route::get('/new', 'SubuserController@create')->name('server.subusers.new');
-    Route::get('/view/{subuser}', 'SubuserController@view')->middleware(SubuserAccess::class)->name('server.subusers.view');
+    Route::get('/view/{subuser}', 'SubuserController@view')->middleware('subuser')->name('server.subusers.view');
 
     Route::post('/new', 'SubuserController@store');
 
-    Route::patch('/view/{subuser}', 'SubuserController@update')->middleware(SubuserAccess::class);
+    Route::patch('/view/{subuser}', 'SubuserController@update')->middleware('subuser');
 
-    Route::delete('/view/{subuser}/delete', 'SubuserController@delete')->middleware(SubuserAccess::class)->name('server.subusers.delete');
+    Route::delete('/view/{subuser}/delete', 'SubuserController@delete')->middleware('subuser')->name('server.subusers.delete');
 });
 
 /*
