@@ -45,7 +45,7 @@ class RequireTwoFactorAuthentication
     protected $settings;
 
     /**
-     * All TOTP related routes
+     * All TOTP related routes.
      *
      * @var array
      */
