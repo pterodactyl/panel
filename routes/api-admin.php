@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-Route::get('/', 'CoreController@index');
+Route::get('/', '\Pterodactyl\Http\Controllers\API\User\CoreController@index');
 
 /*
 |--------------------------------------------------------------------------

@@ -96,7 +96,7 @@ Route::group(['prefix' => 'schedules'], function () {
     Route::post('/new', 'Tasks\TaskManagementController@store');
 
     Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update')->middleware('schedule');
-    Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware('schedule')->name('server.schedules.toggle');
+    // Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware('schedule')->name('server.schedules.toggle');
 
     Route::delete('/view/{schedule}/delete', 'Tasks\TaskManagementController@delete')->middleware('schedule')->name('server.schedules.delete');
 });
