@@ -25,6 +25,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
+use Pterodactyl\Events\User\{Created, Creating, Deleted, Deleting};
 
 class User extends Model implements
     AuthenticatableContract,
@@ -127,6 +128,18 @@ class User extends Model implements
         'language' => 'string|between:2,5',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
+    ];
+
+    /**
+     * Registering event listeners.
+     *
+     * @var array
+     */
+    protected $events = [
+        'creating' => Creating::class,
+        'created' => Created::class,
+        'deleting' => Deleting::class,
+        'deleted' => Deleted::class,
     ];
 
     /**

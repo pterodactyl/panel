@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
+use Pterodactyl\Events\Subuser\{Created, Creating, Deleted, Deleting};
 
 class Subuser extends Model implements CleansAttributes, ValidableContract
 {
@@ -67,6 +68,18 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
         'user_id' => 'numeric|exists:users,id',
         'server_id' => 'numeric|exists:servers,id',
         'daemonSecret' => 'string',
+    ];
+
+    /**
+     * Registering event listeners.
+     *
+     * @var array
+     */
+    protected $events = [
+        'creating' => Creating::class,
+        'created' => Created::class,
+        'deleting' => Deleting::class,
+        'deleted' => Deleted::class,
     ];
 
     /**

@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
+use Pterodactyl\Events\Server\{Created, Creating, Deleted, Deleting, Saved, Saving, Updated, Updating};
 
 class Server extends Model implements CleansAttributes, ValidableContract
 {
@@ -135,6 +136,22 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'user.email' => 6,
         'user.username' => 6,
         'node.name' => 2,
+    ];
+
+    /**
+     * Registering event listeners.
+     *
+     * @var array
+     */
+    protected $events = [
+        'creating' => Creating::class,
+        'created' => Created::class,
+        'updating' => Updating::class,
+        'updated' => Updated::class,
+        'saving' => Saving::class,
+        'saved' => Saved::class,
+        'deleting' => Deleting::class,
+        'deleted' => Deleted::class,
     ];
 
     /**
