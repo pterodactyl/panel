@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -66,6 +52,23 @@
                                 <p class="text-muted"><small>This is the default language that all clients will use unless they manually change it.</small></p>
                             </div>
                         </div> --}}
+                        <div class="form-group col-md-6">
+                            <label class="control-label">2FA Required</label>
+                            <div>
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 0) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="0" @if (old('2fa', Settings::get('2fa', 0)) == 0) checked @endif> Nobody
+                                    </label>
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 1) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="1" @if (old('2fa', Settings::get('2fa', 0)) == 1) checked @endif> Admins
+                                    </label>
+                                    <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 2) active @endif">
+                                        <input type="radio" name="2fa" autocomplete="off" value="2" @if (old('2fa', Settings::get('2fa', 0)) == 2) checked @endif> Everybody
+                                    </label>
+                                </div>
+                                <p class="text-muted"><small>Require your administrators or users to have 2FA enabled. Users include Admins. Everybody includes Sub Users.</small></p>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
