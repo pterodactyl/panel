@@ -6,7 +6,7 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
-Route::get('/', 'CoreController@index');
+Route::get('/', '\Pterodactyl\Http\Controllers\API\User\CoreController@index');
 
 /*
 |--------------------------------------------------------------------------
