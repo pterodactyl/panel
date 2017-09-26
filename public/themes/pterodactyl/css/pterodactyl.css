@@ -346,6 +346,10 @@ span[aria-labelledby="select2-pUserId-container"] {
     line-height: 1.5;
 }
 
+.btn.active, .btn.active.focus {
+    background-color: #408fec;
+}
+
 .strong {
     font-weight: bold !important;
 }

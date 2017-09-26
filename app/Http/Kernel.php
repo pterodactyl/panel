@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
+            \Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication::class,
         ],
         'api' => [
             \Pterodactyl\Http\Middleware\HMACAuthorization::class,
