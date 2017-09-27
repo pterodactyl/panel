@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -33,7 +32,7 @@ class StartupModificationService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    protected $connection;
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
@@ -56,37 +55,29 @@ class StartupModificationService
     protected $validatorService;
 
     /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
-
-    /**
      * StartupModificationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                            $database
+     * @param \Illuminate\Database\ConnectionInterface                            $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
      * @param \Pterodactyl\Services\Servers\EnvironmentService                    $environmentService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
-     * @param \Illuminate\Log\Writer                                              $writer
      */
     public function __construct(
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonServerRepository,
         EnvironmentService $environmentService,
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
-        VariableValidatorService $validatorService,
-        Writer $writer
+        VariableValidatorService $validatorService
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
-        $this->database = $database;
+        $this->connection = $connection;
         $this->environmentService = $environmentService;
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->validatorService = $validatorService;
-        $this->writer = $writer;
     }
 
     /**
@@ -126,7 +117,7 @@ class StartupModificationService
             $hasServiceChanges = true;
         }
 
-        $this->database->beginTransaction();
+        $this->connection->beginTransaction();
         if (isset($data['environment'])) {
             $validator = $this->validatorService->isAdmin($this->admin)
                 ->setFields($data['environment'])
@@ -168,14 +159,12 @@ class StartupModificationService
 
         try {
             $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
-            $this->database->commit();
+            $this->connection->commit();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            ]), $exception, 'warning');
         }
     }
 }

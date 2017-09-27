@@ -10,21 +10,39 @@
 namespace Pterodactyl\Exceptions;
 
 use Log;
+use Throwable;
 
 class DisplayException extends PterodactylException
 {
     /**
+     * @var string
+     */
+    protected $level;
+
+    /**
      * Exception constructor.
      *
-     * @param string $message
-     * @param mixed  $log
+     * @param string         $message
+     * @param Throwable|null $previous
+     * @param string         $level
+     * @internal param mixed $log
      */
-    public function __construct($message, $log = null)
+    public function __construct($message, Throwable $previous = null, $level = 'error')
     {
-        if (! is_null($log)) {
-            Log::error($log);
+        $this->level = $level;
+
+        if (! is_null($previous)) {
+            Log::{$level}($previous);
         }
 
         parent::__construct($message);
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorLevel()
+    {
+        return $this->level;
     }
 }
