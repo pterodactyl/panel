@@ -17,14 +17,24 @@ use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessScheduleService
 {
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     */
     protected $repository;
 
+    /**
+     * @var \Pterodactyl\Services\Schedules\Tasks\RunTaskService
+     */
     protected $runnerService;
 
-    public function __construct(
-        RunTaskService $runnerService,
-        ScheduleRepositoryInterface $repository
-    ) {
+    /**
+     * ProcessScheduleService constructor.
+     *
+     * @param \Pterodactyl\Services\Schedules\Tasks\RunTaskService          $runnerService
+     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     */
+    public function __construct(RunTaskService $runnerService, ScheduleRepositoryInterface $repository)
+    {
         $this->repository = $repository;
         $this->runnerService = $runnerService;
     }

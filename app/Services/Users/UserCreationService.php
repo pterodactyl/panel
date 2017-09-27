@@ -93,7 +93,7 @@ class UserCreationService
         $this->connection->beginTransaction();
         if (! isset($data['password']) || empty($data['password'])) {
             $data['password'] = $this->hasher->make(str_random(30));
-            $token = $this->passwordService->generateReset($data['email']);
+            $token = $this->passwordService->handle($data['email']);
         }
 
         $user = $this->repository->create($data);

@@ -83,7 +83,7 @@ class DaemonKeyProviderService
             ['server_id', '=', $server],
         ]);
 
-        if (! $updateIfExpired || max($this->carbon->now()->diffInSeconds($key->expires_at, false), 0) > 0) {
+        if (! $updateIfExpired || $this->carbon->now()->diffInSeconds($key->expires_at, false) > 0) {
             return $key->secret;
         }
 

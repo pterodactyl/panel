@@ -94,7 +94,7 @@ class UserCreationServiceTest extends TestCase
         $this->hasher->shouldReceive('make')->with('raw-password')->once()->andReturn('enc-password');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->hasher->shouldNotReceive('make');
-        $this->passwordService->shouldNotReceive('generateReset');
+        $this->passwordService->shouldNotReceive('handle');
         $this->repository->shouldReceive('create')->with(['password' => 'enc-password'])->once()->andReturn($user);
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
         $this->appMock->shouldReceive('makeWith')->with(AccountCreated::class, [
@@ -130,7 +130,7 @@ class UserCreationServiceTest extends TestCase
         $this->hasher->shouldNotReceive('make');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->hasher->shouldReceive('make')->once()->andReturn('created-enc-password');
-        $this->passwordService->shouldReceive('generateReset')
+        $this->passwordService->shouldReceive('handle')
             ->with('user@example.com')
             ->once()
             ->andReturn('random-token');

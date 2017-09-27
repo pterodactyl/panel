@@ -10,16 +10,13 @@
 namespace Pterodactyl\Services\Schedules\Tasks;
 
 use Pterodactyl\Models\Task;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 
 class RunTaskService
 {
-    /**
-     * @var \Illuminate\Contracts\Bus\Dispatcher
-     */
-    protected $dispatcher;
+    use DispatchesJobs;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
@@ -29,14 +26,10 @@ class RunTaskService
     /**
      * RunTaskService constructor.
      *
-     * @param \Illuminate\Contracts\Bus\Dispatcher                      $dispatcher
      * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $repository
      */
-    public function __construct(
-        Dispatcher $dispatcher,
-        TaskRepositoryInterface $repository
-    ) {
-        $this->dispatcher = $dispatcher;
+    public function __construct(TaskRepositoryInterface $repository)
+    {
         $this->repository = $repository;
     }
 
@@ -55,6 +48,6 @@ class RunTaskService
         }
 
         $this->repository->update($task->id, ['is_queued' => true]);
-        $this->dispatcher->dispatch((new RunTaskJob($task->id, $task->schedule_id))->delay($task->time_offset));
+        $this->dispatch((new RunTaskJob($task->id, $task->schedule_id))->delay($task->time_offset));
     }
 }

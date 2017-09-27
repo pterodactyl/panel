@@ -12,7 +12,6 @@ namespace Tests\Unit\Services\Services\Variables;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use PhpParser\Node\Expr\Variable;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Services\Variables\VariableUpdateService;
@@ -21,12 +20,12 @@ use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 class VariableUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\ServiceVariable
+     * @var \Pterodactyl\Models\ServiceVariable|\Mockery\Mock
      */
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -61,6 +60,22 @@ class VariableUpdateServiceTest extends TestCase
             ])->once()->andReturn(true);
 
         $this->assertTrue($this->service->handle($this->model, ['test-data' => 'test-value']));
+    }
+
+    /**
+     * Test that a service variable ID can be passed in place of the model.
+     */
+    public function testVariableIdCanBePassedInPlaceOfModel()
+    {
+        $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
+        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, [
+                'user_viewable' => false,
+                'user_editable' => false,
+                'test-data' => 'test-value',
+            ])->once()->andReturn(true);
+
+        $this->assertTrue($this->service->handle($this->model->id, ['test-data' => 'test-value']));
     }
 
     /**

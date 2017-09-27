@@ -141,6 +141,7 @@ class SubuserCreationServiceTest extends TestCase
         $user = factory(User::class)->make();
         $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
 
+        $this->serverRepository->shouldReceive('find')->with($server->id)->once()->andReturn($server);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
         $this->subuserRepository->shouldReceive('findCountWhere')->with([
@@ -154,7 +155,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->permissionService->shouldReceive('handle')->with($subuser->id, $permissions)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($server, $user->email, $permissions);
+        $response = $this->service->handle($server->id, $user->email, $permissions);
         $this->assertInstanceOf(Subuser::class, $response);
         $this->assertSame($subuser, $response);
     }

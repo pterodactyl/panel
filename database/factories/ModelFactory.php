@@ -202,5 +202,6 @@ $factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker\Generator 
         'server_id' => $faker->randomNumber(),
         'user_id' => $faker->randomNumber(),
         'secret' => 'i_' . str_random(40),
+        'expires_at' => \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString(),
     ];
 });

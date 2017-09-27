@@ -46,7 +46,9 @@ class DaemonKeyProviderServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->carbon = m::mock(Carbon::class);
+        $this->carbon = new Carbon();
+        $this->carbon->setTestNow();
+
         $this->keyUpdateService = m::mock(DaemonKeyUpdateService::class);
         $this->repository = m::mock(DaemonKeyRepositoryInterface::class);
 
@@ -65,9 +67,6 @@ class DaemonKeyProviderServiceTest extends TestCase
             ['server_id', '=', $key->server_id],
         ])->once()->andReturn($key);
 
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnSelf();
-        $this->carbon->shouldReceive('diffInSeconds')->with($key->expires_at, false)->once()->andReturn(100);
-
         $response = $this->service->handle($key->server_id, $key->user_id);
         $this->assertNotEmpty($response);
         $this->assertEquals($key->secret, $response);
@@ -78,15 +77,14 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     public function testExpiredKeyIsUpdated()
     {
-        $key = factory(DaemonKey::class)->make();
+        $key = factory(DaemonKey::class)->make([
+            'expires_at' => $this->carbon->subHour(),
+        ]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([
             ['user_id', '=', $key->user_id],
             ['server_id', '=', $key->server_id],
         ])->once()->andReturn($key);
-
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnSelf();
-        $this->carbon->shouldReceive('diffInSeconds')->with($key->expires_at, false)->once()->andReturn(-100);
 
         $this->keyUpdateService->shouldReceive('handle')->with($key->id)->once()->andReturn(true);
 
@@ -100,7 +98,9 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     public function testExpiredKeyIsNotUpdated()
     {
-        $key = factory(DaemonKey::class)->make();
+        $key = factory(DaemonKey::class)->make([
+            'expires_at' => $this->carbon->subHour(),
+        ]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([
             ['user_id', '=', $key->user_id],

@@ -40,7 +40,7 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * @var int
      */
-    protected $schedule;
+    public $schedule;
 
     /**
      * @var int
