@@ -99,7 +99,7 @@ class NodeDeletionServiceTest extends TestCase
         $this->repository->shouldReceive('delete')->with($node->id)->once()->andReturn(true);
 
         $this->assertTrue(
-            $this->service->handle($node->id),
+            $this->service->handle($node),
             'Assert that deletion returns a positive boolean value.'
         );
     }
