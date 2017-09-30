@@ -187,7 +187,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     public function all()
     {
         $instance = $this->getBuilder();
-        if (interface_exists(SearchableInterface::class)) {
+        if (is_subclass_of(get_called_class(), SearchableInterface::class)) {
             $instance = $instance->search($this->searchTerm);
         }
 

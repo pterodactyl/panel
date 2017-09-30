@@ -242,6 +242,7 @@ class ServersController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function store(ServerFormRequest $request)
     {
@@ -278,6 +279,8 @@ class ServersController extends Controller
      *
      * @param int $server
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewDetails($server)
     {
@@ -294,6 +297,8 @@ class ServersController extends Controller
      *
      * @param int $server
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewBuild($server)
     {
@@ -316,6 +321,8 @@ class ServersController extends Controller
      *
      * @param int $server
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewStartup($server)
     {
@@ -346,6 +353,8 @@ class ServersController extends Controller
      *
      * @param int $server
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewDatabase($server)
     {
@@ -388,6 +397,7 @@ class ServersController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function setDetails(Request $request, Server $server)
     {
@@ -409,6 +419,7 @@ class ServersController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function setContainer(Request $request, Server $server)
     {
