@@ -61,7 +61,8 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function __construct($task, $schedule)
     {
-        Assert::integerish($task, 'First argument passed to constructor must be numeric, received %s.');
+        Assert::integerish($task, 'First argument passed to constructor must be integer, received %s.');
+        Assert::integerish($schedule, 'Second argument passed to constructor must be integer, received %s.');
 
         $this->queue = app()->make('config')->get('pterodactyl.queues.standard');
         $this->task = $task;
