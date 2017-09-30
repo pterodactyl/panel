@@ -11,20 +11,22 @@ namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionDeletionService;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException;
 
 class OptionDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
@@ -33,6 +35,9 @@ class OptionDeletionServiceTest extends TestCase
      */
     protected $service;
 
+    /**
+     * Setup tests.
+     */
     public function setUp()
     {
         parent::setUp();
@@ -49,6 +54,7 @@ class OptionDeletionServiceTest extends TestCase
     public function testOptionIsDeletedIfNoServersAreFound()
     {
         $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(0);
+        $this->repository->shouldReceive('findCountWhere')->with([['config_from', '=', 1]])->once()->andReturn(0);
         $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle(1));
@@ -63,9 +69,25 @@ class OptionDeletionServiceTest extends TestCase
 
         try {
             $this->service->handle(1);
-        } catch (\Exception $exception) {
+        } catch (DisplayException $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
             $this->assertEquals(trans('exceptions.service.options.delete_has_servers'), $exception->getMessage());
+        }
+    }
+
+    /**
+     * Test that an exception is thrown if children options exist.
+     */
+    public function testExceptionIsThrownIfChildrenArePresent()
+    {
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(0);
+        $this->repository->shouldReceive('findCountWhere')->with([['config_from', '=', 1]])->once()->andReturn(1);
+
+        try {
+            $this->service->handle(1);
+        } catch (DisplayException $exception) {
+            $this->assertInstanceOf(HasChildrenException::class, $exception);
+            $this->assertEquals(trans('exceptions.service.options.has_children'), $exception->getMessage());
         }
     }
 }
