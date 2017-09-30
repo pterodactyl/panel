@@ -131,7 +131,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function details()
     {
-        return $this->getHttpClient()->request('GET', '/servers');
+        return $this->getHttpClient()->request('GET', '/server');
     }
 
     /**

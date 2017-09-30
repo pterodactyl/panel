@@ -19,6 +19,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
@@ -71,6 +72,7 @@ class RunTaskJob extends Job implements ShouldQueue
      * Run the job and send actions to the daemon running the server.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface $commandRepository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService           $keyProviderService
      * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface   $powerRepository
      * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface           $taskRepository
      *
@@ -80,6 +82,7 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function handle(
         CommandRepositoryInterface $commandRepository,
+        DaemonKeyProviderService $keyProviderService,
         PowerRepositoryInterface $powerRepository,
         TaskRepositoryInterface $taskRepository
     ) {
@@ -95,13 +98,13 @@ class RunTaskJob extends Job implements ShouldQueue
             case 'power':
                 $this->powerRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->accessToken->secret)
+                    ->setAccessToken($keyProviderService->handle($server->id, $server->owner_id))
                     ->sendSignal($task->payload);
                 break;
             case 'command':
                 $this->commandRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->accessToken->secret)
+                    ->setAccessToken($keyProviderService->handle($server->id, $server->owner_id))
                     ->send($task->payload);
                 break;
             default:

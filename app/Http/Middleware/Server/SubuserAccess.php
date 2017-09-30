@@ -40,7 +40,7 @@ class SubuserAccess
     }
 
     /**
-     * Determine if a user has permission to access a subuser.
+     * Determine if a user has permission to access and modify subuser.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
