@@ -94,10 +94,18 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories
-        $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
-        $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
-        $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
-        $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
-        $this->app->bind(PowerRepositoryInterface::class, PowerRepository::class);
+        if ($this->app->make('config')->get('pterodactyl.daemon.use_new_daemon')) {
+            $this->app->bind(ConfigurationRepositoryInterface::class, \Pterodactyl\Repositories\Wings\ConfigurationRepository::class);
+            $this->app->bind(CommandRepositoryInterface::class, \Pterodactyl\Repositories\Wings\CommandRepository::class);
+            $this->app->bind(DaemonServerRepositoryInterface::class, \Pterodactyl\Repositories\Wings\ServerRepository::class);
+            $this->app->bind(FileRepositoryInterface::class, \Pterodactyl\Repositories\Wings\FileRepository::class);
+            $this->app->bind(PowerRepositoryInterface::class, \Pterodactyl\Repositories\Wings\PowerRepository::class);
+        } else {
+            $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
+            $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
+            $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
+            $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
+            $this->app->bind(PowerRepositoryInterface::class, PowerRepository::class);
+        }
     }
 }
