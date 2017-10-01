@@ -27,7 +27,7 @@ class PowerRepository extends BaseRepository implements PowerRepositoryInterface
             case self::SIGNAL_STOP:
             case self::SIGNAL_RESTART:
             case self::SIGNAL_KILL:
-                return $this->getHttpClient()->request('PUT', '/server/' . $this->getAccessServer() . '/power', [
+                return $this->getHttpClient()->request('PUT', 'server/' . $this->getAccessServer() . '/power', [
                     'json' => [
                         'action' => $signal,
                     ],

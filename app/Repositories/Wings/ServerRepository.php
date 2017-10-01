@@ -43,7 +43,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function rebuild()
     {
-        return $this->getHttpClient()->request('POST', '/server/' . $this->getAccessServer() . '/rebuild');
+        return $this->getHttpClient()->request('POST', 'server/' . $this->getAccessServer() . '/rebuild');
     }
 
     /**
@@ -51,7 +51,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function suspend()
     {
-        return $this->getHttpClient()->request('POST', '/server/' . $this->getAccessServer() . '/suspend');
+        return $this->getHttpClient()->request('POST', 'server/' . $this->getAccessServer() . '/suspend');
     }
 
     /**
@@ -59,7 +59,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function unsuspend()
     {
-        return $this->getHttpClient()->request('POST', '/server/' . $this->getAccessServer() . '/unsuspend');
+        return $this->getHttpClient()->request('POST', 'server/' . $this->getAccessServer() . '/unsuspend');
     }
 
     /**
@@ -67,7 +67,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function delete()
     {
-        return $this->getHttpClient()->request('DELETE', '/server/' . $this->getAccessServer());
+        return $this->getHttpClient()->request('DELETE', 'server/' . $this->getAccessServer());
     }
 
     /**
@@ -75,7 +75,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function details()
     {
-        return $this->getHttpClient()->request('GET', '/server/' . $this->getAccessServer());
+        return $this->getHttpClient()->request('GET', 'server/' . $this->getAccessServer());
     }
 
     /**

@@ -21,7 +21,7 @@ class CommandRepository extends BaseRepository implements CommandRepositoryInter
     {
         Assert::stringNotEmpty($command, 'First argument passed to send must be a non-empty string, received %s.');
 
-        return $this->getHttpClient()->request('POST', '/server/' . $this->getAccessServer() . '/command', [
+        return $this->getHttpClient()->request('POST', 'server/' . $this->getAccessServer() . '/command', [
             'json' => [
                 'command' => $command,
             ],

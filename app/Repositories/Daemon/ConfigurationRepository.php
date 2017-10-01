@@ -41,7 +41,7 @@ class ConfigurationRepository extends BaseRepository implements ConfigurationRep
             ],
         ];
 
-        return $this->getHttpClient()->request('PATCH', '/config', [
+        return $this->getHttpClient()->request('PATCH', 'config', [
             'json' => array_merge($structure, $overrides),
         ]);
     }

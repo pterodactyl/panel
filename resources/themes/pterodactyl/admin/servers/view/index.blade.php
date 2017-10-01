@@ -177,7 +177,7 @@
                 'X-Access-Token': '{{ $server->daemonSecret }}',
                 'X-Access-Server': '{{ $server->uuid }}'
             },
-            url: '{{ $server->node->scheme }}://{{ $server->node->fqdn }}:{{ $server->node->daemonListen }}/server',
+            url: '{{ $server->node->scheme }}://{{ $server->node->fqdn }}:{{ $server->node->daemonListen }}/v1/server',
             dataType: 'json',
             timeout: 5000,
         }).done(function (data) {

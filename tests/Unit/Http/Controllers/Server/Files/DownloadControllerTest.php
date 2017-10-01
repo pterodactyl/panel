@@ -71,7 +71,7 @@ class DownloadControllerTest extends TestCase
         $response = $this->controller->index('1234', '/my/file.txt');
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectUrlEquals(sprintf(
-            '%s://%s:%s/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, 'randomString'
+            '%s://%s:%s/v1/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, 'randomString'
         ), $response);
     }
 }

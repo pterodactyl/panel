@@ -141,7 +141,7 @@ class BaseRepository implements BaseRepositoryInterface
         }
 
         return new Client([
-            'base_uri' => sprintf('%s://%s:%s/', $this->getNode()->scheme, $this->getNode()->fqdn, $this->getNode()->daemonListen),
+            'base_uri' => sprintf('%s://%s:%s/v1/', $this->getNode()->scheme, $this->getNode()->fqdn, $this->getNode()->daemonListen),
             'timeout' => $this->config->get('pterodactyl.guzzle.timeout'),
             'connect_timeout' => $this->config->get('pterodactyl.guzzle.connect_timeout'),
             'headers' => $headers,

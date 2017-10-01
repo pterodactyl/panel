@@ -30,6 +30,8 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\HttpException;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Pterodactyl\Transformers\Daemon\ApiKeyTransformer;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class ValidateKeyController extends Controller
@@ -81,7 +83,11 @@ class ValidateKeyController extends Controller
             throw new HttpException(501);
         }
 
-        $key = $this->daemonKeyRepository->getKeyWithServer($token);
+        try {
+            $key = $this->daemonKeyRepository->getKeyWithServer($token);
+        } catch (RecordNotFoundException $exception) {
+            throw new NotFoundHttpException;
+        }
 
         return $this->fractal->item($key, $this->app->make(ApiKeyTransformer::class), 'server')
             ->serializeWith(JsonApiSerializer::class)

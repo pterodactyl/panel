@@ -130,7 +130,7 @@
     (function getInformation() {
         $.ajax({
             method: 'GET',
-            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}',
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/v1',
             timeout: 5000,
             headers: {
                 'X-Access-Token': '{{ $node->daemonSecret }}'

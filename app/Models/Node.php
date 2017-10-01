@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Models;
 
-use GuzzleHttp\Client;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
@@ -125,22 +124,6 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonSFTP' => 2022,
         'daemonListen' => 8080,
     ];
-
-    /**
-     * Return an instance of the Guzzle client for this specific node.
-     *
-     * @param array $headers
-     * @return \GuzzleHttp\Client
-     */
-    public function guzzleClient($headers = [])
-    {
-        return new Client([
-            'base_uri' => sprintf('%s://%s:%s/', $this->scheme, $this->fqdn, $this->daemonListen),
-            'timeout' => config('pterodactyl.guzzle.timeout'),
-            'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
-            'headers' => $headers,
-        ]);
-    }
 
     /**
      * Returns the configuration in JSON format.

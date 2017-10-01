@@ -194,7 +194,6 @@ class OptionController extends Controller
             $this->optionUpdateService->handle($option, $request->all());
             $this->alert->success(trans('admin/services.options.notices.option_updated'))->flash();
         } catch (NoParentConfigurationFoundException $exception) {
-            dd('hodor');
             $this->alert->danger($exception->getMessage())->flash();
         }
 

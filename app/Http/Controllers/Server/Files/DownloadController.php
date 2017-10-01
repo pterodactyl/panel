@@ -55,7 +55,7 @@ class DownloadController extends Controller
         $this->cache->tags(['Server:Downloads'])->put($token, ['server' => $server->uuid, 'path' => $file], 5);
 
         return redirect(sprintf(
-            '%s://%s:%s/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, $token
+            '%s://%s:%s/v1/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, $token
         ));
     }
 }

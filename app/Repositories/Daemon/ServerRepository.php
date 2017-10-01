@@ -63,7 +63,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
             array_set($data, $key, $value);
         }
 
-        return $this->getHttpClient()->request('POST', '/servers', [
+        return $this->getHttpClient()->request('POST', 'servers', [
             'json' => $data,
         ]);
     }
@@ -73,7 +73,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function update(array $data)
     {
-        return $this->getHttpClient()->request('PATCH', '/server', [
+        return $this->getHttpClient()->request('PATCH', 'server', [
             'json' => $data,
         ]);
     }
@@ -86,10 +86,10 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
         Assert::nullOrIsArray($data, 'First argument passed to reinstall must be null or an array, received %s.');
 
         if (is_null($data)) {
-            return $this->getHttpClient()->request('POST', '/server/reinstall');
+            return $this->getHttpClient()->request('POST', 'server/reinstall');
         }
 
-        return $this->getHttpClient()->request('POST', '/server/reinstall', [
+        return $this->getHttpClient()->request('POST', 'server/reinstall', [
             'json' => $data,
         ]);
     }
@@ -99,7 +99,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function rebuild()
     {
-        return $this->getHttpClient()->request('POST', '/server/rebuild');
+        return $this->getHttpClient()->request('POST', 'server/rebuild');
     }
 
     /**
@@ -107,7 +107,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function suspend()
     {
-        return $this->getHttpClient()->request('POST', '/server/suspend');
+        return $this->getHttpClient()->request('POST', 'server/suspend');
     }
 
     /**
@@ -115,7 +115,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function unsuspend()
     {
-        return $this->getHttpClient()->request('POST', '/server/unsuspend');
+        return $this->getHttpClient()->request('POST', 'server/unsuspend');
     }
 
     /**
@@ -123,7 +123,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function delete()
     {
-        return $this->getHttpClient()->request('DELETE', '/servers');
+        return $this->getHttpClient()->request('DELETE', 'servers');
     }
 
     /**
@@ -131,7 +131,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function details()
     {
-        return $this->getHttpClient()->request('GET', '/server');
+        return $this->getHttpClient()->request('GET', 'server');
     }
 
     /**
@@ -141,6 +141,6 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     {
         Assert::stringNotEmpty($key, 'First argument passed to revokeAccessKey must be a non-empty string, received %s.');
 
-        return $this->getHttpClient()->request('DELETE', '/keys/' . $key);
+        return $this->getHttpClient()->request('DELETE', 'keys/' . $key);
     }
 }

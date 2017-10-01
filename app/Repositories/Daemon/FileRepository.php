@@ -22,7 +22,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         $response = $this->getHttpClient()->request('GET', sprintf(
-            '/server/file/stat/%s',
+            'server/file/stat/%s',
             rawurlencode($file['dirname'] . $file['basename'])
         ));
 
@@ -40,7 +40,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         $response = $this->getHttpClient()->request('GET', sprintf(
-            '/server/file/f/%s',
+            'server/file/f/%s',
             rawurlencode($file['dirname'] . $file['basename'])
         ));
 
@@ -58,7 +58,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         $file = pathinfo($path);
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
-        return $this->getHttpClient()->request('POST', '/server/file/save', [
+        return $this->getHttpClient()->request('POST', 'server/file/save', [
             'json' => [
                 'path' => rawurlencode($file['dirname'] . $file['basename']),
                 'content' => $content,
@@ -74,7 +74,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         Assert::string($path, 'First argument passed to getDirectory must be a string, received %s.');
 
         $response = $this->getHttpClient()->request('GET', sprintf(
-            '/server/directory/%s',
+            'server/directory/%s',
             rawurlencode($path)
         ));
 

@@ -107,7 +107,7 @@ return [
     | Configuration for support of the new Golang based daemon.
     */
     'daemon' => [
-        'use_new_daemon' => env('APP_USE_NEW_DAEMON', false),
+        'use_new_daemon' => (bool) env('APP_USE_NEW_DAEMON', false),
     ],
 
     /*
