@@ -31,17 +31,18 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStats($id)
     {
-        $node = $this->getBuilder()->select(
+        $node = $this->getBuilder()->select([
             'nodes.disk_overallocate',
             'nodes.memory_overallocate',
             'nodes.disk',
             'nodes.memory',
-            $this->getBuilder()->raw('SUM(servers.memory) as sum_memory, SUM(servers.disk) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.id', $id)
-            ->first();
+        ])->where('id', $id)->first();
 
-        return collect(['disk' => $node->sum_disk, 'memory' => $node->sum_memory])
+        $stats = $this->getBuilder()->select(
+            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $id)->first();
+
+        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
             ->mapWithKeys(function ($value, $key) use ($node) {
                 $maxUsage = $node->{$key};
                 if ($node->{$key . '_overallocate'} > 0) {
