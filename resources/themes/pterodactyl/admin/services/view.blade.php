@@ -101,7 +101,7 @@
                     @foreach($service->options as $option)
                         <tr>
                             <td><a href="{{ route('admin.services.option.view', $option->id) }}">{{ $option->name }}</a></td>
-                            <td>{!! $option->description !!}</td>
+                            <td class="col-xs-6">{!! $option->description !!}</td>
                             <td><code>{{ $option->tag }}</code></td>
                             <td class="text-center">{{ $option->servers->count() }}</td>
                         </tr>

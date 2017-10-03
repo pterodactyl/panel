@@ -131,7 +131,8 @@
                     <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-danger btn-sm muted muted-hover">
                         <i class="fa fa-trash-o"></i>
                     </button>
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Service</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Option</button>
+                    <a href="{{ route('admin.services.option.export', ['option' => $option->id]) }}" class="btn btn-sm btn-info pull-right" style="margin-right:10px;">Export Option Configuration</a>
                 </div>
             </div>
         </div>

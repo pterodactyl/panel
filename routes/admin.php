@@ -155,6 +155,7 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('/view/{service}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
     Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
     Route::get('/option/{option}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
+    Route::get('/option/{option}/export', 'Services\Options\OptionShareController@export')->name('admin.services.option.export');
     Route::get('/option/{option}/variables', 'VariableController@view')->name('admin.services.option.variables');
     Route::get('/option/{option}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
 
