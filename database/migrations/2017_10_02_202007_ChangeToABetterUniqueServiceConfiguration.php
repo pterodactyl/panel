@@ -15,21 +15,22 @@ class ChangeToABetterUniqueServiceConfiguration extends Migration
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->char('uuid', 36)->after('id');
-            $table->string('author')->after('service_id');
 
             $table->index(['service_id', 'tag']);
         });
 
-        DB::table('service_options')->select([
-            'service_options.id',
-            'service_options.author',
-            'service_options.uuid',
-            'services.author AS service_author',
-        ])->join('services', 'services.id', '=', 'service_options.service_id')->get()->each(function ($option) {
-            DB::table('service_options')->where('id', $option->id)->update([
-                'author' => $option->service_author,
-                'uuid' => Uuid::uuid4()->toString(),
-            ]);
+        DB::transaction(function () {
+            DB::table('service_options')->select([
+                'service_options.id',
+                'service_options.uuid',
+                'service_options.tag',
+                'services.author AS service_author',
+            ])->join('services', 'services.id', '=', 'service_options.service_id')->get()->each(function ($option) {
+                DB::table('service_options')->where('id', $option->id)->update([
+                    'tag' => $option->service_author . ':' . $option->tag,
+                    'uuid' => Uuid::uuid4()->toString(),
+                ]);
+            });
         });
 
         Schema::table('service_options', function (Blueprint $table) {
@@ -44,8 +45,15 @@ class ChangeToABetterUniqueServiceConfiguration extends Migration
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropColumn('uuid');
-            $table->dropColumn('author');
             $table->dropIndex(['service_id', 'tag']);
+        });
+
+        DB::transaction(function () {
+            DB::table('service_options')->select(['id', 'author'])->get()->each(function ($option) {
+                DB::table('service_options')->where('id', $option->id)->update([
+                    'tag' => array_get(explode(':', $option->tag), 1),
+                ]);
+            });
         });
     }
 }
