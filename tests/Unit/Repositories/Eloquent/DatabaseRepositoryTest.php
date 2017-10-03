@@ -117,7 +117,7 @@ class DatabaseRepositoryTest extends TestCase
      */
     public function testUserAssignmentToDatabaseStatement()
     {
-        $query = sprintf('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`', 'test_database', 'test', '%');
+        $query = sprintf('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, EXECUTE ON `%s`.* TO `%s`@`%s`', 'test_database', 'test', '%');
         $this->repository->shouldReceive('runStatement')->with($query, 'test')->once()->andReturn(true);
 
         $this->assertTrue($this->repository->assignUserToDatabase('test_database', 'test', '%', 'test'));

@@ -93,7 +93,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     {
         return $this->runStatement(
             sprintf(
-                'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`',
+                'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, EXECUTE ON `%s`.* TO `%s`@`%s`',
                 $database,
                 $username,
                 $remote
