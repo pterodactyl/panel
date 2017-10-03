@@ -9,6 +9,9 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\Service;
+use Illuminate\Support\Collection;
+
 interface ServiceRepositoryInterface extends RepositoryInterface
 {
     /**
@@ -17,7 +20,15 @@ interface ServiceRepositoryInterface extends RepositoryInterface
      * @param int $id
      * @return \Illuminate\Support\Collection
      */
-    public function getWithOptions($id = null);
+    public function getWithOptions(int $id = null): Collection;
+
+    /**
+     * Return a service or all services and the count of options, packs, and servers for that service.
+     *
+     * @param int|null $id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getWithCounts(int $id = null): Collection;
 
     /**
      * Return a service along with its associated options and the servers relation on those options.
@@ -25,5 +36,5 @@ interface ServiceRepositoryInterface extends RepositoryInterface
      * @param int $id
      * @return mixed
      */
-    public function getWithOptionServers($id);
+    public function getWithOptionServers(int $id): Service;
 }

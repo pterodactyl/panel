@@ -13,7 +13,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 abstract class AdminFormRequest extends FormRequest
 {
-    abstract public function rules();
+    /**
+     * The rules to apply to the incoming form request.
+     *
+     * @return array
+     */
+    abstract public function rules(): array;
 
     /**
      * Determine if the user is an admin and has permission to access this
@@ -21,7 +26,7 @@ abstract class AdminFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if (is_null($this->user())) {
             return false;
@@ -37,7 +42,7 @@ abstract class AdminFormRequest extends FormRequest
      * @param array $only
      * @return array
      */
-    public function normalize($only = [])
+    public function normalize($only = []): array
     {
         return array_merge(
             $this->only($only),

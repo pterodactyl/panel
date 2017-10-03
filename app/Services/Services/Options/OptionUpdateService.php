@@ -40,7 +40,7 @@ class OptionUpdateService
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException
      */
-    public function handle($option, array $data)
+    public function handle($option, array $data): void
     {
         if (! $option instanceof ServiceOption) {
             $option = $this->repository->find($option);

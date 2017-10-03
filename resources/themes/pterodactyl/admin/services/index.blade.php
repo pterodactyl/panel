@@ -20,6 +20,13 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12">
+        <div class="alert alert-danger">
+            Services are a powerful feature of Pterodactyl Panel that allow for extreme flexibility and configuration. Please note that while powerful, modifing a service wrongly can very easily brick your servers and cause more problems. Please avoid editing our default services — those provided by <code>support@pterodactyl.io</code> — unless you are absolutely sure of what you are doing.
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">Configured Service</h3>
@@ -38,7 +45,7 @@
                     </tr>
                     @foreach($services as $service)
                         <tr>
-                            <td class="middle"><a href="{{ route('admin.services.view', $service->id) }}">{{ $service->name }}</a></td>
+                            <td class="middle"><a href="{{ route('admin.services.view', $service->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $service->author }}">{{ $service->name }}</a></td>
                             <td class="col-xs-6 middle">{{ $service->description }}</td>
                             <td class="text-center middle"><code>{{ $service->options_count }}</code></td>
                             <td class="text-center middle"><code>{{ $service->packs_count }}</code></td>

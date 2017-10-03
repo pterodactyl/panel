@@ -33,7 +33,7 @@
                                 <label for="pServiceId" class="form-label">Associated Service</label>
                                 <select name="service_id" id="pServiceId">
                                     @foreach($services as $service)
-                                        <option value="{{ $service->id }}" {{ old('service_id') != $service->id ?: 'selected' }}>{{ $service->name }}</option>
+                                        <option value="{{ $service->id }}" {{ old('service_id') != $service->id ?: 'selected' }}>{{ $service->name }} &lt;{{ $service->author }}&gt;</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -51,16 +51,19 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="pTag" class="form-label">Option Tag</label>
-                                <input type="text" id="pTag" name="tag" value="{{ old('tag') }}" class="form-control" />
+                                <div class="input-group">
+                                    <span class="input-group-addon">{{ config('pterodactyl.service.author') }}:</span>
+                                    <input type="text" id="pTag" name="tag" value="{{ old('tag') }}" class="form-control" />
+                                </div>
                                 <p class="text-muted small">This should be a unique identifer for this service option that is not used for any other service options. Must be alpha-numeric and no more than 60 characters in length.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pDockerImage" class="form-label">Docker Image</label>
+                                <label for="pDockerImage" class="control-label">Docker Image <span class="field-optional"></span></label>
                                 <input type="text" id="pDockerImage" name="docker_image" value="{{ old('docker_image') }}" placeholder="quay.io/pterodactyl/service" class="form-control" />
                                 <p class="text-muted small">The default docker image that should be used for new servers under this service option. This can be left blank to use the parent service's defined image, and can also be changed per-server.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pStartup" class="form-label">Startup Command</label>
+                                <label for="pStartup" class="control-label">Startup Command <span class="field-optional"></span></label>
                                 <textarea id="pStartup" name="startup" class="form-control" rows="4">{{ old('startup') }}</textarea>
                                 <p class="text-muted small">The default statup command that should be used for new servers under this service option. This can be left blank to use the parent service's startup, and can also be changed per-server.</p>
                             </div>
@@ -136,7 +139,7 @@
             data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
                 return {
                     id: item.id,
-                    text: item.name,
+                    text: item.name + ' <' + item.tag + '>',
                 };
             }),
         });

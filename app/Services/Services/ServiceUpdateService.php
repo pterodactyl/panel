@@ -36,7 +36,7 @@ class ServiceUpdateService
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($service, array $data)
+    public function handle(int $service, array $data): void
     {
         if (! is_null(array_get($data, 'author'))) {
             unset($data['author']);

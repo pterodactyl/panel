@@ -16,22 +16,12 @@ class ServiceFormRequest extends AdminFormRequest
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        $rules = [
+        return [
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|nullable|string',
-            'folder' => 'required|regex:/^[\w.-]{1,50}$/|unique:services,folder',
             'startup' => 'required|nullable|string',
         ];
-
-        if ($this->method() === 'PATCH') {
-            $service = $this->route()->parameter('service');
-            $rules['folder'] = $rules['folder'] . ',' . $service->id;
-
-            return $rules;
-        }
-
-        return $rules;
     }
 }

@@ -47,13 +47,6 @@
             <div class="box">
                 <div class="box-body">
                     <div class="form-group">
-                        <label class="control-label">Folder Name</label>
-                        <div>
-                            <input type="text" name="folder" class="form-control" value="{{ old('folder') }}" />
-                            <p class="text-muted"><small>Service are downloaded by the daemon and stored in a folder using this name. The storage location is <code>/srv/daemon/services/{NAME}</code> by default.</small></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="control-label">Default Start Command</label>
                         <div>
                             <textarea name="startup" class="form-control" rows="2">{{ old('startup') }}</textarea>

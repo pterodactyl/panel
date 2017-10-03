@@ -31,7 +31,12 @@ class Service extends Model implements CleansAttributes, ValidableContract
      *
      * @var array
      */
-    protected $fillable = ['name', 'author', 'description', 'folder', 'startup', 'index_file'];
+    protected $fillable = [
+        'name',
+        'description',
+        'startup',
+        'index_file',
+    ];
 
     /**
      * @var array
@@ -40,7 +45,6 @@ class Service extends Model implements CleansAttributes, ValidableContract
         'author' => 'required',
         'name' => 'required',
         'description' => 'sometimes',
-        'folder' => 'required',
         'startup' => 'sometimes',
         'index_file' => 'required',
     ];
@@ -49,10 +53,9 @@ class Service extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'author' => 'string|size:36',
+        'author' => 'email',
         'name' => 'string|max:255',
         'description' => 'nullable|string',
-        'folder' => 'string|max:255|regex:/^[\w.-]{1,50}$/|unique:services,folder',
         'startup' => 'nullable|string',
         'index_file' => 'string',
     ];
@@ -74,12 +77,7 @@ class Service extends Model implements CleansAttributes, ValidableContract
      */
     public function packs()
     {
-        return $this->hasManyThrough(
-            Pack::class,
-            ServiceOption::class,
-            'service_id',
-            'option_id'
-        );
+        return $this->hasManyThrough(Pack::class, ServiceOption::class, 'service_id', 'option_id');
     }
 
     /**

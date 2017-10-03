@@ -44,9 +44,12 @@
                     <div class="form-group">
                         <label class="control-label">Description</label>
                         <div>
-                            <textarea name="description" class="form-control" rows="6">{{ $service->description }}</textarea>
+                            <textarea name="description" class="form-control" rows="7">{{ $service->description }}</textarea>
                         </div>
                     </div>
+                </div>
+                <div class="box-footer">
+                    <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
                 </div>
             </div>
         </div>
@@ -54,23 +57,27 @@
             <div class="box">
                 <div class="box-body">
                     <div class="form-group">
-                        <label class="control-label">Folder Name</label>
-                        <div>
-                            <input type="text" name="folder" class="form-control" value="{{ $service->folder }}" />
-                            <p class="text-muted"><small>Service are downloaded by the daemon and stored in a folder using this name. The storage location is <code>/srv/daemon/services/{NAME}</code> by default.</small></p>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="control-label">Default Start Command</label>
                         <div>
                             <textarea name="startup" class="form-control" rows="2">{{ $service->startup }}</textarea>
                             <p class="text-muted"><small>The default start command to use when running options under this service. This command can be modified per-option and should include the executable to be called in the container.</small></p>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Author</label>
+                        <div>
+                            <input type="text" readonly class="form-control" value="{{ $service->author }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">UUID</label>
+                        <div>
+                            <input type="text" readonly class="form-control" value="{{ $service->uuid }}" />
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
                     <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Service</button>
                 </div>
             </div>
@@ -86,7 +93,7 @@
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tr>
-                        <th class="col-sm-4 col-md-3">Name</th>
+                        <th>Name</th>
                         <th>Description</th>
                         <th>Tag</th>
                         <th class="text-center">Servers</th>

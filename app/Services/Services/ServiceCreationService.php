@@ -9,6 +9,8 @@
 
 namespace Pterodactyl\Services\Services;
 
+use Ramsey\Uuid\Uuid;
+use Pterodactyl\Models\Service;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
@@ -49,16 +51,15 @@ class ServiceCreationService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data)
+    public function handle(array $data): Service
     {
-        return $this->repository->create(array_merge([
+        return $this->repository->create([
+            'uuid' => Uuid::uuid4()->toString(),
             'author' => $this->config->get('pterodactyl.service.author'),
-        ], [
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
-            'folder' => array_get($data, 'folder'),
             'startup' => array_get($data, 'startup'),
             'index_file' => $this->getIndexScript(),
-        ]));
+        ], true, true);
     }
 }

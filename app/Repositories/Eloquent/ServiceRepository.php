@@ -9,8 +9,8 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Service;
+use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
@@ -27,16 +27,14 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function getWithOptions($id = null)
+    public function getWithOptions(int $id = null): Collection
     {
-        Assert::nullOrNumeric($id, 'First argument passed to getWithOptions must be null or numeric, received %s.');
-
         $instance = $this->getBuilder()->with('options.packs', 'options.variables');
 
         if (! is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());
             if (! $instance) {
-                throw new RecordNotFoundException();
+                throw new RecordNotFoundException;
             }
 
             return $instance;
@@ -48,15 +46,33 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     /**
      * {@inheritdoc}
      */
-    public function getWithOptionServers($id)
+    public function getWithCounts(int $id = null): Collection
     {
-        Assert::numeric($id, 'First argument passed to getWithOptionServers must be numeric, received %s.');
+        $instance = $this->getBuilder()->withCount(['options', 'packs', 'servers']);
 
-        $instance = $this->getBuilder()->with('options.servers')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        if (! is_null($id)) {
+            $instance = $instance->find($id, $this->getColumns());
+            if (! $instance) {
+                throw new RecordNotFoundException;
+            }
+
+            return $instance;
         }
 
+        return $instance->get($this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getWithOptionServers(int $id): Service
+    {
+        $instance = $this->getBuilder()->with('options.servers')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        /* @var Service $instance */
         return $instance;
     }
 }

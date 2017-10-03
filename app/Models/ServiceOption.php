@@ -31,7 +31,22 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $fillable = [
+        'name',
+        'description',
+        'docker_image',
+        'config_files',
+        'config_startup',
+        'config_logs',
+        'config_stop',
+        'config_from',
+        'startup',
+        'script_is_privileged',
+        'script_install',
+        'script_entry',
+        'script_container',
+        'copy_script_from',
+    ];
 
     /**
      * Cast values to correct type.
@@ -40,7 +55,9 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      */
     protected $casts = [
         'service_id' => 'integer',
+        'config_from' => 'integer',
         'script_is_privileged' => 'boolean',
+        'copy_script_from' => 'integer',
     ];
 
     /**
@@ -48,6 +65,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      */
     protected static $applicationRules = [
         'service_id' => 'required',
+        'author' => 'required',
         'name' => 'required',
         'description' => 'required',
         'tag' => 'required',
@@ -64,13 +82,14 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'service_id' => 'numeric|exists:services,id',
+        'service_id' => 'bail|numeric|exists:services,id',
+        'author' => 'email',
         'name' => 'string|max:255',
         'description' => 'string',
-        'tag' => 'alpha_num|max:60|unique:service_options,tag',
+        'tag' => 'bail|alpha_num|max:60|unique:service_options,tag',
         'docker_image' => 'string|max:255',
         'startup' => 'nullable|string',
-        'config_from' => 'nullable|numeric|exists:service_options,id',
+        'config_from' => 'bail|nullable|numeric|exists:service_options,id',
         'config_stop' => 'nullable|string|max:255',
         'config_startup' => 'nullable|json',
         'config_logs' => 'nullable|json',

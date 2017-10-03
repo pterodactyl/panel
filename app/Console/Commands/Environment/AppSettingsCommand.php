@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Console\Commands\Environment;
 
-use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
@@ -38,6 +37,7 @@ class AppSettingsCommand extends Command
      * @var string
      */
     protected $signature = 'p:environment:setup
+                            {--author= : The email that services created on this instance should be linked to.}
                             {--url= : The URL that this Panel is running on.}
                             {--timezone= : The timezone to use for Panel times.}
                             {--cache= : The cache driver backend to use.}
@@ -72,9 +72,10 @@ class AppSettingsCommand extends Command
      */
     public function handle()
     {
-        if (is_null($this->config->get('pterodactyl.service.author'))) {
-            $this->variables['SERVICE_AUTHOR'] = Uuid::uuid4()->toString();
-        }
+        $this->output->comment(trans('command/messages.environment.app.author_help'));
+        $this->variables['SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
+            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'undefined@unknown-author.com')
+        );
 
         $this->output->comment(trans('command/messages.environment.app.app_url_help'));
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
