@@ -9,10 +9,10 @@
 
 namespace Pterodactyl\Services\Services\Exporter;
 
+use Closure;
 use Carbon\Carbon;
 use Sabre\Xml\Writer;
 use Sabre\Xml\Service;
-use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
 class XMLExporterService
@@ -58,35 +58,36 @@ class XMLExporterService
     /**
      * Return an XML structure to represent this service option.
      *
-     * @param int|\Pterodactyl\Models\ServiceOption $option
+     * @param int $option
      * @return string
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($option): string
+    public function handle(int $option): string
     {
-        if (! $option instanceof ServiceOption) {
-            $option = $this->repository->find($option);
-        }
+        $option = $this->repository->getWithCopyAttributes($option);
 
         $struct = [
+            'meta' => [
+                'version' => 'PTDL_v1',
+            ],
             'exported_at' => $this->carbon->now()->toIso8601String(),
             'name' => $option->name,
             'author' => array_get(explode(':', $option->tag), 0),
             'tag' => $option->tag,
-            'description' => $option->description,
+            'description' => $this->writeCData($option->description),
             'image' => $option->docker_image,
             'config' => [
-                'files' => $option->config_files,
-                'startup' => $option->config_startup,
-                'logs' => $option->config_logs,
-                'stop' => $option->config_stop,
+                'files' => $this->writeCData($option->inherit_config_files),
+                'startup' => $this->writeCData($option->inherit_config_startup),
+                'logs' => $this->writeCData($option->inherit_config_logs),
+                'stop' => $option->inherit_config_stop,
             ],
             'scripts' => [
                 'installation' => [
-                    'script' => function (Writer $writer) use ($option) {
-                        return $writer->writeCData($option->copy_script_install);
-                    },
+                    'script' => $this->writeCData($option->copy_script_install),
+                    'container' => $option->copy_script_container,
+                    'entrypoint' => $option->copy_script_entry,
                 ],
             ],
         ];
@@ -114,5 +115,18 @@ class XMLExporterService
         }
 
         return $parsed;
+    }
+
+    /**
+     * Return a closure to be used by the XML writer to generate a string wrapped in CDATA tags.
+     *
+     * @param string $value
+     * @return \Closure
+     */
+    protected function writeCData(string $value): Closure
+    {
+        return function (Writer $writer) use ($value) {
+            return $writer->writeCData($value);
+        };
     }
 }

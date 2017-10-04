@@ -114,7 +114,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @return string
      */
-    public function getDisplayStartupAttribute($value)
+    public function getDisplayStartupAttribute()
     {
         return (is_null($this->startup)) ? $this->service->startup : $this->startup;
     }
@@ -125,9 +125,9 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @return string
      */
-    public function getCopyScriptInstallAttribute($value)
+    public function getCopyScriptInstallAttribute()
     {
-        return (is_null($this->copy_script_from)) ? $this->script_install : $this->copyFrom->script_install;
+        return (is_null($this->copy_script_from)) ? $this->script_install : $this->scriptFrom->script_install;
     }
 
     /**
@@ -136,9 +136,9 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @return string
      */
-    public function getCopyScriptEntryAttribute($value)
+    public function getCopyScriptEntryAttribute()
     {
-        return (is_null($this->copy_script_from)) ? $this->script_entry : $this->copyFrom->script_entry;
+        return (is_null($this->copy_script_from)) ? $this->script_entry : $this->scriptFrom->script_entry;
     }
 
     /**
@@ -147,9 +147,49 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @return string
      */
-    public function getCopyScriptContainerAttribute($value)
+    public function getCopyScriptContainerAttribute()
     {
-        return (is_null($this->copy_script_from)) ? $this->script_container : $this->copyFrom->script_container;
+        return (is_null($this->copy_script_from)) ? $this->script_container : $this->scriptFrom->script_container;
+    }
+
+    /**
+     * Return the file configuration for a service option.
+     *
+     * @return string
+     */
+    public function getInheritConfigFilesAttribute()
+    {
+        return is_null($this->config_from) ? $this->config_files : $this->configFrom->config_files;
+    }
+
+    /**
+     * Return the startup configuration for a service option.
+     *
+     * @return string
+     */
+    public function getInheritConfigStartupAttribute()
+    {
+        return is_null($this->config_from) ? $this->config_startup : $this->configFrom->config_startup;
+    }
+
+    /**
+     * Return the log reading configuration for a service option.
+     *
+     * @return string
+     */
+    public function getInheritConfigLogsAttribute()
+    {
+        return is_null($this->config_from) ? $this->config_logs : $this->configFrom->config_logs;
+    }
+
+    /**
+     * Return the stop command configuration for a service option.
+     *
+     * @return string
+     */
+    public function getInheritConfigStopAttribute()
+    {
+        return is_null($this->config_from) ? $this->config_stop : $this->configFrom->config_stop;
     }
 
     /**
@@ -197,8 +237,18 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function copyFrom()
+    public function scriptFrom()
     {
         return $this->belongsTo(self::class, 'copy_script_from');
+    }
+
+    /**
+     * Get the parent service option from which to copy configuration settings.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function configFrom()
+    {
+        return $this->belongsTo(self::class, 'config_from');
     }
 }

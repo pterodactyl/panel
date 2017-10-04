@@ -163,7 +163,7 @@ class OptionController extends Controller
      */
     public function viewScripts($option)
     {
-        $option = $this->serviceOptionRepository->getWithCopyFrom($option);
+        $option = $this->serviceOptionRepository->getWithCopyAttributes($option);
         $copyOptions = $this->serviceOptionRepository->findWhere([
             ['copy_script_from', '=', null],
             ['service_id', '=', $option->service_id],

@@ -10,6 +10,7 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
 class ServiceOptionRepository extends EloquentRepository implements ServiceOptionRepositoryInterface
@@ -23,25 +24,51 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     }
 
     /**
-     * {@inheritdoc}
+     * Return a service option with the variables relation attached.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\ServiceOption
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithVariables($id)
+    public function getWithVariables(int $id): ServiceOption
     {
-        return $this->getBuilder()->with('variables')->find($id, $this->getColumns());
+        /** @var \Pterodactyl\Models\ServiceOption $instance */
+        $instance = $this->getBuilder()->with('variables')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
     }
 
     /**
-     * {@inheritdoc}
+     * Return a service option with the scriptFrom and configFrom relations loaded onto the model.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\ServiceOption
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCopyFrom($id)
+    public function getWithCopyAttributes(int $id): ServiceOption
     {
-        return $this->getBuilder()->with('copyFrom')->find($id, $this->getColumns());
+        /** @var \Pterodactyl\Models\ServiceOption $instance */
+        $instance = $this->getBuilder()->with('scriptFrom', 'configFrom')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
     }
 
     /**
-     * {@inheritdoc}
+     * Confirm a copy script belongs to the same service as the item trying to use it.
+     *
+     * @param int $copyFromId
+     * @param int $service
+     * @return bool
      */
-    public function isCopiableScript($copyFromId, $service)
+    public function isCopiableScript(int $copyFromId, int $service): bool
     {
         return $this->getBuilder()->whereNull('copy_script_from')
             ->where('id', '=', $copyFromId)

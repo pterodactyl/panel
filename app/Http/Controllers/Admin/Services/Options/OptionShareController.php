@@ -11,6 +11,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Services\Options;
 
 use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Pterodactyl\Services\Services\Exporter\XMLExporterService;
 
 class OptionShareController extends Controller
@@ -32,13 +33,16 @@ class OptionShareController extends Controller
 
     /**
      * @param \Pterodactyl\Models\ServiceOption $option
-     * @return $this
+     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function export(ServiceOption $option)
+    public function export(ServiceOption $option): Response
     {
-        return response($this->exporterService->handle($option), 200, [
+        return response($this->exporterService->handle($option->id), 200, [
+            'Content-Transfer-Encoding' => 'binary',
+            'Content-Description' => 'File Transfer',
+            'Content-Disposition' => 'attachment; filename=' . kebab_case($option->name) . '.xml',
             'Content-Type' => 'application/xml',
         ]);
     }
