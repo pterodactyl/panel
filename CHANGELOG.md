@@ -26,6 +26,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Using default value in rules when creating a new variable if the rules is empty.
 * Fixes a design-flaw in the allocation management part of nodes that would run a MySQL query for each port being allocated. This behavior is now changed to only execute one query to add multiple ports at once.
 * Attempting to create a server when no nodes are configured now redirects to the node creation page.
+* Fixes missing library issue for teamspeak when used with mariadb.
 
 ## v0.6.4 (Courageous Carniadactylus)
 ### Fixed
