@@ -18,7 +18,7 @@ abstract class AdminFormRequest extends FormRequest
      *
      * @return array
      */
-    abstract public function rules(): array;
+    abstract public function rules();
 
     /**
      * Determine if the user is an admin and has permission to access this

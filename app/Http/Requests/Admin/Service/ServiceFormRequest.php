@@ -16,7 +16,7 @@ class ServiceFormRequest extends AdminFormRequest
     /**
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
             'name' => 'required|string|min:1|max:255',

@@ -16,7 +16,7 @@ class OptionImportFormRequest extends AdminFormRequest
     /**
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
             'import_file' => 'bail|required|file|max:1000|mimetypes:application/json,text/plain',
