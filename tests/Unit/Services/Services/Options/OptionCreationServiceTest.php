@@ -12,7 +12,9 @@ namespace Tests\Unit\Services\Services\Options;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\ServiceOption;
+use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Services\Services\Options\OptionCreationService;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
@@ -20,12 +22,12 @@ use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundExcep
 class OptionCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\ServiceOption
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
-    protected $model;
+    protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -35,16 +37,22 @@ class OptionCreationServiceTest extends TestCase
     protected $service;
 
     /**
+     * @var \Ramsey\Uuid\Uuid|\Mockery\Mock
+     */
+    protected $uuid;
+
+    /**
      * Setup tests.
      */
     public function setUp()
     {
         parent::setUp();
 
-        $this->model = factory(ServiceOption::class)->make();
+        $this->config = m::mock(Repository::class);
         $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
+        $this->uuid = m::mock('overload:' . Uuid::class);
 
-        $this->service = new OptionCreationService($this->repository);
+        $this->service = new OptionCreationService($this->config, $this->repository);
     }
 
     /**
@@ -52,14 +60,48 @@ class OptionCreationServiceTest extends TestCase
      */
     public function testCreateNewModelWithoutUsingConfigFrom()
     {
-        $this->repository->shouldReceive('create')->with(['name' => $this->model->name, 'config_from' => null])
-            ->once()->andReturn($this->model);
+        $model = factory(ServiceOption::class)->make();
 
-        $response = $this->service->handle(['name' => $this->model->name]);
+        $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('test@example.com');
+        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-string');
+        $this->repository->shouldReceive('create')->with([
+            'name' => $model->name,
+            'config_from' => null,
+            'tag' => 'test@example.com:' . $model->tag,
+            'uuid' => 'uuid-string',
+        ], true, true)->once()->andReturn($model);
+
+        $response = $this->service->handle(['name' => $model->name, 'tag' => $model->tag]);
 
         $this->assertNotEmpty($response);
         $this->assertNull(object_get($response, 'config_from'));
-        $this->assertEquals($this->model->name, $response->name);
+        $this->assertEquals($model->name, $response->name);
+    }
+
+    /**
+     * Test that passing a bad tag into the function will set the correct tag.
+     */
+    public function testCreateNewModelUsingLongTagForm()
+    {
+        $model = factory(ServiceOption::class)->make([
+            'tag' => 'test@example.com:tag',
+        ]);
+
+        $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('test@example.com');
+        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-string');
+        $this->repository->shouldReceive('create')->with([
+            'name' => $model->name,
+            'config_from' => null,
+            'tag' => $model->tag,
+            'uuid' => 'uuid-string',
+        ], true, true)->once()->andReturn($model);
+
+        $response = $this->service->handle(['name' => $model->name, 'tag' => 'bad@example.com:tag']);
+
+        $this->assertNotEmpty($response);
+        $this->assertNull(object_get($response, 'config_from'));
+        $this->assertEquals($model->name, $response->name);
+        $this->assertEquals('test@example.com:tag', $response->tag);
     }
 
     /**
@@ -67,10 +109,14 @@ class OptionCreationServiceTest extends TestCase
      */
     public function testCreateNewModelUsingConfigFrom()
     {
+        $model = factory(ServiceOption::class)->make();
+
         $data = [
-            'name' => $this->model->name,
-            'service_id' => $this->model->service_id,
+            'name' => $model->name,
+            'service_id' => $model->service_id,
+            'tag' => 'test@example.com:tag',
             'config_from' => 1,
+            'uuid' => 'uuid-string',
         ];
 
         $this->repository->shouldReceive('findCountWhere')->with([
@@ -78,13 +124,14 @@ class OptionCreationServiceTest extends TestCase
             ['id', '=', $data['config_from']],
         ])->once()->andReturn(1);
 
-        $this->repository->shouldReceive('create')->with($data)
-            ->once()->andReturn($this->model);
+        $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('test@example.com');
+        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-string');
+        $this->repository->shouldReceive('create')->with($data, true, true)->once()->andReturn($model);
 
         $response = $this->service->handle($data);
 
         $this->assertNotEmpty($response);
-        $this->assertEquals($response, $this->model);
+        $this->assertEquals($response, $model);
     }
 
     /**
