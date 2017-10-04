@@ -26,7 +26,7 @@ abstract class AdminFormRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         if (is_null($this->user())) {
             return false;
@@ -42,7 +42,7 @@ abstract class AdminFormRequest extends FormRequest
      * @param array $only
      * @return array
      */
-    public function normalize($only = []): array
+    public function normalize($only = [])
     {
         return array_merge(
             $this->only($only),
