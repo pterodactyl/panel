@@ -10,7 +10,6 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Service;
-use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
@@ -25,9 +24,14 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return a service or all services with their associated options, variables, and packs.
+     *
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithOptions(int $id = null): Collection
+    public function getWithOptions(int $id = null)
     {
         $instance = $this->getBuilder()->with('options.packs', 'options.variables');
 
@@ -44,9 +48,14 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return a service or all services and the count of options, packs, and servers for that service.
+     *
+     * @param int|null $id
+     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCounts(int $id = null): Collection
+    public function getWithCounts(int $id = null)
     {
         $instance = $this->getBuilder()->withCount(['options', 'packs', 'servers']);
 
@@ -63,7 +72,12 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return a service along with its associated options and the servers relation on those options.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithOptionServers(int $id): Service
     {

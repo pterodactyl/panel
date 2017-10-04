@@ -31,7 +31,8 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Configured Service</h3>
                 <div class="box-tools">
-                    <a href="{{ route('admin.services.new') }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#importServiceOptionModal" role="button"><i class="fa fa-upload"></i> Import Service Option</a>
+                    <a href="{{ route('admin.services.new') }}" class="btn btn-primary btn-sm">Create New</a>
                 </div>
             </div>
             <div class="box-body table-responsive no-padding">
@@ -57,4 +58,50 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="importServiceOptionModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Import a Service Option</h4>
+            </div>
+            <form action="{{ route('admin.services.option.import') }}" enctype="multipart/form-data" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label" for="pImportFile">Service File <span class="field-required"></span></label>
+                        <div>
+                            <input id="pImportFile" type="file" name="import_file" class="form-control" accept="application/json" />
+                            <p class="small text-muted">Select the <code>.json</code> file for the new service option that you wish to import.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="pImportToService">Associated Service <span class="field-required"></span></label>
+                        <div>
+                            <select id="pImportToService" name="import_to_service">
+                                @foreach($services as $service)
+                                   <option value="{{ $service->id }}">{{ $service->name }} &lt;{{ $service->author }}&gt;</option>
+                                @endforeach
+                            </select>
+                            <p class="small text-muted">Select the service that this option will be associated with from the dropdown. If you wish to associate it with a new service you will need to create that service before continuing.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {{ csrf_field() }}
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+    <script>
+        $(document).ready(function() {
+            $('#pImportToService').select2();
+        });
+    </script>
 @endsection

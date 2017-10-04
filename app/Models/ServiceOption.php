@@ -65,7 +65,6 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      */
     protected static $applicationRules = [
         'service_id' => 'required',
-        'author' => 'required',
         'name' => 'required',
         'description' => 'required',
         'tag' => 'required',
@@ -83,10 +82,10 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'service_id' => 'bail|numeric|exists:services,id',
-        'author' => 'email',
+        'uuid' => 'string|size:36',
         'name' => 'string|max:255',
         'description' => 'string',
-        'tag' => 'bail|alpha_num|max:60|unique:service_options,tag',
+        'tag' => 'bail|string|max:150',
         'docker_image' => 'string|max:255',
         'startup' => 'nullable|string',
         'config_from' => 'bail|nullable|numeric|exists:service_options,id',

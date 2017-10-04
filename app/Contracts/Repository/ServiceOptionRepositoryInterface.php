@@ -34,6 +34,16 @@ interface ServiceOptionRepositoryInterface extends RepositoryInterface
     public function getWithCopyAttributes(int $id): ServiceOption;
 
     /**
+     * Return all of the data needed to export a service.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\ServiceOption
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithExportAttributes(int $id): ServiceOption;
+
+    /**
      * Confirm a copy script belongs to the same service as the item trying to use it.
      *
      * @param int $copyFromId

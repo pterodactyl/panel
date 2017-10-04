@@ -10,7 +10,6 @@
 namespace Pterodactyl\Contracts\Repository;
 
 use Pterodactyl\Models\Service;
-use Illuminate\Support\Collection;
 
 interface ServiceRepositoryInterface extends RepositoryInterface
 {
@@ -18,23 +17,29 @@ interface ServiceRepositoryInterface extends RepositoryInterface
      * Return a service or all services with their associated options, variables, and packs.
      *
      * @param int $id
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithOptions(int $id = null): Collection;
+    public function getWithOptions(int $id = null);
 
     /**
      * Return a service or all services and the count of options, packs, and servers for that service.
      *
      * @param int|null $id
-     * @return \Illuminate\Support\Collection
+     * @return \Pterodactyl\Models\Service|\Illuminate\Database\Eloquent\Collection
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCounts(int $id = null): Collection;
+    public function getWithCounts(int $id = null);
 
     /**
      * Return a service along with its associated options and the servers relation on those options.
      *
      * @param int $id
-     * @return mixed
+     * @return \Pterodactyl\Models\Service
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithOptionServers(int $id): Service;
 }

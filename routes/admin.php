@@ -160,6 +160,7 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('/option/{option}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
 
     Route::post('/new', 'ServiceController@store');
+    Route::post('/import', 'Services\Options\OptionShareController@import')->name('admin.services.option.import');
     Route::post('/option/new', 'OptionController@store');
     Route::post('/option/{option}/variables', 'VariableController@store');
 

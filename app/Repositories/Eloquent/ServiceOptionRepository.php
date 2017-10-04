@@ -62,6 +62,25 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     }
 
     /**
+     * Return all of the data needed to export a service.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\ServiceOption
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getWithExportAttributes(int $id): ServiceOption
+    {
+        /** @var \Pterodactyl\Models\ServiceOption $instance */
+        $instance = $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->find($id, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
+    }
+
+    /**
      * Confirm a copy script belongs to the same service as the item trying to use it.
      *
      * @param int $copyFromId
