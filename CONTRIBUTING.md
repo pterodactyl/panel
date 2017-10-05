@@ -11,7 +11,7 @@ Moving forward all commits from contributors should be in the form of a PR, unle
 All new code should contain unit tests at minimum (where applicable). There is a lot of un-covered code currently, so as you are doing things please be looking for places that you can write tests.
 
 ### Update the CHANGELOG
-* When adding something that is new, fixed, changed, or security related for the next release you should be adding a note to the CHANGELOG. If something is changing within the same version (i.e. fixing a bug introduced but not released) it should _not_ go into the CHANGELOG.
+When adding something that is new, fixed, changed, or security related for the next release you should be adding a note to the CHANGELOG. If something is changing within the same version (i.e. fixing a bug introduced but not released) it should _not_ go into the CHANGELOG.
 
 ### Code Guidelines
 We are a `PSR-4` and `PSR-0` compliant project, so please follow those guidelines at a minimum. In addition, StyleCI runs on all of our code to ensure the formatting is standardized across everything. When a PR is made StyleCI will analyze your code and make a pull to that branch if necessary to fix any formatting issues. This project also ships with a PHP-CS configuration file and you are welcome to configure your local environment to make use of that.
