@@ -47,12 +47,12 @@ class Node extends Model
      */
     protected $hidden = ['daemonSecret'];
 
-     /**
-      * Cast values to correct type.
-      *
-      * @var array
-      */
-     protected $casts = [
+    /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
          'public' => 'integer',
          'location_id' => 'integer',
          'memory' => 'integer',

@@ -24,21 +24,21 @@ class AddForeignServerVariables extends Migration
         });
     }
 
-      /**
-       * Reverse the migrations.
-       *
-       * @return void
-       */
-      public function down()
-      {
-          Schema::table('server_variables', function (Blueprint $table) {
-              $table->dropForeign(['server_id']);
-              $table->dropForeign(['variable_id']);
-          });
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('server_variables', function (Blueprint $table) {
+            $table->dropForeign(['server_id']);
+            $table->dropForeign(['variable_id']);
+        });
 
-          DB::statement('ALTER TABLE server_variables
+        DB::statement('ALTER TABLE server_variables
               MODIFY COLUMN server_id MEDIUMINT(8) UNSIGNED NULL,
               MODIFY COLUMN variable_id MEDIUMINT(8) UNSIGNED NOT NULL
           ');
-      }
+    }
 }
