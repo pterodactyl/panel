@@ -107,6 +107,7 @@ $factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Genera
         'service_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
+        'startup' => 'java -jar test.jar',
         'tag' => 'test@testfactory.com:' . $faker->unique()->randomNumber(8),
     ];
 });
