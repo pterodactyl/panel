@@ -4,7 +4,9 @@ We're glad you want to help us out and make this panel the best that it can be! 
 ### Project Branches
 This section mainly applies to those with read/write access to our repositories, but can be helpful for others.
 
-The `develop` branch should always be in a runnable state, and not contain any major breaking features. For the most part this means you will need to create `feature/` branches in order to add new functionality, or change how things work. If you are fixing a small bug (`<2 files` and `<20 lines` changed) you can commit right into develop. When making a feature branch, if it is referencing something in the issue tracker, please title the branch `feature/PTDL-###` where `###` is the issue number.
+The `develop` branch should always be in a runnable state, and not contain any major breaking features. For the most part this means you will need to create `feature/` branches in order to add new functionality, or change how things work. When making a feature branch, if it is referencing something in the issue tracker, please title the branch `feature/PTDL-###` where `###` is the issue number.
+
+Moving forward all commits from contributors should be in the form of a PR, unless it is something we have previous discussed as being able to be pushed right into `develop`.
 
 All new code should contain unit tests at minimum (where applicable). There is a lot of un-covered code currently, so as you are doing things please be looking for places that you can write tests.
 
