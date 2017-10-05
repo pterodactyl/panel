@@ -60,14 +60,16 @@ class OptionCreationServiceTest extends TestCase
      */
     public function testCreateNewModelWithoutUsingConfigFrom()
     {
-        $model = factory(ServiceOption::class)->make();
+        $model = factory(ServiceOption::class)->make([
+            'tag' => str_random(10),
+        ]);
 
         $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('test@example.com');
         $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-string');
         $this->repository->shouldReceive('create')->with([
             'name' => $model->name,
-            'config_from' => null,
             'tag' => 'test@example.com:' . $model->tag,
+            'config_from' => null,
             'uuid' => 'uuid-string',
         ], true, true)->once()->andReturn($model);
 

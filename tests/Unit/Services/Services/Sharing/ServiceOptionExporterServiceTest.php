@@ -51,6 +51,9 @@ class ServiceOptionExporterServiceTest extends TestCase
         $this->service = new ServiceOptionExporterService($this->carbon, $this->repository);
     }
 
+    /**
+     * Test that a JSON structure is returned.
+     */
     public function testJsonStructureIsExported()
     {
         $option = factory(ServiceOption::class)->make();

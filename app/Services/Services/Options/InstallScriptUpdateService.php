@@ -40,7 +40,7 @@ class InstallScriptUpdateService
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException
      */
-    public function handle($option, array $data): void
+    public function handle($option, array $data)
     {
         if (! $option instanceof ServiceOption) {
             $option = $this->repository->find($option);
