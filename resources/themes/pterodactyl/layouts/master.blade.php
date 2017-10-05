@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 <!DOCTYPE html>
 <html>
     <head>
@@ -75,15 +61,15 @@
                                 </a>
                             </li>
                             {{--<li>--}}
-                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.servers') }}"><i class="fa fa-server"></i></a>--}}
+                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.servers')"><i class="fa fa-server"></i></a>--}}
                             {{--</li>--}}
                             @if(Auth::user()->root_admin)
                                 <li>
-                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.admin_cp') }}"><i class="fa fa-gears"></i></a></li>
+                                    <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.admin_cp')"><i class="fa fa-gears"></i></a></li>
                                 </li>
                             @endif
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="{{ @trans('strings.logout') }}"><i class="fa fa-power-off"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.logout')"><i class="fa fa-sign-out"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -285,13 +271,22 @@
                 {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
             @endif
 
-            @if(Auth::user()->isRootAdmin())
+            @if(Auth::user()->root_admin)
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();
-                        if (confirm('Are you sure you want to logout?')) {
-                            window.location = $(this).attr('href');
-                        }
+
+                        var that = this;
+                        swal({
+                            title: 'Do you want to log out?',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d9534f',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Log out'
+                        }, function () {
+                            window.location = $(that).attr('href');
+                        });
                     });
                 </script>
             @endif

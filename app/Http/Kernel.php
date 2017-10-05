@@ -2,7 +2,9 @@
 
 namespace Pterodactyl\Http;
 
+use Pterodactyl\Http\Middleware\DaemonAuthenticate;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class Kernel extends HttpKernel
 {
@@ -37,11 +39,16 @@ class Kernel extends HttpKernel
             \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
+            \Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication::class,
         ],
         'api' => [
             \Pterodactyl\Http\Middleware\HMACAuthorization::class,
             'throttle:60,1',
             'bindings',
+        ],
+        'daemon' => [
+            \Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate::class,
+            SubstituteBindings::class,
         ],
     ];
 
@@ -55,13 +62,15 @@ class Kernel extends HttpKernel
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
         'server' => \Pterodactyl\Http\Middleware\ServerAuthenticate::class,
-        'subuser' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
+        'subuser.auth' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
+        'subuser' => \Pterodactyl\Http\Middleware\Server\SubuserAccess::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
-        'daemon' => \Pterodactyl\Http\Middleware\DaemonAuthenticate::class,
+        'daemon-old' => DaemonAuthenticate::class,
         'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'recaptcha' => \Pterodactyl\Http\Middleware\VerifyReCaptcha::class,
+        'schedule' => \Pterodactyl\Http\Middleware\Server\ScheduleAccess::class,
     ];
 }

@@ -1,30 +1,14 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -48,7 +32,7 @@ class StartupModificationService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    protected $connection;
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
@@ -71,37 +55,29 @@ class StartupModificationService
     protected $validatorService;
 
     /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
-
-    /**
      * StartupModificationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                            $database
+     * @param \Illuminate\Database\ConnectionInterface                            $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
      * @param \Pterodactyl\Services\Servers\EnvironmentService                    $environmentService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
-     * @param \Illuminate\Log\Writer                                              $writer
      */
     public function __construct(
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonServerRepository,
         EnvironmentService $environmentService,
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
-        VariableValidatorService $validatorService,
-        Writer $writer
+        VariableValidatorService $validatorService
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
-        $this->database = $database;
+        $this->connection = $connection;
         $this->environmentService = $environmentService;
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->validatorService = $validatorService;
-        $this->writer = $writer;
     }
 
     /**
@@ -141,7 +117,7 @@ class StartupModificationService
             $hasServiceChanges = true;
         }
 
-        $this->database->beginTransaction();
+        $this->connection->beginTransaction();
         if (isset($data['environment'])) {
             $validator = $this->validatorService->isAdmin($this->admin)
                 ->setFields($data['environment'])
@@ -183,14 +159,12 @@ class StartupModificationService
 
         try {
             $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
-            $this->database->commit();
+            $this->connection->commit();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
             throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            ]), $exception, 'warning');
         }
     }
 }

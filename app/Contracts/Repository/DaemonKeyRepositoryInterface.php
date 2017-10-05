@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
@@ -22,57 +22,30 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Console\Commands;
+namespace Pterodactyl\Contracts\Repository;
 
-use Carbon;
-use Pterodactyl\Models;
-use Illuminate\Console\Command;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-
-class ClearTasks extends Command
+interface DaemonKeyRepositoryInterface extends RepositoryInterface
 {
-    use DispatchesJobs;
+    /**
+     * String prepended to keys to identify that they are managed internally and not part of the user API.
+     */
+    const INTERNAL_KEY_IDENTIFIER = 'i_';
 
     /**
-     * The name and signature of the console command.
+     * Gets the daemon keys associated with a specific server.
      *
-     * @var string
+     * @param int $server
+     * @return \Illuminate\Support\Collection
      */
-    protected $signature = 'pterodactyl:tasks:clearlog';
+    public function getServerKeys($server);
 
     /**
-     * The console command description.
+     * Return a daemon key with the associated server relation attached.
      *
-     * @var string
-     */
-    protected $description = 'Clears old log entires (> 2 months) from the last log.';
-
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
+     * @param string $key
+     * @return \Pterodactyl\Models\DaemonKey
      *
-     * @return mixed
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle()
-    {
-        $entries = Models\TaskLog::where('run_time', '<=', Carbon::now()->subHours(config('pterodactyl.tasks.clear_log'))->toAtomString())->get();
-
-        $this->info(sprintf('Preparing to delete %d old task log entries.', count($entries)));
-        $bar = $this->output->createProgressBar(count($entries));
-
-        foreach ($entries as &$entry) {
-            $entry->delete();
-            $bar->advance();
-        }
-
-        $bar->finish();
-        $this->info("\nFinished deleting old logs.");
-    }
+    public function getKeyWithServer($key);
 }

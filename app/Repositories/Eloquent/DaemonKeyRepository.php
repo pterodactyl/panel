@@ -22,10 +22,45 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Exceptions\Service\Server;
+namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Exceptions\PterodactylException;
+use Webmozart\Assert\Assert;
+use Pterodactyl\Models\DaemonKey;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
-class UserNotLinkedToServerException extends PterodactylException
+class DaemonKeyRepository extends EloquentRepository implements DaemonKeyRepositoryInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function model()
+    {
+        return DaemonKey::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getServerKeys($server)
+    {
+        Assert::integerish($server, 'First argument passed to getServerKeys must be integer, received %s.');
+
+        return $this->getBuilder()->where('server_id', $server)->get($this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeyWithServer($key)
+    {
+        Assert::stringNotEmpty($key, 'First argument passed to getServerByKey must be string, received %s.');
+
+        $instance = $this->getBuilder()->with('server')->where('secret', '=', $key)->first();
+        if (is_null($instance)) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
+    }
 }

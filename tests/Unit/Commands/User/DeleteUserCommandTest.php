@@ -1,39 +1,23 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Tests\Unit\Commands\User;
 
 use Mockery as m;
-use Tests\TestCase;
 use Pterodactyl\Models\User;
+use Tests\Unit\Commands\CommandTestCase;
 use Tests\Assertions\CommandAssertionsTrait;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Symfony\Component\Console\Tester\CommandTester;
 use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
-class DeleteUserCommandTest extends TestCase
+class DeleteUserCommandTest extends CommandTestCase
 {
     use CommandAssertionsTrait;
 
@@ -43,12 +27,12 @@ class DeleteUserCommandTest extends TestCase
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
+     * @var \Pterodactyl\Services\Users\UserDeletionService|\Mockery\Mock
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -80,11 +64,8 @@ class DeleteUserCommandTest extends TestCase
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1->id)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([$user1->username, $user1->id, 'yes']);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], [$user1->username, $user1->id, 'yes']);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertTableContains($user1->id, $display);
         $this->assertTableContains($user1->email, $display);
@@ -107,11 +88,8 @@ class DeleteUserCommandTest extends TestCase
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1->id)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->setInputs(['noResults', $user1->username, $user1->id, 'yes']);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], ['noResults', $user1->username, $user1->id, 'yes']);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.no_users_found'), $display);
         $this->assertTableContains($user1->id, $display);
@@ -133,11 +111,8 @@ class DeleteUserCommandTest extends TestCase
             ->shouldReceive('all')->withNoArgs()->twice()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1->id)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([$user1->username, 0, $user1->username, $user1->id, 'yes']);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], [$user1->username, 0, $user1->username, $user1->id, 'yes']);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.select_search_user'), $display);
         $this->assertTableContains($user1->id, $display);
@@ -159,11 +134,8 @@ class DeleteUserCommandTest extends TestCase
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldNotReceive('handle');
 
-        $response = new CommandTester($this->command);
-        $response->setInputs([$user1->username, $user1->id, 'no']);
-        $response->execute([]);
+        $display = $this->runCommand($this->command, [], [$user1->username, $user1->id, 'no']);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertNotContains(trans('command/messages.user.deleted'), $display);
     }
@@ -181,10 +153,8 @@ class DeleteUserCommandTest extends TestCase
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1)->once()->andReturnNull();
 
-        $response = new CommandTester($this->command);
-        $response->execute(['--user' => $user1->username], ['interactive' => false]);
+        $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => $user1->username]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.deleted'), $display);
     }
@@ -203,10 +173,8 @@ class DeleteUserCommandTest extends TestCase
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldNotReceive('handle');
 
-        $response = new CommandTester($this->command);
-        $response->execute(['--user' => $user1->username], ['interactive' => false]);
+        $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => $user1->username]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.multiple_found'), $display);
     }
@@ -219,10 +187,8 @@ class DeleteUserCommandTest extends TestCase
         $this->repository->shouldReceive('search')->with(123456)->once()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->once()->andReturn([]);
 
-        $response = new CommandTester($this->command);
-        $response->execute(['--user' => 123456], ['interactive' => false]);
+        $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => 123456]);
 
-        $display = $response->getDisplay();
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.user.no_users_found'), $display);
     }

@@ -3,35 +3,17 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Models;
 
-use Hash;
-use Google2FA;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Pterodactyl\Exceptions\DisplayException;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -69,7 +51,18 @@ class User extends Model implements
      *
      * @var array
      */
-    protected $fillable = ['username', 'email', 'name_first', 'name_last', 'password', 'language', 'use_totp', 'totp_secret', 'gravatar', 'root_admin'];
+    protected $fillable = [
+        'username',
+        'email',
+        'name_first',
+        'name_last',
+        'password',
+        'language',
+        'use_totp',
+        'totp_secret',
+        'gravatar',
+        'root_admin',
+    ];
 
     /**
      * Cast values to correct type.
@@ -145,46 +138,6 @@ class User extends Model implements
     ];
 
     /**
-     * Enables or disables TOTP on an account if the token is valid.
-     *
-     * @param int $token
-     * @return bool
-     * @deprecated
-     */
-    public function toggleTotp($token)
-    {
-        if (! Google2FA::verifyKey($this->totp_secret, $token, 1)) {
-            return false;
-        }
-
-        $this->use_totp = ! $this->use_totp;
-
-        return $this->save();
-    }
-
-    /**
-     * Set a user password to a new value assuming it meets the following requirements:
-     *      - 8 or more characters in length
-     *      - at least one uppercase character
-     *      - at least one lowercase character
-     *      - at least one number.
-     *
-     * @param string $password
-     * @param string $regex
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @deprecated
-     */
-    public function setPassword($password, $regex = '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})')
-    {
-        if (! preg_match($regex, $password)) {
-            throw new DisplayException('The password passed did not meet the minimum password requirements.');
-        }
-
-        $this->password = Hash::make($password);
-        $this->save();
-    }
-
-    /**
      * Send the password reset notification.
      *
      * @param string $token
@@ -192,102 +145,6 @@ class User extends Model implements
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
-    }
-
-    /**
-     * Return true or false depending on wether the user is root admin or not.
-     *
-     * @return bool
-     * @deprecated
-     */
-    public function isRootAdmin()
-    {
-        return $this->root_admin;
-    }
-
-    /**
-     * Returns the user's daemon secret for a given server.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @return null|string
-     */
-    public function daemonToken(Server $server)
-    {
-        if ($this->id === $server->owner_id || $this->isRootAdmin()) {
-            return $server->daemonSecret;
-        }
-
-        $subuser = $this->subuserOf->where('server_id', $server->id)->first();
-
-        return ($subuser) ? $subuser->daemonSecret : null;
-    }
-
-    /**
-     * Returns an array of all servers a user is able to access.
-     * Note: does not account for user admin status.
-     *
-     * @return array
-     */
-    public function serverAccessArray()
-    {
-        return Server::select('id')->where('owner_id', $this->id)->union(
-            Subuser::select('server_id')->where('user_id', $this->id)
-        )->pluck('id')->all();
-    }
-
-    /**
-     * Change the access level for a given call to `access()` on the user.
-     *
-     * @param string $level can be all, admin, subuser, owner
-     * @return $this
-     */
-    public function setAccessLevel($level = 'all')
-    {
-        if (! in_array($level, ['all', 'admin', 'subuser', 'owner'])) {
-            $level = 'all';
-        }
-        $this->accessLevel = $level;
-
-        return $this;
-    }
-
-    /**
-     * Returns an array of all servers a user is able to access.
-     * Note: does not account for user admin status.
-     *
-     * @param array $load
-     * @return \Pterodactyl\Models\Server
-     */
-    public function access(...$load)
-    {
-        if (count($load) > 0 && is_null($load[0])) {
-            $query = Server::query();
-        } else {
-            $query = Server::with(! empty($load) ? $load : ['service', 'node', 'allocation']);
-        }
-
-        // If access level is set to owner, only display servers
-        // that the user owns.
-        if ($this->accessLevel === 'owner') {
-            $query->where('owner_id', $this->id);
-        }
-
-        // If set to all, display all servers they can access, including
-        // those they access as an admin.
-        //
-        // If set to subuser, only return the servers they can access because
-        // they are owner, or marked as a subuser of the server.
-        if (($this->accessLevel === 'all' && ! $this->isRootAdmin()) || $this->accessLevel === 'subuser') {
-            $query->whereIn('id', $this->serverAccessArray());
-        }
-
-        // If set to admin, only display the servers a user can access
-        // as an administrator (leaves out owned and subuser of).
-        if ($this->accessLevel === 'admin' && $this->isRootAdmin()) {
-            $query->whereNotIn('id', $this->serverAccessArray());
-        }
-
-        return $query;
     }
 
     /**
@@ -338,5 +195,15 @@ class User extends Model implements
     public function subuserOf()
     {
         return $this->hasMany(Subuser::class);
+    }
+
+    /**
+     * Return all of the daemon keys that a user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function keys()
+    {
+        return $this->hasMany(DaemonKey::class);
     }
 }

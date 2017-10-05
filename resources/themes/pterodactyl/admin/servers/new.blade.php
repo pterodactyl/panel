@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -78,21 +64,20 @@
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-sm-4">
-                        <label for="pLocationId">Location</label>
-                        <select name="location_id" id="pLocationId" class="form-control">
+                        <label for="pNodeId">Node</label>
+                        <select name="node_id" id="pNodeId" class="form-control">
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}"
-                                    @if($location->id === old('location_id'))
-                                        selected
-                                    @endif
-                                >{{ $location->long }} ({{ $location->short }})</option>
+                                <optgroup label="{{ $location->long }} ({{ $location->short }})">
+                                @foreach($location->nodes as $node)
+
+                                <option value="{{ $node->id }}"
+                                    @if($location->id === old('location_id')) selected @endif
+                                >{{ $node->name }}</option>
+
+                                @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
-                        <p class="small text-muted no-margin">The location in which this server will be deployed.</p>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label for="pNodeId">Node</label>
-                        <select name="node_id" id="pNodeId" class="form-control"></select>
                         <p class="small text-muted no-margin">The node which this server will be deployed to.</p>
                     </div>
                     <div class="form-group col-sm-4">
@@ -100,7 +85,7 @@
                         <select name="allocation_id" id="pAllocation" class="form-control"></select>
                         <p class="small text-muted no-margin">The main allocation that will be assigned to this server.</p>
                     </div>
-                    <div class="form-group col-sm-12">
+                    <div class="form-group col-sm-4">
                         <label for="pAllocationAdditional">Additional Allocation(s)</label>
                         <select name="allocation_additional[]" id="pAllocationAdditional" class="form-control" multiple></select>
                         <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>

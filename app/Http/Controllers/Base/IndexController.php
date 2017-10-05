@@ -26,22 +26,24 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\ServerAccessHelperService;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Servers\ServerAccessHelperService
-     */
-    protected $access;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonRepository;
+
+    /**
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     */
+    protected $keyProviderService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
@@ -51,17 +53,17 @@ class IndexController extends Controller
     /**
      * IndexController constructor.
      *
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Servers\ServerAccessHelperService            $access
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
      */
     public function __construct(
+        DaemonKeyProviderService $keyProviderService,
         DaemonServerRepositoryInterface $daemonRepository,
-        ServerAccessHelperService $access,
         ServerRepositoryInterface $repository
     ) {
-        $this->access = $access;
         $this->daemonRepository = $daemonRepository;
+        $this->keyProviderService = $keyProviderService;
         $this->repository = $repository;
     }
 
@@ -90,7 +92,8 @@ class IndexController extends Controller
      */
     public function status(Request $request, $uuid)
     {
-        $server = $this->access->handle($uuid, $request->user());
+        $server = $this->repository->findFirstWhere([['uuidShort', '=', $uuid]]);
+        $token = $this->keyProviderService->handle($server->id, $request->user()->id);
 
         if (! $server->installed) {
             return response()->json(['status' => 20]);
@@ -98,10 +101,14 @@ class IndexController extends Controller
             return response()->json(['status' => 30]);
         }
 
-        $response = $this->daemonRepository->setNode($server->node_id)
-            ->setAccessServer($server->uuid)
-            ->setAccessToken($server->daemonSecret)
-            ->details();
+        try {
+            $response = $this->daemonRepository->setNode($server->node_id)
+                ->setAccessServer($server->uuid)
+                ->setAccessToken($token)
+                ->details();
+        } catch (RequestException $exception) {
+            throw new HttpException(500, $exception->getMessage());
+        }
 
         return response()->json(json_decode($response->getBody()));
     }

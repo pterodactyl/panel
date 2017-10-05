@@ -19,7 +19,7 @@
 // SOFTWARE.
 (function initUploader() {
     var notifyUploadSocketError = false;
-    uploadSocket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/upload/' + Pterodactyl.server.uuid, {
+    uploadSocket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/v1/upload/' + Pterodactyl.server.uuid, {
         'query': 'token=' + Pterodactyl.server.daemonSecret,
     });
 

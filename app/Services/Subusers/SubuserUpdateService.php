@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Services\Subusers;
@@ -28,6 +13,7 @@ use Illuminate\Log\Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
@@ -43,6 +29,11 @@ class SubuserUpdateService
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonRepository;
+
+    /**
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     */
+    private $keyProviderService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
@@ -68,6 +59,7 @@ class SubuserUpdateService
      * SubuserUpdateService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $connection
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
      * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
      * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface    $permissionRepository
@@ -76,6 +68,7 @@ class SubuserUpdateService
      */
     public function __construct(
         ConnectionInterface $connection,
+        DaemonKeyProviderService $keyProviderService,
         DaemonServerRepositoryInterface $daemonRepository,
         PermissionCreationService $permissionService,
         PermissionRepositoryInterface $permissionRepository,
@@ -84,6 +77,7 @@ class SubuserUpdateService
     ) {
         $this->connection = $connection;
         $this->daemonRepository = $daemonRepository;
+        $this->keyProviderService = $keyProviderService;
         $this->permissionRepository = $permissionRepository;
         $this->permissionService = $permissionService;
         $this->repository = $repository;
@@ -106,12 +100,11 @@ class SubuserUpdateService
 
         $this->connection->beginTransaction();
         $this->permissionRepository->deleteWhere([['subuser_id', '=', $subuser->id]]);
-        $daemonPermissions = $this->permissionService->handle($subuser->id, $permissions);
+        $this->permissionService->handle($subuser->id, $permissions);
 
         try {
-            $this->daemonRepository->setNode($subuser->server->node_id)->setAccessServer($subuser->server->uuid)
-                ->setSubuserKey($subuser->daemonSecret, $daemonPermissions);
-            $this->connection->commit();
+            $token = $this->keyProviderService->handle($subuser->server_id, $subuser->user_id, false);
+            $this->daemonRepository->setNode($subuser->server->node_id)->revokeAccessKey($token);
         } catch (RequestException $exception) {
             $this->connection->rollBack();
             $this->writer->warning($exception);
@@ -121,5 +114,7 @@ class SubuserUpdateService
                 'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
             ]));
         }
+
+        $this->connection->commit();
     }
 }

@@ -3,23 +3,8 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Tests\Unit\Services\Services\Variables;
@@ -27,7 +12,6 @@ namespace Tests\Unit\Services\Services\Variables;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use PhpParser\Node\Expr\Variable;
 use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Services\Variables\VariableUpdateService;
@@ -36,12 +20,12 @@ use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 class VariableUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\ServiceVariable
+     * @var \Pterodactyl\Models\ServiceVariable|\Mockery\Mock
      */
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -76,6 +60,22 @@ class VariableUpdateServiceTest extends TestCase
             ])->once()->andReturn(true);
 
         $this->assertTrue($this->service->handle($this->model, ['test-data' => 'test-value']));
+    }
+
+    /**
+     * Test that a service variable ID can be passed in place of the model.
+     */
+    public function testVariableIdCanBePassedInPlaceOfModel()
+    {
+        $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
+        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, [
+                'user_viewable' => false,
+                'user_editable' => false,
+                'test-data' => 'test-value',
+            ])->once()->andReturn(true);
+
+        $this->assertTrue($this->service->handle($this->model->id, ['test-data' => 'test-value']));
     }
 
     /**

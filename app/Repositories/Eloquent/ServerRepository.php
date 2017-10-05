@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Repositories\Eloquent;
@@ -47,13 +32,30 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getAllServers($paginate = 25)
     {
-        $instance = $this->getBuilder()->with('node', 'user', 'allocation');
+        Assert::nullOrIntegerish($paginate, 'First argument passed to getAllServers must be integer or null, received %s.');
 
-        if ($this->searchTerm) {
-            $instance->search($this->searchTerm);
+        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->searchTerm);
+
+        return is_null($paginate) ? $instance->get($this->getColumns()) : $instance->paginate($paginate, $this->getColumns());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDataForRebuild($server = null, $node = null)
+    {
+        Assert::nullOrIntegerish($server, 'First argument passed to getDataForRebuild must be null or integer, received %s.');
+        Assert::nullOrIntegerish($node, 'Second argument passed to getDataForRebuild must be null or integer, received %s.');
+
+        $instance = $this->getBuilder()->with('node', 'option.service', 'pack');
+
+        if (! is_null($server) && is_null($node)) {
+            $instance = $instance->where('id', '=', $server);
+        } elseif (is_null($server) && ! is_null($node)) {
+            $instance = $instance->where('node_id', '=', $node);
         }
 
-        return $instance->paginate($paginate);
+        return $instance->get($this->getColumns());
     }
 
     /**
@@ -62,6 +64,8 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function findWithVariables($id)
     {
+        Assert::integerish($id, 'First argument passed to findWithVariables must be integer, received %s.');
+
         $instance = $this->getBuilder()->with('option.variables', 'variables')
                          ->where($this->getModel()->getKeyName(), '=', $id)
                          ->first($this->getColumns());

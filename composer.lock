@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "15a4dc6de122bc1e47d1d9ca3b1224d6",
+    "content-hash": "46a0a06ec8f3af50ed6ec05c2bb3b9a3",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -3891,6 +3891,58 @@
                 "UUID RFC4122"
             ],
             "time": "2017-08-30T20:45:29+00:00"
+        },
+        {
+            "name": "znck/belongs-to-through",
+            "version": "v2.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/znck/belongs-to-through.git",
+                "reference": "8ac53e9134072902a8d3f3e18c327d4a8fd70d3d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/znck/belongs-to-through/zipball/8ac53e9134072902a8d3f3e18c327d4a8fd70d3d",
+                "reference": "8ac53e9134072902a8d3f3e18c327d4a8fd70d3d",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "orchestra/testbench": "~3.0",
+                "phpunit/php-code-coverage": "^3.3",
+                "phpunit/phpunit": "~5.0",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Znck\\Eloquent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rahul Kadyan",
+                    "email": "hi@znck.me"
+                }
+            ],
+            "description": "Adds belongsToThrough relation to laravel models",
+            "homepage": "https://github.com/znck/belongs-to-through",
+            "keywords": [
+                "belongsToThrough",
+                "eloquent",
+                "laravel",
+                "model",
+                "models",
+                "znck"
+            ],
+            "time": "2017-07-23T13:11:16+00:00"
         }
     ],
     "packages-dev": [

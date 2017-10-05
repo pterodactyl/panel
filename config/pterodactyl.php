@@ -59,6 +59,7 @@ return [
     */
     'api' => [
         'include_on_list' => env('API_INCLUDE_ON_LIST', false),
+        'key_expire_time' => env('API_KEY_EXPIRE_TIME', 60 * 12),
     ],
 
     /*
@@ -96,6 +97,17 @@ return [
     'console' => [
         'count' => env('CONSOLE_PUSH_COUNT', 10),
         'frequency' => env('CONSOLE_PUSH_FREQ', 200),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Daemon Connection Details
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for support of the new Golang based daemon.
+    */
+    'daemon' => [
+        'use_new_daemon' => (bool) env('APP_USE_NEW_DAEMON', false),
     ],
 
     /*
