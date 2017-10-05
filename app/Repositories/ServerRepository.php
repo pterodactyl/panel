@@ -682,7 +682,7 @@ class ServerRepository
                 if ($set) {
                     $svar->variable_value = $data['env_' . $variable->id];
 
-                // Not passed, check if this record exists if so keep value, otherwise set default
+                    // Not passed, check if this record exists if so keep value, otherwise set default
                 } else {
                     $svar->variable_value = ($svar->exists) ? $svar->variable_value : $variable->default_value;
                 }
