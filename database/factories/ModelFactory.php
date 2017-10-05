@@ -103,10 +103,11 @@ $factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $f
 $factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
         'service_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
-        'tag' => $faker->unique()->randomNumber(5),
+        'tag' => 'test@testfactory.com:' . $faker->unique()->randomNumber(8),
     ];
 });
 
@@ -120,8 +121,6 @@ $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Gene
         'user_viewable' => 0,
         'user_editable' => 0,
         'rules' => 'required|string',
-        'created_at' => \Carbon\Carbon::now(),
-        'updated_at' => \Carbon\Carbon::now(),
     ];
 });
 
