@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,121 +21,141 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Server;
 
-use Auth;
-use DB;
-use Uuid;
-use Alert;
 use Log;
-
+use Alert;
+use Cache;
 use Pterodactyl\Models;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-use Pterodactyl\Repositories\Daemon\FileRepository;
-use Pterodactyl\Repositories\ServerRepository;
-
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
-use InvalidArgumentException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\ServerRepository;
+use Pterodactyl\Repositories\Daemon\FileRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class ServerController extends Controller
 {
-
-    /**
-     * Controller Constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function getJavascript(Request $request, $uuid, $folder, $file)
-    {
-        $server = Models\Server::getByUUID($uuid);
-
-        $info = pathinfo($file);
-        $routeFile = str_replace('/', '.', $info['dirname']) . '.' . $info['filename'];
-        try {
-            return response()->view('server.js.' . $folder . '.' . $routeFile, [
-                'server' => $server,
-                'node' => Models\Node::find($server->node)
-            ])->header('Content-Type', 'application/javascript');
-        } catch (InvalidArgumentException $ex) {
-            return abort(404);
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
-    }
-
     /**
      * Renders server index page for specified server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function getIndex(Request $request)
+    public function getIndex(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($request->route()->server);
+        $server = Models\Server::byUuid($uuid);
+
+        $server->js([
+            'meta' => [
+                'saveFile' => route('server.files.save', $server->uuidShort),
+                'csrfToken' => csrf_token(),
+            ],
+            'config' => [
+                'console_count' => config('pterodactyl.console.count'),
+                'console_freq' => config('pterodactyl.console.frequency'),
+            ],
+        ]);
+
         return view('server.index', [
             'server' => $server,
-            'allocations' => Models\Allocation::where('assigned_to', $server->id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'node' => Models\Node::find($server->node)
+            'node' => $server->node,
+        ]);
+    }
+
+    /**
+     * Renders server console as an individual item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function getConsole(Request $request, $uuid)
+    {
+        \Debugbar::disable();
+        $server = Models\Server::byUuid($uuid);
+
+        $server->js([
+            'config' => [
+                'console_count' => config('pterodactyl.console.count'),
+                'console_freq' => config('pterodactyl.console.frequency'),
+            ],
+        ]);
+
+        return view('server.console', [
+            'server' => $server,
+            'node' => $server->node,
         ]);
     }
 
     /**
      * Renders file overview page.
      *
-     * @param  Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function getFiles(Request $request)
+    public function getFiles(Request $request, $uuid)
     {
-
-        $server = Models\Server::getByUUID($request->route()->server);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('list-files', $server);
+
+        $server->js([
+            'meta' => [
+                'directoryList' => route('server.files.directory-list', $server->uuidShort),
+                'csrftoken' => csrf_token(),
+            ],
+            'permissions' => [
+                'moveFiles' => $request->user()->can('move-files', $server),
+                'copyFiles' => $request->user()->can('copy-files', $server),
+                'compressFiles' => $request->user()->can('compress-files', $server),
+                'decompressFiles' => $request->user()->can('decompress-files', $server),
+                'createFiles' => $request->user()->can('create-files', $server),
+                'downloadFiles' => $request->user()->can('download-files', $server),
+                'deleteFiles' => $request->user()->can('delete-files', $server),
+            ],
+        ]);
 
         return view('server.files.index', [
             'server' => $server,
-            'node' => Models\Node::find($server->node)
+            'node' => $server->node,
         ]);
     }
 
     /**
      * Renders add file page.
      *
-     * @param  Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function getAddFile(Request $request)
+    public function getAddFile(Request $request, $uuid)
     {
+        $server = Models\Server::byUuid($uuid);
+        $this->authorize('create-files', $server);
 
-        $server = Models\Server::getByUUID($request->route()->server);
-        $this->authorize('add-files', $server);
+        $server->js();
 
         return view('server.files.add', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
-            'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/'
+            'node' => $server->node,
+            'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/',
         ]);
     }
 
     /**
      * Renders edit file page for a given file.
      *
-     * @param  Request $request
-     * @param  string  $uuid
-     * @param  string  $file
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  string                    $file
+     * @return \Illuminate\View\View
      */
     public function getEditFile(Request $request, $uuid, $file)
     {
-
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-files', $server);
 
         $fileInfo = (object) pathinfo($file);
@@ -145,106 +165,169 @@ class ServerController extends Controller
             $fileContent = $controller->returnFileContents($file);
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
+
             return redirect()->route('server.files.index', $uuid);
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An error occured while attempting to load the requested file for editing, please try again.')->flash();
+
             return redirect()->route('server.files.index', $uuid);
         }
 
+        $server->js([
+            'stat' => $fileContent['stat'],
+        ]);
+
         return view('server.files.edit', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $server->node,
             'file' => $file,
             'stat' => $fileContent['stat'],
             'contents' => $fileContent['file']->content,
-            'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/'
+            'directory' => (in_array($fileInfo->dirname, ['.', './', '/'])) ? '/' : trim($fileInfo->dirname, '/') . '/',
         ]);
-
     }
 
     /**
      * Handles downloading a file for the user.
      *
-     * @param  Request $request
-     * @param  string  $uuid
-     * @param  string  $file
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  string                    $file
+     * @return \Illuminate\View\View
      */
     public function getDownloadFile(Request $request, $uuid, $file)
     {
-
-        $server = Models\Server::getByUUID($uuid);
-        $node = Models\Node::find($server->node);
-
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('download-files', $server);
 
-        $download = new Models\Download;
+        $token = str_random(40);
+        Cache::tags(['Server:Downloads'])->put($token, [
+            'server' => $server->uuid,
+            'path' => $file,
+        ], 5);
 
-        $download->token = (string) Uuid::generate(4);
-        $download->server = $server->uuid;
-        $download->path = $file;
-
-        $download->save();
-
-        return redirect( $node->scheme . '://' . $node->fqdn . ':' . $node->daemonListen . '/server/file/download/' . $download->token);
-
+        return redirect($server->node->scheme . '://' . $server->node->fqdn . ':' . $server->node->daemonListen . '/server/file/download/' . $token);
     }
 
     /**
-     * Renders server settings page.
+     * Returns the allocation overview for a server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function getSettings(Request $request, $uuid)
+    public function getAllocation(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $allocation = Models\Allocation::findOrFail($server->allocation);
+        $server = Models\Server::byUuid($uuid);
+        $this->authorize('view-allocation', $server);
+        $server->js();
 
-        $variables = Models\ServiceVariables::select(
-                'service_variables.*',
-                DB::raw('COALESCE(server_variables.variable_value, service_variables.default_value) as a_serverValue')
-            )->leftJoin('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-            ->where('service_variables.option_id', $server->option)
-            ->where('server_variables.server_id', $server->id)
-            ->get();
+        return view('server.settings.allocation', [
+            'server' => $server->load(['allocations' => function ($query) {
+                $query->orderBy('ip', 'asc');
+                $query->orderBy('port', 'asc');
+            }]),
+            'node' => $server->node,
+        ]);
+    }
 
-        $service = Models\Service::select(
-                DB::raw('IFNULL(service_options.executable, services.executable) as executable')
-            )->leftJoin('service_options', 'service_options.parent_service', '=', 'services.id')
-            ->where('service_options.id', $server->option)
-            ->where('services.id', $server->service)
-            ->first();
+    /**
+     * Returns the startup overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function getStartup(Request $request, $uuid)
+    {
+        $server = Models\Server::byUuid($uuid);
+        $this->authorize('view-startup', $server);
 
-        $serverVariables = [
+        $server->load(['node', 'allocation', 'variables']);
+        $variables = Models\ServiceVariable::where('option_id', $server->option_id)->get();
+
+        $replacements = [
             '{{SERVER_MEMORY}}' => $server->memory,
-            '{{SERVER_IP}}' => $allocation->ip,
-            '{{SERVER_PORT}}' => $allocation->port,
+            '{{SERVER_IP}}' => $server->allocation->ip,
+            '{{SERVER_PORT}}' => $server->allocation->port,
         ];
 
-        $processed = str_replace(array_keys($serverVariables), array_values($serverVariables), $server->startup);
-        foreach($variables as &$variable) {
-            $replace = ($variable->user_viewable === 1) ? $variable->a_serverValue : '**';
-            $processed = str_replace('{{' . $variable->env_variable . '}}', $replace, $processed);
+        $processed = str_replace(array_keys($replacements), array_values($replacements), $server->startup);
+
+        foreach ($variables as $var) {
+            if ($var->user_viewable) {
+                $serverVar = $server->variables->where('variable_id', $var->id)->first();
+                $var->server_set_value = $serverVar->variable_value ?? $var->default_value;
+            } else {
+                $var->server_set_value = '[hidden]';
+            }
+
+            $processed = str_replace('{{' . $var->env_variable . '}}', $var->server_set_value, $processed);
         }
 
-        return view('server.settings', [
+        $server->js();
+
+        return view('server.settings.startup', [
             'server' => $server,
-            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
-                ->where('server_id', $server->id)
-                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->get(),
-            'node' => Models\Node::find($server->node),
+            'node' => $server->node,
             'variables' => $variables->where('user_viewable', 1),
-            'service' => $service,
+            'service' => $server->service,
             'processedStartup' => $processed,
         ]);
     }
 
+    /**
+     * Returns the database overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function getDatabases(Request $request, $uuid)
+    {
+        $server = Models\Server::byUuid($uuid);
+        $this->authorize('view-databases', $server);
+
+        $server->load('node', 'databases.host');
+        $server->js();
+
+        return view('server.settings.databases', [
+            'server' => $server,
+            'node' => $server->node,
+            'databases' => $server->databases,
+        ]);
+    }
+
+    /**
+     * Returns the SFTP overview for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function getSFTP(Request $request, $uuid)
+    {
+        $server = Models\Server::byUuid($uuid);
+        $this->authorize('view-sftp', $server);
+        $server->js();
+
+        return view('server.settings.sftp', [
+            'server' => $server,
+            'node' => $server->node,
+        ]);
+    }
+
+    /**
+     * Handles changing the SFTP password for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSettingsSFTP(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('reset-sftp', $server);
 
         try {
@@ -252,37 +335,42 @@ class ServerController extends Controller
             $repo->updateSFTPPassword($server->id, $request->input('sftp_pass'));
             Alert::success('Successfully updated this servers SFTP password.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('server.settings', $uuid)->withErrors(json_decode($ex->getMessage()));
+            return redirect()->route('server.settings.sftp', $uuid)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to update this server\'s SFTP settings.')->flash();
         }
-        return redirect()->route('server.settings', $uuid);
+
+        return redirect()->route('server.settings.sftp', $uuid);
     }
 
+    /**
+     * Handles changing the startup settings for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSettingsStartup(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-startup', $server);
 
         try {
             $repo = new ServerRepository;
-            $repo->updateStartup($server->id, $request->except([
-                '_token'
-            ]));
+            $repo->updateStartup($server->id, $request->except('_token'));
             Alert::success('Server startup variables were successfully updated.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('server.settings.startup', $uuid)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
         }
-        return redirect()->route('server.settings', [
-            'uuid' => $uuid,
-            'tab' => 'tab_startup'
-        ]);
-    }
 
+        return redirect()->route('server.settings.startup', $uuid);
+    }
 }

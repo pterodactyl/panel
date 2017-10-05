@@ -18,13 +18,13 @@ class ModifyIpStorageMethod extends Migration
 
         // Parse All Servers
         $servers = DB::select('SELECT id, ip, port, node FROM servers');
-        foreach($servers as $server) {
+        foreach ($servers as $server) {
             $allocation = DB::select(
                 'SELECT id FROM allocations WHERE ip = :ip AND port = :port AND node = :node',
                 [
                     'ip' => $server->ip,
                     'port' => $server->port,
-                    'node' => $server->node
+                    'node' => $server->node,
                 ]
             );
 
@@ -33,7 +33,7 @@ class ModifyIpStorageMethod extends Migration
                     'UPDATE servers SET allocation = :alocid WHERE id = :id',
                     [
                         'alocid' => $allocation[0]->id,
-                        'id' => $server->id
+                        'id' => $server->id,
                     ]
                 );
             }
@@ -44,7 +44,6 @@ class ModifyIpStorageMethod extends Migration
             $table->dropColumn('ip');
             $table->dropColumn('port');
         });
-
     }
 
     /**
@@ -54,7 +53,6 @@ class ModifyIpStorageMethod extends Migration
      */
     public function down()
     {
-
         Schema::table('servers', function (Blueprint $table) {
             $table->text('ip')->after('allocation');
             $table->integer('port')->unsigned()->after('ip');
@@ -62,8 +60,8 @@ class ModifyIpStorageMethod extends Migration
 
         // Find the allocations and reset the servers...
         $servers = DB::select('SELECT id, allocation FROM servers');
-        foreach($servers as $server) {
-            $allocation = DB::select('SELECT * FROM allocations WHERE id = :alocid', [ 'alocid' => $server->allocation ]);
+        foreach ($servers as $server) {
+            $allocation = DB::select('SELECT * FROM allocations WHERE id = :alocid', ['alocid' => $server->allocation]);
 
             if (isset($allocation[0])) {
                 DB::update(
@@ -71,7 +69,7 @@ class ModifyIpStorageMethod extends Migration
                     [
                         'ip' => $allocation[0]->ip,
                         'port' => $allocation[0]->port,
-                        'id' => $server->id
+                        'id' => $server->id,
                     ]
                 );
             }

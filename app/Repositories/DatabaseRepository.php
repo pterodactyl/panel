@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,258 +21,264 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Repositories;
 
-use Crypt;
-use Log;
 use DB;
+use Crypt;
 use Validator;
-
-use Pterodactyl\Models;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\DisplayValidationException;
 
-use Illuminate\Database\Capsule\Manager as Capsule;
-
-class DatabaseRepository {
-
+class DatabaseRepository
+{
     /**
-     * Adds a new database to a given database server.
-     * @param int   $server   Id of the server to add a database for.
-     * @param array $options  Array of options for creating that database.
-     * @return void
+     * Adds a new database to a specified database host server.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\Database
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
-    public function create($server, $options)
+    public function create($id, array $data)
     {
-        $server = Models\Server::findOrFail($server);
-        $validator = Validator::make($options, [
-            'db_server' => 'required|exists:database_servers,id',
+        $server = Server::findOrFail($id);
+
+        $validator = Validator::make($data, [
+            'host' => 'required|exists:database_hosts,id',
             'database' => 'required|regex:/^\w{1,100}$/',
-            'remote' => 'required|regex:/^[0-9%.]{1,15}$/',
+            'connection' => 'required|regex:/^[0-9%.]{1,15}$/',
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
+        $host = DatabaseHost::findOrFail($data['host']);
         DB::beginTransaction();
 
         try {
-            $db = new Models\Database;
-            $db->fill([
+            $database = Database::firstOrNew([
                 'server_id' => $server->id,
-                'db_server' => $options['db_server'],
-                'database' => $server->uuidShort . '_' . $options['database'],
-                'username' => $server->uuidShort . '_' . str_random(7),
-                'remote' => $options['remote'],
-                'password' => Crypt::encrypt(str_random(20))
-            ]);
-            $db->save();
-
-            // Contact Remote
-            $dbr = Models\DatabaseServer::findOrFail($options['db_server']);
-
-            $capsule = new Capsule;
-            $capsule->addConnection([
-                'driver' => 'mysql',
-                'host' => $dbr->host,
-                'port' => $dbr->port,
-                'database' => 'mysql',
-                'username' => $dbr->username,
-                'password' => Crypt::decrypt($dbr->password),
-                'charset' => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ]
+                'database_host_id' => $data['host'],
+                'database' => sprintf('s%d_%s', $server->id, $data['database']),
             ]);
 
-            $capsule->setAsGlobal();
+            if ($database->exists) {
+                throw new DisplayException('A database with those details already exists in the system.');
+            }
 
-            Capsule::statement('CREATE DATABASE ' . $db->database);
-            Capsule::statement('CREATE USER \'' . $db->username . '\'@\'' . $db->remote . '\' IDENTIFIED BY \'' . Crypt::decrypt($db->password) . '\'');
-            Capsule::statement('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON ' . $db->database . '.* TO \'' . $db->username . '\'@\'' . $db->remote . '\'');
-            Capsule::statement('FLUSH PRIVILEGES');
+            $database->username = sprintf('s%d_%s', $server->id, str_random(10));
+            $database->remote = $data['connection'];
+            $database->password = Crypt::encrypt(str_random(20));
 
-            DB::commit();
-            return true;
+            $database->save();
         } catch (\Exception $ex) {
-            DB::rollback();
+            DB::rollBack();
+            throw $ex;
+        }
+
+        try {
+            $host->setDynamicConnection();
+
+            DB::connection('dynamic')->statement(sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database->database));
+            DB::connection('dynamic')->statement(sprintf(
+                'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
+                $database->username, $database->remote, Crypt::decrypt($database->password)
+            ));
+            DB::connection('dynamic')->statement(sprintf(
+                'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`',
+                $database->database, $database->username, $database->remote
+            ));
+
+            DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
+
+            // Save Everything
+            DB::commit();
+
+            return $database;
+        } catch (\Exception $ex) {
+            try {
+                DB::connection('dynamic')->statement(sprintf('DROP DATABASE IF EXISTS `%s`', $database->database));
+                DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
+                DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
+            } catch (\Exception $ex) {
+            }
+
+            DB::rollBack();
             throw $ex;
         }
     }
 
     /**
      * Updates the password for a given database.
-     * @param  int $database The ID of the database to modify.
-     * @param  string $password The new password to use for the database.
-     * @return bool
+     *
+     * @param  int     $id
+     * @param  string  $password
+     * @return void
+     *
+     * @todo   Fix logic behind resetting passwords.
      */
-    public function modifyPassword($database, $password)
+    public function password($id, $password)
     {
-        $db = Models\Database::findOrFail($database);
-        $dbr = Models\DatabaseServer::findOrFail($db->db_server);
+        $database = Database::with('host')->findOrFail($id);
+        $database->host->setDynamicConnection();
 
-        DB::beginTransaction();
-        try {
+        DB::transaction(function () use ($database, $password) {
+            $database->password = Crypt::encrypt($password);
 
-            $db->password = Crypt::encrypt($password);
-            $db->save();
-
-            $capsule = new Capsule;
-            $capsule->addConnection([
-                'driver' => 'mysql',
-                'host' => $dbr->host,
-                'port' => $dbr->port,
-                'database' => 'mysql',
-                'username' => $dbr->username,
-                'password' => Crypt::decrypt($dbr->password),
-                'charset' => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ]
-            ]);
-
-            $capsule->setAsGlobal();
-            Capsule::statement(sprintf(
-                'SET PASSWORD FOR \'%s\'@\'%s\' = PASSWORD(\'%s\')',
-                $db->username,
-                $db->remote,
-                $password
+            // We have to do the whole delete user, create user thing rather than
+            // SET PASSWORD ... because MariaDB and PHP statements ends up inserting
+            // a corrupted password. A way around this is strtoupper(sha1(sha1($password, true)))
+            // but no garuntees that will work correctly with every system.
+            DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
+            DB::connection('dynamic')->statement(sprintf(
+                'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'',
+                $database->username, $database->remote, $password
             ));
+            DB::connection('dynamic')->statement(sprintf(
+                'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX ON `%s`.* TO `%s`@`%s`',
+                $database->database, $database->username, $database->remote
+            ));
+            DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
 
-            DB::commit();
-        } catch(\Exception $ex) {
-            DB::rollback();
-            throw $ex;
-        }
+            $database->save();
+        });
     }
 
     /**
-     * Drops a database from the associated MySQL Server
-     * @param  int $database The ID of the database to drop.
-     * @return boolean
+     * Drops a database from the associated database host.
+     *
+     * @param  int  $id
+     * @return void
      */
-    public function drop($database)
+    public function drop($id)
     {
-        $db = Models\Database::findOrFail($database);
-        $dbr = Models\DatabaseServer::findOrFail($db->db_server);
+        $database = Database::with('host')->findOrFail($id);
+        $database->host->setDynamicConnection();
 
-        DB::beginTransaction();
+        DB::transaction(function () use ($database) {
+            DB::connection('dynamic')->statement(sprintf('DROP DATABASE IF EXISTS `%s`', $database->database));
+            DB::connection('dynamic')->statement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $database->username, $database->remote));
+            DB::connection('dynamic')->statement('FLUSH PRIVILEGES');
 
-        try {
-            $capsule = new Capsule;
-            $capsule->addConnection([
-                'driver' => 'mysql',
-                'host' => $dbr->host,
-                'port' => $dbr->port,
-                'database' => 'mysql',
-                'username' => $dbr->username,
-                'password' => Crypt::decrypt($dbr->password),
-                'charset' => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ]
-            ]);
-
-            $capsule->setAsGlobal();
-
-            Capsule::statement('DROP USER \'' . $db->username . '\'@\'' . $db->remote . '\'');
-            Capsule::statement('DROP DATABASE ' . $db->database);
-
-            $db->delete();
-
-            DB::commit();
-            return true;
-        } catch (\Exception $ex) {
-            DB::rollback();
-            throw $ex;
-        }
-
+            $database->delete();
+        });
     }
 
     /**
-     * Deletes a database server from the system if it is empty.
-     * @param  int $server The ID of the Database Server.
-     * @return
+     * Deletes a database host from the system if it has no associated databases.
+     *
+     * @param  int  $id
+     * @return void
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete($server)
+    public function delete($id)
     {
-        $dbh = Models\DatabaseServer::findOrFail($server);
-        $databases = Models\Database::where('db_server', $dbh->id)->count();
+        $host = DatabaseHost::withCount('databases')->findOrFail($id);
 
-        if ($databases > 0) {
-            throw new DisplayException('You cannot delete a database server that has active databases attached to it.');
+        if ($host->databases_count > 0) {
+            throw new DisplayException('You cannot delete a database host that has active databases attached to it.');
         }
 
-        return $dbh->delete();
+        $host->delete();
     }
 
     /**
-     * Adds a new Database Server to the system.
-     * @param array $data
+     * Adds a new Database Host to the system.
+     *
+     * @param  array  $data
+     * @return \Pterodactyl\Models\DatabaseHost
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
      */
     public function add(array $data)
     {
+        if (isset($data['host'])) {
+            $data['host'] = gethostbyname($data['host']);
+        }
+
         $validator = Validator::make($data, [
             'name' => 'required|string|max:255',
-            'host' => 'required|ip|unique:database_servers,host',
+            'host' => 'required|ip|unique:database_hosts,host',
             'port' => 'required|numeric|between:1,65535',
             'username' => 'required|string|max:32',
             'password' => 'required|string',
-            'linked_node' => 'sometimes',
+            'node_id' => 'sometimes|required|exists:nodes,id',
         ]);
 
         if ($validator->fails()) {
-            throw new DisplayValidationException($validator->errors());
+            throw new DisplayValidationException(json_encode($validator->errors()));
         }
 
-        DB::beginTransaction();
+        return DB::transaction(function () use ($data) {
+            $host = new DatabaseHost;
+            $host->password = Crypt::encrypt($data['password']);
 
-        try {
-            $capsule = new Capsule;
-            $capsule->addConnection([
-                'driver' => 'mysql',
-                'host' => $data['host'],
-                'port' => $data['port'],
-                'database' => 'mysql',
-                'username' => $data['username'],
-                'password' => $data['password'],
-                'charset' => 'utf8',
-                'collation' => 'utf8_unicode_ci',
-                'prefix' => '',
-                'options' => [
-                    \PDO::ATTR_TIMEOUT => 3,
-                ]
-            ]);
-
-            $capsule->setAsGlobal();
-
-            // Allows us to check that we can connect to things.
-            Capsule::select('SELECT 1 FROM dual');
-
-            $dbh = new Models\DatabaseServer;
-            $dbh->fill([
+            $host->fill([
                 'name' => $data['name'],
                 'host' => $data['host'],
                 'port' => $data['port'],
                 'username' => $data['username'],
-                'password' => Crypt::encrypt($data['password']),
-                'max_databases' => NULL,
-                'linked_node' => (!empty($data['linked_node']) && $data['linked_node'] > 0) ? $data['linked_node'] : NULL
-            ]);
-            $dbh->save();
+                'max_databases' => null,
+                'node_id' => (isset($data['node_id'])) ? $data['node_id'] : null,
+            ])->save();
 
-            DB::commit();
-        } catch (\Exception $ex) {
-            DB::rollBack();
-            throw $ex;
-        }
+            // Allows us to check that we can connect to things.
+            $host->setDynamicConnection();
+            DB::connection('dynamic')->select('SELECT 1 FROM dual');
+
+            return $host;
+        });
     }
 
+    /**
+     * Updates a Database Host on the system.
+     *
+     * @param  int    $id
+     * @param  array  $data
+     * @return \Pterodactyl\Models\DatabaseHost
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayValidationException
+     */
+    public function update($id, array $data)
+    {
+        $host = DatabaseHost::findOrFail($id);
+
+        if (isset($data['host'])) {
+            $data['host'] = gethostbyname($data['host']);
+        }
+
+        $validator = Validator::make($data, [
+            'name' => 'sometimes|required|string|max:255',
+            'host' => 'sometimes|required|ip|unique:database_hosts,host,' . $host->id,
+            'port' => 'sometimes|required|numeric|between:1,65535',
+            'username' => 'sometimes|required|string|max:32',
+            'password' => 'sometimes|required|string',
+            'node_id' => 'sometimes|required|exists:nodes,id',
+        ]);
+
+        if ($validator->fails()) {
+            throw new DisplayValidationException(json_encode($validator->errors()));
+        }
+
+        return DB::transaction(function () use ($data, $host) {
+            if (isset($data['password'])) {
+                $host->password = Crypt::encrypt($data['password']);
+            }
+            $host->fill($data)->save();
+
+            // Check that we can still connect with these details.
+            $host->setDynamicConnection();
+            DB::connection('dynamic')->select('SELECT 1 FROM dual');
+
+            return $host;
+        });
+    }
 }

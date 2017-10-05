@@ -69,11 +69,6 @@ return [
             'driver' => 'eloquent',
             'model' => Pterodactyl\Models\User::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -98,7 +93,6 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'email' => 'emails.password',
             'table' => 'password_resets',
             'expire' => 60,
         ],

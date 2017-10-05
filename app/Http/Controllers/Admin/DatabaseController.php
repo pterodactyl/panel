@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,110 +21,115 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
-use DB;
 use Log;
-
-use Pterodactyl\Models;
-use Pterodactyl\Repositories\DatabaseRepository;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
+use Alert;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\DatabaseRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class DatabaseController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Display database host index.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
-    public function __construct()
-    {
-        //
-    }
-
-    public function getIndex(Request $request)
+    public function index(Request $request)
     {
         return view('admin.databases.index', [
-            'databases' => Models\Database::select(
-                    'databases.*',
-                    'database_servers.host as a_host',
-                    'database_servers.port as a_port',
-                    'servers.id as a_serverId',
-                    'servers.name as a_serverName'
-                )->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->join('servers', 'databases.server_id', '=', 'servers.id')
-                ->paginate(20),
-            'dbh' => Models\DatabaseServer::select(
-                    'database_servers.*',
-                    'nodes.name as a_linkedNode',
-                    DB::raw('(SELECT COUNT(*) FROM `databases` WHERE `databases`.`db_server` = database_servers.id) as c_databases')
-                )->leftJoin('nodes', 'nodes.id', '=', 'database_servers.linked_node')
-                ->paginate(20)
+            'locations' => Location::with('nodes')->get(),
+            'hosts' => DatabaseHost::withCount('databases')->with('node')->get(),
         ]);
     }
 
-    public function getNew(Request $request)
+    /**
+     * Display database host to user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $id)
     {
-        return view('admin.databases.new', [
-            'nodes' => Models\Node::select('nodes.id', 'nodes.name', 'locations.long as a_location')
-                ->join('locations', 'locations.id', '=', 'nodes.location')
-                ->get()
+        return view('admin.databases.view', [
+            'locations' => Location::with('nodes')->get(),
+            'host' => DatabaseHost::with('databases.server')->findOrFail($id),
         ]);
     }
 
-    public function postNew(Request $request)
+    /**
+     * Handle post request to create database host.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function create(Request $request)
     {
+        $repo = new DatabaseRepository;
+
         try {
-            $repo = new DatabaseRepository;
-            $repo->add($request->except([
-                '_token'
+            $host = $repo->add($request->intersect([
+                'name', 'username', 'password',
+                'host', 'port', 'node_id',
             ]));
+            Alert::success('Successfully created new database host on the system.')->flash();
 
-            Alert::success('Successfully added a new database server to the system.')->flash();
-            return redirect()->route('admin.databases', [
-                'tab' => 'tab_dbservers'
-            ]);
+            return redirect()->route('admin.databases.view', $host->id);
+        } catch (\PDOException $ex) {
+            Alert::danger($ex->getMessage())->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.databases.new')->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('admin.databases')->withErrors(json_decode($ex->getMessage()));
         } catch (\Exception $ex) {
-            if ($ex instanceof DisplayException || $ex instanceof \PDOException) {
-                Alert::danger($ex->getMessage())->flash();
+            Log::error($ex);
+            Alert::danger('An error was encountered while trying to process this request. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.databases');
+    }
+
+    /**
+     * Handle post request to update a database host.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $repo = new DatabaseRepository;
+
+        try {
+            if ($request->input('action') !== 'delete') {
+                $host = $repo->update($id, $request->intersect([
+                    'name', 'username', 'password',
+                    'host', 'port', 'node_id',
+                ]));
+                Alert::success('Database host was updated successfully.')->flash();
             } else {
-                Log::error($ex);
-                Alert::danger('An error occurred while attempting to delete this database server from the system.')->flash();
+                $repo->delete($id);
+
+                return redirect()->route('admin.databases');
             }
-            return redirect()->route('admin.databases.new')->withInput();
-        }
-    }
-
-    public function deleteDatabase(Request $request, $id)
-    {
-        try {
-            $repo = new DatabaseRepository;
-            $repo->drop($id);
+        } catch (\PDOException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.databases.view', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (\Exception $ex) {
             Log::error($ex);
-            return response()->json([
-                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database from the system.'
-            ], 500);
+            Alert::danger('An error was encountered while trying to process this request. This error has been logged.')->flash();
         }
-    }
 
-    public function deleteServer(Request $request, $id)
-    {
-        try {
-            $repo = new DatabaseRepository;
-            $repo->delete($id);
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            return response()->json([
-                'error' => ($ex instanceof DisplayException) ? $ex->getMessage() : 'An error occurred while attempting to delete this database server from the system.'
-            ], 500);
-        }
+        return redirect()->route('admin.databases.view', $id);
     }
-
 }

@@ -1,8 +1,8 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
+ * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,47 +22,89 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
 
-use Illuminate\Http\Request;
-
 class IndexController extends Controller
 {
-
-    /**
-     * Controller Constructor
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Returns listing of user's servers.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function getIndex(Request $request)
     {
+        $servers = $request->user()->access()->with('user');
+
+        if (! is_null($request->input('query'))) {
+            $servers->search($request->input('query'));
+        }
+
         return view('base.index', [
-            'servers' => Server::getUserServers(10),
+            'servers' => $servers->paginate(config('pterodactyl.paginate.frontend.servers')),
         ]);
     }
 
     /**
      * Generate a random string.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $length
      * @return string
+     * @deprecated
      */
     public function getPassword(Request $request, $length = 16)
     {
         $length = ($length < 8) ? 8 : $length;
-        return str_random($length);
+
+        $returnable = false;
+        while (! $returnable) {
+            $generated = str_random($length);
+            if (preg_match('/[A-Z]+[a-z]+[0-9]+/', $generated)) {
+                $returnable = true;
+            }
+        }
+
+        return $generated;
     }
 
+    /**
+     * Returns status of the server in a JSON response used for populating active status list.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function status(Request $request, $uuid)
+    {
+        $server = Server::byUuid($uuid);
+
+        if (! $server) {
+            return response()->json([], 404);
+        }
+
+        if (! $server->installed) {
+            return response()->json(['status' => 20]);
+        }
+
+        if ($server->suspended) {
+            return response()->json(['status' => 30]);
+        }
+
+        try {
+            $res = $server->guzzleClient()->request('GET', '/server');
+            if ($res->getStatusCode() === 200) {
+                return response()->json(json_decode($res->getBody()));
+            }
+        } catch (\Exception $e) {
+            //
+        }
+
+        return response()->json([]);
+    }
 }

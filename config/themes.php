@@ -4,13 +4,13 @@ return [
     'enabled' => true,
     'themes_path' => realpath(base_path('resources/themes')),
     'asset_not_found' => 'LOG_ERROR',
-    'active' => ENV('APP_THEME', 'default'),
+    'active' => env('APP_THEME', 'pterodactyl'),
 
     'themes' => [
-        'default' => [
+        'pterodactyl' => [
             'extends'       => null,
-            'views-path'    => 'default',
-            'asset-path'    => 'themes/default',
+            'views-path'    => 'pterodactyl',
+            'asset-path'    => 'themes/pterodactyl',
         ],
     ],
 ];

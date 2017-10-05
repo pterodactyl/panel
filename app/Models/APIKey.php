@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class APIKey extends Model
 {
+    /**
+     * Public key defined length used in verification methods.
+     *
+     * @var int
+     */
+    const PUBLIC_KEY_LEN = 16;
 
     /**
      * The table associated with the model.
@@ -43,10 +50,28 @@ class APIKey extends Model
     protected $hidden = ['secret'];
 
     /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'allowed_ips' => 'json',
+    ];
+
+    /**
      * Fields that are not mass assignable.
      *
      * @var array
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    /**
+     * Gets the permissions associated with a key.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(APIPermission::class, 'key_id');
+    }
 }

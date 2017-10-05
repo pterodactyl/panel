@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
-use Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Subuser extends Model
 {
+    use Notifiable;
 
     /**
      * The table associated with the model.
@@ -55,43 +57,38 @@ class Subuser extends Model
      *
      * @var array
      */
-     protected $casts = [
-         'user_id' => 'integer',
-         'server_id' => 'integer',
-     ];
+    protected $casts = [
+        'user_id' => 'integer',
+        'server_id' => 'integer',
+    ];
 
     /**
-     * @var mixed
-     */
-    protected static $user;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        self::$user = Auth::user();
-    }
-
-    /**
-     * Returns an array of each server ID that the user has access to.
+     * Gets the server associated with a subuser.
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public static function accessServers()
+    public function server()
     {
-
-        $access = [];
-
-        $union = self::select('server_id')->where('user_id', self::$user->id);
-        $select = Server::select('id')->where('owner', self::$user->id)->union($union)->get();
-
-        foreach($select as &$select) {
-            $access = array_merge($access, [ $select->id ]);
-        }
-
-        return $access;
-
+        return $this->belongsTo(Server::class);
     }
 
+    /**
+     * Gets the user associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Gets the permissions associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 }

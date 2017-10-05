@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Notifications;
 
 use Illuminate\Bus\Queueable;
@@ -35,18 +36,19 @@ class AccountCreated extends Notification implements ShouldQueue
     /**
      * The password reset token to send.
      *
-     * @var string
+     * @var object
      */
-    public $token;
+    public $user;
 
     /**
      * Create a new notification instance.
      *
+     * @param  aray  $user
      * @return void
      */
-    public function __construct($token)
+    public function __construct(array $user)
     {
-        $this->token = $token;
+        $this->user = (object) $user;
     }
 
     /**
@@ -68,10 +70,16 @@ class AccountCreated extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('You are recieving this email because an account has been created for you on Pterodactyl Panel.')
-                    ->line('Email: ' . $notifiable->email)
-                    ->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . $notifiable->email));
-    }
+        $message = (new MailMessage)
+            ->greeting('Hello ' . $this->user->name . '!')
+            ->line('You are recieving this email because an account has been created for you on Pterodactyl Panel.')
+            ->line('Username: ' . $this->user->username)
+            ->line('Email: ' . $notifiable->email);
 
+        if (! is_null($this->user->token)) {
+            return $message->action('Setup Your Account', url('/auth/password/reset/' . $this->user->token . '?email=' . $notifiable->email));
+        }
+
+        return $message;
+    }
 }

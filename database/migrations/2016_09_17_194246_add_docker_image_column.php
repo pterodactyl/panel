@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-use Pterodactyl\Models\Server;
-
 class AddDockerImageColumn extends Migration
 {
     /**

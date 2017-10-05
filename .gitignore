@@ -2,12 +2,24 @@
 *.DS_Store*
 .env
 .vagrant/*
+.vscode/*
+storage/framework/*
+/.idea
 
 composer.lock
-
-Homestead.yaml
-Vagrantfile
-Vagrantfile
-
 node_modules
-.babelrc
+
+_ide_helper_models.php
+_ide_helper.php
+
+sami.phar
+/.sami
+
+# For local development with docker
+# Remove if we ever put the Dockerfile in the repo
+.dockerignore
+Dockerfile
+docker-compose.yml
+# for image related files
+misc
+.phpstorm.meta.php

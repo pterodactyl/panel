@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,19 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Console\Commands;
 
-use DB;
 use Carbon;
 use Pterodactyl\Models;
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-use Pterodactyl\Jobs\SendScheduledTask;
-
 class ClearTasks extends Command
 {
-
     use DispatchesJobs;
 
     /**
@@ -67,7 +64,7 @@ class ClearTasks extends Command
      */
     public function handle()
     {
-        $entries = Models\TaskLog::where('run_time', '<=', Carbon::now()->subHours(env('APP_CLEAR_TASKLOG', 720))->toAtomString())->get();
+        $entries = Models\TaskLog::where('run_time', '<=', Carbon::now()->subHours(config('pterodactyl.tasks.clear_log'))->toAtomString())->get();
 
         $this->info(sprintf('Preparing to delete %d old task log entries.', count($entries)));
         $bar = $this->output->createProgressBar(count($entries));

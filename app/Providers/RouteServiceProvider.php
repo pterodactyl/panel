@@ -19,13 +19,10 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Define your route model bindings, pattern filters, etc.
      *
-     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
     public function boot()
     {
-        //
-
         parent::boot();
     }
 
@@ -36,10 +33,32 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-        Route::group(['namespace' => $this->namespace], function ($router) {
-            foreach (glob(app_path('Http//Routes') . '/*.php') as $file) {
-                $this->app->make('Pterodactyl\\Http\\Routes\\' . basename($file, '.php'))->map($router);
-            }
-        });
+        Route::middleware(['api'])->prefix('/api/user')
+              ->namespace($this->namespace . '\API\User')
+              ->group(base_path('routes/api.php'));
+
+        Route::middleware(['api'])->prefix('/api/admin')
+              ->namespace($this->namespace . '\API\Admin')
+              ->group(base_path('routes/api-admin.php'));
+
+        Route::middleware(['web', 'auth', 'csrf'])
+             ->namespace($this->namespace . '\Base')
+             ->group(base_path('routes/base.php'));
+
+        Route::middleware(['web', 'auth', 'admin', 'csrf'])->prefix('/admin')
+             ->namespace($this->namespace . '\Admin')
+             ->group(base_path('routes/admin.php'));
+
+        Route::middleware(['web', 'csrf'])->prefix('/auth')
+             ->namespace($this->namespace . '\Auth')
+             ->group(base_path('routes/auth.php'));
+
+        Route::middleware(['web', 'auth', 'server', 'csrf'])->prefix('/server/{server}')
+             ->namespace($this->namespace . '\Server')
+             ->group(base_path('routes/server.php'));
+
+        Route::middleware(['web', 'daemon'])->prefix('/daemon')
+             ->namespace($this->namespace . '\Daemon')
+             ->group(base_path('routes/daemon.php'));
     }
 }

@@ -1,0 +1,297 @@
+/**
+ * Pterodactyl - Panel
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+ @import 'checkbox.css';
+
+.login-page {
+    height: auto;
+}
+
+.login-box, .register-box {
+    width: 40%;
+    max-width: 500px;
+    margin: 7% auto;
+}
+
+@media (max-width:768px) {
+    .login-box, .register-box {
+        width: 90%;
+        margin-top: 20px
+    }
+}
+
+.weight-100 {
+    font-weight: 100;
+}
+
+.weight-300 {
+    font-weight: 300;
+}
+
+.btn-clear {
+    background: transparent;
+}
+
+.user-panel > .info {
+    position: relative;
+    left: 0;
+}
+
+code {
+    font-size: 85%;
+}
+
+.control-sidebar-dark .control-sidebar-menu > li > a.active {
+    background: #1e282c;
+}
+
+.callout-nomargin {
+    margin: 0;
+}
+
+.table {
+    font-size: 14px !important;
+}
+
+.middle, .align-middle {
+    vertical-align: middle !important;
+}
+
+#fileOptionMenu.dropdown-menu > li > a {
+    padding:3px 6px;
+}
+
+.hasFileHover {
+    border: 2px dashed #0087F7;
+    border-top: 0 !important;
+    border-radius: 5px;
+    margin: 0;
+    opacity: 0.5;
+}
+
+.hasFileHover * {
+    pointer-events: none !important;
+}
+
+td.has-progress {
+    padding: 0px !important;
+    border-top: 0px !important;
+}
+
+.progress.progress-table-bottom {
+    margin: 0 !important;
+    height:5px !important;
+    padding:0;
+    border:0;
+}
+
+.muted {
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+}
+
+.muted-hover:hover {
+    filter: alpha(opacity=100);
+    opacity: 1;
+}
+
+.use-pointer {
+    cursor: pointer !important;
+}
+
+.input-loader {
+    display: none;
+    position:relative;
+    top: -25px;
+    float: right;
+    right: 5px;
+    color: #cccccc;
+    height: 0;
+}
+
+.box-header > .form-group {
+    margin-bottom: 0;
+}
+
+.box-header > .form-group > div > p.small {
+    margin: 0;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .username > a {
+    color: #fff;
+}
+
+li.select2-results__option--highlighted[aria-selected="false"] > .user-block > .description {
+    color: #eee;
+}
+
+.select2-selection.select2-selection--multiple {
+    min-height: 36px !important;
+}
+
+.select2-search--inline .select2-search__field:focus {
+    outline: none;
+    border: 0 !important;
+}
+
+.img-bordered-xs {
+    border: 1px solid #d2d6de;
+    padding: 1px;
+}
+
+span[aria-labelledby="select2-pUserId-container"] {
+    padding-left: 2px !important;
+}
+
+.callout-slim a {
+    color: #555 !important;
+}
+
+.callout.callout-info.callout-slim {
+    border: 1px solid #0097bc !important;
+    border-left: 5px solid #0097bc !important;
+    border-right: 5px solid #0097bc !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-danger.callout-slim {
+    border: 1px solid #c23321 !important;
+    border-left: 5px solid #c23321 !important;
+    border-right: 5px solid #c23321 !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-warning.callout-slim {
+    border: 1px solid #c87f0a !important;
+    border-left: 5px solid #c87f0a !important;
+    border-right: 5px solid #c87f0a !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-success.callout-slim {
+    border: 1px solid #00733e !important;
+    border-left: 5px solid #00733e !important;
+    border-right: 5px solid #00733e !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.callout.callout-default.callout-slim {
+    border: 1px solid #eee !important;
+    border-left: 5px solid #eee !important;
+    border-right: 5px solid #eee !important;
+    color: #777 !important;
+    background: transparent !important;
+}
+
+.tab-pane .box-footer {
+    margin: 0 -10px -10px;
+}
+
+.select2-container{ width: 100% !important; }
+
+.nav-tabs-custom > .nav-tabs > li:hover {
+    border-top-color:#3c8dbc;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-danger, .nav-tabs-custom > .nav-tabs > li.tab-danger:hover {
+    border-top-color: #c23321;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-success, .nav-tabs-custom > .nav-tabs > li.tab-success:hover {
+    border-top-color: #00733e;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-info, .nav-tabs-custom > .nav-tabs > li.tab-info:hover {
+    border-top-color: #0097bc;
+}
+
+.nav-tabs-custom > .nav-tabs > li.active.tab-warning, .nav-tabs-custom > .nav-tabs > li.tab-warning:hover {
+    border-top-color: #c87f0a;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs {
+    border-bottom: 0px !important;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li {
+    margin-bottom: 0px !important;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li:first-child.active,
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li:first-child:hover {
+    border-radius: 3px 0 0 0;
+}
+
+.nav-tabs-custom.nav-tabs-floating > .nav-tabs > li:first-child.active > a {
+    border-radius: 0 0 0 3px;
+}
+
+.position-relative {
+    position: relative;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
+}
+
+.btn-icon > i.fa {
+    line-height: 1.5;
+}
+
+.strong {
+    font-weight: bold !important;
+}
+
+.server-description > td {
+    padding-top: 0 !important;
+    border-top: 0 !important;
+}
+
+tr:hover + tr.server-description {
+    background-color: #f5f5f5 !important;
+}
+
+.login-corner-info {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+}
+
+input.form-autocomplete-stop[readonly] {
+    background: inherit;
+    cursor: text;
+}
+
+/* fix Google Recaptcha badge */
+.grecaptcha-badge {
+    bottom: 54px !important;
+    background: white;
+    box-shadow: none !important;
+}

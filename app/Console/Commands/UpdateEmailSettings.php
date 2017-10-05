@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -35,6 +36,7 @@ class UpdateEmailSettings extends Command
     protected $signature = 'pterodactyl:mail
                             {--driver=}
                             {--email=}
+                            {--from-name=}
                             {--host=}
                             {--port=}
                             {--username=}
@@ -66,7 +68,7 @@ class UpdateEmailSettings extends Command
     {
         $variables = [];
         $file = base_path() . '/.env';
-        if (!file_exists($file)) {
+        if (! file_exists($file)) {
             $this->error('Missing environment file! It appears that you have not installed this panel correctly.');
             exit();
         }
@@ -75,42 +77,43 @@ class UpdateEmailSettings extends Command
 
         $this->table([
             'Option',
-            'Description'
+            'Description',
         ], [
             [
                 'smtp',
-                'SMTP Server Email'
+                'SMTP Server Email',
             ],
             [
                 'mail',
-                'PHP\'s Internal Mail Server'
+                'PHP\'s Internal Mail Server',
             ],
             [
                 'mailgun',
-                'Mailgun Email Service'
+                'Mailgun Email Service',
             ],
             [
                 'mandrill',
-                'Mandrill Transactional Email Service'
+                'Mandrill Transactional Email Service',
             ],
             [
                 'postmark',
-                'Postmark Transactional Email Service'
-            ]
+                'Postmark Transactional Email Service',
+            ],
         ]);
+
         $variables['MAIL_DRIVER'] = is_null($this->option('driver')) ? $this->choice('Which email driver would you like to use?', [
             'smtp',
             'mail',
             'mailgun',
             'mandrill',
-            'postmark'
+            'postmark',
         ]) : $this->option('driver');
 
         switch ($variables['MAIL_DRIVER']) {
             case 'smtp':
-                $variables['MAIL_HOST'] = is_null($this->option('host')) ? $this->ask('SMTP Host (e.g smtp.google.com)') : $this->option('host');
-                $variables['MAIL_PORT'] = is_null($this->option('port')) ? $this->anticipate('SMTP Host Port (e.g 587)', ['587']) : $this->option('port');
-                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('SMTP Username') : $this->option('password');
+                $variables['MAIL_HOST'] = is_null($this->option('host')) ? $this->ask('SMTP Host (e.g smtp.google.com)', config('mail.host')) : $this->option('host');
+                $variables['MAIL_PORT'] = is_null($this->option('port')) ? $this->anticipate('SMTP Host Port (e.g 587)', ['587', config('mail.port')], config('mail.port')) : $this->option('port');
+                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('SMTP Username', config('mail.username')) : $this->option('password');
                 $variables['MAIL_PASSWORD'] = is_null($this->option('password')) ? $this->secret('SMTP Password') : $this->option('password');
                 break;
             case 'mail':
@@ -126,7 +129,7 @@ class UpdateEmailSettings extends Command
                 $variables['MAIL_DRIVER'] = 'smtp';
                 $variables['MAIL_HOST'] = 'smtp.postmarkapp.com';
                 $variables['MAIL_PORT'] = 587;
-                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('Postmark API Token') : $this->option('username');
+                $variables['MAIL_USERNAME'] = is_null($this->option('username')) ? $this->ask('Postmark API Token', config('mail.username')) : $this->option('username');
                 $variables['MAIL_PASSWORD'] = $variables['MAIL_USERNAME'];
                 break;
             default:
@@ -135,14 +138,19 @@ class UpdateEmailSettings extends Command
                 break;
         }
 
-        $variables['MAIL_FROM'] = is_null($this->option('email')) ? $this->ask('Email address emails should originate from') : $this->option('email');
+        $variables['MAIL_FROM'] = is_null($this->option('email')) ? $this->ask('Email address emails should originate from', config('mail.from.address')) : $this->option('email');
+        $variables['MAIL_FROM_NAME'] = is_null($this->option('from-name')) ? $this->ask('Name emails should appear to be from', config('mail.from.name')) : $this->option('from-name');
+        $variables['MAIL_FROM_NAME'] = '"' . $variables['MAIL_FROM_NAME'] . '"';
         $variables['MAIL_ENCRYPTION'] = 'tls';
 
         $bar = $this->output->createProgressBar(count($variables));
 
         $this->line('Writing new email environment configuration to file.');
         foreach ($variables as $key => $value) {
-            $newValue = $key . '=' . $value;
+            if (str_contains($value, ' ') && ! str_contains($value, '"')) {
+                $value = '"' . $value . '"';
+            }
+            $newValue = $key . '=' . $value . ' # DO NOT EDIT! set using pterodactyl:mail';
 
             if (preg_match_all('/^' . $key . '=(.*)$/m', $envContents) < 1) {
                 $envContents = $envContents . "\n" . $newValue;
@@ -154,6 +162,9 @@ class UpdateEmailSettings extends Command
 
         file_put_contents($file, $envContents);
         $bar->finish();
+
+        $this->line('Updating evironment configuration cache file.');
+        $this->call('config:cache');
         echo "\n";
     }
 }

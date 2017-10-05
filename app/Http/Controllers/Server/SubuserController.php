@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,95 +21,88 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Server;
 
-use DB;
+use Log;
 use Auth;
 use Alert;
-use Log;
-
 use Pterodactyl\Models;
-use Pterodactyl\Repositories\SubuserRepository;
-
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
 use Illuminate\Http\Request;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\SubuserRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class SubuserController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Displays the subuser overview index.
      *
-     * @return void
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
      */
-    public function __construct()
+    public function index(Request $request, $uuid)
     {
-        //
-    }
-
-    public function getIndex(Request $request, $uuid)
-    {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid)->load('subusers.user');
         $this->authorize('list-subusers', $server);
+
+        $server->js();
 
         return view('server.users.index', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
-            'subusers' => Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
-                ->join('users', 'users.id', '=', 'subusers.user_id')
-                ->where('server_id', $server->id)
-                ->get()
+            'node' => $server->node,
+            'subusers' => $server->subusers,
         ]);
-
     }
 
-    public function getView(Request $request, $uuid, $id)
+    /**
+     * Displays the a single subuser overview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function view(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid)->load('node');
         $this->authorize('view-subuser', $server);
 
-        $subuser = Models\Subuser::select('subusers.*', 'users.email as a_userEmail')
-            ->join('users', 'users.id', '=', 'subusers.user_id')
-            ->where(DB::raw('md5(subusers.id)'), $id)->where('subusers.server_id', $server->id)
-            ->first();
+        $subuser = Models\Subuser::with('permissions', 'user')
+            ->where('server_id', $server->id)->findOrFail($id);
 
-        if (!$subuser) {
-            abort(404);
-        }
-
-        $permissions = [];
-        $modelPermissions = Models\Permission::select('permission')
-            ->where('user_id', $subuser->user_id)->where('server_id', $server->id)
-            ->get();
-
-        foreach($modelPermissions as &$perm) {
-            $permissions[$perm->permission] = true;
-        }
+        $server->js();
 
         return view('server.users.view', [
             'server' => $server,
-            'node' => Models\Node::find($server->node),
+            'node' => $server->node,
             'subuser' => $subuser,
-            'permissions' => $permissions,
+            'permlist' => Models\Permission::listPermissions(),
+            'permissions' => $subuser->permissions->mapWithKeys(function ($item, $key) {
+                return [$item->permission => true];
+            }),
         ]);
     }
 
-    public function postView(Request $request, $uuid, $id)
+    /**
+     * Handles editing a subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $uuid, $id)
     {
-
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('edit-subuser', $server);
 
-        $subuser = Models\Subuser::where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
+        $subuser = Models\Subuser::where('server_id', $server->id)->findOrFail($id);
 
         try {
-
-            if (!$subuser) {
-                throw new DisplayException('Unable to locate a subuser by that ID.');
-            } else if ($subuser->user_id === Auth::user()->id) {
+            if ($subuser->user_id === Auth::user()->id) {
                 throw new DisplayException('You are not authorized to edit you own account.');
             }
 
@@ -117,14 +110,14 @@ class SubuserController extends Controller
             $repo->update($subuser->id, [
                 'permissions' => $request->input('permissions'),
                 'server' => $server->id,
-                'user' => $subuser->user_id
+                'user' => $subuser->user_id,
             ]);
 
             Alert::success('Subuser permissions have successfully been updated.')->flash();
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.subusers.view', [
                 'uuid' => $uuid,
-                'id' => $id
+                'id' => $id,
             ])->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
@@ -132,37 +125,55 @@ class SubuserController extends Controller
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to update this subuser.')->flash();
         }
+
         return redirect()->route('server.subusers.view', [
             'uuid' => $uuid,
-            'id' => $id
+            'id' => $id,
         ]);
     }
 
-    public function getNew(Request $request, $uuid)
+    /**
+     * Display new subuser creation page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
+        $server->js();
 
         return view('server.users.new', [
             'server' => $server,
-            'node' => Models\Node::find($server->node)
+            'permissions' => Models\Permission::listPermissions(),
+            'node' => $server->node,
         ]);
     }
 
-    public function postNew(Request $request, $uuid)
+    /**
+     * Handles creating a new subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('create-subuser', $server);
 
         try {
             $repo = new SubuserRepository;
-            $id = $repo->create($server->id, $request->except([
-                '_token'
+            $subuser = $repo->create($server->id, $request->only([
+                'permissions', 'email',
             ]));
             Alert::success('Successfully created new subuser.')->flash();
+
             return redirect()->route('server.subusers.view', [
                 'uuid' => $uuid,
-                'id' => md5($id)
+                'id' => $subuser->id,
             ]);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('server.subusers.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
@@ -172,33 +183,39 @@ class SubuserController extends Controller
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to add a new subuser.')->flash();
         }
+
         return redirect()->route('server.subusers.new', $uuid)->withInput();
     }
 
-    public function deleteSubuser(Request $request, $uuid, $id)
+    /**
+     * Handles deleting a subuser.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
+     */
+    public function delete(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Models\Server::byUuid($uuid);
         $this->authorize('delete-subuser', $server);
 
         try {
-            $subuser = Models\Subuser::select('id')->where(DB::raw('md5(id)'), $id)->where('server_id', $server->id)->first();
-            if (!$subuser) {
-                throw new DisplayException('No subuser by that ID was found on the system.');
-            }
+            $subuser = Models\Subuser::where('server_id', $server->id)->findOrFail($id);
 
             $repo = new SubuserRepository;
             $repo->delete($subuser->id);
+
             return response('', 204);
         } catch (DisplayException $ex) {
             response()->json([
-                'error' => $ex->getMessage()
+                'error' => $ex->getMessage(),
             ], 422);
         } catch (\Exception $ex) {
             Log::error($ex);
             response()->json([
-                'error' => 'An unknown error occured while attempting to delete this subuser.'
+                'error' => 'An unknown error occured while attempting to delete this subuser.',
             ], 503);
         }
     }
-
 }

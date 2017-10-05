@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,28 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Exceptions;
 
 use Log;
 
 class DisplayException extends \Exception
 {
-
-    private $_logging = null;
-
+    /**
+     * Exception constructor.
+     *
+     * @param  string  $message
+     * @param  mixed   $log
+     * @return void
+     */
     public function __construct($message, $log = null)
     {
-        $this->_logging = $log;
-        if ($this->_logging !== null) {
+        if (! is_null($log)) {
             Log::error($log);
         }
 
         parent::__construct($message);
     }
-
-    public function getLogging()
-    {
-        return $this->_logging;
-    }
-
 }

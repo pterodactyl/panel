@@ -15,9 +15,12 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Pterodactyl\Http\Middleware\EncryptCookies::class,
         \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Illuminate\Session\Middleware\StartSession::class,
-        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
+        \Pterodactyl\Http\Middleware\TrimStrings::class,
+
+        /*
+         * Custom middleware applied to all routes.
+         */
+        \Fideloper\Proxy\TrustProxies::class,
     ];
 
     /**
@@ -33,8 +36,10 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
         ],
         'api' => [
+            \Pterodactyl\Http\Middleware\HMACAuthorization::class,
             'throttle:60,1',
             'bindings',
         ],
@@ -51,9 +56,11 @@ class Kernel extends HttpKernel
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
         'server' => \Pterodactyl\Http\Middleware\CheckServer::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
+        'daemon' => \Pterodactyl\Http\Middleware\DaemonAuthenticate::class,
         'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'recaptcha' => \Pterodactyl\Http\Middleware\VerifyReCaptcha::class,
     ];
 }

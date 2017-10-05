@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-
     /**
      * The table associated with the model.
      *
@@ -47,17 +47,38 @@ class Task extends Model
      *
      * @var array
      */
-     protected $casts = [
-         'id' => 'integer',
-         'server' => 'integer',
-         'queued' => 'integer',
-     ];
+    protected $casts = [
+        'id' => 'integer',
+        'user_id' => 'integer',
+        'server_id' => 'integer',
+        'queued' => 'boolean',
+        'active' => 'boolean',
+    ];
 
-     /**
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['last_run', 'next_run', 'created_at', 'updated_at'];
 
+    /**
+     * Gets the server associated with a task.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function server()
+    {
+        return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Gets the user associated with a task.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

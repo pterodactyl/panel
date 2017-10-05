@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Allocation extends Model
 {
-
     /**
      * The table associated with the model.
      *
@@ -42,15 +42,46 @@ class Allocation extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+     /**
+      * Cast values to correct type.
+      *
+      * @var array
+      */
      protected $casts = [
-         'node' => 'integer',
+         'node_id' => 'integer',
          'port' => 'integer',
-         'assigned_to' => 'integer',
+         'server_id' => 'integer',
      ];
 
+     /**
+      * Accessor to automatically provide the IP alias if defined.
+      *
+      * @param  null|string  $value
+      * @return string
+      */
+     public function getAliasAttribute($value)
+     {
+         return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
+     }
+
+     /**
+      * Accessor to quickly determine if this allocation has an alias.
+      *
+      * @param  null|string  $value
+      * @return bool
+      */
+     public function getHasAliasAttribute($value)
+     {
+         return ! is_null($this->ip_alias);
+     }
+
+     /**
+      * Gets information for the server associated with this allocation.
+      *
+      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+      */
+     public function server()
+     {
+         return $this->belongsTo(Server::class);
+     }
 }

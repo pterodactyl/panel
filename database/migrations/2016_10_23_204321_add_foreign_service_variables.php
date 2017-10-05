@@ -34,4 +34,4 @@ class AddForeignServiceVariables extends Migration
 
          DB::statement('ALTER TABLE service_variables MODIFY option_id MEDIUMINT(8) UNSIGNED NOT NULL');
      }
- }
+}

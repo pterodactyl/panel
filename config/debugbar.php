@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     /*
      |--------------------------------------------------------------------------
@@ -26,12 +26,12 @@ return array(
      | can also be used. For PDO, run the package migrations first.
      |
      */
-    'storage' => array(
+    'storage' => [
         'enabled' => true,
-        'driver' => 'file', // redis, file, pdo
+        'driver' => env('DEBUGBAR_DRIVER', 'file'), // redis, file, pdo
         'path' => storage_path() . '/debugbar', // For file driver
         'connection' => null,   // Leave null for default connection (Redis/PDO)
-    ),
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -81,7 +81,7 @@ return array(
      |
      */
 
-    'collectors' => array(
+    'collectors' => [
         'phpinfo'         => true,  // Php version
         'messages'        => true,  // Messages
         'time'            => true,  // Time Datalogger
@@ -92,7 +92,7 @@ return array(
         'views'           => true,  // Views with their data
         'route'           => true,  // Current route information
         'laravel'         => false, // Laravel version and environment
-        'events'          => false, // All events fired
+        'events'          => true, // All events fired
         'default_request' => false, // Regular or special Symfony request logger
         'symfony_request' => true,  // Only one can be enabled..
         'mail'            => true,  // Catch mail messages
@@ -102,7 +102,7 @@ return array(
         'auth'            => false, // Display Laravel authentication status
         'gate'            => false, // Display Laravel Gate checks
         'session'         => true,  // Display session data
-    ),
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -113,33 +113,33 @@ return array(
      |
      */
 
-    'options' => array(
-        'auth' => array(
+    'options' => [
+        'auth' => [
             'show_name' => false,   // Also show the users name/email in the debugbar
-        ),
-        'db' => array(
+        ],
+        'db' => [
             'with_params'       => true,   // Render SQL with the parameters substituted
-            'timeline'          => false,  // Add the queries to the timeline
-            'backtrace'         => false,  // EXPERIMENTAL: Use a backtrace to find the origin of the query in your files.
-            'explain' => array(            // EXPERIMENTAL: Show EXPLAIN output on queries
+            'timeline'          => true,  // Add the queries to the timeline
+            'backtrace'         => true,  // EXPERIMENTAL: Use a backtrace to find the origin of the query in your files.
+            'explain' => [            // EXPERIMENTAL: Show EXPLAIN output on queries
                 'enabled' => false,
-                'types' => array('SELECT'), // array('SELECT', 'INSERT', 'UPDATE', 'DELETE'); for MySQL 5.6.3+
-            ),
-            'hints'             => true,    // Show hints for common mistakes
-        ),
-        'mail' => array(
-            'full_log' => false
-        ),
-        'views' => array(
+                'types' => ['SELECT', 'INSERT', 'UPDATE', 'DELETE'], // array('SELECT', 'INSERT', 'UPDATE', 'DELETE'); for MySQL 5.6.3+
+            ],
+            'hints'             => false,    // Show hints for common mistakes
+        ],
+        'mail' => [
+            'full_log' => false,
+        ],
+        'views' => [
             'data' => false,    //Note: Can slow down the application, because the data can be quite large..
-        ),
-        'route' => array(
-            'label' => true  // show complete route on bar
-        ),
-        'logs' => array(
-            'file' => null
-        ),
-    ),
+        ],
+        'route' => [
+            'label' => true,  // show complete route on bar
+        ],
+        'logs' => [
+            'file' => null,
+        ],
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -166,4 +166,4 @@ return array(
      */
     'route_prefix' => '_debugbar',
 
-);
+];

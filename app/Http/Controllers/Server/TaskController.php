@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,136 +21,160 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Server;
 
-use Alert;
 use Log;
-use Cron;
-
-use Pterodactyl\Repositories;
-use Pterodactyl\Models;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
+use Alert;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\TaskRepository;
+use Pterodactyl\Exceptions\DisplayValidationException;
 
 class TaskController extends Controller
 {
-    public function __constructor()
+    /**
+     * Display task index page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request, $uuid)
     {
-        //
-    }
-
-    public function getIndex(Request $request, $uuid)
-    {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Server::byUuid($uuid)->load('tasks');
         $this->authorize('list-tasks', $server);
+        $server->js();
 
         return view('server.tasks.index', [
             'server' => $server,
-            'node' => Models\Node::findOrFail($server->node),
-            'tasks' => Models\Task::where('server', $server->id)->get(),
+            'node' => $server->node,
+            'tasks' => $server->tasks,
             'actions' => [
-                'command' => 'Send Command',
-                'power' => 'Set Power Status'
-            ]
+                'command' => trans('server.tasks.actions.command'),
+                'power' => trans('server.tasks.actions.power'),
+            ],
         ]);
     }
 
-    public function getNew(Request $request, $uuid)
+    /**
+     * Display new task page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Server::byUuid($uuid);
         $this->authorize('create-task', $server);
+        $server->js();
 
         return view('server.tasks.new', [
             'server' => $server,
-            'node' => Models\Node::findOrFail($server->node)
+            'node' => $server->node,
         ]);
     }
 
-    public function postNew(Request $request, $uuid)
+    /**
+     * Handle creation of new task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request, $uuid)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Server::byUuid($uuid);
         $this->authorize('create-task', $server);
 
+        $repo = new TaskRepository;
         try {
-            $repo = new Repositories\TaskRepository;
-            $repo->create($server->id, $request->except([
-                '_token'
+            $repo->create($server->id, $request->user()->id, $request->except([
+                '_token',
             ]));
+
+            return redirect()->route('server.tasks', $uuid);
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('server.tasks', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('server.tasks.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unknown error occured while attempting to create this task.')->flash();
         }
-        return redirect()->route('server.tasks', $uuid);
 
+        return redirect()->route('server.tasks.new', $uuid);
     }
 
-    public function getView(Request $request, $uuid, $id)
+    /**
+     * Handle deletion of a task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
-        $this->authorize('view-task', $server);
-
-        return view('server.tasks.view', [
-            'server' => $server,
-            'node' => Models\Node::findOrFail($server->node),
-            'task' => Models\Task::where('id', $id)->where('server', $server->id)->firstOrFail()
-        ]);
-    }
-
-    public function deleteTask(Request $request, $uuid, $id)
-    {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Server::byUuid($uuid)->load('tasks');
         $this->authorize('delete-task', $server);
 
-        $task = Models\Task::findOrFail($id);
-
-        if (!$task || $server->id !== $task->server) {
+        $task = $server->tasks->where('id', $id)->first();
+        if (! $task) {
             return response()->json([
-                'error' => 'No task by that ID was found associated with this server.'
+                'error' => 'No task by that ID was found associated with this server.',
             ], 404);
         }
 
+        $repo = new TaskRepository;
         try {
-            $repo = new Repositories\TaskRepository;
             $repo->delete($id);
+
             return response()->json([], 204);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'A server error occured while attempting to delete this task.'
+                'error' => 'A server error occured while attempting to delete this task.',
             ], 503);
         }
     }
 
-    public function toggleTask(Request $request, $uuid, $id)
+    /**
+     * Toggle the status of a task.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string                    $uuid
+     * @param  int                       $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function toggle(Request $request, $uuid, $id)
     {
-        $server = Models\Server::getByUUID($uuid);
+        $server = Server::byUuid($uuid)->load('tasks');
         $this->authorize('toggle-task', $server);
 
-        $task = Models\Task::findOrFail($id);
-
-        if (!$task || $server->id !== $task->server) {
+        $task = $server->tasks->where('id', $id)->first();
+        if (! $task) {
             return response()->json([
-                'error' => 'No task by that ID was found associated with this server.'
+                'error' => 'No task by that ID was found associated with this server.',
             ], 404);
         }
 
+        $repo = new TaskRepository;
         try {
-            $repo = new Repositories\TaskRepository;
             $resp = $repo->toggle($id);
+
             return response()->json([
-                'status' => $resp
+                'status' => $resp,
             ]);
         } catch (\Exception $ex) {
             Log::error($ex);
+
             return response()->json([
-                'error' => 'A server error occured while attempting to toggle this task.'
+                'error' => 'A server error occured while attempting to toggle this task.',
             ], 503);
         }
     }

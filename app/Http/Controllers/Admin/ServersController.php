@@ -1,7 +1,7 @@
 <?php
 /**
  * Pterodactyl - Panel
- * Copyright (c) 2015 - 2016 Dane Everitt <dane@daneeveritt.com>
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,520 +21,580 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Alert;
-use Debugbar;
-use DB;
 use Log;
-
+use Alert;
+use Javascript;
 use Pterodactyl\Models;
+use Illuminate\Http\Request;
+use GuzzleHttp\Exception\TransferException;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\ServerRepository;
 use Pterodactyl\Repositories\DatabaseRepository;
-
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\AutoDeploymentException;
 use Pterodactyl\Exceptions\DisplayValidationException;
-
-use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class ServersController extends Controller
 {
-
     /**
-     * Controller Constructor
+     * Display the index page with all servers currently on the system.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
-    public function __construct()
+    public function index(Request $request)
     {
-        //
-    }
+        $servers = Models\Server::with('node', 'user', 'allocation');
 
-    public function getIndex(Request $request)
-    {
-        $query = Models\Server::withTrashed()->select(
-            'servers.*',
-            'nodes.name as a_nodeName',
-            'users.email as a_ownerEmail',
-            'allocations.ip',
-            'allocations.port',
-            'allocations.ip_alias'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id');
-
-        if ($request->input('filter') && !is_null($request->input('filter'))) {
-            preg_match_all('/[^\s"\']+|"([^"]*)"|\'([^\']*)\'/', urldecode($request->input('filter')), $matches);
-            foreach($matches[0] as $match) {
-                $match = str_replace('"', '', $match);
-                if (strpos($match, ':')) {
-                    list($field, $term) = explode(':', $match);
-                    $field = (strpos($field, '.')) ? $field : 'servers.' . $field;
-                    $query->orWhere($field, 'LIKE', '%' . $term . '%');
-                } else {
-                    $query->where('servers.name', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('servers.username', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('users.email', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('allocations.port', 'LIKE', '%' . $match . '%');
-                    $query->orWhere('allocations.ip', 'LIKE', '%' . $match . '%');
-                }
-            }
-        }
-
-        try {
-            $servers = $query->paginate(20);
-        } catch (\Exception $ex) {
-            Alert::warning('There was an error with the search parameters provided.');
-            $servers = Models\Server::withTrashed()->select(
-                'servers.*',
-                'nodes.name as a_nodeName',
-                'users.email as a_ownerEmail',
-                'allocations.ip',
-                'allocations.port',
-                'allocations.ip_alias'
-            )->join('nodes', 'servers.node', '=', 'nodes.id')
-            ->join('users', 'servers.owner', '=', 'users.id')
-            ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-            ->paginate(20);
+        if (! is_null($request->input('query'))) {
+            $servers->search($request->input('query'));
         }
 
         return view('admin.servers.index', [
-            'servers' => $servers
+            'servers' => $servers->paginate(25),
         ]);
     }
 
-    public function getNew(Request $request)
+    /**
+     * Display create new server page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
+    public function create(Request $request)
     {
+        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        Javascript::put([
+            'services' => $services->map(function ($item) {
+                return array_merge($item->toArray(), [
+                    'options' => $item->options->keyBy('id')->toArray(),
+                ]);
+            })->keyBy('id'),
+        ]);
+
         return view('admin.servers.new', [
             'locations' => Models\Location::all(),
-            'services' => Models\Service::all()
+            'services' => $services,
         ]);
     }
 
-    public function getView(Request $request, $id)
+    /**
+     * Create server controller method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Response\RedirectResponse
+     */
+    public function store(Request $request)
     {
-        $server = Models\Server::withTrashed()->select(
-            'servers.*',
-            'nodes.name as a_nodeName',
-            'users.email as a_ownerEmail',
-            'locations.long as a_locationName',
-            'services.name as a_serviceName',
-            DB::raw('IFNULL(service_options.executable, services.executable) as a_serviceExecutable'),
-            'service_options.docker_image',
-            'service_options.name as a_servceOptionName',
-            'allocations.ip',
-            'allocations.port',
-            'allocations.ip_alias'
-        )->join('nodes', 'servers.node', '=', 'nodes.id')
-        ->join('users', 'servers.owner', '=', 'users.id')
-        ->join('locations', 'nodes.location', '=', 'locations.id')
-        ->join('services', 'servers.service', '=', 'services.id')
-        ->join('service_options', 'servers.option', '=', 'service_options.id')
-        ->join('allocations', 'servers.allocation', '=', 'allocations.id')
-        ->where('servers.id', $id)
-        ->first();
-
-        if (!$server) {
-            return abort(404);
-        }
-
-        return view('admin.servers.view', [
-            'server' => $server,
-            'assigned' => Models\Allocation::where('assigned_to', $id)->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'unassigned' => Models\Allocation::where('node', $server->node)->whereNull('assigned_to')->orderBy('ip', 'asc')->orderBy('port', 'asc')->get(),
-            'startup' => Models\ServiceVariables::select('service_variables.*', 'server_variables.variable_value as a_serverValue')
-                ->join('server_variables', 'server_variables.variable_id', '=', 'service_variables.id')
-                ->where('service_variables.option_id', $server->option)
-                ->where('server_variables.server_id', $server->id)
-                ->get(),
-            'databases' => Models\Database::select('databases.*', 'database_servers.host as a_host', 'database_servers.port as a_port')
-                ->where('server_id', $server->id)
-                ->join('database_servers', 'database_servers.id', '=', 'databases.db_server')
-                ->get(),
-            'db_servers' => Models\DatabaseServer::all()
-        ]);
-    }
-
-    public function postNewServer(Request $request)
-    {
-
         try {
-            $server = new ServerRepository;
-            $response = $server->create($request->all());
-            return redirect()->route('admin.servers.view', [ 'id' => $response ]);
+            $repo = new ServerRepository;
+            $server = $repo->create($request->except('_token'));
+
+            return redirect()->route('admin.servers.view', $server->id);
         } catch (DisplayValidationException $ex) {
             return redirect()->route('admin.servers.new')->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-            return redirect()->route('admin.servers.new')->withInput();
+        } catch (AutoDeploymentException $ex) {
+            Alert::danger('Auto-Deployment Exception: ' . $ex->getMessage())->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
             Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
-            return redirect()->route('admin.servers.new')->withInput();
         }
 
+        return redirect()->route('admin.servers.new')->withInput();
     }
 
     /**
-     * Returns a JSON tree of all avaliable nodes in a given location.
+     * Returns a tree of all avaliable nodes in a given location.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
      */
-    public function postNewServerGetNodes(Request $request)
+    public function nodes(Request $request)
     {
+        $nodes = Models\Node::with('allocations')->where('location_id', $request->input('location'))->get();
 
-        if(!$request->input('location')) {
-            return response()->json([
-                'error' => 'Missing location in request.'
-            ], 500);
-        }
+        return $nodes->map(function ($item) {
+            $filtered = $item->allocations->where('server_id', null)->map(function ($map) {
+                return collect($map)->only(['id', 'ip', 'port']);
+            });
 
-        return response()->json(Models\Node::select('id', 'name', 'public')->where('location', $request->input('location'))->get());
+            $item->ports = $filtered->map(function ($map) use ($item) {
+                return [
+                    'id' => $map['id'],
+                    'text' => $map['ip'] . ':' . $map['port'],
+                ];
+            })->values();
 
+            return [
+                'id' => $item->id,
+                'text' => $item->name,
+                'allocations' => $item->ports,
+            ];
+        })->values();
     }
 
     /**
-     * Returns a JSON tree of all avaliable IPs and Ports on a given node.
+     * Display the index when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
      */
-    public function postNewServerGetIps(Request $request)
+    public function viewIndex(Request $request, $id)
     {
-
-        if(!$request->input('node')) {
-            return response()->json([
-                'error' => 'Missing node in request.'
-            ], 500);
-        }
-
-        $ips = Models\Allocation::where('node', $request->input('node'))->whereNull('assigned_to')->get();
-        $listing = [];
-
-        foreach($ips as &$ip) {
-            if (array_key_exists($ip->ip, $listing)) {
-                $listing[$ip->ip] = array_merge($listing[$ip->ip], [$ip->port]);
-            } else {
-                $listing[$ip->ip] = [$ip->port];
-            }
-        }
-        return response()->json($listing);
-
+        return view('admin.servers.view.index', ['server' => Models\Server::findOrFail($id)]);
     }
 
     /**
-     * Returns a JSON tree of all avaliable options for a given service.
+     * Display the details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
      */
-    public function postNewServerServiceOptions(Request $request)
+    public function viewDetails(Request $request, $id)
     {
+        $server = Models\Server::where('installed', 1)->findOrFail($id);
 
-        if(!$request->input('service')) {
-            return response()->json([
-                'error' => 'Missing service in request.'
-            ], 500);
-        }
-
-        $service = Models\Service::select('executable', 'startup')->where('id', $request->input('service'))->first();
-        return response()->json(Models\ServiceOptions::select('id', 'name', 'docker_image')->where('parent_service', $request->input('service'))->orderBy('name', 'asc')->get());
-
+        return view('admin.servers.view.details', ['server' => $server]);
     }
 
     /**
-     * Returns a JSON tree of all avaliable variables for a given service option.
+     * Display the build details page when viewing a specific server.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\View\View
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
      */
-    public function postNewServerServiceVariables(Request $request)
+    public function viewBuild(Request $request, $id)
     {
+        $server = Models\Server::where('installed', 1)->with('node.allocations')->findOrFail($id);
 
-        if(!$request->input('option')) {
-            return response()->json([
-                'error' => 'Missing option in request.'
-            ], 500);
-        }
+        return view('admin.servers.view.build', [
+            'server' => $server,
+            'assigned' => $server->node->allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
+            'unassigned' => $server->node->allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
+        ]);
+    }
 
-        $option = Models\ServiceOptions::select(
-                DB::raw('COALESCE(service_options.executable, services.executable) as executable'),
-                DB::raw('COALESCE(service_options.startup, services.startup) as startup')
-            )->leftJoin('services', 'services.id', '=', 'service_options.parent_service')
-            ->where('service_options.id', $request->input('option'))
-            ->first();
+    /**
+     * Display startup configuration page for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function viewStartup(Request $request, $id)
+    {
+        $server = Models\Server::where('installed', 1)->with('option.variables', 'variables')->findOrFail($id);
+        $server->option->variables->transform(function ($item, $key) use ($server) {
+            $item->server_value = $server->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
 
-        return response()->json([
-            'variables' => Models\ServiceVariables::where('option_id', $request->input('option'))->get(),
-            'exec' => $option->executable,
-            'startup' => $option->startup
+            return $item;
+        });
+
+        $services = Models\Service::with('options.packs', 'options.variables')->get();
+        Javascript::put([
+            'services' => $services->map(function ($item) {
+                return array_merge($item->toArray(), [
+                    'options' => $item->options->keyBy('id')->toArray(),
+                ]);
+            })->keyBy('id'),
+            'server_variables' => $server->variables->mapWithKeys(function ($item) {
+                return ['env_' . $item->variable_id => [
+                    'value' => $item->variable_value,
+                ]];
+            })->toArray(),
         ]);
 
+        return view('admin.servers.view.startup', [
+            'server' => $server,
+            'services' => $services,
+        ]);
     }
 
-    public function postUpdateServerDetails(Request $request, $id)
+    /**
+     * Display the database management page for a specific server.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
+     * @return \Illuminate\View\View
+     */
+    public function viewDatabase(Request $request, $id)
     {
+        $server = Models\Server::where('installed', 1)->with('databases.host')->findOrFail($id);
 
+        return view('admin.servers.view.database', [
+            'hosts' => Models\DatabaseHost::all(),
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Display the management page when viewing a specific server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function viewManage(Request $request, $id)
+    {
+        return view('admin.servers.view.manage', ['server' => Models\Server::findOrFail($id)]);
+    }
+
+    /**
+     * Display the deletion page for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\View\View
+     */
+    public function viewDelete(Request $request, $id)
+    {
+        return view('admin.servers.view.delete', ['server' => Models\Server::findOrFail($id)]);
+    }
+
+    /**
+     * Update the details for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function setDetails(Request $request, $id)
+    {
+        $repo = new ServerRepository;
         try {
-
-            $server = new ServerRepository;
-            $server->updateDetails($id, [
-                'owner' => $request->input('owner'),
-                'name' => $request->input('name'),
-                'reset_token' => ($request->input('reset_token', false) === 'on') ? true : false
-            ]);
+            $repo->updateDetails($id, array_merge(
+                $request->only('description'),
+                $request->intersect([
+                    'owner_id', 'name', 'reset_token',
+                ])
+            ));
 
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_details'
-            ])->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update this server. Please try again.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to update this server. This error has been logged.')->flash();
         }
 
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_details'
-        ])->withInput();
+        return redirect()->route('admin.servers.view.details', $id)->withInput();
     }
 
-    public function postUpdateContainerDetails(Request $request, $id) {
+    /**
+     * Set the new docker container for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function setContainer(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+
         try {
-            $server = new ServerRepository;
-            $server->updateContainer($id, [
-                'image' => $request->input('docker_image')
-            ]);
+            $repo->updateContainer($id, $request->intersect('docker_image'));
+
             Alert::success('Successfully updated this server\'s docker image.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_details'
-            ])->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('admin.servers.view.details', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException occured while attempting to update the container image. Is the daemon online? This error has been logged.');
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.details', $id);
+    }
+
+    /**
+     * Toggles the install status for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function toggleInstall(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+        try {
+            $repo->toggleInstall($id);
+
+            Alert::success('Server install status was successfully toggled.')->flash();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to update this server\'s docker image. Please try again.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to toggle this servers status. This error has been logged.')->flash();
         }
 
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_details'
-        ]);
+        return redirect()->route('admin.servers.view.manage', $id);
     }
 
-    public function postUpdateServerToggleBuild(Request $request, $id) {
-        $server = Models\Server::findOrFail($id);
-        $node = Models\Node::findOrFail($server->node);
-        $client = Models\Node::guzzleRequest($server->node);
-
-        try {
-            $res = $client->request('POST', '/server/rebuild', [
-                'headers' => [
-                    'X-Access-Server' => $server->uuid,
-                    'X-Access-Token' => $node->daemonSecret
-                ]
-            ]);
-            Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
-        } catch (\GuzzleHttp\Exception\TransferException $ex) {
-            Log::warning($ex);
-            Alert::danger('An error occured while attempting to toggle a rebuild.')->flash();
-        }
-
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_manage'
-        ]);
-    }
-
-    public function postUpdateServerUpdateBuild(Request $request, $id)
+    /**
+     * Reinstalls the server with the currently assigned pack and service.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reinstallServer(Request $request, $id)
     {
+        $repo = new ServerRepository;
         try {
+            $repo->reinstall($id);
 
-            $server = new ServerRepository;
-            $server->changeBuild($id, [
-                'default' => $request->input('default'),
-                'add_additional' => $request->input('add_additional'),
-                'remove_additional' => $request->input('remove_additional'),
-                'memory' => $request->input('memory'),
-                'swap' => $request->input('swap'),
-                'io' => $request->input('io'),
-                'cpu' => $request->input('cpu'),
-            ]);
+            Alert::success('Server successfully marked for reinstallation.')->flash();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to perform this reinstallation. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.manage', $id);
+    }
+
+    /**
+     * Setup a server to have a container rebuild.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function rebuildContainer(Request $request, $id)
+    {
+        $server = Models\Server::with('node')->findOrFail($id);
+
+        try {
+            $server->node->guzzleClient([
+                'X-Access-Server' => $server->uuid,
+                'X-Access-Token' => $server->node->daemonSecret,
+            ])->request('POST', '/server/rebuild');
+
+            Alert::success('A rebuild has been queued successfully. It will run the next time this server is booted.')->flash();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.manage', $id);
+    }
+
+    /**
+     * Manage the suspension status for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function manageSuspension(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+        $action = $request->input('action');
+
+        if (! in_array($action, ['suspend', 'unsuspend'])) {
+            Alert::danger('Invalid action was passed to function.')->flash();
+
+            return redirect()->route('admin.servers.view.manage', $id);
+        }
+
+        try {
+            $repo->toggleAccess($id, ($action === 'unsuspend'));
+
+            Alert::success('Server has been ' . $action . 'ed.');
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An unhandled exception occured while attemping to ' . $action . ' this server. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.manage', $id);
+    }
+
+    /**
+     * Update the build configuration for a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function updateBuild(Request $request, $id)
+    {
+        $repo = new ServerRepository;
+
+        try {
+            $repo->changeBuild($id, $request->intersect([
+                'allocation_id', 'add_allocations', 'remove_allocations',
+                'memory', 'swap', 'io', 'cpu', 'disk',
+            ]));
+
             Alert::success('Server details were successfully updated.')->flash();
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_build'
-            ])->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('admin.servers.view.build', $id)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_build'
-            ]);
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException was encountered while trying to contact the daemon, please ensure it is online and accessible. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to add this server. Please try again.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to add this server. This error has been logged.')->flash();
         }
 
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_build'
-        ]);
+        return redirect()->route('admin.servers.view.build', $id);
     }
 
-    public function deleteServer(Request $request, $id, $force = null)
+    /**
+     * Start the server deletion process.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function delete(Request $request, $id)
     {
+        $repo = new ServerRepository;
+
         try {
-            $server = new ServerRepository;
-            $server->deleteServer($id, $force);
-            Alert::success('Server has been marked for deletion on the system.')->flash();
+            $repo->delete($id, $request->has('force_delete'));
+            Alert::success('Server was successfully deleted from the system.')->flash();
+
             return redirect()->route('admin.servers');
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-        } catch(\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to delete this server. Please try again.')->flash();
-        }
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_delete'
-        ]);
-    }
-
-    public function postToggleInstall(Request $request, $id)
-    {
-        try {
-            $server = new ServerRepository;
-            $server->toggleInstall($id);
-            Alert::success('Server status was successfully toggled.')->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch(\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An unhandled exception occured while attemping to toggle this servers status.')->flash();
-        } finally {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_manage'
-            ]);
-        }
-    }
-
-    public function postUpdateServerStartup(Request $request, $id)
-    {
-        try {
-            $server = new ServerRepository;
-            $server->updateStartup($id, $request->except([
-                '_token'
-            ]), true);
-            Alert::success('Server startup variables were successfully updated.')->flash();
-        } catch (\Pterodactyl\Exceptions\DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
-            Log::error($e);
-            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. Please try again.')->flash();
-        } finally {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_startup'
-            ])->withInput();
-        }
-    }
-
-    public function postDatabase(Request $request, $id)
-    {
-        try {
-            $repo = new DatabaseRepository;
-            $repo->create($id, $request->except([
-                '_token'
-            ]));
-            Alert::success('Added new database to this server.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_database'
-            ])->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException occurred while attempting to delete this server from the daemon, please ensure it is running. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An exception occured while attempting to add a new database for this server.')->flash();
+            Alert::danger('An unhandled exception occured while attemping to delete this server. This error has been logged.')->flash();
         }
 
-        return redirect()->route('admin.servers.view', [
-            'id' => $id,
-            'tab' => 'tab_database'
-        ])->withInput();
+        return redirect()->route('admin.servers.view.delete', $id);
     }
 
-    public function postSuspendServer(Request $request, $id)
+    /**
+     * Update the startup command as well as variables.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function saveStartup(Request $request, $id)
     {
-        try {
-            $repo = new ServerRepository;
-            $repo->suspend($id);
-            Alert::success('Server has been suspended on the system. All running processes have been stopped and will not be startable until it is un-suspended.');
-        } catch (DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
-            Log::error($e);
-            Alert::danger('An unhandled exception occured while attemping to suspend this server. Please try again.')->flash();
-        } finally {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_manage'
-            ]);
-        }
-    }
+        $repo = new ServerRepository;
 
-    public function postUnsuspendServer(Request $request, $id)
-    {
         try {
-            $repo = new ServerRepository;
-            $repo->unsuspend($id);
-            Alert::success('Server has been unsuspended on the system. Access has been re-enabled.');
-        } catch (DisplayException $e) {
-            Alert::danger($e->getMessage())->flash();
-        } catch(\Exception $e) {
-            Log::error($e);
-            Alert::danger('An unhandled exception occured while attemping to unsuspend this server. Please try again.')->flash();
-        } finally {
-            return redirect()->route('admin.servers.view', [
-                'id' => $id,
-                'tab' => 'tab_manage'
-            ]);
-        }
-    }
+            if ($repo->updateStartup($id, $request->except('_token'), true)) {
+                Alert::success('Service configuration successfully modfied for this server, reinstalling now.')->flash();
 
-    public function postQueuedDeletionHandler(Request $request, $id)
-    {
-        try {
-            $repo = new ServerRepository;
-            if (!is_null($request->input('cancel'))) {
-                $repo->cancelDeletion($id);
-                Alert::success('Server deletion has been cancelled. This server will remain suspended until you unsuspend it.')->flash();
                 return redirect()->route('admin.servers.view', $id);
-            } else if(!is_null($request->input('delete'))) {
-                $repo->deleteNow($id);
-                Alert::success('Server was successfully deleted from the system.')->flash();
-                return redirect()->route('admin.servers');
-            } else if(!is_null($request->input('force_delete'))) {
-                $repo->deleteNow($id, true);
-                Alert::success('Server was successfully force deleted from the system.')->flash();
-                return redirect()->route('admin.servers');
+            } else {
+                Alert::success('Startup variables were successfully modified and assigned for this server.')->flash();
             }
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view.startup', $id)->withErrors(json_decode($ex->getMessage()));
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
-            return redirect()->route('admin.servers.view', $id);
+        } catch (TransferException $ex) {
+            Log::warning($ex);
+            Alert::danger('A TransferException occurred while attempting to update the startup for this server, please ensure the daemon is running. This error has been logged.')->flash();
         } catch (\Exception $ex) {
             Log::error($ex);
-            Alert::danger('An unhandled error occured while attempting to perform this action.')->flash();
-            return redirect()->route('admin.servers.view', $id);
+            Alert::danger('An unhandled exception occured while attemping to update startup variables for this server. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.startup', $id);
+    }
+
+    /**
+     * Creates a new database assigned to a specific server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function newDatabase(Request $request, $id)
+    {
+        $repo = new DatabaseRepository;
+
+        try {
+            $repo->create($id, $request->only(['host', 'database', 'connection']));
+
+            Alert::success('A new database was assigned to this server successfully.')->flash();
+        } catch (DisplayValidationException $ex) {
+            return redirect()->route('admin.servers.view.database', $id)->withInput()->withErrors(json_decode($ex->getMessage()))->withInput();
+        } catch (DisplayException $ex) {
+            Alert::danger($ex->getMessage())->flash();
+        } catch (\Exception $ex) {
+            Log::error($ex);
+            Alert::danger('An exception occured while attempting to add a new database for this server. This error has been logged.')->flash();
+        }
+
+        return redirect()->route('admin.servers.view.database', $id)->withInput();
+    }
+
+    /**
+     * Resets the database password for a specific database on this server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function resetDatabasePassword(Request $request, $id)
+    {
+        $database = Models\Database::where('server_id', $id)->findOrFail($request->input('database'));
+        $repo = new DatabaseRepository;
+
+        try {
+            $repo->password($database->id, str_random(20));
+
+            return response('', 204);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+
+            return response()->json(['error' => 'A unhandled exception occurred while attempting to reset this password. This error has been logged.'], 503);
         }
     }
 
+    /**
+     * Deletes a database from a server.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int                       $id
+     * @param  int                       $database
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteDatabase(Request $request, $id, $database)
+    {
+        $database = Models\Database::where('server_id', $id)->findOrFail($database);
+        $repo = new DatabaseRepository;
+
+        try {
+            $repo->drop($database->id);
+
+            return response('', 204);
+        } catch (\Exception $ex) {
+            Log::error($ex);
+
+            return response()->json(['error' => 'A unhandled exception occurred while attempting to drop this database. This error has been logged.'], 503);
+        }
+    }
 }
