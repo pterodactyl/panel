@@ -65,8 +65,8 @@ composer install --no-progress
 php artisan key:generate --force
 php artisan migrate
 php artisan db:seed
-php artisan pterodactyl:user --firstname Test --lastname Admin --username admin --email testadmin@pterodactyl.io --password Ptero123 --admin 1
-php artisan pterodactyl:user --firstname Test --lastname User --username user --email testuser@pterodactyl.io --password Ptero123 --admin 0
+php artisan p:user:make --name-first Test --name-last Admin --username admin --email testadmin@pterodactyl.io --password Ptero123 --admin 1
+php artisan p:user:make --name-first Test --name-last User --username user --email testuser@pterodactyl.io --password Ptero123 --admin 0
 
 echo "Add queue cronjob and start queue worker"
 (crontab -l 2>/dev/null; echo "* * * * * php /var/www/html/pterodactyl/artisan schedule:run >> /dev/null 2>&1") | crontab -
