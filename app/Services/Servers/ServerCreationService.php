@@ -30,6 +30,11 @@ class ServerCreationService
     protected $allocationRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    protected $configurationStructureService;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
@@ -81,6 +86,7 @@ class ServerCreationService
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
      * @param \Illuminate\Database\DatabaseManager                                $database
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface           $nodeRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService   $configurationStructureService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
@@ -93,6 +99,7 @@ class ServerCreationService
         DaemonServerRepositoryInterface $daemonServerRepository,
         DatabaseManager $database,
         NodeRepositoryInterface $nodeRepository,
+        ServerConfigurationStructureService $configurationStructureService,
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         UserRepositoryInterface $userRepository,
@@ -102,6 +109,7 @@ class ServerCreationService
     ) {
         $this->allocationRepository = $allocationRepository;
         $this->daemonServerRepository = $daemonServerRepository;
+        $this->configurationStructureService = $configurationStructureService;
         $this->database = $database;
         $this->nodeRepository = $nodeRepository;
         $this->repository = $repository;
@@ -175,10 +183,11 @@ class ServerCreationService
         }
 
         $this->serverVariableRepository->insert($records);
+        $structure = $this->configurationStructureService->handle($server->id);
 
         // Create the server on the daemon & commit it to the database.
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->create($server->id);
+            $this->daemonServerRepository->setNode($server->node_id)->create($structure, ['start_on_completion' => (bool) $data['start_on_completion']]);
             $this->database->commit();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();

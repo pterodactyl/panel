@@ -10,6 +10,7 @@
 namespace Pterodactyl\Contracts\Repository;
 
 use Pterodactyl\Models\ServiceOption;
+use Illuminate\Database\Eloquent\Collection;
 
 interface ServiceOptionRepositoryInterface extends RepositoryInterface
 {
@@ -24,14 +25,20 @@ interface ServiceOptionRepositoryInterface extends RepositoryInterface
     public function getWithVariables(int $id): ServiceOption;
 
     /**
+     * Return all of the service options and their relations to be used in the daemon API.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAllWithCopyAttributes(): Collection;
+
+    /**
      * Return a service option with the scriptFrom and configFrom relations loaded onto the model.
      *
-     * @param int $id
+     * @param int|string $value
+     * @param string     $column
      * @return \Pterodactyl\Models\ServiceOption
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCopyAttributes(int $id): ServiceOption;
+    public function getWithCopyAttributes($value, string $column = 'id'): ServiceOption;
 
     /**
      * Return all of the data needed to export a service.

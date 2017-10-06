@@ -10,61 +10,29 @@
 namespace Pterodactyl\Repositories\Daemon;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Services\Servers\EnvironmentService;
+use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface as DatabaseServerRepositoryInterface;
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Create a new server on the daemon for the panel.
+     *
+     * @param array $structure
+     * @param array $overrides
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function create($id, array $overrides = [], $start = false)
+    public function create(array $structure, array $overrides = []): ResponseInterface
     {
-        Assert::numeric($id, 'First argument passed to create must be numeric, received %s.');
-        Assert::boolean($start, 'Third argument passed to create must be boolean, received %s.');
-
-        $repository = $this->app->make(DatabaseServerRepositoryInterface::class);
-        $environment = $this->app->make(EnvironmentService::class);
-
-        $server = $repository->getDataForCreation($id);
-
-        $data = [
-            'uuid' => (string) $server->uuid,
-            'user' => $server->username,
-            'build' => [
-                'default' => [
-                    'ip' => $server->allocation->ip,
-                    'port' => $server->allocation->port,
-                ],
-                'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
-                    return $item->pluck('port');
-                })->toArray(),
-                'env' => $environment->process($server),
-                'memory' => (int) $server->memory,
-                'swap' => (int) $server->swap,
-                'io' => (int) $server->io,
-                'cpu' => (int) $server->cpu,
-                'disk' => (int) $server->disk,
-                'image' => $server->image,
-            ],
-            'service' => [
-                'type' => $server->option->service->folder,
-                'option' => $server->option->tag,
-                'pack' => object_get($server, 'pack.uuid'),
-                'skip_scripts' => $server->skip_scripts,
-            ],
-            'rebuild' => false,
-            'start_on_completion' => $start,
-        ];
-
         // Loop through overrides.
         foreach ($overrides as $key => $value) {
-            array_set($data, $key, $value);
+            array_set($structure, $key, $value);
         }
 
         return $this->getHttpClient()->request('POST', 'servers', [
-            'json' => $data,
+            'json' => $structure,
         ]);
     }
 

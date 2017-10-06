@@ -47,7 +47,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         Assert::nullOrIntegerish($server, 'First argument passed to getDataForRebuild must be null or integer, received %s.');
         Assert::nullOrIntegerish($node, 'Second argument passed to getDataForRebuild must be null or integer, received %s.');
 
-        $instance = $this->getBuilder()->with('node', 'option.service', 'pack');
+        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'option', 'node');
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
@@ -111,9 +111,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForCreation($id)
     {
-        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'option.service')
-                         ->find($id, $this->getColumns());
-
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'option'])->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException();
         }

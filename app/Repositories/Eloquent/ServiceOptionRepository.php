@@ -9,7 +9,9 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\ServiceOption;
+use Illuminate\Database\Eloquent\Collection;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
@@ -43,17 +45,30 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     }
 
     /**
+     * Return all of the service options and their relations to be used in the daemon API.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAllWithCopyAttributes(): Collection
+    {
+        return $this->getBuilder()->with('scriptFrom', 'configFrom')->get($this->getColumns());
+    }
+
+    /**
      * Return a service option with the scriptFrom and configFrom relations loaded onto the model.
      *
-     * @param int $id
+     * @param int|string $value
+     * @param string     $column
      * @return \Pterodactyl\Models\ServiceOption
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCopyAttributes(int $id): ServiceOption
+    public function getWithCopyAttributes($value, string $column = 'id'): ServiceOption
     {
+        Assert::true((is_digit($value) || is_string($value)), 'First argument passed to getWithCopyAttributes must be an integer or string, received %s.');
+
         /** @var \Pterodactyl\Models\ServiceOption $instance */
-        $instance = $this->getBuilder()->with('scriptFrom', 'configFrom')->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->first($this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
         }
