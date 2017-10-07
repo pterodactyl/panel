@@ -101,6 +101,7 @@ curl -sSLO http://dl.4players.de/ts/releases/${TS_VERSION}/teamspeak3-server_lin
 
 tar -xjvf teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2
 cp -r teamspeak3-server_linux_amd64/* /mnt/server
+cp -r /mnt/server/redist/* /mnt/server/
 
 echo "machine_id=
 default_voice_port=${SERVER_PORT}
