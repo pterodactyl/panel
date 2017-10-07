@@ -20,6 +20,8 @@ class ChangeServicesToUseAMoreUniqueIdentifier extends Migration
             $table->string('author')->change();
             $table->char('uuid', 36)->after('id');
             $table->dropColumn('folder');
+            $table->dropColumn('startup');
+            $table->dropColumn('index_file');
         });
 
         DB::table('services')->get(['id', 'author', 'uuid'])->each(function ($service) {
@@ -42,6 +44,8 @@ class ChangeServicesToUseAMoreUniqueIdentifier extends Migration
         Schema::table('services', function (Blueprint $table) {
             $table->dropColumn('uuid');
             $table->string('folder')->nullable();
+            $table->text('startup')->nullable();
+            $table->text('index_file');
             $table->string('author', 36)->change();
 
             $table->unique('name');

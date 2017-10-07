@@ -58,10 +58,8 @@ class ServiceOptionExporterService
             'exported_at' => $this->carbon->now()->toIso8601String(),
             'name' => $option->name,
             'author' => array_get(explode(':', $option->tag), 0),
-            'tag' => $option->tag,
             'description' => $option->description,
             'image' => $option->docker_image,
-            'startup' => $option->display_startup,
             'config' => [
                 'files' => $option->inherit_config_files,
                 'startup' => $option->inherit_config_startup,

@@ -108,17 +108,6 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Returns the display startup string for the option and will use the parent
-     * service one if the option does not have one defined.
-     *
-     * @return string
-     */
-    public function getDisplayStartupAttribute()
-    {
-        return (is_null($this->startup)) ? $this->service->startup : $this->startup;
-    }
-
-    /**
      * Returns the install script for the option; if option is copying from another
      * it will return the copied script.
      *

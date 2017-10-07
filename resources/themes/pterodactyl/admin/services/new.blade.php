@@ -21,7 +21,7 @@
 @section('content')
 <form action="{{ route('admin.services.new') }}" method="POST">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">New Service</h3>
@@ -38,19 +38,6 @@
                         <label class="control-label">Description</label>
                         <div>
                             <textarea name="description" class="form-control" rows="6">{{ old('description') }}</textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="box">
-                <div class="box-body">
-                    <div class="form-group">
-                        <label class="control-label">Default Start Command</label>
-                        <div>
-                            <textarea name="startup" class="form-control" rows="2">{{ old('startup') }}</textarea>
-                            <p class="text-muted"><small>The default start command to use when running options under this service. This command can be modified per-option and should include the executable to be called in the container.</small></p>
                         </div>
                     </div>
                 </div>

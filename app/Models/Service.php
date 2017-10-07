@@ -34,8 +34,6 @@ class Service extends Model implements CleansAttributes, ValidableContract
     protected $fillable = [
         'name',
         'description',
-        'startup',
-        'index_file',
     ];
 
     /**
@@ -45,8 +43,6 @@ class Service extends Model implements CleansAttributes, ValidableContract
         'author' => 'required',
         'name' => 'required',
         'description' => 'sometimes',
-        'startup' => 'sometimes',
-        'index_file' => 'required',
     ];
 
     /**
@@ -56,8 +52,6 @@ class Service extends Model implements CleansAttributes, ValidableContract
         'author' => 'email',
         'name' => 'string|max:255',
         'description' => 'nullable|string',
-        'startup' => 'nullable|string',
-        'index_file' => 'string',
     ];
 
     /**

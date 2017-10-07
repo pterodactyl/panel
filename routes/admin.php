@@ -152,7 +152,6 @@ Route::group(['prefix' => 'services'], function () {
     Route::get('/', 'ServiceController@index')->name('admin.services');
     Route::get('/new', 'ServiceController@create')->name('admin.services.new');
     Route::get('/view/{service}', 'ServiceController@view')->name('admin.services.view');
-    Route::get('/view/{service}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
     Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
     Route::get('/option/{option}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
     Route::get('/option/{option}/export', 'Services\Options\OptionShareController@export')->name('admin.services.option.export');
@@ -165,7 +164,6 @@ Route::group(['prefix' => 'services'], function () {
     Route::post('/option/{option}/variables', 'VariableController@store');
 
     Route::patch('/view/{service}', 'ServiceController@update');
-    Route::patch('/view/{service}/functions', 'ServiceController@updateFunctions');
     Route::patch('/option/{option}', 'OptionController@editConfiguration');
     Route::patch('/option/{option}/scripts', 'OptionController@updateScripts');
     Route::patch('/option/{option}/variables/{variable}', 'VariableController@update')->name('admin.services.option.variables.edit');

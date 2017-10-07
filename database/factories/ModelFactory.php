@@ -91,12 +91,10 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
 $factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'author' => $faker->unique()->uuid,
+        'uuid' => $faker->unique()->uuid,
+        'author' => 'testauthor@example.com',
         'name' => $faker->word,
         'description' => null,
-        'folder' => strtolower($faker->unique()->word),
-        'startup' => 'java -jar test.jar',
-        'index_file' => 'indexjs',
     ];
 });
 
@@ -108,7 +106,6 @@ $factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Genera
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
         'startup' => 'java -jar test.jar',
-        'tag' => 'test@testfactory.com:' . $faker->unique()->randomNumber(8),
     ];
 });
 
