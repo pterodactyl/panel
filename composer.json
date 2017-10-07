@@ -47,6 +47,7 @@
         "barryvdh/laravel-ide-helper": "^2.4",
         "friendsofphp/php-cs-fixer": "~2.4.0",
         "fzaninotto/faker": "^1.6",
+        "laravel/dusk": "^1.0",
         "mockery/mockery": "^0.9",
         "php-mock/php-mock-phpunit": "^1.1",
         "phpunit/phpunit": "^5.7"

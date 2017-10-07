@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if ($this->app->environment() !== 'production') {
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            $this->app->register(\Laravel\Dusk\DuskServiceProvider::class);
         }
 
         if (config('pterodactyl.auth.notifications')) {
