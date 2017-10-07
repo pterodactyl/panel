@@ -69,21 +69,13 @@
         }
     },
     "scripts": {
-        "pre-install-cmd": [
-            "rm -f bootstrap/cache/services.php bootstrap/cache/compiled.php"
-        ],
-        "pre-update-cmd": [
-            "rm -f bootstrap/cache/services.php bootstrap/cache/compiled.php"
-        ],
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize",
-            "php artisan config:cache"
+            "php artisan optimize"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize",
-            "php artisan config:cache"
+            "php artisan optimize"
         ]
     },
     "prefer-stable": true,
