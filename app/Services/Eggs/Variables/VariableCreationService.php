@@ -7,50 +7,51 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Variables;
+namespace Pterodactyl\Services\Eggs\Variables;
 
-use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
-    protected $serviceOptionRepository;
+    protected $eggRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
-    protected $serviceVariableRepository;
+    protected $variableRepository;
 
+    /**
+     * VariableCreationService constructor.
+     *
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $eggRepository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
+     */
     public function __construct(
-        EggRepositoryInterface $serviceOptionRepository,
-        ServiceVariableRepositoryInterface $serviceVariableRepository
+        EggRepositoryInterface $eggRepository,
+        EggVariableRepositoryInterface $variableRepository
     ) {
-        $this->serviceOptionRepository = $serviceOptionRepository;
-        $this->serviceVariableRepository = $serviceVariableRepository;
+        $this->eggRepository = $eggRepository;
+        $this->variableRepository = $variableRepository;
     }
 
     /**
-     * Create a new variable for a given service option.
+     * Create a new variable for a given Egg.
      *
-     * @param int|\Pterodactyl\Models\Egg $option
-     * @param array                       $data
+     * @param int   $egg
+     * @param array $data
      * @return \Pterodactyl\Models\EggVariable
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
-    public function handle($option, array $data)
+    public function handle(int $egg, array $data): EggVariable
     {
-        if ($option instanceof Egg) {
-            $option = $option->id;
-        }
-
         if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
             throw new ReservedVariableNameException(sprintf(
                 'Cannot use the protected name %s for this environment variable.',
@@ -60,8 +61,8 @@ class VariableCreationService
 
         $options = array_get($data, 'options', []);
 
-        return $this->serviceVariableRepository->create(array_merge([
-            'option_id' => $option,
+        return $this->variableRepository->create(array_merge([
+            'egg_id' => $egg,
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
         ], $data));

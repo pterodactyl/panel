@@ -7,17 +7,20 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Options;
+namespace Pterodactyl\Services\Eggs;
 
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 
-class OptionConfigurationFileService
+class EggConfigurationService
 {
+    /**
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     */
     protected $repository;
 
     /**
-     * OptionConfigurationFileService constructor.
+     * EggConfigurationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
@@ -27,7 +30,7 @@ class OptionConfigurationFileService
     }
 
     /**
-     * Return a service configuration file to be used by the daemon.
+     * Return an Egg file to be used by the Daemon.
      *
      * @param int|\Pterodactyl\Models\Egg $option
      * @return array

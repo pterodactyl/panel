@@ -16,7 +16,7 @@ use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Services\Options\OptionCreationService;
+use Pterodactyl\Services\Services\Options\EggCreationService;
 use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionCreationServiceTest extends TestCase
@@ -32,7 +32,7 @@ class OptionCreationServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\OptionCreationService
+     * @var \Pterodactyl\Services\Services\Options\EggCreationService
      */
     protected $service;
 
@@ -52,7 +52,7 @@ class OptionCreationServiceTest extends TestCase
         $this->repository = m::mock(EggRepositoryInterface::class);
         $this->uuid = m::mock('overload:' . Uuid::class);
 
-        $this->service = new OptionCreationService($this->config, $this->repository);
+        $this->service = new EggCreationService($this->config, $this->repository);
     }
 
     /**

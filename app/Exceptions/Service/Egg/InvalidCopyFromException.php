@@ -7,10 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\ServiceVariable;
+namespace Pterodactyl\Exceptions\Service\Egg;
 
-use Exception;
+use Pterodactyl\Exceptions\DisplayException;
 
-class ReservedVariableNameException extends Exception
+class InvalidCopyFromException extends DisplayException
 {
 }

@@ -7,32 +7,32 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Variables;
+namespace Pterodactyl\Services\Eggs\Variables;
 
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
     protected $repository;
 
     /**
      * VariableUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
      */
-    public function __construct(ServiceVariableRepositoryInterface $repository)
+    public function __construct(EggVariableRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * Update a specific service variable.
+     * Update a specific egg variable.
      *
      * @param int|\Pterodactyl\Models\EggVariable $variable
      * @param array                               $data
@@ -41,7 +41,7 @@ class VariableUpdateService
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function handle($variable, array $data)
     {
@@ -58,7 +58,7 @@ class VariableUpdateService
 
             $search = $this->repository->withColumns('id')->findCountWhere([
                 ['env_variable', '=', array_get($data, 'env_variable')],
-                ['option_id', '=', $variable->option_id],
+                ['egg_id', '=', $variable->egg_id],
                 ['id', '!=', $variable->id],
             ]);
 
@@ -71,9 +71,9 @@ class VariableUpdateService
 
         $options = array_get($data, 'options', []);
 
-        return $this->repository->withoutFresh()->update($variable->id, array_merge([
+        return $this->repository->withoutFresh()->update($variable->id, array_merge($data, [
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
-        ], $data));
+        ]));
     }
 }

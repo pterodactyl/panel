@@ -64,7 +64,7 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $applicationRules = [
-        'service_id' => 'required',
+        'nest_id' => 'required',
         'name' => 'required',
         'description' => 'required',
         'docker_image' => 'required',
@@ -80,13 +80,13 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'service_id' => 'bail|numeric|exists:services,id',
+        'nest_id' => 'bail|numeric|exists:nests,id',
         'uuid' => 'string|size:36',
         'name' => 'string|max:255',
         'description' => 'string',
         'docker_image' => 'string|max:255',
         'startup' => 'nullable|string',
-        'config_from' => 'bail|nullable|numeric|exists:service_options,id',
+        'config_from' => 'bail|nullable|numeric|exists:eggs,id',
         'config_stop' => 'nullable|string|max:255',
         'config_startup' => 'nullable|json',
         'config_logs' => 'nullable|json',

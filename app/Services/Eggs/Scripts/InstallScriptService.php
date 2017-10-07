@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Options;
+namespace Pterodactyl\Services\Eggs\Scripts;
 
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
+use Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException;
 
-class InstallScriptUpdateService
+class InstallScriptService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
@@ -21,7 +21,7 @@ class InstallScriptUpdateService
     protected $repository;
 
     /**
-     * InstallScriptUpdateService constructor.
+     * InstallScriptService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
@@ -31,30 +31,30 @@ class InstallScriptUpdateService
     }
 
     /**
-     * Modify the option install script for a given service option.
+     * Modify the install script for a given Egg.
      *
-     * @param int|\Pterodactyl\Models\Egg $option
+     * @param int|\Pterodactyl\Models\Egg $egg
      * @param array                       $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException
      */
-    public function handle($option, array $data)
+    public function handle($egg, array $data)
     {
-        if (! $option instanceof Egg) {
-            $option = $this->repository->find($option);
+        if (! $egg instanceof Egg) {
+            $egg = $this->repository->find($egg);
         }
 
         if (! is_null(array_get($data, 'copy_script_from'))) {
-            if (! $this->repository->isCopiableScript(array_get($data, 'copy_script_from'), $option->service_id)) {
-                throw new InvalidCopyFromException(trans('exceptions.service.options.invalid_copy_id'));
+            if (! $this->repository->isCopiableScript(array_get($data, 'copy_script_from'), $egg->service_id)) {
+                throw new InvalidCopyFromException(trans('exceptions.nest.egg.invalid_copy_id'));
             }
         }
 
-        $this->repository->withoutFresh()->update($option->id, [
+        $this->repository->withoutFresh()->update($egg->id, [
             'script_install' => array_get($data, 'script_install'),
-            'script_is_privileged' => array_get($data, 'script_is_privileged'),
+            'script_is_privileged' => array_get($data, 'script_is_privileged', 1),
             'script_entry' => array_get($data, 'script_entry'),
             'script_container' => array_get($data, 'script_container'),
             'copy_script_from' => array_get($data, 'copy_script_from'),

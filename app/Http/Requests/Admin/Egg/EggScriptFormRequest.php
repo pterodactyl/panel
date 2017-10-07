@@ -7,11 +7,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Admin\Service;
+namespace Pterodactyl\Http\Requests\Admin\Egg;
 
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class EditOptionScript extends AdminFormRequest
+class EggScriptFormRequest extends AdminFormRequest
 {
     /**
      * Return the rules to be used when validating the sent data in the request.

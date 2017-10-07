@@ -14,16 +14,16 @@ use Pterodactyl\Models\Egg;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\Service\EggFormRequest;
+use Pterodactyl\Services\Services\Options\EggUpdateService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
-use Pterodactyl\Services\Services\Options\OptionUpdateService;
-use Pterodactyl\Services\Services\Options\OptionCreationService;
-use Pterodactyl\Services\Services\Options\OptionDeletionService;
-use Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest;
-use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
-use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
-use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
+use Pterodactyl\Services\Services\Options\EggCreationService;
+use Pterodactyl\Services\Services\Options\EggDeletionService;
+use Pterodactyl\Services\Services\Options\InstallScriptService;
+use Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException;
+use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 
 class OptionController extends Controller
 {
@@ -33,22 +33,22 @@ class OptionController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\InstallScriptUpdateService
+     * @var \Pterodactyl\Services\Services\Options\InstallScriptService
      */
     protected $installScriptUpdateService;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\OptionCreationService
+     * @var \Pterodactyl\Services\Services\Options\EggCreationService
      */
     protected $optionCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\OptionDeletionService
+     * @var \Pterodactyl\Services\Services\Options\EggDeletionService
      */
     protected $optionDeletionService;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\OptionUpdateService
+     * @var \Pterodactyl\Services\Services\Options\EggUpdateService
      */
     protected $optionUpdateService;
 
@@ -65,20 +65,20 @@ class OptionController extends Controller
     /**
      * OptionController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
-     * @param \Pterodactyl\Services\Services\Options\InstallScriptUpdateService $installScriptUpdateService
-     * @param \Pterodactyl\Services\Services\Options\OptionCreationService      $optionCreationService
-     * @param \Pterodactyl\Services\Services\Options\OptionDeletionService      $optionDeletionService
-     * @param \Pterodactyl\Services\Services\Options\OptionUpdateService        $optionUpdateService
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface         $serviceRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface          $serviceOptionRepository
+     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
+     * @param \Pterodactyl\Services\Services\Options\InstallScriptService $installScriptUpdateService
+     * @param \Pterodactyl\Services\Services\Options\EggCreationService   $optionCreationService
+     * @param \Pterodactyl\Services\Services\Options\EggDeletionService   $optionDeletionService
+     * @param \Pterodactyl\Services\Services\Options\EggUpdateService     $optionUpdateService
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface   $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $serviceOptionRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
-        InstallScriptUpdateService $installScriptUpdateService,
-        OptionCreationService $optionCreationService,
-        OptionDeletionService $optionDeletionService,
-        OptionUpdateService $optionUpdateService,
+        InstallScriptService $installScriptUpdateService,
+        EggCreationService $optionCreationService,
+        EggDeletionService $optionDeletionService,
+        EggUpdateService $optionUpdateService,
         NestRepositoryInterface $serviceRepository,
         EggRepositoryInterface $serviceOptionRepository
     ) {
@@ -107,12 +107,12 @@ class OptionController extends Controller
     /**
      * Handle adding a new service option.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\Service\EggFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(ServiceOptionFormRequest $request)
+    public function store(EggFormRequest $request)
     {
         try {
             $option = $this->optionCreationService->handle($request->normalize());

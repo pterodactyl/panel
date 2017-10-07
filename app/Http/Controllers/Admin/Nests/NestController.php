@@ -145,12 +145,12 @@ class NestController extends Controller
     /**
      * Handle request to delete a nest.
      *
-     * @param \Pterodactyl\Models\Nest $nest
+     * @param int $nest
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function destroy($nest): RedirectResponse
+    public function destroy(int $nest): RedirectResponse
     {
         $this->nestDeletionService->handle($nest);
         $this->alert->success(trans('admin/nests.notices.deleted'))->flash();

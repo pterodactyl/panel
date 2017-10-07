@@ -7,8 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\ServiceOption;
+namespace Pterodactyl\Exceptions\Service\Egg;
 
-class NoParentConfigurationFoundException extends \Exception
+use Pterodactyl\Exceptions\DisplayException;
+
+class NoParentConfigurationFoundException extends DisplayException
 {
 }

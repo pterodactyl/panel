@@ -7,14 +7,14 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Options;
+namespace Pterodactyl\Services\Eggs;
 
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Egg\HasChildrenException;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException;
 
-class OptionDeletionService
+class EggDeletionService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
@@ -27,7 +27,7 @@ class OptionDeletionService
     protected $serverRepository;
 
     /**
-     * OptionDeletionService constructor.
+     * EggDeletionService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $repository
@@ -41,26 +41,26 @@ class OptionDeletionService
     }
 
     /**
-     * Delete an option from the database if it has no active servers attached to it.
+     * Delete an Egg from the database if it has no active servers attached to it.
      *
-     * @param int $option
+     * @param int $egg
      * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\HasChildrenException
      */
-    public function handle(int $option): int
+    public function handle(int $egg): int
     {
-        $servers = $this->serverRepository->findCountWhere([['option_id', '=', $option]]);
+        $servers = $this->serverRepository->findCountWhere([['egg_id', '=', $egg]]);
         if ($servers > 0) {
-            throw new HasActiveServersException(trans('exceptions.service.options.delete_has_servers'));
+            throw new HasActiveServersException(trans('exceptions.nest.egg.delete_has_servers'));
         }
 
-        $children = $this->repository->findCountWhere([['config_from', '=', $option]]);
+        $children = $this->repository->findCountWhere([['config_from', '=', $egg]]);
         if ($children > 0) {
-            throw new HasChildrenException(trans('exceptions.service.options.has_children'));
+            throw new HasChildrenException(trans('exceptions.nest.egg.has_children'));
         }
 
-        return $this->repository->delete($option);
+        return $this->repository->delete($egg);
     }
 }

@@ -6,16 +6,16 @@
 @extends('layouts.admin')
 
 @section('title')
-    Service &rarr; Option: {{ $option->name }} &rarr; Scripts
+    Nests &rarr; Egg: {{ $egg->name }} &rarr; Scripts
 @endsection
 
 @section('content-header')
-    <h1>{{ $option->name }}<small>Manage install and upgrade scripts for this service option.</small></h1>
+    <h1>{{ $egg->name }}<small>Manage install and upgrade scripts for this Egg.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Service</a></li>
-        <li><a href="{{ route('admin.services.view', $option->service->id) }}">{{ $option->service->name }}</a></li>
-        <li class="active">{{ $option->name }}</li>
+        <li><a href="{{ route('admin.nests') }}">Service</a></li>
+        <li><a href="{{ route('admin.nests.view', $egg->nest->id) }}">{{ $egg->nest->name }}</a></li>
+        <li class="active">{{ $egg->name }}</li>
     </ol>
 @endsection
 
@@ -24,29 +24,29 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.services.option.view', $option->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.services.option.variables', $option->id) }}">Variables</a></li>
-                <li class="active"><a href="{{ route('admin.services.option.scripts', $option->id) }}">Scripts</a></li>
+                <li><a href="{{ route('admin.nests.egg.view', $egg->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.nests.egg.variables', $egg->id) }}">Variables</a></li>
+                <li class="active"><a href="{{ route('admin.nests.egg.scripts', $egg->id) }}">Scripts</a></li>
             </ul>
         </div>
     </div>
 </div>
-<form action="{{ route('admin.services.option.scripts', $option->id) }}" method="POST">
+<form action="{{ route('admin.nests.egg.scripts', $egg->id) }}" method="POST">
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Install Script</h3>
                 </div>
-                @if(! is_null($option->copyFrom))
+                @if(! is_null($egg->copyFrom))
                     <div class="box-body">
                         <div class="callout callout-warning no-margin">
-                            This service option is copying installation scripts and containe options from <a href="{{ route('admin.services.option.view', $option->copyFrom->id) }}">{{ $option->copyFrom->name }}</a>. Any changes you make to this script will not apply unless you select "None" from the dropdown box below.
+                            This service option is copying installation scripts and containe options from <a href="{{ route('admin.nests.egg.view', $egg->copyFrom->id) }}">{{ $egg->copyFrom->name }}</a>. Any changes you make to this script will not apply unless you select "None" from the dropdown box below.
                         </div>
                     </div>
                 @endif
                 <div class="box-body no-padding">
-                    <div id="editor_install"style="height:300px">{{ $option->script_install }}</div>
+                    <div id="editor_install"style="height:300px">{{ $egg->script_install }}</div>
                 </div>
                 <div class="box-body">
                     <div class="row">
@@ -55,19 +55,19 @@
                             <select id="pCopyScriptFrom" name="copy_script_from">
                                 <option value="0">None</option>
                                 @foreach($copyFromOptions as $opt)
-                                    <option value="{{ $opt->id }}" {{ $option->copy_script_from !== $opt->id ?: 'selected' }}>{{ $opt->name }}</option>
+                                    <option value="{{ $opt->id }}" {{ $egg->copy_script_from !== $opt->id ?: 'selected' }}>{{ $opt->name }}</option>
                                 @endforeach
                             </select>
                             <p class="text-muted small">If selected, script above will be ignored and script from selected option will be used in place.</p>
                         </div>
                         <div class="form-group col-sm-4">
                             <label class="control-label">Script Container</label>
-                            <input type="text" name="script_container" class="form-control" value="{{ $option->script_container }}" />
+                            <input type="text" name="script_container" class="form-control" value="{{ $egg->script_container }}" />
                             <p class="text-muted small">Docker container to use when running this script for the server.</p>
                         </div>
                         <div class="form-group col-sm-4">
                             <label class="control-label">Script Entrypoint Command</label>
-                            <input type="text" name="script_entry" class="form-control" value="{{ $option->script_entry }}" />
+                            <input type="text" name="script_entry" class="form-control" value="{{ $egg->script_entry }}" />
                             <p class="text-muted small">The entrypoint command to use for this script.</p>
                         </div>
                     </div>
@@ -76,8 +76,8 @@
                             The following service options rely on this script:
                             @if(count($relyOnScript) > 0)
                                 @foreach($relyOnScript as $rely)
-                                    <a href="{{ route('admin.services.option.view', $rely->id) }}">
-                                        <code>{{ $rely->name }}</code>&nbsp;
+                                    <a href="{{ route('admin.nests.egg.view', $rely->id) }}">
+                                        <code>{{ $rely->name }}</code>@if(!$loop->last),&nbsp;@endif
                                     </a>
                                 @endforeach
                             @else
@@ -89,7 +89,7 @@
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     <textarea name="script_install" class="hidden"></textarea>
-                    <button type="submit" class="btn btn-primary btn-sm pull-right">Save Script</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
                 </div>
             </div>
         </div>

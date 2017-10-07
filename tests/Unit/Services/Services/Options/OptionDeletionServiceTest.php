@@ -14,8 +14,8 @@ use Tests\TestCase;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
+use Pterodactyl\Services\Services\Options\EggDeletionService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Services\Options\OptionDeletionService;
 use Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException;
 
 class OptionDeletionServiceTest extends TestCase
@@ -31,7 +31,7 @@ class OptionDeletionServiceTest extends TestCase
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\OptionDeletionService
+     * @var \Pterodactyl\Services\Services\Options\EggDeletionService
      */
     protected $service;
 
@@ -45,7 +45,7 @@ class OptionDeletionServiceTest extends TestCase
         $this->repository = m::mock(EggRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
 
-        $this->service = new OptionDeletionService($this->serverRepository, $this->repository);
+        $this->service = new EggDeletionService($this->serverRepository, $this->repository);
     }
 
     /**

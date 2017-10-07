@@ -7,11 +7,12 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Pterodactyl\Http\Requests\Admin\Egg;
 
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class OptionVariableFormRequest extends AdminFormRequest
+class EggVariableFormRequest extends AdminFormRequest
 {
     /**
      * @return array
@@ -37,11 +38,9 @@ class OptionVariableFormRequest extends AdminFormRequest
     {
         $rules = $this->input('rules');
         if ($this->method() === 'PATCH') {
-            $rules = $this->input('rules', $this->route()->parameter('variable')->rules);
+            $rules = $this->input('rules', $this->route()->parameter('egg')->rules);
         }
 
-        $validator->sometimes('default_value', $rules, function ($input) {
-            return $input->default_value;
-        });
+        $validator->addRules(['default_value' => $rules]);
     }
 }

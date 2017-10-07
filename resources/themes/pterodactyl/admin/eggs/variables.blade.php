@@ -6,16 +6,16 @@
 @extends('layouts.admin')
 
 @section('title')
-    Service Options &rarr; {{ $option->name }} &rarr; Variables
+    Egg &rarr; {{ $egg->name }} &rarr; Variables
 @endsection
 
 @section('content-header')
-    <h1>{{ $option->name }}<small>Managing variables for this service option.</small></h1>
+    <h1>{{ $egg->name }}<small>Managing variables for this Egg.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Service</a></li>
-        <li><a href="{{ route('admin.services.view', $option->service->id) }}">{{ $option->service->name }}</a></li>
-        <li><a href="{{ route('admin.services.option.view', $option->id) }}">{{ $option->name }}</a></li>
+        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
+        <li><a href="{{ route('admin.nests.view', $egg->nest->id) }}">{{ $egg->nest->name }}</a></li>
+        <li><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></li>
         <li class="active">Variables</li>
     </ol>
 @endsection
@@ -25,22 +25,30 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.services.option.view', $option->id) }}">Configuration</a></li>
-                <li class="active"><a href="{{ route('admin.services.option.variables', $option->id) }}">Variables</a></li>
-                <li class="tab-success"><a href="#modal" data-toggle="modal" data-target="#newVariableModal">New Variable</a></li>
-                <li><a href="{{ route('admin.services.option.scripts', $option->id) }}">Scripts</a></li>
+                <li><a href="{{ route('admin.nests.egg.view', $egg->id) }}">Configuration</a></li>
+                <li class="active"><a href="{{ route('admin.nests.egg.variables', $egg->id) }}">Variables</a></li>
+                <li><a href="{{ route('admin.nests.egg.scripts', $egg->id) }}">Scripts</a></li>
             </ul>
         </div>
     </div>
 </div>
 <div class="row">
-    @foreach($option->variables as $variable)
+    <div class="col-xs-12">
+        <div class="box no-border">
+            <div class="box-body">
+                <a href="#" class="btn btn-sm btn-success pull-right" data-toggle="modal" data-target="#newVariableModal">Create New Variable</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    @foreach($egg->variables as $variable)
         <div class="col-sm-6">
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ $variable->name }}</h3>
                 </div>
-                <form action="{{ route('admin.services.option.variables.edit', ['id' => $option->id, 'variable' => $variable->id]) }}" method="POST">
+                <form action="{{ route('admin.nests.egg.variables.edit', ['id' => $egg->id, 'variable' => $variable->id]) }}" method="POST">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="form-label">Name</label>
@@ -93,7 +101,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Create New Option Variable</h4>
             </div>
-            <form action="{{ route('admin.services.option.variables', $option->id) }}" method="POST">
+            <form action="{{ route('admin.nests.egg.variables', $egg->id) }}" method="POST">
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label">Name</label>

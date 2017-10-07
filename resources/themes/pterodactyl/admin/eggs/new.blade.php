@@ -6,20 +6,20 @@
 @extends('layouts.admin')
 
 @section('title')
-    Service &rarr; New Option
+    Nests &rarr; New Egg
 @endsection
 
 @section('content-header')
-    <h1>New Option<small>Create a new service option to assign to servers.</small></h1>
+    <h1>New Egg<small>Create a new Egg to assign to servers.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Service</a></li>
-        <li class="active">New Service Option</li>
+        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
+        <li class="active">New Egg</li>
     </ol>
 @endsection
 
 @section('content')
-<form action="{{ route('admin.services.option.new') }}" method="POST">
+<form action="{{ route('admin.nests.egg.new') }}" method="POST">
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
@@ -30,42 +30,37 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pServiceId" class="form-label">Associated Service</label>
-                                <select name="service_id" id="pServiceId">
-                                    @foreach($services as $service)
-                                        <option value="{{ $service->id }}" {{ old('service_id') != $service->id ?: 'selected' }}>{{ $service->name }} &lt;{{ $service->author }}&gt;</option>
-                                    @endforeach
-                                </select>
+                                <label for="pNestId" class="form-label">Associated Nest</label>
+                                <div>
+                                    <select name="nest_id" id="pNestId">
+                                        @foreach($nests as $nest)
+                                            <option value="{{ $nest->id }}" {{ old('nest_id') != $nest->id ?: 'selected' }}>{{ $nest->name }} &lt;{{ $nest->author }}&gt;</option>
+                                        @endforeach
+                                    </select>
+                                    <p class="text-muted small">Think of a Nest as a category. You can put multiple Eggs in a nest, but consider putting only Eggs that are related to eachother in each Nest.</p>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="pName" class="form-label">Option Name</label>
+                                <label for="pName" class="form-label">Name</label>
                                 <input type="text" id="pName" name="name" value="{{ old('name') }}" class="form-control" />
-                                <p class="text-muted small">A simple, human-readable name to use as an identifier for this service.</p>
+                                <p class="text-muted small">A simple, human-readable name to use as an identifier for this Egg. This is what users will see as thier gameserver type.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pDescription" class="form-label">Description</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="8">{{ old('description') }}</textarea>
-                                <p class="text-muted small">A description of this service that will be displayed throughout the panel as needed.</p>
+                                <p class="text-muted small">A description of this Egg.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pTag" class="form-label">Option Tag</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">{{ config('pterodactyl.service.author') }}:</span>
-                                    <input type="text" id="pTag" name="tag" value="{{ old('tag') }}" class="form-control" />
-                                </div>
-                                <p class="text-muted small">This should be a unique identifer for this service option that is not used for any other service options. Must be alpha-numeric and no more than 60 characters in length.</p>
-                            </div>
-                            <div class="form-group">
-                                <label for="pDockerImage" class="control-label">Docker Image <span class="field-optional"></span></label>
+                                <label for="pDockerImage" class="control-label">Docker Image</label>
                                 <input type="text" id="pDockerImage" name="docker_image" value="{{ old('docker_image') }}" placeholder="quay.io/pterodactyl/service" class="form-control" />
-                                <p class="text-muted small">The default docker image that should be used for new servers under this service option. This can be left blank to use the parent service's defined image, and can also be changed per-server.</p>
+                                <p class="text-muted small">The default docker image that should be used for new servers using this Egg. This can be changed per-server.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pStartup" class="control-label">Startup Command <span class="field-optional"></span></label>
-                                <textarea id="pStartup" name="startup" class="form-control" rows="4">{{ old('startup') }}</textarea>
-                                <p class="text-muted small">The default statup command that should be used for new servers under this service option. This can be left blank to use the parent service's startup, and can also be changed per-server.</p>
+                                <label for="pStartup" class="control-label">Startup Command</label>
+                                <textarea id="pStartup" name="startup" class="form-control" rows="14">{{ old('startup') }}</textarea>
+                                <p class="text-muted small">The default statup command that should be used for new servers created with this Egg. You can change this per-server as needed.</p>
                             </div>
                         </div>
                     </div>
@@ -90,7 +85,7 @@
                                 <select name="config_from" id="pConfigFrom" class="form-control">
                                     <option value="0">None</option>
                                 </select>
-                                <p class="text-muted small">If you would like to default to settings from another option select the option from the menu above.</p>
+                                <p class="text-muted small">If you would like to default to settings from another Egg select it from the dropdown above.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pConfigStop" class="form-label">Stop Command</label>
@@ -118,7 +113,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-success btn-sm pull-right">Create Service</button>
+                    <button type="submit" class="btn btn-success btn-sm pull-right">Create</button>
                 </div>
             </div>
         </div>
@@ -131,15 +126,15 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function() {
-        $('#pServiceId').select2().change();
+        $('#pNestId').select2().change();
         $('#pConfigFrom').select2();
     });
-    $('#pServiceId').on('change', function (event) {
+    $('#pNestId').on('change', function (event) {
         $('#pConfigFrom').html('<option value="">None</option>').select2({
-            data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
+            data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
                 return {
                     id: item.id,
-                    text: item.name + ' <' + item.tag + '>',
+                    text: item.name + ' <' + item.author + '>',
                 };
             }),
         });

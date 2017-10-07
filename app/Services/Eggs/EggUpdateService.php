@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Options;
+namespace Pterodactyl\Services\Eggs;
 
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
+use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 
-class OptionUpdateService
+class EggUpdateService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
@@ -21,7 +21,7 @@ class OptionUpdateService
     protected $repository;
 
     /**
-     * OptionUpdateService constructor.
+     * EggUpdateService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
@@ -33,30 +33,30 @@ class OptionUpdateService
     /**
      * Update a service option.
      *
-     * @param int|\Pterodactyl\Models\Egg $option
+     * @param int|\Pterodactyl\Models\Egg $egg
      * @param array                       $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
-    public function handle($option, array $data)
+    public function handle($egg, array $data)
     {
-        if (! $option instanceof Egg) {
-            $option = $this->repository->find($option);
+        if (! $egg instanceof Egg) {
+            $egg = $this->repository->find($egg);
         }
 
         if (! is_null(array_get($data, 'config_from'))) {
             $results = $this->repository->findCountWhere([
-                ['service_id', '=', $option->service_id],
+                ['nest_id', '=', $egg->nest_id],
                 ['id', '=', array_get($data, 'config_from')],
             ]);
 
             if ($results !== 1) {
-                throw new NoParentConfigurationFoundException(trans('exceptions.service.options.must_be_child'));
+                throw new NoParentConfigurationFoundException(trans('exceptions.nest.egg.must_be_child'));
             }
         }
 
-        $this->repository->withoutFresh()->update($option->id, $data);
+        $this->repository->withoutFresh()->update($egg->id, $data);
     }
 }

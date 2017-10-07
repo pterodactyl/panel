@@ -156,7 +156,7 @@ Route::group(['prefix' => 'nests'], function () {
     Route::get('/egg/{egg}', 'Nests\EggController@view')->name('admin.nests.egg.view');
     Route::get('/egg/{egg}/export', 'Nests\EggShareController@export')->name('admin.nests.egg.export');
     Route::get('/egg/{egg}/variables', 'Nests\EggVariableController@view')->name('admin.nests.egg.variables');
-    Route::get('/egg/{egg}/scripts', 'Nests\EggScriptController@view')->name('admin.nests.egg.scripts');
+    Route::get('/egg/{egg}/scripts', 'Nests\EggScriptController@index')->name('admin.nests.egg.scripts');
 
     Route::post('/new', 'Nests\NestController@store');
     Route::post('/import', 'Nests\EggShareController@import')->name('admin.nests.egg.import');

@@ -14,7 +14,7 @@ use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
+use Pterodactyl\Services\Services\Options\InstallScriptService;
 use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
 
 class InstallScriptUpdateServiceTest extends TestCase
@@ -41,7 +41,7 @@ class InstallScriptUpdateServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\InstallScriptUpdateService
+     * @var \Pterodactyl\Services\Services\Options\InstallScriptService
      */
     protected $service;
 
@@ -55,7 +55,7 @@ class InstallScriptUpdateServiceTest extends TestCase
         $this->model = factory(Egg::class)->make();
         $this->repository = m::mock(EggRepositoryInterface::class);
 
-        $this->service = new InstallScriptUpdateService($this->repository);
+        $this->service = new InstallScriptService($this->repository);
     }
 
     /**

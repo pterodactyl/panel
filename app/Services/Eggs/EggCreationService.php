@@ -7,15 +7,16 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Options;
+namespace Pterodactyl\Services\Eggs;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
+use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 
-class OptionCreationService
+// When a mommy and a daddy pterodactyl really like eachother...
+class EggCreationService
 {
     /**
      * @var \Illuminate\Contracts\Config\Repository
@@ -28,7 +29,7 @@ class OptionCreationService
     protected $repository;
 
     /**
-     * CreationService constructor.
+     * EggCreationService constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                  $config
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
@@ -46,31 +47,25 @@ class OptionCreationService
      * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function handle(array $data): Egg
     {
-        if (! is_null(array_get($data, 'config_from'))) {
+        $data['config_from'] = array_get($data, 'config_from');
+        if (! is_null($data['config_from'])) {
             $results = $this->repository->findCountWhere([
-                ['service_id', '=', array_get($data, 'service_id')],
+                ['nest_id', '=', array_get($data, 'nest_id')],
                 ['id', '=', array_get($data, 'config_from')],
             ]);
 
             if ($results !== 1) {
                 throw new NoParentConfigurationFoundException(trans('exceptions.service.options.must_be_child'));
             }
-        } else {
-            $data['config_from'] = null;
-        }
-
-        if (count($parts = explode(':', array_get($data, 'tag'))) > 1) {
-            $data['tag'] = $this->config->get('pterodactyl.service.author') . ':' . trim(array_pop($parts));
-        } else {
-            $data['tag'] = $this->config->get('pterodactyl.service.author') . ':' . trim(array_get($data, 'tag'));
         }
 
         return $this->repository->create(array_merge($data, [
             'uuid' => Uuid::uuid4()->toString(),
+            'author' => $this->config->get('pterodactyl.service.author'),
         ]), true, true);
     }
 }
