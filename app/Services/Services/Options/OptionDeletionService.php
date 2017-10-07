@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
-use Webmozart\Assert\Assert;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
@@ -50,10 +49,8 @@ class OptionDeletionService
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      * @throws \Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException
      */
-    public function handle($option)
+    public function handle(int $option): int
     {
-        Assert::integerish($option, 'First argument passed to handle must be integer, received %s.');
-
         $servers = $this->serverRepository->findCountWhere([['option_id', '=', $option]]);
         if ($servers > 0) {
             throw new HasActiveServersException(trans('exceptions.service.options.delete_has_servers'));

@@ -197,6 +197,12 @@
                     });
                 </script>
             @endif
+
+            <script>
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                })
+            </script>
         @show
     </body>
 </html>

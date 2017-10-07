@@ -21,6 +21,7 @@ return [
     'service' => [
         'delete_has_servers' => 'A service with active servers attached to it cannot be deleted from the Panel.',
         'options' => [
+            'duplicate_tag' => 'A service option with that tag already exists for this service.',
             'delete_has_servers' => 'A service option with active servers attached to it cannot be deleted from the Panel.',
             'invalid_copy_id' => 'The service option selected for copying a script from either does not exist, or is copying a script itself.',
             'must_be_child' => 'The "Copy Settings From" directive for this option must be a child option for the selected service.',
@@ -29,6 +30,10 @@ return [
         'variables' => [
             'env_not_unique' => 'The environment variable :name must be unique to this service option.',
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
+        ],
+        'exporter' => [
+            'import_file_error' => 'The XML file provided was not valid.',
+            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
         ],
     ],
     'packs' => [

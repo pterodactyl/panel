@@ -59,17 +59,16 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pTag" class="form-label">Option Tag</label>
-                                <input type="text" id="pTag" name="tag" value="{{ $option->tag }}" class="form-control" />
-                                <p class="text-muted small">This should be a unique identifer for this service option that is not used for any other service options.</p>
+                                <label class="form-label">Option Tag</label>
+                                <input type="text" disabled value="{{ $option->tag }}" class="form-control" />
                             </div>
                             <div class="form-group">
-                                <label for="pDockerImage" class="form-label">Docker Image</label>
+                                <label for="pDockerImage" class="control-label">Docker Image <span class="field-optional"></label>
                                 <input type="text" id="pDockerImage" name="docker_image" value="{{ $option->docker_image }}" class="form-control" />
                                 <p class="text-muted small">The default docker image that should be used for new servers under this service option. This can be left blank to use the parent service's defined image, and can also be changed per-server.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pStartup" class="form-label">Startup Command</label>
+                                <label for="pStartup" class="control-label">Startup Command <span class="field-optional"></label>
                                 <textarea id="pStartup" name="startup" class="form-control" rows="4" placeholder="{{ $option->service->startup }}">{{ $option->startup }}</textarea>
                                 <p class="text-muted small">The default statup command that should be used for new servers under this service option. This can be left blank to use the parent service's startup, and can also be changed per-server.</p>
                             </div>
@@ -97,7 +96,7 @@
                                 <select name="config_from" id="pConfigFrom" class="form-control">
                                     <option value="0">None</option>
                                     @foreach($option->service->options as $o)
-                                        <option value="{{ $o->id }}" {{ ($option->config_from !== $o->id) ?: 'selected' }}>{{ $o->name }}</option>
+                                        <option value="{{ $o->id }}" {{ ($option->config_from !== $o->id) ?: 'selected' }}>{{ $o->name }} &lt;{{ $option->tag }}&gt;</option>
                                     @endforeach
                                 </select>
                                 <p class="text-muted small">If you would like to default to settings from another option select the option from the menu above.</p>
@@ -132,7 +131,8 @@
                     <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-danger btn-sm muted muted-hover">
                         <i class="fa fa-trash-o"></i>
                     </button>
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Service</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Option</button>
+                    <a href="{{ route('admin.services.option.export', ['option' => $option->id]) }}" class="btn btn-sm btn-info pull-right" style="margin-right:10px;">Export Option Configuration</a>
                 </div>
             </div>
         </div>

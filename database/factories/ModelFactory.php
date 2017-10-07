@@ -91,22 +91,21 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
 $factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'author' => $faker->unique()->uuid,
+        'uuid' => $faker->unique()->uuid,
+        'author' => 'testauthor@example.com',
         'name' => $faker->word,
         'description' => null,
-        'folder' => strtolower($faker->unique()->word),
-        'startup' => 'java -jar test.jar',
-        'index_file' => 'indexjs',
     ];
 });
 
 $factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
         'service_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
-        'tag' => $faker->unique()->randomNumber(5),
+        'startup' => 'java -jar test.jar',
     ];
 });
 
@@ -120,8 +119,6 @@ $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Gene
         'user_viewable' => 0,
         'user_editable' => 0,
         'rules' => 'required|string',
-        'created_at' => \Carbon\Carbon::now(),
-        'updated_at' => \Carbon\Carbon::now(),
     ];
 });
 

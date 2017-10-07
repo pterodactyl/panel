@@ -11,6 +11,7 @@ namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
 use Tests\TestCase;
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Service;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
@@ -22,12 +23,12 @@ class ServiceCreationServiceTest extends TestCase
     use CreatesServiceIndex;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -35,6 +36,11 @@ class ServiceCreationServiceTest extends TestCase
      * @var \Pterodactyl\Services\Services\ServiceCreationService
      */
     protected $service;
+
+    /**
+     * @var \Ramsey\Uuid\Uuid|\Mockery\Mock
+     */
+    protected $uuid;
 
     /**
      * Setup tests.
@@ -45,6 +51,7 @@ class ServiceCreationServiceTest extends TestCase
 
         $this->config = m::mock(Repository::class);
         $this->repository = m::mock(ServiceRepositoryInterface::class);
+        $this->uuid = m::mock('overload:' . Uuid::class);
 
         $this->service = new ServiceCreationService($this->config, $this->repository);
     }
@@ -62,15 +69,16 @@ class ServiceCreationServiceTest extends TestCase
             'startup' => $model->startup,
         ];
 
+        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-0000');
         $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('0000-author');
         $this->repository->shouldReceive('create')->with([
+            'uuid' => 'uuid-0000',
             'author' => '0000-author',
             'name' => $data['name'],
             'description' => $data['description'],
-            'folder' => $data['folder'],
             'startup' => $data['startup'],
             'index_file' => $this->getIndexScript(),
-        ])->once()->andReturn($model);
+        ], true, true)->once()->andReturn($model);
 
         $response = $this->service->handle($data);
         $this->assertInstanceOf(Service::class, $response);

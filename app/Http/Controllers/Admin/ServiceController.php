@@ -9,7 +9,9 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Illuminate\View\View;
 use Pterodactyl\Models\Service;
+use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Services\ServiceUpdateService;
@@ -46,6 +48,15 @@ class ServiceController extends Controller
      */
     protected $updateService;
 
+    /**
+     * ServiceController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
+     * @param \Pterodactyl\Services\Services\ServiceCreationService        $creationService
+     * @param \Pterodactyl\Services\Services\ServiceDeletionService        $deletionService
+     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Services\ServiceUpdateService          $updateService
+     */
     public function __construct(
         AlertsMessageBag $alert,
         ServiceCreationService $creationService,
@@ -65,10 +76,10 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('admin.services.index', [
-            'services' => $this->repository->getWithOptions(),
+            'services' => $this->repository->getWithCounts(),
         ]);
     }
 
@@ -77,7 +88,7 @@ class ServiceController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
         return view('admin.services.new');
     }
@@ -88,7 +99,7 @@ class ServiceController extends Controller
      * @param int $service
      * @return \Illuminate\View\View
      */
-    public function view($service)
+    public function view(int $service): View
     {
         return view('admin.services.view', [
             'service' => $this->repository->getWithOptionServers($service),
@@ -101,7 +112,7 @@ class ServiceController extends Controller
      * @param \Pterodactyl\Models\Service $service
      * @return \Illuminate\View\View
      */
-    public function viewFunctions(Service $service)
+    public function viewFunctions(Service $service): View
     {
         return view('admin.services.functions', ['service' => $service]);
     }
@@ -114,7 +125,7 @@ class ServiceController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(ServiceFormRequest $request)
+    public function store(ServiceFormRequest $request): RedirectResponse
     {
         $service = $this->creationService->handle($request->normalize());
         $this->alert->success(trans('admin/services.notices.service_created', ['name' => $service->name]))->flash();
@@ -132,7 +143,7 @@ class ServiceController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(ServiceFormRequest $request, Service $service)
+    public function update(ServiceFormRequest $request, Service $service): RedirectResponse
     {
         $this->updateService->handle($service->id, $request->normalize());
         $this->alert->success(trans('admin/services.notices.service_updated'))->flash();
@@ -150,7 +161,7 @@ class ServiceController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateFunctions(ServiceFunctionsFormRequest $request, Service $service)
+    public function updateFunctions(ServiceFunctionsFormRequest $request, Service $service): RedirectResponse
     {
         $this->updateService->handle($service->id, $request->normalize());
         $this->alert->success(trans('admin/services.notices.functions_updated'))->flash();
@@ -166,7 +177,7 @@ class ServiceController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function destroy(Service $service)
+    public function destroy(Service $service): RedirectResponse
     {
         $this->deletionService->handle($service->id);
         $this->alert->success(trans('admin/services.notices.service_deleted'))->flash();

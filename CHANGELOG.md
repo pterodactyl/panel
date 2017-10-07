@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * New CLI command to disabled 2-Factor Authentication on an account if necessary.
 * Ability to delete users and locations via the CLI.
 * You can now require 2FA for all users, admins only, or at will using a simple configuration in the Admin CP.
+* Added ability to export and import service options and their associated settings and environment variables via the Admin CP.
 
 ### Changed
 * Theme colors and login pages updated to give a more unique feel to the project.

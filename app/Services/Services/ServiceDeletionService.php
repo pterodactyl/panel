@@ -47,7 +47,7 @@ class ServiceDeletionService
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function handle($service)
+    public function handle(int $service): int
     {
         $count = $this->serverRepository->findCountWhere([['service_id', '=', $service]]);
         if ($count > 0) {

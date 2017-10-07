@@ -13,6 +13,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 abstract class AdminFormRequest extends FormRequest
 {
+    /**
+     * The rules to apply to the incoming form request.
+     *
+     * @return array
+     */
     abstract public function rules();
 
     /**

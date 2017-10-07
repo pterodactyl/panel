@@ -9,17 +9,20 @@
 
 namespace Pterodactyl\Contracts\Repository\Daemon;
 
+use Psr\Http\Message\ResponseInterface;
+
 interface ServerRepositoryInterface extends BaseRepositoryInterface
 {
     /**
      * Create a new server on the daemon for the panel.
      *
-     * @param int   $id
+     * @param array $structure
      * @param array $overrides
-     * @param bool  $start
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function create($id, array $overrides = [], $start = false);
+    public function create(array $structure, array $overrides = []): ResponseInterface;
 
     /**
      * Update server details on the daemon.

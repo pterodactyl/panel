@@ -11,7 +11,7 @@ namespace Pterodactyl\Http\Requests\Admin\Service;
 
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class ServiceFormRequest extends AdminFormRequest
+class OptionImportFormRequest extends AdminFormRequest
 {
     /**
      * @return array
@@ -19,9 +19,8 @@ class ServiceFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:1|max:255',
-            'description' => 'required|nullable|string',
-            'startup' => 'required|nullable|string',
+            'import_file' => 'bail|required|file|max:1000|mimetypes:application/json,text/plain',
+            'import_to_service' => 'bail|required|integer|exists:services,id',
         ];
     }
 }
