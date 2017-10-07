@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services\Sharing;
+namespace Pterodactyl\Services\Eggs\Sharing;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;

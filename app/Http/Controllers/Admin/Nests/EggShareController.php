@@ -14,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
-use Pterodactyl\Services\Services\Sharing\EggImporterService;
+use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
 use Pterodactyl\Http\Requests\Admin\Service\OptionImportFormRequest;
 
 class EggShareController extends Controller
@@ -25,15 +25,15 @@ class EggShareController extends Controller
     protected $exporterService;
 
     /**
-     * @var \Pterodactyl\Services\Services\Sharing\EggImporterService
+     * @var \Pterodactyl\Services\Eggs\Sharing\EggImporterService
      */
     protected $importerService;
 
     /**
      * OptionShareController constructor.
      *
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService     $exporterService
-     * @param \Pterodactyl\Services\Services\Sharing\EggImporterService $importerService
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService $exporterService
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService $importerService
      */
     public function __construct(
         EggExporterService $exporterService,
