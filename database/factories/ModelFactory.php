@@ -102,7 +102,7 @@ $factory->define(Pterodactyl\Models\Egg::class, function (Faker\Generator $faker
     return [
         'id' => $faker->unique()->randomNumber(),
         'uuid' => $faker->unique()->uuid,
-        'service_id' => $faker->unique()->randomNumber(),
+        'nest_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
         'startup' => 'java -jar test.jar',

@@ -11,13 +11,13 @@ namespace Pterodactyl\Http\Controllers\API\Remote;
 
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Services\Options\EggConfigurationService;
 
-class OptionRetrievalController extends Controller
+class EggRetrievalController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Services\Options\EggConfigurationService
+     * @var \Pterodactyl\Services\Eggs\EggConfigurationService
      */
     protected $configurationFileService;
 
@@ -29,8 +29,8 @@ class OptionRetrievalController extends Controller
     /**
      * OptionUpdateController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface       $repository
-     * @param \Pterodactyl\Services\Services\Options\EggConfigurationService $configurationFileService
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Eggs\EggConfigurationService       $configurationFileService
      */
     public function __construct(
         EggRepositoryInterface $repository,
@@ -41,7 +41,7 @@ class OptionRetrievalController extends Controller
     }
 
     /**
-     * Return a JSON array of service options and the SHA1 hash of thier configuration file.
+     * Return a JSON array of Eggs and the SHA1 hash of thier configuration file.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -58,7 +58,7 @@ class OptionRetrievalController extends Controller
     }
 
     /**
-     * Return the configuration file for a single service option for the Daemon.
+     * Return the configuration file for a single Egg for the Daemon.
      *
      * @param string $uuid
      * @return \Illuminate\Http\JsonResponse

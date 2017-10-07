@@ -140,8 +140,9 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDaemonServiceData($id)
     {
-        $instance = $this->getBuilder()->with('egg.nest', 'pack')->find($id, $this->getColumns());
+        Assert::integerish($id, 'First argument passed to getDaemonServiceData must be integer, received %s.');
 
+        $instance = $this->getBuilder()->with('egg.nest', 'pack')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException();
         }

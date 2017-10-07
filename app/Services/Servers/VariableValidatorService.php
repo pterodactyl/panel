@@ -106,7 +106,7 @@ class VariableValidatorService
      */
     public function validate($option)
     {
-        $variables = $this->optionVariableRepository->findWhere([['option_id', '=', $option]]);
+        $variables = $this->optionVariableRepository->findWhere([['egg_id', '=', $option]]);
         if (count($variables) === 0) {
             $this->results = [];
 

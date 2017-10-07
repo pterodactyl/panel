@@ -110,8 +110,8 @@ class StartupModificationService
         }
 
         if (
-            $server->service_id != array_get($data, 'service_id', $server->service_id) ||
-            $server->option_id != array_get($data, 'option_id', $server->option_id) ||
+            $server->nest_id != array_get($data, 'nest_id', $server->nest_id) ||
+            $server->egg_id != array_get($data, 'egg_id', $server->egg_id) ||
             $server->pack_id != array_get($data, 'pack_id', $server->pack_id)
         ) {
             $hasServiceChanges = true;
@@ -121,7 +121,7 @@ class StartupModificationService
         if (isset($data['environment'])) {
             $validator = $this->validatorService->isAdmin($this->admin)
                 ->setFields($data['environment'])
-                ->validate(array_get($data, 'option_id', $server->option_id));
+                ->validate(array_get($data, 'egg_id', $server->egg_id));
 
             foreach ($validator->getResults() as $result) {
                 $this->serverVariableRepository->withoutFresh()->updateOrCreate([
@@ -143,15 +143,15 @@ class StartupModificationService
             $server = $this->repository->update($server->id, [
                 'installed' => 0,
                 'startup' => array_get($data, 'startup', $server->startup),
-                'service_id' => array_get($data, 'service_id', $server->service_id),
-                'option_id' => array_get($data, 'option_id', $server->service_id),
-                'pack_id' => array_get($data, 'pack_id', $server->pack_id),
+                'nest_id' => array_get($data, 'nest_id', $server->nest_id),
+                'egg_id' => array_get($data, 'egg_id', $server->egg_id),
+                'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
                 'skip_scripts' => isset($data['skip_scripts']),
             ]);
 
             if (isset($hasServiceChanges)) {
                 $daemonData['service'] = array_merge(
-                    $this->repository->withColumns(['id', 'option_id', 'pack_id'])->getDaemonServiceData($server),
+                    $this->repository->withColumns(['id', 'egg_id', 'pack_id'])->getDaemonServiceData($server->id),
                     ['skip_scripts' => isset($data['skip_scripts'])]
                 );
             }

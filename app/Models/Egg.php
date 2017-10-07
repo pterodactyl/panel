@@ -54,7 +54,7 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'service_id' => 'integer',
+        'nest_id' => 'integer',
         'config_from' => 'integer',
         'script_is_privileged' => 'boolean',
         'copy_script_from' => 'integer',

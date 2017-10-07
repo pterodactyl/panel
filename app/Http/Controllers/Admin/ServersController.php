@@ -92,6 +92,11 @@ class ServersController extends Controller
     protected $locationRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     */
+    protected $nestRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     protected $nodeRepository;
@@ -110,11 +115,6 @@ class ServersController extends Controller
      * @var \Pterodactyl\Services\Servers\ServerCreationService
      */
     protected $service;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    protected $serviceRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\StartupModificationService
@@ -144,7 +144,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
      * @param \Pterodactyl\Services\Servers\ReinstallServerService            $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface       $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface       $nestRepository
      * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
      */
@@ -164,7 +164,7 @@ class ServersController extends Controller
         NodeRepositoryInterface $nodeRepository,
         ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository,
-        NestRepositoryInterface $serviceRepository,
+        NestRepositoryInterface $nestRepository,
         StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
     ) {
@@ -179,11 +179,11 @@ class ServersController extends Controller
         $this->detailsModificationService = $detailsModificationService;
         $this->deletionService = $deletionService;
         $this->locationRepository = $locationRepository;
+        $this->nestRepository = $nestRepository;
         $this->nodeRepository = $nodeRepository;
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
         $this->service = $service;
-        $this->serviceRepository = $serviceRepository;
         $this->startupModificationService = $startupModificationService;
         $this->suspensionService = $suspensionService;
     }
@@ -218,19 +218,19 @@ class ServersController extends Controller
             return redirect()->route('admin.nodes');
         }
 
-        $services = $this->serviceRepository->getWithOptions();
+        $nests = $this->nestRepository->getWithEggs();
 
         Javascript::put([
-            'services' => $services->map(function ($item) {
+            'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
-                    'options' => $item->options->keyBy('id')->toArray(),
+                    'eggs' => $item->eggs->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
         ]);
 
         return view('admin.servers.new', [
             'locations' => $this->locationRepository->all(),
-            'services' => $services,
+            'nests' => $nests,
         ]);
     }
 
@@ -331,12 +331,12 @@ class ServersController extends Controller
             abort(404);
         }
 
-        $services = $this->serviceRepository->getWithOptions();
+        $nests = $this->nestRepository->getWithEggs();
 
         Javascript::put([
-            'services' => $services->map(function ($item) {
+            'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
-                    'options' => $item->options->keyBy('id')->toArray(),
+                    'eggs' => $item->eggs->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
             'server_variables' => $parameters->data,
@@ -344,7 +344,7 @@ class ServersController extends Controller
 
         return view('admin.servers.view.startup', [
             'server' => $parameters->server,
-            'services' => $services,
+            'nests' => $nests,
         ]);
     }
 
@@ -402,7 +402,7 @@ class ServersController extends Controller
     public function setDetails(Request $request, Server $server)
     {
         $this->detailsModificationService->edit($server, $request->only([
-            'owner_id', 'name', 'description', 'reset_token',
+            'owner_id', 'name', 'description',
         ]));
 
         $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();

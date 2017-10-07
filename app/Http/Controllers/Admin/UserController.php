@@ -159,6 +159,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UserFormRequest $request, User $user)
     {
