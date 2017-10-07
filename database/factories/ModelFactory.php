@@ -133,7 +133,7 @@ $factory->state(Pterodactyl\Models\EggVariable::class, 'editable', function () {
 $factory->define(Pterodactyl\Models\Pack::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'option_id' => $faker->randomNumber(),
+        'egg_id' => $faker->randomNumber(),
         'uuid' => $faker->uuid,
         'name' => $faker->word,
         'description' => null,

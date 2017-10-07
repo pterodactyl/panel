@@ -34,7 +34,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $fillable = [
-        'option_id', 'uuid', 'name', 'version', 'description', 'selectable', 'visible', 'locked',
+        'egg_id', 'uuid', 'name', 'version', 'description', 'selectable', 'visible', 'locked',
     ];
 
     /**

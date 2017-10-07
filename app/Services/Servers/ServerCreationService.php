@@ -124,7 +124,7 @@ class ServerCreationService
     public function create(array $data)
     {
         // @todo auto-deployment
-        $validator = $this->validatorService->isAdmin()->setFields($data['environment'])->validate($data['option_id']);
+        $validator = $this->validatorService->isAdmin()->setFields($data['environment'])->validate($data['egg_id']);
         $uniqueShort = str_random(8);
 
         $this->connection->beginTransaction();

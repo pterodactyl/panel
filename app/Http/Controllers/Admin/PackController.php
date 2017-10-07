@@ -114,7 +114,7 @@ class PackController extends Controller
     public function index(Request $request)
     {
         return view('admin.packs.index', [
-            'packs' => $this->repository->search($request->input('query'))->paginateWithOptionAndServerCount(
+            'packs' => $this->repository->search($request->input('query'))->paginateWithEggAndServerCount(
                 $this->config->get('pterodactyl.paginate.admin.packs')
             ),
         ]);
@@ -124,11 +124,13 @@ class PackController extends Controller
      * Display new pack creation form.
      *
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function create()
     {
         return view('admin.packs.new', [
-            'services' => $this->serviceRepository->getWithOptions(),
+            'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }
 
@@ -136,11 +138,13 @@ class PackController extends Controller
      * Display new pack creation modal for use with template upload.
      *
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function newTemplate()
     {
         return view('admin.packs.modal', [
-            'services' => $this->serviceRepository->getWithOptions(),
+            'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }
 
@@ -160,7 +164,7 @@ class PackController extends Controller
     public function store(PackFormRequest $request)
     {
         if ($request->has('from_template')) {
-            $pack = $this->templateUploadService->handle($request->input('option_id'), $request->file('file_upload'));
+            $pack = $this->templateUploadService->handle($request->input('egg_id'), $request->file('file_upload'));
         } else {
             $pack = $this->creationService->handle($request->normalize(), $request->file('file_upload'));
         }
@@ -175,12 +179,13 @@ class PackController extends Controller
      *
      * @param int $pack
      * @return \Illuminate\View\View
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view($pack)
     {
         return view('admin.packs.view', [
             'pack' => $this->repository->getWithServers($pack),
-            'services' => $this->serviceRepository->getWithOptions(),
+            'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }
 

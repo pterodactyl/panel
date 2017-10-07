@@ -79,7 +79,7 @@
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('vendor/jquery/date-format.min.js') !!}
-    @if($server->service->folder === 'minecraft')
+    @if($server->nest->name === 'Minecraft' && $server->nest->author === 'support@pterodactyl.io')
         {!! Theme::js('js/plugins/minecraft/eula.js') !!}
     @endif
 @endsection
