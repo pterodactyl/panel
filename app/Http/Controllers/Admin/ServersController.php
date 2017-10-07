@@ -25,11 +25,11 @@ use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Database\DatabaseManagementService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\StartupModificationService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
@@ -112,7 +112,7 @@ class ServersController extends Controller
     protected $service;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $serviceRepository;
 
@@ -144,7 +144,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
      * @param \Pterodactyl\Services\Servers\ReinstallServerService            $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface    $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface       $serviceRepository
      * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
      */
@@ -164,7 +164,7 @@ class ServersController extends Controller
         NodeRepositoryInterface $nodeRepository,
         ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository,
-        ServiceRepositoryInterface $serviceRepository,
+        NestRepositoryInterface $serviceRepository,
         StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
     ) {

@@ -11,18 +11,18 @@ namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\Services\ServiceUpdateService;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Services\Services\NestUpdateService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class ServiceUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\ServiceUpdateService
+     * @var \Pterodactyl\Services\Services\NestUpdateService
      */
     protected $service;
 
@@ -33,9 +33,9 @@ class ServiceUpdateServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = m::mock(ServiceRepositoryInterface::class);
+        $this->repository = m::mock(NestRepositoryInterface::class);
 
-        $this->service = new ServiceUpdateService($this->repository);
+        $this->service = new NestUpdateService($this->repository);
     }
 
     /**

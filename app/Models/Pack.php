@@ -47,7 +47,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
         'selectable' => 'sometimes|required',
         'visible' => 'sometimes|required',
         'locked' => 'sometimes|required',
-        'option_id' => 'required',
+        'egg_id' => 'required',
     ];
 
     /**
@@ -60,7 +60,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
         'selectable' => 'boolean',
         'visible' => 'boolean',
         'locked' => 'boolean',
-        'option_id' => 'exists:service_options,id',
+        'egg_id' => 'exists:eggs,id',
     ];
 
     /**
@@ -69,7 +69,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'option_id' => 'integer',
+        'egg_id' => 'integer',
         'selectable' => 'boolean',
         'visible' => 'boolean',
         'locked' => 'boolean',
@@ -83,9 +83,8 @@ class Pack extends Model implements CleansAttributes, ValidableContract
     protected $searchableColumns = [
         'name' => 10,
         'uuid' => 8,
-        'option.name' => 6,
-        'option.tag' => 5,
-        'option.docker_image' => 5,
+        'egg.name' => 6,
+        'egg.docker_image' => 5,
         'version' => 2,
     ];
 
@@ -114,13 +113,13 @@ class Pack extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets option associated with a service pack.
+     * Gets egg associated with a service pack.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function option()
+    public function egg()
     {
-        return $this->belongsTo(ServiceOption::class);
+        return $this->belongsTo(Egg::class);
     }
 
     /**

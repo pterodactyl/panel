@@ -9,15 +9,15 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\EggVariable;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest;
 use Pterodactyl\Repositories\Eloquent\ServiceVariableRepository;
 use Pterodactyl\Services\Services\Variables\VariableUpdateService;
 use Pterodactyl\Services\Services\Variables\VariableCreationService;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
 class VariableController extends Controller
 {
@@ -32,7 +32,7 @@ class VariableController extends Controller
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $serviceOptionRepository;
 
@@ -48,7 +48,7 @@ class VariableController extends Controller
 
     public function __construct(
         AlertsMessageBag $alert,
-        ServiceOptionRepositoryInterface $serviceOptionRepository,
+        EggRepositoryInterface $serviceOptionRepository,
         ServiceVariableRepository $serviceVariableRepository,
         VariableCreationService $creationService,
         VariableUpdateService $updateService
@@ -64,13 +64,13 @@ class VariableController extends Controller
      * Handles POST request to create a new option variable.
      *
      * @param \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
-     * @param \Pterodactyl\Models\ServiceOption                          $option
+     * @param \Pterodactyl\Models\Egg                                    $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
-    public function store(OptionVariableFormRequest $request, ServiceOption $option)
+    public function store(OptionVariableFormRequest $request, Egg $option)
     {
         $this->creationService->handle($option->id, $request->normalize());
         $this->alert->success(trans('admin/services.variables.notices.variable_created'))->flash();
@@ -95,8 +95,8 @@ class VariableController extends Controller
      * Handles POST when editing a configration for a service variable.
      *
      * @param \Pterodactyl\Http\Requests\Admin\OptionVariableFormRequest $request
-     * @param \Pterodactyl\Models\ServiceOption                          $option
-     * @param \Pterodactyl\Models\ServiceVariable                        $variable
+     * @param \Pterodactyl\Models\Egg                                    $option
+     * @param \Pterodactyl\Models\EggVariable                            $variable
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -104,7 +104,7 @@ class VariableController extends Controller
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
-    public function update(OptionVariableFormRequest $request, ServiceOption $option, ServiceVariable $variable)
+    public function update(OptionVariableFormRequest $request, Egg $option, EggVariable $variable)
     {
         $this->updateService->handle($variable, $request->normalize());
         $this->alert->success(trans('admin/services.variables.notices.variable_updated', [
@@ -117,11 +117,11 @@ class VariableController extends Controller
     /**
      * Delete a service variable from the system.
      *
-     * @param \Pterodactyl\Models\ServiceOption   $option
-     * @param \Pterodactyl\Models\ServiceVariable $variable
+     * @param \Pterodactyl\Models\Egg         $option
+     * @param \Pterodactyl\Models\EggVariable $variable
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function delete(ServiceOption $option, ServiceVariable $variable)
+    public function delete(Egg $option, EggVariable $variable)
     {
         $this->serviceVariableRepository->delete($variable->id);
         $this->alert->success(trans('admin/services.variables.notices.variable_deleted', [

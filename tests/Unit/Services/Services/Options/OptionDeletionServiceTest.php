@@ -12,16 +12,16 @@ namespace Tests\Unit\Services\Services\Options;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionDeletionService;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException;
 
 class OptionDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -42,7 +42,7 @@ class OptionDeletionServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
+        $this->repository = m::mock(EggRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
 
         $this->service = new OptionDeletionService($this->serverRepository, $this->repository);

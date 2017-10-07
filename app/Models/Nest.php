@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Service extends Model implements CleansAttributes, ValidableContract
+class Nest extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
@@ -24,7 +24,7 @@ class Service extends Model implements CleansAttributes, ValidableContract
      *
      * @var string
      */
-    protected $table = 'services';
+    protected $table = 'nests';
 
     /**
      * Fields that are mass assignable.
@@ -55,27 +55,27 @@ class Service extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Gets all service options associated with this service.
+     * Gets all eggs associated with this service.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function options()
+    public function eggs()
     {
-        return $this->hasMany(ServiceOption::class);
+        return $this->hasMany(Egg::class);
     }
 
     /**
-     * Returns all of the packs associated with a service, regardless of the service option.
+     * Returns all of the packs associated with a nest, regardless of the egg.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function packs()
     {
-        return $this->hasManyThrough(Pack::class, ServiceOption::class, 'service_id', 'option_id');
+        return $this->hasManyThrough(Pack::class, Egg::class, 'nest_id', 'egg_id');
     }
 
     /**
-     * Gets all servers associated with this service.
+     * Gets all servers associated with this nest.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

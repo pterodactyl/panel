@@ -9,49 +9,49 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\Egg;
 use Illuminate\Database\Eloquent\Collection;
 
-interface ServiceOptionRepositoryInterface extends RepositoryInterface
+interface EggRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Return a service option with the variables relation attached.
+     * Return an egg with the variables relation attached.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithVariables(int $id): ServiceOption;
+    public function getWithVariables(int $id): Egg;
 
     /**
-     * Return all of the service options and their relations to be used in the daemon API.
+     * Return all eggs and their relations to be used in the daemon API.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllWithCopyAttributes(): Collection;
 
     /**
-     * Return a service option with the scriptFrom and configFrom relations loaded onto the model.
+     * Return an egg with the scriptFrom and configFrom relations loaded onto the model.
      *
      * @param int|string $value
      * @param string     $column
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      */
-    public function getWithCopyAttributes($value, string $column = 'id'): ServiceOption;
+    public function getWithCopyAttributes($value, string $column = 'id'): Egg;
 
     /**
      * Return all of the data needed to export a service.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithExportAttributes(int $id): ServiceOption;
+    public function getWithExportAttributes(int $id): Egg;
 
     /**
-     * Confirm a copy script belongs to the same service as the item trying to use it.
+     * Confirm a copy script belongs to the same nest as the item trying to use it.
      *
      * @param int $copyFromId
      * @param int $service

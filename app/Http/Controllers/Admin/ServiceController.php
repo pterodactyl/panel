@@ -10,15 +10,15 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\View\View;
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Nest;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Services\ServiceUpdateService;
-use Pterodactyl\Services\Services\ServiceCreationService;
-use Pterodactyl\Services\Services\ServiceDeletionService;
-use Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Services\Services\NestUpdateService;
+use Pterodactyl\Services\Services\NestCreationService;
+use Pterodactyl\Services\Services\NestDeletionService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Service\StoreNestFormRequest;
 use Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest;
 
 class ServiceController extends Controller
@@ -29,40 +29,40 @@ class ServiceController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Services\ServiceCreationService
+     * @var \Pterodactyl\Services\Services\NestCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Services\ServiceDeletionService
+     * @var \Pterodactyl\Services\Services\NestDeletionService
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\ServiceUpdateService
+     * @var \Pterodactyl\Services\Services\NestUpdateService
      */
     protected $updateService;
 
     /**
      * ServiceController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
-     * @param \Pterodactyl\Services\Services\ServiceCreationService        $creationService
-     * @param \Pterodactyl\Services\Services\ServiceDeletionService        $deletionService
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Services\ServiceUpdateService          $updateService
+     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param \Pterodactyl\Services\Services\NestCreationService        $creationService
+     * @param \Pterodactyl\Services\Services\NestDeletionService        $deletionService
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Services\NestUpdateService          $updateService
      */
     public function __construct(
         AlertsMessageBag $alert,
-        ServiceCreationService $creationService,
-        ServiceDeletionService $deletionService,
-        ServiceRepositoryInterface $repository,
-        ServiceUpdateService $updateService
+        NestCreationService $creationService,
+        NestDeletionService $deletionService,
+        NestRepositoryInterface $repository,
+        NestUpdateService $updateService
     ) {
         $this->alert = $alert;
         $this->creationService = $creationService;
@@ -109,10 +109,10 @@ class ServiceController extends Controller
     /**
      * Return function editing view for a service.
      *
-     * @param \Pterodactyl\Models\Service $service
+     * @param \Pterodactyl\Models\Nest $service
      * @return \Illuminate\View\View
      */
-    public function viewFunctions(Service $service): View
+    public function viewFunctions(Nest $service): View
     {
         return view('admin.services.functions', ['service' => $service]);
     }
@@ -120,12 +120,12 @@ class ServiceController extends Controller
     /**
      * Handle post action for new service.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Admin\Service\StoreNestFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(ServiceFormRequest $request): RedirectResponse
+    public function store(StoreNestFormRequest $request): RedirectResponse
     {
         $service = $this->creationService->handle($request->normalize());
         $this->alert->success(trans('admin/services.notices.service_created', ['name' => $service->name]))->flash();
@@ -136,14 +136,14 @@ class ServiceController extends Controller
     /**
      * Edits configuration for a specific service.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceFormRequest $request
-     * @param \Pterodactyl\Models\Service                                 $service
+     * @param \Pterodactyl\Http\Requests\Admin\Service\StoreNestFormRequest $request
+     * @param \Pterodactyl\Models\Nest                                      $service
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(ServiceFormRequest $request, Service $service): RedirectResponse
+    public function update(StoreNestFormRequest $request, Nest $service): RedirectResponse
     {
         $this->updateService->handle($service->id, $request->normalize());
         $this->alert->success(trans('admin/services.notices.service_updated'))->flash();
@@ -155,13 +155,13 @@ class ServiceController extends Controller
      * Update the functions file for a service.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Service\ServiceFunctionsFormRequest $request
-     * @param \Pterodactyl\Models\Service                                          $service
+     * @param \Pterodactyl\Models\Nest                                             $service
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateFunctions(ServiceFunctionsFormRequest $request, Service $service): RedirectResponse
+    public function updateFunctions(ServiceFunctionsFormRequest $request, Nest $service): RedirectResponse
     {
         $this->updateService->handle($service->id, $request->normalize());
         $this->alert->success(trans('admin/services.notices.functions_updated'))->flash();
@@ -172,12 +172,12 @@ class ServiceController extends Controller
     /**
      * Delete a service from the panel.
      *
-     * @param \Pterodactyl\Models\Service $service
+     * @param \Pterodactyl\Models\Nest $service
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function destroy(Service $service): RedirectResponse
+    public function destroy(Nest $service): RedirectResponse
     {
         $this->deletionService->handle($service->id);
         $this->alert->success(trans('admin/services.notices.service_deleted'))->flash();

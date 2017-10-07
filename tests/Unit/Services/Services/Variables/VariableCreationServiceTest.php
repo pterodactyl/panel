@@ -11,16 +11,16 @@ namespace Tests\Unit\Services\Services\Variables;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Services\Variables\VariableCreationService;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 
 class VariableCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $serviceOptionRepository;
 
@@ -41,7 +41,7 @@ class VariableCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->serviceOptionRepository = m::mock(ServiceOptionRepositoryInterface::class);
+        $this->serviceOptionRepository = m::mock(EggRepositoryInterface::class);
         $this->serviceVariableRepository = m::mock(ServiceVariableRepositoryInterface::class);
 
         $this->service = new VariableCreationService($this->serviceOptionRepository, $this->serviceVariableRepository);
@@ -58,9 +58,9 @@ class VariableCreationServiceTest extends TestCase
            'user_viewable' => false,
            'user_editable' => false,
            'env_variable' => 'TEST_VAR_123',
-        ])->once()->andReturn(new ServiceVariable);
+        ])->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(ServiceVariable::class, $this->service->handle(1, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
     }
 
     /**
@@ -75,9 +75,9 @@ class VariableCreationServiceTest extends TestCase
             'user_editable' => true,
             'env_variable' => 'TEST_VAR_123',
             'options' => ['user_viewable', 'user_editable'],
-        ])->once()->andReturn(new ServiceVariable);
+        ])->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(ServiceVariable::class, $this->service->handle(1, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
     }
 
     /**
@@ -96,7 +96,7 @@ class VariableCreationServiceTest extends TestCase
      */
     public function testModelCanBePassedInPlaceOfInteger()
     {
-        $model = factory(ServiceOption::class)->make();
+        $model = factory(Egg::class)->make();
         $data = ['env_variable' => 'TEST_VAR_123'];
 
         $this->serviceVariableRepository->shouldReceive('create')->with([
@@ -104,9 +104,9 @@ class VariableCreationServiceTest extends TestCase
             'user_viewable' => false,
             'user_editable' => false,
             'env_variable' => 'TEST_VAR_123',
-        ])->once()->andReturn(new ServiceVariable);
+        ])->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(ServiceVariable::class, $this->service->handle($model, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->service->handle($model, $data));
     }
 
     /**
@@ -117,7 +117,7 @@ class VariableCreationServiceTest extends TestCase
     public function reservedNamesProvider()
     {
         $data = [];
-        $exploded = explode(',', ServiceVariable::RESERVED_ENV_NAMES);
+        $exploded = explode(',', EggVariable::RESERVED_ENV_NAMES);
         foreach ($exploded as $e) {
             $data[] = [$e];
         }

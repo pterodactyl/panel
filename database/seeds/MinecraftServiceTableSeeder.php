@@ -6,17 +6,17 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 
 class MinecraftServiceTableSeeder extends Seeder
 {
     /**
      * The core service ID.
      *
-     * @var \Pterodactyl\Models\Service
+     * @var \Pterodactyl\Models\Nest
      */
     protected $service;
 
@@ -80,7 +80,7 @@ EOF;
 
     private function addCoreService()
     {
-        $this->service = Service::updateOrCreate([
+        $this->service = Nest::updateOrCreate([
             'author' => config('pterodactyl.service.core'),
             'folder' => 'minecraft',
         ], [
@@ -114,7 +114,7 @@ fi
 curl -o ${SERVER_JARFILE} https://s3.amazonaws.com/Minecraft.Download/versions/${DL_VERSION}/minecraft_server.${DL_VERSION}.jar
 EOF;
 
-        $this->option['vanilla'] = ServiceOption::updateOrCreate([
+        $this->option['vanilla'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'vanilla',
         ], [
@@ -148,7 +148,7 @@ if [ ! -z "${DL_PATH}" ]; then
 fi
 EOF;
 
-        $this->option['spigot'] = ServiceOption::updateOrCreate([
+        $this->option['spigot'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'spigot',
         ], [
@@ -178,7 +178,7 @@ cd /mnt/server
 curl -sSL "https://repo.spongepowered.org/maven/org/spongepowered/spongevanilla/${SPONGE_VERSION}/spongevanilla-${SPONGE_VERSION}.jar" -o ${SERVER_JARFILE}
 EOF;
 
-        $this->option['sponge'] = ServiceOption::updateOrCreate([
+        $this->option['sponge'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'sponge',
         ], [
@@ -211,7 +211,7 @@ fi
 curl -o ${SERVER_JARFILE} https://ci.md-5.net/job/BungeeCord/${BUNGEE_VERSION}/artifact/bootstrap/target/BungeeCord.jar
 EOF;
 
-        $this->option['bungeecord'] = ServiceOption::updateOrCreate([
+        $this->option['bungeecord'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'bungeecord',
         ], [
@@ -247,7 +247,7 @@ java -jar installer.jar --installServer
 rm -rf installer.jar
 EOF;
 
-        $this->option['forge'] = ServiceOption::updateOrCreate([
+        $this->option['forge'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'forge',
         ], [
@@ -276,7 +276,7 @@ EOF;
 
     private function addVanillaVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['vanilla']->id,
             'env_variable' => 'SERVER_JARFILE',
         ], [
@@ -288,7 +288,7 @@ EOF;
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['vanilla']->id,
             'env_variable' => 'VANILLA_VERSION',
         ], [
@@ -303,7 +303,7 @@ EOF;
 
     private function addSpigotVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['spigot']->id,
             'env_variable' => 'SERVER_JARFILE',
         ], [
@@ -315,7 +315,7 @@ EOF;
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['spigot']->id,
             'env_variable' => 'DL_VERSION',
         ], [
@@ -327,7 +327,7 @@ EOF;
             'rules' => 'required|string|between:3,7',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['spigot']->id,
             'env_variable' => 'DL_PATH',
         ], [
@@ -342,7 +342,7 @@ EOF;
 
     private function addSpongeVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['sponge']->id,
             'env_variable' => 'SPONGE_VERSION',
         ], [
@@ -354,7 +354,7 @@ EOF;
             'rules' => 'required|regex:/^([a-zA-Z0-9.\-_]+)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['sponge']->id,
             'env_variable' => 'SERVER_JARFILE',
         ], [
@@ -369,7 +369,7 @@ EOF;
 
     private function addBungeecordVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['bungeecord']->id,
             'env_variable' => 'BUNGEE_VERSION',
         ], [
@@ -381,7 +381,7 @@ EOF;
             'rules' => 'required|alpha_num|between:1,6',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['bungeecord']->id,
             'env_variable' => 'SERVER_JARFILE',
         ], [
@@ -396,7 +396,7 @@ EOF;
 
     private function addForgeVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['forge']->id,
             'env_variable' => 'SERVER_JARFILE',
         ], [

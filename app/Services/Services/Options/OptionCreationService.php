@@ -10,9 +10,9 @@
 namespace Pterodactyl\Services\Services\Options;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionCreationService
@@ -23,17 +23,17 @@ class OptionCreationService
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
      * CreationService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                            $config
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
+     * @param \Illuminate\Contracts\Config\Repository                  $config
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
-    public function __construct(ConfigRepository $config, ServiceOptionRepositoryInterface $repository)
+    public function __construct(ConfigRepository $config, EggRepositoryInterface $repository)
     {
         $this->config = $config;
         $this->repository = $repository;
@@ -43,12 +43,12 @@ class OptionCreationService
      * Create a new service option and assign it to the given service.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException
      */
-    public function handle(array $data): ServiceOption
+    public function handle(array $data): Egg
     {
         if (! is_null(array_get($data, 'config_from'))) {
             $results = $this->repository->findCountWhere([

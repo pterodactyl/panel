@@ -6,10 +6,10 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class VoiceServiceTableSeeder extends Seeder
@@ -19,7 +19,7 @@ class VoiceServiceTableSeeder extends Seeder
     /**
      * The core service ID.
      *
-     * @var Service
+     * @var Nest
      */
     protected $service;
 
@@ -42,7 +42,7 @@ class VoiceServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Service::updateOrCreate([
+        $this->service = Nest::updateOrCreate([
             'author' => config('pterodactyl.service.core'),
             'folder' => 'voice',
         ], [
@@ -71,7 +71,7 @@ tar -xjvf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2
 cp -r murmur-static_x86-${MUMBLE_VERSION}/* /mnt/server
 EOF;
 
-        $this->option['mumble'] = ServiceOption::updateOrCreate([
+        $this->option['mumble'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'mumble',
         ], [
@@ -124,7 +124,7 @@ logappend=0
 query_skipbruteforcecheck=0" > /mnt/server/ts3server.ini
 EOF;
 
-        $this->option['ts3'] = ServiceOption::updateOrCreate([
+        $this->option['ts3'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'ts3',
         ], [
@@ -143,7 +143,7 @@ EOF;
 
     private function addVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['mumble']->id,
             'env_variable' => 'MAX_USERS',
         ], [
@@ -155,7 +155,7 @@ EOF;
             'rules' => 'required|numeric|digits_between:1,5',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['mumble']->id,
             'env_variable' => 'MUMBLE_VERSION',
         ], [
@@ -167,7 +167,7 @@ EOF;
             'rules' => 'required|regex:/^([0-9_\.-]{5,8})$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['ts3']->id,
             'env_variable' => 'TS_VERSION',
         ], [

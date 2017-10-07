@@ -12,10 +12,10 @@ namespace Tests\Unit\Services\Services;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\Services\ServiceDeletionService;
+use Pterodactyl\Services\Services\NestDeletionService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class ServiceDeletionServiceTest extends TestCase
 {
@@ -25,12 +25,12 @@ class ServiceDeletionServiceTest extends TestCase
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\ServiceDeletionService
+     * @var \Pterodactyl\Services\Services\NestDeletionService
      */
     protected $service;
 
@@ -42,9 +42,9 @@ class ServiceDeletionServiceTest extends TestCase
         parent::setUp();
 
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
-        $this->repository = m::mock(ServiceRepositoryInterface::class);
+        $this->repository = m::mock(NestRepositoryInterface::class);
 
-        $this->service = new ServiceDeletionService($this->serverRepository, $this->repository);
+        $this->service = new NestDeletionService($this->serverRepository, $this->repository);
     }
 
     /**

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class ServiceOption extends Model implements CleansAttributes, ValidableContract
+class Egg extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
@@ -24,7 +24,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
      *
      * @var string
      */
-    protected $table = 'service_options';
+    protected $table = 'eggs';
 
     /**
      * Fields that are not mass assignable.
@@ -67,9 +67,8 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
         'service_id' => 'required',
         'name' => 'required',
         'description' => 'required',
-        'tag' => 'required',
-        'docker_image' => 'sometimes',
-        'startup' => 'sometimes',
+        'docker_image' => 'required',
+        'startup' => 'required',
         'config_from' => 'sometimes',
         'config_stop' => 'required_without:config_from',
         'config_startup' => 'required_without:config_from',
@@ -85,7 +84,6 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
         'uuid' => 'string|size:36',
         'name' => 'string|max:255',
         'description' => 'string',
-        'tag' => 'bail|string|max:150',
         'docker_image' => 'string|max:255',
         'startup' => 'nullable|string',
         'config_from' => 'bail|nullable|numeric|exists:service_options,id',
@@ -103,12 +101,10 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
         'config_startup' => null,
         'config_logs' => null,
         'config_files' => null,
-        'startup' => null,
-        'docker_image' => null,
     ];
 
     /**
-     * Returns the install script for the option; if option is copying from another
+     * Returns the install script for the egg; if egg is copying from another
      * it will return the copied script.
      *
      * @return string
@@ -119,7 +115,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Returns the entry command for the option; if option is copying from another
+     * Returns the entry command for the egg; if egg is copying from another
      * it will return the copied entry command.
      *
      * @return string
@@ -130,7 +126,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Returns the install container for the option; if option is copying from another
+     * Returns the install container for the egg; if egg is copying from another
      * it will return the copied install container.
      *
      * @return string
@@ -141,7 +137,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Return the file configuration for a service option.
+     * Return the file configuration for an egg.
      *
      * @return string
      */
@@ -151,7 +147,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Return the startup configuration for a service option.
+     * Return the startup configuration for an egg.
      *
      * @return string
      */
@@ -161,7 +157,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Return the log reading configuration for a service option.
+     * Return the log reading configuration for an egg.
      *
      * @return string
      */
@@ -171,7 +167,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Return the stop command configuration for a service option.
+     * Return the stop command configuration for an egg.
      *
      * @return string
      */
@@ -181,47 +177,47 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets service associated with a service option.
+     * Gets nest associated with an egg.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function service()
+    public function nest()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Nest::class);
     }
 
     /**
-     * Gets all servers associated with this service option.
+     * Gets all servers associated with this egg.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function servers()
     {
-        return $this->hasMany(Server::class, 'option_id');
+        return $this->hasMany(Server::class, 'egg_id');
     }
 
     /**
-     * Gets all variables associated with this service.
+     * Gets all variables associated with this egg.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function variables()
     {
-        return $this->hasMany(ServiceVariable::class, 'option_id');
+        return $this->hasMany(EggVariable::class, 'egg_id');
     }
 
     /**
-     * Gets all packs associated with this service.
+     * Gets all packs associated with this egg.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function packs()
     {
-        return $this->hasMany(Pack::class, 'option_id');
+        return $this->hasMany(Pack::class, 'egg_id');
     }
 
     /**
-     * Get the parent service option from which to copy scripts.
+     * Get the parent egg from which to copy scripts.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -231,7 +227,7 @@ class ServiceOption extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Get the parent service option from which to copy configuration settings.
+     * Get the parent egg from which to copy configuration settings.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

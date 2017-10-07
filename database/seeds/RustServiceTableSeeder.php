@@ -6,10 +6,10 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class RustServiceTableSeeder extends Seeder
@@ -42,7 +42,7 @@ class RustServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Service::updateOrCreate([
+        $this->service = Nest::updateOrCreate([
             'author' => config('pterodactyl.service.core'),
             'folder' => 'rust',
         ], [
@@ -75,7 +75,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
-        $this->option['rustvanilla'] = ServiceOption::updateOrCreate([
+        $this->option['rustvanilla'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'rustvanilla',
         ], [
@@ -119,7 +119,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v /mnt/server/steam/linux32/steamclient.so /mnt/server/.steam/sdk32/steamclient.so
 EOF;
 
-        $this->option['rustoxide'] = ServiceOption::updateOrCreate([
+        $this->option['rustoxide'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'rustoxide',
         ], [
@@ -146,7 +146,7 @@ EOF;
 
     private function addVanillaVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'HOSTNAME',
         ], [
@@ -158,7 +158,7 @@ EOF;
             'rules' => 'required|string',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'LEVEL',
         ], [
@@ -170,7 +170,7 @@ EOF;
             'rules' => 'required|string',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'DESCRIPTION',
         ], [
@@ -182,7 +182,7 @@ EOF;
             'rules' => 'required|string',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'URL',
         ], [
@@ -194,7 +194,7 @@ EOF;
             'rules' => 'url',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'WORLD_SIZE',
         ], [
@@ -206,7 +206,7 @@ EOF;
             'rules' => 'required|integer',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'SEED',
         ], [
@@ -218,7 +218,7 @@ EOF;
             'rules' => 'present',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'MAX_PLAYERS',
         ], [
@@ -230,7 +230,7 @@ EOF;
             'rules' => 'required|integer',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'SERVER_IMG',
         ], [
@@ -242,7 +242,7 @@ EOF;
             'rules' => 'url',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'RCON_PORT',
         ], [
@@ -254,7 +254,7 @@ EOF;
             'rules' => 'required|integer',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'RCON_PASS',
         ], [
@@ -266,7 +266,7 @@ EOF;
             'rules' => 'required',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustvanilla']->id,
             'env_variable' => 'ADDITIONAL_ARGS',
         ], [
@@ -281,7 +281,7 @@ EOF;
 
     private function addOxideVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'HOSTNAME',
         ], [
@@ -293,7 +293,7 @@ EOF;
             'rules' => 'required|string',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'LEVEL',
         ], [
@@ -305,7 +305,7 @@ EOF;
             'rules' => 'required|string',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'DESCRIPTION',
         ], [
@@ -317,7 +317,7 @@ EOF;
             'rules' => 'required|string',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'URL',
         ], [
@@ -329,7 +329,7 @@ EOF;
             'rules' => 'url',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'WORLD_SIZE',
         ], [
@@ -341,7 +341,7 @@ EOF;
             'rules' => 'required|integer',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'SEED',
         ], [
@@ -353,7 +353,7 @@ EOF;
             'rules' => 'present',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'MAX_PLAYERS',
         ], [
@@ -365,7 +365,7 @@ EOF;
             'rules' => 'required|integer',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'SERVER_IMG',
         ], [
@@ -377,7 +377,7 @@ EOF;
             'rules' => 'url',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'RCON_PORT',
         ], [
@@ -389,7 +389,7 @@ EOF;
             'rules' => 'required|integer',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'RCON_PASS',
         ], [
@@ -401,7 +401,7 @@ EOF;
             'rules' => 'required',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['rustoxide']->id,
             'env_variable' => 'ADDITIONAL_ARGS',
         ], [

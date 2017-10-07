@@ -11,7 +11,7 @@ namespace Pterodactyl\Http\Controllers\API\Admin;
 
 use Fractal;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Transformers\Admin\ServiceTransformer;
 
@@ -28,7 +28,7 @@ class ServiceController extends Controller
         $this->authorize('service-list', $request->apiKey());
 
         return Fractal::create()
-            ->collection(Service::all())
+            ->collection(Nest::all())
             ->transformWith(new ServiceTransformer($request))
             ->withResourceName('service')
             ->toArray();
@@ -45,7 +45,7 @@ class ServiceController extends Controller
     {
         $this->authorize('service-view', $request->apiKey());
 
-        $service = Service::findOrFail($id);
+        $service = Nest::findOrFail($id);
         $fractal = Fractal::create()->item($service);
 
         if ($request->input('include')) {

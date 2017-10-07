@@ -6,32 +6,32 @@
 @extends('layouts.admin')
 
 @section('title')
-    New Service
+    New Nest
 @endsection
 
 @section('content-header')
-    <h1>New Service<small>Configure a new service to deploy to all nodes.</small></h1>
+    <h1>New Nest<small>Configure a new nest to deploy to all nodes.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Service</a></li>
+        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
         <li class="active">New</li>
     </ol>
 @endsection
 
 @section('content')
-<form action="{{ route('admin.services.new') }}" method="POST">
+<form action="{{ route('admin.nests.new') }}" method="POST">
     <div class="row">
         <div class="col-md-12">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">New Service</h3>
+                    <h3 class="box-title">New Nest</h3>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
                         <label class="control-label">Name</label>
                         <div>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}" />
-                            <p class="text-muted"><small>This should be a descriptive category name that emcompasses all of the options within the service.</small></p>
+                            <p class="text-muted"><small>This should be a descriptive category name that emcompasses all of the eggs within the nest.</small></p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -43,7 +43,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="input" class="btn btn-primary pull-right">Save Service</button>
+                    <button type="submit" class="btn btn-primary pull-right">Save</button>
                 </div>
             </div>
         </div>

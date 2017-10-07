@@ -13,10 +13,10 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\Egg;
 use Illuminate\Contracts\Config\Repository;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionCreationService;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionCreationServiceTest extends TestCase
@@ -27,7 +27,7 @@ class OptionCreationServiceTest extends TestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -49,7 +49,7 @@ class OptionCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->config = m::mock(Repository::class);
-        $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
+        $this->repository = m::mock(EggRepositoryInterface::class);
         $this->uuid = m::mock('overload:' . Uuid::class);
 
         $this->service = new OptionCreationService($this->config, $this->repository);
@@ -60,7 +60,7 @@ class OptionCreationServiceTest extends TestCase
      */
     public function testCreateNewModelWithoutUsingConfigFrom()
     {
-        $model = factory(ServiceOption::class)->make([
+        $model = factory(Egg::class)->make([
             'tag' => str_random(10),
         ]);
 
@@ -85,7 +85,7 @@ class OptionCreationServiceTest extends TestCase
      */
     public function testCreateNewModelUsingLongTagForm()
     {
-        $model = factory(ServiceOption::class)->make([
+        $model = factory(Egg::class)->make([
             'tag' => 'test@example.com:tag',
         ]);
 
@@ -111,7 +111,7 @@ class OptionCreationServiceTest extends TestCase
      */
     public function testCreateNewModelUsingConfigFrom()
     {
-        $model = factory(ServiceOption::class)->make();
+        $model = factory(Egg::class)->make();
 
         $data = [
             'name' => $model->name,

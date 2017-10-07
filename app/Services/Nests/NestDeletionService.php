@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services;
+namespace Pterodactyl\Services\Nests;
 
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
-class ServiceDeletionService
+class NestDeletionService
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
@@ -21,39 +21,39 @@ class ServiceDeletionService
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * ServiceDeletionService constructor.
+     * NestDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface   $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
-        ServiceRepositoryInterface $repository
+        NestRepositoryInterface $repository
     ) {
         $this->serverRepository = $serverRepository;
         $this->repository = $repository;
     }
 
     /**
-     * Delete a service from the system only if there are no servers attached to it.
+     * Delete a nest from the system only if there are no servers attached to it.
      *
-     * @param int $service
+     * @param int $nest
      * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function handle(int $service): int
+    public function handle(int $nest): int
     {
-        $count = $this->serverRepository->findCountWhere([['service_id', '=', $service]]);
+        $count = $this->serverRepository->findCountWhere([['nest_id', '=', $nest]]);
         if ($count > 0) {
             throw new HasActiveServersException(trans('exceptions.service.delete_has_servers'));
         }
 
-        return $this->repository->delete($service);
+        return $this->repository->delete($nest);
     }
 }

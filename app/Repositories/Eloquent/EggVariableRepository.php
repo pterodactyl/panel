@@ -9,16 +9,16 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\ServiceVariable;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
+use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
-class ServiceVariableRepository extends EloquentRepository implements ServiceVariableRepositoryInterface
+class EggVariableRepository extends EloquentRepository implements EggVariableRepositoryInterface
 {
     /**
      * {@inheritdoc}
      */
     public function model()
     {
-        return ServiceVariable::class;
+        return EggVariable::class;
     }
 }

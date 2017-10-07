@@ -9,9 +9,9 @@
 
 namespace Pterodactyl\Http\Controllers\Daemon;
 
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Http\Controllers\Controller;
 
 class ServiceController extends Controller
@@ -27,7 +27,7 @@ class ServiceController extends Controller
     public function listServices(Request $request)
     {
         $response = [];
-        foreach (Service::all() as $service) {
+        foreach (Nest::all() as $service) {
             $response[$service->folder] = [
                 'main.json' => sha1($this->getConfiguration($service->id)->toJson()),
                 'index.js' => sha1($service->index_file),
@@ -47,7 +47,7 @@ class ServiceController extends Controller
      */
     public function pull(Request $request, $folder, $file)
     {
-        $service = Service::where('folder', $folder)->firstOrFail();
+        $service = Nest::where('folder', $folder)->firstOrFail();
 
         if ($file === 'index.js') {
             return response($service->index_file)->header('Content-Type', 'text/plain');
@@ -67,7 +67,7 @@ class ServiceController extends Controller
      */
     protected function getConfiguration($id)
     {
-        $options = ServiceOption::where('service_id', $id)->get();
+        $options = Egg::where('service_id', $id)->get();
 
         return $options->mapWithKeys(function ($item) use ($options) {
             return [

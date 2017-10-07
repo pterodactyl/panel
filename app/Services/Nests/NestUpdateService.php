@@ -7,41 +7,41 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services;
+namespace Pterodactyl\Services\Nests;
 
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
-class ServiceUpdateService
+class NestUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * ServiceUpdateService constructor.
+     * NestUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
-    public function __construct(ServiceRepositoryInterface $repository)
+    public function __construct(NestRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * Update a service and prevent changing the author once it is set.
+     * Update a nest and prevent changing the author once it is set.
      *
-     * @param int   $service
+     * @param int   $nest
      * @param array $data
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(int $service, array $data)
+    public function handle(int $nest, array $data)
     {
         if (! is_null(array_get($data, 'author'))) {
             unset($data['author']);
         }
 
-        $this->repository->withoutFresh()->update($service, $data);
+        $this->repository->withoutFresh()->update($nest, $data);
     }
 }

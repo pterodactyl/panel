@@ -6,10 +6,10 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class TerrariaServiceTableSeeder extends Seeder
@@ -42,7 +42,7 @@ class TerrariaServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Service::updateOrCreate([
+        $this->service = Nest::updateOrCreate([
             'author' => config('pterodactyl.service.core'),
             'folder' => 'terraria',
         ], [
@@ -70,7 +70,7 @@ curl -sSLO https://github.com/NyxStudios/TShock/releases/download/v${T_VERSION}/
 unzip -o tshock_${T_VERSION}.zip -d /mnt/server
 EOF;
 
-        $this->option['tshock'] = ServiceOption::updateOrCreate([
+        $this->option['tshock'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'tshock',
         ], [
@@ -89,7 +89,7 @@ EOF;
 
     private function addVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['tshock']->id,
             'env_variable' => 'T_VERSION',
         ], [
@@ -101,7 +101,7 @@ EOF;
             'rules' => 'required|regex:/^([0-9_\.-]{5,10})$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['tshock']->id,
             'env_variable' => 'MAX_SLOTS',
         ], [

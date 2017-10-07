@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Http\Requests\Admin;
 
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 
 class OptionVariableFormRequest extends AdminFormRequest
 {
@@ -21,7 +21,7 @@ class OptionVariableFormRequest extends AdminFormRequest
         return [
             'name' => 'required|string|min:1|max:255',
             'description' => 'sometimes|nullable|string',
-            'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . ServiceVariable::RESERVED_ENV_NAMES,
+            'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . EggVariable::RESERVED_ENV_NAMES,
             'default_value' => 'string',
             'options' => 'sometimes|required|array',
             'rules' => 'bail|required|string',

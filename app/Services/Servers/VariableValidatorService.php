@@ -12,7 +12,7 @@ namespace Pterodactyl\Services\Servers;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorService
@@ -33,7 +33,7 @@ class VariableValidatorService
     protected $results = [];
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
     protected $optionVariableRepository;
 
@@ -55,13 +55,13 @@ class VariableValidatorService
     /**
      * VariableValidatorService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface $optionVariableRepository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface    $optionVariableRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $serverRepository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Illuminate\Contracts\Validation\Factory                            $validator
      */
     public function __construct(
-        OptionVariableRepositoryInterface $optionVariableRepository,
+        EggVariableRepositoryInterface $optionVariableRepository,
         ServerRepositoryInterface $serverRepository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         ValidationFactory $validator

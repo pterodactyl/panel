@@ -6,41 +6,41 @@
 @extends('layouts.admin')
 
 @section('title')
-    Service &rarr; {{ $service->name }}
+    Nests &rarr; {{ $nest->name }}
 @endsection
 
 @section('content-header')
-    <h1>{{ $service->name }}<small>{{ str_limit($service->description, 50) }}</small></h1>
+    <h1>{{ $nest->name }}<small>{{ str_limit($nest->description, 50) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.services') }}">Service</a></li>
-        <li class="active">{{ $service->name }}</li>
+        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
+        <li class="active">{{ $nest->name }}</li>
     </ol>
 @endsection
 
 @section('content')
 <div class="row">
-    <form action="{{ route('admin.services.view', $service->id) }}" method="POST">
+    <form action="{{ route('admin.nests.view', $nest->id) }}" method="POST">
         <div class="col-md-6">
             <div class="box">
                 <div class="box-body">
                     <div class="form-group">
                         <label class="control-label">Name <span class="field-required"></span></label>
                         <div>
-                            <input type="text" name="name" class="form-control" value="{{ $service->name }}" />
+                            <input type="text" name="name" class="form-control" value="{{ $nest->name }}" />
                             <p class="text-muted"><small>This should be a descriptive category name that emcompasses all of the options within the service.</small></p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label">Description <span class="field-required"></span></label>
                         <div>
-                            <textarea name="description" class="form-control" rows="7">{{ $service->description }}</textarea>
+                            <textarea name="description" class="form-control" rows="7">{{ $nest->description }}</textarea>
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Edit Option</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
                     <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
                 </div>
             </div>
@@ -52,14 +52,14 @@
                 <div class="form-group">
                     <label class="control-label">Author</label>
                     <div>
-                        <input type="text" readonly class="form-control" value="{{ $service->author }}" />
+                        <input type="text" readonly class="form-control" value="{{ $nest->author }}" />
                         <p class="text-muted small">The author of this service option. Please direct questions and issues to them unless this is an official option authored by <code>support@pterodactyl.io</code>.</p>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label">UUID</label>
                     <div>
-                        <input type="text" readonly class="form-control" value="{{ $service->uuid }}" />
+                        <input type="text" readonly class="form-control" value="{{ $nest->uuid }}" />
                         <p class="text-muted small">A unique identifier that all servers using this option are assigned for identification purposes.</p>
                     </div>
                 </div>
@@ -71,28 +71,30 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Configured Options</h3>
+                <h3 class="box-title">Nest Eggs</h3>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Tag</th>
                         <th class="text-center">Servers</th>
+                        <th class="text-center"></th>
                     </tr>
-                    @foreach($service->options as $option)
+                    @foreach($nest->eggs as $egg)
                         <tr>
-                            <td><a href="{{ route('admin.services.option.view', $option->id) }}">{{ $option->name }}</a></td>
-                            <td class="col-xs-6">{!! $option->description !!}</td>
-                            <td><code>{{ $option->tag }}</code></td>
-                            <td class="text-center">{{ $option->servers->count() }}</td>
+                            <td class="align-middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></td>
+                            <td class="col-xs-8 align-middle">{!! $egg->description !!}</td>
+                            <td class="text-center align-middle"><code>{{ $egg->servers->count() }}</code></td>
+                            <td class="align-middle">
+                                <a href="{{ route('admin.nests.egg.export', ['egg' => $egg->id]) }}"><i class="fa fa-download"></i></a>
+                            </td>
                         </tr>
                     @endforeach
                 </table>
             </div>
             <div class="box-footer">
-                <a href="{{ route('admin.services.option.new') }}"><button class="btn btn-success btn-sm pull-right">New Service Option</button></a>
+                <a href="{{ route('admin.nests.egg.new') }}"><button class="btn btn-success btn-sm pull-right">New Egg</button></a>
             </div>
         </div>
     </div>

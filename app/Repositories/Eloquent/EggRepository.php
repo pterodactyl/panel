@@ -9,33 +9,33 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\Egg;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\ServiceOption;
 use Illuminate\Database\Eloquent\Collection;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 
-class ServiceOptionRepository extends EloquentRepository implements ServiceOptionRepositoryInterface
+class EggRepository extends EloquentRepository implements EggRepositoryInterface
 {
     /**
      * {@inheritdoc}
      */
     public function model()
     {
-        return ServiceOption::class;
+        return Egg::class;
     }
 
     /**
-     * Return a service option with the variables relation attached.
+     * Return an egg with the variables relation attached.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithVariables(int $id): ServiceOption
+    public function getWithVariables(int $id): Egg
     {
-        /** @var \Pterodactyl\Models\ServiceOption $instance */
+        /** @var \Pterodactyl\Models\Egg $instance */
         $instance = $this->getBuilder()->with('variables')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
@@ -45,7 +45,7 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     }
 
     /**
-     * Return all of the service options and their relations to be used in the daemon API.
+     * Return all eggs and their relations to be used in the daemon API.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -55,19 +55,19 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     }
 
     /**
-     * Return a service option with the scriptFrom and configFrom relations loaded onto the model.
+     * Return an egg with the scriptFrom and configFrom relations loaded onto the model.
      *
      * @param int|string $value
      * @param string     $column
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCopyAttributes($value, string $column = 'id'): ServiceOption
+    public function getWithCopyAttributes($value, string $column = 'id'): Egg
     {
         Assert::true((is_digit($value) || is_string($value)), 'First argument passed to getWithCopyAttributes must be an integer or string, received %s.');
 
-        /** @var \Pterodactyl\Models\ServiceOption $instance */
+        /** @var \Pterodactyl\Models\Egg $instance */
         $instance = $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->first($this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
@@ -80,13 +80,13 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
      * Return all of the data needed to export a service.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\ServiceOption
+     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithExportAttributes(int $id): ServiceOption
+    public function getWithExportAttributes(int $id): Egg
     {
-        /** @var \Pterodactyl\Models\ServiceOption $instance */
+        /** @var \Pterodactyl\Models\Egg $instance */
         $instance = $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
@@ -96,7 +96,7 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     }
 
     /**
-     * Confirm a copy script belongs to the same service as the item trying to use it.
+     * Confirm a copy script belongs to the same nest as the item trying to use it.
      *
      * @param int $copyFromId
      * @param int $service
@@ -106,7 +106,7 @@ class ServiceOptionRepository extends EloquentRepository implements ServiceOptio
     {
         return $this->getBuilder()->whereNull('copy_script_from')
             ->where('id', '=', $copyFromId)
-            ->where('service_id', '=', $service)
+            ->where('nest_id', '=', $service)
             ->exists();
     }
 }

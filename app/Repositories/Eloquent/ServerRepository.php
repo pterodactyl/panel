@@ -47,7 +47,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         Assert::nullOrIntegerish($server, 'First argument passed to getDataForRebuild must be null or integer, received %s.');
         Assert::nullOrIntegerish($node, 'Second argument passed to getDataForRebuild must be null or integer, received %s.');
 
-        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'option', 'node');
+        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'egg', 'node');
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
@@ -66,7 +66,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     {
         Assert::integerish($id, 'First argument passed to findWithVariables must be integer, received %s.');
 
-        $instance = $this->getBuilder()->with('option.variables', 'variables')
+        $instance = $this->getBuilder()->with('egg.variables', 'variables')
                          ->where($this->getModel()->getKeyName(), '=', $id)
                          ->first($this->getColumns());
 
@@ -82,7 +82,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getVariablesWithValues($id, $returnWithObject = false)
     {
-        $instance = $this->getBuilder()->with('variables', 'option.variables')
+        $instance = $this->getBuilder()->with('variables', 'egg.variables')
                          ->find($id, $this->getColumns());
 
         if (! $instance) {
@@ -90,7 +90,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         }
 
         $data = [];
-        $instance->option->variables->each(function ($item) use (&$data, $instance) {
+        $instance->egg->variables->each(function ($item) use (&$data, $instance) {
             $display = $instance->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
 
             $data[$item->env_variable] = $display ?? $item->default_value;
@@ -111,7 +111,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForCreation($id)
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'option'])->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg'])->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException();
         }
@@ -140,15 +140,15 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDaemonServiceData($id)
     {
-        $instance = $this->getBuilder()->with('option.service', 'pack')->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with('egg.nest', 'pack')->find($id, $this->getColumns());
 
         if (! $instance) {
             throw new RecordNotFoundException();
         }
 
         return [
-            'type' => $instance->option->service->folder,
-            'option' => $instance->option->tag,
+            'type' => $instance->egg->nest->folder,
+            'option' => $instance->egg->tag,
             'pack' => (! is_null($instance->pack_id)) ? $instance->pack->uuid : null,
         ];
     }
@@ -211,7 +211,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     {
         Assert::stringNotEmpty($uuid, 'First argument passed to getByUuid must be a non-empty string, received %s.');
 
-        $instance = $this->getBuilder()->with('service', 'node')->where(function ($query) use ($uuid) {
+        $instance = $this->getBuilder()->with('nest', 'node')->where(function ($query) use ($uuid) {
             $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
         })->first($this->getColumns());
 

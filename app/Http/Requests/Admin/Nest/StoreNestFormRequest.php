@@ -7,11 +7,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Admin\Service;
+namespace Pterodactyl\Http\Requests\Admin\Nest;
 
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class ServiceFormRequest extends AdminFormRequest
+class StoreNestFormRequest extends AdminFormRequest
 {
     /**
      * @return array
@@ -21,7 +21,6 @@ class ServiceFormRequest extends AdminFormRequest
         return [
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|nullable|string',
-            'startup' => 'required|nullable|string',
         ];
     }
 }

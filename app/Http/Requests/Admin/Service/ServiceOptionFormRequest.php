@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Http\Requests\Admin\Service;
 
-use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class ServiceOptionFormRequest extends AdminFormRequest
@@ -19,6 +19,6 @@ class ServiceOptionFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        return ServiceOption::getCreateRules();
+        return Egg::getCreateRules();
     }
 }

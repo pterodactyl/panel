@@ -12,10 +12,10 @@ namespace Tests\Unit\Services\Services\Sharing;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\EggVariable;
 use Tests\Assertions\NestedObjectAssertionsTrait;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Services\Sharing\ServiceOptionExporterService;
 
 class ServiceOptionExporterServiceTest extends TestCase
@@ -28,7 +28,7 @@ class ServiceOptionExporterServiceTest extends TestCase
     protected $carbon;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -46,7 +46,7 @@ class ServiceOptionExporterServiceTest extends TestCase
 
         Carbon::setTestNow(Carbon::now());
         $this->carbon = new Carbon();
-        $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
+        $this->repository = m::mock(EggRepositoryInterface::class);
 
         $this->service = new ServiceOptionExporterService($this->carbon, $this->repository);
     }
@@ -56,8 +56,8 @@ class ServiceOptionExporterServiceTest extends TestCase
      */
     public function testJsonStructureIsExported()
     {
-        $option = factory(ServiceOption::class)->make();
-        $option->variables = collect([$variable = factory(ServiceVariable::class)->make()]);
+        $option = factory(Egg::class)->make();
+        $option->variables = collect([$variable = factory(EggVariable::class)->make()]);
 
         $this->repository->shouldReceive('getWithExportAttributes')->with($option->id)->once()->andReturn($option);
 

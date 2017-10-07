@@ -54,7 +54,7 @@ class ServerController extends Controller
         $this->authorize('view-startup', $server);
 
         $server->load(['node', 'allocation', 'variables']);
-        $variables = Models\ServiceVariable::where('option_id', $server->option_id)->get();
+        $variables = Models\EggVariable::where('option_id', $server->option_id)->get();
 
         $replacements = [
             '{{SERVER_MEMORY}}' => $server->memory,

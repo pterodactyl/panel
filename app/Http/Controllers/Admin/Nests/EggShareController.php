@@ -7,54 +7,54 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin\Services\Options;
+namespace Pterodactyl\Http\Controllers\Admin\Nests;
 
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\RedirectResponse;
-use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
+use Pterodactyl\Services\Services\Sharing\EggImporterService;
 use Pterodactyl\Http\Requests\Admin\Service\OptionImportFormRequest;
-use Pterodactyl\Services\Services\Sharing\ServiceOptionExporterService;
-use Pterodactyl\Services\Services\Sharing\ServiceOptionImporterService;
 
-class OptionShareController extends Controller
+class EggShareController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Services\Sharing\ServiceOptionExporterService
+     * @var \Pterodactyl\Services\Eggs\Sharing\EggExporterService
      */
     protected $exporterService;
 
     /**
-     * @var \Pterodactyl\Services\Services\Sharing\ServiceOptionImporterService
+     * @var \Pterodactyl\Services\Services\Sharing\EggImporterService
      */
     protected $importerService;
 
     /**
      * OptionShareController constructor.
      *
-     * @param \Pterodactyl\Services\Services\Sharing\ServiceOptionExporterService $exporterService
-     * @param \Pterodactyl\Services\Services\Sharing\ServiceOptionImporterService $importerService
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService     $exporterService
+     * @param \Pterodactyl\Services\Services\Sharing\EggImporterService $importerService
      */
     public function __construct(
-        ServiceOptionExporterService $exporterService,
-        ServiceOptionImporterService $importerService
+        EggExporterService $exporterService,
+        EggImporterService $importerService
     ) {
         $this->exporterService = $exporterService;
         $this->importerService = $importerService;
     }
 
     /**
-     * @param \Pterodactyl\Models\ServiceOption $option
+     * @param \Pterodactyl\Models\Egg $egg
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function export(ServiceOption $option): Response
+    public function export(Egg $egg): Response
     {
-        return response($this->exporterService->handle($option->id), 200, [
+        return response($this->exporterService->handle($egg->id), 200, [
             'Content-Transfer-Encoding' => 'binary',
             'Content-Description' => 'File Transfer',
-            'Content-Disposition' => 'attachment; filename=' . kebab_case($option->name) . '.json',
+            'Content-Disposition' => 'attachment; filename=egg-' . kebab_case($egg->name) . '.json',
             'Content-Type' => 'application/json',
         ]);
     }
@@ -71,8 +71,8 @@ class OptionShareController extends Controller
      */
     public function import(OptionImportFormRequest $request): RedirectResponse
     {
-        $option = $this->importerService->handle($request->file('import_file'), $request->input('import_to_service'));
+        $egg = $this->importerService->handle($request->file('import_file'), $request->input('import_to_nest'));
 
-        return redirect()->route('admin.services.option.view', ['option' => $option->id]);
+        return redirect()->route('admin.nests.egg.view', ['egg' => $egg->id]);
     }
 }

@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class ServiceVariable extends Model implements CleansAttributes, ValidableContract
+class EggVariable extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
@@ -31,7 +31,7 @@ class ServiceVariable extends Model implements CleansAttributes, ValidableContra
      *
      * @var string
      */
-    protected $table = 'service_variables';
+    protected $table = 'egg_variables';
 
     /**
      * Fields that are not mass assignable.
@@ -46,7 +46,7 @@ class ServiceVariable extends Model implements CleansAttributes, ValidableContra
      * @var array
      */
     protected $casts = [
-        'option_id' => 'integer',
+        'egg_id' => 'integer',
         'user_viewable' => 'integer',
         'user_editable' => 'integer',
     ];
@@ -64,7 +64,7 @@ class ServiceVariable extends Model implements CleansAttributes, ValidableContra
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'option_id' => 'exists:service_options,id',
+        'egg_id' => 'exists:eggs,id',
         'name' => 'string|between:1,255',
         'description' => 'nullable|string',
         'env_variable' => 'regex:/^[\w]{1,255}$/|notIn:' . self::RESERVED_ENV_NAMES,
@@ -83,9 +83,6 @@ class ServiceVariable extends Model implements CleansAttributes, ValidableContra
     ];
 
     /**
-     * Returns the display executable for the option and will use the parent
-     * service one if the option does not have one defined.
-     *
      * @return bool
      */
     public function getRequiredAttribute($value)

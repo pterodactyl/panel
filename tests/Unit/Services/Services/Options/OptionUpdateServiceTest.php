@@ -12,20 +12,20 @@ namespace Tests\Unit\Services\Services\Options;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\ServiceOption;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionUpdateService;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
 class OptionUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\ServiceOption
+     * @var \Pterodactyl\Models\Egg
      */
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
@@ -41,8 +41,8 @@ class OptionUpdateServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = factory(ServiceOption::class)->make();
-        $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
+        $this->model = factory(Egg::class)->make();
+        $this->repository = m::mock(EggRepositoryInterface::class);
 
         $this->service = new OptionUpdateService($this->repository);
     }

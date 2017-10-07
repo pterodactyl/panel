@@ -12,7 +12,7 @@ namespace Tests\Unit\Services\Services\Variables;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Services\Variables\VariableUpdateService;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
@@ -20,7 +20,7 @@ use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 class VariableUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\ServiceVariable|\Mockery\Mock
+     * @var \Pterodactyl\Models\EggVariable|\Mockery\Mock
      */
     protected $model;
 
@@ -41,7 +41,7 @@ class VariableUpdateServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = factory(ServiceVariable::class)->make();
+        $this->model = factory(EggVariable::class)->make();
         $this->repository = m::mock(ServiceVariableRepositoryInterface::class);
 
         $this->service = new VariableUpdateService($this->repository);
@@ -141,7 +141,7 @@ class VariableUpdateServiceTest extends TestCase
     public function reservedNamesProvider()
     {
         $data = [];
-        $exploded = explode(',', ServiceVariable::RESERVED_ENV_NAMES);
+        $exploded = explode(',', EggVariable::RESERVED_ENV_NAMES);
         foreach ($exploded as $e) {
             $data[] = [$e];
         }

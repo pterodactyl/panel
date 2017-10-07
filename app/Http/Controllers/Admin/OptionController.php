@@ -10,18 +10,18 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Javascript;
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Models\ServiceOption;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Service\EditOptionScript;
 use Pterodactyl\Services\Services\Options\OptionUpdateService;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionCreationService;
 use Pterodactyl\Services\Services\Options\OptionDeletionService;
 use Pterodactyl\Http\Requests\Admin\Service\ServiceOptionFormRequest;
 use Pterodactyl\Services\Services\Options\InstallScriptUpdateService;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
 use Pterodactyl\Exceptions\Service\ServiceOption\NoParentConfigurationFoundException;
 
@@ -53,25 +53,25 @@ class OptionController extends Controller
     protected $optionUpdateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $serviceRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $serviceOptionRepository;
 
     /**
      * OptionController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                                  $alert
-     * @param \Pterodactyl\Services\Services\Options\InstallScriptUpdateService  $installScriptUpdateService
-     * @param \Pterodactyl\Services\Services\Options\OptionCreationService       $optionCreationService
-     * @param \Pterodactyl\Services\Services\Options\OptionDeletionService       $optionDeletionService
-     * @param \Pterodactyl\Services\Services\Options\OptionUpdateService         $optionUpdateService
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface       $serviceRepository
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $serviceOptionRepository
+     * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
+     * @param \Pterodactyl\Services\Services\Options\InstallScriptUpdateService $installScriptUpdateService
+     * @param \Pterodactyl\Services\Services\Options\OptionCreationService      $optionCreationService
+     * @param \Pterodactyl\Services\Services\Options\OptionDeletionService      $optionDeletionService
+     * @param \Pterodactyl\Services\Services\Options\OptionUpdateService        $optionUpdateService
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface         $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface          $serviceOptionRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -79,8 +79,8 @@ class OptionController extends Controller
         OptionCreationService $optionCreationService,
         OptionDeletionService $optionDeletionService,
         OptionUpdateService $optionUpdateService,
-        ServiceRepositoryInterface $serviceRepository,
-        ServiceOptionRepositoryInterface $serviceOptionRepository
+        NestRepositoryInterface $serviceRepository,
+        EggRepositoryInterface $serviceOptionRepository
     ) {
         $this->alert = $alert;
         $this->installScriptUpdateService = $installScriptUpdateService;
@@ -129,12 +129,12 @@ class OptionController extends Controller
     /**
      * Delete a given option from the database.
      *
-     * @param \Pterodactyl\Models\ServiceOption $option
+     * @param \Pterodactyl\Models\Egg $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function destroy(ServiceOption $option)
+    public function destroy(Egg $option)
     {
         $this->optionDeletionService->handle($option->id);
         $this->alert->success(trans('admin/services.options.notices.option_deleted'))->flash();
@@ -145,10 +145,10 @@ class OptionController extends Controller
     /**
      * Display option overview page.
      *
-     * @param \Pterodactyl\Models\ServiceOption $option
+     * @param \Pterodactyl\Models\Egg $option
      * @return \Illuminate\View\View
      */
-    public function viewConfiguration(ServiceOption $option)
+    public function viewConfiguration(Egg $option)
     {
         return view('admin.services.options.view', ['option' => $option]);
     }
@@ -181,14 +181,14 @@ class OptionController extends Controller
     /**
      * Handles POST when editing a configration for a service option.
      *
-     * @param \Illuminate\Http\Request          $request
-     * @param \Pterodactyl\Models\ServiceOption $option
+     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Models\Egg  $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function editConfiguration(Request $request, ServiceOption $option)
+    public function editConfiguration(Request $request, Egg $option)
     {
         try {
             $this->optionUpdateService->handle($option, $request->all());
@@ -204,13 +204,13 @@ class OptionController extends Controller
      * Handles POST when updating script for a service option.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Service\EditOptionScript $request
-     * @param \Pterodactyl\Models\ServiceOption                         $option
+     * @param \Pterodactyl\Models\Egg                                   $option
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateScripts(EditOptionScript $request, ServiceOption $option)
+    public function updateScripts(EditOptionScript $request, Egg $option)
     {
         try {
             $this->installScriptUpdateService->handle($option, $request->normalize());

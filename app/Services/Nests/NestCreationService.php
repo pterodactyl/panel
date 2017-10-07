@@ -7,59 +7,54 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Services;
+namespace Pterodactyl\Services\Nests;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Traits\Services\CreatesServiceIndex;
+use Pterodactyl\Models\Nest;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
-class ServiceCreationService
+class NestCreationService
 {
-    use CreatesServiceIndex;
-
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * ServiceCreationService constructor.
+     * NestCreationService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                      $config
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $repository
+     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(
         ConfigRepository $config,
-        ServiceRepositoryInterface $repository
+        NestRepositoryInterface $repository
     ) {
         $this->config = $config;
         $this->repository = $repository;
     }
 
     /**
-     * Create a new service on the system.
+     * Create a new nest on the system.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Service
+     * @return \Pterodactyl\Models\Nest
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data): Service
+    public function handle(array $data): Nest
     {
         return $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
             'author' => $this->config->get('pterodactyl.service.author'),
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
-            'startup' => array_get($data, 'startup'),
-            'index_file' => $this->getIndexScript(),
         ], true, true);
     }
 }

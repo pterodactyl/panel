@@ -9,31 +9,31 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Nest;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
-class ServiceRepository extends EloquentRepository implements ServiceRepositoryInterface
+class NestRepository extends EloquentRepository implements NestRepositoryInterface
 {
     /**
      * {@inheritdoc}
      */
     public function model()
     {
-        return Service::class;
+        return Nest::class;
     }
 
     /**
-     * Return a service or all services with their associated options, variables, and packs.
+     * Return a nest or all nests with their associated eggs, variables, and packs.
      *
      * @param int $id
-     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Service
+     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Nest
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithOptions(int $id = null)
+    public function getWithEggs(int $id = null)
     {
-        $instance = $this->getBuilder()->with('options.packs', 'options.variables');
+        $instance = $this->getBuilder()->with('eggs.packs', 'eggs.variables');
 
         if (! is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());
@@ -48,16 +48,16 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     }
 
     /**
-     * Return a service or all services and the count of options, packs, and servers for that service.
+     * Return a nest or all nests and the count of eggs, packs, and servers for that nest.
      *
      * @param int|null $id
-     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Service
+     * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithCounts(int $id = null)
     {
-        $instance = $this->getBuilder()->withCount(['options', 'packs', 'servers']);
+        $instance = $this->getBuilder()->withCount(['eggs', 'packs', 'servers']);
 
         if (! is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());
@@ -72,21 +72,21 @@ class ServiceRepository extends EloquentRepository implements ServiceRepositoryI
     }
 
     /**
-     * Return a service along with its associated options and the servers relation on those options.
+     * Return a nest along with its associated eggs and the servers relation on those eggs.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\Service
+     * @return \Pterodactyl\Models\Nest
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithOptionServers(int $id): Service
+    public function getWithEggServers(int $id): Nest
     {
-        $instance = $this->getBuilder()->with('options.servers')->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with('eggs.servers')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
         }
 
-        /* @var Service $instance */
+        /* @var Nest $instance */
         return $instance;
     }
 }

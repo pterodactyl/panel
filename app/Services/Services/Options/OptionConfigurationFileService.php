@@ -9,8 +9,8 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 
 class OptionConfigurationFileService
 {
@@ -19,9 +19,9 @@ class OptionConfigurationFileService
     /**
      * OptionConfigurationFileService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
-    public function __construct(ServiceOptionRepositoryInterface $repository)
+    public function __construct(EggRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -29,14 +29,14 @@ class OptionConfigurationFileService
     /**
      * Return a service configuration file to be used by the daemon.
      *
-     * @param int|\Pterodactyl\Models\ServiceOption $option
+     * @param int|\Pterodactyl\Models\Egg $option
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($option): array
     {
-        if (! $option instanceof ServiceOption) {
+        if (! $option instanceof Egg) {
             $option = $this->repository->getWithCopyAttributes($option);
         }
 

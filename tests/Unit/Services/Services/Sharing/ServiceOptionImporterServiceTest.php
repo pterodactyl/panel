@@ -12,16 +12,16 @@ namespace Tests\Unit\Services\Services\Sharing;
 use Mockery as m;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Http\UploadedFile;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Services\Services\Sharing\EggImporterService;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
-use Pterodactyl\Services\Services\Sharing\ServiceOptionImporterService;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\DuplicateOptionTagException;
 
@@ -38,17 +38,17 @@ class ServiceOptionImporterServiceTest extends TestCase
     protected $file;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Sharing\ServiceOptionImporterService
+     * @var \Pterodactyl\Services\Services\Sharing\EggImporterService
      */
     protected $service;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
     protected $serviceRepository;
 
@@ -71,12 +71,12 @@ class ServiceOptionImporterServiceTest extends TestCase
 
         $this->connection = m::mock(ConnectionInterface::class);
         $this->file = m::mock(UploadedFile::class);
-        $this->repository = m::mock(ServiceOptionRepositoryInterface::class);
-        $this->serviceRepository = m::mock(ServiceRepositoryInterface::class);
+        $this->repository = m::mock(EggRepositoryInterface::class);
+        $this->serviceRepository = m::mock(NestRepositoryInterface::class);
         $this->serviceVariableRepository = m::mock(ServiceVariableRepositoryInterface::class);
         $this->uuid = m::mock('overload:' . Uuid::class);
 
-        $this->service = new ServiceOptionImporterService(
+        $this->service = new EggImporterService(
             $this->connection, $this->serviceRepository, $this->repository, $this->serviceVariableRepository
         );
     }
@@ -86,9 +86,9 @@ class ServiceOptionImporterServiceTest extends TestCase
      */
     public function testServiceOptionIsImported()
     {
-        $option = factory(ServiceOption::class)->make();
-        $service = factory(Service::class)->make();
-        $service->options = collect([factory(ServiceOption::class)->make()]);
+        $option = factory(Egg::class)->make();
+        $service = factory(Nest::class)->make();
+        $service->options = collect([factory(Egg::class)->make()]);
 
         $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
@@ -98,7 +98,7 @@ class ServiceOptionImporterServiceTest extends TestCase
             'name' => $option->name,
             'tag' => $option->tag,
             'variables' => [
-                $variable = factory(ServiceVariable::class)->make(),
+                $variable = factory(EggVariable::class)->make(),
             ],
         ]));
         $this->serviceRepository->shouldReceive('getWithOptions')->with($service->id)->once()->andReturn($service);
@@ -120,7 +120,7 @@ class ServiceOptionImporterServiceTest extends TestCase
 
         $response = $this->service->handle($this->file, $service->id);
         $this->assertNotEmpty($response);
-        $this->assertInstanceOf(ServiceOption::class, $response);
+        $this->assertInstanceOf(Egg::class, $response);
         $this->assertSame($option, $response);
     }
 
@@ -179,9 +179,9 @@ class ServiceOptionImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfDuplicateTagExists()
     {
-        $option = factory(ServiceOption::class)->make();
-        $service = factory(Service::class)->make();
-        $service->options = collect([factory(ServiceOption::class)->make(['tag' => $option->tag])]);
+        $option = factory(Egg::class)->make();
+        $service = factory(Nest::class)->make();
+        $service->options = collect([factory(Egg::class)->make(['tag' => $option->tag])]);
 
         $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);

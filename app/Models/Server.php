@@ -68,8 +68,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'io' => 'required',
         'cpu' => 'required',
         'disk' => 'required',
-        'service_id' => 'required',
-        'option_id' => 'required',
+        'nest_id' => 'required',
+        'egg_id' => 'required',
         'node_id' => 'required',
         'allocation_id' => 'required',
         'pack_id' => 'sometimes',
@@ -92,8 +92,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'cpu' => 'numeric|min:0',
         'disk' => 'numeric|min:0',
         'allocation_id' => 'exists:allocations,id',
-        'service_id' => 'exists:services,id',
-        'option_id' => 'exists:service_options,id',
+        'nest_id' => 'exists:nests,id',
+        'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',
         'custom_container' => 'nullable|string',
         'startup' => 'nullable|string',
@@ -119,8 +119,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'cpu' => 'integer',
         'oom_disabled' => 'integer',
         'allocation_id' => 'integer',
-        'service_id' => 'integer',
-        'option_id' => 'integer',
+        'nest_id' => 'integer',
+        'egg_id' => 'integer',
         'pack_id' => 'integer',
         'installed' => 'integer',
     ];
@@ -202,23 +202,23 @@ class Server extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets information for the service associated with this server.
+     * Gets information for the nest associated with this server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function service()
+    public function nest()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Nest::class);
     }
 
     /**
-     * Gets information for the service option associated with this server.
+     * Gets information for the egg associated with this server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function option()
+    public function egg()
     {
-        return $this->belongsTo(ServiceOption::class);
+        return $this->belongsTo(Egg::class);
     }
 
     /**

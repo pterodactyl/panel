@@ -9,15 +9,15 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException;
 
 class OptionDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
@@ -29,12 +29,12 @@ class OptionDeletionService
     /**
      * OptionDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
-        ServiceOptionRepositoryInterface $repository
+        EggRepositoryInterface $repository
     ) {
         $this->repository = $repository;
         $this->serverRepository = $serverRepository;

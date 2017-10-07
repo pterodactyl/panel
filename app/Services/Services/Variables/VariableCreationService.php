@@ -9,16 +9,16 @@
 
 namespace Pterodactyl\Services\Services\Variables;
 
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException;
 
 class VariableCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $serviceOptionRepository;
 
@@ -28,7 +28,7 @@ class VariableCreationService
     protected $serviceVariableRepository;
 
     public function __construct(
-        ServiceOptionRepositoryInterface $serviceOptionRepository,
+        EggRepositoryInterface $serviceOptionRepository,
         ServiceVariableRepositoryInterface $serviceVariableRepository
     ) {
         $this->serviceOptionRepository = $serviceOptionRepository;
@@ -38,20 +38,20 @@ class VariableCreationService
     /**
      * Create a new variable for a given service option.
      *
-     * @param int|\Pterodactyl\Models\ServiceOption $option
-     * @param array                                 $data
-     * @return \Pterodactyl\Models\ServiceVariable
+     * @param int|\Pterodactyl\Models\Egg $option
+     * @param array                       $data
+     * @return \Pterodactyl\Models\EggVariable
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
      */
     public function handle($option, array $data)
     {
-        if ($option instanceof ServiceOption) {
+        if ($option instanceof Egg) {
             $option = $option->id;
         }
 
-        if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', ServiceVariable::RESERVED_ENV_NAMES))) {
+        if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
             throw new ReservedVariableNameException(sprintf(
                 'Cannot use the protected name %s for this environment variable.',
                 array_get($data, 'env_variable')

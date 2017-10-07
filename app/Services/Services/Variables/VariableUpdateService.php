@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Services\Services\Variables;
 
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException;
@@ -34,8 +34,8 @@ class VariableUpdateService
     /**
      * Update a specific service variable.
      *
-     * @param int|\Pterodactyl\Models\ServiceVariable $variable
-     * @param array                                   $data
+     * @param int|\Pterodactyl\Models\EggVariable $variable
+     * @param array                               $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -45,12 +45,12 @@ class VariableUpdateService
      */
     public function handle($variable, array $data)
     {
-        if (! $variable instanceof ServiceVariable) {
+        if (! $variable instanceof EggVariable) {
             $variable = $this->repository->find($variable);
         }
 
         if (! is_null(array_get($data, 'env_variable'))) {
-            if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', ServiceVariable::RESERVED_ENV_NAMES))) {
+            if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
                 throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', [
                     'name' => array_get($data, 'env_variable'),
                 ]));

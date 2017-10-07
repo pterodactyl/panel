@@ -9,23 +9,23 @@
 
 namespace Pterodactyl\Services\Services\Options;
 
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
 
 class InstallScriptUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
      * InstallScriptUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
-    public function __construct(ServiceOptionRepositoryInterface $repository)
+    public function __construct(EggRepositoryInterface $repository)
     {
         $this->repository = $repository;
     }
@@ -33,8 +33,8 @@ class InstallScriptUpdateService
     /**
      * Modify the option install script for a given service option.
      *
-     * @param int|\Pterodactyl\Models\ServiceOption $option
-     * @param array                                 $data
+     * @param int|\Pterodactyl\Models\Egg $option
+     * @param array                       $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -42,7 +42,7 @@ class InstallScriptUpdateService
      */
     public function handle($option, array $data)
     {
-        if (! $option instanceof ServiceOption) {
+        if (! $option instanceof Egg) {
             $option = $this->repository->find($option);
         }
 

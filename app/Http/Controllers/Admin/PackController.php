@@ -19,9 +19,9 @@ use Pterodactyl\Services\Packs\PackCreationService;
 use Pterodactyl\Services\Packs\PackDeletionService;
 use Pterodactyl\Http\Requests\Admin\PackFormRequest;
 use Pterodactyl\Services\Packs\TemplateUploadService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class PackController extends Controller
 {
@@ -61,7 +61,7 @@ class PackController extends Controller
     protected $updateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $serviceRepository;
 
@@ -73,15 +73,15 @@ class PackController extends Controller
     /**
      * PackController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
-     * @param \Illuminate\Contracts\Config\Repository                      $config
-     * @param \Pterodactyl\Services\Packs\ExportPackService                $exportService
-     * @param \Pterodactyl\Services\Packs\PackCreationService              $creationService
-     * @param \Pterodactyl\Services\Packs\PackDeletionService              $deletionService
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface    $repository
-     * @param \Pterodactyl\Services\Packs\PackUpdateService                $updateService
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $serviceRepository
-     * @param \Pterodactyl\Services\Packs\TemplateUploadService            $templateUploadService
+     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \Pterodactyl\Services\Packs\ExportPackService             $exportService
+     * @param \Pterodactyl\Services\Packs\PackCreationService           $creationService
+     * @param \Pterodactyl\Services\Packs\PackDeletionService           $deletionService
+     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Packs\PackUpdateService             $updateService
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $serviceRepository
+     * @param \Pterodactyl\Services\Packs\TemplateUploadService         $templateUploadService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -91,7 +91,7 @@ class PackController extends Controller
         PackDeletionService $deletionService,
         PackRepositoryInterface $repository,
         PackUpdateService $updateService,
-        ServiceRepositoryInterface $serviceRepository,
+        NestRepositoryInterface $serviceRepository,
         TemplateUploadService $templateUploadService
     ) {
         $this->alert = $alert;

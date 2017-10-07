@@ -12,11 +12,11 @@ namespace Tests\Unit\Services\Services;
 use Mockery as m;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Nest;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
-use Pterodactyl\Services\Services\ServiceCreationService;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
+use Pterodactyl\Services\Services\NestCreationService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class ServiceCreationServiceTest extends TestCase
 {
@@ -28,12 +28,12 @@ class ServiceCreationServiceTest extends TestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\ServiceCreationService
+     * @var \Pterodactyl\Services\Services\NestCreationService
      */
     protected $service;
 
@@ -50,10 +50,10 @@ class ServiceCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->config = m::mock(Repository::class);
-        $this->repository = m::mock(ServiceRepositoryInterface::class);
+        $this->repository = m::mock(NestRepositoryInterface::class);
         $this->uuid = m::mock('overload:' . Uuid::class);
 
-        $this->service = new ServiceCreationService($this->config, $this->repository);
+        $this->service = new NestCreationService($this->config, $this->repository);
     }
 
     /**
@@ -61,7 +61,7 @@ class ServiceCreationServiceTest extends TestCase
      */
     public function testCreateNewService()
     {
-        $model = factory(Service::class)->make();
+        $model = factory(Nest::class)->make();
         $data = [
             'name' => $model->name,
             'description' => $model->description,
@@ -81,7 +81,7 @@ class ServiceCreationServiceTest extends TestCase
         ], true, true)->once()->andReturn($model);
 
         $response = $this->service->handle($data);
-        $this->assertInstanceOf(Service::class, $response);
+        $this->assertInstanceOf(Nest::class, $response);
         $this->assertEquals($model, $response);
     }
 }

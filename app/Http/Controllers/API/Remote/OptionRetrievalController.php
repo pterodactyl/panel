@@ -11,7 +11,7 @@ namespace Pterodactyl\Http\Controllers\API\Remote;
 
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Services\Options\OptionConfigurationFileService;
 
 class OptionRetrievalController extends Controller
@@ -22,18 +22,18 @@ class OptionRetrievalController extends Controller
     protected $configurationFileService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
      * OptionUpdateController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServiceOptionRepositoryInterface    $repository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface              $repository
      * @param \Pterodactyl\Services\Services\Options\OptionConfigurationFileService $configurationFileService
      */
     public function __construct(
-        ServiceOptionRepositoryInterface $repository,
+        EggRepositoryInterface $repository,
         OptionConfigurationFileService $configurationFileService
     ) {
         $this->configurationFileService = $configurationFileService;

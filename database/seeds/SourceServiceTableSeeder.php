@@ -6,10 +6,10 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Traits\Services\CreatesServiceIndex;
 
 class SourceServiceTableSeeder extends Seeder
@@ -42,7 +42,7 @@ class SourceServiceTableSeeder extends Seeder
 
     private function addCoreService()
     {
-        $this->service = Service::updateOrCreate([
+        $this->service = Nest::updateOrCreate([
             'author' => config('pterodactyl.service.core'),
             'folder' => 'srcds',
         ], [
@@ -81,7 +81,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
-        $this->option['source'] = ServiceOption::updateOrCreate([
+        $this->option['source'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'source',
         ], [
@@ -99,7 +99,7 @@ EOF;
             'script_container' => 'ubuntu:16.04',
         ]);
 
-        $this->option['insurgency'] = ServiceOption::updateOrCreate([
+        $this->option['insurgency'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'insurgency',
         ], [
@@ -115,7 +115,7 @@ EOF;
             'copy_script_from' => $this->option['source']->id,
         ]);
 
-        $this->option['tf2'] = ServiceOption::updateOrCreate([
+        $this->option['tf2'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'tf2',
         ], [
@@ -161,7 +161,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
-        $this->option['ark'] = ServiceOption::updateOrCreate([
+        $this->option['ark'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'ark',
         ], [
@@ -205,7 +205,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
-        $this->option['csgo'] = ServiceOption::updateOrCreate([
+        $this->option['csgo'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'csgo',
         ], [
@@ -249,7 +249,7 @@ mkdir -p /mnt/server/.steam/sdk32
 cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
 EOF;
 
-        $this->option['gmod'] = ServiceOption::updateOrCreate([
+        $this->option['gmod'] = Egg::updateOrCreate([
             'service_id' => $this->service->id,
             'tag' => 'gmod',
         ], [
@@ -280,7 +280,7 @@ EOF;
 
     private function addInsurgencyVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['insurgency']->id,
             'env_variable' => 'SRCDS_APPID',
         ], [
@@ -292,7 +292,7 @@ EOF;
             'rules' => 'required|regex:/^(17705)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['insurgency']->id,
             'env_variable' => 'SRCDS_GAME',
         ], [
@@ -304,7 +304,7 @@ EOF;
             'rules' => 'required|regex:/^(insurgency)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['insurgency']->id,
             'env_variable' => 'SRCDS_MAP',
         ], [
@@ -319,7 +319,7 @@ EOF;
 
     private function addTF2Variables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['tf2']->id,
             'env_variable' => 'SRCDS_APPID',
         ], [
@@ -331,7 +331,7 @@ EOF;
             'rules' => 'required|regex:/^(232250)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['tf2']->id,
             'env_variable' => 'SRCDS_GAME',
         ], [
@@ -343,7 +343,7 @@ EOF;
             'rules' => 'required|regex:/^(tf)$/',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['tf2']->id,
             'env_variable' => 'SRCDS_MAP',
         ], [
@@ -358,7 +358,7 @@ EOF;
 
     private function addArkVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['ark']->id,
             'env_variable' => 'ARK_PASSWORD',
         ], [
@@ -370,7 +370,7 @@ EOF;
             'rules' => 'alpha_dash|between:1,100',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['ark']->id,
             'env_variable' => 'ARK_ADMIN_PASSWORD',
         ], [
@@ -382,7 +382,7 @@ EOF;
             'rules' => 'alpha_dash|between:1,100',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['ark']->id,
             'env_variable' => 'SERVER_MAX_PLAYERS',
         ], [
@@ -397,7 +397,7 @@ EOF;
 
     private function addCSGOVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
             'env_variable' => 'SRCDS_MAP',
         ], [
@@ -409,7 +409,7 @@ EOF;
             'rules' => 'required|string|alpha_dash',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['csgo']->id,
             'env_variable' => 'STEAM_ACC',
         ], [
@@ -424,7 +424,7 @@ EOF;
 
     private function addGMODVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['gmod']->id,
             'env_variable' => 'SRCDS_MAP',
         ], [
@@ -436,7 +436,7 @@ EOF;
             'rules' => 'required|string|alpha_dash',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['gmod']->id,
             'env_variable' => 'STEAM_ACC',
         ], [
@@ -451,7 +451,7 @@ EOF;
 
     private function addCustomVariables()
     {
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['source']->id,
             'env_variable' => 'SRCDS_APPID',
         ], [
@@ -463,7 +463,7 @@ EOF;
             'rules' => 'required|numeric|digits_between:1,6',
         ]);
 
-        ServiceVariable::updateOrCreate([
+        EggVariable::updateOrCreate([
             'option_id' => $this->option['source']->id,
             'env_variable' => 'SRCDS_GAME',
         ], [
