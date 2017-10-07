@@ -276,6 +276,5 @@ class EmailSettingsCommandTest extends CommandTestCase
     {
         $this->config->shouldReceive('get')->withAnyArgs()->zeroOrMoreTimes()->andReturnNull();
         $this->command->shouldReceive('writeToEnvironment')->with($data)->once()->andReturnNull();
-        $this->command->shouldReceive('call')->with('config:cache')->once()->andReturnNull();
     }
 }
