@@ -41,10 +41,11 @@ class ChangeServicesToUseAMoreUniqueIdentifier extends Migration
     {
         Schema::table('services', function (Blueprint $table) {
             $table->dropColumn('uuid');
-            $table->string('folder')->unique('file');
-            $table->char('author', 36)->change();
+            $table->string('folder')->nullable();
+            $table->string('author', 36)->change();
 
             $table->unique('name');
+            $table->unique('folder', 'services_file_unique');
         });
     }
 }

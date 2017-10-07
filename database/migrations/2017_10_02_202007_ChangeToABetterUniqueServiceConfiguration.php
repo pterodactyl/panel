@@ -49,7 +49,7 @@ class ChangeToABetterUniqueServiceConfiguration extends Migration
         });
 
         DB::transaction(function () {
-            DB::table('service_options')->select(['id', 'author'])->get()->each(function ($option) {
+            DB::table('service_options')->select(['id', 'tag'])->get()->each(function ($option) {
                 DB::table('service_options')->where('id', $option->id)->update([
                     'tag' => array_get(explode(':', $option->tag), 1),
                 ]);
