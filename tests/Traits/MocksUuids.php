@@ -13,7 +13,7 @@ use Mockery as m;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 
-trait KnownUuid
+trait MocksUuids
 {
     /**
      * The known UUID string.

@@ -12,8 +12,8 @@ namespace Tests\Unit\Services\Services\Sharing;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Egg;
-use Tests\Traits\KnownUuid;
 use Pterodactyl\Models\Nest;
+use Tests\Traits\MocksUuids;
 use Illuminate\Http\UploadedFile;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
@@ -26,7 +26,7 @@ use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggImporterServiceTest extends TestCase
 {
-    use KnownUuid;
+    use MocksUuids;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock

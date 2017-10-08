@@ -11,14 +11,14 @@ namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Exceptions\PterodactylException;
+use Pterodactyl\Services\Eggs\EggDeletionService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Egg\HasChildrenException;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Services\Services\Options\EggDeletionService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceOption\HasChildrenException;
 
-class OptionDeletionServiceTest extends TestCase
+class EggDeletionServiceTest extends TestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
@@ -31,7 +31,7 @@ class OptionDeletionServiceTest extends TestCase
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\EggDeletionService
+     * @var \Pterodactyl\Services\Eggs\EggDeletionService
      */
     protected $service;
 
@@ -49,11 +49,11 @@ class OptionDeletionServiceTest extends TestCase
     }
 
     /**
-     * Test that option is deleted if no servers are found.
+     * Test that Egg is deleted if no servers are found.
      */
-    public function testOptionIsDeletedIfNoServersAreFound()
+    public function testEggIsDeletedIfNoServersAreFound()
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(0);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['egg_id', '=', 1]])->once()->andReturn(0);
         $this->repository->shouldReceive('findCountWhere')->with([['config_from', '=', 1]])->once()->andReturn(0);
         $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(1);
 
@@ -61,33 +61,33 @@ class OptionDeletionServiceTest extends TestCase
     }
 
     /**
-     * Test that option is not deleted if servers are found.
+     * Test that Egg is not deleted if servers are found.
      */
     public function testExceptionIsThrownIfServersAreFound()
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(1);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['egg_id', '=', 1]])->once()->andReturn(1);
 
         try {
             $this->service->handle(1);
-        } catch (DisplayException $exception) {
+        } catch (PterodactylException $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.options.delete_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.egg.delete_has_servers'), $exception->getMessage());
         }
     }
 
     /**
-     * Test that an exception is thrown if children options exist.
+     * Test that an exception is thrown if children Eggs exist.
      */
     public function testExceptionIsThrownIfChildrenArePresent()
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['option_id', '=', 1]])->once()->andReturn(0);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['egg_id', '=', 1]])->once()->andReturn(0);
         $this->repository->shouldReceive('findCountWhere')->with([['config_from', '=', 1]])->once()->andReturn(1);
 
         try {
             $this->service->handle(1);
-        } catch (DisplayException $exception) {
+        } catch (PterodactylException $exception) {
             $this->assertInstanceOf(HasChildrenException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.options.has_children'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.egg.has_children'), $exception->getMessage());
         }
     }
 }

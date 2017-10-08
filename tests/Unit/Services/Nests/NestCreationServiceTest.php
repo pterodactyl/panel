@@ -12,15 +12,15 @@ namespace Tests\Unit\Services\Services;
 use Mockery as m;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
-use Tests\Traits\KnownUuid;
 use Pterodactyl\Models\Nest;
+use Tests\Traits\MocksUuids;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class NestCreationServiceTest extends TestCase
 {
-    use KnownUuid;
+    use MocksUuids;
 
     /**
      * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
