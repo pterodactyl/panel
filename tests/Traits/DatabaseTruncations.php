@@ -1,9 +1,10 @@
 <?php
+
 namespace Tests\Traits;
 
-use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Contracts\Console\Kernel;
 
 trait DatabaseTruncations
 {
@@ -15,7 +16,7 @@ trait DatabaseTruncations
     public function runDatabaseTruncations()
     {
         $this->artisan('migrate', [
-            '--seed' => true
+            '--seed' => true,
         ]);
         $this->app[Kernel::class]->setArtisan(null);
 
