@@ -30,6 +30,9 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 addons:
   chrome: stable
+  artifacts: true
+    working_dir: tests/Browser
+    debug: true
 notifications:
   email: false
   webhooks:
