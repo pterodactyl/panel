@@ -115,7 +115,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testEmptyResultSetShouldBeReturnedIfNoVariablesAreFound()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn([]);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn([]);
 
         $response = $this->service->validate(1);
 
@@ -129,7 +129,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testValidatorShouldNotProcessVariablesSetAsNotUserEditableWhenAdminFlagIsNotPassed()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($this->variables);
 
         $this->validator->shouldReceive('make')->with([
             'variable_value' => 'Test_SomeValue_0',
@@ -161,7 +161,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testValidatorShouldProcessAllVariablesWhenAdminFlagIsSet()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($this->variables);
 
         foreach ($this->variables as $key => $variable) {
             $this->validator->shouldReceive('make')->with([
@@ -198,7 +198,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testValidatorShouldThrowExceptionWhenAValidationErrorIsEncountered()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($this->variables);
 
         $this->validator->shouldReceive('make')->with([
             'variable_value' => null,

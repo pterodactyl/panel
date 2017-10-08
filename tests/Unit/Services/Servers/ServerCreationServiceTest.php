@@ -12,6 +12,7 @@ namespace Tests\Unit\Services\Servers;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
+use Tests\Traits\MocksUuids;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\PterodactylException;
@@ -32,7 +33,7 @@ use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonS
  */
 class ServerCreationServiceTest extends TestCase
 {
-    use PHPMock;
+    use MocksUuids, PHPMock;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
@@ -72,8 +73,8 @@ class ServerCreationServiceTest extends TestCase
         'environment' => [
             'TEST_VAR_1' => 'var1-value',
         ],
-        'service_id' => 1,
-        'option_id' => 1,
+        'nest_id' => 1,
+        'egg_id' => 1,
         'startup' => 'startup-param',
         'docker_image' => 'some/image',
     ];
@@ -119,11 +120,6 @@ class ServerCreationServiceTest extends TestCase
     protected $validatorService;
 
     /**
-     * @var \Ramsey\Uuid\Uuid|\Mockery\Mock
-     */
-    protected $uuid;
-
-    /**
      * Setup tests.
      */
     public function setUp()
@@ -141,7 +137,6 @@ class ServerCreationServiceTest extends TestCase
         $this->userRepository = m::mock(UserRepositoryInterface::class);
         $this->usernameService = m::mock(UsernameGenerationService::class);
         $this->validatorService = m::mock(VariableValidatorService::class);
-        $this->uuid = m::mock('overload:Ramsey\Uuid\Uuid');
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
             ->expects($this->any())->willReturn('random_string');
@@ -167,14 +162,19 @@ class ServerCreationServiceTest extends TestCase
     {
         $this->validatorService->shouldReceive('isAdmin')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('setFields')->with($this->data['environment'])->once()->andReturnSelf()
-            ->shouldReceive('validate')->with($this->data['option_id'])->once()->andReturnSelf();
+            ->shouldReceive('validate')->with($this->data['egg_id'])->once()->andReturnSelf();
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-0000');
         $this->usernameService->shouldReceive('generate')->with($this->data['name'], 'random_string')
             ->once()->andReturn('user_name');
 
-        $this->repository->shouldReceive('create')->withAnyArgs()->once()->andReturn((object) [
+        $this->repository->shouldReceive('create')->with(m::subset([
+            'uuid' => $this->getKnownUuid(),
+            'node_id' => $this->data['node_id'],
+            'owner_id' => 1,
+            'nest_id' => 1,
+            'egg_id' => 1,
+        ]))->once()->andReturn((object) [
             'node_id' => 1,
             'id' => 1,
         ]);
@@ -212,7 +212,6 @@ class ServerCreationServiceTest extends TestCase
         $this->validatorService->shouldReceive('isAdmin->setFields->validate->getResults')->once()->andReturn([]);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->usernameService->shouldReceive('generate')->once()->andReturn('user_name');
-        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-0000');
         $this->repository->shouldReceive('create')->once()->andReturn((object) [
             'node_id' => 1,
             'id' => 1,
