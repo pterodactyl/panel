@@ -2,9 +2,9 @@
 
 namespace Tests\Browser;
 
-use Pterodactyl\Models\User;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
+use Pterodactyl\Models\User;
 use Tests\Traits\DatabaseTruncations;
 
 class AuthTest extends DuskTestCase
@@ -39,7 +39,6 @@ class AuthTest extends DuskTestCase
                 ->assertSee('Authentication is required to continue.')
                 ->visit('/account')
                 ->assertPathIs('/auth/login');
-
         });
     }
 }

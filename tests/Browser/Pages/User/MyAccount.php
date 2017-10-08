@@ -36,5 +36,4 @@ class MyAccount extends BasePage
             ->type('username', $username)
             ->press(__('base.account.update_identity'));
     }
-
 }
