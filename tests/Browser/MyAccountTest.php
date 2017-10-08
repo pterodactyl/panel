@@ -2,11 +2,11 @@
 
 namespace Tests\Browser;
 
-use Pterodactyl\Models\User;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
-use Tests\Browser\Pages\User\MyAccount;
+use Pterodactyl\Models\User;
 use Tests\Traits\DatabaseTruncations;
+use Tests\Browser\Pages\User\MyAccount;
 
 class MyAccountTest extends DuskTestCase
 {
