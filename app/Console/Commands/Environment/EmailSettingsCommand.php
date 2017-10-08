@@ -92,7 +92,6 @@ class EmailSettingsCommand extends Command
         $this->writeToEnvironment($this->variables);
 
         $this->line('Updating stored environment configuration file.');
-        $this->call('config:cache');
         $this->line('');
     }
 

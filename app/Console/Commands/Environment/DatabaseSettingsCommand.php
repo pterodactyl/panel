@@ -122,7 +122,6 @@ class DatabaseSettingsCommand extends Command
 
         $this->writeToEnvironment($this->variables);
 
-        $this->console->call('config:cache');
         $this->info($this->console->output());
 
         return 0;
