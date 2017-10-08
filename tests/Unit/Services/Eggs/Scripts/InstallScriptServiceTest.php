@@ -13,11 +13,11 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Services\Eggs\Scripts\InstallScriptService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Services\Options\InstallScriptService;
-use Pterodactyl\Exceptions\Service\ServiceOption\InvalidCopyFromException;
+use Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException;
 
-class InstallScriptUpdateServiceTest extends TestCase
+class InstallScriptServiceTest extends TestCase
 {
     /**
      * @var array
@@ -36,12 +36,12 @@ class InstallScriptUpdateServiceTest extends TestCase
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Options\InstallScriptService
+     * @var \Pterodactyl\Services\Eggs\Scripts\InstallScriptService
      */
     protected $service;
 
@@ -65,7 +65,7 @@ class InstallScriptUpdateServiceTest extends TestCase
     {
         $this->data['copy_script_from'] = 1;
 
-        $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->service_id)->once()->andReturn(true);
+        $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->nest_id)->once()->andReturn(true);
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
 
@@ -79,12 +79,12 @@ class InstallScriptUpdateServiceTest extends TestCase
     {
         $this->data['copy_script_from'] = 1;
 
-        $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->service_id)->once()->andReturn(false);
+        $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->nest_id)->once()->andReturn(false);
         try {
             $this->service->handle($this->model, $this->data);
         } catch (Exception $exception) {
             $this->assertInstanceOf(InvalidCopyFromException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.options.invalid_copy_id'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.egg.invalid_copy_id'), $exception->getMessage());
         }
     }
 

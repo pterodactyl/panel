@@ -10,34 +10,24 @@
 namespace Pterodactyl\Services\Eggs\Variables;
 
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    protected $eggRepository;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
-    protected $variableRepository;
+    protected $repository;
 
     /**
      * VariableCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $eggRepository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
      */
-    public function __construct(
-        EggRepositoryInterface $eggRepository,
-        EggVariableRepositoryInterface $variableRepository
-    ) {
-        $this->eggRepository = $eggRepository;
-        $this->variableRepository = $variableRepository;
+    public function __construct(EggVariableRepositoryInterface $repository)
+    {
+        $this->repository = $repository;
     }
 
     /**
@@ -61,10 +51,10 @@ class VariableCreationService
 
         $options = array_get($data, 'options', []);
 
-        return $this->variableRepository->create(array_merge([
+        return $this->repository->create(array_merge($data, [
             'egg_id' => $egg,
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
-        ], $data));
+        ]));
     }
 }

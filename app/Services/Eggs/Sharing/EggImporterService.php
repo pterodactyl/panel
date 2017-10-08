@@ -31,14 +31,14 @@ class EggImporterService
     protected $eggVariableRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     */
+    protected $nestRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    protected $serviceRepository;
 
     /**
      * EggImporterService constructor.
@@ -46,18 +46,18 @@ class EggImporterService
      * @param \Illuminate\Database\ConnectionInterface                         $connection
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $eggVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface        $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface        $nestRepository
      */
     public function __construct(
         ConnectionInterface $connection,
         EggRepositoryInterface $repository,
         EggVariableRepositoryInterface $eggVariableRepository,
-        NestRepositoryInterface $serviceRepository
+        NestRepositoryInterface $nestRepository
     ) {
         $this->connection = $connection;
-        $this->repository = $repository;
-        $this->serviceRepository = $serviceRepository;
         $this->eggVariableRepository = $eggVariableRepository;
+        $this->repository = $repository;
+        $this->nestRepository = $nestRepository;
     }
 
     /**
@@ -74,16 +74,16 @@ class EggImporterService
     public function handle(UploadedFile $file, int $nest): Egg
     {
         if (! $file->isValid() || ! $file->isFile()) {
-            throw new InvalidFileUploadException(trans('exceptions.egg.importer.file_error'));
+            throw new InvalidFileUploadException(trans('exceptions.nest.importer.file_error'));
         }
 
         $parsed = json_decode($file->openFile()->fread($file->getSize()));
 
         if (object_get($parsed, 'meta.version') !== 'PTDL_v1') {
-            throw new InvalidFileUploadException(trans('exceptions.egg.importer.invalid_json_provided'));
+            throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
         }
 
-        $nest = $this->serviceRepository->getWithEggs($nest);
+        $nest = $this->nestRepository->getWithEggs($nest);
         $this->connection->beginTransaction();
 
         $egg = $this->repository->create([

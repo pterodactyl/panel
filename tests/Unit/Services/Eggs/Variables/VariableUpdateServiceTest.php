@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Tests\Unit\Services\Services\Variables;
+namespace Tests\Unit\Services\Eggs\Variables;
 
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Services\Variables\VariableUpdateService;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
+use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
 class VariableUpdateServiceTest extends TestCase
 {
@@ -25,12 +25,12 @@ class VariableUpdateServiceTest extends TestCase
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Variables\VariableUpdateService
+     * @var \Pterodactyl\Services\Eggs\Variables\VariableUpdateService
      */
     protected $service;
 
@@ -42,7 +42,7 @@ class VariableUpdateServiceTest extends TestCase
         parent::setUp();
 
         $this->model = factory(EggVariable::class)->make();
-        $this->repository = m::mock(ServiceVariableRepositoryInterface::class);
+        $this->repository = m::mock(EggVariableRepositoryInterface::class);
 
         $this->service = new VariableUpdateService($this->repository);
     }
@@ -86,7 +86,7 @@ class VariableUpdateServiceTest extends TestCase
         $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
-                ['option_id', '=', $this->model->option_id],
+                ['egg_id', '=', $this->model->option_id],
                 ['id', '!=', $this->model->id],
             ])->once()->andReturn(0);
 
@@ -101,6 +101,28 @@ class VariableUpdateServiceTest extends TestCase
     }
 
     /**
+     * Test that data passed into the handler is overwritten inside the handler.
+     */
+    public function testDataPassedIntoHandlerTakesLowerPriorityThanDataSet()
+    {
+        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+            ->shouldReceive('findCountWhere')->with([
+                ['env_variable', '=', 'TEST_VAR_123'],
+                ['egg_id', '=', $this->model->option_id],
+                ['id', '!=', $this->model->id],
+            ])->once()->andReturn(0);
+
+        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, [
+                'user_viewable' => false,
+                'user_editable' => false,
+                'env_variable' => 'TEST_VAR_123',
+            ])->once()->andReturn(true);
+
+        $this->assertTrue($this->service->handle($this->model, ['user_viewable' => 123456, 'env_variable' => 'TEST_VAR_123']));
+    }
+
+    /**
      * Test that a non-unique environment variable triggers an exception.
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsNotUnique()
@@ -108,7 +130,7 @@ class VariableUpdateServiceTest extends TestCase
         $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
-                ['option_id', '=', $this->model->option_id],
+                ['egg_id', '=', $this->model->option_id],
                 ['id', '!=', $this->model->id],
             ])->once()->andReturn(1);
 
@@ -126,9 +148,9 @@ class VariableUpdateServiceTest extends TestCase
      * Test that all of the reserved variables defined in the model trigger an exception.
      *
      * @dataProvider reservedNamesProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
+     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
-    public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames($variable)
+    public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
         $this->service->handle($this->model, ['env_variable' => $variable]);
     }

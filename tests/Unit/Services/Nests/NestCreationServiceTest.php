@@ -12,15 +12,15 @@ namespace Tests\Unit\Services\Services;
 use Mockery as m;
 use Tests\TestCase;
 use Ramsey\Uuid\Uuid;
+use Tests\Traits\KnownUuid;
 use Pterodactyl\Models\Nest;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Traits\Services\CreatesServiceIndex;
-use Pterodactyl\Services\Services\NestCreationService;
+use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
-class ServiceCreationServiceTest extends TestCase
+class NestCreationServiceTest extends TestCase
 {
-    use CreatesServiceIndex;
+    use KnownUuid;
 
     /**
      * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
@@ -33,14 +33,9 @@ class ServiceCreationServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\NestCreationService
+     * @var \Pterodactyl\Services\Nests\NestCreationService
      */
     protected $service;
-
-    /**
-     * @var \Ramsey\Uuid\Uuid|\Mockery\Mock
-     */
-    protected $uuid;
 
     /**
      * Setup tests.
@@ -51,7 +46,6 @@ class ServiceCreationServiceTest extends TestCase
 
         $this->config = m::mock(Repository::class);
         $this->repository = m::mock(NestRepositoryInterface::class);
-        $this->uuid = m::mock('overload:' . Uuid::class);
 
         $this->service = new NestCreationService($this->config, $this->repository);
     }
@@ -65,19 +59,14 @@ class ServiceCreationServiceTest extends TestCase
         $data = [
             'name' => $model->name,
             'description' => $model->description,
-            'folder' => $model->folder,
-            'startup' => $model->startup,
         ];
 
-        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn('uuid-0000');
-        $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('0000-author');
+        $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('testauthor@example.com');
         $this->repository->shouldReceive('create')->with([
-            'uuid' => 'uuid-0000',
-            'author' => '0000-author',
+            'uuid' => $this->getKnownUuid(),
+            'author' => 'testauthor@example.com',
             'name' => $data['name'],
             'description' => $data['description'],
-            'startup' => $data['startup'],
-            'index_file' => $this->getIndexScript(),
         ], true, true)->once()->andReturn($model);
 
         $response = $this->service->handle($data);

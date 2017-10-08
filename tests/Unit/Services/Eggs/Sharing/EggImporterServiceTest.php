@@ -11,26 +11,32 @@ namespace Tests\Unit\Services\Services\Sharing;
 
 use Mockery as m;
 use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
+use Tests\Traits\KnownUuid;
 use Pterodactyl\Models\Nest;
 use Illuminate\Http\UploadedFile;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\PterodactylException;
+use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Services\Services\Sharing\EggImporterService;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Service\ServiceOption\DuplicateOptionTagException;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
-class ServiceOptionImporterServiceTest extends TestCase
+class EggImporterServiceTest extends TestCase
 {
+    use KnownUuid;
+
     /**
      * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     protected $connection;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
+     */
+    protected $eggVariableRepository;
 
     /**
      * @var \Illuminate\Http\UploadedFile|\Mockery\Mock
@@ -38,29 +44,19 @@ class ServiceOptionImporterServiceTest extends TestCase
     protected $file;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
+     */
+    protected $nestRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Sharing\EggImporterService
+     * @var \Pterodactyl\Services\Eggs\Sharing\EggImporterService
      */
     protected $service;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
-     */
-    protected $serviceRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface|\Mockery\Mock
-     */
-    protected $serviceVariableRepository;
-
-    /**
-     * @var \Ramsey\Uuid\Uuid|\Mockery\Mock
-     */
-    protected $uuid;
 
     /**
      * Setup tests.
@@ -70,58 +66,54 @@ class ServiceOptionImporterServiceTest extends TestCase
         parent::setUp();
 
         $this->connection = m::mock(ConnectionInterface::class);
+        $this->eggVariableRepository = m::mock(EggVariableRepositoryInterface::class);
         $this->file = m::mock(UploadedFile::class);
+        $this->nestRepository = m::mock(NestRepositoryInterface::class);
         $this->repository = m::mock(EggRepositoryInterface::class);
-        $this->serviceRepository = m::mock(NestRepositoryInterface::class);
-        $this->serviceVariableRepository = m::mock(ServiceVariableRepositoryInterface::class);
-        $this->uuid = m::mock('overload:' . Uuid::class);
 
         $this->service = new EggImporterService(
-            $this->connection, $this->serviceRepository, $this->repository, $this->serviceVariableRepository
+            $this->connection, $this->repository, $this->eggVariableRepository, $this->nestRepository
         );
     }
 
     /**
      * Test that a service option can be successfully imported.
      */
-    public function testServiceOptionIsImported()
+    public function testEggConfigurationIsImported()
     {
-        $option = factory(Egg::class)->make();
-        $service = factory(Nest::class)->make();
-        $service->options = collect([factory(Egg::class)->make()]);
+        $egg = factory(Egg::class)->make();
+        $nest = factory(Nest::class)->make();
 
         $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
         $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
             'meta' => ['version' => 'PTDL_v1'],
-            'name' => $option->name,
-            'tag' => $option->tag,
+            'name' => $egg->name,
+            'tag' => $egg->tag,
             'variables' => [
                 $variable = factory(EggVariable::class)->make(),
             ],
         ]));
-        $this->serviceRepository->shouldReceive('getWithOptions')->with($service->id)->once()->andReturn($service);
+        $this->nestRepository->shouldReceive('getWithEggs')->with($nest->id)->once()->andReturn($nest);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->uuid->shouldReceive('uuid4->toString')->withNoArgs()->once()->andReturn($option->uuid);
         $this->repository->shouldReceive('create')->with(m::subset([
-            'uuid' => $option->uuid,
-            'service_id' => $service->id,
-            'name' => $option->name,
-            'tag' => $option->tag,
-        ]), true, true)->once()->andReturn($option);
+            'uuid' => $this->getKnownUuid(),
+            'nest_id' => $nest->id,
+            'name' => $egg->name,
+        ]), true, true)->once()->andReturn($egg);
 
-        $this->serviceVariableRepository->shouldReceive('create')->with(m::subset([
-            'option_id' => $option->id,
+        $this->eggVariableRepository->shouldReceive('create')->with(m::subset([
+            'egg_id' => $egg->id,
             'env_variable' => $variable->env_variable,
         ]))->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($this->file, $service->id);
+        $response = $this->service->handle($this->file, $nest->id);
         $this->assertNotEmpty($response);
         $this->assertInstanceOf(Egg::class, $response);
-        $this->assertSame($option, $response);
+        $this->assertSame($egg, $response);
     }
 
     /**
@@ -134,7 +126,7 @@ class ServiceOptionImporterServiceTest extends TestCase
             $this->service->handle($this->file, 1234);
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.exporter.import_file_error'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.importer.file_error'), $exception->getMessage());
         }
     }
 
@@ -150,7 +142,7 @@ class ServiceOptionImporterServiceTest extends TestCase
             $this->service->handle($this->file, 1234);
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.exporter.import_file_error'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.importer.file_error'), $exception->getMessage());
         }
     }
 
@@ -170,33 +162,7 @@ class ServiceOptionImporterServiceTest extends TestCase
             $this->service->handle($this->file, 1234);
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.exporter.invalid_json_provided'), $exception->getMessage());
-        }
-    }
-
-    /**
-     * Test that an exception is thrown if a duplicate tag exists.
-     */
-    public function testExceptionIsThrownIfDuplicateTagExists()
-    {
-        $option = factory(Egg::class)->make();
-        $service = factory(Nest::class)->make();
-        $service->options = collect([factory(Egg::class)->make(['tag' => $option->tag])]);
-
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
-        $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
-        $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
-        $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
-            'meta' => ['version' => 'PTDL_v1'],
-            'tag' => $option->tag,
-        ]));
-        $this->serviceRepository->shouldReceive('getWithOptions')->with($service->id)->once()->andReturn($service);
-
-        try {
-            $this->service->handle($this->file, $service->id);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(DuplicateOptionTagException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.options.duplicate_tag'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.importer.invalid_json_provided'), $exception->getMessage());
         }
     }
 }

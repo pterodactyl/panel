@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Tests\Unit\Services\Services\Sharing;
+namespace Tests\Unit\Services\Eggs\Sharing;
 
 use Mockery as m;
 use Carbon\Carbon;
@@ -15,10 +15,10 @@ use Tests\TestCase;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Tests\Assertions\NestedObjectAssertionsTrait;
+use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Services\Sharing\ServiceOptionExporterService;
 
-class ServiceOptionExporterServiceTest extends TestCase
+class EggExporterServiceTest extends TestCase
 {
     use NestedObjectAssertionsTrait;
 
@@ -33,7 +33,7 @@ class ServiceOptionExporterServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\Sharing\ServiceOptionExporterService
+     * @var \Pterodactyl\Services\Eggs\Sharing\EggExporterService
      */
     protected $service;
 
@@ -48,7 +48,7 @@ class ServiceOptionExporterServiceTest extends TestCase
         $this->carbon = new Carbon();
         $this->repository = m::mock(EggRepositoryInterface::class);
 
-        $this->service = new ServiceOptionExporterService($this->carbon, $this->repository);
+        $this->service = new EggExporterService($this->repository);
     }
 
     /**
@@ -56,18 +56,20 @@ class ServiceOptionExporterServiceTest extends TestCase
      */
     public function testJsonStructureIsExported()
     {
-        $option = factory(Egg::class)->make();
-        $option->variables = collect([$variable = factory(EggVariable::class)->make()]);
+        $egg = factory(Egg::class)->make();
+        $egg->variables = collect([$variable = factory(EggVariable::class)->make()]);
 
-        $this->repository->shouldReceive('getWithExportAttributes')->with($option->id)->once()->andReturn($option);
+        $this->repository->shouldReceive('getWithExportAttributes')->with($egg->id)->once()->andReturn($egg);
 
-        $response = $this->service->handle($option->id);
+        $response = $this->service->handle($egg->id);
         $this->assertNotEmpty($response);
 
         $data = json_decode($response);
         $this->assertEquals(JSON_ERROR_NONE, json_last_error());
         $this->assertObjectHasNestedAttribute('meta.version', $data);
         $this->assertObjectNestedValueEquals('meta.version', 'PTDL_v1', $data);
+        $this->assertObjectHasNestedAttribute('author', $data);
+        $this->assertObjectNestedValueEquals('author', $egg->author, $data);
         $this->assertObjectHasNestedAttribute('exported_at', $data);
         $this->assertObjectNestedValueEquals('exported_at', Carbon::now()->toIso8601String(), $data);
         $this->assertObjectHasNestedAttribute('scripts.installation.script', $data);

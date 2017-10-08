@@ -7,30 +7,24 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Tests\Unit\Services\Services\Variables;
+namespace Tests\Unit\Services\Eggs\Variables;
 
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Services\Variables\VariableCreationService;
-use Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface;
+use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
 class VariableCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
-    protected $serviceOptionRepository;
+    protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceVariableRepositoryInterface
-     */
-    protected $serviceVariableRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Services\Variables\VariableCreationService
+     * @var \Pterodactyl\Services\Eggs\Variables\VariableCreationService
      */
     protected $service;
 
@@ -41,10 +35,9 @@ class VariableCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->serviceOptionRepository = m::mock(EggRepositoryInterface::class);
-        $this->serviceVariableRepository = m::mock(ServiceVariableRepositoryInterface::class);
+        $this->repository = m::mock(EggVariableRepositoryInterface::class);
 
-        $this->service = new VariableCreationService($this->serviceOptionRepository, $this->serviceVariableRepository);
+        $this->service = new VariableCreationService($this->repository);
     }
 
     /**
@@ -53,11 +46,11 @@ class VariableCreationServiceTest extends TestCase
     public function testVariableIsCreatedAndStored()
     {
         $data = ['env_variable' => 'TEST_VAR_123'];
-        $this->serviceVariableRepository->shouldReceive('create')->with([
-           'option_id' => 1,
-           'user_viewable' => false,
-           'user_editable' => false,
-           'env_variable' => 'TEST_VAR_123',
+        $this->repository->shouldReceive('create')->with([
+            'egg_id' => 1,
+            'user_viewable' => false,
+            'user_editable' => false,
+            'env_variable' => 'TEST_VAR_123',
         ])->once()->andReturn(new EggVariable);
 
         $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
@@ -69,8 +62,8 @@ class VariableCreationServiceTest extends TestCase
     public function testOptionsPassedInArrayKeyAreParsedProperly()
     {
         $data = ['env_variable' => 'TEST_VAR_123', 'options' => ['user_viewable', 'user_editable']];
-        $this->serviceVariableRepository->shouldReceive('create')->with([
-            'option_id' => 1,
+        $this->repository->shouldReceive('create')->with([
+            'egg_id' => 1,
             'user_viewable' => true,
             'user_editable' => true,
             'env_variable' => 'TEST_VAR_123',
@@ -84,29 +77,28 @@ class VariableCreationServiceTest extends TestCase
      * Test that all of the reserved variables defined in the model trigger an exception.
      *
      * @dataProvider reservedNamesProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\ServiceVariable\ReservedVariableNameException
+     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
-    public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames($variable)
+    public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
         $this->service->handle(1, ['env_variable' => $variable]);
     }
 
     /**
-     * Test that a model can be passed in place of an integer.
+     * Test that the egg ID applied in the function takes higher priority than an
+     * ID passed into the handler.
      */
-    public function testModelCanBePassedInPlaceOfInteger()
+    public function testEggIdPassedInDataIsNotApplied()
     {
-        $model = factory(Egg::class)->make();
-        $data = ['env_variable' => 'TEST_VAR_123'];
-
-        $this->serviceVariableRepository->shouldReceive('create')->with([
-            'option_id' => $model->id,
+        $data = ['egg_id' => 123456, 'env_variable' => 'TEST_VAR_123'];
+        $this->repository->shouldReceive('create')->with([
+            'egg_id' => 1,
             'user_viewable' => false,
             'user_editable' => false,
             'env_variable' => 'TEST_VAR_123',
         ])->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(EggVariable::class, $this->service->handle($model, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
     }
 
     /**

@@ -32,10 +32,8 @@ class NestCreationService
      * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
-    public function __construct(
-        ConfigRepository $config,
-        NestRepositoryInterface $repository
-    ) {
+    public function __construct(ConfigRepository $config, NestRepositoryInterface $repository)
+    {
         $this->config = $config;
         $this->repository = $repository;
     }

@@ -11,18 +11,18 @@ namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\Services\NestUpdateService;
+use Pterodactyl\Services\Nests\NestUpdateService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
-class ServiceUpdateServiceTest extends TestCase
+class NestUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\NestUpdateService
+     * @var \Pterodactyl\Services\Nests\NestUpdateService
      */
     protected $service;
 

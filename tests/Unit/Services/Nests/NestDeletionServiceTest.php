@@ -12,25 +12,26 @@ namespace Tests\Unit\Services\Services;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\Services\NestDeletionService;
+use Pterodactyl\Exceptions\PterodactylException;
+use Pterodactyl\Services\Nests\NestDeletionService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
-class ServiceDeletionServiceTest extends TestCase
+class NestDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Services\NestDeletionService
+     * @var \Pterodactyl\Services\Nests\NestDeletionService
      */
     protected $service;
 
@@ -52,7 +53,7 @@ class ServiceDeletionServiceTest extends TestCase
      */
     public function testServiceIsDeleted()
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['service_id', '=', 1]])->once()->andReturn(0);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['nest_id', '=', 1]])->once()->andReturn(0);
         $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle(1));
@@ -62,14 +63,16 @@ class ServiceDeletionServiceTest extends TestCase
      * Test that an exception is thrown when there are servers attached to a service.
      *
      * @dataProvider serverCountProvider
+     *
+     * @param int $count
      */
-    public function testExceptionIsThrownIfServersAreAttached($count)
+    public function testExceptionIsThrownIfServersAreAttached(int $count)
     {
-        $this->serverRepository->shouldReceive('findCountWhere')->with([['service_id', '=', 1]])->once()->andReturn($count);
+        $this->serverRepository->shouldReceive('findCountWhere')->with([['nest_id', '=', 1]])->once()->andReturn($count);
 
         try {
             $this->service->handle(1);
-        } catch (Exception $exception) {
+        } catch (PterodactylException $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
             $this->assertEquals(trans('exceptions.service.delete_has_servers'), $exception->getMessage());
         }
