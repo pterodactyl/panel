@@ -31,7 +31,9 @@ after_success:
 addons:
   chrome: stable
   artifacts:
-    working_dir: tests/Browser
+    paths:
+    - ./tests/Browser/console
+    - ./test/Browser/screenshots
     debug: true
 notifications:
   email: false
