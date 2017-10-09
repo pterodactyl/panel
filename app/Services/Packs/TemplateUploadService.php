@@ -11,8 +11,8 @@ namespace Pterodactyl\Services\Packs;
 
 use ZipArchive;
 use Illuminate\Http\UploadedFile;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\ZipExtractionException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 use Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
@@ -58,7 +58,7 @@ class TemplateUploadService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
@@ -94,7 +94,7 @@ class TemplateUploadService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException

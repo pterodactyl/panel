@@ -16,6 +16,7 @@ return [
     'eggs' => [
         'notices' => [
             'imported' => 'Successfully imported this Egg and its associated variables.',
+            'updated_via_import' => 'This Egg has been updated using the file provided.',
             'deleted' => 'Successfully deleted the requested egg from the Panel.',
             'updated' => 'Egg configuration has been updated successfully.',
             'script_updated' => 'Egg install script has been updated and will run whenever servers are installed.',

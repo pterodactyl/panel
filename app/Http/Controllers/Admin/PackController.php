@@ -156,7 +156,7 @@ class PackController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException

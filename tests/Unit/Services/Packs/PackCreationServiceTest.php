@@ -19,7 +19,7 @@ use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Packs\PackCreationService;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 
 class PackCreationServiceTest extends TestCase

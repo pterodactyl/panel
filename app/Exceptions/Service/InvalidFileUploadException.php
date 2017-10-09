@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\Pack;
+namespace Pterodactyl\Exceptions\Service;
 
 use Pterodactyl\Exceptions\DisplayException;
 

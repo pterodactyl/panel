@@ -31,6 +31,7 @@ return [
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
         ],
         'importer' => [
+            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
             'file_error' => 'The JSON file provided was not valid.',
             'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
         ],

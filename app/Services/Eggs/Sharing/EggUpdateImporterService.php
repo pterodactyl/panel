@@ -1,25 +1,15 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs\Sharing;
 
-use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Egg;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
-class EggImporterService
+class EggUpdateImporterService
 {
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -27,53 +17,44 @@ class EggImporterService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
-     */
-    protected $eggVariableRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    protected $nestRepository;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
-     * EggImporterService constructor.
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     */
+    protected $variableRepository;
+
+    /**
+     * EggUpdateImporterService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                         $connection
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $eggVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface        $nestRepository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
         ConnectionInterface $connection,
         EggRepositoryInterface $repository,
-        EggVariableRepositoryInterface $eggVariableRepository,
-        NestRepositoryInterface $nestRepository
+        EggVariableRepositoryInterface $variableRepository
     ) {
         $this->connection = $connection;
-        $this->eggVariableRepository = $eggVariableRepository;
         $this->repository = $repository;
-        $this->nestRepository = $nestRepository;
+        $this->variableRepository = $variableRepository;
     }
 
     /**
-     * Take an uploaded JSON file and parse it into a new egg.
+     * Update an existing Egg using an uploaded JSON file.
      *
+     * @param int                           $egg
      * @param \Illuminate\Http\UploadedFile $file
-     * @param int                           $nest
-     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
-    public function handle(UploadedFile $file, int $nest): Egg
+    public function handle(int $egg, UploadedFile $file)
     {
         if (! $file->isValid() || ! $file->isFile()) {
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.file_error'));
@@ -90,12 +71,8 @@ class EggImporterService
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
         }
 
-        $nest = $this->nestRepository->getWithEggs($nest);
         $this->connection->beginTransaction();
-
-        $egg = $this->repository->create([
-            'uuid' => Uuid::uuid4()->toString(),
-            'nest_id' => $nest->id,
+        $this->repository->update($egg, [
             'author' => object_get($parsed, 'author'),
             'name' => object_get($parsed, 'name'),
             'description' => object_get($parsed, 'description'),
@@ -108,17 +85,29 @@ class EggImporterService
             'script_install' => object_get($parsed, 'scripts.installation.script'),
             'script_entry' => object_get($parsed, 'scripts.installation.entrypoint'),
             'script_container' => object_get($parsed, 'scripts.installation.container'),
-            'copy_script_from' => null,
         ], true, true);
 
+        // Update Existing Variables
         collect($parsed->variables)->each(function ($variable) use ($egg) {
-            $this->eggVariableRepository->create(array_merge((array) $variable, [
-                'egg_id' => $egg->id,
-            ]));
+            $this->variableRepository->withoutFresh()->updateOrCreate([
+                'egg_id' => $egg,
+                'env_variable' => $variable->env_variable,
+            ], collect($variable)->except(['egg_id', 'env_variable'])->toArray());
+        });
+
+        $imported = collect($parsed->variables)->pluck('env_variable')->toArray();
+        $existing = $this->variableRepository->withColumns(['id', 'env_variable'])->findWhere([['egg_id', '=', $egg]]);
+
+        // Delete variables not present in the import.
+        collect($existing)->each(function ($variable) use ($egg, $imported) {
+            if (! in_array($variable->env_variable, $imported)) {
+                $this->variableRepository->deleteWhere([
+                    ['egg_id', '=', $egg],
+                    ['env_variable', '=', $variable->env_variable],
+                ]);
+            }
         });
 
         $this->connection->commit();
-
-        return $egg;
     }
 }

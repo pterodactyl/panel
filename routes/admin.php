@@ -163,6 +163,8 @@ Route::group(['prefix' => 'nests'], function () {
     Route::post('/egg/new', 'Nests\EggController@store');
     Route::post('/egg/{egg}/variables', 'Nests\EggVariableController@store');
 
+    Route::put('/egg/{egg}', 'Nests\EggShareController@update');
+
     Route::patch('/view/{nest}', 'Nests\NestController@update');
     Route::patch('/egg/{egg}', 'Nests\EggController@update');
     Route::patch('/egg/{egg}/scripts', 'Nests\EggScriptController@update');

@@ -30,14 +30,39 @@
             </ul>
         </div>
     </div>
+    <div class="col-xs-12">
+        <div class="callout callout-info">
+            <strong>Notice:</strong> Editing an Egg or any of the Process Management fields <em>requires</em> that each Daemon be rebooted in order to apply the changes.
+        </div>
+    </div>
 </div>
-<form action="{{ route('admin.nests.egg.view', $egg->id) }}" method="POST">
+<form action="{{ route('admin.nests.egg.view', $egg->id) }}" enctype="multipart/form-data" method="POST">
     <div class="row">
         <div class="col-xs-12">
-            <div class="callout callout-info">
-                <strong>Notice:</strong> Editing an Egg or any of the Process Management fields <em>requires</em> that each Daemon be rebooted in order to apply the changes.
+            <div class="box box-danger">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-8">
+                            <div class="form-group no-margin-bottom">
+                                <label for="pName" class="control-label">Egg File</label>
+                                <div>
+                                    <input type="file" name="import_file" class="form-control" style="border: 0;margin-left:-10px;" />
+                                    <p class="text-muted small no-margin-bottom">If you would like to replace settings for this Egg by uploading a new JSON file, simply select it here and press "Update Egg". This will not change any existing startup strings or Docker images for existing servers.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            {!! csrf_field() !!}
+                            <button type="submit" name="_method" value="PUT" class="btn btn-sm btn-danger pull-right">Update Egg</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+</form>
+<form action="{{ route('admin.nests.egg.view', $egg->id) }}" method="POST">
+    <div class="row">
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
