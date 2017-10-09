@@ -116,12 +116,14 @@ $(document).ready(function () {
 });
 
 $terminal.on('scroll', function () {
-    if ($(this).scrollTop() + $(this).innerHeight() + 50 < $(this)[0].scrollHeight) {
-        $scrollNotify.removeClass('hidden');
-    } else {
+    if (isTerminalScrolledDown()) {
         $scrollNotify.addClass('hidden');
     }
 });
+
+function isTerminalScrolledDown() {
+    return $terminal.scrollTop() + $terminal.innerHeight() + 50 > $terminal[0].scrollHeight;
+}
 
 window.scrollToBottom = function () {
     $terminal.scrollTop($terminal[0].scrollHeight);
@@ -149,10 +151,13 @@ function pushToTerminal(string) {
 
     if (TerminalQueue.length > 0) {
         for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
+            const scrolledDown = isTerminalScrolledDown();
             pushToTerminal(TerminalQueue[0]);
 
-            if (! $scrollNotify.is(':visible')) {
+            if (scrolledDown) {
                 window.scrollToBottom();
+            } else {
+                $scrollNotify.removeClass('hidden');
             }
 
             window.ConsoleElements++;
