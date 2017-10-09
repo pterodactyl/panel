@@ -52,20 +52,30 @@
                                 <p class="text-muted small">A simple, human-readable name to use as an identifier for this Egg.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pDescription" class="control-label">Description <span class="field-required"></span></label>
-                                <textarea id="pDescription" name="description" class="form-control" rows="10">{{ $egg->description }}</textarea>
-                                <p class="text-muted small">A description of this Egg that will be displayed throughout the Panel as needed.</p>
+                                <label for="pUuid" class="control-label">UUID</label>
+                                <input type="text" id="pUuid" readonly value="{{ $egg->uuid }}" class="form-control" />
+                                <p class="text-muted small">This is the globally unique identifier for this Egg which the Daemon uses as an identifier.</p>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="pAuthor" class="control-label">Author</label>
+                                <input type="text" id="pAuthor" readonly value="{{ $egg->author }}" class="form-control" />
+                                <p class="text-muted small">The author of this version of the Egg. Uploading a new Egg configuration from a different author will change this.</p>
+                            </div>
                             <div class="form-group">
                                 <label for="pDockerImage" class="control-label">Docker Image <span class="field-required"></span></label>
                                 <input type="text" id="pDockerImage" name="docker_image" value="{{ $egg->docker_image }}" class="form-control" />
                                 <p class="text-muted small">The default docker image that should be used for new servers using this Egg. This can be changed per-server as needed.</p>
                             </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="pDescription" class="control-label">Description <span class="field-required"></span></label>
+                                <textarea id="pDescription" name="description" class="form-control" rows="6">{{ $egg->description }}</textarea>
+                                <p class="text-muted small">A description of this Egg that will be displayed throughout the Panel as needed.</p>
+                            </div>
                             <div class="form-group">
                                 <label for="pStartup" class="control-label">Startup Command <span class="field-required"></span></label>
-                                <textarea id="pStartup" name="startup" class="form-control" rows="9">{{ $egg->startup }}</textarea>
+                                <textarea id="pStartup" name="startup" class="form-control" rows="6">{{ $egg->startup }}</textarea>
                                 <p class="text-muted small">The default statup command that should be used for new servers using this Egg.</p>
                             </div>
                         </div>
@@ -141,7 +151,7 @@
     <script>
     $('#pConfigFrom').select2();
     $('#deleteButton').on('mouseenter', function (event) {
-        $(this).find('i').html(' Delete Option');
+        $(this).find('i').html(' Delete Egg');
     }).on('mouseleave', function (event) {
         $(this).find('i').html('');
     });

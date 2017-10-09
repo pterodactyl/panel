@@ -32,22 +32,22 @@ class EggConfigurationService
     /**
      * Return an Egg file to be used by the Daemon.
      *
-     * @param int|\Pterodactyl\Models\Egg $option
+     * @param int|\Pterodactyl\Models\Egg $egg
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($option): array
+    public function handle($egg): array
     {
-        if (! $option instanceof Egg) {
-            $option = $this->repository->getWithCopyAttributes($option);
+        if (! $egg instanceof Egg) {
+            $egg = $this->repository->getWithCopyAttributes($egg);
         }
 
         return [
-            'startup' => json_decode($option->inherit_config_startup),
-            'stop' => $option->inherit_config_stop,
-            'configs' => json_decode($option->inherit_config_files),
-            'log' => json_decode($option->inherit_config_logs),
+            'startup' => json_decode($egg->inherit_config_startup),
+            'stop' => $egg->inherit_config_stop,
+            'configs' => json_decode($egg->inherit_config_files),
+            'log' => json_decode($egg->inherit_config_logs),
             'query' => 'none',
         ];
     }

@@ -75,9 +75,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="pImportToService">Associated Nest <span class="field-required"></span></label>
+                        <label class="control-label" for="pImportToNest">Associated Nest <span class="field-required"></span></label>
                         <div>
-                            <select id="pImportToService" name="import_to_service">
+                            <select id="pImportToNest" name="import_to_nest">
                                 @foreach($nests as $nest)
                                    <option value="{{ $nest->id }}">{{ $nest->name }} &lt;{{ $nest->author }}&gt;</option>
                                 @endforeach
@@ -101,7 +101,7 @@
     @parent
     <script>
         $(document).ready(function() {
-            $('#pImportToService').select2();
+            $('#pImportToNest').select2();
         });
     </script>
 @endsection

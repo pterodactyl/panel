@@ -9,6 +9,6 @@
 Route::get('/authenticate/{token}', 'ValidateKeyController@index')->name('api.remote.authenticate');
 
 Route::group(['prefix' => '/eggs'], function () {
-    Route::get('/', 'EggRetrievalController@download@index')->name('api.remote.eggs');
+    Route::get('/', 'EggRetrievalController@index')->name('api.remote.eggs');
     Route::get('/{uuid}', 'EggRetrievalController@download')->name('api.remote.eggs.download');
 });

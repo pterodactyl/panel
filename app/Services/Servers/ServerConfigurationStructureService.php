@@ -72,7 +72,7 @@ class ServerConfigurationStructureService
             ],
             'keys' => [],
             'service' => [
-                'option' => $server->option->uuid,
+                'egg' => $server->egg->uuid,
                 'pack' => object_get($server, 'pack.uuid'),
                 'skip_scripts' => $server->skip_scripts,
             ],

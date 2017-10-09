@@ -49,7 +49,7 @@ class Nest extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'author' => 'email',
+        'author' => 'string|email',
         'name' => 'string|max:255',
         'description' => 'nullable|string',
     ];

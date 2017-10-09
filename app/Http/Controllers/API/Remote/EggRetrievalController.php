@@ -47,11 +47,11 @@ class EggRetrievalController extends Controller
      */
     public function index(): JsonResponse
     {
-        $options = $this->repository->getAllWithCopyAttributes();
+        $eggs = $this->repository->getAllWithCopyAttributes();
 
         $response = [];
-        $options->each(function ($option) use (&$response) {
-            $response[$option->uuid] = sha1(json_encode($this->configurationFileService->handle($option)));
+        $eggs->each(function ($egg) use (&$response) {
+            $response[$egg->uuid] = sha1(json_encode($this->configurationFileService->handle($egg)));
         });
 
         return response()->json($response);

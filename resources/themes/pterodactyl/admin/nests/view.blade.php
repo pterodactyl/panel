@@ -83,7 +83,7 @@
                     </tr>
                     @foreach($nest->eggs as $egg)
                         <tr>
-                            <td class="align-middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></td>
+                            <td class="align-middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $egg->author }}">{{ $egg->name }}</a></td>
                             <td class="col-xs-8 align-middle">{!! $egg->description !!}</td>
                             <td class="text-center align-middle"><code>{{ $egg->servers->count() }}</code></td>
                             <td class="align-middle">
@@ -105,7 +105,7 @@
     @parent
     <script>
         $('#deleteButton').on('mouseenter', function (event) {
-            $(this).find('i').html(' Delete Service');
+            $(this).find('i').html(' Delete Nest');
         }).on('mouseleave', function (event) {
             $(this).find('i').html('');
         });

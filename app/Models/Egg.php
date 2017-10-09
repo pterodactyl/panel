@@ -65,8 +65,10 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     protected static $applicationRules = [
         'nest_id' => 'required',
+        'uuid' => 'required',
         'name' => 'required',
         'description' => 'required',
+        'author' => 'required',
         'docker_image' => 'required',
         'startup' => 'required',
         'config_from' => 'sometimes',
@@ -84,6 +86,7 @@ class Egg extends Model implements CleansAttributes, ValidableContract
         'uuid' => 'string|size:36',
         'name' => 'string|max:255',
         'description' => 'string',
+        'author' => 'string|email',
         'docker_image' => 'string|max:255',
         'startup' => 'nullable|string',
         'config_from' => 'bail|nullable|numeric|exists:eggs,id',

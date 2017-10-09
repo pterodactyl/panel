@@ -89,6 +89,7 @@ class EggImporterService
         $egg = $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
             'nest_id' => $nest->id,
+            'author' => object_get($parsed, 'author'),
             'name' => object_get($parsed, 'name'),
             'description' => object_get($parsed, 'description'),
             'docker_image' => object_get($parsed, 'image'),

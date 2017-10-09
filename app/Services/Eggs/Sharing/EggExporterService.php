@@ -51,6 +51,7 @@ class EggExporterService
             'author' => $egg->author,
             'description' => $egg->description,
             'image' => $egg->docker_image,
+            'startup' => $egg->startup,
             'config' => [
                 'files' => $egg->inherit_config_files,
                 'startup' => $egg->inherit_config_startup,

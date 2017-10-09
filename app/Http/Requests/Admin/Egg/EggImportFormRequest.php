@@ -7,11 +7,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Admin\Service;
+namespace Pterodactyl\Http\Requests\Admin\Egg;
 
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class ServiceFunctionsFormRequest extends AdminFormRequest
+class EggImportFormRequest extends AdminFormRequest
 {
     /**
      * @return array
@@ -19,7 +19,8 @@ class ServiceFunctionsFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'index_file' => 'required|nullable|string',
+            'import_file' => 'bail|required|file|max:1000|mimetypes:application/json,text/plain',
+            'import_to_nest' => 'bail|required|integer|exists:nests,id',
         ];
     }
 }
