@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
+use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
@@ -17,7 +18,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function create($id, array $overrides = [], $start = false)
+    public function create(array $structure, array $overrides = []): ResponseInterface
     {
         throw new PterodactylException('This feature is not yet implemented.');
     }
