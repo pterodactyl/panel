@@ -150,18 +150,19 @@ function pushToTerminal(string) {
     }
 
     if (TerminalQueue.length > 0) {
+        var scrolledDown = isTerminalScrolledDown();
+        
         for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
-            const scrolledDown = isTerminalScrolledDown();
             pushToTerminal(TerminalQueue[0]);
-
-            if (scrolledDown) {
-                window.scrollToBottom();
-            } else {
-                $scrollNotify.removeClass('hidden');
-            }
 
             window.ConsoleElements++;
             TerminalQueue.shift();
+        }
+        
+        if (scrolledDown) {
+            window.scrollToBottom();
+        } else if ($scrollNotify.hasClass('hidden')) {
+            $scrollNotify.removeClass('hidden');
         }
 
         var removeElements = window.ConsoleElements - CONSOLE_OUTPUT_LIMIT;
