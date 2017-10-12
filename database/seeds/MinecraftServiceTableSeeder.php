@@ -196,6 +196,76 @@ EOF;
 
         $script = <<<'EOF'
 #!/bin/ash
+# SpongeForge Installation Script
+#
+# Server Files: /mnt/server
+apk update
+apk add curl
+
+cd /mnt/server
+
+curl -sS http://files.minecraftforge.net/maven/net/minecraftforge/forge/${MINECRAFT_FORGE_VERSION}/forge-${MINECRAFT_FORGE_VERSION}-installer.jar -o installer.jar
+curl -sS http://files.minecraftforge.net/maven/net/minecraftforge/forge/${MINECRAFT_FORGE_VERSION}/forge-${MINECRAFT_FORGE_VERSION}-universal.jar -o server.jar
+curl -sSL "https://repo.spongepowered.org/maven/org/spongepowered/spongeforge/${SPONGE_FORGE_VERSION}/spongeforge-${SPONGE_FORGE_VERSION}.jar" -o SpongeForge.jar
+
+java -jar installer.jar --installServer
+rm -rf installer.jar
+mkdir mods
+mv SpongeForge.jar mods/SpongeForge.jar
+EOF;
+
+        $this->option['sponge_forge'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'sponge_forge',
+        ], [
+            'name' => 'Sponge (SpongeForge)',
+            'description' => 'SpongeForge is the SpongeAPI implementation for Minecraft Forge.',
+            'docker_image' => 'quay.io/pterodactyl/core:java',
+            'config_startup' => '{"userInteraction": [ "You need to agree to the EULA"]}',
+            'config_logs' => '{"custom": false, "location": "logs/fml-server-latest.log"}',
+            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "server-port": "{{server.build.default.port}}"}}}',
+            'config_stop' => 'stop',
+            'config_from' => null,
+            'startup' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',
+            'script_install' => $script,
+            'script_container' => 'frolvlad/alpine-oraclejdk8:cleaned',
+        ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
+# Nukkit Installation Script
+#
+# Server Files: /mnt/server
+
+apk update
+apk add curl
+
+cd /mnt/server
+
+curl -sSL "https://yivesmirror.com/files/nukkit/Nukkit-${NUKKIT_VERSION}.jar" -o ${SERVER_JARFILE}
+
+echo server-port=something > server.properties
+echo server-ip=something >> server.properties
+EOF;
+
+        $this->option['nukkit'] = ServiceOption::updateOrCreate([
+            'service_id' => $this->service->id,
+            'tag' => 'nukkit',
+        ], [
+            'name' => 'Minecraft: Pocket Edition (Nukkit)',
+            'description' => 'Nuclear powered MCPE Server, has a PocketMine-like structure and Java-armed strength. Developed for multiplayer survival games.',
+            'docker_image' => 'quay.io/pterodactyl/core:java-glibc',
+            'config_startup' => '{"language": "Welcome! Please choose a language first!", "done": ")! For help, type ", "userInteraction": []}',
+            'config_files' => '{"server.properties":{"parser": "properties", "find":{"server-ip": "0.0.0.0", "server-port": "{{server.build.default.port}}"}}}',
+            'config_logs' => '{"custom": false, "location": "logs/server.log"}',
+            'config_stop' => 'stop',
+            'config_from' => null,
+            'startup' => 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}',
+            'script_install' => $script,
+        ]);
+
+        $script = <<<'EOF'
+#!/bin/ash
 # Bungeecord Installation Script
 #
 # Server Files: /mnt/server
@@ -270,8 +340,10 @@ EOF;
         $this->addVanillaVariables();
         $this->addSpigotVariables();
         $this->addSpongeVariables();
+        $this->addSpongeForgeVariables();
         $this->addBungeecordVariables();
         $this->addForgeVariables();
+        $this->addNukkitVariables();
     }
 
     private function addVanillaVariables()
@@ -361,6 +433,72 @@ EOF;
             'name' => 'Server Jar File',
             'description' => 'The name of the Jarfile to use when running SpongeVanilla.',
             'default_value' => 'server.jar',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
+        ]);
+    }
+
+    private function addSpongeForgeVariables()
+    {
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['sponge_forge']->id,
+            'env_variable' => 'SPONGE_FORGE_VERSION',
+        ], [
+            'name' => 'SpongeForge Version',
+            'description' => 'The version of SpongeForge to download and use.',
+            'default_value' => '1.11.2-2476-6.1.0-BETA-2636',
+            'user_viewable' => 1,
+            'user_editable' => 0,
+            'rules' => 'required|regex:/^([a-zA-Z0-9.\-_]+)$/',
+        ]);
+
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['sponge_forge']->id,
+            'env_variable' => 'MINECRAFT_FORGE_VERSION',
+        ], [
+            'name' => 'Minecraft Forge Version',
+            'description' => 'The version of Minecraft Forge to download and use.',
+            'default_value' => '1.11.2-13.20.1.2476',
+            'user_viewable' => 1,
+            'user_editable' => 0,
+            'rules' => 'required|regex:/^([a-zA-Z0-9.\-_]+)$/',
+        ]);
+
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['sponge_forge']->id,
+            'env_variable' => 'SERVER_JARFILE',
+        ], [
+            'name' => 'Server Jar File',
+            'description' => 'The name of the Jarfile to use for MinecraftForge when running SpongeForge.',
+            'default_value' => 'server.jar',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
+        ]);
+    }
+
+    private function addNukkitVariables()
+    {
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['nukkit']->id,
+            'env_variable' => 'NUKKIT_VERSION',
+        ], [
+            'name' => 'Nukkit Version',
+            'description' => 'The version of Nukkit to download and use.',
+            'default_value' => 'latest',
+            'user_viewable' => 1,
+            'user_editable' => 1,
+            'rules' => 'required|alpha_num|between:1,6',
+        ]);
+
+        ServiceVariable::updateOrCreate([
+            'option_id' => $this->option['nukkit']->id,
+            'env_variable' => 'SERVER_JARFILE',
+        ], [
+            'name' => 'Nukkit Jar File',
+            'description' => 'The name of the Jarfile to use when running Nukkit.',
+            'default_value' => 'nukkit.jar',
             'user_viewable' => 1,
             'user_editable' => 1,
             'rules' => 'required|regex:/^([\w\d._-]+)(\.jar)$/',
