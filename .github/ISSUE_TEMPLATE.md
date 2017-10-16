@@ -4,3 +4,11 @@ If you're just making a suggestion, be descriptive, and link to any issues that 
 
 You can delete from this line up.
 ---------------------
+
+* Panel or Daemon: 
+* Version of Panel/Daemon: 
+* Your Computer's or Server's OS/Browser: 
+* Issue Type (Bug/Question/Feature): 
+
+## Add Details Below:
+
