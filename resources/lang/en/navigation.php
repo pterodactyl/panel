@@ -18,7 +18,7 @@ return [
         'create_file' => 'Create File',
         'upload_files' => 'Upload Files',
         'subusers' => 'Subusers',
-        'task_management' => 'Task Management',
+        'schedules' => 'Schedules',
         'configuration' => 'Configuration',
         'port_allocations' => 'Port Allocations',
         'sftp_settings' => 'SFTP Settings',

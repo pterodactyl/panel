@@ -7,8 +7,6 @@ class AddTasksTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -25,16 +23,14 @@ class AddTasksTable extends Migration
             $table->string('day_of_month')->default('*');
             $table->string('hour')->default('*');
             $table->string('minute')->default('*');
-            $table->timestamp('last_run');
-            $table->timestamp('next_run');
+            $table->timestamp('last_run')->nullable();
+            $table->timestamp('next_run')->nullable();
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

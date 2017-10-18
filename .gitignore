@@ -22,3 +22,5 @@ Dockerfile
 docker-compose.yml
 # for image related files
 misc
+.phpstorm.meta.php
+.php_cs.cache

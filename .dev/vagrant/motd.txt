@@ -1,0 +1,17 @@
+#####################################################
+            Pterodactyl Panel Vagrant VM
+
+Install: /var/www/html/pterodactyl
+Ports:
+    Panel: 80     (50080 on host)
+    MailHog: 8025 (58025 on host)
+    MySQL: 3306   (53306 on host)
+
+Default panel users:
+    user: admin passwd: Ptero123 (admin user)
+    user: user  passwd: Ptero123 (standard user)
+
+MySQL is accessible using root/pterodactyl or pterodactyl/pterodactyl
+
+Service for pteroq and mailhog are running
+#####################################################

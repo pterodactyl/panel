@@ -1,0 +1,20 @@
+# Pterodactyl Queue Worker File
+# ----------------------------------
+# File should be placed in:
+# /etc/systemd/system
+#
+# nano /etc/systemd/system/pteroq.service
+
+[Unit]
+Description=Pterodactyl Queue Worker
+
+[Service]
+# On some systems the user and group might be different.
+# Some systems use `apache` as the user and group.
+User=www-data
+Group=www-data
+Restart=on-failure
+ExecStart=/usr/bin/php /var/www/html/pterodactyl/artisan queue:work database --queue=high,standard,low --sleep=3 --tries=3
+
+[Install]
+WantedBy=multi-user.target

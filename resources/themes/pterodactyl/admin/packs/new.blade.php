@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -66,12 +52,12 @@
                         <p class="text-muted small">The version of this package, or the version of the files contained within the package.</p>
                     </div>
                     <div class="form-group">
-                        <label for="pOptionId" class="form-label">Associated Option</label>
-                        <select id="pOptionId" name="option_id" class="form-control">
-                            @foreach($services as $service)
-                                <optgroup label="{{ $service->name }}">
-                                    @foreach($service->options as $option)
-                                        <option value="{{ $option->id }}">{{ $option->name }}</option>
+                        <label for="pEggId" class="form-label">Associated Egg</label>
+                        <select id="pEggId" name="egg_id" class="form-control">
+                            @foreach($nests as $nest)
+                                <optgroup label="{{ $nest->name }}">
+                                    @foreach($nest->eggs as $egg)
+                                        <option value="{{ $egg->id }}">{{ $egg->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -138,7 +124,7 @@
 @section('footer-scripts')
     @parent
     <script>
-        $('#pOptionId').select2();
+        $('#pEggId').select2();
         $('#toggleModal').on('click', function (event) {
             event.preventDefault();
 
@@ -149,9 +135,9 @@
             }).fail(function (jqXhr) {
                 console.error(jqXhr);
                 alert('There was an error trying to create the upload modal.');
-            }).success(function (data) {
+            }).done(function (data) {
                 $(data).modal();
-                $('#pOptionIdModal').select2();
+                $('#pEggIdModal').select2();
             });
         });
     </script>

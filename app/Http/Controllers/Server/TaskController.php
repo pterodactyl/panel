@@ -3,23 +3,8 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Http\Controllers\Server;
@@ -38,8 +23,8 @@ class TaskController extends Controller
     /**
      * Display task index page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function index(Request $request, $uuid)
@@ -48,13 +33,13 @@ class TaskController extends Controller
         $this->authorize('list-tasks', $server);
         $server->js();
 
-        return view('server.tasks.index', [
+        return view('server.schedules.index', [
             'server' => $server,
             'node' => $server->node,
             'tasks' => $server->tasks,
             'actions' => [
-                'command' => trans('server.tasks.actions.command'),
-                'power' => trans('server.tasks.actions.power'),
+                'command' => trans('server.schedules.actions.command'),
+                'power' => trans('server.schedules.actions.power'),
             ],
         ]);
     }
@@ -62,8 +47,8 @@ class TaskController extends Controller
     /**
      * Display new task page.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\View\View
      */
     public function create(Request $request, $uuid)
@@ -72,7 +57,7 @@ class TaskController extends Controller
         $this->authorize('create-task', $server);
         $server->js();
 
-        return view('server.tasks.new', [
+        return view('server.schedules.new', [
             'server' => $server,
             'node' => $server->node,
         ]);
@@ -81,8 +66,8 @@ class TaskController extends Controller
     /**
      * Handle creation of new task.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $uuid)
@@ -96,9 +81,9 @@ class TaskController extends Controller
                 '_token',
             ]));
 
-            return redirect()->route('server.tasks', $uuid);
+            return redirect()->route('server.schedules', $uuid);
         } catch (DisplayValidationException $ex) {
-            return redirect()->route('server.tasks.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
+            return redirect()->route('server.schedules.new', $uuid)->withErrors(json_decode($ex->getMessage()))->withInput();
         } catch (DisplayException $ex) {
             Alert::danger($ex->getMessage())->flash();
         } catch (\Exception $ex) {
@@ -106,15 +91,15 @@ class TaskController extends Controller
             Alert::danger('An unknown error occured while attempting to create this task.')->flash();
         }
 
-        return redirect()->route('server.tasks.new', $uuid);
+        return redirect()->route('server.schedules.new', $uuid);
     }
 
     /**
      * Handle deletion of a task.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Request $request, $uuid, $id)
@@ -146,9 +131,9 @@ class TaskController extends Controller
     /**
      * Toggle the status of a task.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string                    $uuid
-     * @param  int                       $id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param int                      $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function toggle(Request $request, $uuid, $id)

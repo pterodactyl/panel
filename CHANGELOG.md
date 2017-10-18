@@ -3,6 +3,75 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.0 (Derelict Dermodactylus)
+### Added
+* File manager now supports mass deletion option for files and folders.
+* Support for CS:GO as a default service option selection.
+* Support for GMOD as a default service option selection.
+* Added test suite for core aspects of the project (Services, Repositories, Commands, etc.) to lessen the chances for bugs to escape into releases.
+* New CLI command to disabled 2-Factor Authentication on an account if necessary.
+* Ability to delete users and locations via the CLI.
+* You can now require 2FA for all users, admins only, or at will using a simple configuration in the Admin CP.
+* Added ability to export and import service options and their associated settings and environment variables via the Admin CP.
+
+### Changed
+* Theme colors and login pages updated to give a more unique feel to the project.
+* Massive overhaul to the backend code that allows for much easier updating of core functionality as well as support for better testing. This overhaul also reduces complex code logic, and allows for faster response times in the application.
+* CLI commands updated to be easier to type, now stored in the `p:` namespace.
+* Logout icon is now more universal and not just a power icon.
+* Administrative logout notice now uses SWAL rather than a generic javascript popup.
+* Server creation page now only asks for a node to deploy to, rather than requiring a location and then a node.
+
+### Fixed
+* Unable to change the daemon secret for a server via the Admin CP.
+* Using default value in rules when creating a new variable if the rules is empty.
+* Fixes a design-flaw in the allocation management part of nodes that would run a MySQL query for each port being allocated. This behavior is now changed to only execute one query to add multiple ports at once.
+* Attempting to create a server when no nodes are configured now redirects to the node creation page.
+* Fixes missing library issue for teamspeak when used with mariadb.
+
+## v0.6.4 (Courageous Carniadactylus)
+### Fixed
+* Fixed the console rendering on page load, I guess people don't like watching it load line-by-line for 10 minutes. Who would have guessed...
+* Re-added support for up/down arrows loading previous commands in the console window.
+
+### Changed
+* Panel API for Daemon now responds with a `HTTP/401 Unauthorized` error when unable to locate a node with a given authentication token, rather than a `HTTP/404 Not Found` response.
+* Added better colors and styling for the terminal that can be adjusted per-theme.
+* Session timeout adjusted to be 7 days by default.
+
+## v0.6.3 (Courageous Carniadactylus)
+### Fixed
+* **[Security]** — Addresses an oversight in how the terminal rendered information sent from the server feed which allowed a malicious user to execute arbitrary commands on the game-server process itself by using a specifically crafted in-game command.
+
+### Changed
+* Removed `jquery.terminal` and replaced it with an in-house developed terminal with less potential for security issues.
+
+## v0.6.2 (Courageous Carniadactylus)
+### Fixed
+* Fixes a few typos throughout the panel, there are more don't worry.
+* Fixes bug when disabling 2FA due to a misnamed route.
+* API now returns a 404 error when deleting a user that doesn't exist, rather than saying it was successful.
+* Service variables that allow empty input now allow you to empty out the assigned value and set it back to blank.
+* Fixes a bug where changing the default allocation for a server would not actually apply that allocation as the default on the daemon.
+* Newly created service variables are now backfilled and assigned to existing servers properly.
+
+### Added
+* Added a `Vagrantfile` to the repository to help speed up development and testing for those who don't want to do a full dedicated install.
+* Added a confirmation dialog to the logout button for admins to prevent misguided clickers from accidentally logging out when they wanted to switch to Admin or Server views.
+
+### Changed
+* Blocked out the `Reinstall` button for servers that have failed installation to avoid confusion and bugs causing the daemon to break.
+* Updated dependencies, listed below.
+```
+aws/aws-sdk-php (3.26.5 => 3.29.7)       
+laravel/framework (v5.4.21 => v5.4.27)        
+barryvdh/laravel-debugbar (v2.3.2 => v2.4.0)     
+fideloper/proxy (3.3.0 => 3.3.3)
+igaster/laravel-theme (v1.14 => v1.16)    
+laravel/tinker (v1.0.0 => v1.0.1)  
+spatie/laravel-fractal (4.0.0 => 4.0.1)
+```
+
 ## v0.6.1 (Courageous Carniadactylus)
 ### Fixed
 * Fixes a bug preventing the use of services that have no variables attached to them.
@@ -197,7 +266,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
 * New server creation page now makes significantly less AJAX calls and is much quicker to respond.
 * Server and Node view pages wee modified to split tabs into individual pages to make re-themeing and modifications significantly easier, and reduce MySQL query loads on page.
-* `[pre.4]` — Services and Pack magement overhauled to be faster, cleaner, and more extensible in the future.
+* `[pre.4]` — Service and Pack magement overhauled to be faster, cleaner, and more extensible in the future.
 * Most of the backend `UnhandledException` display errors now include a clearer error that directs admins to the program's logs.
 * Table seeders for services now can be run during upgrades and will attempt to locate and update, or create new if not found in the database.
 * Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.

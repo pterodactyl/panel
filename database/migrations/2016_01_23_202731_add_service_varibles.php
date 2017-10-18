@@ -7,8 +7,6 @@ class AddServiceVaribles extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -29,8 +27,6 @@ class AddServiceVaribles extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

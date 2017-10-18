@@ -1,0 +1,32 @@
+language: php
+dist: trusty
+php:
+  - '7.0'
+  - '7.1'
+#  - '7.2'
+sudo: false
+cache:
+  directories:
+    - $HOME/.composer/cache
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS travis;'
+before_script:
+  - cp .env.travis .env
+  - composer install --no-interaction --prefer-dist --no-suggest --verbose
+  - php artisan migrate -v
+script:
+  - vendor/bin/phpunit --coverage-clover coverage.xml
+notifications:
+  email: false
+  webhooks:
+    urls:
+      - https://misc.schrej.net/travistodiscord/pterodev.php
+    on_success: change
+    on_failure: always
+    on_error: always
+    on_cancel: always
+    on_start: never
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

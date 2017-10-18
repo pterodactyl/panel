@@ -3,133 +3,152 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Log;
-use Alert;
-use Illuminate\Http\Request;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Exceptions\DisplayException;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\DatabaseRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Database\DatabaseHostService;
+use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     */
+    protected $locationRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     */
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Database\DatabaseHostService
+     */
+    protected $service;
+
+    /**
+     * DatabaseController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
+     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Database\DatabaseHostService                $service
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface     $locationRepository
+     */
+    public function __construct(
+        AlertsMessageBag $alert,
+        DatabaseHostRepositoryInterface $repository,
+        DatabaseHostService $service,
+        LocationRepositoryInterface $locationRepository
+    ) {
+        $this->alert = $alert;
+        $this->repository = $repository;
+        $this->service = $service;
+        $this->locationRepository = $locationRepository;
+    }
+
+    /**
      * Display database host index.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('admin.databases.index', [
-            'locations' => Location::with('nodes')->get(),
-            'hosts' => DatabaseHost::withCount('databases')->with('node')->get(),
+            'locations' => $this->locationRepository->getAllWithNodes(),
+            'hosts' => $this->repository->getWithViewDetails(),
         ]);
     }
 
     /**
      * Display database host to user.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param int $host
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view(Request $request, $id)
+    public function view($host)
     {
         return view('admin.databases.view', [
-            'locations' => Location::with('nodes')->get(),
-            'host' => DatabaseHost::with('databases.server')->findOrFail($id),
+            'locations' => $this->locationRepository->getAllWithNodes(),
+            'host' => $this->repository->getWithServers($host),
         ]);
     }
 
     /**
-     * Handle post request to create database host.
+     * Handle request to create a new database host.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Throwable
      */
-    public function create(Request $request)
+    public function create(DatabaseHostFormRequest $request)
     {
-        $repo = new DatabaseRepository;
-
         try {
-            $host = $repo->add($request->intersect([
-                'name', 'username', 'password',
-                'host', 'port', 'node_id',
-            ]));
-            Alert::success('Successfully created new database host on the system.')->flash();
+            $host = $this->service->create($request->normalize());
+            $this->alert->success('Successfully created a new database host on the system.')->flash();
 
             return redirect()->route('admin.databases.view', $host->id);
         } catch (\PDOException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.databases')->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error was encountered while trying to process this request. This error has been logged.')->flash();
+            $this->alert->danger($ex->getMessage())->flash();
         }
 
         return redirect()->route('admin.databases');
     }
 
     /**
-     * Handle post request to update a database host.
+     * Handle updating database host.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int                       $id
+     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
+     * @param \Pterodactyl\Models\DatabaseHost                         $host
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function update(Request $request, $id)
+    public function update(DatabaseHostFormRequest $request, DatabaseHost $host)
     {
-        $repo = new DatabaseRepository;
-
-        try {
-            if ($request->input('action') !== 'delete') {
-                $host = $repo->update($id, $request->intersect([
-                    'name', 'username', 'password',
-                    'host', 'port', 'node_id',
-                ]));
-                Alert::success('Database host was updated successfully.')->flash();
-            } else {
-                $repo->delete($id);
-
-                return redirect()->route('admin.databases');
-            }
-        } catch (\PDOException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (DisplayException $ex) {
-            Alert::danger($ex->getMessage())->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('admin.databases.view', $id)->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger('An error was encountered while trying to process this request. This error has been logged.')->flash();
+        if ($request->input('action') === 'delete') {
+            return $this->delete($host);
         }
 
-        return redirect()->route('admin.databases.view', $id);
+        try {
+            $host = $this->service->update($host->id, $request->normalize());
+            $this->alert->success('Database host was updated successfully.')->flash();
+        } catch (\PDOException $ex) {
+            $this->alert->danger($ex->getMessage())->flash();
+        }
+
+        return redirect()->route('admin.databases.view', $host->id);
+    }
+
+    /**
+     * Handle request to delete a database host.
+     *
+     * @param \Pterodactyl\Models\DatabaseHost $host
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function delete(DatabaseHost $host)
+    {
+        $this->service->delete($host->id);
+        $this->alert->success('The requested database host has been deleted from the system.')->flash();
+
+        return redirect()->route('admin.databases');
     }
 }

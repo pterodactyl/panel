@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -91,8 +77,8 @@
             <form action="{{ route('admin.servers.view.database', $server->id) }}" method="POST">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pDatabaseHost" class="control-label">Database Host</label>
-                        <select id="pDatabaseHost" name="host" class="form-control">
+                        <label for="pDatabaseHostId" class="control-label">Database Host</label>
+                        <select id="pDatabaseHostId" name="database_host_id" class="form-control">
                             @foreach($hosts as $host)
                                 <option value="{{ $host->id }}">{{ $host->name }}</option>
                             @endforeach
@@ -107,8 +93,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pConnections" class="control-label">Connections</label>
-                        <input id="pConnections" type="text" name="connection" class="form-control" placeholder="%" value="%" />
+                        <label for="pRemote" class="control-label">Connections</label>
+                        <input id="pRemote" type="text" name="remote" class="form-control" value="%" />
                         <p class="text-muted small">This should reflect the IP address that connections are allowed from. Uses standard MySQL notation. If unsure leave as <code>%</code>.</p>
                     </div>
                 </div>
