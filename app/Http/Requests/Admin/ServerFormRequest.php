@@ -63,7 +63,7 @@ class ServerFormRequest extends AdminFormRequest
             $validator->sometimes('pack_id', [
                 Rule::exists('packs', 'id')->where(function ($query) {
                     $query->where('selectable', 1);
-                    $query->where('option_id', $this->input('option_id'));
+                    $query->where('egg_id', $this->input('egg_id'));
                 }),
             ], function ($input) {
                 return $input->pack_id !== 0 && $input->pack_id !== null;

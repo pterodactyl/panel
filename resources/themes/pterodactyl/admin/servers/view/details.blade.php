@@ -91,7 +91,7 @@
                     <div class="form-group">
                         <label for="name" class="control-label">Docker Image</label>
                         <input type="text" name="docker_image" value="{{ $server->image }}" class="form-control" />
-                        <p class="text-muted small">The docker image to use for this server. The default image for this service and option combination is <code>{{ $server->option->docker_image }}</code>.</p>
+                        <p class="text-muted small">The docker image to use for this server. The default image for this service and option combination is <code>{{ $server->egg->docker_image }}</code>.</p>
                     </div>
                 </div>
                 <div class="box-footer">

@@ -11,18 +11,18 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\ServiceVariable;
+use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
     protected $optionVariableRepository;
 
@@ -60,14 +60,14 @@ class VariableValidatorServiceTest extends TestCase
 
         $this->variables = collect(
             [
-                factory(ServiceVariable::class)->states('editable', 'viewable')->make(),
-                factory(ServiceVariable::class)->states('viewable')->make(),
-                factory(ServiceVariable::class)->states('editable')->make(),
-                factory(ServiceVariable::class)->make(),
+                factory(EggVariable::class)->states('editable', 'viewable')->make(),
+                factory(EggVariable::class)->states('viewable')->make(),
+                factory(EggVariable::class)->states('editable')->make(),
+                factory(EggVariable::class)->make(),
             ]
         );
 
-        $this->optionVariableRepository = m::mock(OptionVariableRepositoryInterface::class);
+        $this->optionVariableRepository = m::mock(EggVariableRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
         $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
         $this->validator = m::mock(Factory::class);
@@ -115,7 +115,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testEmptyResultSetShouldBeReturnedIfNoVariablesAreFound()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn([]);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn([]);
 
         $response = $this->service->validate(1);
 
@@ -129,7 +129,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testValidatorShouldNotProcessVariablesSetAsNotUserEditableWhenAdminFlagIsNotPassed()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($this->variables);
 
         $this->validator->shouldReceive('make')->with([
             'variable_value' => 'Test_SomeValue_0',
@@ -161,7 +161,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testValidatorShouldProcessAllVariablesWhenAdminFlagIsSet()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($this->variables);
 
         foreach ($this->variables as $key => $variable) {
             $this->validator->shouldReceive('make')->with([
@@ -198,7 +198,7 @@ class VariableValidatorServiceTest extends TestCase
      */
     public function testValidatorShouldThrowExceptionWhenAValidationErrorIsEncountered()
     {
-        $this->optionVariableRepository->shouldReceive('findWhere')->with([['option_id', '=', 1]])->andReturn($this->variables);
+        $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($this->variables);
 
         $this->validator->shouldReceive('make')->with([
             'variable_value' => null,

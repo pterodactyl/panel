@@ -51,12 +51,12 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pOptionId" class="form-label">Associated Option</label>
-                        <select id="pOptionId" name="option_id" class="form-control">
-                            @foreach($services as $service)
-                                <optgroup label="{{ $service->name }}">
-                                    @foreach($service->options as $option)
-                                        <option value="{{ $option->id }}" {{ $pack->option_id !== $option->id ?: 'selected' }}>{{ $option->name }}</option>
+                        <label for="pEggId" class="form-label">Associated Option</label>
+                        <select id="pEggId" name="egg_id" class="form-control">
+                            @foreach($nests as $nest)
+                                <optgroup label="{{ $nest->name }}">
+                                    @foreach($nest->eggs as $egg)
+                                        <option value="{{ $egg->id }}" {{ $pack->egg_id !== $egg->id ?: 'selected' }}>{{ $egg->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -173,6 +173,6 @@
 @section('footer-scripts')
     @parent
     <script>
-        $('#pOptionId').select2();
+        $('#pEggId').select2();
     </script>
 @endsection

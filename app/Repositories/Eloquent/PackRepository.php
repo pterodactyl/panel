@@ -75,11 +75,11 @@ class PackRepository extends EloquentRepository implements PackRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function paginateWithOptionAndServerCount($paginate = 50)
+    public function paginateWithEggAndServerCount($paginate = 50)
     {
         Assert::integer($paginate, 'First argument passed to paginateWithOptionAndServerCount must be integer, received %s.');
 
-        return $this->getBuilder()->with('option')->withCount('servers')
+        return $this->getBuilder()->with('egg')->withCount('servers')
             ->search($this->searchTerm)
             ->paginate($paginate, $this->getColumns());
     }

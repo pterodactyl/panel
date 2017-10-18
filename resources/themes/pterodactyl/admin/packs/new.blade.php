@@ -52,12 +52,12 @@
                         <p class="text-muted small">The version of this package, or the version of the files contained within the package.</p>
                     </div>
                     <div class="form-group">
-                        <label for="pOptionId" class="form-label">Associated Option</label>
-                        <select id="pOptionId" name="option_id" class="form-control">
-                            @foreach($services as $service)
-                                <optgroup label="{{ $service->name }}">
-                                    @foreach($service->options as $option)
-                                        <option value="{{ $option->id }}">{{ $option->name }}</option>
+                        <label for="pEggId" class="form-label">Associated Egg</label>
+                        <select id="pEggId" name="egg_id" class="form-control">
+                            @foreach($nests as $nest)
+                                <optgroup label="{{ $nest->name }}">
+                                    @foreach($nest->eggs as $egg)
+                                        <option value="{{ $egg->id }}">{{ $egg->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -124,7 +124,7 @@
 @section('footer-scripts')
     @parent
     <script>
-        $('#pOptionId').select2();
+        $('#pEggId').select2();
         $('#toggleModal').on('click', function (event) {
             event.preventDefault();
 
@@ -135,9 +135,9 @@
             }).fail(function (jqXhr) {
                 console.error(jqXhr);
                 alert('There was an error trying to create the upload modal.');
-            }).success(function (data) {
+            }).done(function (data) {
                 $(data).modal();
-                $('#pOptionIdModal').select2();
+                $('#pEggIdModal').select2();
             });
         });
     </script>

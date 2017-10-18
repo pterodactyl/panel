@@ -19,9 +19,9 @@ use Pterodactyl\Services\Packs\PackCreationService;
 use Pterodactyl\Services\Packs\PackDeletionService;
 use Pterodactyl\Http\Requests\Admin\PackFormRequest;
 use Pterodactyl\Services\Packs\TemplateUploadService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 
 class PackController extends Controller
 {
@@ -61,7 +61,7 @@ class PackController extends Controller
     protected $updateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $serviceRepository;
 
@@ -73,15 +73,15 @@ class PackController extends Controller
     /**
      * PackController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
-     * @param \Illuminate\Contracts\Config\Repository                      $config
-     * @param \Pterodactyl\Services\Packs\ExportPackService                $exportService
-     * @param \Pterodactyl\Services\Packs\PackCreationService              $creationService
-     * @param \Pterodactyl\Services\Packs\PackDeletionService              $deletionService
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface    $repository
-     * @param \Pterodactyl\Services\Packs\PackUpdateService                $updateService
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface $serviceRepository
-     * @param \Pterodactyl\Services\Packs\TemplateUploadService            $templateUploadService
+     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
+     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \Pterodactyl\Services\Packs\ExportPackService             $exportService
+     * @param \Pterodactyl\Services\Packs\PackCreationService           $creationService
+     * @param \Pterodactyl\Services\Packs\PackDeletionService           $deletionService
+     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
+     * @param \Pterodactyl\Services\Packs\PackUpdateService             $updateService
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $serviceRepository
+     * @param \Pterodactyl\Services\Packs\TemplateUploadService         $templateUploadService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -91,7 +91,7 @@ class PackController extends Controller
         PackDeletionService $deletionService,
         PackRepositoryInterface $repository,
         PackUpdateService $updateService,
-        ServiceRepositoryInterface $serviceRepository,
+        NestRepositoryInterface $serviceRepository,
         TemplateUploadService $templateUploadService
     ) {
         $this->alert = $alert;
@@ -114,7 +114,7 @@ class PackController extends Controller
     public function index(Request $request)
     {
         return view('admin.packs.index', [
-            'packs' => $this->repository->search($request->input('query'))->paginateWithOptionAndServerCount(
+            'packs' => $this->repository->search($request->input('query'))->paginateWithEggAndServerCount(
                 $this->config->get('pterodactyl.paginate.admin.packs')
             ),
         ]);
@@ -124,11 +124,13 @@ class PackController extends Controller
      * Display new pack creation form.
      *
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function create()
     {
         return view('admin.packs.new', [
-            'services' => $this->serviceRepository->getWithOptions(),
+            'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }
 
@@ -136,11 +138,13 @@ class PackController extends Controller
      * Display new pack creation modal for use with template upload.
      *
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function newTemplate()
     {
         return view('admin.packs.modal', [
-            'services' => $this->serviceRepository->getWithOptions(),
+            'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }
 
@@ -152,7 +156,7 @@ class PackController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
@@ -160,7 +164,7 @@ class PackController extends Controller
     public function store(PackFormRequest $request)
     {
         if ($request->has('from_template')) {
-            $pack = $this->templateUploadService->handle($request->input('option_id'), $request->file('file_upload'));
+            $pack = $this->templateUploadService->handle($request->input('egg_id'), $request->file('file_upload'));
         } else {
             $pack = $this->creationService->handle($request->normalize(), $request->file('file_upload'));
         }
@@ -175,12 +179,13 @@ class PackController extends Controller
      *
      * @param int $pack
      * @return \Illuminate\View\View
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view($pack)
     {
         return view('admin.packs.view', [
             'pack' => $this->repository->getWithServers($pack),
-            'services' => $this->serviceRepository->getWithOptions(),
+            'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }
 
