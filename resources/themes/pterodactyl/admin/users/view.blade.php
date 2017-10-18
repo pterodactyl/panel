@@ -113,22 +113,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($user->setAccessLevel('subuser')->access()->get() as $server)
-                            <tr>
-                                <td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>
-                                <td><code>{{ $server->uuidShort }}</code></td>
-                                <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                                <td>
-                                    @if($server->owner_id === $user->id)
-                                        <span class="label bg-purple">Owner</span>
-                                    @else
-                                        <span class="label bg-blue">Subuser</span>
-                                    @endif
-                                </td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
-                                <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
-                            </td>
-                        @endforeach
+                        Oh dear, this hasn't been fixed yet?
+                        {{--@foreach($user->setAccessLevel('subuser')->access()->get() as $server)--}}
+                            {{--<tr>--}}
+                                {{--<td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>--}}
+                                {{--<td><code>{{ $server->uuidShort }}</code></td>--}}
+                                {{--<td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>--}}
+                                {{--<td>--}}
+                                    {{--@if($server->owner_id === $user->id)--}}
+                                        {{--<span class="label bg-purple">Owner</span>--}}
+                                    {{--@else--}}
+                                        {{--<span class="label bg-blue">Subuser</span>--}}
+                                    {{--@endif--}}
+                                {{--</td>--}}
+                                {{--<td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>--}}
+                                {{--<td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>--}}
+                            {{--</td>--}}
+                        {{--@endforeach--}}
                     </tbody>
                 </table>
             </div>

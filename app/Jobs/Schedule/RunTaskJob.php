@@ -162,7 +162,7 @@ class RunTaskJob extends Job implements ShouldQueue
         $repository = app()->make(ScheduleRepositoryInterface::class);
         $repository->withoutFresh()->update($this->schedule, [
             'is_processing' => false,
-            'last_run_at' => app()->make(Carbon::class)->now()->toDateTimeString(),
+            'last_run_at' => Carbon::now()->toDateTimeString(),
         ]);
     }
 

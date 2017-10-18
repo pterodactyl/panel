@@ -14,12 +14,12 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 interface PackRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
     /**
-     * Return a paginated listing of packs with their associated option and server count.
+     * Return a paginated listing of packs with their associated egg and server count.
      *
      * @param int $paginate
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginateWithOptionAndServerCount($paginate = 50);
+    public function paginateWithEggAndServerCount($paginate = 50);
 
     /**
      * Return a pack with the associated server models attached to it.

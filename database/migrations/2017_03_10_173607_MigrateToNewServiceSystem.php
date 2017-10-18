@@ -6,8 +6,6 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
-use Pterodactyl\Models\Service;
-use Pterodactyl\Models\ServiceOption;
 use Illuminate\Database\Migrations\Migration;
 
 class MigrateToNewServiceSystem extends Migration
@@ -18,12 +16,12 @@ class MigrateToNewServiceSystem extends Migration
     public function up()
     {
         DB::transaction(function () {
-            $service = Service::where('author', config('pterodactyl.service.core'))->where('folder', 'srcds')->first();
+            $service = DB::table('services')->where('author', config('pterodactyl.service.core'))->where('folder', 'srcds')->first();
             if (! $service) {
                 return;
             }
 
-            $options = ServiceOption::where('service_id', $service->id)->get();
+            $options = DB::table('service_options')->where('service_id', $service->id)->get();
             $options->each(function ($item) use ($options) {
                 if ($item->tag === 'srcds' && $item->name === 'Insurgency') {
                     $item->tag = 'insurgency';

@@ -9,8 +9,8 @@
 
 namespace Pterodactyl\Transformers\Admin;
 
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\ServiceOption;
 use League\Fractal\TransformerAbstract;
 
 class OptionTransformer extends TransformerAbstract
@@ -53,7 +53,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(ServiceOption $option)
+    public function transform(Egg $option)
     {
         return $option->toArray();
     }
@@ -63,7 +63,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeService(ServiceOption $option)
+    public function includeService(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
             return;
@@ -77,7 +77,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includePacks(ServiceOption $option)
+    public function includePacks(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('pack-list')) {
             return;
@@ -91,7 +91,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeServers(ServiceOption $option)
+    public function includeServers(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
@@ -105,7 +105,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeVariables(ServiceOption $option)
+    public function includeVariables(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
             return;
