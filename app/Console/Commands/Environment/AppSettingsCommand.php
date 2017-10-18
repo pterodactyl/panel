@@ -115,7 +115,6 @@ class AppSettingsCommand extends Command
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);
 
-        $this->command->call('config:cache');
         $this->info($this->command->output());
     }
 
