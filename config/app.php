@@ -181,6 +181,7 @@ return [
         Lord\Laroute\LarouteServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
         Sofa\Eloquence\ServiceProvider::class,
+        Appstract\BladeDirectives\BladeDirectivesServiceProvider::class,
     ],
 
     /*
