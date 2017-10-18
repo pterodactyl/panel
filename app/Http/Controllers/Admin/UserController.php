@@ -131,7 +131,7 @@ class UserController extends Controller
 
         $this->deletionService->handle($user);
 
-        return redirect()->route('admin.users.view', $user->id);
+        return redirect()->route('admin.users');
     }
 
     /**
