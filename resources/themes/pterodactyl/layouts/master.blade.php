@@ -85,7 +85,7 @@
                             </div>
                         </div>
                     @endif
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu tree" data-widget="tree">
                         <li class="header">@lang('navigation.account.header')</li>
                         <li class="{{ Route::currentRouteName() !== 'account' ?: 'active' }}">
                             <a href="{{ route('account') }}">
