@@ -60,6 +60,7 @@ class SubuserAccessAuthenticate
         try {
             $token = $this->keyProviderService->handle($server->id, $request->user()->id);
             $this->session->now('server_data.token', $token);
+            $request->attributes->set('server_token', $token);
         } catch (RecordNotFoundException $exception) {
             throw new AuthenticationException('This account does not have permission to access this server.');
         }

@@ -15,7 +15,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class SubuserAccess
+class SubuserBelongsToServer
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface

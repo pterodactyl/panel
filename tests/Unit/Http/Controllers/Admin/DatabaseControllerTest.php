@@ -13,7 +13,6 @@ use Mockery as m;
 use Tests\TestCase;
 use Prologue\Alerts\AlertsMessageBag;
 use Tests\Assertions\ControllerAssertionsTrait;
-use Pterodactyl\Services\Database\DatabaseHostService;
 use Pterodactyl\Http\Controllers\Admin\DatabaseController;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
@@ -43,7 +42,7 @@ class DatabaseControllerTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseHostService
+     * @var \Pterodactyl\Services\Databases\HostsUpdateService
      */
     protected $service;
 
@@ -57,7 +56,7 @@ class DatabaseControllerTest extends TestCase
         $this->alert = m::mock(AlertsMessageBag::class);
         $this->locationRepository = m::mock(LocationRepositoryInterface::class);
         $this->repository = m::mock(DatabaseHostRepositoryInterface::class);
-        $this->service = m::mock(DatabaseHostService::class);
+        $this->service = m::mock(HostUpdateService::class);
 
         $this->controller = new DatabaseController(
             $this->alert,

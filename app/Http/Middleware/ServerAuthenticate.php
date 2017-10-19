@@ -105,7 +105,12 @@ class ServerAuthenticate
         }
 
         // Store the server in the session.
+        // @todo remove from session. use request attributes.
         $this->session->now('server_data.model', $server);
+
+        // Add server to the request attributes. This will replace sessions
+        // as files are updated.
+        $request->attributes->set('server', $server);
 
         return $next($request);
     }

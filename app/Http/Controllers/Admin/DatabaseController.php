@@ -9,11 +9,15 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Pterodactyl\Models\DatabaseHost;
+use PDOException;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Database\DatabaseHostService;
+use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
+use Pterodactyl\Services\Databases\Hosts\HostCreationService;
+use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -22,41 +26,57 @@ class DatabaseController extends Controller
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
-    protected $alert;
+    private $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService
+     */
+    private $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\Hosts\HostDeletionService
+     */
+    private $deletionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
      */
-    protected $locationRepository;
+    private $locationRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseHostService
+     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService
      */
-    protected $service;
+    private $updateService;
 
     /**
      * DatabaseController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Database\DatabaseHostService                $service
+     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService         $creationService
+     * @param \Pterodactyl\Services\Databases\Hosts\HostDeletionService         $deletionService
+     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService           $updateService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface     $locationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
         DatabaseHostRepositoryInterface $repository,
-        DatabaseHostService $service,
+        HostCreationService $creationService,
+        HostDeletionService $deletionService,
+        HostUpdateService $updateService,
         LocationRepositoryInterface $locationRepository
     ) {
         $this->alert = $alert;
+        $this->creationService = $creationService;
+        $this->deletionService = $deletionService;
         $this->repository = $repository;
-        $this->service = $service;
         $this->locationRepository = $locationRepository;
+        $this->updateService = $updateService;
     }
 
     /**
@@ -64,7 +84,7 @@ class DatabaseController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View
     {
         return view('admin.databases.index', [
             'locations' => $this->locationRepository->getAllWithNodes(),
@@ -80,7 +100,7 @@ class DatabaseController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view($host)
+    public function view($host): View
     {
         return view('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
@@ -94,42 +114,41 @@ class DatabaseController extends Controller
      * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function create(DatabaseHostFormRequest $request)
+    public function create(DatabaseHostFormRequest $request): RedirectResponse
     {
         try {
-            $host = $this->service->create($request->normalize());
-            $this->alert->success('Successfully created a new database host on the system.')->flash();
-
-            return redirect()->route('admin.databases.view', $host->id);
-        } catch (\PDOException $ex) {
+            $host = $this->creationService->handle($request->normalize());
+        } catch (PDOException $ex) {
             $this->alert->danger($ex->getMessage())->flash();
+
+            return redirect()->route('admin.databases');
         }
 
-        return redirect()->route('admin.databases');
+        $this->alert->success('Successfully created a new database host on the system.')->flash();
+
+        return redirect()->route('admin.databases.view', $host->id);
     }
 
     /**
      * Handle updating database host.
      *
      * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost                         $host
+     * @param int                                                      $host
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(DatabaseHostFormRequest $request, DatabaseHost $host)
+    public function update(DatabaseHostFormRequest $request, int $host): RedirectResponse
     {
-        if ($request->input('action') === 'delete') {
-            return $this->delete($host);
-        }
-
         try {
-            $host = $this->service->update($host->id, $request->normalize());
+            $host = $this->updateService->handle($host, $request->normalize());
             $this->alert->success('Database host was updated successfully.')->flash();
-        } catch (\PDOException $ex) {
+        } catch (PDOException $ex) {
             $this->alert->danger($ex->getMessage())->flash();
         }
 
@@ -139,14 +158,14 @@ class DatabaseController extends Controller
     /**
      * Handle request to delete a database host.
      *
-     * @param \Pterodactyl\Models\DatabaseHost $host
+     * @param int $host
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DatabaseHost $host)
+    public function delete(int $host): RedirectResponse
     {
-        $this->service->delete($host->id);
+        $this->deletionService->handle($host);
         $this->alert->success('The requested database host has been deleted from the system.')->flash();
 
         return redirect()->route('admin.databases');

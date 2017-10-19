@@ -5,6 +5,9 @@ namespace Pterodactyl\Http;
 use Pterodactyl\Http\Middleware\DaemonAuthenticate;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
+use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
+use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
 
 class Kernel extends HttpKernel
 {
@@ -63,7 +66,6 @@ class Kernel extends HttpKernel
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
         'server' => \Pterodactyl\Http\Middleware\ServerAuthenticate::class,
         'subuser.auth' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
-        'subuser' => \Pterodactyl\Http\Middleware\Server\SubuserAccess::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
         'daemon-old' => DaemonAuthenticate::class,
         'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
@@ -71,6 +73,13 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'recaptcha' => \Pterodactyl\Http\Middleware\VerifyReCaptcha::class,
-        'schedule' => \Pterodactyl\Http\Middleware\Server\ScheduleAccess::class,
+
+        // Server specific middleware (used for authenticating access to resources)
+        //
+        // These are only used for individual server authentication, and not gloabl
+        // actions from other resources. They are defined in the route files.
+        'server..database' => DatabaseBelongsToServer::class,
+        'server..subuser' => SubuserBelongsToServer::class,
+        'server..schedule' => ScheduleBelongsToServer::class,
     ];
 }

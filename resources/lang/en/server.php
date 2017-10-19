@@ -302,7 +302,7 @@ return [
         'database' => [
             'header' => 'Databases',
             'header_sub' => 'All databases available for this server.',
-            'your_dbs' => 'Your Databases',
+            'your_dbs' => 'Configured Databases',
             'host' => 'MySQL Host',
             'reset_password' => 'Reset Password',
             'no_dbs' => 'There are no databases listed for this server.',

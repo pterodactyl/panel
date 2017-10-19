@@ -15,7 +15,6 @@ use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Services\Database\DatabaseHostService;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -47,7 +46,7 @@ class DatabaseHostServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseHostService
+     * @var \Pterodactyl\Services\Databases\HostsUpdateService
      */
     protected $service;
 
@@ -64,7 +63,7 @@ class DatabaseHostServiceTest extends TestCase
         $this->encrypter = m::mock(Encrypter::class);
         $this->repository = m::mock(DatabaseHostRepositoryInterface::class);
 
-        $this->service = new DatabaseHostService(
+        $this->service = new HostUpdateService(
             $this->database,
             $this->databaseRepository,
             $this->repository,

@@ -155,6 +155,17 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('view-databases', $server)
+                                <li
+                                    @if(starts_with(Route::currentRouteName(), 'server.databases'))
+                                    class="active"
+                                    @endif
+                                >
+                                    <a href="{{ route('server.databases.index', $server->uuidShort)}}">
+                                        <i class="fa fa-database"></i> <span>@lang('navigation.server.databases')</span>
+                                    </a>
+                                </li>
+                            @endcan
                             @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
                                 <li class="treeview
                                     @if(starts_with(Route::currentRouteName(), 'server.settings'))
@@ -177,9 +188,6 @@
                                         @endcan
                                         @can('view-startup', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
-                                        @endcan
-                                        @can('view-databases', $server)
-                                            <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
                                         @endcan
                                     </ul>
                                 </li>

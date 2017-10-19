@@ -16,7 +16,7 @@ use phpmock\phpunit\PHPMock;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabaseManagementServiceTest extends TestCase
@@ -53,7 +53,7 @@ class DatabaseManagementServiceTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseManagementService
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     protected $service;
 
