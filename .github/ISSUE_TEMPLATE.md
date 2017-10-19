@@ -7,8 +7,8 @@ You can delete from this line up.
 
 * Panel or Daemon: 
 * Version of Panel/Daemon: 
-* Your Computer's or Server's OS/Browser: 
-* Issue Type (Bug/Question/Feature): 
+* Server's OS: 
+* Your Computer's OS & Browser: 
 
 ## Add Details Below:
 
