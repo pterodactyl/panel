@@ -249,6 +249,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         Assert::boolean($validate, 'Third argument passed to updateOrCreate must be boolean, received %s.');
         Assert::boolean($force, 'Fourth argument passed to updateOrCreate must be boolean, received %s.');
 
+        foreach ($where as $item) {
+            Assert::true(is_scalar($item) || is_null($item), 'First argument passed to updateOrCreate should be an array of scalar or null values, received an array value of %s.');
+        }
+
         $instance = $this->withColumns('id')->findWhere($where)->first();
 
         if (! $instance) {

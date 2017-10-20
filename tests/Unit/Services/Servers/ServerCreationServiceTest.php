@@ -9,14 +9,13 @@
 
 namespace Tests\Unit\Services\Servers;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
-use Illuminate\Database\DatabaseManager;
+use Tests\Traits\MocksUuids;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Services\Servers\UsernameGenerationService;
@@ -24,20 +23,35 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
+/**
+ * @preserveGlobalState disabled
+ */
 class ServerCreationServiceTest extends TestCase
 {
-    use PHPMock;
+    use MocksUuids, PHPMock;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     protected $allocationRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService|\Mockery\Mock
+     */
+    protected $configurationStructureService;
+
+    /**
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
+     */
+    protected $connection;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $daemonServerRepository;
 
@@ -59,34 +73,29 @@ class ServerCreationServiceTest extends TestCase
         'environment' => [
             'TEST_VAR_1' => 'var1-value',
         ],
-        'service_id' => 1,
-        'option_id' => 1,
+        'nest_id' => 1,
+        'egg_id' => 1,
         'startup' => 'startup-param',
         'docker_image' => 'some/image',
     ];
 
     /**
-     * @var \Illuminate\Database\DatabaseManager
-     */
-    protected $database;
-
-    /**
-     * @var \GuzzleHttp\Exception\RequestException
+     * @var \GuzzleHttp\Exception\RequestException|\Mockery\Mock
      */
     protected $exception;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     protected $nodeRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
     protected $serverVariableRepository;
 
@@ -96,29 +105,19 @@ class ServerCreationServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $userRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\UsernameGenerationService
+     * @var \Pterodactyl\Services\Servers\UsernameGenerationService|\Mockery\Mock
      */
     protected $usernameService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService
+     * @var \Pterodactyl\Services\Servers\VariableValidatorService|\Mockery\Mock
      */
     protected $validatorService;
-
-    /**
-     * @var \Ramsey\Uuid\Uuid
-     */
-    protected $uuid;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
 
     /**
      * Setup tests.
@@ -128,8 +127,9 @@ class ServerCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->allocationRepository = m::mock(AllocationRepositoryInterface::class);
+        $this->configurationStructureService = m::mock(ServerConfigurationStructureService::class);
+        $this->connection = m::mock(ConnectionInterface::class);
         $this->daemonServerRepository = m::mock(DaemonServerRepositoryInterface::class);
-        $this->database = m::mock(DatabaseManager::class);
         $this->exception = m::mock(RequestException::class);
         $this->nodeRepository = m::mock(NodeRepositoryInterface::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
@@ -137,26 +137,21 @@ class ServerCreationServiceTest extends TestCase
         $this->userRepository = m::mock(UserRepositoryInterface::class);
         $this->usernameService = m::mock(UsernameGenerationService::class);
         $this->validatorService = m::mock(VariableValidatorService::class);
-        $this->uuid = m::mock('overload:Ramsey\Uuid\Uuid');
-        $this->writer = m::mock(Writer::class);
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
             ->expects($this->any())->willReturn('random_string');
 
-        $this->getFunctionMock('\\Ramsey\\Uuid\\Uuid', 'uuid4')
-            ->expects($this->any())->willReturn('s');
-
         $this->service = new ServerCreationService(
             $this->allocationRepository,
+            $this->connection,
             $this->daemonServerRepository,
-            $this->database,
             $this->nodeRepository,
+            $this->configurationStructureService,
             $this->repository,
             $this->serverVariableRepository,
             $this->userRepository,
             $this->usernameService,
-            $this->validatorService,
-            $this->writer
+            $this->validatorService
         );
     }
 
@@ -167,39 +162,19 @@ class ServerCreationServiceTest extends TestCase
     {
         $this->validatorService->shouldReceive('isAdmin')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('setFields')->with($this->data['environment'])->once()->andReturnSelf()
-            ->shouldReceive('validate')->with($this->data['option_id'])->once()->andReturnSelf();
+            ->shouldReceive('validate')->with($this->data['egg_id'])->once()->andReturnSelf();
 
-        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->uuid->shouldReceive('uuid4')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('toString')->withNoArgs()->once()->andReturn('uuid-0000');
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->usernameService->shouldReceive('generate')->with($this->data['name'], 'random_string')
             ->once()->andReturn('user_name');
 
-        $this->repository->shouldReceive('create')->with([
-            'uuid' => 'uuid-0000',
-            'uuidShort' => 'random_string',
+        $this->repository->shouldReceive('create')->with(m::subset([
+            'uuid' => $this->getKnownUuid(),
             'node_id' => $this->data['node_id'],
-            'name' => $this->data['name'],
-            'description' => $this->data['description'],
-            'skip_scripts' => false,
-            'suspended' => false,
-            'owner_id' => $this->data['owner_id'],
-            'memory' => $this->data['memory'],
-            'swap' => $this->data['swap'],
-            'disk' => $this->data['disk'],
-            'io' => $this->data['io'],
-            'cpu' => $this->data['cpu'],
-            'oom_disabled' => false,
-            'allocation_id' => $this->data['allocation_id'],
-            'service_id' => $this->data['service_id'],
-            'option_id' => $this->data['option_id'],
-            'pack_id' => null,
-            'startup' => $this->data['startup'],
-            'daemonSecret' => 'random_string',
-            'image' => $this->data['docker_image'],
-            'username' => 'user_name',
-            'sftp_password' => null,
-        ])->once()->andReturn((object) [
+            'owner_id' => 1,
+            'nest_id' => 1,
+            'egg_id' => 1,
+        ]))->once()->andReturn((object) [
             'node_id' => 1,
             'id' => 1,
         ]);
@@ -216,9 +191,12 @@ class ServerCreationServiceTest extends TestCase
             'variable_id' => 1,
             'variable_value' => 'var1-value',
         ]])->once()->andReturnNull();
+
+        $this->configurationStructureService->shouldReceive('handle')->with(1)->once()->andReturn(['test' => 'struct']);
+
         $this->daemonServerRepository->shouldReceive('setNode')->with(1)->once()->andReturnSelf()
-            ->shouldReceive('create')->with(1)->once()->andReturnNull();
-        $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+            ->shouldReceive('create')->with(['test' => 'struct'], ['start_on_completion' => false])->once()->andReturnNull();
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->create($this->data);
 
@@ -232,8 +210,7 @@ class ServerCreationServiceTest extends TestCase
     public function testExceptionShouldBeThrownIfTheRequestFails()
     {
         $this->validatorService->shouldReceive('isAdmin->setFields->validate->getResults')->once()->andReturn([]);
-        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->uuid->shouldReceive('uuid4->toString')->once()->andReturn('uuid-0000');
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->usernameService->shouldReceive('generate')->once()->andReturn('user_name');
         $this->repository->shouldReceive('create')->once()->andReturn((object) [
             'node_id' => 1,
@@ -242,18 +219,15 @@ class ServerCreationServiceTest extends TestCase
 
         $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturnNull();
         $this->serverVariableRepository->shouldReceive('insert')->with([])->once()->andReturnNull();
+        $this->configurationStructureService->shouldReceive('handle')->once()->andReturnNull();
         $this->daemonServerRepository->shouldReceive('setNode->create')->once()->andThrow($this->exception);
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
-        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
-        $this->database->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 
         try {
             $this->service->create($this->data);
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('admin/server.exceptions.daemon_exception', [
-                'code' => 'E_CONN_REFUSED',
-            ]), $exception->getMessage());
+        } catch (PterodactylException $exception) {
+            $this->assertInstanceOf(DaemonConnectionException::class, $exception);
         }
     }
 }

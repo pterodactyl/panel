@@ -42,12 +42,16 @@ class RemoveDaemonSecretFromSubusersTable extends Migration
     public function down()
     {
         Schema::table('subusers', function (Blueprint $table) {
-            $table->char('daemonSecret', 36)->after('server_id')->unique();
+            $table->char('daemonSecret', 36)->after('server_id');
         });
 
         $subusers = DB::table('subusers')->get();
         $subusers->each(function ($subuser) {
             DB::table('daemon_keys')->where('user_id', $subuser->user_id)->where('server_id', $subuser->server_id)->delete();
+        });
+
+        Schema::table('subusers', function (Blueprint $table) {
+            $table->unique('daemonSecret');
         });
     }
 }

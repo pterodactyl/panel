@@ -20,12 +20,12 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 class PackUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
@@ -53,8 +53,7 @@ class PackUpdateServiceTest extends TestCase
     public function testPackIsUpdated()
     {
         $model = factory(Pack::class)->make();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,
@@ -67,13 +66,13 @@ class PackUpdateServiceTest extends TestCase
     /**
      * Test that an exception is thrown if the pack option ID is changed while servers are using the pack.
      */
-    public function testExceptionIsThrownIfModifyingOptionIdWhenServersAreAttached()
+    public function testExceptionIsThrownIfModifyingEggIdWhenServersAreAttached()
     {
         $model = factory(Pack::class)->make();
         $this->serverRepository->shouldReceive('findCountWhere')->with([['pack_id', '=', $model->id]])->once()->andReturn(1);
 
         try {
-            $this->service->handle($model, ['option_id' => 0]);
+            $this->service->handle($model, ['egg_id' => 0]);
         } catch (HasActiveServersException $exception) {
             $this->assertEquals(trans('exceptions.packs.update_has_servers'), $exception->getMessage());
         }
@@ -86,10 +85,9 @@ class PackUpdateServiceTest extends TestCase
     {
         $model = factory(Pack::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'option_id'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('withColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($model->id)->once()->andReturn($model);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,

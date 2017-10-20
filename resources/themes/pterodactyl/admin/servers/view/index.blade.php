@@ -66,8 +66,8 @@
                             <tr>
                                 <td>Service</td>
                                 <td>
-                                    <a href="{{ route('admin.services.view', $server->option->service->id) }}">{{ $server->option->service->name }}</a> ::
-                                    <a href="{{ route('admin.services.option.view', $server->option->id) }}">{{ $server->option->name }}</a>
+                                    <a href="{{ route('admin.nests.view', $server->nest_id) }}">{{ $server->nest->name }}</a> ::
+                                    <a href="{{ route('admin.nests.egg.view', $server->egg_id) }}">{{ $server->egg->name }}</a>
                                 </td>
                             </tr>
                             <tr>

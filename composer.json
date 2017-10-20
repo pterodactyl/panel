@@ -15,6 +15,7 @@
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
+        "appstract/laravel-blade-directives": "^0.6.0",
         "aws/aws-sdk-php": "^3.29",
         "daneeveritt/login-notifications": "^1.0",
         "doctrine/dbal": "^2.5",

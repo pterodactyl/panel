@@ -88,29 +88,28 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
     ];
 });
 
-$factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $faker) {
+$factory->define(Pterodactyl\Models\Nest::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'author' => $faker->unique()->uuid,
+        'uuid' => $faker->unique()->uuid,
+        'author' => 'testauthor@example.com',
         'name' => $faker->word,
         'description' => null,
-        'folder' => strtolower($faker->unique()->word),
-        'startup' => 'java -jar test.jar',
-        'index_file' => 'indexjs',
     ];
 });
 
-$factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Generator $faker) {
+$factory->define(Pterodactyl\Models\Egg::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'service_id' => $faker->unique()->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
+        'nest_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
-        'tag' => $faker->unique()->randomNumber(5),
+        'startup' => 'java -jar test.jar',
     ];
 });
 
-$factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Generator $faker) {
+$factory->define(Pterodactyl\Models\EggVariable::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
         'name' => $faker->firstName,
@@ -120,23 +119,21 @@ $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Gene
         'user_viewable' => 0,
         'user_editable' => 0,
         'rules' => 'required|string',
-        'created_at' => \Carbon\Carbon::now(),
-        'updated_at' => \Carbon\Carbon::now(),
     ];
 });
 
-$factory->state(Pterodactyl\Models\ServiceVariable::class, 'viewable', function () {
+$factory->state(Pterodactyl\Models\EggVariable::class, 'viewable', function () {
     return ['user_viewable' => 1];
 });
 
-$factory->state(Pterodactyl\Models\ServiceVariable::class, 'editable', function () {
+$factory->state(Pterodactyl\Models\EggVariable::class, 'editable', function () {
     return ['user_editable' => 1];
 });
 
 $factory->define(Pterodactyl\Models\Pack::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'option_id' => $faker->randomNumber(),
+        'egg_id' => $faker->randomNumber(),
         'uuid' => $faker->uuid,
         'name' => $faker->word,
         'description' => null,

@@ -56,7 +56,7 @@
                             <td><code>{{ $server->uuidShort }}</code></td>
                             <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                             <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->username }}</a></td>
-                            <td>{{ $server->service->name }} ({{ $server->option->name }})</td>
+                            <td>{{ $server->nest->name }} ({{ $server->egg->name }})</td>
                             <td class="text-center"><span data-action="memory">NaN</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                             <td class="text-center">{{ $server->disk }} MB</td>
                             <td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">NaN</span> %</td>

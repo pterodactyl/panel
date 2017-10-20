@@ -10,7 +10,7 @@
 namespace Pterodactyl\Transformers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Service;
+use Pterodactyl\Models\Nest;
 use League\Fractal\TransformerAbstract;
 
 class ServiceTransformer extends TransformerAbstract
@@ -52,7 +52,7 @@ class ServiceTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(Service $service)
+    public function transform(Nest $service)
     {
         return $service->toArray();
     }
@@ -62,7 +62,7 @@ class ServiceTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeOptions(Service $service)
+    public function includeOptions(Nest $service)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('option-list')) {
             return;
@@ -76,7 +76,7 @@ class ServiceTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeServers(Service $service)
+    public function includeServers(Nest $service)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
@@ -90,7 +90,7 @@ class ServiceTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includePacks(Service $service)
+    public function includePacks(Nest $service)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('pack-list')) {
             return;

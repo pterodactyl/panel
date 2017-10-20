@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
-use Pterodactyl\Models\ServiceVariable;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -17,7 +16,7 @@ class ChangeServiceVariablesValidationRules extends Migration
         });
 
         DB::transaction(function () {
-            foreach (ServiceVariable::all() as $variable) {
+            foreach (DB::table('service_variables')->get() as $variable) {
                 $variable->rules = ($variable->required) ? 'required|regex:' . $variable->rules : 'regex:' . $variable->rules;
                 $variable->save();
             }
@@ -39,7 +38,7 @@ class ChangeServiceVariablesValidationRules extends Migration
         });
 
         DB::transaction(function () {
-            foreach (ServiceVariable::all() as $variable) {
+            foreach (DB::table('service_variables')->get() as $variable) {
                 $variable->regex = str_replace(['required|regex:', 'regex:'], '', $variable->regex);
                 $variable->save();
             }

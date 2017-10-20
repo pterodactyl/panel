@@ -13,8 +13,8 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 
 class PackCreationService
@@ -65,7 +65,7 @@ class PackCreationService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
     public function handle(array $data, UploadedFile $file = null)
     {

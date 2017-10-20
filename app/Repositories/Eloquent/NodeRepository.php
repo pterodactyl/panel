@@ -116,7 +116,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeServers($id)
     {
-        $instance = $this->getBuilder()->with('servers.user', 'servers.service', 'servers.option')
+        $instance = $this->getBuilder()->with('servers.user', 'servers.nest', 'servers.egg')
             ->find($id, $this->getColumns());
 
         if (! $instance) {

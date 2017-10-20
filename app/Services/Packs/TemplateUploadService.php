@@ -11,8 +11,8 @@ namespace Pterodactyl\Services\Packs;
 
 use ZipArchive;
 use Illuminate\Http\UploadedFile;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\ZipExtractionException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 use Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
@@ -52,18 +52,18 @@ class TemplateUploadService
     /**
      * Process an uploaded file to create a new pack from a JSON or ZIP format.
      *
-     * @param int                           $option
+     * @param int                           $egg
      * @param \Illuminate\Http\UploadedFile $file
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
      */
-    public function handle($option, UploadedFile $file)
+    public function handle($egg, UploadedFile $file)
     {
         if (! $file->isValid()) {
             throw new InvalidFileUploadException(trans('exceptions.packs.invalid_upload'));
@@ -76,10 +76,10 @@ class TemplateUploadService
         }
 
         if ($file->getMimeType() === 'application/zip') {
-            return $this->handleArchive($option, $file);
+            return $this->handleArchive($egg, $file);
         } else {
             $json = json_decode($file->openFile()->fread($file->getSize()), true);
-            $json['option_id'] = $option;
+            $json['egg_id'] = $egg;
 
             return $this->creationService->handle($json);
         }
@@ -88,18 +88,18 @@ class TemplateUploadService
     /**
      * Process a ZIP file to create a pack and stored archive.
      *
-     * @param int                           $option
+     * @param int                           $egg
      * @param \Illuminate\Http\UploadedFile $file
      * @return \Pterodactyl\Models\Pack
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException
+     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
      * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
      * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
      */
-    protected function handleArchive($option, $file)
+    protected function handleArchive($egg, $file)
     {
         if (! $this->archive->open($file->getRealPath())) {
             throw new UnreadableZipArchiveException(trans('exceptions.packs.unreadable'));
@@ -110,7 +110,7 @@ class TemplateUploadService
         }
 
         $json = json_decode($this->archive->getFromName('import.json'), true);
-        $json['option_id'] = $option;
+        $json['egg_id'] = $egg;
 
         $pack = $this->creationService->handle($json);
         if (! $this->archive->extractTo(storage_path('app/packs/' . $pack->uuid), 'archive.tar.gz')) {
