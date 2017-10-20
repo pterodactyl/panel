@@ -184,6 +184,13 @@
                                     </ul>
                                 </li>
                             @endif
+                            @if(Auth::user()->root_admin)
+                                <li>
+                                    <a href="{{ route('admin.servers.view', $server->id) }}">
+                                        <i class="fa fa-cog"></i> <span>@lang('navigation.server.admin')</span>
+                                    </a>
+                                </li>
+                            @endif
                         @endif
                     </ul>
                 </section>
