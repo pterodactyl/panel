@@ -20,7 +20,7 @@ return [
         'subusers' => 'Subusers',
         'schedules' => 'Schedules',
         'configuration' => 'Configuration',
-        'port_allocations' => 'Port Allocations',
+        'port_allocations' => 'Allocation Settings',
         'sftp_settings' => 'SFTP Settings',
         'startup_parameters' => 'Startup Parameters',
         'databases' => 'Databases',

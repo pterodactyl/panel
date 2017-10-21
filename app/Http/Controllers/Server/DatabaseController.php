@@ -41,11 +41,14 @@ class DatabaseController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request): View
     {
         $server = $request->attributes->get('server');
-        $this->injectJavascript();
+        $this->authorize('view-databases', $server);
+        $this->setRequest($request)->injectJavascript();
 
         return view('server.databases.index', [
             'databases' => $this->repository->getDatabasesForServer($server->id),
@@ -58,11 +61,14 @@ class DatabaseController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(Request $request): JsonResponse
     {
+        $this->authorize('reset-db-password', $request->attributes->get('server'));
+
         $password = str_random(20);
         $this->passwordService->handle($request->attributes->get('database'), $password);
 

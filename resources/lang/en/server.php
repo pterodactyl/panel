@@ -189,9 +189,13 @@ return [
                 'title' => 'Delete Subuser',
                 'description' => 'Allows a user to delete other subusers on the server.',
             ],
-            'set_connection' => [
-                'title' => 'Set Default Connection',
-                'description' => 'Allows user to set the default connection used for a server as well as view avaliable ports.',
+            'view_allocations' => [
+                'title' => 'View Allocations',
+                'description' => 'Allows user to view all of the IPs and ports assigned to a server.',
+            ],
+            'edit_allocation' => [
+                'title' => 'Edit Default Connection',
+                'description' => 'Allows user to change the default connection allocation to use for a server.',
             ],
             'view_startup' => [
                 'title' => 'View Startup Command',

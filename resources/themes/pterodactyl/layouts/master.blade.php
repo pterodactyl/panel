@@ -166,7 +166,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) ||  Gate::allows('view-allocation', $server))
                                 <li class="treeview
                                     @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active

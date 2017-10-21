@@ -87,28 +87,6 @@ class ServerController extends Controller
     }
 
     /**
-     * Returns the database overview for a server.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
-     * @return \Illuminate\View\View
-     */
-    public function getDatabases(Request $request, $uuid)
-    {
-        $server = Models\Server::byUuid($uuid);
-        $this->authorize('view-databases', $server);
-
-        $server->load('node', 'databases.host');
-        $server->js();
-
-        return view('server.settings.databases', [
-            'server' => $server,
-            'node' => $server->node,
-            'databases' => $server->databases,
-        ]);
-    }
-
-    /**
      * Returns the SFTP overview for a server.
      *
      * @param \Illuminate\Http\Request $request

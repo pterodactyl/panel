@@ -35,7 +35,7 @@
                             <th>@lang('strings.port')</th>
                             <th></th>
                         </tr>
-                        @foreach ($server->allocations as $allocation)
+                        @foreach ($allocations as $allocation)
                             <tr>
                                 <td>
                                     <code>{{ $allocation->ip }}</code>
@@ -50,15 +50,18 @@
                                 <td><code>{{ $allocation->port }}</code></td>
                                 <td class="col-xs-2 middle">
                                     @if($allocation->id === $server->allocation_id)
-                                        <span class="label label-success" data-allocation="{{ $allocation->id }}">@lang('strings.primary')</span>
+                                        <a class="btn btn-xs btn-success disabled" data-action="set-default" data-allocation="{{ $allocation->hashid }}" role="button">@lang('strings.primary')</a>
                                     @else
-                                        <span class="label label-default" data-action="set-connection" data-allocation="{{ $allocation->id }}">@lang('strings.make_primary')</span>
+                                        <a class="btn btn-xs btn-default" data-action="set-default" data-allocation="{{ $allocation->hashid }}" role="button">@lang('strings.make_primary')</a>
                                     @endif
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+            </div>
+            <div id="toggleActivityOverlay" class="overlay hidden">
+                <i class="fa fa-refresh fa-spin"></i>
             </div>
         </div>
     </div>
@@ -79,37 +82,39 @@
     @parent
     {!! Theme::js('js/frontend/server.socket.js') !!}
     <script>
-    @can('reset-db-password', $server)
-        $('[data-action="reset-database-password"]').click(function (e) {
-            e.preventDefault();
-            var block = $(this);
-            $(this).find('i').addClass('fa-spin');
-            $.ajax({
-                type: 'POST',
-                url: Router.route('server.ajax.reset-database-password', { server: Pterodactyl.server.uuidShort }),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
-                },
-                data: {
-                    'database': $(this).data('id')
-                }
-            }).done(function (data) {
-                block.parent().find('code').html(data);
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: 'Whoops!',
-                    text: error
+        $(document).ready(function () {
+            @can('edit-allocation', $server)
+            (function triggerClickHandler() {
+                $('a[data-action="set-default"]:not(.disabled)').click(function (e) {
+                    $('#toggleActivityOverlay').removeClass('hidden');
+                    e.preventDefault();
+                    var self = $(this);
+                    $.ajax({
+                        type: 'PATCH',
+                        url: Router.route('server.settings.allocation', { server: Pterodactyl.server.uuidShort }),
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+                        },
+                        data: {
+                            'allocation': $(this).data('allocation')
+                        }
+                    }).done(function () {
+                        self.parents().eq(2).find('a[role="button"]').removeClass('btn-success disabled').addClass('btn-default').html('{{ trans('strings.make_primary') }}');
+                        self.removeClass('btn-default').addClass('btn-success disabled').html('{{ trans('strings.primary') }}');
+                    }).fail(function(jqXHR) {
+                        console.error(jqXHR);
+                        var error = 'An error occured while trying to process this request.';
+                        if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                            error = jqXHR.responseJSON.error;
+                        }
+                        swal({type: 'error', title: 'Whoops!', text: error});
+                    }).always(function () {
+                        triggerClickHandler();
+                        $('#toggleActivityOverlay').addClass('hidden');
+                    })
                 });
-            }).always(function () {
-                block.find('i').removeClass('fa-spin');
-            });
+            })();
+            @endcan
         });
-    @endcan
     </script>
 @endsection

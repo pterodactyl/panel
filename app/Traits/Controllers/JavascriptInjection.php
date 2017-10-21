@@ -15,16 +15,33 @@ use Illuminate\Http\Request;
 trait JavascriptInjection
 {
     /**
+     * @var \Illuminate\Http\Request
+     */
+    private $request;
+
+    /**
+     * Set the request object to use when injecting JS.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return $this
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+
+        return $this;
+    }
+
+    /**
      * Injects server javascript into the page to be used by other services.
      *
-     * @param array                         $args
-     * @param bool                          $overwrite
-     * @param \Illuminate\Http\Request|null $request
+     * @param array $args
+     * @param bool  $overwrite
      * @return array
      */
-    public function injectJavascript($args = [], $overwrite = false, Request $request = null)
+    public function injectJavascript($args = [], $overwrite = false)
     {
-        $request = $request ?? app()->make(Request::class);
+        $request = $this->request ?? app()->make(Request::class);
         $server = $request->attributes->get('server');
         $token = $request->attributes->get('server_token');
 
