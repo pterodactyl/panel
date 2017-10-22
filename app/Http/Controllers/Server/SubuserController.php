@@ -110,7 +110,7 @@ class SubuserController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view($uuid, $id)
+    public function view($id)
     {
         $server = $this->session->get('server_data.model');
         $this->authorize('view-subuser', $server);
