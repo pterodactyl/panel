@@ -301,7 +301,7 @@ return [
             'change_pass' => 'Change SFTP Password',
             'details' => 'SFTP Details',
             'conn_addr' => 'Connection Address',
-            'warning' => 'Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
+            'warning' => 'The SFTP password is your account password. Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
         ],
         'database' => [
             'header' => 'Databases',
