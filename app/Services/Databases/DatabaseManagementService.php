@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Databases;
 
+use Pterodactyl\Models\Database;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
@@ -95,7 +96,7 @@ class DatabaseManagementService
             $this->database->commit();
         } catch (\Exception $ex) {
             try {
-                if (isset($database)) {
+                if (isset($database) && $database instanceof Database) {
                     $this->repository->dropDatabase($database->database);
                     $this->repository->dropUser($database->username, $database->remote);
                     $this->repository->flush();
