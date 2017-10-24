@@ -51,7 +51,7 @@ class HostDeletionServiceTest extends TestCase
      *
      * @dataProvider databaseCountDataProvider
      */
-    public function testExceptionIsThrownIfDeletingHostWithDatabases($count)
+    public function testExceptionIsThrownIfDeletingHostWithDatabases(int $count)
     {
         $this->databaseRepository->shouldReceive('findCountWhere')->with([['database_host_id', '=', 1234]])->once()->andReturn($count);
 

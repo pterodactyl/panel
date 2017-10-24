@@ -51,7 +51,7 @@ class DatabasePasswordServiceTest extends TestCase
      *
      * @dataProvider useModelDataProvider
      */
-    public function testPasswordIsChanged($useModel)
+    public function testPasswordIsChanged(bool $useModel)
     {
         $model = factory(Database::class)->make();
 
