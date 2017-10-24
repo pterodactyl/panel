@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\API\Remote;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\AuthenticationException;
@@ -33,7 +32,7 @@ class SftpController extends Controller
 
     /**
      * Authenticate a set of credentials and return the associated server details
-     * for a SFTP connections on the daemon.
+     * for a SFTP connection on the daemon.
      *
      * @param \Pterodactyl\Http\Requests\API\Remote\SftpAuthenticationFormRequest $request
      * @return \Illuminate\Http\JsonResponse
@@ -81,6 +80,6 @@ class SftpController extends Controller
      */
     protected function throttleKey(Request $request)
     {
-        return Str::lower(array_get(explode('.', $request->input('username')), 0) . '|' . $request->ip());
+        return strtolower(array_get(explode('.', $request->input('username')), 0) . '|' . $request->ip());
     }
 }
