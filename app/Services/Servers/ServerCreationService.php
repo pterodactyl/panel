@@ -64,11 +64,6 @@ class ServerCreationService
     protected $userRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\UsernameGenerationService
-     */
-    protected $usernameService;
-
-    /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
     protected $validatorService;
@@ -84,7 +79,6 @@ class ServerCreationService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
-     * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
      */
     public function __construct(
@@ -96,7 +90,6 @@ class ServerCreationService
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         UserRepositoryInterface $userRepository,
-        UsernameGenerationService $usernameService,
         VariableValidatorService $validatorService
     ) {
         $this->allocationRepository = $allocationRepository;
@@ -107,7 +100,6 @@ class ServerCreationService
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->userRepository = $userRepository;
-        $this->usernameService = $usernameService;
         $this->validatorService = $validatorService;
     }
 
@@ -151,8 +143,6 @@ class ServerCreationService
             'startup' => $data['startup'],
             'daemonSecret' => str_random(NodeCreationService::DAEMON_SECRET_LENGTH),
             'image' => $data['docker_image'],
-            'username' => $this->usernameService->generate($data['name'], $uniqueShort),
-            'sftp_password' => null,
         ]);
 
         // Process allocations and assign them to the server in the database.

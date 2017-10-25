@@ -30,8 +30,6 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
         'cpu' => 0,
         'oom_disabled' => 0,
         'pack_id' => null,
-        'username' => $faker->userName,
-        'sftp_password' => null,
         'installed' => 1,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
