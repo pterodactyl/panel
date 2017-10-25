@@ -193,8 +193,9 @@
                                 </li>
                             @endif
                             @if(Auth::user()->root_admin)
+                                <li class="header">@lang('navigation.server.admin_header')</li>
                                 <li>
-                                    <a href="{{ route('admin.servers.view', $server->id) }}">
+                                    <a href="{{ route('admin.servers.view', $server->id) }}" target="_blank">
                                         <i class="fa fa-cog"></i> <span>@lang('navigation.server.admin')</span>
                                     </a>
                                 </li>

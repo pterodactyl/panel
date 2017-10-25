@@ -25,6 +25,7 @@ return [
         'startup_parameters' => 'Startup Parameters',
         'databases' => 'Databases',
         'edit_file' => 'Edit File',
-        'admin' => 'Manage',
+        'admin_header' => 'ADMINISTRATIVE',
+        'admin' => 'Server Configuration',
     ],
 ];
