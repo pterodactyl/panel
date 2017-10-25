@@ -56,14 +56,6 @@
                                 <td data-attr="container-id"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                             </tr>
                             <tr>
-                                <td>Docker User ID</td>
-                                <td data-attr="container-user"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Docker Container Name</td>
-                                <td>{{ $server->username }}</td>
-                            </tr>
-                            <tr>
                                 <td>Service</td>
                                 <td>
                                     <a href="{{ route('admin.nests.view', $server->nest_id) }}">{{ $server->nest->name }}</a> ::

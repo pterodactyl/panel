@@ -21,10 +21,9 @@ Route::group(['prefix' => 'settings'], function () {
     Route::get('/allocation', 'Settings\AllocationController@index')->name('server.settings.allocation');
     Route::patch('/allocation', 'Settings\AllocationController@update');
 
-    Route::get('/sftp', 'ServerController@getSFTP')->name('server.settings.sftp');
-    Route::get('/startup', 'ServerController@getStartup')->name('server.settings.startup');
+    Route::get('/sftp', 'Settings\SftpController@index')->name('server.settings.sftp');
 
-    Route::post('/sftp', 'ServerController@postSettingsSFTP');
+    Route::get('/startup', 'ServerController@getStartup')->name('server.settings.startup');
     Route::post('/startup', 'ServerController@postSettingsStartup');
 });
 

@@ -50,7 +50,6 @@ trait JavascriptInjection
                 'uuid' => $server->uuid,
                 'uuidShort' => $server->uuidShort,
                 'daemonSecret' => $token,
-                'username' => $server->username,
             ],
             'node' => [
                 'fqdn' => $server->node->fqdn,

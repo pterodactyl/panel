@@ -18,7 +18,6 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Services\Servers\UsernameGenerationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -110,11 +109,6 @@ class ServerCreationServiceTest extends TestCase
     protected $userRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\UsernameGenerationService|\Mockery\Mock
-     */
-    protected $usernameService;
-
-    /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService|\Mockery\Mock
      */
     protected $validatorService;
@@ -135,7 +129,6 @@ class ServerCreationServiceTest extends TestCase
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
         $this->userRepository = m::mock(UserRepositoryInterface::class);
-        $this->usernameService = m::mock(UsernameGenerationService::class);
         $this->validatorService = m::mock(VariableValidatorService::class);
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Servers', 'str_random')
@@ -150,7 +143,6 @@ class ServerCreationServiceTest extends TestCase
             $this->repository,
             $this->serverVariableRepository,
             $this->userRepository,
-            $this->usernameService,
             $this->validatorService
         );
     }
@@ -165,8 +157,6 @@ class ServerCreationServiceTest extends TestCase
             ->shouldReceive('validate')->with($this->data['egg_id'])->once()->andReturnSelf();
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->usernameService->shouldReceive('generate')->with($this->data['name'], 'random_string')
-            ->once()->andReturn('user_name');
 
         $this->repository->shouldReceive('create')->with(m::subset([
             'uuid' => $this->getKnownUuid(),
@@ -211,7 +201,6 @@ class ServerCreationServiceTest extends TestCase
     {
         $this->validatorService->shouldReceive('isAdmin->setFields->validate->getResults')->once()->andReturn([]);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->usernameService->shouldReceive('generate')->once()->andReturn('user_name');
         $this->repository->shouldReceive('create')->once()->andReturn((object) [
             'node_id' => 1,
             'id' => 1,

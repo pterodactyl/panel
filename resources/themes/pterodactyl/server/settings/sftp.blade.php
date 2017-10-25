@@ -21,37 +21,7 @@
 
 @section('content')
 <div class="row">
-    <div class="col-sm-6">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">@lang('server.config.sftp.change_pass')</h3>
-            </div>
-            @can('reset-sftp', $server)
-                <form action="{{ route('server.settings.sftp', $server->uuidShort) }}" method="post">
-                    <div class="box-body">
-                        <div class="form-group">
-                            <label for="sftp_pass" class="control-label">@lang('base.account.new_password')</label>
-                            <div>
-                                <input type="password" class="form-control" name="sftp_pass" />
-                                <p class="text-muted"><small>@lang('auth.password_requirements')</small></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="box-footer">
-                        {!! csrf_field() !!}
-                        <input type="submit" class="btn btn-primary btn-sm" value="@lang('base.account.update_pass')" />
-                    </div>
-                </form>
-            @else
-                <div class="box-body">
-                    <div class="callout callout-warning callout-nomargin">
-                        <p>@lang('auth.not_authorized')</p>
-                    </div>
-                </div>
-            @endcan
-        </div>
-    </div>
-    <div class="col-sm-6">
+    <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.config.sftp.details')</h3>
@@ -66,20 +36,12 @@
                 <div class="form-group">
                     <label for="password" class="control-label">@lang('strings.username')</label>
                     <div>
-                        <input type="text" class="form-control" readonly value="{{ $server->username }}" />
+                        <input type="text" class="form-control" readonly value="{{ auth()->user()->username }}.{{ $server->uuidShort }}" />
                     </div>
                 </div>
-                @can('view-sftp-password', $server)
-                    <div class="form-group">
-                        <label for="password" class="control-label">@lang('base.account.current_password')</label>
-                        <div>
-                            <input type="text" class="form-control" readonly @if(! is_null($server->sftp_password))value="{{ Crypt::decrypt($server->sftp_password) }}"@endif />
-                        </div>
-                    </div>
-                @endcan
             </div>
             <div class="box-footer">
-                <p class="small text-muted">@lang('server.config.sftp.warning')</p>
+                <p class="small text-muted no-margin-bottom">@lang('server.config.sftp.warning')</p>
             </div>
         </div>
     </div>

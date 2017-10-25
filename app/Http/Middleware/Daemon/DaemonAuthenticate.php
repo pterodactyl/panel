@@ -75,7 +75,7 @@ class DaemonAuthenticate
             throw new HttpException(403);
         }
 
-        $request->attributes->set('node.model', $node);
+        $request->attributes->set('node', $node);
 
         return $next($request);
     }
