@@ -292,8 +292,8 @@ return [
             'command' => 'Startup Command',
             'edit_params' => 'Edit Parameters',
             'update' => 'Update Startup Parameters',
-            'startup_var' => 'Startup Command Variable',
             'startup_regex' => 'Input Rules',
+            'edited' => 'Startup variables have been successfully edited. They will take effect the next time this server is started.',
         ],
         'sftp' => [
             'header' => 'SFTP Configuration',

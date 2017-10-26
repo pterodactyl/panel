@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
@@ -51,6 +52,19 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getVariablesWithValues($id, $returnAsObject = false);
+
+    /**
+     * Get the primary allocation for a given server. If a model is passed into
+     * the function, load the allocation relationship onto it. Otherwise, find and
+     * return the server from the database.
+     *
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param bool                           $refresh
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getPrimaryAllocation($server, bool $refresh = false): Server;
 
     /**
      * Return enough data to be used for the creation of a server via the daemon.

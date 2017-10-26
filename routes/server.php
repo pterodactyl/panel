@@ -23,8 +23,8 @@ Route::group(['prefix' => 'settings'], function () {
 
     Route::get('/sftp', 'Settings\SftpController@index')->name('server.settings.sftp');
 
-    Route::get('/startup', 'ServerController@getStartup')->name('server.settings.startup');
-    Route::post('/startup', 'ServerController@postSettingsStartup');
+    Route::get('/startup', 'Settings\StartupController@index')->name('server.settings.startup');
+    Route::patch('/startup', 'Settings\StartupController@update');
 });
 
 /*

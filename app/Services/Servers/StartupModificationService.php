@@ -12,8 +12,8 @@ namespace Pterodactyl\Services\Servers;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
@@ -118,9 +118,9 @@ class StartupModificationService
         }
 
         $this->connection->beginTransaction();
-        if (isset($data['environment'])) {
+        if (! is_null(array_get($data, 'environment'))) {
             $validator = $this->validatorService->isAdmin($this->admin)
-                ->setFields($data['environment'])
+                ->setFields(array_get($data, 'environment', []))
                 ->validate(array_get($data, 'egg_id', $server->egg_id));
 
             foreach ($validator->getResults() as $result) {
@@ -159,12 +159,11 @@ class StartupModificationService
 
         try {
             $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
-            $this->connection->commit();
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]), $exception, 'warning');
+            $this->connection->rollBack();
+            throw new DaemonConnectionException($exception);
         }
+
+        $this->connection->commit();
     }
 }
