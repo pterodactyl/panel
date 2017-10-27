@@ -50,7 +50,7 @@ class ServerConfigurationStructureServiceTest extends TestCase
         })->toArray();
 
         $this->repository->shouldReceive('getDataForCreation')->with($model)->once()->andReturn($model);
-        $this->environment->shouldReceive('process')->with($model)->once()->andReturn(['environment_array']);
+        $this->environment->shouldReceive('handle')->with($model)->once()->andReturn(['environment_array']);
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);

@@ -184,4 +184,19 @@ return [
         'daemon/*',
         'remote/*',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dynamic Environment Variables
+    |--------------------------------------------------------------------------
+    |
+    | Place dynamic environment variables here that should be auto-appended
+    | to server environment fields when the server is created or updated.
+    |
+    | Items should be in 'key' => 'value' format, where key is the environment
+    | variable name, and value is the server-object key. For example:
+    |
+    | 'P_SERVER_CREATED_AT' => 'created_at'
+    */
+    'environment_variables' => [],
 ];

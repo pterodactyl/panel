@@ -137,16 +137,21 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Return enough data to be used for the creation of a server via the daemon.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
      */
-    public function getDataForCreation($id)
+    public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg'])->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        foreach (['allocation', 'allocations', 'pack', 'egg'] as $relation) {
+            if (! $server->relationLoaded($relation) || $refresh) {
+                $server->load($relation);
+            }
         }
 
-        return $instance;
+        return $server;
     }
 
     /**

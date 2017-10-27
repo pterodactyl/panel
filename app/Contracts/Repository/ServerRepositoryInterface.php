@@ -69,12 +69,11 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Return enough data to be used for the creation of a server via the daemon.
      *
-     * @param int $id
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
      */
-    public function getDataForCreation($id);
+    public function getDataForCreation(Server $server, bool $refresh = false): Server;
 
     /**
      * Return a server as well as associated databases and their hosts.

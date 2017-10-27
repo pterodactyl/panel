@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Server\Settings;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
@@ -84,6 +85,7 @@ class StartupController extends Controller
      */
     public function update(UpdateStartupParametersFormRequest $request): RedirectResponse
     {
+        $this->modificationService->setUserLevel(User::USER_LEVEL_USER);
         $this->modificationService->handle($request->attributes->get('server'), $request->normalize());
         $this->alert->success(trans('server.config.startup.edited'))->flash();
 

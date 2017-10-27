@@ -20,6 +20,8 @@ class Node extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Notifiable, Validable;
 
+    const DAEMON_SECRET_LENGTH = 36;
+
     /**
      * The table associated with the model.
      *

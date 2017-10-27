@@ -11,6 +11,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Javascript;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
@@ -570,10 +571,8 @@ class ServersController extends Controller
      */
     public function saveStartup(Request $request, Server $server)
     {
-        $this->startupModificationService->isAdmin()->handle(
-            $server,
-            $request->except('_token')
-        );
+        $this->startupModificationService->setUserLevel(User::USER_LEVEL_ADMIN);
+        $this->startupModificationService->handle($server, $request->except('_token'));
         $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
         return redirect()->route('admin.servers.view.startup', $server->id);
