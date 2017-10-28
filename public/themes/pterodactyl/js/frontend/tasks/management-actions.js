@@ -34,7 +34,7 @@ $(document).ready(function () {
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('server.schedules.delete', {
+                url: Router.route('server.schedules.view', {
                     server: Pterodactyl.server.uuidShort,
                     schedule: self.data('schedule-id'),
                 }),

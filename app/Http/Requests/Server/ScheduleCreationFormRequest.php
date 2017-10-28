@@ -9,10 +9,22 @@
 
 namespace Pterodactyl\Http\Requests\Server;
 
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
-
-class ScheduleCreationFormRequest extends FrontendUserFormRequest
+class ScheduleCreationFormRequest extends ServerFormRequest
 {
+    /**
+     * Permission to validate this request aganist.
+     *
+     * @return string
+     */
+    protected function permission(): string
+    {
+        if ($this->method() === 'PATCH') {
+            return 'edit-schedule';
+        }
+
+        return 'create-schedule';
+    }
+
     /**
      * Validation rules to apply to the request.
      *

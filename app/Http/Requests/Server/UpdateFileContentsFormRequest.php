@@ -9,22 +9,24 @@
 
 namespace Pterodactyl\Http\Requests\Server;
 
-use Illuminate\Log\Writer;
-use Illuminate\Contracts\Session\Session;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
-class UpdateFileContentsFormRequest extends FrontendUserFormRequest
+class UpdateFileContentsFormRequest extends ServerFormRequest
 {
     /**
-     * @var object
+     * Return the permission string to validate this request aganist.
+     *
+     * @return string
      */
-    protected $stats;
+    protected function permission(): string
+    {
+        return 'edit-files';
+    }
 
     /**
      * Authorize a request to edit a file.
@@ -38,16 +40,12 @@ class UpdateFileContentsFormRequest extends FrontendUserFormRequest
      */
     public function authorize()
     {
-        parent::authorize();
-
-        $session = app()->make(Session::class);
-        $server = $session->get('server_data.model');
-        $token = $session->get('server_data.token');
-
-        $permission = $this->user()->can('edit-files', $server);
-        if (! $permission) {
+        if (! parent::authorize()) {
             return false;
         }
+
+        $server = $this->attributes->get('server');
+        $token = $this->attributes->get('server_token');
 
         return $this->checkFileCanBeEdited($server, $token);
     }
@@ -61,16 +59,8 @@ class UpdateFileContentsFormRequest extends FrontendUserFormRequest
     }
 
     /**
-     * Return the file stats from the Daemon.
+     * Checks if a given file can be edited by a user on this server.
      *
-     * @return object
-     */
-    public function getStats()
-    {
-        return $this->stats;
-    }
-
-    /**
      * @param \Pterodactyl\Models\Server $server
      * @param string                     $token
      * @return bool
@@ -80,32 +70,28 @@ class UpdateFileContentsFormRequest extends FrontendUserFormRequest
      * @throws \Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    protected function checkFileCanBeEdited($server, $token)
+    private function checkFileCanBeEdited($server, $token)
     {
         $config = app()->make(Repository::class);
         $repository = app()->make(FileRepositoryInterface::class);
 
         try {
-            $this->stats = $repository->setNode($server->node_id)
-                ->setAccessServer($server->uuid)
+            $stats = $repository->setNode($server->node_id)->setAccessServer($server->uuid)
                 ->setAccessToken($token)
                 ->getFileStat($this->route()->parameter('file'));
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            app()->make(Writer::class)->warning($exception);
-
-            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
 
-        if (! $this->stats->file || ! in_array($this->stats->mime, $config->get('pterodactyl.files.editable'))) {
+        if (! $stats->file || ! in_array($stats->mime, $config->get('pterodactyl.files.editable'))) {
             throw new FileTypeNotEditableException(trans('server.files.exceptions.invalid_mime'));
         }
 
-        if ($this->stats->size > $config->get('pterodactyl.files.max_edit_size')) {
+        if ($stats->size > $config->get('pterodactyl.files.max_edit_size')) {
             throw new FileSizeTooLargeException(trans('server.files.exceptions.max_size'));
         }
+
+        $this->attributes->set('file_stats', $stats);
 
         return true;
     }

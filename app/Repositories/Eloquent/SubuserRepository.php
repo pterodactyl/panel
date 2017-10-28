@@ -25,33 +25,39 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return a subuser with the associated server relationship.
+     *
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param bool                        $refresh
+     * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithServer($id)
+    public function getWithServer(Subuser $subuser, bool $refresh = false): Subuser
     {
-        Assert::numeric($id, 'First argument passed to getWithServer must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with('server', 'user')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
+        if (! $subuser->relationLoaded('server') || $refresh) {
+            $subuser->load('server');
         }
 
-        return $instance;
+        return $subuser;
     }
 
     /**
-     * {@inheritdoc}
+     * Return a subuser with the associated permissions relationship.
+     *
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param bool                        $refresh
+     * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithPermissions($id)
+    public function getWithPermissions(Subuser $subuser, bool $refresh = false): Subuser
     {
-        Assert::numeric($id, 'First argument passed to getWithPermissions must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with('permissions', 'user')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
+        if (! $subuser->relationLoaded('permissions') || $refresh) {
+            $subuser->load('permissions');
         }
 
-        return $instance;
+        if (! $subuser->relationLoaded('user') || $refresh) {
+            $subuser->load('user');
+        }
+
+        return $subuser;
     }
 
     /**

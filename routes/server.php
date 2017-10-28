@@ -70,13 +70,13 @@ Route::group(['prefix' => 'files'], function () {
 Route::group(['prefix' => 'users'], function () {
     Route::get('/', 'SubuserController@index')->name('server.subusers');
     Route::get('/new', 'SubuserController@create')->name('server.subusers.new');
-    Route::get('/view/{subuser}', 'SubuserController@view')->middleware('server..subuser')->name('server.subusers.view');
-
     Route::post('/new', 'SubuserController@store');
 
-    Route::patch('/view/{subuser}', 'SubuserController@update')->middleware('server..subuser');
-
-    Route::delete('/view/{subuser}/delete', 'SubuserController@delete')->middleware('server..subuser')->name('server.subusers.delete');
+    Route::group(['middleware' => 'server..subuser'], function () {
+        Route::get('/view/{subuser}', 'SubuserController@view')->name('server.subusers.view');
+        Route::patch('/view/{subuser}', 'SubuserController@update');
+        Route::delete('/view/{subuser}', 'SubuserController@delete');
+    });
 });
 
 /*
@@ -90,12 +90,14 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'schedules'], function () {
     Route::get('/', 'Tasks\TaskManagementController@index')->name('server.schedules');
     Route::get('/new', 'Tasks\TaskManagementController@create')->name('server.schedules.new');
-    Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->middleware('server..schedule')->name('server.schedules.view');
-
     Route::post('/new', 'Tasks\TaskManagementController@store');
 
-    Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update')->middleware('server..schedule');
-    Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware('server..schedule')->name('server.schedules.toggle');
+    Route::group(['middleware' => 'server..schedule'], function () {
+        Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->name('server.schedules.view');
 
-    Route::delete('/view/{schedule}/delete', 'Tasks\TaskManagementController@delete')->middleware('server..schedule')->name('server.schedules.delete');
+        Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update');
+        Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->name('server.schedules.toggle');
+
+        Route::delete('/view/{schedule}', 'Tasks\TaskManagementController@delete');
+    });
 });

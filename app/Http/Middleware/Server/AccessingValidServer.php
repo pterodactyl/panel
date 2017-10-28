@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Middleware;
 
@@ -19,7 +12,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class ServerAuthenticate
+class AccessingValidServer
 {
     /**
      * @var \Illuminate\Contracts\Config\Repository
@@ -42,7 +35,7 @@ class ServerAuthenticate
     protected $session;
 
     /**
-     * ServerAuthenticate constructor.
+     * AccessingValidServer constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                     $config
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository

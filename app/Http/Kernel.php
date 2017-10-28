@@ -5,6 +5,7 @@ namespace Pterodactyl\Http;
 use Pterodactyl\Http\Middleware\DaemonAuthenticate;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Pterodactyl\Http\Middleware\AccessingValidServer;
 use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
 use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
@@ -64,7 +65,7 @@ class Kernel extends HttpKernel
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
-        'server' => \Pterodactyl\Http\Middleware\ServerAuthenticate::class,
+        'server' => AccessingValidServer::class,
         'subuser.auth' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
         'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
         'daemon-old' => DaemonAuthenticate::class,
