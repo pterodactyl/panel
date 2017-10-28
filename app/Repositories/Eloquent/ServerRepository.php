@@ -67,11 +67,41 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         Assert::integerish($id, 'First argument passed to findWithVariables must be integer, received %s.');
 
         $instance = $this->getBuilder()->with('egg.variables', 'variables')
-                         ->where($this->getModel()->getKeyName(), '=', $id)
-                         ->first($this->getColumns());
+            ->where($this->getModel()->getKeyName(), '=', $id)
+            ->first($this->getColumns());
 
         if (is_null($instance)) {
             throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Get the primary allocation for a given server. If a model is passed into
+     * the function, load the allocation relationship onto it. Otherwise, find and
+     * return the server from the database.
+     *
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param bool                           $refresh
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getPrimaryAllocation($server, bool $refresh = false): Server
+    {
+        $instance = $server;
+        if (! $instance instanceof Server) {
+            Assert::integerish($server, 'First argument passed to getPrimaryAllocation must be instance of \Pterodactyl\Models\Server or integer, received %s.');
+            $instance = $this->getBuilder()->find($server, $this->getColumns());
+        }
+
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        if (! $instance->relationLoaded('allocation') || $refresh) {
+            $instance->load('allocation');
         }
 
         return $instance;
@@ -107,16 +137,21 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Return enough data to be used for the creation of a server via the daemon.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
      */
-    public function getDataForCreation($id)
+    public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg'])->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        foreach (['allocation', 'allocations', 'pack', 'egg'] as $relation) {
+            if (! $server->relationLoaded($relation) || $refresh) {
+                $server->load($relation);
+            }
         }
 
-        return $instance;
+        return $server;
     }
 
     /**

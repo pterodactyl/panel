@@ -11,6 +11,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Javascript;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
@@ -22,12 +23,13 @@ use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
@@ -67,9 +69,14 @@ class ServersController extends Controller
     protected $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseManagementService
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     protected $databaseManagementService;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
+     */
+    protected $databasePasswordService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
@@ -135,7 +142,8 @@ class ServersController extends Controller
      * @param \Illuminate\Contracts\Config\Repository                         $config
      * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
      * @param \Pterodactyl\Services\Servers\ServerCreationService             $service
-     * @param \Pterodactyl\Services\Database\DatabaseManagementService        $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService       $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabasePasswordService         $databasePasswordService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
      * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
      * @param \Pterodactyl\Services\Servers\ServerDeletionService             $deletionService
@@ -156,6 +164,7 @@ class ServersController extends Controller
         ContainerRebuildService $containerRebuildService,
         ServerCreationService $service,
         DatabaseManagementService $databaseManagementService,
+        DatabasePasswordService $databasePasswordService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
         ServerDeletionService $deletionService,
@@ -173,9 +182,10 @@ class ServersController extends Controller
         $this->buildModificationService = $buildModificationService;
         $this->config = $config;
         $this->containerRebuildService = $containerRebuildService;
-        $this->databaseManagementService = $databaseManagementService;
-        $this->databaseRepository = $databaseRepository;
         $this->databaseHostRepository = $databaseHostRepository;
+        $this->databaseManagementService = $databaseManagementService;
+        $this->databasePasswordService = $databasePasswordService;
+        $this->databaseRepository = $databaseRepository;
         $this->detailsModificationService = $detailsModificationService;
         $this->deletionService = $deletionService;
         $this->locationRepository = $locationRepository;
@@ -561,10 +571,8 @@ class ServersController extends Controller
      */
     public function saveStartup(Request $request, Server $server)
     {
-        $this->startupModificationService->isAdmin()->handle(
-            $server,
-            $request->except('_token')
-        );
+        $this->startupModificationService->setUserLevel(User::USER_LEVEL_ADMIN);
+        $this->startupModificationService->handle($server, $request->except('_token'));
         $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
         return redirect()->route('admin.servers.view.startup', $server->id);
@@ -609,7 +617,7 @@ class ServersController extends Controller
             ['id', '=', $request->input('database')],
         ]);
 
-        $this->databaseManagementService->changePassword($database->id, str_random(20));
+        $this->databasePasswordService->handle($database, str_random(20));
 
         return response('', 204);
     }

@@ -9,6 +9,9 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
+use Pterodactyl\Traits\Services\HasUserLevels;
 use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
@@ -17,20 +20,7 @@ use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorService
 {
-    /**
-     * @var bool
-     */
-    protected $isAdmin = false;
-
-    /**
-     * @var array
-     */
-    protected $fields = [];
-
-    /**
-     * @var array
-     */
-    protected $results = [];
+    use HasUserLevels;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
@@ -73,55 +63,25 @@ class VariableValidatorService
     }
 
     /**
-     * Set the fields with populated data to validate.
-     *
-     * @param array $fields
-     * @return $this
-     */
-    public function setFields(array $fields)
-    {
-        $this->fields = $fields;
-
-        return $this;
-    }
-
-    /**
-     * Set this function to be running at the administrative level.
-     *
-     * @param bool $bool
-     * @return $this
-     */
-    public function isAdmin($bool = true)
-    {
-        $this->isAdmin = $bool;
-
-        return $this;
-    }
-
-    /**
      * Validate all of the passed data aganist the given service option variables.
      *
-     * @param int $option
-     * @return $this
+     * @param int   $egg
+     * @param array $fields
+     * @return \Illuminate\Support\Collection
      */
-    public function validate($option)
+    public function handle(int $egg, array $fields = []): Collection
     {
-        $variables = $this->optionVariableRepository->findWhere([['egg_id', '=', $option]]);
-        if (count($variables) === 0) {
-            $this->results = [];
+        $variables = $this->optionVariableRepository->findWhere([['egg_id', '=', $egg]]);
 
-            return $this;
-        }
-
-        $variables->each(function ($item) {
-            // Skip doing anything if user is not an admin and variable is not user viewable
-            // or editable.
-            if (! $this->isAdmin && (! $item->user_editable || ! $item->user_viewable)) {
-                return;
+        return $variables->map(function ($item) use ($fields) {
+            // Skip doing anything if user is not an admin and
+            // variable is not user viewable or editable.
+            if (! $this->isUserLevel(User::USER_LEVEL_ADMIN) && (! $item->user_editable || ! $item->user_viewable)) {
+                return false;
             }
 
             $validator = $this->validator->make([
-                'variable_value' => array_key_exists($item->env_variable, $this->fields) ? $this->fields[$item->env_variable] : null,
+                'variable_value' => array_get($fields, $item->env_variable),
             ], [
                 'variable_value' => $item->rules,
             ]);
@@ -136,23 +96,13 @@ class VariableValidatorService
                 ));
             }
 
-            $this->results[] = [
+            return (object) [
                 'id' => $item->id,
                 'key' => $item->env_variable,
-                'value' => $this->fields[$item->env_variable],
+                'value' => array_get($fields, $item->env_variable),
             ];
+        })->filter(function ($item) {
+            return is_object($item);
         });
-
-        return $this;
-    }
-
-    /**
-     * Return the final results after everything has been validated.
-     *
-     * @return array
-     */
-    public function getResults()
-    {
-        return $this->results;
     }
 }

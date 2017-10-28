@@ -32,6 +32,9 @@ class User extends Model implements
 {
     use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
 
+    const USER_LEVEL_USER = 0;
+    const USER_LEVEL_ADMIN = 1;
+
     /**
      * Level of servers to display when using access() on a user.
      *

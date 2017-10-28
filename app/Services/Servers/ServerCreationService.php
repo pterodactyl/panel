@@ -1,18 +1,12 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -26,52 +20,47 @@ class ServerCreationService
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
-    protected $allocationRepository;
+    private $allocationRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
      */
-    protected $configurationStructureService;
+    private $configurationStructureService;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
-    protected $daemonServerRepository;
+    private $daemonServerRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
-    protected $nodeRepository;
+    private $nodeRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
      */
-    protected $serverVariableRepository;
+    private $serverVariableRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
-    protected $userRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\UsernameGenerationService
-     */
-    protected $usernameService;
+    private $userRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
-    protected $validatorService;
+    private $validatorService;
 
     /**
      * CreationService constructor.
@@ -84,7 +73,6 @@ class ServerCreationService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
-     * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
      */
     public function __construct(
@@ -96,7 +84,6 @@ class ServerCreationService
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         UserRepositoryInterface $userRepository,
-        UsernameGenerationService $usernameService,
         VariableValidatorService $validatorService
     ) {
         $this->allocationRepository = $allocationRepository;
@@ -107,7 +94,6 @@ class ServerCreationService
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->userRepository = $userRepository;
-        $this->usernameService = $usernameService;
         $this->validatorService = $validatorService;
     }
 
@@ -124,35 +110,30 @@ class ServerCreationService
     public function create(array $data)
     {
         // @todo auto-deployment
-        $validator = $this->validatorService->isAdmin()->setFields($data['environment'])->validate($data['egg_id']);
-        $uniqueShort = str_random(8);
 
         $this->connection->beginTransaction();
-
         $server = $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
-            'uuidShort' => $uniqueShort,
-            'node_id' => $data['node_id'],
-            'name' => $data['name'],
-            'description' => $data['description'],
+            'uuidShort' => str_random(8),
+            'node_id' => array_get($data, 'node_id'),
+            'name' => array_get($data, 'name'),
+            'description' => array_get($data, 'description'),
             'skip_scripts' => isset($data['skip_scripts']),
             'suspended' => false,
-            'owner_id' => $data['owner_id'],
-            'memory' => $data['memory'],
-            'swap' => $data['swap'],
-            'disk' => $data['disk'],
-            'io' => $data['io'],
-            'cpu' => $data['cpu'],
+            'owner_id' => array_get($data, 'owner_id'),
+            'memory' => array_get($data, 'memory'),
+            'swap' => array_get($data, 'swap'),
+            'disk' => array_get($data, 'disk'),
+            'io' => array_get($data, 'io'),
+            'cpu' => array_get($data, 'cpu'),
             'oom_disabled' => isset($data['oom_disabled']),
-            'allocation_id' => $data['allocation_id'],
-            'nest_id' => $data['nest_id'],
-            'egg_id' => $data['egg_id'],
+            'allocation_id' => array_get($data, 'allocation_id'),
+            'nest_id' => array_get($data, 'nest_id'),
+            'egg_id' => array_get($data, 'egg_id'),
             'pack_id' => (! isset($data['pack_id']) || $data['pack_id'] == 0) ? null : $data['pack_id'],
-            'startup' => $data['startup'],
-            'daemonSecret' => str_random(NodeCreationService::DAEMON_SECRET_LENGTH),
-            'image' => $data['docker_image'],
-            'username' => $this->usernameService->generate($data['name'], $uniqueShort),
-            'sftp_password' => null,
+            'startup' => array_get($data, 'startup'),
+            'daemonSecret' => str_random(Node::DAEMON_SECRET_LENGTH),
+            'image' => array_get($data, 'docker_image'),
         ]);
 
         // Process allocations and assign them to the server in the database.
@@ -164,17 +145,21 @@ class ServerCreationService
         $this->allocationRepository->assignAllocationsToServer($server->id, $records);
 
         // Process the passed variables and store them in the database.
-        $records = [];
-        foreach ($validator->getResults() as $result) {
-            $records[] = [
-                'server_id' => $server->id,
-                'variable_id' => $result['id'],
-                'variable_value' => $result['value'],
-            ];
-        }
+        $this->validatorService->setUserLevel(User::USER_LEVEL_ADMIN);
+        $results = $this->validatorService->handle(array_get($data, 'egg_id'), array_get($data, 'environment', []));
 
-        $this->serverVariableRepository->insert($records);
-        $structure = $this->configurationStructureService->handle($server->id);
+        $records = $results->map(function ($result) use ($server) {
+            return [
+                'server_id' => $server->id,
+                'variable_id' => $result->id,
+                'variable_value' => $result->value,
+            ];
+        })->toArray();
+
+        if (! empty($records)) {
+            $this->serverVariableRepository->insert($records);
+        }
+        $structure = $this->configurationStructureService->handle($server);
 
         // Create the server on the daemon & commit it to the database.
         try {

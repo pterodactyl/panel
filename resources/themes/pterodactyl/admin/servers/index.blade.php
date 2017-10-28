@@ -42,7 +42,6 @@
                             <th>ID</th>
                             <th>Server Name</th>
                             <th>Owner</th>
-                            <th>Username</th>
                             <th>Node</th>
                             <th>Connection</th>
                             <th></th>
@@ -52,7 +51,6 @@
                                 <td><code>{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                                 <td><a href="{{ route('admin.users.view', $server->user->id) }}">{{ $server->user->username }}</a></td>
-                                <td>{{ $server->username }}</td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
                                 <td>
                                     <code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code>

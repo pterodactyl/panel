@@ -18,7 +18,7 @@ use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
@@ -36,7 +36,7 @@ class ServerDeletionServiceTest extends TestCase
     protected $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseManagementService
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     protected $databaseManagementService;
 

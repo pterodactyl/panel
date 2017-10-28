@@ -96,7 +96,7 @@ class DatabaseRepositoryTest extends TestCase
     public function testCreateDatabaseStatement()
     {
         $query = sprintf('CREATE DATABASE IF NOT EXISTS `%s`', 'test_database');
-        $this->repository->shouldReceive('runStatement')->with($query, 'test')->once()->andReturn(true);
+        $this->repository->shouldReceive('runStatement')->with($query)->once()->andReturn(true);
 
         $this->assertTrue($this->repository->createDatabase('test_database', 'test'));
     }
@@ -107,7 +107,7 @@ class DatabaseRepositoryTest extends TestCase
     public function testCreateUserStatement()
     {
         $query = sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', 'test', '%', 'password');
-        $this->repository->shouldReceive('runStatement')->with($query, 'test')->once()->andReturn(true);
+        $this->repository->shouldReceive('runStatement')->with($query)->once()->andReturn(true);
 
         $this->assertTrue($this->repository->createUser('test', '%', 'password', 'test'));
     }
@@ -118,7 +118,7 @@ class DatabaseRepositoryTest extends TestCase
     public function testUserAssignmentToDatabaseStatement()
     {
         $query = sprintf('GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, EXECUTE ON `%s`.* TO `%s`@`%s`', 'test_database', 'test', '%');
-        $this->repository->shouldReceive('runStatement')->with($query, 'test')->once()->andReturn(true);
+        $this->repository->shouldReceive('runStatement')->with($query)->once()->andReturn(true);
 
         $this->assertTrue($this->repository->assignUserToDatabase('test_database', 'test', '%', 'test'));
     }
@@ -128,7 +128,7 @@ class DatabaseRepositoryTest extends TestCase
      */
     public function testFlushStatement()
     {
-        $this->repository->shouldReceive('runStatement')->with('FLUSH PRIVILEGES', 'test')->once()->andReturn(true);
+        $this->repository->shouldReceive('runStatement')->with('FLUSH PRIVILEGES')->once()->andReturn(true);
 
         $this->assertTrue($this->repository->flush('test'));
     }
@@ -139,7 +139,7 @@ class DatabaseRepositoryTest extends TestCase
     public function testDropDatabaseStatement()
     {
         $query = sprintf('DROP DATABASE IF EXISTS `%s`', 'test_database');
-        $this->repository->shouldReceive('runStatement')->with($query, 'test')->once()->andReturn(true);
+        $this->repository->shouldReceive('runStatement')->with($query)->once()->andReturn(true);
 
         $this->assertTrue($this->repository->dropDatabase('test_database', 'test'));
     }
@@ -150,7 +150,7 @@ class DatabaseRepositoryTest extends TestCase
     public function testDropUserStatement()
     {
         $query = sprintf('DROP USER IF EXISTS `%s`@`%s`', 'test', '%');
-        $this->repository->shouldReceive('runStatement')->with($query, 'test')->once()->andReturn(true);
+        $this->repository->shouldReceive('runStatement')->with($query)->once()->andReturn(true);
 
         $this->assertTrue($this->repository->dropUser('test', '%', 'test'));
     }

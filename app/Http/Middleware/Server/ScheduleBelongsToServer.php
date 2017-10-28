@@ -14,7 +14,7 @@ use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
-class ScheduleAccess
+class ScheduleBelongsToServer
 {
     /**
      * @var \Pterodactyl\Contracts\Extensions\HashidsInterface

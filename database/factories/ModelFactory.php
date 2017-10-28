@@ -29,9 +29,10 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
         'io' => 500,
         'cpu' => 0,
         'oom_disabled' => 0,
+        'allocation_id' => $faker->randomNumber(),
+        'nest_id' => $faker->randomNumber(),
+        'egg_id' => $faker->randomNumber(),
         'pack_id' => null,
-        'username' => $faker->userName,
-        'sftp_password' => null,
         'installed' => 1,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
@@ -39,6 +40,8 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
 });
 
 $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $faker) {
+    static $password;
+
     return [
         'id' => $faker->unique()->randomNumber(),
         'external_id' => null,
@@ -47,7 +50,7 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $fake
         'email' => $faker->safeEmail,
         'name_first' => $faker->firstName,
         'name_last' => $faker->lastName,
-        'password' => bcrypt('password'),
+        'password' => $password ?: $password = bcrypt('password'),
         'language' => 'en',
         'root_admin' => false,
         'use_totp' => false,
@@ -170,6 +173,21 @@ $factory->define(Pterodactyl\Models\DatabaseHost::class, function (Faker\Generat
         'username' => $faker->colorName,
         'password' => Crypt::encrypt($faker->word),
         'node_id' => $faker->randomNumber(),
+    ];
+});
+
+$factory->define(Pterodactyl\Models\Database::class, function (Faker\Generator $faker) {
+    static $password;
+
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'server_id' => $faker->randomNumber(),
+        'database_host_id' => $faker->randomNumber(),
+        'database' => str_random(10),
+        'username' => str_random(10),
+        'password' => $password ?: bcrypt('test123'),
+        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
     ];
 });
 

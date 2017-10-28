@@ -65,6 +65,16 @@ class Allocation extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
+     * Return a hashid encoded string to represent the ID of the allocation.
+     *
+     * @return string
+     */
+    public function getHashidAttribute()
+    {
+        return app()->make('hashids')->encode($this->id);
+    }
+
+    /**
      * Accessor to automatically provide the IP alias if defined.
      *
      * @param null|string $value

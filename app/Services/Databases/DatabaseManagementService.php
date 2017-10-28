@@ -7,8 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Database;
+namespace Pterodactyl\Services\Databases;
 
+use Pterodactyl\Models\Database;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
@@ -79,28 +80,26 @@ class DatabaseManagementService
             $database = $this->repository->createIfNotExists($data);
             $this->dynamic->set('dynamic', $data['database_host_id']);
 
-            $this->repository->createDatabase($database->database, 'dynamic');
+            $this->repository->createDatabase($database->database);
             $this->repository->createUser(
                 $database->username,
                 $database->remote,
-                $this->encrypter->decrypt($database->password),
-                'dynamic'
+                $this->encrypter->decrypt($database->password)
             );
             $this->repository->assignUserToDatabase(
                 $database->database,
                 $database->username,
-                $database->remote,
-                'dynamic'
+                $database->remote
             );
-            $this->repository->flush('dynamic');
+            $this->repository->flush();
 
             $this->database->commit();
         } catch (\Exception $ex) {
             try {
-                if (isset($database)) {
-                    $this->repository->dropDatabase($database->database, 'dynamic');
-                    $this->repository->dropUser($database->username, $database->remote, 'dynamic');
-                    $this->repository->flush('dynamic');
+                if (isset($database) && $database instanceof Database) {
+                    $this->repository->dropDatabase($database->database);
+                    $this->repository->dropUser($database->username, $database->remote);
+                    $this->repository->flush();
                 }
             } catch (\Exception $exTwo) {
                 // ignore an exception
@@ -114,61 +113,21 @@ class DatabaseManagementService
     }
 
     /**
-     * Change the password for a specific user and database combination.
-     *
-     * @param int    $id
-     * @param string $password
-     * @return bool
-     *
-     * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function changePassword($id, $password)
-    {
-        $database = $this->repository->find($id);
-        $this->dynamic->set('dynamic', $database->database_host_id);
-
-        $this->database->beginTransaction();
-
-        try {
-            $updated = $this->repository->withoutFresh()->update($id, [
-                'password' => $this->encrypter->encrypt($password),
-            ]);
-
-            $this->repository->dropUser($database->username, $database->remote, 'dynamic');
-            $this->repository->createUser($database->username, $database->remote, $password, 'dynamic');
-            $this->repository->assignUserToDatabase(
-                $database->database,
-                $database->username,
-                $database->remote,
-                'dynamic'
-            );
-            $this->repository->flush('dynamic');
-
-            $this->database->commit();
-        } catch (\Exception $ex) {
-            $this->database->rollBack();
-            throw $ex;
-        }
-
-        return $updated;
-    }
-
-    /**
      * Delete a database from the given host server.
      *
      * @param int $id
      * @return bool|null
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function delete($id)
     {
         $database = $this->repository->find($id);
         $this->dynamic->set('dynamic', $database->database_host_id);
 
-        $this->repository->dropDatabase($database->database, 'dynamic');
-        $this->repository->dropUser($database->username, $database->remote, 'dynamic');
-        $this->repository->flush('dynamic');
+        $this->repository->dropDatabase($database->database);
+        $this->repository->dropUser($database->username, $database->remote);
+        $this->repository->flush();
 
         return $this->repository->delete($id);
     }

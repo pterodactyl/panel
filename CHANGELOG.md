@@ -12,15 +12,22 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * New CLI command to disabled 2-Factor Authentication on an account if necessary.
 * Ability to delete users and locations via the CLI.
 * You can now require 2FA for all users, admins only, or at will using a simple configuration in the Admin CP.
-* Added ability to export and import service options and their associated settings and environment variables via the Admin CP.
+* **Added ability to export and import service options and their associated settings and environment variables via the Admin CP.**
+* Default allocation for a server can be changed on the front-end by users. This includes two new subuser permissions as well.
+* Significant improvements to environment variable control for servers. Now ships with built-in abilities to define extra variables in the Panel's configuration file, or in-code for those heavily modifying the Panel.
+* Quick link to server edit view in ACP on frontend when viewing servers.
+* Databases created in the Panel now include `EXECUTE` privilege.
 
 ### Changed
+* **Services renamed to Nests. Service Options renamed to Eggs.** 🥚
 * Theme colors and login pages updated to give a more unique feel to the project.
 * Massive overhaul to the backend code that allows for much easier updating of core functionality as well as support for better testing. This overhaul also reduces complex code logic, and allows for faster response times in the application.
 * CLI commands updated to be easier to type, now stored in the `p:` namespace.
 * Logout icon is now more universal and not just a power icon.
 * Administrative logout notice now uses SWAL rather than a generic javascript popup.
 * Server creation page now only asks for a node to deploy to, rather than requiring a location and then a node.
+* Database passwords are now hidden by default and will only show if clicked on. In addition, database view in ACP now indicates that passwords must be viewed on the front-end.
+* Localhost cannot be used as a connection address in the environment configuration script. `127.0.0.1` is allowed.
 
 ### Fixed
 * Unable to change the daemon secret for a server via the Admin CP.
@@ -28,6 +35,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a design-flaw in the allocation management part of nodes that would run a MySQL query for each port being allocated. This behavior is now changed to only execute one query to add multiple ports at once.
 * Attempting to create a server when no nodes are configured now redirects to the node creation page.
 * Fixes missing library issue for teamspeak when used with mariadb.
+* Fixes inability to change the default port on front-end when viewing a server.
+* Fixes bug preventing deletion of nests that have other nests referencing them as children. 
+
+### Removed
+* SFTP settings page now only displays connection address and username. Password setting was removed as it is no longer necessary with Daemon changes.
 
 ## v0.6.4 (Courageous Carniadactylus)
 ### Fixed

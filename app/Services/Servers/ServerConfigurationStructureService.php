@@ -19,12 +19,12 @@ class ServerConfigurationStructureService
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
      */
-    protected $environment;
+    private $environment;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * ServerConfigurationStructureService constructor.
@@ -41,19 +41,21 @@ class ServerConfigurationStructureService
     }
 
     /**
-     * @param int|\Pterodactyl\Models\Server $server
+     * Return a configuration array for a specific server when passed a server model.
+     *
+     * @param \Pterodactyl\Models\Server $server
      * @return array
+     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($server): array
+    public function handle(Server $server): array
     {
-        if (! $server instanceof Server || array_diff(self::REQUIRED_RELATIONS, $server->getRelations())) {
-            $server = $this->repository->getDataForCreation(is_digit($server) ? $server : $server->id);
+        if (array_diff(self::REQUIRED_RELATIONS, $server->getRelations())) {
+            $server = $this->repository->getDataForCreation($server);
         }
 
         return [
             'uuid' => $server->uuid,
-            'user' => $server->username,
             'build' => [
                 'default' => [
                     'ip' => $server->allocation->ip,
@@ -62,7 +64,7 @@ class ServerConfigurationStructureService
                 'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
                     return $item->pluck('port');
                 })->toArray(),
-                'env' => $this->environment->process($server),
+                'env' => $this->environment->handle($server),
                 'memory' => (int) $server->memory,
                 'swap' => (int) $server->swap,
                 'io' => (int) $server->io,
@@ -70,7 +72,6 @@ class ServerConfigurationStructureService
                 'disk' => (int) $server->disk,
                 'image' => $server->image,
             ],
-            'keys' => [],
             'service' => [
                 'egg' => $server->egg->uuid,
                 'pack' => object_get($server, 'pack.uuid'),

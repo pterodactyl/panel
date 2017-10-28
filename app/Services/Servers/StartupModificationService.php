@@ -1,58 +1,50 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Traits\Services\HasUserLevels;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class StartupModificationService
 {
-    /**
-     * @var bool
-     */
-    protected $admin = false;
+    use HasUserLevels;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
-    protected $daemonServerRepository;
+    private $daemonServerRepository;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
      */
-    protected $environmentService;
+    private $environmentService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
      */
-    protected $serverVariableRepository;
+    private $serverVariableRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
-    protected $validatorService;
+    private $validatorService;
 
     /**
      * StartupModificationService constructor.
@@ -81,90 +73,80 @@ class StartupModificationService
     }
 
     /**
-     * Determine if this function should run at an administrative level.
-     *
-     * @param bool $bool
-     * @return $this
-     */
-    public function isAdmin($bool = true)
-    {
-        $this->admin = $bool;
-
-        return $this;
-    }
-
-    /**
      * Process startup modification for a server.
      *
-     * @param int|\Pterodactyl\Models\Server $server
-     * @param array                          $data
+     * @param \Pterodactyl\Models\Server $server
+     * @param array                      $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($server, array $data)
+    public function handle(Server $server, array $data)
     {
-        if (! $server instanceof Server) {
-            $server = $this->repository->find($server);
+        $this->connection->beginTransaction();
+        if (! is_null(array_get($data, 'environment'))) {
+            $this->validatorService->setUserLevel($this->getUserLevel());
+            $results = $this->validatorService->handle(array_get($data, 'egg_id', $server->egg_id), array_get($data, 'environment', []));
+
+            $results->each(function ($result) use ($server) {
+                $this->serverVariableRepository->withoutFresh()->updateOrCreate([
+                    'server_id' => $server->id,
+                    'variable_id' => $result->id,
+                ], [
+                    'variable_value' => $result->value,
+                ]);
+            });
         }
+
+        $daemonData = ['build' => [
+            'env|overwrite' => $this->environmentService->handle($server),
+        ]];
+
+        if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
+            $this->updateAdministrativeSettings($data, $server, $daemonData);
+        }
+
+        try {
+            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
+        } catch (RequestException $exception) {
+            $this->connection->rollBack();
+            throw new DaemonConnectionException($exception);
+        }
+
+        $this->connection->commit();
+    }
+
+    /**
+     * Update certain administrative settings for a server in the DB.
+     *
+     * @param array                      $data
+     * @param \Pterodactyl\Models\Server $server
+     * @param array                      $daemonData
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    private function updateAdministrativeSettings(array $data, Server &$server, array &$daemonData)
+    {
+        $server = $this->repository->update($server->id, [
+            'installed' => 0,
+            'startup' => array_get($data, 'startup', $server->startup),
+            'nest_id' => array_get($data, 'nest_id', $server->nest_id),
+            'egg_id' => array_get($data, 'egg_id', $server->egg_id),
+            'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
+            'skip_scripts' => isset($data['skip_scripts']),
+        ]);
 
         if (
             $server->nest_id != array_get($data, 'nest_id', $server->nest_id) ||
             $server->egg_id != array_get($data, 'egg_id', $server->egg_id) ||
             $server->pack_id != array_get($data, 'pack_id', $server->pack_id)
         ) {
-            $hasServiceChanges = true;
-        }
-
-        $this->connection->beginTransaction();
-        if (isset($data['environment'])) {
-            $validator = $this->validatorService->isAdmin($this->admin)
-                ->setFields($data['environment'])
-                ->validate(array_get($data, 'egg_id', $server->egg_id));
-
-            foreach ($validator->getResults() as $result) {
-                $this->serverVariableRepository->withoutFresh()->updateOrCreate([
-                    'server_id' => $server->id,
-                    'variable_id' => $result['id'],
-                ], [
-                    'variable_value' => $result['value'],
-                ]);
-            }
-        }
-
-        $daemonData = [
-            'build' => [
-                'env|overwrite' => $this->environmentService->process($server),
-            ],
-        ];
-
-        if ($this->admin) {
-            $server = $this->repository->update($server->id, [
-                'installed' => 0,
-                'startup' => array_get($data, 'startup', $server->startup),
-                'nest_id' => array_get($data, 'nest_id', $server->nest_id),
-                'egg_id' => array_get($data, 'egg_id', $server->egg_id),
-                'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
-                'skip_scripts' => isset($data['skip_scripts']),
-            ]);
-
-            if (isset($hasServiceChanges)) {
-                $daemonData['service'] = array_merge(
-                    $this->repository->withColumns(['id', 'egg_id', 'pack_id'])->getDaemonServiceData($server->id),
-                    ['skip_scripts' => isset($data['skip_scripts'])]
-                );
-            }
-        }
-
-        try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
-            $this->connection->commit();
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]), $exception, 'warning');
+            $daemonData['service'] = array_merge(
+                $this->repository->withColumns(['id', 'egg_id', 'pack_id'])->getDaemonServiceData($server->id),
+                ['skip_scripts' => isset($data['skip_scripts'])]
+            );
         }
     }
 }

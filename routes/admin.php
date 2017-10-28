@@ -38,6 +38,7 @@ Route::group(['prefix' => 'databases'], function () {
 
     Route::post('/', 'DatabaseController@create');
     Route::patch('/view/{host}', 'DatabaseController@update');
+    Route::delete('/view/{host}', 'DatabaseController@delete');
 });
 
 /*

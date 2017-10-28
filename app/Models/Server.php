@@ -30,18 +30,11 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $table = 'servers';
 
     /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['sftp_password'];
-
-    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
      * Always eager load these relationships on the model.
@@ -55,7 +48,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      *
      * @var array
      */
-    protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
+    protected $guarded = ['id', 'installed', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
      * @var array
@@ -73,8 +66,6 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'node_id' => 'required',
         'allocation_id' => 'required',
         'pack_id' => 'sometimes',
-        'auto_deploy' => 'sometimes',
-        'custom_id' => 'sometimes',
         'skip_scripts' => 'sometimes',
     ];
 
@@ -95,10 +86,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'nest_id' => 'exists:nests,id',
         'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',
-        'custom_container' => 'nullable|string',
         'startup' => 'nullable|string',
-        'auto_deploy' => 'accepted',
-        'custom_id' => 'numeric|unique:servers,id',
         'skip_scripts' => 'boolean',
     ];
 
@@ -132,7 +120,6 @@ class Server extends Model implements CleansAttributes, ValidableContract
      */
     protected $searchableColumns = [
         'name' => 10,
-        'username' => 10,
         'uuidShort' => 9,
         'uuid' => 8,
         'pack.name' => 7,

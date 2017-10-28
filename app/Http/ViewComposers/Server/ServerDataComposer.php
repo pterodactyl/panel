@@ -1,32 +1,25 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\ViewComposers\Server;
 
 use Illuminate\View\View;
-use Illuminate\Contracts\Session\Session;
+use Illuminate\Http\Request;
 
 class ServerDataComposer
 {
     /**
-     * @var \Illuminate\Contracts\Session\Session
+     * @var \Illuminate\Http\Request
      */
-    protected $session;
+    protected $request;
 
     /**
      * ServerDataComposer constructor.
      *
-     * @param \Illuminate\Contracts\Session\Session $session
+     * @param \Illuminate\Http\Request $request
      */
-    public function __construct(Session $session)
+    public function __construct(Request $request)
     {
-        $this->session = $session;
+        $this->request = $request;
     }
 
     /**
@@ -36,10 +29,10 @@ class ServerDataComposer
      */
     public function compose(View $view)
     {
-        $data = $this->session->get('server_data');
+        $server = $this->request->get('server');
 
-        $view->with('server', array_get($data, 'model'));
-        $view->with('node', object_get($data['model'], 'node'));
-        $view->with('daemon_token', array_get($data, 'token'));
+        $view->with('server', $server);
+        $view->with('node', object_get($server, 'node'));
+        $view->with('daemon_token', $this->request->get('server_token'));
     }
 }
