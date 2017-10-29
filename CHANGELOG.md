@@ -28,6 +28,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Server creation page now only asks for a node to deploy to, rather than requiring a location and then a node.
 * Database passwords are now hidden by default and will only show if clicked on. In addition, database view in ACP now indicates that passwords must be viewed on the front-end.
 * Localhost cannot be used as a connection address in the environment configuration script. `127.0.0.1` is allowed.
+* Application locale can now be quickly set using an environment variable `APP_LOCALE` rather than having to edit core files.
 
 ### Fixed
 * Unable to change the daemon secret for a server via the Admin CP.

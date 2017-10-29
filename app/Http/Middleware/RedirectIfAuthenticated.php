@@ -3,10 +3,26 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Auth\AuthManager;
 
 class RedirectIfAuthenticated
 {
+    /**
+     * @var \Illuminate\Contracts\Auth\Guard
+     */
+    private $authManager;
+
+    /**
+     * RedirectIfAuthenticated constructor.
+     *
+     * @param \Illuminate\Auth\AuthManager $authManager
+     */
+    public function __construct(AuthManager $authManager)
+    {
+        $this->authManager = $authManager;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -15,9 +31,9 @@ class RedirectIfAuthenticated
      * @param string|null              $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, string $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
+        if ($this->authManager->guard($guard)->check()) {
             return redirect(route('index'));
         }
 

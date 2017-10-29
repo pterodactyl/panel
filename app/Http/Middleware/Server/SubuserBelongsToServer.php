@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Middleware\Server;
 
 use Closure;
+use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
@@ -43,7 +44,7 @@ class SubuserBelongsToServer
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $server = $request->attributes->get('server');
 

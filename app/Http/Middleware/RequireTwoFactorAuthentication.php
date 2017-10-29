@@ -10,6 +10,7 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Krucas\Settings\Settings;
 use Prologue\Alerts\AlertsMessageBag;
 
@@ -22,27 +23,34 @@ class RequireTwoFactorAuthentication
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
-    protected $alert;
+    private $alert;
 
     /**
      * @var \Krucas\Settings\Settings
      */
-    protected $settings;
+    private $settings;
 
     /**
-     * All TOTP related routes.
+     * The names of routes that should be accessable without 2FA enabled.
      *
      * @var array
      */
-    protected $ignoreRoutes = [
-            'account.security',
-            'account.security.revoke',
-            'account.security.totp',
-            'account.security.totp.set',
-            'account.security.totp.disable',
-            'auth.totp',
-            'auth.logout',
+    protected $except = [
+        'account.security',
+        'account.security.revoke',
+        'account.security.totp',
+        'account.security.totp.set',
+        'account.security.totp.disable',
+        'auth.totp',
+        'auth.logout',
     ];
+
+    /**
+     * The route to redirect a user to to enable 2FA.
+     *
+     * @var string
+     */
+    protected $redirectRoute = 'account.security';
 
     /**
      * RequireTwoFactorAuthentication constructor.
@@ -63,7 +71,7 @@ class RequireTwoFactorAuthentication
      * @param \Closure                 $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         // Ignore non-users
         if (! $request->user()) {
@@ -71,7 +79,7 @@ class RequireTwoFactorAuthentication
         }
 
         // Skip the 2FA pages
-        if (in_array($request->route()->getName(), $this->ignoreRoutes)) {
+        if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);
         }
 
@@ -93,8 +101,8 @@ class RequireTwoFactorAuthentication
                 break;
         }
 
-        $this->alert->danger('The administrator has required 2FA to be enabled. You must enable it before you can do any other action.')->flash();
+        $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();
 
-        return redirect()->route('account.security');
+        return redirect()->route($this->redirectRoute);
     }
 }

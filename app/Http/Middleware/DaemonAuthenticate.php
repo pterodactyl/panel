@@ -10,35 +10,36 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
-use Illuminate\Contracts\Auth\Guard;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class DaemonAuthenticate
 {
-    /**
-     * The Guard implementation.
-     *
-     * @var \Illuminate\Contracts\Auth\Guard
-     */
-    protected $auth;
-
     /**
      * An array of route names to not apply this middleware to.
      *
      * @var array
      */
-    protected $except = [
+    private $except = [
         'daemon.configuration',
     ];
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    private $repository;
+
+    /**
      * Create a new filter instance.
      *
-     * @param \Illuminate\Contracts\Auth\Guard $auth
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
-    public function __construct(Guard $auth)
+    public function __construct(NodeRepositoryInterface $repository)
     {
-        $this->auth = $auth;
+        $this->repository = $repository;
     }
 
     /**
@@ -48,20 +49,23 @@ class DaemonAuthenticate
      * @param \Closure                 $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);
         }
 
         if (! $request->header('X-Access-Node')) {
-            return abort(403);
+            throw new HttpException(403);
         }
 
-        $node = Node::where('daemonSecret', $request->header('X-Access-Node'))->first();
-        if (! $node) {
-            return abort(401);
+        try {
+            $node = $this->repository->findWhere(['daemonSecret' => $request->header('X-Access-Node')]);
+        } catch (RecordNotFoundException $exception) {
+            throw new HttpException(401);
         }
+
+        $request->attributes->set('node', $node);
 
         return $next($request);
     }
