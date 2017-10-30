@@ -24,24 +24,24 @@
 
 return [
     'notices' => [
-        'service_created' => 'A new service, :name, has been successfully created.',
-        'service_deleted' => 'Successfully deleted the requested service from the Panel.',
-        'service_updated' => 'Successfully updated the service configuration options.',
-        'functions_updated' => 'The service functions file has been updated. You will need to reboot your Nodes in order for these changes to be applied.',
+        'service_created' => 'Un nuevo servicio, a :name, ha sido creado con éxito.',
+        'service_deleted' => 'Se ha eliminado correctamente el servicio solicitado del panel.',
+        'service_updated' => 'Se actualizaron correctamente las opciones de configuración del servicio.',
+        'functions_updated' => 'Se ha actualizado el archivo de funciones de servicio. Tendrá que reiniciar los nodos para que estos cambios se apliquen.',
     ],
     'options' => [
         'notices' => [
-            'option_deleted' => 'Successfully deleted the requested service option from the Panel.',
-            'option_updated' => 'Service option configuration has been updated successfully.',
-            'script_updated' => 'Service option install script has been updated and will run whenever servers are installed.',
-            'option_created' => 'New service option was created successfully. You will need to restart any running daemons to apply this new service.',
+            'option_deleted' => 'Se ha eliminado correctamente la opción de servicio solicitada del Panel.',
+            'option_updated' => 'Opción de servicio se ha actualizado correctamente.',
+            'script_updated' => 'Opción de servicio de script de instalación se ha actualizado y se ejecutará cuando se instalan servidores.',
+            'option_created' => 'Nueva opción de servicio se ha creado correctamente. Es necesario reiniciar los demonios ejecutándose para aplicar este nuevo servicio.',
         ],
     ],
     'variables' => [
         'notices' => [
-            'variable_deleted' => 'The variable ":variable" has been deleted and will no longer be available to servers once rebuilt.',
-            'variable_updated' => 'The variable ":variable" has been updated. You will need to rebuild any servers using this variable in order to apply changes.',
-            'variable_created' => 'New variable has successfully been created and assigned to this service option.',
+            'variable_deleted' => 'La variable ":variable" se ha eliminado y ya no estará disponible para los servidores una vez reconstruida.',
+            'variable_updated' => 'Se ha actualizado la variable ":variable". Es necesario reconstruir los servidores que utilizan esta variable con el fin de aplicar los cambios.',
+            'variable_created' => 'Nueva variable de éxito ha sido creado y asignado a esta opción de servicio.',
         ],
     ],
 ];

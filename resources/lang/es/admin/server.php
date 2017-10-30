@@ -24,11 +24,11 @@
 
 return [
     'exceptions' => [
-        'no_new_default_allocation' => 'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.',
-        'marked_as_failed' => 'This server was marked as having failed a previous installation. Current status cannot be toggled in this state.',
-        'bad_variable' => 'There was a validation error with the :name variable.',
-        'daemon_exception' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
-        'default_allocation_not_found' => 'The requested default allocation was not found in this server\'s allocations.',
+        'no_new_default_allocation' => 'Está intentando eliminar la asignación predeterminada para este servidor, pero no hay una asignación alternativa para usar.',
+        'marked_as_failed' => 'Este servidor fue marcado como que falló una instalación previa. El estado actual no se puede cambiar en este estado.',
+        'bad_variable' => 'Hubo un error de validación con la variable: name.',
+        'daemon_exception' => 'Hubo una excepción al intentar comunicarse con el daemon que dio como resultado un código de respuesta HTTP /:code. Esta excepción ha sido registrada.',
+        'default_allocation_not_found' => 'La asignación predeterminada solicitada no se encontró en las asignaciones de este servidor.',
     ],
     'alerts' => [
         'startup_changed' => 'Se ha actualizado la configuración de inicio de este servidor. Si se ha cambiado el servicio o la opción de este servidor una reinstalación será ocurriendo ahora.',
