@@ -3,28 +3,12 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Models;
 
-use GuzzleHttp\Client;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +19,8 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Node extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Notifiable, Validable;
+
+    const DAEMON_SECRET_LENGTH = 36;
 
     /**
      * The table associated with the model.
@@ -142,22 +128,6 @@ class Node extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Return an instance of the Guzzle client for this specific node.
-     *
-     * @param array $headers
-     * @return \GuzzleHttp\Client
-     */
-    public function guzzleClient($headers = [])
-    {
-        return new Client([
-            'base_uri' => sprintf('%s://%s:%s/', $this->scheme, $this->fqdn, $this->daemonListen),
-            'timeout' => config('pterodactyl.guzzle.timeout'),
-            'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
-            'headers' => $headers,
-        ]);
-    }
-
-    /**
      * Returns the configuration in JSON format.
      *
      * @param bool $pretty
@@ -176,13 +146,23 @@ class Node extends Model implements CleansAttributes, ValidableContract
                 ],
             ],
             'docker' => [
+                'container' => [
+                    'user' => null,
+                ],
+                'network' => [
+                    'name' => 'pterodactyl_nw',
+                ],
                 'socket' => '/var/run/docker.sock',
                 'autoupdate_images' => true,
             ],
             'sftp' => [
                 'path' => $this->daemonBase,
+                'ip' => '0.0.0.0',
                 'port' => $this->daemonSFTP,
-                'container' => 'ptdl-sftp',
+                'keypair' => [
+                    'bits' => 2048,
+                    'e' => 65537,
+                ],
             ],
             'logger' => [
                 'path' => 'logs/',

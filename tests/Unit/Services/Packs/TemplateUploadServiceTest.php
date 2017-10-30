@@ -3,23 +3,8 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Tests\Unit\Services\Packs;
@@ -31,8 +16,8 @@ use Pterodactyl\Models\Pack;
 use Illuminate\Http\UploadedFile;
 use Pterodactyl\Services\Packs\PackCreationService;
 use Pterodactyl\Services\Packs\TemplateUploadService;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\ZipExtractionException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 use Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
@@ -42,17 +27,17 @@ class TemplateUploadServiceTest extends TestCase
     const JSON_FILE_CONTENTS = '{"test_content": "value"}';
 
     /**
-     * @var \ZipArchive
+     * @var \ZipArchive|\Mockery\Mock
      */
     protected $archive;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackCreationService
+     * @var \Pterodactyl\Services\Packs\PackCreationService|\Mockery\Mock
      */
     protected $creationService;
 
     /**
-     * @var \Illuminate\Http\UploadedFile
+     * @var \Illuminate\Http\UploadedFile|\Mockery\Mock
      */
     protected $file;
 
@@ -85,10 +70,9 @@ class TemplateUploadServiceTest extends TestCase
         $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getMimeType')->withNoArgs()->twice()->andReturn($mime);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(128);
-        $this->file->shouldReceive('openFile')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('fread')->with(128)->once()->andReturn(self::JSON_FILE_CONTENTS);
+        $this->file->shouldReceive('openFile->fread')->with(128)->once()->andReturn(self::JSON_FILE_CONTENTS);
 
-        $this->creationService->shouldReceive('handle')->with(['test_content' => 'value', 'option_id' => 1])
+        $this->creationService->shouldReceive('handle')->with(['test_content' => 'value', 'egg_id' => 1])
             ->once()->andReturn(factory(Pack::class)->make());
 
         $this->assertInstanceOf(Pack::class, $this->service->handle(1, $this->file));
@@ -109,7 +93,7 @@ class TemplateUploadServiceTest extends TestCase
         $this->archive->shouldReceive('locateName')->with('import.json')->once()->andReturn(true);
         $this->archive->shouldReceive('locateName')->with('archive.tar.gz')->once()->andReturn(true);
         $this->archive->shouldReceive('getFromName')->with('import.json')->once()->andReturn(self::JSON_FILE_CONTENTS);
-        $this->creationService->shouldReceive('handle')->with(['test_content' => 'value', 'option_id' => 1])
+        $this->creationService->shouldReceive('handle')->with(['test_content' => 'value', 'egg_id' => 1])
             ->once()->andReturn($model);
         $this->archive->shouldReceive('extractTo')->with(storage_path('app/packs/' . $model->uuid), 'archive.tar.gz')
             ->once()->andReturn(true);

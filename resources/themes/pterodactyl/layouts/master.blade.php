@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 <!DOCTYPE html>
 <html>
     <head>
@@ -99,7 +85,7 @@
                             </div>
                         </div>
                     @endif
-                    <ul class="sidebar-menu">
+                    <ul class="sidebar-menu tree" data-widget="tree">
                         <li class="header">@lang('navigation.account.header')</li>
                         <li class="{{ Route::currentRouteName() !== 'account' ?: 'active' }}">
                             <a href="{{ route('account') }}">
@@ -169,7 +155,18 @@
                                     </a>
                                 </li>
                             @endcan
-                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) || Gate::allows('view-databases', $server) || Gate::allows('view-allocation', $server))
+                            @can('view-databases', $server)
+                                <li
+                                    @if(starts_with(Route::currentRouteName(), 'server.databases'))
+                                    class="active"
+                                    @endif
+                                >
+                                    <a href="{{ route('server.databases.index', $server->uuidShort)}}">
+                                        <i class="fa fa-database"></i> <span>@lang('navigation.server.databases')</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) ||  Gate::allows('view-allocation', $server))
                                 <li class="treeview
                                     @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active
@@ -192,10 +189,15 @@
                                         @can('view-startup', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
                                         @endcan
-                                        @can('view-databases', $server)
-                                            <li class="{{ Route::currentRouteName() !== 'server.settings.databases' ?: 'active' }}"><a href="{{ route('server.settings.databases', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.databases')</a></li>
-                                        @endcan
                                     </ul>
+                                </li>
+                            @endif
+                            @if(Auth::user()->root_admin)
+                                <li class="header">@lang('navigation.server.admin_header')</li>
+                                <li>
+                                    <a href="{{ route('admin.servers.view', $server->id) }}" target="_blank">
+                                        <i class="fa fa-cog"></i> <span>@lang('navigation.server.admin')</span>
+                                    </a>
                                 </li>
                             @endif
                         @endif
@@ -285,7 +287,7 @@
                 {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
             @endif
 
-            @if(Auth::user()->isRootAdmin())
+            @if(Auth::user()->root_admin)
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();

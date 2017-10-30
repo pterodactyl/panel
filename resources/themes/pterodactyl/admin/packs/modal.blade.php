@@ -10,17 +10,17 @@
                     <div class="well" style="margin-bottom:0">
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="pOptionIdModal" class="form-label">Associated Service Option:</label>
-                                <select id="pOptionIdModal" name="option_id" class="form-control">
-                                    @foreach($services as $service)
-                                        <optgroup label="{{ $service->name }}">
-                                            @foreach($service->options as $option)
-                                                <option value="{{ $option->id }}">{{ $option->name }}</option>
+                                <label for="pEggIdModal" class="form-label">Associated Egg:</label>
+                                <select id="pEggIdModal" name="egg_id" class="form-control">
+                                    @foreach($nests as $nest)
+                                        <optgroup label="{{ $nest->name }}">
+                                            @foreach($nest->eggs as $egg)
+                                                <option value="{{ $egg->id }}">{{ $egg->name }}</option>
                                             @endforeach
                                         </optgroup>
                                     @endforeach
                                 </select>
-                                <p class="text-muted small">The option that this pack is assocaited with. Only servers that are assigned this option will be able to access this pack.</p>
+                                <p class="text-muted small">The Egg that this pack is assocaited with. Only servers that are assigned this Egg will be able to access this pack.</p>
                             </div>
                         </div>
                         <div class="row" style="margin-top:15px;">

@@ -3,23 +3,8 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Tests\Unit\Services\Packs;
@@ -28,28 +13,31 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Pack;
+use Tests\Traits\MocksUuids;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Packs\PackCreationService;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileUploadException;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 
 class PackCreationServiceTest extends TestCase
 {
+    use MocksUuids;
+
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     protected $connection;
 
     /**
-     * @var \Illuminate\Http\UploadedFile
+     * @var \Illuminate\Http\UploadedFile|\Mockery\Mock
      */
     protected $file;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -59,14 +47,9 @@ class PackCreationServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Illuminate\Contracts\Filesystem\Factory
+     * @var \Illuminate\Contracts\Filesystem\Factory|\Mockery\Mock
      */
     protected $storage;
-
-    /**
-     * @var \Ramsey\Uuid\Uuid
-     */
-    protected $uuid;
 
     /**
      * Setup tests.
@@ -79,7 +62,6 @@ class PackCreationServiceTest extends TestCase
         $this->file = m::mock(UploadedFile::class);
         $this->repository = m::mock(PackRepositoryInterface::class);
         $this->storage = m::mock(Factory::class);
-        $this->uuid = m::mock('overload:\Ramsey\Uuid\Uuid');
 
         $this->service = new PackCreationService($this->connection, $this->storage, $this->repository);
     }
@@ -92,17 +74,15 @@ class PackCreationServiceTest extends TestCase
         $model = factory(Pack::class)->make();
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->uuid->shouldReceive('uuid4')->withNoArgs()->once()->andReturn($model->uuid);
         $this->repository->shouldReceive('create')->with([
-            'uuid' => $model->uuid,
+            'uuid' => $this->getKnownUuid(),
             'selectable' => false,
             'visible' => false,
             'locked' => false,
             'test-data' => 'value',
         ])->once()->andReturn($model);
 
-        $this->storage->shouldReceive('disk')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('makeDirectory')->with('packs/' . $model->uuid)->once()->andReturnNull();
+        $this->storage->shouldReceive('disk->makeDirectory')->with('packs/' . $model->uuid)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->handle(['test-data' => 'value']);
@@ -122,17 +102,15 @@ class PackCreationServiceTest extends TestCase
         $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getMimeType')->withNoArgs()->once()->andReturn($mime);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->uuid->shouldReceive('uuid4')->withNoArgs()->once()->andReturn($model->uuid);
         $this->repository->shouldReceive('create')->with([
-            'uuid' => $model->uuid,
+            'uuid' => $this->getKnownUuid(),
             'selectable' => false,
             'visible' => false,
             'locked' => false,
             'test-data' => 'value',
         ])->once()->andReturn($model);
 
-        $this->storage->shouldReceive('disk')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('makeDirectory')->with('packs/' . $model->uuid)->once()->andReturnNull();
+        $this->storage->shouldReceive('disk->makeDirectory')->with('packs/' . $model->uuid)->once()->andReturnNull();
         $this->file->shouldReceive('storeAs')->with('packs/' . $model->uuid, 'archive.tar.gz')->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 

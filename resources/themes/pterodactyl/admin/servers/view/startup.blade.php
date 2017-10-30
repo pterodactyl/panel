@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -92,34 +78,34 @@
                         </p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pServiceId">Service</label>
-                        <select name="service_id" id="pServiceId" class="form-control">
-                            @foreach($services as $service)
-                                <option value="{{ $service->id }}"
-                                    @if($service->id === $server->service_id)
+                        <label for="pNestId">Nest</label>
+                        <select name="nest_id" id="pNestId" class="form-control">
+                            @foreach($nests as $nest)
+                                <option value="{{ $nest->id }}"
+                                    @if($nest->id === $server->nest_id)
                                         selected
                                     @endif
-                                >{{ $service->name }}</option>
+                                >{{ $nest->name }}</option>
                             @endforeach
                         </select>
-                        <p class="small text-muted no-margin">Select the type of service that this server will be running.</p>
+                        <p class="small text-muted no-margin">Select the Nest that this server will be grouped into.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pOptionId">Option</label>
-                        <select name="option_id" id="pOptionId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select the type of sub-service that this server will be running.</p>
+                        <label for="pEggId">Egg</label>
+                        <select name="egg_id" id="pEggId" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select the Egg that will provide processing data for this server.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pPackId">Service Pack</label>
+                        <label for="pPackId">Data Pack</label>
                         <select name="pack_id" id="pPackId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select a service pack to be automatically installed on this server when first created.</p>
+                        <p class="small text-muted no-margin">Select a data pack to be automatically installed on this server when first created.</p>
                     </div>
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
                             <input id="pSkipScripting" name="skip_scripting" type="checkbox" value="1" @if($server->skip_scripts) checked @endif />
-                            <label for="pSkipScripting" class="strong">Skip Service Option Install Script</label>
+                            <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
                         </div>
-                        <p class="small text-muted no-margin">If the selected <code>Option</code> has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
                     </div>
                 </div>
             </div>
@@ -136,11 +122,11 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function () {
-        $('#pServiceId').select2({
-            placeholder: 'Select a Service',
+        $('#pNestId').select2({
+            placeholder: 'Select a Nest',
         }).change();
-        $('#pOptionId').select2({
-            placeholder: 'Select a Service Option',
+        $('#pEggId').select2({
+            placeholder: 'Select a Nest Egg',
         });
         $('#pPackId').select2({
             placeholder: 'Select a Service Pack',
@@ -157,20 +143,20 @@
     });
     </script>
     <script>
-        $('#pServiceId').on('change', function (event) {
-            $('#pOptionId').html('').select2({
-                data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
+        $('#pNestId').on('change', function (event) {
+            $('#pEggId').html('').select2({
+                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
                     return {
                         id: item.id,
                         text: item.name,
                     };
                 }),
-            }).val('{{ $server->option_id }}').change();
+            }).change();
         });
 
-        $('#pOptionId').on('change', function (event) {
-            var parentChain = _.get(Pterodactyl.services, $('#pServiceId').val(), null);
-            var objectChain = _.get(parentChain, 'options.' + $(this).val(), null);
+        $('#pEggId').on('change', function (event) {
+            var parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
+            var objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
             $('#pDefaultContainer').val(_.get(objectChain, 'docker_image', 'not defined!'));
 
@@ -181,7 +167,7 @@
             }
 
             $('#pPackId').html('').select2({
-                data: [{ id: '', text: 'No Service Pack' }].concat(
+                data: [{ id: '0', text: 'No Service Pack' }].concat(
                     $.map(_.get(objectChain, 'packs', []), function (item, i) {
                         return {
                             id: item.id,

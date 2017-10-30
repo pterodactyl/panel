@@ -1,49 +1,28 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Contracts\Repository\Daemon;
+
+use Psr\Http\Message\ResponseInterface;
 
 interface ServerRepositoryInterface extends BaseRepositoryInterface
 {
     /**
      * Create a new server on the daemon for the panel.
      *
-     * @param int   $id
+     * @param array $structure
      * @param array $overrides
-     * @param bool  $start
      * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function create($id, array $overrides = [], $start = false);
-
-    /**
-     * Set an access token and associated permissions for a server.
      *
-     * @param string $key
-     * @param array  $permissions
-     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function setSubuserKey($key, array $permissions);
+    public function create(array $structure, array $overrides = []): ResponseInterface;
 
     /**
      * Update server details on the daemon.
@@ -95,4 +74,12 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function details();
+
+    /**
+     * Revoke an access key on the daemon before the time is expired.
+     *
+     * @param string $key
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function revokeAccessKey($key);
 }

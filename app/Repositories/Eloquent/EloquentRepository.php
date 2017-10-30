@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Repositories\Eloquent;
@@ -202,7 +187,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     public function all()
     {
         $instance = $this->getBuilder();
-        if (interface_exists(SearchableInterface::class)) {
+        if (is_subclass_of(get_called_class(), SearchableInterface::class)) {
             $instance = $instance->search($this->searchTerm);
         }
 
@@ -263,6 +248,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     {
         Assert::boolean($validate, 'Third argument passed to updateOrCreate must be boolean, received %s.');
         Assert::boolean($force, 'Fourth argument passed to updateOrCreate must be boolean, received %s.');
+
+        foreach ($where as $item) {
+            Assert::true(is_scalar($item) || is_null($item), 'First argument passed to updateOrCreate should be an array of scalar or null values, received an array value of %s.');
+        }
 
         $instance = $this->withColumns('id')->findWhere($where)->first();
 

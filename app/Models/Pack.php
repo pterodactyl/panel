@@ -3,23 +3,8 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Models;
@@ -49,7 +34,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $fillable = [
-        'option_id', 'uuid', 'name', 'version', 'description', 'selectable', 'visible', 'locked',
+        'egg_id', 'uuid', 'name', 'version', 'description', 'selectable', 'visible', 'locked',
     ];
 
     /**
@@ -62,7 +47,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
         'selectable' => 'sometimes|required',
         'visible' => 'sometimes|required',
         'locked' => 'sometimes|required',
-        'option_id' => 'required',
+        'egg_id' => 'required',
     ];
 
     /**
@@ -75,7 +60,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
         'selectable' => 'boolean',
         'visible' => 'boolean',
         'locked' => 'boolean',
-        'option_id' => 'exists:service_options,id',
+        'egg_id' => 'exists:eggs,id',
     ];
 
     /**
@@ -84,7 +69,7 @@ class Pack extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'option_id' => 'integer',
+        'egg_id' => 'integer',
         'selectable' => 'boolean',
         'visible' => 'boolean',
         'locked' => 'boolean',
@@ -98,9 +83,8 @@ class Pack extends Model implements CleansAttributes, ValidableContract
     protected $searchableColumns = [
         'name' => 10,
         'uuid' => 8,
-        'option.name' => 6,
-        'option.tag' => 5,
-        'option.docker_image' => 5,
+        'egg.name' => 6,
+        'egg.docker_image' => 5,
         'version' => 2,
     ];
 
@@ -129,13 +113,13 @@ class Pack extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets option associated with a service pack.
+     * Gets egg associated with a service pack.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function option()
+    public function egg()
     {
-        return $this->belongsTo(ServiceOption::class);
+        return $this->belongsTo(Egg::class);
     }
 
     /**

@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 return [
@@ -33,16 +18,22 @@ return [
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
     ],
-    'service' => [
-        'delete_has_servers' => 'A service with active servers attached to it cannot be deleted from the Panel.',
-        'options' => [
-            'delete_has_servers' => 'A service option with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The service option selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this option must be a child option for the selected service.',
+    'nest' => [
+        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'egg' => [
+            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
+            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
+            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
+            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this service option.',
+            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
+        ],
+        'importer' => [
+            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
+            'file_error' => 'The JSON file provided was not valid.',
+            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
         ],
     ],
     'packs' => [

@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -146,9 +132,7 @@
                     </div>
                 </div>
                 <div class="box-footer no-border no-pad-top no-pad-bottom">
-                    <div class="alert alert-info">
-                        <p class="small no-margin">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.<p>
-                    </div>
+                    <p class="text-muted small">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.<p>
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-sm-4">
@@ -174,9 +158,7 @@
                     </div>
                 </div>
                 <div class="box-footer no-border no-pad-top no-pad-bottom">
-                    <div class="alert alert-info">
-                        <p class="small no-margin">If you do not want to limit CPU usage set the value to <code>0</code>. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/engine/reference/run/#/block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.<p>
-                    </div>
+                    <p class="text-muted small">If you do not want to limit CPU usage set the value to <code>0</code>. To determine a value, take the number <em>physical</em> cores and multiply it by 100. For example, on a quad core system <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single core, you would set the value to <code>50</code>. To allow a server to use up to two physical cores, set the value to <code>200</code>. BlockIO should be a value between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/engine/reference/run/#/block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.<p>
                 </div>
             </div>
         </div>
@@ -185,38 +167,38 @@
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Service Configuration</h3>
+                    <h3 class="box-title">Nest Configuration</h3>
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
-                        <label for="pServiceId">Service</label>
-                        <select name="service_id" id="pServiceId" class="form-control">
-                            @foreach($services as $service)
-                                <option value="{{ $service->id }}"
-                                    @if($service->id === old('service_id'))
+                        <label for="pNestId">Nest</label>
+                        <select name="nest_id" id="pNestId" class="form-control">
+                            @foreach($nests as $nest)
+                                <option value="{{ $nest->id }}"
+                                    @if($nest->id === old('nest_id'))
                                         selected="selected"
                                     @endif
-                                >{{ $service->name }}</option>
+                                >{{ $nest->name }}</option>
                             @endforeach
                         </select>
-                        <p class="small text-muted no-margin">Select the type of service that this server will be running.</p>
+                        <p class="small text-muted no-margin">Select the Nest that this server will be grouped under.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pOptionId">Option</label>
-                        <select name="option_id" id="pOptionId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select the type of sub-service that this server will be running.</p>
+                        <label for="pEggId">Egg</label>
+                        <select name="egg_id" id="pEggId" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select the Egg that will define how this server should operate.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pPackId">Service Pack</label>
+                        <label for="pPackId">Data Pack</label>
                         <select name="pack_id" id="pPackId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select a service pack to be automatically installed on this server when first created.</p>
+                        <p class="small text-muted no-margin">Select a data pack to be automatically installed on this server when first created.</p>
                     </div>
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
                             <input id="pSkipScripting" name="skip_scripting" type="checkbox" value="1" />
-                            <label for="pSkipScripting" class="strong">Skip Service Option Install Script</label>
+                            <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
                         </div>
-                        <p class="small text-muted no-margin">If the selected <code>Option</code> has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
                     </div>
                 </div>
             </div>
@@ -228,9 +210,9 @@
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
-                        <label for="pDefaultContainer">Process Container</label>
+                        <label for="pDefaultContainer">Docker Image</label>
                         <input id="pDefaultContainer" name="docker_image" value="{{ old('docker_image') }}" class="form-control" />
-                        <p class="small text-muted no-margin">This is the default Docker container that will be used to run this server.</p>
+                        <p class="small text-muted no-margin">This is the default Docker image that will be used to run this server.</p>
                     </div>
                 </div>
             </div>

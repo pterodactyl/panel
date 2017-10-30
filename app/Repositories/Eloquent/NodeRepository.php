@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Repositories\Eloquent;
@@ -46,17 +31,18 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStats($id)
     {
-        $node = $this->getBuilder()->select(
+        $node = $this->getBuilder()->select([
             'nodes.disk_overallocate',
             'nodes.memory_overallocate',
             'nodes.disk',
             'nodes.memory',
-            $this->getBuilder()->raw('SUM(servers.memory) as sum_memory, SUM(servers.disk) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.id', $id)
-            ->first();
+        ])->where('id', $id)->first();
 
-        return collect(['disk' => $node->sum_disk, 'memory' => $node->sum_memory])
+        $stats = $this->getBuilder()->select(
+            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $id)->first();
+
+        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
             ->mapWithKeys(function ($value, $key) use ($node) {
                 $maxUsage = $node->{$key};
                 if ($node->{$key . '_overallocate'} > 0) {
@@ -130,7 +116,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeServers($id)
     {
-        $instance = $this->getBuilder()->with('servers.user', 'servers.service', 'servers.option')
+        $instance = $this->getBuilder()->with('servers.user', 'servers.nest', 'servers.egg')
             ->find($id, $this->getColumns());
 
         if (! $instance) {

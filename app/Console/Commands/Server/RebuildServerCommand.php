@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Console\Commands\Server;
@@ -27,12 +12,17 @@ namespace Pterodactyl\Console\Commands\Server;
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class RebuildServerCommand extends Command
 {
+    /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    protected $configurationStructureService;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
@@ -42,11 +32,6 @@ class RebuildServerCommand extends Command
      * @var string
      */
     protected $description = 'Rebuild a single server, all servers on a node, or all servers on the panel.';
-
-    /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
-     */
-    protected $environmentService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
@@ -64,18 +49,18 @@ class RebuildServerCommand extends Command
      * RebuildServerCommand constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService                   $environmentService
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService  $configurationStructureService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
      */
     public function __construct(
         DaemonServerRepositoryInterface $daemonRepository,
-        EnvironmentService $environmentService,
+        ServerConfigurationStructureService $configurationStructureService,
         ServerRepositoryInterface $repository
     ) {
         parent::__construct();
 
+        $this->configurationStructureService = $configurationStructureService;
         $this->daemonRepository = $daemonRepository;
-        $this->environmentService = $environmentService;
         $this->repository = $repository;
     }
 
@@ -89,25 +74,10 @@ class RebuildServerCommand extends Command
 
         $servers->each(function ($server) use ($bar) {
             $bar->clear();
-            $json = [
-                'build' => [
-                    'image' => $server->image,
-                    'env|overwrite' => $this->environmentService->process($server),
-                ],
-                'service' => [
-                    'type' => $server->option->service->folder,
-                    'option' => $server->option->tag,
-                    'pack' => object_get($server, 'pack.uuid'),
-                    'skip_scripts' => $server->skip_scripts,
-                ],
-                'rebuild' => true,
-            ];
+            $json = array_merge($this->configurationStructureService->handle($server), ['rebuild' => true]);
 
             try {
-                $this->daemonRepository->setNode($server->node_id)
-                    ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->node->daemonSecret)
-                    ->update($json);
+                $this->daemonRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($json);
             } catch (RequestException $exception) {
                 $this->output->error(trans('command/messages.server.rebuild_failed', [
                     'name' => $server->name,

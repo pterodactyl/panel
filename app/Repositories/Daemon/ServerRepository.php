@@ -1,106 +1,38 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Repositories\Daemon;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Services\Servers\EnvironmentService;
+use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface as DatabaseServerRepositoryInterface;
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {
-    const DAEMON_PERMISSIONS = ['s:*'];
-
     /**
-     * {@inheritdoc}
+     * Create a new server on the daemon for the panel.
+     *
+     * @param array $structure
+     * @param array $overrides
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function create($id, array $overrides = [], $start = false)
+    public function create(array $structure, array $overrides = []): ResponseInterface
     {
-        Assert::numeric($id, 'First argument passed to create must be numeric, received %s.');
-        Assert::boolean($start, 'Third argument passed to create must be boolean, received %s.');
-
-        $repository = $this->app->make(DatabaseServerRepositoryInterface::class);
-        $environment = $this->app->make(EnvironmentService::class);
-
-        $server = $repository->getDataForCreation($id);
-
-        $data = [
-            'uuid' => (string) $server->uuid,
-            'user' => $server->username,
-            'build' => [
-                'default' => [
-                    'ip' => $server->allocation->ip,
-                    'port' => $server->allocation->port,
-                ],
-                'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
-                    return $item->pluck('port');
-                })->toArray(),
-                'env' => $environment->process($server),
-                'memory' => (int) $server->memory,
-                'swap' => (int) $server->swap,
-                'io' => (int) $server->io,
-                'cpu' => (int) $server->cpu,
-                'disk' => (int) $server->disk,
-                'image' => $server->image,
-            ],
-            'service' => [
-                'type' => $server->option->service->folder,
-                'option' => $server->option->tag,
-                'pack' => object_get($server, 'pack.uuid'),
-                'skip_scripts' => $server->skip_scripts,
-            ],
-            'rebuild' => false,
-            'start_on_completion' => $start,
-            'keys' => [
-                (string) $server->daemonSecret => self::DAEMON_PERMISSIONS,
-            ],
-        ];
-
         // Loop through overrides.
         foreach ($overrides as $key => $value) {
-            array_set($data, $key, $value);
+            array_set($structure, $key, $value);
         }
 
-        return $this->getHttpClient()->request('POST', '/servers', [
-            'json' => $data,
-        ]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setSubuserKey($key, array $permissions)
-    {
-        Assert::stringNotEmpty($key, 'First argument passed to setSubuserKey must be a non-empty string, received %s.');
-
-        return $this->getHttpClient()->request('PATCH', '/server', [
-            'json' => [
-                'keys' => [
-                    $key => $permissions,
-                ],
-            ],
+        return $this->getHttpClient()->request('POST', 'servers', [
+            'json' => $structure,
         ]);
     }
 
@@ -109,7 +41,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function update(array $data)
     {
-        return $this->getHttpClient()->request('PATCH', '/server', [
+        return $this->getHttpClient()->request('PATCH', 'server', [
             'json' => $data,
         ]);
     }
@@ -122,10 +54,10 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
         Assert::nullOrIsArray($data, 'First argument passed to reinstall must be null or an array, received %s.');
 
         if (is_null($data)) {
-            return $this->getHttpClient()->request('POST', '/server/reinstall');
+            return $this->getHttpClient()->request('POST', 'server/reinstall');
         }
 
-        return $this->getHttpClient()->request('POST', '/server/reinstall', [
+        return $this->getHttpClient()->request('POST', 'server/reinstall', [
             'json' => $data,
         ]);
     }
@@ -135,7 +67,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function rebuild()
     {
-        return $this->getHttpClient()->request('POST', '/server/rebuild');
+        return $this->getHttpClient()->request('POST', 'server/rebuild');
     }
 
     /**
@@ -143,7 +75,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function suspend()
     {
-        return $this->getHttpClient()->request('POST', '/server/suspend');
+        return $this->getHttpClient()->request('POST', 'server/suspend');
     }
 
     /**
@@ -151,7 +83,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function unsuspend()
     {
-        return $this->getHttpClient()->request('POST', '/server/unsuspend');
+        return $this->getHttpClient()->request('POST', 'server/unsuspend');
     }
 
     /**
@@ -159,7 +91,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function delete()
     {
-        return $this->getHttpClient()->request('DELETE', '/servers');
+        return $this->getHttpClient()->request('DELETE', 'servers');
     }
 
     /**
@@ -167,6 +99,16 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function details()
     {
-        return $this->getHttpClient()->request('GET', '/servers');
+        return $this->getHttpClient()->request('GET', 'server');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function revokeAccessKey($key)
+    {
+        Assert::stringNotEmpty($key, 'First argument passed to revokeAccessKey must be a non-empty string, received %s.');
+
+        return $this->getHttpClient()->request('DELETE', 'keys/' . $key);
     }
 }

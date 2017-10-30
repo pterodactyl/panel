@@ -1,30 +1,14 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Console\Commands\Environment;
 
-use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
@@ -53,6 +37,7 @@ class AppSettingsCommand extends Command
      * @var string
      */
     protected $signature = 'p:environment:setup
+                            {--author= : The email that services created on this instance should be linked to.}
                             {--url= : The URL that this Panel is running on.}
                             {--timezone= : The timezone to use for Panel times.}
                             {--cache= : The cache driver backend to use.}
@@ -87,9 +72,10 @@ class AppSettingsCommand extends Command
      */
     public function handle()
     {
-        if (is_null($this->config->get('pterodactyl.service.author'))) {
-            $this->variables['SERVICE_AUTHOR'] = Uuid::uuid4()->toString();
-        }
+        $this->output->comment(trans('command/messages.environment.app.author_help'));
+        $this->variables['SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
+            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'undefined@unknown-author.com')
+        );
 
         $this->output->comment(trans('command/messages.environment.app.app_url_help'));
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
@@ -129,7 +115,6 @@ class AppSettingsCommand extends Command
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);
 
-        $this->command->call('config:cache');
         $this->info($this->command->output());
     }
 

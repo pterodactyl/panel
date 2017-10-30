@@ -3,23 +3,8 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Tests\Unit\Services\Packs;
@@ -35,12 +20,12 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 class PackUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
@@ -68,8 +53,7 @@ class PackUpdateServiceTest extends TestCase
     public function testPackIsUpdated()
     {
         $model = factory(Pack::class)->make();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,
@@ -82,13 +66,13 @@ class PackUpdateServiceTest extends TestCase
     /**
      * Test that an exception is thrown if the pack option ID is changed while servers are using the pack.
      */
-    public function testExceptionIsThrownIfModifyingOptionIdWhenServersAreAttached()
+    public function testExceptionIsThrownIfModifyingEggIdWhenServersAreAttached()
     {
         $model = factory(Pack::class)->make();
         $this->serverRepository->shouldReceive('findCountWhere')->with([['pack_id', '=', $model->id]])->once()->andReturn(1);
 
         try {
-            $this->service->handle($model, ['option_id' => 0]);
+            $this->service->handle($model, ['egg_id' => 0]);
         } catch (HasActiveServersException $exception) {
             $this->assertEquals(trans('exceptions.packs.update_has_servers'), $exception->getMessage());
         }
@@ -101,10 +85,9 @@ class PackUpdateServiceTest extends TestCase
     {
         $model = factory(Pack::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'option_id'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('withColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($model->id)->once()->andReturn($model);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,

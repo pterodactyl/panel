@@ -1,25 +1,10 @@
 <?php
-/*
+/**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Jobs\Schedule;
@@ -34,6 +19,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
@@ -55,7 +41,7 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * @var int
      */
-    protected $schedule;
+    public $schedule;
 
     /**
      * @var int
@@ -75,7 +61,8 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function __construct($task, $schedule)
     {
-        Assert::integerish($task, 'First argument passed to constructor must be numeric, received %s.');
+        Assert::integerish($task, 'First argument passed to constructor must be integer, received %s.');
+        Assert::integerish($schedule, 'Second argument passed to constructor must be integer, received %s.');
 
         $this->queue = app()->make('config')->get('pterodactyl.queues.standard');
         $this->task = $task;
@@ -86,6 +73,7 @@ class RunTaskJob extends Job implements ShouldQueue
      * Run the job and send actions to the daemon running the server.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface $commandRepository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService           $keyProviderService
      * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface   $powerRepository
      * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface           $taskRepository
      *
@@ -95,6 +83,7 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function handle(
         CommandRepositoryInterface $commandRepository,
+        DaemonKeyProviderService $keyProviderService,
         PowerRepositoryInterface $powerRepository,
         TaskRepositoryInterface $taskRepository
     ) {
@@ -110,13 +99,13 @@ class RunTaskJob extends Job implements ShouldQueue
             case 'power':
                 $this->powerRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->daemonSecret)
+                    ->setAccessToken($keyProviderService->handle($server->id, $server->owner_id))
                     ->sendSignal($task->payload);
                 break;
             case 'command':
                 $this->commandRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($server->daemonSecret)
+                    ->setAccessToken($keyProviderService->handle($server->id, $server->owner_id))
                     ->send($task->payload);
                 break;
             default:
@@ -173,7 +162,7 @@ class RunTaskJob extends Job implements ShouldQueue
         $repository = app()->make(ScheduleRepositoryInterface::class);
         $repository->withoutFresh()->update($this->schedule, [
             'is_processing' => false,
-            'last_run_at' => app()->make(Carbon::class)->now()->toDateTimeString(),
+            'last_run_at' => Carbon::now()->toDateTimeString(),
         ]);
     }
 

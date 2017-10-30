@@ -59,6 +59,7 @@ return [
     */
     'api' => [
         'include_on_list' => env('API_INCLUDE_ON_LIST', false),
+        'key_expire_time' => env('API_KEY_EXPIRE_TIME', 60 * 12),
     ],
 
     /*
@@ -96,6 +97,17 @@ return [
     'console' => [
         'count' => env('CONSOLE_PUSH_COUNT', 10),
         'frequency' => env('CONSOLE_PUSH_FREQ', 200),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Daemon Connection Details
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for support of the new Golang based daemon.
+    */
+    'daemon' => [
+        'use_new_daemon' => (bool) env('APP_USE_NEW_DAEMON', false),
     ],
 
     /*
@@ -172,4 +184,19 @@ return [
         'daemon/*',
         'remote/*',
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dynamic Environment Variables
+    |--------------------------------------------------------------------------
+    |
+    | Place dynamic environment variables here that should be auto-appended
+    | to server environment fields when the server is created or updated.
+    |
+    | Items should be in 'key' => 'value' format, where key is the environment
+    | variable name, and value is the server-object key. For example:
+    |
+    | 'P_SERVER_CREATED_AT' => 'created_at'
+    */
+    'environment_variables' => [],
 ];

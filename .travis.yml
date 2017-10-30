@@ -15,7 +15,7 @@ before_install:
 before_script:
   - cp .env.travis .env
   - composer install --no-interaction --prefer-dist --no-suggest --verbose
-  - php artisan migrate --seed -v
+  - php artisan migrate -v
 script:
   - vendor/bin/phpunit --coverage-clover coverage.xml
 notifications:
