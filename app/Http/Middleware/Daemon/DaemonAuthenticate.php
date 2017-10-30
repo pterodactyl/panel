@@ -33,17 +33,18 @@ use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 class DaemonAuthenticate
 {
     /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    private $repository;
+
+    /**
      * Daemon routes that this middleware should be skipped on.
+     *
      * @var array
      */
     protected $except = [
         'daemon.configuration',
     ];
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
-     */
-    protected $repository;
 
     /**
      * DaemonAuthenticate constructor.
