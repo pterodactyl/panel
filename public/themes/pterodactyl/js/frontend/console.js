@@ -46,7 +46,7 @@ $(document).ready(function () {
     }
 
     $terminalInput.focus();
-    $('.terminal_input--prompt, #terminal_input, #terminal, #terminalNotify').on('click', function () {
+    $('.terminal_input--prompt, #terminal_input, #terminalNotify').on('click', function () {
         $terminalInput.focus();
     });
 
