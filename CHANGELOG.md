@@ -36,7 +36,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Attempting to create a server when no nodes are configured now redirects to the node creation page.
 * Fixes missing library issue for teamspeak when used with mariadb.
 * Fixes inability to change the default port on front-end when viewing a server.
-* Fixes bug preventing deletion of nests that have other nests referencing them as children. 
+* Fixes bug preventing deletion of nests that have other nests referencing them as children.
+* Fixes console sometimes not loading properly on slow connections
 
 ### Removed
 * SFTP settings page now only displays connection address and username. Password setting was removed as it is no longer necessary with Daemon changes.

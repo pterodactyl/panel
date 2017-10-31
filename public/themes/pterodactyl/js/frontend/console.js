@@ -203,9 +203,11 @@ function pushToTerminal(string) {
     });
 
     Socket.on('console', function (data) {
-        data.line.split(/\n/g).forEach(function (item) {
-            TerminalQueue.push(item);
-        });
+        if(data.line) {
+            data.line.split(/\n/g).forEach(function (item) {
+                TerminalQueue.push(item);
+            });
+        }
     });
 })();
 
