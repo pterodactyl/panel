@@ -47,7 +47,7 @@ $(document).ready(function () {
 
     $terminalInput.focus();
     $('.terminal_input--prompt, #terminal_input, #terminal, #terminalNotify').on('click', function () {
-        $terminalInput.focus();
+        //$terminalInput.focus();
     });
 
     $terminalInput.on('keyup', function (e) {
