@@ -2,20 +2,16 @@
 
 namespace Tests\Unit\Http\Middleware\Server;
 
-use Closure;
 use Mockery as m;
-use Tests\TestCase;
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Config\Repository;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\AccessingValidServer;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
-class AccessingValidServerTest extends TestCase
+class AccessingValidServerTest extends MiddlewareTestCase
 {
     /**
      * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
@@ -26,11 +22,6 @@ class AccessingValidServerTest extends TestCase
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
-
-    /**
-     * @var \Illuminate\Http\Request|\Mockery\Mock
-     */
-    private $request;
 
     /**
      * @var \Illuminate\Contracts\Session\Session|\Mockery\Mock
@@ -46,8 +37,6 @@ class AccessingValidServerTest extends TestCase
 
         $this->config = m::mock(Repository::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
-        $this->request = m::mock(Request::class);
-        $this->request->attributes = new ParameterBag();
         $this->session = m::mock(Session::class);
     }
 
@@ -139,8 +128,8 @@ class AccessingValidServerTest extends TestCase
         $this->session->shouldReceive('now')->with('server_data.model', $model)->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        $this->assertTrue($this->request->attributes->has('server'), 'Assert request attributes contains server.');
-        $this->assertSame($model, $this->request->attributes->get('server'));
+        $this->assertRequestHasAttribute('server');
+        $this->assertRequestAttributeEquals($model, 'server');
     }
 
     /**
@@ -169,17 +158,5 @@ class AccessingValidServerTest extends TestCase
     private function getMiddleware(): AccessingValidServer
     {
         return new AccessingValidServer($this->config, $this->repository, $this->session);
-    }
-
-    /**
-     * Provide a closure to be used when validating that the response from the middleware
-     * is the same request object we passed into it.
-     */
-    private function getClosureAssertions(): Closure
-    {
-        return function ($response) {
-            $this->assertInstanceOf(Request::class, $response);
-            $this->assertSame($this->request, $response);
-        };
     }
 }

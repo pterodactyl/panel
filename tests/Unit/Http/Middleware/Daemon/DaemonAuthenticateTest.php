@@ -2,28 +2,20 @@
 
 namespace Tests\Unit\Http\Middleware\Daemon;
 
-use Closure;
 use Mockery as m;
-use Tests\TestCase;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
-use Symfony\Component\HttpFoundation\ParameterBag;
+use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
-class DaemonAuthenticateTest extends TestCase
+class DaemonAuthenticateTest extends MiddlewareTestCase
 {
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     private $repository;
-
-    /**
-     * @var \Illuminate\Http\Request|\Mockery\Mock
-     */
-    private $request;
 
     /**
      * Setup tests.
@@ -33,8 +25,6 @@ class DaemonAuthenticateTest extends TestCase
         parent::setUp();
 
         $this->repository = m::mock(NodeRepositoryInterface::class);
-        $this->request = m::mock(Request::class);
-        $this->request->attributes = new ParameterBag();
     }
 
     /**
@@ -98,8 +88,8 @@ class DaemonAuthenticateTest extends TestCase
         $this->repository->shouldReceive('findFirstWhere')->with([['daemonSecret', '=', $model->daemonSecret]])->once()->andReturn($model);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        $this->assertTrue($this->request->attributes->has('node'), 'Assert request attributes contains node.');
-        $this->assertSame($model, $this->request->attributes->get('node'));
+        $this->assertRequestHasAttribute('node');
+        $this->assertRequestAttributeEquals($model, 'node');
     }
 
     /**
@@ -110,17 +100,5 @@ class DaemonAuthenticateTest extends TestCase
     private function getMiddleware(): DaemonAuthenticate
     {
         return new DaemonAuthenticate($this->repository);
-    }
-
-    /**
-     * Provide a closure to be used when validating that the response from the middleware
-     * is the same request object we passed into it.
-     */
-    private function getClosureAssertions(): Closure
-    {
-        return function ($response) {
-            $this->assertInstanceOf(Request::class, $response);
-            $this->assertSame($this->request, $response);
-        };
     }
 }

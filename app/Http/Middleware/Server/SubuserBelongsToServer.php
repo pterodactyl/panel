@@ -50,7 +50,7 @@ class SubuserBelongsToServer
 
         $hash = $request->route()->parameter('subuser', 0);
         $subuser = $this->repository->find($this->hashids->decodeFirst($hash, 0));
-        if (! $subuser || $subuser->server_id !== $server->id) {
+        if (is_null($subuser) || $subuser->server_id !== $server->id) {
             throw new NotFoundHttpException;
         }
 
