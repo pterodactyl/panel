@@ -198,8 +198,8 @@ function pushToTerminal(string) {
         $('#terminal').html('');
         data.split(/\n/g).forEach(function (item) {
             pushToTerminal(item);
-            window.scrollToBottom();
         });
+        window.scrollToBottom();
     });
 
     Socket.on('console', function (data) {
