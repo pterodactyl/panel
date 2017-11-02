@@ -46,7 +46,7 @@ $(document).ready(function () {
     }
 
     $terminalInput.focus();
-    $('.terminal_input--prompt, #terminal_input, #terminal, #terminalNotify').on('click', function () {
+    $('.terminal_input--prompt, #terminal_input, #terminalNotify').on('click', function () {
         $terminalInput.focus();
     });
 
@@ -198,14 +198,16 @@ function pushToTerminal(string) {
         $('#terminal').html('');
         data.split(/\n/g).forEach(function (item) {
             pushToTerminal(item);
-            window.scrollToBottom();
         });
+        window.scrollToBottom();
     });
 
     Socket.on('console', function (data) {
-        data.line.split(/\n/g).forEach(function (item) {
-            TerminalQueue.push(item);
-        });
+        if(data.line) {
+            data.line.split(/\n/g).forEach(function (item) {
+                TerminalQueue.push(item);
+            });
+        }
     });
 })();
 
