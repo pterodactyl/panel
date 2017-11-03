@@ -10,31 +10,17 @@
 namespace Tests\Unit\Http\Controllers\Server;
 
 use Mockery as m;
-use Tests\TestCase;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Config\Repository;
-use Tests\Assertions\ControllerAssertionsTrait;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Server\ConsoleController;
 
-class ConsoleControllerTest extends TestCase
+class ConsoleControllerTest extends ControllerTestCase
 {
-    use ControllerAssertionsTrait;
-
     /**
-     * @var \Illuminate\Contracts\Config\Repository
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
     protected $config;
-
-    /**
-     * @var \Pterodactyl\Http\Controllers\Server\ConsoleController
-     */
-    protected $controller;
-
-    /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
 
     /**
      * Setup tests.
@@ -44,9 +30,6 @@ class ConsoleControllerTest extends TestCase
         parent::setUp();
 
         $this->config = m::mock(Repository::class);
-        $this->session = m::mock(Session::class);
-
-        $this->controller = m::mock(ConsoleController::class, [$this->config, $this->session])->makePartial();
     }
 
     /**
@@ -56,16 +39,15 @@ class ConsoleControllerTest extends TestCase
      */
     public function testAllControllers($function, $view)
     {
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
+        $this->setRequestAttribute('server', $server);
+        $this->mockInjectJavascript();
 
-        if ($function === 'index') {
-            $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        }
         $this->config->shouldReceive('get')->with('pterodactyl.console.count')->once()->andReturn(100);
         $this->config->shouldReceive('get')->with('pterodactyl.console.frequency')->once()->andReturn(10);
-        $this->controller->shouldReceive('injectJavascript')->once()->andReturnNull();
 
-        $response = $this->controller->$function();
+        $response = $controller->$function($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals($view, $response);
     }
@@ -81,5 +63,15 @@ class ConsoleControllerTest extends TestCase
             ['index', 'server.index'],
             ['console', 'server.console'],
         ];
+    }
+
+    /**
+     * Return a mocked instance of the controller to allow access to authorization functionality.
+     *
+     * @return \Pterodactyl\Http\Controllers\Server\ConsoleController|\Mockery\Mock
+     */
+    private function getController()
+    {
+        return $this->buildMockedController(ConsoleController::class, [$this->config]);
     }
 }

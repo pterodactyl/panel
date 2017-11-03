@@ -128,7 +128,7 @@ class SubuserController extends Controller
      */
     public function update(SubuserUpdateFormRequest $request, string $uuid, string $hash): RedirectResponse
     {
-        $this->subuserUpdateService->handle($request->attributes->get('subuser'), $request->input('permissions'));
+        $this->subuserUpdateService->handle($request->attributes->get('subuser'), $request->input('permissions', []));
         $this->alert->success(trans('server.users.user_updated'))->flash();
 
         return redirect()->route('server.subusers.view', ['uuid' => $uuid, 'subuser' => $hash]);
@@ -154,7 +154,6 @@ class SubuserController extends Controller
      * Handles creating a new subuser.
      *
      * @param \Pterodactyl\Http\Requests\Server\Subuser\SubuserStoreFormRequest $request
-     * @param string                                                            $uuid
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -164,15 +163,15 @@ class SubuserController extends Controller
      * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
      */
-    public function store(SubuserStoreFormRequest $request, $uuid): RedirectResponse
+    public function store(SubuserStoreFormRequest $request): RedirectResponse
     {
         $server = $request->attributes->get('server');
 
-        $subuser = $this->subuserCreationService->handle($server, $request->input('email'), $request->input('permissions'));
+        $subuser = $this->subuserCreationService->handle($server, $request->input('email'), $request->input('permissions', []));
         $this->alert->success(trans('server.users.user_assigned'))->flash();
 
         return redirect()->route('server.subusers.view', [
-            'uuid' => $uuid,
+            'uuid' => $server->uuid,
             'id' => $subuser->id,
         ]);
     }
