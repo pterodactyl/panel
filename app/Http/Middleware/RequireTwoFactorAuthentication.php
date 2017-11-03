@@ -73,27 +73,23 @@ class RequireTwoFactorAuthentication
      */
     public function handle(Request $request, Closure $next)
     {
-        // Ignore non-users
         if (! $request->user()) {
             return $next($request);
         }
 
-        // Skip the 2FA pages
         if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);
         }
 
-        // Get the setting
         switch ((int) $this->settings->get('2fa', 0)) {
             case self::LEVEL_NONE:
                 return $next($request);
-
+                break;
             case self::LEVEL_ADMIN:
-                if (! $request->user()->root_admin) {
+                if (! $request->user()->root_admin || $request->user()->use_totp) {
                     return $next($request);
                 }
                 break;
-
             case self::LEVEL_ALL:
                 if ($request->user()->use_totp) {
                     return $next($request);

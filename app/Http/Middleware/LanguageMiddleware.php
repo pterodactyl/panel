@@ -11,11 +11,16 @@ namespace Pterodactyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
+use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Config\Repository;
 
 class LanguageMiddleware
 {
+    /**
+     * @var \Illuminate\Foundation\Application
+     */
+    private $app;
+
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
@@ -24,10 +29,12 @@ class LanguageMiddleware
     /**
      * LanguageMiddleware constructor.
      *
+     * @param \Illuminate\Foundation\Application      $app
      * @param \Illuminate\Contracts\Config\Repository $config
      */
-    public function __construct(Repository $config)
+    public function __construct(Application $app, Repository $config)
     {
+        $this->app = $app;
         $this->config = $config;
     }
 
@@ -40,7 +47,7 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        App::setLocale($this->config->get('app.locale', 'en'));
+        $this->app->setLocale($this->config->get('app.locale', 'en'));
 
         return $next($request);
     }

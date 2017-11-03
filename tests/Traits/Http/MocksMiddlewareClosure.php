@@ -9,11 +9,6 @@ use BadFunctionCallException;
 trait MocksMiddlewareClosure
 {
     /**
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
-
-    /**
      * Provide a closure to be used when validating that the response from the middleware
      * is the same request object we passed into it.
      */

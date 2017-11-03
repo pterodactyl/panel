@@ -74,6 +74,7 @@ $factory->define(Pterodactyl\Models\Location::class, function (Faker\Generator $
 $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
         'public' => true,
         'name' => $faker->firstName,
         'fqdn' => $faker->ipv4,

@@ -11,10 +11,8 @@ namespace Pterodactyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Node;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
 {
@@ -56,15 +54,10 @@ class DaemonAuthenticate
         }
 
         if (! $request->header('X-Access-Node')) {
-            throw new HttpException(403);
+            throw new AccessDeniedHttpException;
         }
 
-        try {
-            $node = $this->repository->findWhere(['daemonSecret' => $request->header('X-Access-Node')]);
-        } catch (RecordNotFoundException $exception) {
-            throw new HttpException(401);
-        }
-
+        $node = $this->repository->findWhere(['daemonSecret' => $request->header('X-Access-Node')]);
         $request->attributes->set('node', $node);
 
         return $next($request);

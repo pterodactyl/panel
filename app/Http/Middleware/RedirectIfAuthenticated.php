@@ -9,7 +9,7 @@ use Illuminate\Auth\AuthManager;
 class RedirectIfAuthenticated
 {
     /**
-     * @var \Illuminate\Contracts\Auth\Guard
+     * @var \Illuminate\Auth\AuthManager
      */
     private $authManager;
 
@@ -34,7 +34,7 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next, string $guard = null)
     {
         if ($this->authManager->guard($guard)->check()) {
-            return redirect(route('index'));
+            return redirect()->route('index');
         }
 
         return $next($request);
