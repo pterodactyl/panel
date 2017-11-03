@@ -19,17 +19,17 @@ class SubuserDeletionService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService
      */
-    protected $keyDeletionService;
+    private $keyDeletionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * SubuserDeletionService constructor.

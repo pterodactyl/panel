@@ -22,22 +22,17 @@ class SubuserDeletionServiceTest extends TestCase
     /**
      * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService|\Mockery\Mock
      */
-    protected $keyDeletionService;
+    private $keyDeletionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Subusers\SubuserDeletionService
-     */
-    protected $service;
+    private $repository;
 
     /**
      * Setup tests.
@@ -49,18 +44,12 @@ class SubuserDeletionServiceTest extends TestCase
         $this->connection = m::mock(ConnectionInterface::class);
         $this->keyDeletionService = m::mock(DaemonKeyDeletionService::class);
         $this->repository = m::mock(SubuserRepositoryInterface::class);
-
-        $this->service = new SubuserDeletionService(
-            $this->connection,
-            $this->keyDeletionService,
-            $this->repository
-        );
     }
 
     /**
      * Test that a subuser is deleted correctly.
      */
-    public function testSubuserIsDeletedIfModelIsPassed()
+    public function testSubuserIsDeleted()
     {
         $subuser = factory(Subuser::class)->make();
 
@@ -69,24 +58,17 @@ class SubuserDeletionServiceTest extends TestCase
         $this->repository->shouldReceive('delete')->with($subuser->id)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->service->handle($subuser);
+        $this->getService()->handle($subuser);
         $this->assertTrue(true);
     }
 
     /**
-     * Test that a subuser is deleted correctly if only the subuser ID is passed.
+     * Return an instance of the service with mocked dependencies for testing.
+     *
+     * @return \Pterodactyl\Services\Subusers\SubuserDeletionService
      */
-    public function testSubuserIsDeletedIfIdPassedInPlaceOfModel()
+    private function getService(): SubuserDeletionService
     {
-        $subuser = factory(Subuser::class)->make();
-
-        $this->repository->shouldReceive('find')->with($subuser->id)->once()->andReturn($subuser);
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->keyDeletionService->shouldReceive('handle')->with($subuser->server_id, $subuser->user_id)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($subuser->id)->once()->andReturnNull();
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-
-        $this->service->handle($subuser->id);
-        $this->assertTrue(true);
+        return new SubuserDeletionService($this->connection, $this->keyDeletionService, $this->repository);
     }
 }
