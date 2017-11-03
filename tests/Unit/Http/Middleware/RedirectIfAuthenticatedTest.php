@@ -30,7 +30,7 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
     public function testAuthenticatedUserIsRedirected()
     {
         $this->authManager->shouldReceive('guard')->with(null)->once()->andReturnSelf();
-        $this->authManager->shouldReceive('check')->with(null)->once()->andReturn(true);
+        $this->authManager->shouldReceive('check')->withNoArgs()->once()->andReturn(true);
 
         $response = $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -43,7 +43,7 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
     public function testNonAuthenticatedUserIsNotRedirected()
     {
         $this->authManager->shouldReceive('guard')->with(null)->once()->andReturnSelf();
-        $this->authManager->shouldReceive('check')->with(null)->once()->andReturn(false);
+        $this->authManager->shouldReceive('check')->withNoArgs()->once()->andReturn(false);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
