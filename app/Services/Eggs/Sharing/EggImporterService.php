@@ -75,7 +75,7 @@ class EggImporterService
      */
     public function handle(UploadedFile $file, int $nest): Egg
     {
-        if (! $file->isValid() || ! $file->isFile()) {
+        if ($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile()) {
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.file_error'));
         }
 

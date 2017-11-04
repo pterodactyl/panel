@@ -11,7 +11,6 @@ namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Nest;
 use Tests\Traits\MocksUuids;
 use Illuminate\Contracts\Config\Repository;
@@ -25,17 +24,12 @@ class NestCreationServiceTest extends TestCase
     /**
      * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestCreationService
-     */
-    protected $service;
+    private $repository;
 
     /**
      * Setup tests.
@@ -46,8 +40,6 @@ class NestCreationServiceTest extends TestCase
 
         $this->config = m::mock(Repository::class);
         $this->repository = m::mock(NestRepositoryInterface::class);
-
-        $this->service = new NestCreationService($this->config, $this->repository);
     }
 
     /**
@@ -56,21 +48,48 @@ class NestCreationServiceTest extends TestCase
     public function testCreateNewService()
     {
         $model = factory(Nest::class)->make();
-        $data = [
-            'name' => $model->name,
-            'description' => $model->description,
-        ];
 
         $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('testauthor@example.com');
         $this->repository->shouldReceive('create')->with([
             'uuid' => $this->getKnownUuid(),
             'author' => 'testauthor@example.com',
-            'name' => $data['name'],
-            'description' => $data['description'],
+            'name' => $model->name,
+            'description' => $model->description,
         ], true, true)->once()->andReturn($model);
 
-        $response = $this->service->handle($data);
+        $response = $this->getService()->handle(['name' => $model->name, 'description' => $model->description]);
         $this->assertInstanceOf(Nest::class, $response);
         $this->assertEquals($model, $response);
+    }
+
+    /**
+     * Test creation of a new nest with a defined author. This is used by seeder
+     * scripts which need to set a specific author for nests in order for other
+     * functionality to work correctly.
+     */
+    public function testCreateServiceWithDefinedAuthor()
+    {
+        $model = factory(Nest::class)->make();
+
+        $this->repository->shouldReceive('create')->with([
+            'uuid' => $this->getKnownUuid(),
+            'author' => 'support@pterodactyl.io',
+            'name' => $model->name,
+            'description' => $model->description,
+        ], true, true)->once()->andReturn($model);
+
+        $response = $this->getService()->handle(['name' => $model->name, 'description' => $model->description], 'support@pterodactyl.io');
+        $this->assertInstanceOf(Nest::class, $response);
+        $this->assertEquals($model, $response);
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Nests\NestCreationService
+     */
+    private function getService(): NestCreationService
+    {
+        return new NestCreationService($this->config, $this->repository);
     }
 }
