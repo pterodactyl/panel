@@ -11,7 +11,7 @@ return [
     | standard Pterodactyl shipped services.
     */
     'service' => [
-        'author' => env('SERVICE_AUTHOR', 'unknown@unknown.com'),
+        'author' => env('APP_SERVICE_AUTHOR', 'unknown@unknown.com'),
     ],
 
     /*

@@ -73,8 +73,8 @@ class AppSettingsCommand extends Command
     public function handle()
     {
         $this->output->comment(trans('command/messages.environment.app.author_help'));
-        $this->variables['SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
-            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'undefined@unknown-author.com')
+        $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
+            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
         );
 
         $this->output->comment(trans('command/messages.environment.app.app_url_help'));
@@ -98,7 +98,7 @@ class AppSettingsCommand extends Command
             trans('command/messages.environment.app.session_driver'), [
                 'redis' => 'Redis (recommended)',
                 'memcached' => 'Memcached',
-                'mysql' => 'MySQL Database',
+                'database' => 'MySQL Database',
                 'file' => 'Filesystem',
                 'cookie' => 'Cookie',
             ], $this->config->get('session.driver', 'redis')
