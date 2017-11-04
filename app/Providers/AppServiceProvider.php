@@ -1,20 +1,20 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Providers;
 
 use View;
 use Cache;
-use Pterodactyl\Models;
-use Pterodactyl\Observers;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Observers\UserObserver;
+use Pterodactyl\Observers\ServerObserver;
+use Pterodactyl\Observers\SubuserObserver;
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use DaneEveritt\LoginNotifications\NotificationServiceProvider;
+use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,9 +25,9 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        Models\User::observe(Observers\UserObserver::class);
-        Models\Server::observe(Observers\ServerObserver::class);
-        Models\Subuser::observe(Observers\SubuserObserver::class);
+        User::observe(UserObserver::class);
+        Server::observe(ServerObserver::class);
+        Subuser::observe(SubuserObserver::class);
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
@@ -39,11 +39,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         if ($this->app->environment() !== 'production') {
-            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            $this->app->register(DebugbarServiceProvider::class);
+            $this->app->register(IdeHelperServiceProvider::class);
         }
 
         if (config('pterodactyl.auth.notifications')) {
-            $this->app->register(\DaneEveritt\LoginNotifications\NotificationServiceProvider::class);
+            $this->app->register(NotificationServiceProvider::class);
         }
     }
 
