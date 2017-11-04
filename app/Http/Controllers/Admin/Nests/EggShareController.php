@@ -69,10 +69,12 @@ class EggShareController extends Controller
      */
     public function export(Egg $egg): Response
     {
+        $filename = trim(preg_replace('/[^\w]/', '-', kebab_case($egg->name)), '-');
+
         return response($this->exporterService->handle($egg->id), 200, [
             'Content-Transfer-Encoding' => 'binary',
             'Content-Description' => 'File Transfer',
-            'Content-Disposition' => 'attachment; filename=egg-' . kebab_case($egg->name) . '.json',
+            'Content-Disposition' => 'attachment; filename=egg-' . $filename . '.json',
             'Content-Type' => 'application/json',
         ]);
     }
