@@ -1,12 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- * Translated by Michael Rittmeister <mail@schlaubi.net>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 return [
     'daemon_connection_failed' => 'Es gab einen Fehler bei der Verbindung mit dem Daemon. Ausgabe: HTTP/:code response code. Dieser Fehler wurde geloggt.',
