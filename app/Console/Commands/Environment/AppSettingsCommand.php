@@ -153,7 +153,7 @@ class AppSettingsCommand extends Command
         }
 
         if (empty($this->variables['REDIS_PASSWORD'])) {
-            unset($this->variables['REDIS_PASSWORD']);
+            $this->variables['REDIS_PASSWORD'] = 'null';
         }
 
         $this->variables['REDIS_PORT'] = $this->option('redis-port') ?? $this->ask(

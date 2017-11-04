@@ -41,7 +41,7 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'strict' => env('DB_STRICT_MODE', true),
+            'strict' => env('DB_STRICT_MODE', false),
         ],
     ],
 
