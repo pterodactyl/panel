@@ -2,12 +2,32 @@
 
 namespace Pterodactyl\Http;
 
+use Fideloper\Proxy\TrustProxies;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Auth\Middleware\Authenticate;
+use Pterodactyl\Http\Middleware\TrimStrings;
+use Illuminate\Session\Middleware\StartSession;
+use Pterodactyl\Http\Middleware\EncryptCookies;
+use Pterodactyl\Http\Middleware\VerifyCsrfToken;
+use Pterodactyl\Http\Middleware\VerifyReCaptcha;
+use Pterodactyl\Http\Middleware\AdminAuthenticate;
+use Pterodactyl\Http\Middleware\HMACAuthorization;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Pterodactyl\Http\Middleware\DaemonAuthenticate;
+use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Pterodactyl\Http\Middleware\AccessingValidServer;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
+use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
 use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
+use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 
 class Kernel extends HttpKernel
 {
@@ -17,15 +37,15 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        \Pterodactyl\Http\Middleware\EncryptCookies::class,
-        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-        \Pterodactyl\Http\Middleware\TrimStrings::class,
+        CheckForMaintenanceMode::class,
+        EncryptCookies::class,
+        AddQueuedCookiesToResponse::class,
+        TrimStrings::class,
 
         /*
          * Custom middleware applied to all routes.
          */
-        \Fideloper\Proxy\TrustProxies::class,
+        TrustProxies::class,
     ];
 
     /**
@@ -35,23 +55,23 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \Pterodactyl\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Pterodactyl\Http\Middleware\LanguageMiddleware::class,
-            \Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            LanguageMiddleware::class,
+            RequireTwoFactorAuthentication::class,
         ],
         'api' => [
-            \Pterodactyl\Http\Middleware\HMACAuthorization::class,
+            HMACAuthorization::class,
             'throttle:60,1',
             'bindings',
         ],
         'daemon' => [
-            \Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate::class,
             SubstituteBindings::class,
+            'daemon-old',
         ],
     ];
 
@@ -61,18 +81,18 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'guest' => \Pterodactyl\Http\Middleware\RedirectIfAuthenticated::class,
-        'server' => \Pterodactyl\Http\Middleware\ServerAuthenticate::class,
-        'subuser.auth' => \Pterodactyl\Http\Middleware\SubuserAccessAuthenticate::class,
-        'admin' => \Pterodactyl\Http\Middleware\AdminAuthenticate::class,
+        'auth' => Authenticate::class,
+        'auth.basic' => AuthenticateWithBasicAuth::class,
+        'guest' => RedirectIfAuthenticated::class,
+        'server' => AccessingValidServer::class,
+        'subuser.auth' => AuthenticateAsSubuser::class,
+        'admin' => AdminAuthenticate::class,
         'daemon-old' => DaemonAuthenticate::class,
-        'csrf' => \Pterodactyl\Http\Middleware\VerifyCsrfToken::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'recaptcha' => \Pterodactyl\Http\Middleware\VerifyReCaptcha::class,
+        'csrf' => VerifyCsrfToken::class,
+        'throttle' => ThrottleRequests::class,
+        'can' => Authorize::class,
+        'bindings' => SubstituteBindings::class,
+        'recaptcha' => VerifyReCaptcha::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //

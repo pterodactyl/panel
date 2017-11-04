@@ -9,15 +9,14 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Files;
 
-use Illuminate\Log\Writer;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Session\Session;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class FileActionsController extends Controller
 {
@@ -26,30 +25,16 @@ class FileActionsController extends Controller
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
      */
-    protected $fileRepository;
-
-    /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    protected $repository;
 
     /**
      * FileActionsController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $fileRepository
-     * @param \Illuminate\Contracts\Session\Session                            $session
-     * @param \Illuminate\Log\Writer                                           $writer
+     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $repository
      */
-    public function __construct(FileRepositoryInterface $fileRepository, Session $session, Writer $writer)
+    public function __construct(FileRepositoryInterface $repository)
     {
-        $this->fileRepository = $fileRepository;
-        $this->session = $session;
-        $this->writer = $writer;
+        $this->repository = $repository;
     }
 
     /**
@@ -60,12 +45,12 @@ class FileActionsController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $server = $this->session->get('server_data.model');
+        $server = $request->attributes->get('server');
         $this->authorize('list-files', $server);
 
-        $this->injectJavascript([
+        $this->setRequest($request)->injectJavascript([
             'meta' => [
                 'directoryList' => route('server.files.directory-list', $server->uuidShort),
                 'csrftoken' => csrf_token(),
@@ -92,10 +77,10 @@ class FileActionsController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
-        $this->authorize('create-files', $this->session->get('server_data.model'));
-        $this->injectJavascript();
+        $this->authorize('create-files', $request->attributes->get('server'));
+        $this->setRequest($request)->injectJavascript();
 
         return view('server.files.add', [
             'directory' => (in_array($request->get('dir'), [null, '/', ''])) ? '' : trim($request->get('dir'), '/') . '/',
@@ -114,31 +99,24 @@ class FileActionsController extends Controller
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateFileContentsFormRequest $request, $uuid, $file)
+    public function update(UpdateFileContentsFormRequest $request, string $uuid, string $file): View
     {
-        $server = $this->session->get('server_data.model');
-        $this->authorize('edit-files', $server);
+        $server = $request->attributes->get('server');
 
         $dirname = pathinfo($file, PATHINFO_DIRNAME);
         try {
-            $content = $this->fileRepository->setNode($server->node_id)
-                ->setAccessServer($server->uuid)
-                ->setAccessToken($this->session->get('server_data.token'))
+            $content = $this->repository->setNode($server->node_id)->setAccessServer($server->uuid)
+                ->setAccessToken($request->attributes->get('server_token'))
                 ->getContent($file);
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
-            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
 
-        $this->injectJavascript(['stat' => $request->getStats()]);
+        $this->setRequest($request)->injectJavascript(['stat' => $request->attributes->get('file_stats')]);
 
         return view('server.files.edit', [
             'file' => $file,
-            'stat' => $request->getStats(),
+            'stat' => $request->attributes->get('file_stats'),
             'contents' => $content,
             'directory' => (in_array($dirname, ['.', './', '/'])) ? '/' : trim($dirname, '/') . '/',
         ]);

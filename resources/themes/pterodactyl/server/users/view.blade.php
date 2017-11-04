@@ -21,7 +21,7 @@
 
 @section('content')
 @can('edit-subuser', $server)
-<form action="{{ route('server.subusers.view', [ 'uuid' => $server->uuidShort, 'id' => $subuser->id ]) }}" method="POST">
+<form action="{{ route('server.subusers.view', [ 'uuid' => $server->uuidShort, 'subuser' => $subuser->hashid ]) }}" method="POST">
 @endcan
     <div class="row">
         <div class="col-sm-12">

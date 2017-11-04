@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Server\Settings;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;

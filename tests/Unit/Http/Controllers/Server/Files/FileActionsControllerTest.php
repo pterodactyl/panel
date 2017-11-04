@@ -10,51 +10,24 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
-use Tests\TestCase;
-use Illuminate\Log\Writer;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\Session\Session;
+use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
-use Tests\Assertions\ControllerAssertionsTrait;
+use Pterodactyl\Exceptions\PterodactylException;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Http\Controllers\Server\Files\FileActionsController;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
-class FileActionsControllerTest extends TestCase
+class FileActionsControllerTest extends ControllerTestCase
 {
-    use ControllerAssertionsTrait;
+    use MocksRequestException;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Server\Files\FileActionsController
+     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface|\Mockery\Mock
      */
-    protected $controller;
-
-    /**
-     * @var \Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest
-     */
-    protected $fileContentsFormRequest;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
-     */
-    protected $fileRepository;
-
-    /**
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
-
-    /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    protected $repository;
 
     /**
      * Setup tests.
@@ -63,15 +36,7 @@ class FileActionsControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->fileContentsFormRequest = m::mock(UpdateFileContentsFormRequest::class);
-        $this->fileRepository = m::mock(FileRepositoryInterface::class);
-        $this->request = m::mock(Request::class);
-        $this->session = m::mock(Session::class);
-        $this->writer = m::mock(Writer::class);
-
-        $this->controller = m::mock(FileActionsController::class, [
-            $this->fileRepository, $this->session, $this->writer,
-        ])->makePartial();
+        $this->repository = m::mock(FileRepositoryInterface::class);
     }
 
     /**
@@ -79,14 +44,16 @@ class FileActionsControllerTest extends TestCase
      */
     public function testIndexController()
     {
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('list-files', $server)->once()->andReturnNull();
-        $this->request->shouldReceive('user->can')->andReturn(true);
-        $this->controller->shouldReceive('injectJavascript')->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+        $this->mockInjectJavascript();
 
-        $response = $this->controller->index($this->request);
+        $controller->shouldReceive('authorize')->with('list-files', $server)->once()->andReturnNull();
+        $this->request->shouldReceive('user->can')->andReturn(true);
+
+        $response = $controller->index($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.files.index', $response);
     }
@@ -98,14 +65,16 @@ class FileActionsControllerTest extends TestCase
      */
     public function testCreateController($directory, $expected)
     {
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('create-files', $server)->once()->andReturnNull();
-        $this->controller->shouldReceive('injectJavascript')->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+        $this->mockInjectJavascript();
+
+        $controller->shouldReceive('authorize')->with('create-files', $server)->once()->andReturnNull();
         $this->request->shouldReceive('get')->with('dir')->andReturn($directory);
 
-        $response = $this->controller->create($this->request);
+        $response = $controller->create($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.files.add', $response);
         $this->assertViewHasKey('directory', $response);
@@ -119,20 +88,22 @@ class FileActionsControllerTest extends TestCase
      */
     public function testUpdateController($file, $expected)
     {
+        $this->setRequestMockClass(UpdateFileContentsFormRequest::class);
+
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('edit-files', $server)->once()->andReturnNull();
-        $this->session->shouldReceive('get')->with('server_data.token')->once()->andReturn($server->daemonSecret);
-        $this->fileRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
+        $this->setRequestAttribute('server', $server);
+        $this->setRequestAttribute('server_token', 'abc123');
+        $this->setRequestAttribute('file_stats', 'fileStatsObject');
+        $this->mockInjectJavascript(['stat' => 'fileStatsObject']);
+
+        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
             ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with($server->daemonSecret)->once()->andReturnSelf()
+            ->shouldReceive('setAccessToken')->with('abc123')->once()->andReturnSelf()
             ->shouldReceive('getContent')->with($file)->once()->andReturn('file contents');
 
-        $this->fileContentsFormRequest->shouldReceive('getStats')->withNoArgs()->twice()->andReturn(['stats']);
-        $this->controller->shouldReceive('injectJavascript')->with(['stat' => ['stats']])->once()->andReturnNull();
-
-        $response = $this->controller->update($this->fileContentsFormRequest, '1234', $file);
+        $response = $controller->update($this->request, '1234', $file);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.files.edit', $response);
         $this->assertViewHasKey('file', $response);
@@ -140,7 +111,7 @@ class FileActionsControllerTest extends TestCase
         $this->assertViewHasKey('contents', $response);
         $this->assertViewHasKey('directory', $response);
         $this->assertViewKeyEquals('file', $file, $response);
-        $this->assertViewKeyEquals('stat', ['stats'], $response);
+        $this->assertViewKeyEquals('stat', 'fileStatsObject', $response);
         $this->assertViewKeyEquals('contents', 'file contents', $response);
         $this->assertViewKeyEquals('directory', $expected, $response);
     }
@@ -150,20 +121,23 @@ class FileActionsControllerTest extends TestCase
      */
     public function testExceptionRenderedByUpdateController()
     {
+        $this->setRequestMockClass(UpdateFileContentsFormRequest::class);
+        $this->configureExceptionMock();
+
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
-        $exception = m::mock(RequestException::class);
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('edit-files', $server)->once()->andReturnNull();
-        $this->fileRepository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($exception);
+        $this->setRequestAttribute('server', $server);
+        $this->setRequestAttribute('server_token', 'abc123');
+        $this->setRequestAttribute('file_stats', 'fileStatsObject');
 
-        $exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
-        $this->writer->shouldReceive('warning')->with($exception)->once()->andReturnNull();
+        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($this->getExceptionMock());
 
         try {
-            $this->controller->update($this->fileContentsFormRequest, '1234', 'file.txt');
-        } catch (DisplayException $exception) {
-            $this->assertEquals(trans('exceptions.daemon_connection_failed', ['code' => 'E_CONN_REFUSED']), $exception->getMessage());
+            $controller->update($this->request, '1234', 'file.txt');
+        } catch (PterodactylException $exception) {
+            $this->assertInstanceOf(DaemonConnectionException::class, $exception);
+            $this->assertInstanceOf(RequestException::class, $exception->getPrevious());
         }
     }
 
@@ -198,5 +172,15 @@ class FileActionsControllerTest extends TestCase
             ['/file.txt', '/'],
             ['./file.txt', '/'],
         ];
+    }
+
+    /**
+     * Return a mocked instance of the controller to allow access to authorization functionality.
+     *
+     * @return \Pterodactyl\Http\Controllers\Server\Files\FileActionsController|\Mockery\Mock
+     */
+    private function getController()
+    {
+        return $this->buildMockedController(FileActionsController::class, [$this->repository]);
     }
 }

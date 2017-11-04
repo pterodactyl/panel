@@ -1,42 +1,36 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Middleware\Server;
 
 use Closure;
-use Illuminate\Contracts\Session\Session;
+use Illuminate\Http\Request;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SubuserBelongsToServer
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
      */
-    protected $repository;
+    private $hashids;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
-    protected $session;
+    private $repository;
 
     /**
      * SubuserAccess constructor.
      *
-     * @param \Illuminate\Contracts\Session\Session                        $session
+     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface           $hashids
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
-    public function __construct(Session $session, SubuserRepositoryInterface $repository)
+    public function __construct(HashidsInterface $hashids, SubuserRepositoryInterface $repository)
     {
+        $this->hashids = $hashids;
         $this->repository = $repository;
-        $this->session = $session;
     }
 
     /**
@@ -50,12 +44,13 @@ class SubuserBelongsToServer
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $server = $this->session->get('server_data.model');
+        $server = $request->attributes->get('server');
 
-        $subuser = $this->repository->find($request->route()->parameter('subuser', 0));
-        if ($subuser->server_id !== $server->id) {
+        $hash = $request->route()->parameter('subuser', 0);
+        $subuser = $this->repository->find($this->hashids->decodeFirst($hash, 0));
+        if (is_null($subuser) || $subuser->server_id !== $server->id) {
             throw new NotFoundHttpException;
         }
 
@@ -64,6 +59,8 @@ class SubuserBelongsToServer
                 throw new DisplayException(trans('exceptions.subusers.editing_self'));
             }
         }
+
+        $request->attributes->set('subuser', $subuser);
 
         return $next($request);
     }

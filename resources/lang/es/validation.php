@@ -24,9 +24,9 @@ return [
     'before_or_equal' => 'El campo :attribute debe ser una fecha antes o igual a :date.',
     'between' => [
         'numeric' => 'El campo :attribute debe estar entre :min - :max.',
-        'file'    => 'El campo :attribute debe estar entre :min - :max kilobytes.',
-        'string'  => 'El campo :attribute debe estar entre :min - :max caracteres.',
-        'array'   => 'El campo :attribute debe tener entre :min y :max elementos.',
+        'file' => 'El campo :attribute debe estar entre :min - :max kilobytes.',
+        'string' => 'El campo :attribute debe estar entre :min - :max caracteres.',
+        'array' => 'El campo :attribute debe tener entre :min y :max elementos.',
     ],
     'boolean' => 'El campo :attribute debe ser verdadero o falso.',
     'confirmed' => 'El campo de confirmación de :attribute no coincide.',

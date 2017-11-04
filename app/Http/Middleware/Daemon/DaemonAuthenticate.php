@@ -33,14 +33,18 @@ use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 class DaemonAuthenticate
 {
     /**
-     * @var array
-     */
-    protected $except = ['daemon.configuration'];
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
-    protected $repository;
+    private $repository;
+
+    /**
+     * Daemon routes that this middleware should be skipped on.
+     *
+     * @var array
+     */
+    protected $except = [
+        'daemon.configuration',
+    ];
 
     /**
      * DaemonAuthenticate constructor.
@@ -63,6 +67,10 @@ class DaemonAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
+        if (in_array($request->route()->getName(), $this->except)) {
+            return $next($request);
+        }
+
         $token = $request->bearerToken();
 
         if (is_null($token)) {

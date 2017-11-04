@@ -10,61 +10,43 @@
 namespace Tests\Unit\Http\Controllers\Server;
 
 use Mockery as m;
-use Tests\TestCase;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Session\Session;
-use Tests\Assertions\ControllerAssertionsTrait;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Services\Subusers\SubuserUpdateService;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Services\Subusers\SubuserDeletionService;
 use Pterodactyl\Http\Controllers\Server\SubuserController;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Http\Requests\Server\Subuser\SubuserStoreFormRequest;
+use Pterodactyl\Http\Requests\Server\Subuser\SubuserUpdateFormRequest;
 
-class SubuserControllerTest extends TestCase
+class SubuserControllerTest extends ControllerTestCase
 {
-    use ControllerAssertionsTrait;
-
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
+     * @var \Prologue\Alerts\AlertsMessageBag|\Mockery\Mock
      */
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Server\SubuserController
-     */
-    protected $controller;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
-
-    /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
-     * @var \Pterodactyl\Services\Subusers\SubuserCreationService
+     * @var \Pterodactyl\Services\Subusers\SubuserCreationService|\Mockery\Mock
      */
     protected $subuserCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserDeletionService
+     * @var \Pterodactyl\Services\Subusers\SubuserDeletionService|\Mockery\Mock
      */
     protected $subuserDeletionService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserUpdateService
+     * @var \Pterodactyl\Services\Subusers\SubuserUpdateService|\Mockery\Mock
      */
     protected $subuserUpdateService;
 
@@ -77,20 +59,9 @@ class SubuserControllerTest extends TestCase
 
         $this->alert = m::mock(AlertsMessageBag::class);
         $this->repository = m::mock(SubuserRepositoryInterface::class);
-        $this->request = m::mock(Request::class);
-        $this->session = m::mock(Session::class);
         $this->subuserCreationService = m::mock(SubuserCreationService::class);
         $this->subuserDeletionService = m::mock(SubuserDeletionService::class);
         $this->subuserUpdateService = m::mock(SubuserUpdateService::class);
-
-        $this->controller = m::mock(SubuserController::class, [
-            $this->alert,
-            $this->session,
-            $this->subuserCreationService,
-            $this->subuserDeletionService,
-            $this->repository,
-            $this->subuserUpdateService,
-        ])->makePartial();
     }
 
     /*
@@ -98,14 +69,16 @@ class SubuserControllerTest extends TestCase
      */
     public function testIndexController()
     {
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('list-subusers', $server)->once()->andReturnNull();
-        $this->controller->shouldReceive('injectJavascript')->withNoArgs()->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+        $this->mockInjectJavascript();
+
+        $controller->shouldReceive('authorize')->with('list-subusers', $server)->once()->andReturnNull();
         $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $server->id]])->once()->andReturn([]);
 
-        $response = $this->controller->index();
+        $response = $controller->index($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.users.index', $response);
         $this->assertViewHasKey('subusers', $response);
@@ -116,20 +89,22 @@ class SubuserControllerTest extends TestCase
      */
     public function testViewController()
     {
-        $subuser = factory(Subuser::class)->make([
-            'permissions' => collect([
-                (object) ['permission' => 'some.permission'],
-                (object) ['permission' => 'another.permission'],
-            ]),
-        ]);
+        $controller = $this->getController();
+        $subuser = factory(Subuser::class)->make();
+        $subuser->setRelation('permissions', collect([
+            (object) ['permission' => 'some.permission'],
+            (object) ['permission' => 'another.permission'],
+        ]));
         $server = factory(Server::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('view-subuser', $server)->once()->andReturnNull();
-        $this->repository->shouldReceive('getWithPermissions')->with(1234)->once()->andReturn($subuser);
-        $this->controller->shouldReceive('injectJavascript')->withNoArgs()->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+        $this->setRequestAttribute('subuser', $subuser);
+        $this->mockInjectJavascript();
 
-        $response = $this->controller->view($server->uuid, 1234);
+        $controller->shouldReceive('authorize')->with('view-subuser', $server)->once()->andReturnNull();
+        $this->repository->shouldReceive('getWithPermissions')->with($subuser)->once()->andReturn($subuser);
+
+        $response = $controller->view($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.users.view', $response);
         $this->assertViewHasKey('subuser', $response);
@@ -148,18 +123,21 @@ class SubuserControllerTest extends TestCase
      */
     public function testUpdateController()
     {
-        $server = factory(Server::class)->make();
+        $this->setRequestMockClass(SubuserUpdateFormRequest::class);
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('edit-subuser', $server)->once()->andReturnNull();
+        $controller = $this->getController();
+        $subuser = factory(Subuser::class)->make();
+
+        $this->setRequestAttribute('subuser', $subuser);
+
         $this->request->shouldReceive('input')->with('permissions', [])->once()->andReturn(['some.permission']);
-        $this->subuserUpdateService->shouldReceive('handle')->with(1234, ['some.permission'])->once()->andReturnNull();
-        $this->alert->shouldReceive('success')->with(trans('server.users.user_updated'))->once()->andReturnSelf()
-            ->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
+        $this->subuserUpdateService->shouldReceive('handle')->with($subuser, ['some.permission'])->once()->andReturnNull();
+        $this->alert->shouldReceive('success')->with(trans('server.users.user_updated'))->once()->andReturnSelf();
+        $this->alert->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->controller->update($this->request, $server->uuid, 1234);
+        $response = $controller->update($this->request, 'abcd1234', 1234);
         $this->assertIsRedirectResponse($response);
-        $this->assertRedirectRouteEquals('server.subusers.view', $response, ['uuid' => $server->uuid, 'id' => 1234]);
+        $this->assertRedirectRouteEquals('server.subusers.view', $response, ['uuid' => 'abcd1234', 'id' => 1234]);
     }
 
     /**
@@ -167,13 +145,15 @@ class SubuserControllerTest extends TestCase
      */
     public function testCreateController()
     {
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('create-subuser', $server)->once()->andReturnNull();
-        $this->controller->shouldReceive('injectJavascript')->withNoArgs()->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+        $this->mockInjectJavascript();
 
-        $response = $this->controller->create();
+        $controller->shouldReceive('authorize')->with('create-subuser', $server)->once()->andReturnNull();
+
+        $response = $controller->create($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.users.new', $response);
         $this->assertViewHasKey('permissions', $response);
@@ -185,20 +165,26 @@ class SubuserControllerTest extends TestCase
      */
     public function testStoreController()
     {
+        $this->setRequestMockClass(SubuserStoreFormRequest::class);
+        $controller = $this->getController();
+
         $server = factory(Server::class)->make();
         $subuser = factory(Subuser::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('create-subuser', $server)->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+
         $this->request->shouldReceive('input')->with('email')->once()->andReturn('user@test.com');
         $this->request->shouldReceive('input')->with('permissions', [])->once()->andReturn(['some.permission']);
         $this->subuserCreationService->shouldReceive('handle')->with($server, 'user@test.com', ['some.permission'])->once()->andReturn($subuser);
-        $this->alert->shouldReceive('success')->with(trans('server.users.user_assigned'))->once()->andReturnSelf()
-            ->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
+        $this->alert->shouldReceive('success')->with(trans('server.users.user_assigned'))->once()->andReturnSelf();
+        $this->alert->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->controller->store($this->request, $server->uuid);
+        $response = $controller->store($this->request);
         $this->assertIsRedirectResponse($response);
-        $this->assertRedirectRouteEquals('server.subusers.view', $response, ['uuid' => $server->uuid, 'id' => $subuser->id]);
+        $this->assertRedirectRouteEquals('server.subusers.view', $response, [
+            'uuid' => $server->uuid,
+            'id' => $subuser->id,
+        ]);
     }
 
     /**
@@ -206,14 +192,35 @@ class SubuserControllerTest extends TestCase
      */
     public function testDeleteController()
     {
+        $controller = $this->getController();
+
         $server = factory(Server::class)->make();
+        $subuser = factory(Subuser::class)->make();
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('delete-subuser', $server)->once()->andReturnNull();
-        $this->subuserDeletionService->shouldReceive('handle')->with(1234)->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+        $this->setRequestAttribute('subuser', $subuser);
 
-        $response = $this->controller->delete($server->uuid, 1234);
+        $controller->shouldReceive('authorize')->with('delete-subuser', $server)->once()->andReturnNull();
+        $this->subuserDeletionService->shouldReceive('handle')->with($subuser)->once()->andReturnNull();
+
+        $response = $controller->delete($this->request);
         $this->assertIsResponse($response);
         $this->assertResponseCodeEquals(204, $response);
+    }
+
+    /**
+     * Return a mocked instance of the controller to allow access to authorization functionality.
+     *
+     * @return \Pterodactyl\Http\Controllers\Server\SubuserController|\Mockery\Mock
+     */
+    private function getController()
+    {
+        return $this->buildMockedController(SubuserController::class, [
+            $this->alert,
+            $this->subuserCreationService,
+            $this->subuserDeletionService,
+            $this->repository,
+            $this->subuserUpdateService,
+        ]);
     }
 }

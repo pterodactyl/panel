@@ -9,14 +9,35 @@
 
 namespace Pterodactyl\Http\Middleware;
 
-use Auth;
 use Closure;
-use Session;
-use Settings;
-use Illuminate\Support\Facades\App;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Application;
+use Illuminate\Contracts\Config\Repository;
 
 class LanguageMiddleware
 {
+    /**
+     * @var \Illuminate\Foundation\Application
+     */
+    private $app;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    private $config;
+
+    /**
+     * LanguageMiddleware constructor.
+     *
+     * @param \Illuminate\Foundation\Application      $app
+     * @param \Illuminate\Contracts\Config\Repository $config
+     */
+    public function __construct(Application $app, Repository $config)
+    {
+        $this->app = $app;
+        $this->config = $config;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -24,17 +45,9 @@ class LanguageMiddleware
      * @param \Closure                 $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        // if (Session::has('applocale')) {
-        //     App::setLocale(Session::get('applocale'));
-        // } elseif (Auth::check() && isset(Auth::user()->language)) {
-        //     Session::put('applocale', Auth::user()->language);
-        //     App::setLocale(Auth::user()->language);
-        // } else {
-        //     App::setLocale(Settings::get('default_language', 'en'));
-        // }
-        App::setLocale('en');
+        $this->app->setLocale($this->config->get('app.locale', 'en'));
 
         return $next($request);
     }
