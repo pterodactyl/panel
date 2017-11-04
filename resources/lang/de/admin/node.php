@@ -1,12 +1,5 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- * Translated by Michael Rittmeister <mail@schlaubi.net>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
+
 return [
     'validation' => [
         'fqdn_not_resolvable' => 'Diese FQDN scheint nicht auf eine IP weiterzuleiten.',
