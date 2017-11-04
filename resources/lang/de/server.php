@@ -247,7 +247,7 @@ return [
             ],
             'view_databases' => [
                 'title' => 'View Database Details',
-                'description' => Der User darf die Datenbankinformationen sehen.',
+                'description' => 'Der User darf die Datenbankinformationen sehen.',
             ],
             'reset_db_password' => [
                 'title' => 'Reset Database Password',
