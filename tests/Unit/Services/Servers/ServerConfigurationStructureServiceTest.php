@@ -41,9 +41,10 @@ class ServerConfigurationStructureServiceTest extends TestCase
     public function testCorrectStructureIsReturned()
     {
         $model = factory(Server::class)->make();
-        $model->allocation = factory(Allocation::class)->make();
-        $model->allocations = collect(factory(Allocation::class)->times(2)->make());
-        $model->egg = factory(Egg::class)->make();
+        $model->setRelation('pack', null);
+        $model->setRelation('allocation', factory(Allocation::class)->make());
+        $model->setRelation('allocations', collect(factory(Allocation::class)->times(2)->make()));
+        $model->setRelation('egg', factory(Egg::class)->make());
 
         $portListing = $model->allocations->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
