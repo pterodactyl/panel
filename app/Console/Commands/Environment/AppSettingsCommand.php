@@ -147,9 +147,13 @@ class AppSettingsCommand extends Command
             $this->output->comment(trans('command/messages.environment.app.redis_pass_help'));
             $this->variables['REDIS_PASSWORD'] = $this->option('redis-pass') ?? $this->output->askHidden(
                 trans('command/messages.environment.app.redis_password'), function () {
-                    return true;
+                    return '';
                 }
             );
+        }
+
+        if (empty($this->variables['REDIS_PASSWORD'])) {
+            unset($this->variables['REDIS_PASSWORD']);
         }
 
         $this->variables['REDIS_PORT'] = $this->option('redis-port') ?? $this->ask(
