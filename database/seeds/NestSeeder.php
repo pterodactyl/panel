@@ -59,7 +59,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Minecraft',
                 'description' => 'Minecraft - the classic game from Mojang. With support for Vanilla MC, Spigot, and many others!',
-            ]);
+            ], 'support@pterodactyl.io');
         }
     }
 
@@ -76,7 +76,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Source Engine',
                 'description' => 'Includes support for most Source Dedicated Server games.',
-            ]);
+            ], 'support@pterodactyl.io');
         }
     }
 
@@ -93,7 +93,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Voice Servers',
                 'description' => 'Voice servers such as Mumble and Teamspeak 3.',
-            ]);
+            ], 'support@pterodactyl.io');
         }
     }
 }

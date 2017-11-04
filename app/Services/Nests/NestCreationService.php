@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Nests;
 
@@ -19,12 +12,12 @@ class NestCreationService
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * NestCreationService constructor.
@@ -41,16 +34,16 @@ class NestCreationService
     /**
      * Create a new nest on the system.
      *
-     * @param array $data
+     * @param array       $data
+     * @param string|null $author
      * @return \Pterodactyl\Models\Nest
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data): Nest
+    public function handle(array $data, string $author = null): Nest
     {
         return $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
-            'author' => $this->config->get('pterodactyl.service.author'),
+            'author' => $author ?? $this->config->get('pterodactyl.service.author'),
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
         ], true, true);
