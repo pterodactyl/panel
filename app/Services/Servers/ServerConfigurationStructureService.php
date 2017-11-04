@@ -54,6 +54,11 @@ class ServerConfigurationStructureService
             $server = $this->repository->getDataForCreation($server);
         }
 
+        $pack = $server->getRelation('pack');
+        if (! is_null($pack)) {
+            $pack = $server->getRelation('pack')->uuid;
+        }
+
         return [
             'uuid' => $server->uuid,
             'build' => [
@@ -74,7 +79,7 @@ class ServerConfigurationStructureService
             ],
             'service' => [
                 'egg' => $server->egg->uuid,
-                'pack' => object_get($server, 'pack.uuid'),
+                'pack' => $pack,
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,
