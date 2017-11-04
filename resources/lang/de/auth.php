@@ -1,4 +1,5 @@
 <?php
+
 return [
     'not_authorized' => 'Du bist nicht autorisiert diese Aktion auszuführen0.',
     'auth_error' => 'Es gab ein Problem während du dich anmelden wolltest.',
