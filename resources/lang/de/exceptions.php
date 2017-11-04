@@ -15,7 +15,7 @@ return [
         'daemon_off_config_updated' => 'Die COnfiguration <strong>wurde aktualisiert</strong>! Du musst allerdings die config neu auf dem Server bearbeiten.',
     ],
     'allocations' => [
-        'too_many_ports' => 'Du kannst leider nicht mehr als 1000 Ports gleichzeitig hinzufügen,
+        'too_many_ports' => 'Du kannst leider nicht mehr als 1000 Ports gleichzeitig hinzufügen',
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
     ],
