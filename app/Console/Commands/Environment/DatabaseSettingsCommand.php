@@ -45,7 +45,10 @@ class DatabaseSettingsCommand extends Command
      */
     protected $signature = 'p:environment:database
                             {--host= : The connection address for the MySQL server.}
-                            {--port= : The connection port for the MySQL server.}';
+                            {--port= : The connection port for the MySQL server.}
+                            {--database= : The database to use.}
+                            {--username= : Username to use when connecting.}
+                            {--password= : Password to use for this database.}';
 
     /**
      * @var array
@@ -86,12 +89,12 @@ class DatabaseSettingsCommand extends Command
             trans('command/messages.environment.database.port'), $this->config->get('database.connections.mysql.port', 3306)
         );
 
-        $this->variables['DB_DATABASE'] = $this->option('port') ?? $this->ask(
+        $this->variables['DB_DATABASE'] = $this->option('database') ?? $this->ask(
             trans('command/messages.environment.database.database'), $this->config->get('database.connections.mysql.database', 'panel')
         );
 
         $this->output->note(trans('command/messages.environment.database.username_warning'));
-        $this->variables['DB_USERNAME'] = $this->option('port') ?? $this->ask(
+        $this->variables['DB_USERNAME'] = $this->option('username') ?? $this->ask(
             trans('command/messages.environment.database.username'), $this->config->get('database.connections.mysql.username', 'pterodactyl')
         );
 
