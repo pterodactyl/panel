@@ -12,7 +12,7 @@ class DatabaseBelongsToServer
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * DatabaseAccess constructor.
@@ -40,7 +40,7 @@ class DatabaseBelongsToServer
         $server = $request->attributes->get('server');
 
         $database = $this->repository->find($request->input('database'));
-        if ($database->server_id !== $server->id) {
+        if (is_null($database) || $database->server_id !== $server->id) {
             throw new NotFoundHttpException;
         }
 

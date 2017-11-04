@@ -9,8 +9,9 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Files;
 
+use Illuminate\Http\Request;
 use Illuminate\Cache\Repository;
-use Illuminate\Contracts\Session\Session;
+use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 
 class DownloadController extends Controller
@@ -21,41 +22,34 @@ class DownloadController extends Controller
     protected $cache;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
      * DownloadController constructor.
      *
-     * @param \Illuminate\Cache\Repository          $cache
-     * @param \Illuminate\Contracts\Session\Session $session
+     * @param \Illuminate\Cache\Repository $cache
      */
-    public function __construct(Repository $cache, Session $session)
+    public function __construct(Repository $cache)
     {
         $this->cache = $cache;
-        $this->session = $session;
     }
 
     /**
      * Setup a unique download link for a user to download a file from.
      *
-     * @param string $uuid
-     * @param string $file
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $uuid
+     * @param string                   $file
+     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index($uuid, $file)
+    public function index(Request $request, string $uuid, string $file): RedirectResponse
     {
-        $server = $this->session->get('server_data.model');
+        $server = $request->attributes->get('server');
         $this->authorize('download-files', $server);
 
         $token = str_random(40);
+        $node = $server->getRelation('node');
         $this->cache->tags(['Server:Downloads'])->put($token, ['server' => $server->uuid, 'path' => $file], 5);
 
-        return redirect(sprintf(
-            '%s://%s:%s/v1/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, $token
-        ));
+        return redirect(sprintf('%s://%s:%s/v1/server/file/download/%s', $node->scheme, $node->fqdn, $node->daemonListen, $token));
     }
 }

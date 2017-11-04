@@ -1,35 +1,28 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository;
+
+use Pterodactyl\Models\Subuser;
 
 interface SubuserRepositoryInterface extends RepositoryInterface
 {
     /**
      * Return a subuser with the associated server relationship.
      *
-     * @param int $id
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param bool                        $refresh
      * @return \Pterodactyl\Models\Subuser
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithServer($id);
+    public function getWithServer(Subuser $subuser, bool $refresh = false): Subuser;
 
     /**
      * Return a subuser with the associated permissions relationship.
      *
-     * @param int $id
-     * @return \Illuminate\Database\Eloquent\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param bool                        $refresh
+     * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithPermissions($id);
+    public function getWithPermissions(Subuser $subuser, bool $refresh = false): Subuser;
 
     /**
      * Return a subuser and associated permissions given a user_id and server_id.

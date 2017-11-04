@@ -9,13 +9,13 @@
 
 namespace Pterodactyl\Services\Subusers;
 
-use Illuminate\Log\Writer;
+use Pterodactyl\Models\Subuser;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserUpdateService
@@ -23,12 +23,12 @@ class SubuserUpdateService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
-    protected $daemonRepository;
+    private $daemonRepository;
 
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
@@ -38,22 +38,17 @@ class SubuserUpdateService
     /**
      * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
      */
-    protected $permissionRepository;
+    private $permissionRepository;
 
     /**
      * @var \Pterodactyl\Services\Subusers\PermissionCreationService
      */
-    protected $permissionService;
+    private $permissionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
-    protected $repository;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    private $repository;
 
     /**
      * SubuserUpdateService constructor.
@@ -64,7 +59,6 @@ class SubuserUpdateService
      * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
      * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface    $permissionRepository
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $repository
-     * @param \Illuminate\Log\Writer                                             $writer
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -72,8 +66,7 @@ class SubuserUpdateService
         DaemonServerRepositoryInterface $daemonRepository,
         PermissionCreationService $permissionService,
         PermissionRepositoryInterface $permissionRepository,
-        SubuserRepositoryInterface $repository,
-        Writer $writer
+        SubuserRepositoryInterface $repository
     ) {
         $this->connection = $connection;
         $this->daemonRepository = $daemonRepository;
@@ -81,20 +74,19 @@ class SubuserUpdateService
         $this->permissionRepository = $permissionRepository;
         $this->permissionService = $permissionService;
         $this->repository = $repository;
-        $this->writer = $writer;
     }
 
     /**
      * Update permissions for a given subuser.
      *
-     * @param int   $subuser
-     * @param array $permissions
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param array                       $permissions
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($subuser, array $permissions)
+    public function handle(Subuser $subuser, array $permissions)
     {
         $subuser = $this->repository->getWithServer($subuser);
 
@@ -104,15 +96,10 @@ class SubuserUpdateService
 
         try {
             $token = $this->keyProviderService->handle($subuser->server_id, $subuser->user_id, false);
-            $this->daemonRepository->setNode($subuser->server->node_id)->revokeAccessKey($token);
+            $this->daemonRepository->setNode($subuser->getRelation('server')->node_id)->revokeAccessKey($token);
         } catch (RequestException $exception) {
             $this->connection->rollBack();
-            $this->writer->warning($exception);
-
-            $response = $exception->getResponse();
-            throw new DisplayException(trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
 
         $this->connection->commit();

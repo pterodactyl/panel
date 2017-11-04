@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Middleware;
 
@@ -13,36 +6,30 @@ use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Session\Session;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class ServerAuthenticate
+class AccessingValidServer
 {
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Models\Server
-     */
-    protected $server;
+    private $repository;
 
     /**
      * @var \Illuminate\Contracts\Session\Session
      */
-    protected $session;
+    private $session;
 
     /**
-     * ServerAuthenticate constructor.
+     * AccessingValidServer constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                     $config
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
@@ -63,7 +50,7 @@ class ServerAuthenticate
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
-     * @return mixed
+     * @return \Illuminate\Http\Response|mixed
      *
      * @throws \Illuminate\Auth\AuthenticationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -72,10 +59,6 @@ class ServerAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $request->user()) {
-            throw new AuthenticationException;
-        }
-
         $attributes = $request->route()->parameter('server');
         $isApiRequest = $request->expectsJson() || $request->is(...$this->config->get('pterodactyl.json_routes', []));
         $server = $this->repository->getByUuid($attributes instanceof Server ? $attributes->uuid : $attributes);
@@ -96,9 +79,11 @@ class ServerAuthenticate
             return response()->view('errors.suspended', [], 403);
         }
 
+        // Servers can have install statuses other than 1 or 0, so don't check
+        // for a bool-type operator here.
         if ($server->installed !== 1) {
             if ($isApiRequest) {
-                throw new AccessDeniedHttpException('Server is completing install process.');
+                throw new AccessDeniedHttpException('Server is not marked as installed.');
             }
 
             return response()->view('errors.installing', [], 403);
