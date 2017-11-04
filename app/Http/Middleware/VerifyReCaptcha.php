@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
+use stdClass;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Pterodactyl\Events\Auth\FailedCaptcha;
@@ -65,11 +66,11 @@ class VerifyReCaptcha
     /**
      * Determine if the response from the recaptcha servers was valid.
      *
-     * @param object                   $result
+     * @param stdClass                 $result
      * @param \Illuminate\Http\Request $request
      * @return bool
      */
-    private function isResponseVerified(object $result, Request $request): bool
+    private function isResponseVerified(stdClass $result, Request $request): bool
     {
         if (! $this->config->get('recaptcha.verify_domain')) {
             return false;

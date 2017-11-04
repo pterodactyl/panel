@@ -13,7 +13,6 @@ use Pterodactyl\Http\Middleware\VerifyReCaptcha;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
 use Pterodactyl\Http\Middleware\HMACAuthorization;
 use Illuminate\Routing\Middleware\ThrottleRequests;
-use Pterodactyl\Http\Middleware\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -21,6 +20,7 @@ use Pterodactyl\Http\Middleware\AccessingValidServer;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
@@ -28,6 +28,7 @@ use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
 use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+use Pterodactyl\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
 
 class Kernel extends HttpKernel
 {
@@ -71,7 +72,7 @@ class Kernel extends HttpKernel
         ],
         'daemon' => [
             SubstituteBindings::class,
-            'daemon-old',
+            DaemonAuthenticate::class,
         ],
     ];
 
@@ -87,7 +88,7 @@ class Kernel extends HttpKernel
         'server' => AccessingValidServer::class,
         'subuser.auth' => AuthenticateAsSubuser::class,
         'admin' => AdminAuthenticate::class,
-        'daemon-old' => DaemonAuthenticate::class,
+        'daemon-old' => OldDaemonAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
