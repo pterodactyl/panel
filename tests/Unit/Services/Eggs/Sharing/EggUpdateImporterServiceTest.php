@@ -65,7 +65,7 @@ class EggUpdateImporterServiceTest extends TestCase
         $egg = factory(Egg::class)->make();
         $variable = factory(EggVariable::class)->make();
 
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
+        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
         $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
@@ -105,7 +105,7 @@ class EggUpdateImporterServiceTest extends TestCase
         $variable1 = factory(EggVariable::class)->make();
         $variable2 = factory(EggVariable::class)->make();
 
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
+        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
         $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
@@ -145,7 +145,7 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfFileIsInvalid()
     {
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(false);
+        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_NO_FILE);
         try {
             $this->service->handle(1234, $this->file);
         } catch (PterodactylException $exception) {
@@ -159,7 +159,7 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfFileIsNotAFile()
     {
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
+        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(false);
 
         try {
@@ -175,7 +175,7 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfJsonMetaDataIsInvalid()
     {
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
+        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
         $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
@@ -195,7 +195,7 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfBadJsonIsProvided()
     {
-        $this->file->shouldReceive('isValid')->withNoArgs()->once()->andReturn(true);
+        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
         $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn('}');
