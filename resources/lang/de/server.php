@@ -1,0 +1,323 @@
+<?php
+
+return [
+    'index' => [
+        'title' => 'Server :name',
+        'header' => 'Server Konsole',
+        'header_sub' => 'Verwalte deinen Server in Echtzeit.',
+    ],
+    'schedule' => [
+        'header' => 'Schedule Manager',
+        'header_sub' => 'Erstelle geplante Aktionen.',
+        'current' => 'Derzeitige Aktionen',
+        'new' => [
+            'header' => 'Neue Aktion erstellen',
+            'header_sub' => 'Erstelle eine neue Gruppe an Aktionen.',
+            'submit' => 'Aktion erstellen',
+        ],
+        'manage' => [
+            'header' => 'Aktion verwalten',
+            'submit' => 'Aktion bearbeiten',
+            'delete' => 'Aktion löschen',
+        ],
+        'task' => [
+            'time' => 'Nach',
+            'action' => 'Aktion ausführen',
+            'payload' => 'With Payload',
+            'add_more' => 'Weitere Aktion',
+        ],
+        'actions' => [
+            'command' => 'Command ausführen',
+            'power' => 'Power Aktion',
+        ],
+        'unnamed' => 'Unnamed Schedule',
+        'setup' => 'Schedule Setup',
+        'day_of_week' => 'Day of Week',
+        'day_of_month' => 'Day of Month',
+        'hour' => 'Hour of Day',
+        'minute' => 'Minute of Hour',
+        'time_help' => 'Dieses System unterstützt dern Cronjob Syntax.',
+        'task_help' => 'Times for tasks are relative to the previously defined task. Each schedule may have no more than 5 tasks assigned to it and tasks may not be scheduled more than 15 minutes apart.',
+    ],
+    'tasks' => [
+        'task_created' => 'Aktion erfolgreich erstellt.',
+        'task_updated' => 'Aktion bearbeitet.',
+        'header' => 'Scheduled Tasks',
+        'header_sub' => 'Automatisiere deinen Server.',
+        'current' => 'Aktuelle Aktionen',
+        'actions' => [
+            'command' => 'Command ausführen',
+            'power' => 'Power Aktion senden',
+        ],
+        'new_task' => 'Neue Aktion erstellen',
+        'toggle' => 'Status ändern',
+        'new' => [
+            'header' => 'Neue Aktion',
+            'header_sub' => 'Neuen Aktion erstellen.',
+            'task_name' => 'Name',
+            'day_of_week' => 'Tag einer Woche',
+            'custom' => 'Custom Value',
+            'day_of_month' => 'Tag eines Monats',
+            'hour' => 'Stunde',
+            'minute' => 'Minute',
+            'sun' => 'Sontag',
+            'mon' => 'Montad',
+            'tues' => 'Dienstag',
+            'wed' => 'Mittwoch',
+            'thurs' => 'Donnerstag',
+            'fri' => 'Freitag',
+            'sat' => 'Samstag',
+            'submit' => 'Absenden',
+            'type' => 'TTyp',
+            'chain_then' => 'Then, After',
+            'chain_do' => 'Do',
+            'chain_arguments' => 'With Arguments',
+            'payload' => 'Task Payload',
+            'payload_help' => 'Wenn du die send command Methode ausgewählt hast wird ein Command zur angegebenen Zeit ausgeführt.',
+        ],
+        'edit' => [
+            'header' => 'Aktion beareiten',
+            'submit' => 'Abschicken',
+        ],
+    ],
+    'users' => [
+        'header' => 'User verwalten',
+        'header_sub' => 'Bestimme wer den Server verwalten kann.',
+        'configure' => 'Rechte einstellen',
+        'list' => 'Account Liste',
+        'add' => 'Neuen User erstellen',
+        'update' => 'User bearbeiten',
+        'user_assigned' => 'User an einen Server gebunden.',
+        'user_updated' => 'User Rechte erfolgreich aktualisiert.',
+        'edit' => [
+            'header' => 'User bearbeiten',
+            'header_sub' => 'Bearbeite den Zugriff eines Users auf deine Server.',
+        ],
+        'new' => [
+            'header' => 'Neuen User erstellen',
+            'header_sub' => 'Erstelle einen neuen User un gebe ihm Zugirff auf einen Server.',
+            'email' => 'Email Address',
+            'email_help' => 'Email Adresse für Einladungs mail.',
+            'power_header' => 'Power Verwaltung',
+            'file_header' => 'Datein Verwaltung',
+            'subuser_header' => 'Subuser Verwaltung',
+            'server_header' => 'Server Verwaltung',
+            'task_header' => 'Schedule Verwaltung',
+            'sftp_header' => 'SFTP Verwaltung',
+            'database_header' => 'Database Verwaltung',
+            'power_start' => [
+                'title' => 'Start Server',
+                'description' => 'Der User darf den Server starten.',
+            ],
+            'power_stop' => [
+                'title' => 'Stop Server',
+                'description' => 'Der User darf den Server stoppen.',
+            ],
+            'power_restart' => [
+                'title' => 'Restart Server',
+                'description' => 'Der User darf den Server restarten.',
+            ],
+            'power_kill' => [
+                'title' => 'Kill Server',
+                'description' => 'Der User darf den Prozess des Servers töten.',
+            ],
+            'send_command' => [
+                'title' => 'Send Console Command',
+                'description' => 'Der User darf die Konsole benutzen.',
+            ],
+            'list_files' => [
+                'title' => 'List Files',
+                'description' => 'Der User darf die Server-Dateien sehen.',
+            ],
+            'edit_files' => [
+                'title' => 'Edit Files',
+                'description' => 'Der User darf die Server-Dateien sehen.',
+            ],
+            'save_files' => [
+                'title' => 'Save Files',
+                'description' => 'Der User darf die Server-Dateien bearbeiten.',
+            ],
+            'move_files' => [
+                'title' => 'Rename & Move Files',
+                'description' => 'Der User darf die Server-Dateien ubenennen und verschieben.',
+            ],
+            'copy_files' => [
+                'title' => 'Copy Files',
+                'description' => 'Der User darf die Server-Dateien kopieren.',
+            ],
+            'compress_files' => [
+                'title' => 'Compress Files',
+                'description' => 'Der User darf die Server-Dateien komprimieren(zip).',
+            ],
+            'decompress_files' => [
+                'title' => 'Decompress Files',
+                'description' => 'Der User darf zip Archive entpacken.',
+            ],
+            'create_files' => [
+                'title' => 'Create Files',
+                'description' => 'Der User darf Server-Dateien erstellen.',
+            ],
+            'upload_files' => [
+                'title' => 'Upload Files',
+                'description' => 'Der User darf Server-Dateien hochladen.',
+            ],
+            'delete_files' => [
+                'title' => 'Delete Files',
+                'description' => 'Der User darf Server-Dateien löschen.',
+            ],
+            'download_files' => [
+                'title' => 'Download Files',
+                'description' => 'Der User darf Server-Dateien herunterladen.',
+            ],
+            'list_subusers' => [
+                'title' => 'List Subusers',
+                'description' => 'Der User darf Subuser sehen.',
+            ],
+            'view_subuser' => [
+                'title' => 'View Subuser',
+                'description' => 'Der User darf Subuser genauer sehen.',
+            ],
+            'edit_subuser' => [
+                'title' => 'Edit Subuser',
+                'description' => 'Der User darf Subuser bearbeiten.',
+            ],
+            'create_subuser' => [
+                'title' => 'Create Subuser',
+                'description' => 'Der User darf Subuser erstellen.',
+            ],
+            'delete_subuser' => [
+                'title' => 'Delete Subuser',
+                'description' => 'Der User darf Subuser löschen.',
+            ],
+            'view_allocations' => [
+                'title' => 'View Allocations',
+                'description' => 'Allows user to view all of the IPs and ports assigned to a server.',
+            ],
+            'edit_allocation' => [
+                'title' => 'Edit Default Connection',
+                'description' => 'Allows user to change the default connection allocation to use for a server.',
+            ],
+            'view_startup' => [
+                'title' => 'View Startup Command',
+                'description' => 'Allows user to view the startup command and associated variables for a server.',
+            ],
+            'edit_startup' => [
+                'title' => 'Edit Startup Command',
+                'description' => 'Allows a user to modify startup variables for a server.',
+            ],
+            'list_schedules' => [
+                'title' => 'List Schedules',
+                'description' => 'Der User darf geplante Aktionen für den Server sehen.',
+            ],
+            'view_schedule' => [
+                'title' => 'View Schedule',
+                'description' => 'Der User darf eine Aktion ansehen.',
+            ],
+            'toggle_schedule' => [
+                'title' => 'Toggle Schedule',
+                'description' => 'Der User darf geplante Aktionen für den Server de-/aktivieren.',
+            ],
+            'queue_schedule' => [
+                'title' => 'Queue Schedule',
+                'description' => 'Allows a user to queue a schedule to run it\'s tasks on the next process cycle.',
+            ],
+            'edit_schedule' => [
+                'title' => 'Edit Schedule',
+                'description' => 'Der User darf geplante Aktionen für den Server bearbeiten.',
+            ],
+            'create_schedule' => [
+                'title' => 'Create Schedule',
+                'description' => 'Der User darf geplante Aktionen für den Server erstellen.',
+            ],
+            'delete_schedule' => [
+                'title' => 'Delete Schedule',
+                'description' => 'Der User darf geplante Aktionen für den Server löschen.',
+            ],
+            'view_sftp' => [
+                'title' => 'View SFTP Details',
+                'description' => 'Der User darf die SFTP Informationen sehen (nicht das Passwort).',
+            ],
+            'view_sftp_password' => [
+                'title' => 'View SFTP Password',
+                'description' => 'Der User darf dass SFTP Passwort sehen.',
+            ],
+            'reset_sftp' => [
+                'title' => 'Reset SFTP Password',
+                'description' => 'Der User darf dass SFTP Passwort zurücksetzen.',
+            ],
+            'view_databases' => [
+                'title' => 'View Database Details',
+                'description' => Der User darf die Datenbankinformationen sehen.',
+            ],
+            'reset_db_password' => [
+                'title' => 'Reset Database Password',
+                'description' => 'Der User darf das Datenbankpasswort zurücksetzen.',
+            ],
+        ],
+    ],
+    'files' => [
+        'exceptions' => [
+            'invalid_mime' => 'Diese Datei kann leider nicht bearbeitet werden',
+            'max_size' => 'Diese Datei ist zu groß um bearbeitet zu werden.',
+        ],
+        'header' => 'Datei Manager',
+        'header_sub' => 'Verwalte deine Dateien.',
+        'loading' => 'Datein werden geladen. Bitte warten...',
+        'path' => 'Wenn du Ordner erstellst solltest du :path als Basis Ordner verwenden! Der maximale Upload beträgt: :size.',
+        'seconds_ago' => 'Sekunden her',
+        'file_name' => 'Dateiname',
+        'size' => 'Größe',
+        'last_modified' => 'Zuletzt bearbeitet',
+        'add_new' => 'Neue Datei erstellen',
+        'add_folder' => 'Neuen Ordner ertsllen',
+        'mass_actions' => 'Massenaktionen',
+        'delete' => 'löschen',
+        'edit' => [
+            'header' => 'Datei bearbeiten',
+            'header_sub' => 'Bearbeite Dateien direkt vom Browser aus.',
+            'save' => 'Datei speichern',
+            'return' => 'Zurück zum Datei Manager',
+        ],
+        'add' => [
+            'header' => 'Neue Datei',
+            'header_sub' => 'Erstelle eine neue Datei.',
+            'name' => 'Dateiname',
+            'create' => 'Datei erstellen',
+        ],
+    ],
+    'config' => [
+        'startup' => [
+            'header' => 'Start Konfiguration',
+            'header_sub' => 'Bearbeite die Startparameter des Serves.',
+            'command' => 'Startup Command',
+            'edit_params' => 'Parameter bearbeiten',
+            'update' => 'Absenden',
+            'startup_regex' => 'Input Rules',
+            'edited' => 'Die Einstellungen wurden gespeichert und werden beim nächsten Serverstart verwendet.',
+        ],
+        'sftp' => [
+            'header' => 'SFTP Information',
+            'header_sub' => 'Details für eine SFTP verbindung.',
+            'change_pass' => 'Passwort ändern',
+            'details' => 'SFTP Details',
+            'conn_addr' => 'Adresse',
+            'warning' => 'Bitte benutze SFTP und nicht FTP!.',
+        ],
+        'database' => [
+            'header' => 'Datenbanken',
+            'header_sub' => 'Alle für diesen Server verfügbaren Datenbanken.',
+            'your_dbs' => 'Deine Datenbanken',
+            'host' => 'MySQL Host',
+            'reset_password' => 'Passwort zurücksetzen',
+            'no_dbs' => 'Du hast leider keine Datenbanken.',
+            'add_db' => 'Datenbank hinzufügen.',
+        ],
+        'allocation' => [
+            'header' => 'Server Allocations',
+            'header_sub' => 'Control the IPs and ports available on this server.',
+            'available' => 'Available Allocations',
+            'help' => 'Allocation Help',
+            'help_text' => 'The list to the left includes all available IPs and ports that are open for your server to use for incoming connections.',
+        ],
+    ],
+];
