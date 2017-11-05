@@ -48,12 +48,8 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
                             <tr>
-                                <td>UUID</td>
-                                <td>{{ $server->uuid }}</td>
-                            </tr>
-                            <tr>
-                                <td>Docker Container ID</td>
-                                <td data-attr="container-id"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                                <td>UUID / Docker Container ID</td>
+                                <td><code>{{ $server->uuid }}</code></td>
                             </tr>
                             <tr>
                                 <td>Service</td>
@@ -157,31 +153,4 @@
         </div>
     </div>
 </div>
-@endsection
-
-@section('footer-scripts')
-    @parent
-    <script>
-    (function checkServerInfo() {
-        $.ajax({
-            type: 'GET',
-            headers: {
-                'X-Access-Token': '{{ $server->daemonSecret }}',
-                'X-Access-Server': '{{ $server->uuid }}'
-            },
-            url: '{{ $server->node->scheme }}://{{ $server->node->fqdn }}:{{ $server->node->daemonListen }}/v1/server',
-            dataType: 'json',
-            timeout: 5000,
-        }).done(function (data) {
-            $('td[data-attr="container-id"]').html('<code>' + data.container.id + '</code>');
-            $('td[data-attr="container-user"]').html('<code>' + data.user + '</code>');
-        }).fail(function (jqXHR) {
-            $('td[data-attr="container-id"]').html('<code>error</code>');
-            $('td[data-attr="container-user"]').html('<code>error</code>');
-            console.error(jqXHR);
-        }).always(function () {
-            setTimeout(checkServerInfo, 60000);
-        })
-    })();
-    </script>
 @endsection
