@@ -82,19 +82,21 @@ class KeyCreationServiceTest extends TestCase
         ], true, true)->once()->andReturn((object) ['id' => 1]);
 
         $this->permissions->shouldReceive('getPermissions')->withNoArgs()->once()->andReturn([
-            '_user' => ['server' => ['list']],
-            'server' => ['create'],
+            '_user' => ['server' => ['list', 'multiple-dash-test']],
+            'server' => ['create', 'admin-dash-test'],
         ]);
 
         $this->permissions->shouldReceive('create')->with(1, 'user.server-list')->once()->andReturnNull();
+        $this->permissions->shouldReceive('create')->with(1, 'user.server-multiple-dash-test')->once()->andReturnNull();
         $this->permissions->shouldReceive('create')->with(1, 'server-create')->once()->andReturnNull();
+        $this->permissions->shouldReceive('create')->with(1, 'server-admin-dash-test')->once()->andReturnNull();
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->service->handle(
             ['test-data' => 'test'],
-            ['invalid-node', 'server-list'],
-            ['invalid-node', 'server-create']
+            ['invalid-node', 'server-list', 'server-multiple-dash-test'],
+            ['invalid-node', 'server-create', 'server-admin-dash-test']
         );
 
         $this->assertNotEmpty($response);
