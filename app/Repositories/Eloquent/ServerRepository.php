@@ -40,6 +40,22 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
+     * Load the egg relations onto the server model.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
+     */
+    public function loadEggRelations(Server $server, bool $refresh = false): Server
+    {
+        if (! $server->relationLoaded('egg') || $refresh) {
+            $server->load('egg.scriptFrom');
+        }
+
+        return $server;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getDataForRebuild($server = null, $node = null)

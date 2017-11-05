@@ -32,6 +32,15 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getDataForRebuild($server = null, $node = null);
 
     /**
+     * Load the egg relations onto the server model.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
+     */
+    public function loadEggRelations(Server $server, bool $refresh = false): Server;
+
+    /**
      * Return a server model and all variables associated with the server.
      *
      * @param int $id

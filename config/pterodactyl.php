@@ -184,6 +184,8 @@ return [
         'remote/*',
     ],
 
+    'default_api_version' => 'application/vnd.pterodactyl.v1+json',
+
     /*
     |--------------------------------------------------------------------------
     | Dynamic Environment Variables
