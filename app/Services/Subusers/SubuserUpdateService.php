@@ -88,14 +88,14 @@ class SubuserUpdateService
      */
     public function handle(Subuser $subuser, array $permissions)
     {
-        $subuser = $this->repository->getWithServer($subuser);
+        $subuser = $this->repository->loadServerAndUserRelations($subuser);
 
         $this->connection->beginTransaction();
         $this->permissionRepository->deleteWhere([['subuser_id', '=', $subuser->id]]);
         $this->permissionService->handle($subuser->id, $permissions);
 
         try {
-            $token = $this->keyProviderService->handle($subuser->server_id, $subuser->user_id, false);
+            $token = $this->keyProviderService->handle($subuser->getRelation('server'), $subuser->getRelation('user'), false);
             $this->daemonRepository->setNode($subuser->getRelation('server')->node_id)->revokeAccessKey($token);
         } catch (RequestException $exception) {
             $this->connection->rollBack();

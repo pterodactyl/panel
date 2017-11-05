@@ -20,11 +20,7 @@ class Authenticate
     public function handle(Request $request, Closure $next)
     {
         if (! $request->user()) {
-            if ($request->ajax() || $request->expectsJson()) {
-                throw new AuthenticationException();
-            } else {
-                return redirect()->route('auth.login');
-            }
+            throw new AuthenticationException;
         }
 
         return $next($request);

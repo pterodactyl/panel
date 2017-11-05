@@ -31,10 +31,14 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
      * @param bool                        $refresh
      * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithServer(Subuser $subuser, bool $refresh = false): Subuser
+    public function loadServerAndUserRelations(Subuser $subuser, bool $refresh = false): Subuser
     {
         if (! $subuser->relationLoaded('server') || $refresh) {
             $subuser->load('server');
+        }
+
+        if (! $subuser->relationLoaded('user') || $refresh) {
+            $subuser->load('user');
         }
 
         return $subuser;

@@ -12,6 +12,8 @@ namespace Tests\Unit\Services\DaemonKeys;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
@@ -20,24 +22,14 @@ use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 class DaemonKeyProviderServiceTest extends TestCase
 {
     /**
-     * @var \Carbon\Carbon|\Mockery\Mock
-     */
-    protected $carbon;
-
-    /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService|\Mockery\Mock
      */
-    protected $keyUpdateService;
+    private $keyUpdateService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
-     */
-    protected $service;
+    private $repository;
 
     /**
      * Setup tests.
@@ -45,29 +37,46 @@ class DaemonKeyProviderServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->carbon = new Carbon();
-        $this->carbon->setTestNow();
+        Carbon::setTestNow();
 
         $this->keyUpdateService = m::mock(DaemonKeyUpdateService::class);
         $this->repository = m::mock(DaemonKeyRepositoryInterface::class);
-
-        $this->service = new DaemonKeyProviderService($this->carbon, $this->keyUpdateService, $this->repository);
     }
 
     /**
-     * Test that a key is returned.
+     * Test that a key is returned correctly as a non-admin.
      */
     public function testKeyIsReturned()
     {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
         $key = factory(DaemonKey::class)->make();
 
         $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $key->user_id],
-            ['server_id', '=', $key->server_id],
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $response = $this->service->handle($key->server_id, $key->user_id);
+        $response = $this->getService()->handle($server, $user);
+        $this->assertNotEmpty($response);
+        $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Test that an admin user gets the server owner's key as the response.
+     */
+    public function testServerOwnerKeyIsReturnedIfUserIsAdministrator()
+    {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 1]);
+        $key = factory(DaemonKey::class)->make();
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $server->owner_id],
+            ['server_id', '=', $server->id],
+        ])->once()->andReturn($key);
+
+        $response = $this->getService()->handle($server, $user);
         $this->assertNotEmpty($response);
         $this->assertEquals($key->secret, $response);
     }
@@ -77,20 +86,20 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     public function testExpiredKeyIsUpdated()
     {
-        $key = factory(DaemonKey::class)->make([
-            'expires_at' => $this->carbon->subHour(),
-        ]);
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $key->user_id],
-            ['server_id', '=', $key->server_id],
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $this->keyUpdateService->shouldReceive('handle')->with($key->id)->once()->andReturn(true);
+        $this->keyUpdateService->shouldReceive('handle')->with($key->id)->once()->andReturn('abc123');
 
-        $response = $this->service->handle($key->server_id, $key->user_id);
+        $response = $this->getService()->handle($server, $user);
         $this->assertNotEmpty($response);
-        $this->assertTrue($response);
+        $this->assertEquals('abc123', $response);
     }
 
     /**
@@ -98,17 +107,27 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     public function testExpiredKeyIsNotUpdated()
     {
-        $key = factory(DaemonKey::class)->make([
-            'expires_at' => $this->carbon->subHour(),
-        ]);
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $key->user_id],
-            ['server_id', '=', $key->server_id],
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $response = $this->service->handle($key->server_id, $key->user_id, false);
+        $response = $this->getService()->handle($server, $user, false);
         $this->assertNotEmpty($response);
         $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     */
+    private function getService(): DaemonKeyProviderService
+    {
+        return new DaemonKeyProviderService($this->keyUpdateService, $this->repository);
     }
 }

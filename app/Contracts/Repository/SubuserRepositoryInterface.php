@@ -13,7 +13,7 @@ interface SubuserRepositoryInterface extends RepositoryInterface
      * @param bool                        $refresh
      * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithServer(Subuser $subuser, bool $refresh = false): Subuser;
+    public function loadServerAndUserRelations(Subuser $subuser, bool $refresh = false): Subuser;
 
     /**
      * Return a subuser with the associated permissions relationship.

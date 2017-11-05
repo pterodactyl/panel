@@ -29,6 +29,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
 {
@@ -80,7 +81,7 @@ class DaemonAuthenticate
         try {
             $node = $this->repository->findFirstWhere([['daemonSecret', '=', $token]]);
         } catch (RecordNotFoundException $exception) {
-            throw new HttpException(403);
+            throw new AccessDeniedHttpException;
         }
 
         $request->attributes->set('node', $node);

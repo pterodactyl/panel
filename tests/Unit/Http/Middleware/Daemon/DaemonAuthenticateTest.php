@@ -60,6 +60,8 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     /**
      * Test that passing in an invalid node daemon secret will result in a HTTP/403
      * error response.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testResponseShouldFailIfNoNodeIsFound()
     {
@@ -68,11 +70,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
 
         $this->repository->shouldReceive('findFirstWhere')->with([['daemonSecret', '=', 'test1234']])->once()->andThrow(new RecordNotFoundException);
 
-        try {
-            $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        } catch (HttpException $exception) {
-            $this->assertEquals(403, $exception->getStatusCode(), 'Assert that a status code of 403 is returned.');
-        }
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
     /**

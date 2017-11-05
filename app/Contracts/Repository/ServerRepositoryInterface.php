@@ -118,7 +118,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return a server by UUID.
      *
      * @param string $uuid
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

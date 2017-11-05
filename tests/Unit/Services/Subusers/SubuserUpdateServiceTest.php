@@ -11,6 +11,7 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Tests\Traits\MocksRequestException;
@@ -81,13 +82,14 @@ class SubuserUpdateServiceTest extends TestCase
     {
         $subuser = factory(Subuser::class)->make();
         $subuser->setRelation('server', factory(Server::class)->make());
+        $subuser->setRelation('user', factory(User::class)->make());
 
-        $this->repository->shouldReceive('getWithServer')->with($subuser)->once()->andReturn($subuser);
+        $this->repository->shouldReceive('loadServerAndUserRelations')->with($subuser)->once()->andReturn($subuser);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->permissionRepository->shouldReceive('deleteWhere')->with([['subuser_id', '=', $subuser->id]])->once()->andReturnNull();
         $this->permissionService->shouldReceive('handle')->with($subuser->id, ['some-permission'])->once()->andReturnNull();
 
-        $this->keyProviderService->shouldReceive('handle')->with($subuser->server_id, $subuser->user_id, false)->once()->andReturn('test123');
+        $this->keyProviderService->shouldReceive('handle')->with($subuser->server, $subuser->user, false)->once()->andReturn('test123');
         $this->daemonRepository->shouldReceive('setNode')->with($subuser->server->node_id)->once()->andReturnSelf();
         $this->daemonRepository->shouldReceive('revokeAccessKey')->with('test123')->once()->andReturnNull();
 
@@ -106,13 +108,14 @@ class SubuserUpdateServiceTest extends TestCase
 
         $subuser = factory(Subuser::class)->make();
         $subuser->setRelation('server', factory(Server::class)->make());
+        $subuser->setRelation('user', factory(User::class)->make());
 
-        $this->repository->shouldReceive('getWithServer')->with($subuser)->once()->andReturn($subuser);
+        $this->repository->shouldReceive('loadServerAndUserRelations')->with($subuser)->once()->andReturn($subuser);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->permissionRepository->shouldReceive('deleteWhere')->with([['subuser_id', '=', $subuser->id]])->once()->andReturnNull();
         $this->permissionService->shouldReceive('handle')->with($subuser->id, [])->once()->andReturnNull();
 
-        $this->keyProviderService->shouldReceive('handle')->with($subuser->server_id, $subuser->user_id, false)->once()->andReturn('test123');
+        $this->keyProviderService->shouldReceive('handle')->with($subuser->server, $subuser->user, false)->once()->andReturn('test123');
         $this->daemonRepository->shouldReceive('setNode')->with($subuser->server->node_id)->once()->andThrow($this->getExceptionMock());
         $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 

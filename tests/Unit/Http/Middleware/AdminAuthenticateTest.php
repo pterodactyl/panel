@@ -4,7 +4,6 @@ namespace Tests\Unit\Http\Middleware;
 
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AdminAuthenticateTest extends MiddlewareTestCase
 {
@@ -22,20 +21,20 @@ class AdminAuthenticateTest extends MiddlewareTestCase
 
     /**
      * Test that a missing user in the request triggers an error.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testExceptionIsThrownIfUserDoesNotExist()
     {
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturnNull();
 
-        try {
-            $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        } catch (HttpException $exception) {
-            $this->assertEquals(403, $exception->getStatusCode());
-        }
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
     /**
      * Test that an exception is thrown if the user is not an admin.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testExceptionIsThrownIfUserIsNotAnAdmin()
     {
@@ -43,11 +42,7 @@ class AdminAuthenticateTest extends MiddlewareTestCase
 
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);
 
-        try {
-            $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        } catch (HttpException $exception) {
-            $this->assertEquals(403, $exception->getStatusCode());
-        }
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
     /**

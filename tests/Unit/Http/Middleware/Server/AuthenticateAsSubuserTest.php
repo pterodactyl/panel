@@ -42,7 +42,7 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
         $user = $this->setRequestUser();
         $this->setRequestAttribute('server', $model);
 
-        $this->keyProviderService->shouldReceive('handle')->with($model->id, $user->id)->once()->andReturn('abc123');
+        $this->keyProviderService->shouldReceive('handle')->with($model, $user)->once()->andReturn('abc123');
         $this->session->shouldReceive('now')->with('server_data.token', 'abc123')->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
@@ -53,7 +53,7 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
     /**
      * Test middleware handles missing token exception.
      *
-     * @expectedException \Illuminate\Auth\AuthenticationException
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      * @expectedExceptionMessage This account does not have permission to access this server.
      */
     public function testExceptionIsThrownIfNoTokenIsFound()
@@ -62,7 +62,7 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
         $user = $this->setRequestUser();
         $this->setRequestAttribute('server', $model);
 
-        $this->keyProviderService->shouldReceive('handle')->with($model->id, $user->id)->once()->andThrow(new RecordNotFoundException);
+        $this->keyProviderService->shouldReceive('handle')->with($model, $user)->once()->andThrow(new RecordNotFoundException);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }

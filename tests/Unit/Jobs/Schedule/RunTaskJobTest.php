@@ -13,6 +13,7 @@ use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
 use Pterodactyl\Models\Task;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
@@ -63,6 +64,7 @@ class RunTaskJobTest extends TestCase
     {
         parent::setUp();
         Bus::fake();
+        Carbon::setTestNow();
 
         $this->commandRepository = m::mock(CommandRepositoryInterface::class);
         $this->config = m::mock(Repository::class);
@@ -81,17 +83,15 @@ class RunTaskJobTest extends TestCase
      */
     public function testPowerAction()
     {
-        Carbon::setTestNow();
-
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'power', 'sequence_id' => 1]);
-        $server = factory(Server::class)->make();
-        $task->server = $server;
+        $task->setRelation('server', $server = factory(Server::class)->make());
+        $server->setRelation('user', factory(User::class)->make());
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $server->owner_id)->once()->andReturn('123456');
-        $this->powerRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
+        $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
+        $this->powerRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
+            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
             ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
             ->shouldReceive('sendSignal')->with($task->payload)->once()->andReturnNull();
 
@@ -113,17 +113,15 @@ class RunTaskJobTest extends TestCase
      */
     public function testCommandAction()
     {
-        Carbon::setTestNow();
-
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'command', 'sequence_id' => 1]);
-        $server = factory(Server::class)->make();
-        $task->server = $server;
+        $task->setRelation('server', $server = factory(Server::class)->make());
+        $server->setRelation('user', factory(User::class)->make());
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $server->owner_id)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
+        $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
+        $this->commandRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
+            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
             ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
             ->shouldReceive('send')->with($task->payload)->once()->andReturnNull();
 
@@ -145,17 +143,15 @@ class RunTaskJobTest extends TestCase
      */
     public function testNextTaskQueuedIfExists()
     {
-        Carbon::setTestNow();
-
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'command', 'sequence_id' => 1]);
-        $server = factory(Server::class)->make();
-        $task->server = $server;
+        $task->setRelation('server', $server = factory(Server::class)->make());
+        $server->setRelation('user', factory(User::class)->make());
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $server->owner_id)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
+        $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
+        $this->commandRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
+            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
             ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
             ->shouldReceive('send')->with($task->payload)->once()->andReturnNull();
 
@@ -187,7 +183,8 @@ class RunTaskJobTest extends TestCase
     public function testInvalidActionPassedToJob()
     {
         $task = factory(Task::class)->make(['action' => 'invalid', 'sequence_id' => 1]);
-        $task->server = [];
+        $task->setRelation('server', $server = factory(Server::class)->make());
+        $server->setRelation('user', factory(User::class)->make());
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
 

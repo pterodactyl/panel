@@ -31,7 +31,7 @@ class TaskRepository extends EloquentRepository implements TaskRepositoryInterfa
     {
         Assert::integerish($id, 'First argument passed to getTaskWithServer must be numeric, received %s.');
 
-        $instance = $this->getBuilder()->with('server')->find($id, $this->getColumns());
+        $instance = $this->getBuilder()->with('server.user')->find($id, $this->getColumns());
         if (! $instance) {
             throw new RecordNotFoundException;
         }

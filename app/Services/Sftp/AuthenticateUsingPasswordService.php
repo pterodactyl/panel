@@ -84,7 +84,7 @@ class AuthenticateUsingPasswordService
 
         return [
             'server' => $server->uuid,
-            'token' => $this->keyProviderService->handle($server->id, $user->id),
+            'token' => $this->keyProviderService->handle($server, $user),
         ];
     }
 }
