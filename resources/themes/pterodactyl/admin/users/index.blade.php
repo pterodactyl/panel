@@ -39,13 +39,13 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>ID</td>
-                            <th>Email</td>
+                            <th>ID</th>
+                            <th>Email</th>
                             <th>Client Name</th>
                             <th>Username</th>
                             <th class="text-center">2FA</th>
-                            <th class="text-center" data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</th>
-                            <th class="text-center" data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
                             <th></th>
                         </tr>
                     </thead>
