@@ -3,7 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.7.0 (Derelict Dermodactylus)
+## v0.7.0-beta.2 (Derelict Dermodactylus)
+### Fixed
+* `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
+
+## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
