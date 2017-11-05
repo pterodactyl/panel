@@ -65,13 +65,16 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return a subuser and associated permissions given a user_id and server_id.
+     *
+     * @param int $user
+     * @param int $server
+     * @return \Pterodactyl\Models\Subuser
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithPermissionsUsingUserAndServer($user, $server)
+    public function getWithPermissionsUsingUserAndServer(int $user, int $server): Subuser
     {
-        Assert::integerish($user, 'First argument passed to getWithPermissionsUsingUserAndServer must be integer, received %s.');
-        Assert::integerish($server, 'Second argument passed to getWithPermissionsUsingUserAndServer must be integer, received %s.');
-
         $instance = $this->getBuilder()->with('permissions')->where([
             ['user_id', '=', $user],
             ['server_id', '=', $server],

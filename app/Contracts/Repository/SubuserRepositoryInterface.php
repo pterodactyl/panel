@@ -33,7 +33,7 @@ interface SubuserRepositoryInterface extends RepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithPermissionsUsingUserAndServer($user, $server);
+    public function getWithPermissionsUsingUserAndServer(int $user, int $server): Subuser;
 
     /**
      * Find a subuser and return with server and permissions relationships.

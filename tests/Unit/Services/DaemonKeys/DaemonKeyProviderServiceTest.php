@@ -16,11 +16,18 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderServiceTest extends TestCase
 {
+    /**
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
+     */
+    private $keyCreationService;
+
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService|\Mockery\Mock
      */
@@ -39,6 +46,7 @@ class DaemonKeyProviderServiceTest extends TestCase
         parent::setUp();
         Carbon::setTestNow();
 
+        $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
         $this->keyUpdateService = m::mock(DaemonKeyUpdateService::class);
         $this->repository = m::mock(DaemonKeyRepositoryInterface::class);
     }
@@ -49,30 +57,11 @@ class DaemonKeyProviderServiceTest extends TestCase
     public function testKeyIsReturned()
     {
         $server = factory(Server::class)->make();
-        $user = factory(User::class)->make(['root_admin' => 0]);
+        $user = factory(User::class)->make();
         $key = factory(DaemonKey::class)->make();
 
         $this->repository->shouldReceive('findFirstWhere')->with([
             ['user_id', '=', $user->id],
-            ['server_id', '=', $server->id],
-        ])->once()->andReturn($key);
-
-        $response = $this->getService()->handle($server, $user);
-        $this->assertNotEmpty($response);
-        $this->assertEquals($key->secret, $response);
-    }
-
-    /**
-     * Test that an admin user gets the server owner's key as the response.
-     */
-    public function testServerOwnerKeyIsReturnedIfUserIsAdministrator()
-    {
-        $server = factory(Server::class)->make();
-        $user = factory(User::class)->make(['root_admin' => 1]);
-        $key = factory(DaemonKey::class)->make();
-
-        $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $server->owner_id],
             ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
@@ -122,12 +111,74 @@ class DaemonKeyProviderServiceTest extends TestCase
     }
 
     /**
+     * Test that a key is created if it is missing and the user is a
+     * root administrator.
+     */
+    public function testMissingKeyIsCreatedIfRootAdmin()
+    {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 1]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn($key->secret);
+
+        $response = $this->getService()->handle($server, $user, false);
+        $this->assertNotEmpty($response);
+        $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Test that a key is created if it is missing and the user is the
+     * server owner.
+     */
+    public function testMissingKeyIsCreatedIfUserIsServerOwner()
+    {
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $server = factory(Server::class)->make(['owner_id' => $user->id]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn($key->secret);
+
+        $response = $this->getService()->handle($server, $user, false);
+        $this->assertNotEmpty($response);
+        $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Test that an exception is thrown if the user should not get a key.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function testExceptionIsThrownIfUserDoesNotDeserveKey()
+    {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->getService()->handle($server, $user, false);
+    }
+
+    /**
      * Return an instance of the service with mocked dependencies.
      *
      * @return \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
      */
     private function getService(): DaemonKeyProviderService
     {
-        return new DaemonKeyProviderService($this->keyUpdateService, $this->repository);
+        return new DaemonKeyProviderService($this->keyCreationService, $this->repository, $this->keyUpdateService);
     }
 }

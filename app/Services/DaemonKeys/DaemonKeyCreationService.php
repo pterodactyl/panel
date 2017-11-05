@@ -25,7 +25,6 @@
 namespace Pterodactyl\Services\DaemonKeys;
 
 use Carbon\Carbon;
-use Webmozart\Assert\Assert;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
@@ -72,11 +71,8 @@ class DaemonKeyCreationService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle($server, $user)
+    public function handle(int $server, int $user)
     {
-        Assert::integerish($server, 'First argument passed to handle must be an integer, received %s.');
-        Assert::integerish($user, 'Second argument passed to handle must be an integer, received %s.');
-
         $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40);
 
         $this->repository->withoutFresh()->create([

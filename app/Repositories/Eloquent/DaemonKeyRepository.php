@@ -40,6 +40,26 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
     }
 
     /**
+     * Load the server and user relations onto a key model.
+     *
+     * @param \Pterodactyl\Models\DaemonKey $key
+     * @param bool                          $refresh
+     * @return \Pterodactyl\Models\DaemonKey
+     */
+    public function loadServerAndUserRelations(DaemonKey $key, bool $refresh = false): DaemonKey
+    {
+        if (! $key->relationLoaded('server') || $refresh) {
+            $key->load('server');
+        }
+
+        if (! $key->relationLoaded('user') || $refresh) {
+            $key->load('user');
+        }
+
+        return $key;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getServerKeys($server)

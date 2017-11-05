@@ -24,12 +24,23 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\DaemonKey;
+
 interface DaemonKeyRepositoryInterface extends RepositoryInterface
 {
     /**
      * String prepended to keys to identify that they are managed internally and not part of the user API.
      */
     const INTERNAL_KEY_IDENTIFIER = 'i_';
+
+    /**
+     * Load the server and user relations onto a key model.
+     *
+     * @param \Pterodactyl\Models\DaemonKey $key
+     * @param bool                          $refresh
+     * @return \Pterodactyl\Models\DaemonKey
+     */
+    public function loadServerAndUserRelations(DaemonKey $key, bool $refresh = false): DaemonKey;
 
     /**
      * Gets the daemon keys associated with a specific server.

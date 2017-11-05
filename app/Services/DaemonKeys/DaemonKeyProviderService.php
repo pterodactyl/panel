@@ -27,10 +27,16 @@ namespace Pterodactyl\Services\DaemonKeys;
 use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderService
 {
+    /**
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
+     */
+    private $keyCreationService;
+
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService
      */
@@ -44,11 +50,16 @@ class DaemonKeyProviderService
     /**
      * GetDaemonKeyService constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService      $keyCreationService
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
      */
-    public function __construct(DaemonKeyUpdateService $keyUpdateService, DaemonKeyRepositoryInterface $repository)
-    {
+    public function __construct(
+        DaemonKeyCreationService $keyCreationService,
+        DaemonKeyRepositoryInterface $repository,
+        DaemonKeyUpdateService $keyUpdateService
+    ) {
+        $this->keyCreationService = $keyCreationService;
         $this->keyUpdateService = $keyUpdateService;
         $this->repository = $repository;
     }
@@ -66,12 +77,23 @@ class DaemonKeyProviderService
      */
     public function handle(Server $server, User $user, $updateIfExpired = true): string
     {
-        $userId = $user->root_admin ? $server->owner_id : $user->id;
+        try {
+            $key = $this->repository->findFirstWhere([
+                ['user_id', '=', $user->id],
+                ['server_id', '=', $server->id],
+            ]);
+        } catch (RecordNotFoundException $exception) {
+            // If key doesn't exist but we are an admin or the server owner,
+            // create it.
+            if ($user->root_admin || $user->id === $server->owner_id) {
+                return $this->keyCreationService->handle($server->id, $user->id);
+            }
 
-        $key = $this->repository->findFirstWhere([
-            ['user_id', '=', $userId],
-            ['server_id', '=', $server->id],
-        ]);
+            // If they aren't the admin or owner of the server, they shouldn't get access.
+            // Subusers should always have an entry created when they are, so if there is
+            // no record, it should fail.
+            throw $exception;
+        }
 
         if (! $updateIfExpired || Carbon::now()->diffInSeconds($key->expires_at, false) > 0) {
             return $key->secret;
