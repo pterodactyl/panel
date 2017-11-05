@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
+* `[beta.1]` — Fixes bug that would prevent root admins from accessing servers they were not set as the owner of.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
