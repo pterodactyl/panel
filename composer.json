@@ -46,7 +46,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^2.4",
         "barryvdh/laravel-ide-helper": "^2.4",
-        "friendsofphp/php-cs-fixer": "~2.4.0",
+        "friendsofphp/php-cs-fixer": "^2.4",
         "fzaninotto/faker": "^1.6",
         "mockery/mockery": "^0.9",
         "php-mock/php-mock-phpunit": "^1.1",

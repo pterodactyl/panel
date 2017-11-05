@@ -135,9 +135,9 @@ class SubuserControllerTest extends ControllerTestCase
         $this->alert->shouldReceive('success')->with(trans('server.users.user_updated'))->once()->andReturnSelf();
         $this->alert->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
 
-        $response = $controller->update($this->request, 'abcd1234', 1234);
+        $response = $controller->update($this->request, 'abcd1234', $subuser->hashid);
         $this->assertIsRedirectResponse($response);
-        $this->assertRedirectRouteEquals('server.subusers.view', $response, ['uuid' => 'abcd1234', 'id' => 1234]);
+        $this->assertRedirectRouteEquals('server.subusers.view', $response, ['uuid' => 'abcd1234', 'id' => $subuser->hashid]);
     }
 
     /**
@@ -183,7 +183,7 @@ class SubuserControllerTest extends ControllerTestCase
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectRouteEquals('server.subusers.view', $response, [
             'uuid' => $server->uuid,
-            'id' => $subuser->id,
+            'id' => $subuser->hashid,
         ]);
     }
 

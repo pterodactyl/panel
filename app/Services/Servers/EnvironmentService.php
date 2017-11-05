@@ -99,7 +99,7 @@ class EnvironmentService
      *
      * @return array
      */
-    final private function getEnvironmentMappings(): array
+    private function getEnvironmentMappings(): array
     {
         return [
             'STARTUP' => 'startup',
