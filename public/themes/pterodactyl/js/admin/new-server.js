@@ -29,7 +29,7 @@ $(document).ready(function() {
     });
     $('#pNodeId').select2({
         placeholder: 'Select a Node',
-    });
+    }).change();
     $('#pAllocation').select2({
         placeholder: 'Select a Default Allocation',
     });
@@ -79,14 +79,6 @@ $(document).ready(function() {
     });
 });
 
-function hideLoader() {
-    $('#allocationLoader').hide();
-}
-
-function showLoader() {
-    $('#allocationLoader').show();
-}
-
 var lastActiveBox = null;
 $(document).on('click', function (event) {
     if (lastActiveBox !== null) {
@@ -97,12 +89,9 @@ $(document).on('click', function (event) {
     lastActiveBox.addClass('box-primary');
 });
 
-var curentNode = null;
-var NodeData = [];
-
-$('#pNodeId').on('change', function (event) {
+$('#pNodeId').on('change', function () {
     currentNode = $(this).val();
-    $.each(NodeData, function (i, v) {
+    $.each(Pterodactyl.nodeData, function (i, v) {
         if (v.id == currentNode) {
             $('#pAllocation').html('').select2({
                 data: v.allocations,

@@ -60,10 +60,9 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     public function getNodeServers($id);
 
     /**
-     * Return a collection of nodes beloning to a specific location for use on frontend display.
+     * Return a collection of nodes for all locations to use in server creation UI.
      *
-     * @param int $location
      * @return mixed
      */
-    public function getNodesForLocation($location);
+    public function getNodesForServerCreation();
 }

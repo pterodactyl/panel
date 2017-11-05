@@ -95,7 +95,6 @@ Route::group(['prefix' => 'servers'], function () {
     Route::get('/view/{server}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
 
     Route::post('/new', 'ServersController@store');
-    Route::post('/new/nodes', 'ServersController@nodes')->name('admin.servers.new.nodes');
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
     Route::post('/view/{server}/startup', 'ServersController@saveStartup');
     Route::post('/view/{server}/database', 'ServersController@newDatabase');

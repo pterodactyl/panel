@@ -231,6 +231,7 @@ class ServersController extends Controller
         $nests = $this->nestRepository->getWithEggs();
 
         Javascript::put([
+            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
             'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
@@ -260,17 +261,6 @@ class ServersController extends Controller
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
         return redirect()->route('admin.servers.view', $server->id);
-    }
-
-    /**
-     * Returns a tree of all avaliable nodes in a given location.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Support\Collection
-     */
-    public function nodes(Request $request)
-    {
-        return $this->nodeRepository->getNodesForLocation($request->input('location'));
     }
 
     /**
