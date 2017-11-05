@@ -31,7 +31,7 @@ class MacroServiceProvider extends ServiceProvider
             $i = 0;
             while (($size / 1024) > 0.9) {
                 $size = $size / 1024;
-                $i++;
+                ++$i;
             }
 
             return round($size, ($i < 2) ? 0 : $precision) . ' ' . $units[$i];

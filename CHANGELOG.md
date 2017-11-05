@@ -8,6 +8,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
 * `[beta.1]` — Fixes bug that would prevent root admins from accessing servers they were not set as the owner of.
 * `[beta.1]` — Fixes wrong URL redirect being provided when creating a subuser.
+* `[beta.1]` — Fixes missing check in environment setup that would leave the Hashids salt empty.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added

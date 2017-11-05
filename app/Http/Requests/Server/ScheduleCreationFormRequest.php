@@ -69,7 +69,7 @@ class ScheduleCreationFormRequest extends ServerFormRequest
     {
         $restructured = [];
         foreach (array_get($this->all(), 'tasks', []) as $key => $values) {
-            for ($i = 0; $i < count($values); $i++) {
+            for ($i = 0; $i < count($values); ++$i) {
                 $restructured[$i][$key] = $values[$i];
             }
         }

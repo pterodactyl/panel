@@ -20,7 +20,7 @@ if (! function_exists('human_readable')) {
             $i = 0;
             while (($path / 1024) > 0.9) {
                 $path = $path / 1024;
-                $i++;
+                ++$i;
             }
 
             return round($path, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];

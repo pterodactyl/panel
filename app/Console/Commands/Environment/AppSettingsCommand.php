@@ -72,6 +72,10 @@ class AppSettingsCommand extends Command
      */
     public function handle()
     {
+        if (empty($this->config->get('hashids.salt')) || $this->option('--new-salt')) {
+            $this->variables['HASHIDS_SALT'] = str_random(20);
+        }
+
         $this->output->comment(trans('command/messages.environment.app.author_help'));
         $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
             trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
