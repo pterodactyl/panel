@@ -172,7 +172,7 @@ class SubuserController extends Controller
 
         return redirect()->route('server.subusers.view', [
             'uuid' => $server->uuid,
-            'id' => $subuser->id,
+            'id' => $subuser->hashid,
         ]);
     }
 
