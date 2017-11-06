@@ -42,3 +42,41 @@ If you've found what you believe is a security issue please email us at `support
 You can find us in a couple places online. First and foremost, we're active right here on Github. If you encounter a bug or other problem open an issue on here for us to take a look at it. We also accept feature requests here as well.
 
 You can also find us on [Discord](https://pterodactyl.io/discord) or our [community forums](https://forums.pterodactyl.io/). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our forums or Discord.
+
+
+## Financial contributions
+
+We also welcome financial contributions in full transparency on our [open collective](https://opencollective.com/pterodactyl).
+Anyone can file an expense. If the expense makes sense for the development of the community, it will be "merged" in the ledger of our open collective by the core contributors and the person who filed the expense will be reimbursed.
+
+
+## Credits
+
+
+### Contributors
+
+Thank you to all the people who have already contributed to pterodactyl!
+<a href="graphs/contributors"><img src="https://opencollective.com/pterodactyl/contributors.svg?width=890" /></a>
+
+
+### Backers
+
+Thank you to all our backers! [[Become a backer](https://opencollective.com/pterodactyl#backer)]
+
+<a href="https://opencollective.com/pterodactyl#backers" target="_blank"><img src="https://opencollective.com/pterodactyl/backers.svg?width=890"></a>
+
+
+### Sponsors
+
+Thank you to all our sponsors! (please ask your company to also support this open source project by [becoming a sponsor](https://opencollective.com/pterodactyl#sponsor))
+
+<a href="https://opencollective.com/pterodactyl/sponsor/0/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/1/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/2/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/3/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/4/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/5/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/6/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/7/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/8/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/9/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/9/avatar.svg"></a>
