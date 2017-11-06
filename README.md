@@ -1,12 +1,42 @@
 [![Logo Image](https://cdn.pterodactyl.io/logos/Banner%20Logo%20Black@2x.png)](https://pterodactyl.io)
 
-[![Build Status](https://travis-ci.org/Pterodactyl/Panel.svg?branch=develop)](https://travis-ci.org/Pterodactyl/Panel) [![StyleCI](https://styleci.io/repos/47508644/shield?branch=develop)](https://styleci.io/repos/47508644) [![codecov](https://codecov.io/gh/Pterodactyl/Panel/branch/develop/graph/badge.svg)](https://codecov.io/gh/Pterodactyl/Panel)
+[![Backers on Open Collective](https://opencollective.com/pterodactyl/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/pterodactyl/sponsors/badge.svg)](#sponsors) [![Build Status](https://travis-ci.org/Pterodactyl/Panel.svg?branch=develop)](https://travis-ci.org/Pterodactyl/Panel) [![StyleCI](https://styleci.io/repos/47508644/shield?branch=develop)](https://styleci.io/repos/47508644) [![codecov](https://codecov.io/gh/Pterodactyl/Panel/branch/develop/graph/badge.svg)](https://codecov.io/gh/Pterodactyl/Panel)
 
 ## Pterodactyl Panel
 Pterodactyl Panel is the free, open-source, game agnostic, self-hosted control panel for users, networks, and game service providers. Pterodactyl supports games and servers such as Minecraft (including Spigot, Bungeecord, and Sponge), ARK: Evolution Evolved, CS:GO, Team Fortress 2, Insurgency, Teamspeak 3, Mumble, and many more. Control all of your games from one unified interface.
 
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [Documentation Website](https://docs.pterodactyl.io), our [Discord Chat](https://discord.gg/QRDZvVm), or via our [Forums](https://forums.pterodactyl.io).
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute]](CONTRIBUTING.md).
+<a href="graphs/contributors"><img src="https://opencollective.com/pterodactyl/contributors.svg?width=890" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/pterodactyl#backer)]
+
+<a href="https://opencollective.com/pterodactyl#backers" target="_blank"><img src="https://opencollective.com/pterodactyl/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/pterodactyl#sponsor)]
+
+<a href="https://opencollective.com/pterodactyl/sponsor/0/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/1/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/2/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/3/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/4/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/5/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/6/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/7/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/8/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/pterodactyl/sponsor/9/website" target="_blank"><img src="https://opencollective.com/pterodactyl/sponsor/9/avatar.svg"></a>
+
+
 
 ## License
 ```
