@@ -93,7 +93,7 @@ class IndexController extends Controller
     public function status(Request $request, $uuid)
     {
         $server = $this->repository->findFirstWhere([['uuidShort', '=', $uuid]]);
-        $token = $this->keyProviderService->handle($server->id, $request->user()->id);
+        $token = $this->keyProviderService->handle($server, $request->user());
 
         if (! $server->installed) {
             return response()->json(['status' => 20]);

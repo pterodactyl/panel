@@ -10,6 +10,8 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Schedule;
+use Illuminate\Support\Collection;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleRepository extends EloquentRepository implements ScheduleRepositoryInterface
@@ -23,19 +25,33 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     }
 
     /**
-     * {@inheritdoc}
+     * Return all of the schedules for a given server.
+     *
+     * @param int $server
+     * @return \Illuminate\Support\Collection
      */
-    public function getServerSchedules($server)
+    public function findServerSchedules(int $server): Collection
     {
         return $this->getBuilder()->withCount('tasks')->where('server_id', '=', $server)->get($this->getColumns());
     }
 
     /**
-     * {@inheritdoc}
+     * Return a schedule model with all of the associated tasks as a relationship.
+     *
+     * @param int $schedule
+     * @return \Pterodactyl\Models\Schedule
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getScheduleWithTasks($schedule)
+    public function getScheduleWithTasks(int $schedule): Schedule
     {
-        return $this->getBuilder()->with('tasks')->find($schedule, $this->getColumns());
+        /** @var \Pterodactyl\Models\Schedule $instance */
+        $instance = $this->getBuilder()->with('tasks')->find($schedule, $this->getColumns());
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        return $instance;
     }
 
     /**

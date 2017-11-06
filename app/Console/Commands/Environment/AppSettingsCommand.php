@@ -72,9 +72,13 @@ class AppSettingsCommand extends Command
      */
     public function handle()
     {
+        if (empty($this->config->get('hashids.salt')) || $this->option('--new-salt')) {
+            $this->variables['HASHIDS_SALT'] = str_random(20);
+        }
+
         $this->output->comment(trans('command/messages.environment.app.author_help'));
-        $this->variables['SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
-            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'undefined@unknown-author.com')
+        $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
+            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
         );
 
         $this->output->comment(trans('command/messages.environment.app.app_url_help'));
@@ -98,7 +102,7 @@ class AppSettingsCommand extends Command
             trans('command/messages.environment.app.session_driver'), [
                 'redis' => 'Redis (recommended)',
                 'memcached' => 'Memcached',
-                'mysql' => 'MySQL Database',
+                'database' => 'MySQL Database',
                 'file' => 'Filesystem',
                 'cookie' => 'Cookie',
             ], $this->config->get('session.driver', 'redis')
@@ -147,9 +151,13 @@ class AppSettingsCommand extends Command
             $this->output->comment(trans('command/messages.environment.app.redis_pass_help'));
             $this->variables['REDIS_PASSWORD'] = $this->option('redis-pass') ?? $this->output->askHidden(
                 trans('command/messages.environment.app.redis_password'), function () {
-                    return true;
+                    return '';
                 }
             );
+        }
+
+        if (empty($this->variables['REDIS_PASSWORD'])) {
+            $this->variables['REDIS_PASSWORD'] = 'null';
         }
 
         $this->variables['REDIS_PORT'] = $this->option('redis-port') ?? $this->ask(

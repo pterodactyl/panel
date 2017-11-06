@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Settings;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -57,11 +58,11 @@ class StartupController extends Controller
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $server = $request->attributes->get('server');
         $this->authorize('view-startup', $server);
-        $this->injectJavascript();
+        $this->setRequest($request)->injectJavascript();
 
         $data = $this->commandViewService->handle($server->id);
 

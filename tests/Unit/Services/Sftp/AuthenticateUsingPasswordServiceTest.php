@@ -55,7 +55,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('server_token');
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('server_token');
 
         $response = $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
         $this->assertNotEmpty($response);
@@ -80,7 +80,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('server_token');
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('server_token');
 
         $response = $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
         $this->assertNotEmpty($response);

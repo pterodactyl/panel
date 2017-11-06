@@ -129,9 +129,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function getNodesForLocation($location)
+    public function getNodesForServerCreation()
     {
-        $instance = $this->getBuilder()->with('allocations')->where('location_id', $location)->get();
+        $instance = $this->getBuilder()->with('allocations')->get();
 
         return $instance->map(function ($item) {
             $filtered = $item->allocations->where('server_id', null)->map(function ($map) {

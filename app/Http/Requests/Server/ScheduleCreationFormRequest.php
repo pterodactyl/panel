@@ -9,10 +9,22 @@
 
 namespace Pterodactyl\Http\Requests\Server;
 
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
-
-class ScheduleCreationFormRequest extends FrontendUserFormRequest
+class ScheduleCreationFormRequest extends ServerFormRequest
 {
+    /**
+     * Permission to validate this request aganist.
+     *
+     * @return string
+     */
+    protected function permission(): string
+    {
+        if ($this->method() === 'PATCH') {
+            return 'edit-schedule';
+        }
+
+        return 'create-schedule';
+    }
+
     /**
      * Validation rules to apply to the request.
      *
@@ -57,7 +69,7 @@ class ScheduleCreationFormRequest extends FrontendUserFormRequest
     {
         $restructured = [];
         foreach (array_get($this->all(), 'tasks', []) as $key => $values) {
-            for ($i = 0; $i < count($values); ++$i) {
+            for ($i = 0; $i < count($values); $i++) {
                 $restructured[$i][$key] = $values[$i];
             }
         }

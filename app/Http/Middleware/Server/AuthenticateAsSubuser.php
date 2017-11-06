@@ -7,26 +7,26 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Middleware;
+namespace Pterodactyl\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Session\Session;
-use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class SubuserAccessAuthenticate
+class AuthenticateAsSubuser
 {
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
      */
-    protected $keyProviderService;
+    private $keyProviderService;
 
     /**
      * @var \Illuminate\Contracts\Session\Session
      */
-    protected $session;
+    private $session;
 
     /**
      * SubuserAccessAuthenticate constructor.
@@ -34,10 +34,8 @@ class SubuserAccessAuthenticate
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
      * @param \Illuminate\Contracts\Session\Session                     $session
      */
-    public function __construct(
-        DaemonKeyProviderService $keyProviderService,
-        Session $session
-    ) {
+    public function __construct(DaemonKeyProviderService $keyProviderService, Session $session)
+    {
         $this->keyProviderService = $keyProviderService;
         $this->session = $session;
     }
@@ -55,15 +53,16 @@ class SubuserAccessAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
-        $server = $this->session->get('server_data.model');
+        $server = $request->attributes->get('server');
 
         try {
-            $token = $this->keyProviderService->handle($server->id, $request->user()->id);
-            $this->session->now('server_data.token', $token);
-            $request->attributes->set('server_token', $token);
+            $token = $this->keyProviderService->handle($server, $request->user());
         } catch (RecordNotFoundException $exception) {
-            throw new AuthenticationException('This account does not have permission to access this server.');
+            throw new AccessDeniedHttpException('This account does not have permission to access this server.');
         }
+
+        $this->session->now('server_data.token', $token);
+        $request->attributes->set('server_token', $token);
 
         return $next($request);
     }

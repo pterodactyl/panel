@@ -1,21 +1,15 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Server\Files;
 
-use Illuminate\Log\Writer;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Session\Session;
+use Illuminate\Http\Response;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class RemoteRequestController extends Controller
 {
@@ -27,50 +21,33 @@ class RemoteRequestController extends Controller
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
      */
-    protected $fileRepository;
-
-    /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    protected $repository;
 
     /**
      * RemoteRequestController constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                          $config
-     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $fileRepository
-     * @param \Illuminate\Contracts\Session\Session                            $session
-     * @param \Illuminate\Log\Writer                                           $writer
+     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $repository
      */
-    public function __construct(
-        ConfigRepository $config,
-        FileRepositoryInterface $fileRepository,
-        Session $session,
-        Writer $writer
-    ) {
+    public function __construct(ConfigRepository $config, FileRepositoryInterface $repository)
+    {
         $this->config = $config;
-        $this->fileRepository = $fileRepository;
-        $this->session = $session;
-        $this->writer = $writer;
+        $this->repository = $repository;
     }
 
     /**
      * Return a listing of a servers file directory.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\View\View
+     * @return \Illuminate\View\View
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function directory(Request $request)
+    public function directory(Request $request): View
     {
-        $server = $this->session->get('server_data.model');
+        $server = $request->attributes->get('server');
         $this->authorize('list-files', $server);
 
         $requestDirectory = '/' . trim(urldecode($request->input('directory', '/')), '/');
@@ -89,17 +66,12 @@ class RemoteRequestController extends Controller
         }
 
         try {
-            $listing = $this->fileRepository->setNode($server->node_id)
+            $listing = $this->repository->setNode($server->node_id)
                 ->setAccessServer($server->uuid)
-                ->setAccessToken($this->session->get('server_data.token'))
+                ->setAccessToken($request->attributes->get('server_token'))
                 ->getDirectory($requestDirectory);
         } catch (RequestException $exception) {
-            $this->writer->warning($exception);
-            $response = $exception->getResponse();
-
-            return response()->json(['error' => trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ])], 500);
+            throw new DaemonConnectionException($exception);
         }
 
         return view('server.files.list', [
@@ -114,31 +86,26 @@ class RemoteRequestController extends Controller
      * Put the contents of a file onto the daemon.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function store(Request $request, $uuid)
+    public function store(Request $request): Response
     {
-        $server = $this->session->get('server_data.model');
+        $server = $request->attributes->get('server');
         $this->authorize('save-files', $server);
 
         try {
-            $this->fileRepository->setNode($server->node_id)
+            $this->repository->setNode($server->node_id)
                 ->setAccessServer($server->uuid)
-                ->setAccessToken($this->session->get('server_data.token'))
+                ->setAccessToken($request->attributes->get('server_token'))
                 ->putContent($request->input('file'), $request->input('contents'));
 
             return response('', 204);
         } catch (RequestException $exception) {
-            $this->writer->warning($exception);
-            $response = $exception->getResponse();
-
-            return response()->json(['error' => trans('exceptions.daemon_connection_failed', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ])], 500);
+            throw new DaemonConnectionException($exception);
         }
     }
 }

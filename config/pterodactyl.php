@@ -11,8 +11,7 @@ return [
     | standard Pterodactyl shipped services.
     */
     'service' => [
-        'core' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
-        'author' => env('SERVICE_AUTHOR'),
+        'author' => env('APP_SERVICE_AUTHOR', 'unknown@unknown.com'),
     ],
 
     /*
@@ -184,6 +183,8 @@ return [
         'daemon/*',
         'remote/*',
     ],
+
+    'default_api_version' => 'application/vnd.pterodactyl.v1+json',
 
     /*
     |--------------------------------------------------------------------------

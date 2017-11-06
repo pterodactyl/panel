@@ -3,7 +3,16 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v0.7.0 (Derelict Dermodactylus)
+## v0.7.0-beta.2 (Derelict Dermodactylus)
+### Fixed
+* `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
+* `[beta.1]` — Fixes bug that would prevent root admins from accessing servers they were not set as the owner of.
+* `[beta.1]` — Fixes wrong URL redirect being provided when creating a subuser.
+* `[beta.1]` — Fixes missing check in environment setup that would leave the Hashids salt empty.
+* `[beta.1]` — Fixes bug preventing loading of allocations when trying to create a new server.
+* `[beta.1]` — Fixes bug causing inability to create new servers on the Panel.
+
+## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
@@ -28,6 +37,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Server creation page now only asks for a node to deploy to, rather than requiring a location and then a node.
 * Database passwords are now hidden by default and will only show if clicked on. In addition, database view in ACP now indicates that passwords must be viewed on the front-end.
 * Localhost cannot be used as a connection address in the environment configuration script. `127.0.0.1` is allowed.
+* Application locale can now be quickly set using an environment variable `APP_LOCALE` rather than having to edit core files.
 
 ### Fixed
 * Unable to change the daemon secret for a server via the Admin CP.

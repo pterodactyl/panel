@@ -10,6 +10,8 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AdminAuthenticate
 {
@@ -20,18 +22,10 @@ class AdminAuthenticate
      * @param \Closure                 $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        if (! $request->user()) {
-            if ($request->expectsJson() || $request->json()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('auth/login');
-            }
-        }
-
-        if (! $request->user()->root_admin) {
-            return abort(403);
+        if (! $request->user() || ! $request->user()->root_admin) {
+            throw new AccessDeniedHttpException;
         }
 
         return $next($request);

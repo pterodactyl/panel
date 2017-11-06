@@ -29,29 +29,30 @@ use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Models\Permission;
 use League\Fractal\TransformerAbstract;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class ApiKeyTransformer extends TransformerAbstract
 {
     /**
-     * @var \Carbon\Carbon
+     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
      */
-    protected $carbon;
+    private $keyRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * ApiKeyTransformer constructor.
      *
-     * @param \Carbon\Carbon                                               $carbon
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $keyRepository
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface   $repository
      */
-    public function __construct(Carbon $carbon, SubuserRepositoryInterface $repository)
+    public function __construct(DaemonKeyRepositoryInterface $keyRepository, SubuserRepositoryInterface $repository)
     {
-        $this->carbon = $carbon;
         $this->repository = $repository;
+        $this->keyRepository = $keyRepository;
     }
 
     /**
@@ -64,18 +65,20 @@ class ApiKeyTransformer extends TransformerAbstract
      */
     public function transform(DaemonKey $key)
     {
-        if ($key->user_id === $key->server->owner_id) {
+        $this->keyRepository->loadServerAndUserRelations($key);
+
+        if ($key->user_id === $key->getRelation('server')->owner_id || $key->getRelation('user')->root_admin) {
             return [
-                'id' => $key->server->uuid,
+                'id' => $key->getRelation('server')->uuid,
                 'is_temporary' => true,
-                'expires_in' => max($this->carbon->now()->diffInSeconds($key->expires_at, false), 0),
+                'expires_in' => max(Carbon::now()->diffInSeconds($key->expires_at, false), 0),
                 'permissions' => ['s:*'],
             ];
         }
 
         $subuser = $this->repository->getWithPermissionsUsingUserAndServer($key->user_id, $key->server_id);
 
-        $permissions = $subuser->permissions->pluck('permission')->toArray();
+        $permissions = $subuser->getRelation('permissions')->pluck('permission')->toArray();
         $mappings = Permission::getPermissions(true);
         $daemonPermissions = [];
 
@@ -86,9 +89,9 @@ class ApiKeyTransformer extends TransformerAbstract
         }
 
         return [
-            'id' => $key->server->uuid,
+            'id' => $key->getRelation('server')->uuid,
             'is_temporary' => true,
-            'expires_in' => max($this->carbon->now()->diffInSeconds($key->expires_at, false), 0),
+            'expires_in' => max(Carbon::now()->diffInSeconds($key->expires_at, false), 0),
             'permissions' => $daemonPermissions,
         ];
     }

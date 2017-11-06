@@ -25,43 +25,56 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return a subuser with the associated server relationship.
+     *
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param bool                        $refresh
+     * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithServer($id)
+    public function loadServerAndUserRelations(Subuser $subuser, bool $refresh = false): Subuser
     {
-        Assert::numeric($id, 'First argument passed to getWithServer must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with('server', 'user')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
+        if (! $subuser->relationLoaded('server') || $refresh) {
+            $subuser->load('server');
         }
 
-        return $instance;
+        if (! $subuser->relationLoaded('user') || $refresh) {
+            $subuser->load('user');
+        }
+
+        return $subuser;
     }
 
     /**
-     * {@inheritdoc}
+     * Return a subuser with the associated permissions relationship.
+     *
+     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param bool                        $refresh
+     * @return \Pterodactyl\Models\Subuser
      */
-    public function getWithPermissions($id)
+    public function getWithPermissions(Subuser $subuser, bool $refresh = false): Subuser
     {
-        Assert::numeric($id, 'First argument passed to getWithPermissions must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with('permissions', 'user')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
+        if (! $subuser->relationLoaded('permissions') || $refresh) {
+            $subuser->load('permissions');
         }
 
-        return $instance;
+        if (! $subuser->relationLoaded('user') || $refresh) {
+            $subuser->load('user');
+        }
+
+        return $subuser;
     }
 
     /**
-     * {@inheritdoc}
+     * Return a subuser and associated permissions given a user_id and server_id.
+     *
+     * @param int $user
+     * @param int $server
+     * @return \Pterodactyl\Models\Subuser
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithPermissionsUsingUserAndServer($user, $server)
+    public function getWithPermissionsUsingUserAndServer(int $user, int $server): Subuser
     {
-        Assert::integerish($user, 'First argument passed to getWithPermissionsUsingUserAndServer must be integer, received %s.');
-        Assert::integerish($server, 'Second argument passed to getWithPermissionsUsingUserAndServer must be integer, received %s.');
-
         $instance = $this->getBuilder()->with('permissions')->where([
             ['user_id', '=', $user],
             ['server_id', '=', $server],

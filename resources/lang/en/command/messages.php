@@ -74,6 +74,8 @@ return [
             'try_again' => 'Go back and try again?',
         ],
         'app' => [
+            'author' => 'Egg Author Email',
+            'author_help' => 'Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.',
             'app_url_help' => 'The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.',
             'app_url' => 'Application URL',
             'timezone_help' => 'The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference http://php.net/manual/en/timezones.php.',

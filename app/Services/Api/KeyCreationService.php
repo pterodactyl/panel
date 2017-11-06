@@ -86,7 +86,7 @@ class KeyCreationService
         $nodes = $this->permissionService->getPermissions();
 
         foreach ($permissions as $permission) {
-            @list($block, $search) = explode('-', $permission);
+            @list($block, $search) = explode('-', $permission, 2);
 
             if (
                 (empty($block) || empty($search)) ||
@@ -100,7 +100,7 @@ class KeyCreationService
         }
 
         foreach ($administrative as $permission) {
-            @list($block, $search) = explode('-', $permission);
+            @list($block, $search) = explode('-', $permission, 2);
 
             if (
                 (empty($block) || empty($search)) ||

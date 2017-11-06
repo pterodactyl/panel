@@ -13,6 +13,10 @@ Route::group(['prefix' => '/eggs'], function () {
     Route::get('/{uuid}', 'EggRetrievalController@download')->name('api.remote.eggs.download');
 });
 
+Route::group(['prefix' => '/scripts'], function () {
+    Route::get('/{uuid}', 'EggInstallController@index')->name('api.remote.scripts');
+});
+
 Route::group(['prefix' => '/sftp'], function () {
     Route::post('/', 'SftpController@index')->name('api.remote.sftp');
 });

@@ -25,39 +25,41 @@
 namespace Pterodactyl\Services\DaemonKeys;
 
 use Carbon\Carbon;
-use Webmozart\Assert\Assert;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderService
 {
     /**
-     * @var \Carbon\Carbon
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
      */
-    protected $carbon;
+    private $keyCreationService;
 
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService
      */
-    protected $keyUpdateService;
+    private $keyUpdateService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * GetDaemonKeyService constructor.
      *
-     * @param \Carbon\Carbon                                                 $carbon
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService      $keyCreationService
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
      */
     public function __construct(
-        Carbon $carbon,
-        DaemonKeyUpdateService $keyUpdateService,
-        DaemonKeyRepositoryInterface $repository
+        DaemonKeyCreationService $keyCreationService,
+        DaemonKeyRepositoryInterface $repository,
+        DaemonKeyUpdateService $keyUpdateService
     ) {
-        $this->carbon = $carbon;
+        $this->keyCreationService = $keyCreationService;
         $this->keyUpdateService = $keyUpdateService;
         $this->repository = $repository;
     }
@@ -65,25 +67,35 @@ class DaemonKeyProviderService
     /**
      * Get the access key for a user on a specific server.
      *
-     * @param int  $server
-     * @param int  $user
-     * @param bool $updateIfExpired
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\User   $user
+     * @param bool                       $updateIfExpired
      * @return string
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($server, $user, $updateIfExpired = true)
+    public function handle(Server $server, User $user, $updateIfExpired = true): string
     {
-        Assert::integerish($server, 'First argument passed to handle must be an integer, received %s.');
-        Assert::integerish($user, 'Second argument passed to handle must be an integer, received %s.');
+        try {
+            $key = $this->repository->findFirstWhere([
+                ['user_id', '=', $user->id],
+                ['server_id', '=', $server->id],
+            ]);
+        } catch (RecordNotFoundException $exception) {
+            // If key doesn't exist but we are an admin or the server owner,
+            // create it.
+            if ($user->root_admin || $user->id === $server->owner_id) {
+                return $this->keyCreationService->handle($server->id, $user->id);
+            }
 
-        $key = $this->repository->findFirstWhere([
-            ['user_id', '=', $user],
-            ['server_id', '=', $server],
-        ]);
+            // If they aren't the admin or owner of the server, they shouldn't get access.
+            // Subusers should always have an entry created when they are, so if there is
+            // no record, it should fail.
+            throw $exception;
+        }
 
-        if (! $updateIfExpired || $this->carbon->now()->diffInSeconds($key->expires_at, false) > 0) {
+        if (! $updateIfExpired || Carbon::now()->diffInSeconds($key->expires_at, false) > 0) {
             return $key->secret;
         }
 

@@ -20,7 +20,12 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12">
+        <div class="alert alert-danger">
+            API functionality is disabled in this beta release.
+        </div>
+
         <div class="box">
+            <div class="overlay"></div>
             <div class="box-header">
                 <h3 class="box-title">@lang('base.api.index.list')</h3>
                 <div class="box-tools">
