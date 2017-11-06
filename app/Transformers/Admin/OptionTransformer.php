@@ -3,29 +3,14 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Transformers\Admin;
 
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\ServiceOption;
 use League\Fractal\TransformerAbstract;
 
 class OptionTransformer extends TransformerAbstract
@@ -52,8 +37,7 @@ class OptionTransformer extends TransformerAbstract
     /**
      * Setup request object for transformer.
      *
-     * @param  \Illuminate\Http\Request|bool  $request
-     * @return void
+     * @param \Illuminate\Http\Request|bool $request
      */
     public function __construct($request = false)
     {
@@ -69,7 +53,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(ServiceOption $option)
+    public function transform(Egg $option)
     {
         return $option->toArray();
     }
@@ -79,7 +63,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeService(ServiceOption $option)
+    public function includeService(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
             return;
@@ -93,7 +77,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includePacks(ServiceOption $option)
+    public function includePacks(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('pack-list')) {
             return;
@@ -107,7 +91,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeServers(ServiceOption $option)
+    public function includeServers(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
             return;
@@ -121,7 +105,7 @@ class OptionTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeVariables(ServiceOption $option)
+    public function includeVariables(Egg $option)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
             return;

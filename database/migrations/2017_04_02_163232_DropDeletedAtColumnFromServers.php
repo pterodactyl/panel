@@ -8,8 +8,6 @@ class DropDeletedAtColumnFromServers extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -20,8 +18,6 @@ class DropDeletedAtColumnFromServers extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

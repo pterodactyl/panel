@@ -8,8 +8,6 @@ class AddForeignPermissions extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,19 +17,17 @@ class AddForeignPermissions extends Migration
         });
     }
 
-     /**
-      * Reverse the migrations.
-      *
-      * @return void
-      */
-     public function down()
-     {
-         Schema::table('permissions', function (Blueprint $table) {
-             $table->dropForeign('permissions_user_id_foreign');
-             $table->dropForeign('permissions_server_id_foreign');
+    /**
+     * Reverse the migrations.
+     */
+    public function down()
+    {
+        Schema::table('permissions', function (Blueprint $table) {
+            $table->dropForeign('permissions_user_id_foreign');
+            $table->dropForeign('permissions_server_id_foreign');
 
-             $table->dropIndex('permissions_user_id_foreign');
-             $table->dropIndex('permissions_server_id_foreign');
-         });
-     }
+            $table->dropIndex('permissions_user_id_foreign');
+            $table->dropIndex('permissions_server_id_foreign');
+        });
+    }
 }

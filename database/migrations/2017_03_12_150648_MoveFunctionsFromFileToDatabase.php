@@ -1,6 +1,5 @@
 <?php
 
-use Pterodactyl\Models\Service;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -85,8 +84,6 @@ EOF;
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -95,11 +92,11 @@ EOF;
         });
 
         DB::transaction(function () {
-            Service::where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('folder', '!=', 'minecraft')->update([
+            DB::table('services')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('folder', '!=', 'minecraft')->update([
                 'index_file' => $this->default,
             ]);
 
-            Service::where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('folder', 'minecraft')->update([
+            DB::table('services')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('folder', 'minecraft')->update([
                 'index_file' => $this->default_mc,
             ]);
         });
@@ -107,8 +104,6 @@ EOF;
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

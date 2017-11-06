@@ -1,0 +1,152 @@
+<?php
+
+namespace Pterodactyl\Services\Servers;
+
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Traits\Services\HasUserLevels;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+
+class StartupModificationService
+{
+    use HasUserLevels;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     */
+    private $daemonServerRepository;
+
+    /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    private $connection;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     */
+    private $environmentService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
+     */
+    private $serverVariableRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\VariableValidatorService
+     */
+    private $validatorService;
+
+    /**
+     * StartupModificationService constructor.
+     *
+     * @param \Illuminate\Database\ConnectionInterface                            $connection
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
+     * @param \Pterodactyl\Services\Servers\EnvironmentService                    $environmentService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     */
+    public function __construct(
+        ConnectionInterface $connection,
+        DaemonServerRepositoryInterface $daemonServerRepository,
+        EnvironmentService $environmentService,
+        ServerRepositoryInterface $repository,
+        ServerVariableRepositoryInterface $serverVariableRepository,
+        VariableValidatorService $validatorService
+    ) {
+        $this->daemonServerRepository = $daemonServerRepository;
+        $this->connection = $connection;
+        $this->environmentService = $environmentService;
+        $this->repository = $repository;
+        $this->serverVariableRepository = $serverVariableRepository;
+        $this->validatorService = $validatorService;
+    }
+
+    /**
+     * Process startup modification for a server.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param array                      $data
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function handle(Server $server, array $data)
+    {
+        $this->connection->beginTransaction();
+        if (! is_null(array_get($data, 'environment'))) {
+            $this->validatorService->setUserLevel($this->getUserLevel());
+            $results = $this->validatorService->handle(array_get($data, 'egg_id', $server->egg_id), array_get($data, 'environment', []));
+
+            $results->each(function ($result) use ($server) {
+                $this->serverVariableRepository->withoutFresh()->updateOrCreate([
+                    'server_id' => $server->id,
+                    'variable_id' => $result->id,
+                ], [
+                    'variable_value' => $result->value,
+                ]);
+            });
+        }
+
+        $daemonData = ['build' => [
+            'env|overwrite' => $this->environmentService->handle($server),
+        ]];
+
+        if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
+            $this->updateAdministrativeSettings($data, $server, $daemonData);
+        }
+
+        try {
+            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
+        } catch (RequestException $exception) {
+            $this->connection->rollBack();
+            throw new DaemonConnectionException($exception);
+        }
+
+        $this->connection->commit();
+    }
+
+    /**
+     * Update certain administrative settings for a server in the DB.
+     *
+     * @param array                      $data
+     * @param \Pterodactyl\Models\Server $server
+     * @param array                      $daemonData
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    private function updateAdministrativeSettings(array $data, Server &$server, array &$daemonData)
+    {
+        $server = $this->repository->update($server->id, [
+            'installed' => 0,
+            'startup' => array_get($data, 'startup', $server->startup),
+            'nest_id' => array_get($data, 'nest_id', $server->nest_id),
+            'egg_id' => array_get($data, 'egg_id', $server->egg_id),
+            'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
+            'skip_scripts' => isset($data['skip_scripts']),
+        ]);
+
+        if (
+            $server->nest_id != array_get($data, 'nest_id', $server->nest_id) ||
+            $server->egg_id != array_get($data, 'egg_id', $server->egg_id) ||
+            $server->pack_id != array_get($data, 'pack_id', $server->pack_id)
+        ) {
+            $daemonData['service'] = array_merge(
+                $this->repository->withColumns(['id', 'egg_id', 'pack_id'])->getDaemonServiceData($server->id),
+                ['skip_scripts' => isset($data['skip_scripts'])]
+            );
+        }
+    }
+}
