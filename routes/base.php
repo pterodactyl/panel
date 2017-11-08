@@ -58,3 +58,28 @@ Route::group(['prefix' => 'account/security'], function () {
 
     Route::delete('/totp', 'SecurityController@disableTotp')->name('account.security.totp.disable');
 });
+
+// Localization
+$fallback_file = resource_path('lang/'.config('app.fallback_locale').'/js.php');
+$files = glob(resource_path('lang/*'));
+foreach ($files as $file) {
+    $lang = basename($file);
+
+    Route::get('/js/lang/'.$lang.'.js', function () use ($fallback_file, $file, $lang) {
+        $strings = Cache::remember('lang/'.$lang.'.js', 60, function () use ($fallback_file, $file, $lang) {
+            $strings = [];
+            if($lang != config('app.fallback_locale')) {
+                $strings['js'] = array_replace_recursive (require $fallback_file, require $file.'/js.php');
+            } else {
+                $strings['js'] = require $file.'/js.php';
+            }
+
+            return $strings;
+        });
+
+        header('Content-Type: text/javascript');
+        echo('window.i18n = ' . json_encode($strings) . ';');
+        exit();
+    })->name('assets.lang');
+}
+

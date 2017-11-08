@@ -42,7 +42,7 @@ $(document).ready(function () {
 
     $('button[data-action="add-new-task"]').on('click', function () {
         if ($('#containsTaskList').find('.task-list-item').length >= 5) {
-            swal('Task Limit Reached', 'You may only assign a maximum of 5 tasks to one schedule.');
+            swal(i18n.js.task_view.task_limit_reached_title, i18n.js.task_view.task_limit_reached_text);
             return;
         }
 

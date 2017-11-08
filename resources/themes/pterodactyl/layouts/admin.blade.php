@@ -20,6 +20,7 @@
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#367fa9">
+        <script src="/js/lang/{{ config('app.locale') }}.js"></script>
 
         @include('layouts.scripts')
 
@@ -185,12 +186,12 @@
 
                         var that = this;
                         swal({
-                            title: 'Do you want to log out?',
+                            title: '@lang('strings.logout_confirm_title')',
                             type: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d9534f',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Log out'
+                            confirmButtonText: '@lang('strings.logout_confirm_button')'
                         }, function () {
                             window.location = $(that).attr('href');
                         });

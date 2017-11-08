@@ -82,7 +82,7 @@
 
     Siofu.addEventListener('start', function (event) {
         window.onbeforeunload = function () {
-            return 'A file upload in in progress, are you sure you want to continue?';
+            return i18n.js.upload.in_progress;
         };
         event.file.meta.path = $('#file_listing').data('current-dir');
         event.file.meta.identifier = Math.random().toString(36).slice(2);
@@ -103,7 +103,7 @@
 
     Siofu.addEventListener('progress', function(event) {
         window.onbeforeunload = function () {
-            return 'A file upload in in progress, are you sure you want to continue?';
+            return i18n.js.upload.in_progress;
         };
         var percent = event.bytesLoaded / event.file.size * 100;
         if (percent >= 100) {
@@ -119,7 +119,7 @@
         if (!event.success) {
             $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
             $.notify({
-                message: 'An error was encountered while attempting to upload this file.'
+                message: i18n.js.upload.error + '.'
             }, {
                 type: 'danger',
                 delay: 5000
@@ -132,7 +132,7 @@
         console.error(event);
         $('.prog-bar-' + event.file.meta.identifier).css('width', '100%').removeClass('progress-bar-info').addClass('progress-bar-danger');
         $.notify({
-            message: 'An error was encountered while attempting to upload this file: <strong>' + event.message + '.</strong>',
+            message: i18n.js.upload.error + ': <strong>' + event.message + '.</strong>',
         }, {
             type: 'danger',
             delay: 8000

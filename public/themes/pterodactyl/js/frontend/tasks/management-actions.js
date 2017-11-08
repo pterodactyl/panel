@@ -23,12 +23,12 @@ $(document).ready(function () {
         var self = $(this);
         swal({
             type: 'error',
-            title: 'Delete Schedule?',
-            text: 'Are you sure you want to delete this schedule? There is no undo.',
+            title: i18n.js.task_manage.delete_title,
+            text: i18n.js.task_manage.delete_text,
             showCancelButton: true,
             allowOutsideClick: true,
             closeOnConfirm: false,
-            confirmButtonText: 'Delete Schedule',
+            confirmButtonText: i18n.js.task_manage.delete_button,
             confirmButtonColor: '#d9534f',
             showLoaderOnConfirm: true
         }, function () {
@@ -45,15 +45,15 @@ $(document).ready(function () {
                 swal({
                     type: 'success',
                     title: '',
-                    text: 'Schedule has been deleted.'
+                    text: i18n.js.task_manage.delete_success
                 });
                 self.parent().parent().slideUp();
             }).fail(function (jqXHR) {
                 console.error(jqXHR);
                 swal({
                     type: 'error',
-                    title: 'Whoops!',
-                    text: 'An error occured while attempting to delete this schedule.'
+                    title: i18n.js.common.whoops,
+                    text: i18n.js.task_manage.delete_fail
                 });
             });
         });
@@ -63,12 +63,12 @@ $(document).ready(function () {
         var self = $(this);
         swal({
             type: 'info',
-            title: 'Toggle Schedule',
-            text: 'This will toggle the selected schedule.',
+            title: i18n.js.task_manage.toggle_title,
+            text: i18n.js.task_manage.toggle_text,
             showCancelButton: true,
             allowOutsideClick: true,
             closeOnConfirm: false,
-            confirmButtonText: 'Continue',
+            confirmButtonText: i18n.js.task_manage.toggle_button,
             showLoaderOnConfirm: true
         }, function () {
             $.ajax({
@@ -84,7 +84,7 @@ $(document).ready(function () {
                 swal({
                     type: 'success',
                     title: '',
-                    text: 'Schedule has been toggled.'
+                    text: i18n.js.task_manage.toggle_success
                 });
                 if (data.status !== 1) {
                     self.parent().parent().addClass('muted muted-hover');
@@ -95,8 +95,8 @@ $(document).ready(function () {
                 console.error(jqXHR);
                 swal({
                     type: 'error',
-                    title: 'Whoops!',
-                    text: 'An error occured while attempting to toggle this schedule.'
+                    title: i18n.js.common.whoops,
+                    text: i18n.js.task_manage.toggle_fail
                 });
             });
         });

@@ -47,8 +47,8 @@ class ActionsClass {
 
         swal({
             type: 'input',
-            title: 'Create Folder',
-            text: 'Please enter the path and folder name below.',
+            title: i18n.js.actions.create_folder_title,
+            text: i18n.js.actions.create_folder_text,
             showCancelButton: true,
             showConfirmButton: true,
             closeOnConfirm: false,
@@ -72,7 +72,7 @@ class ActionsClass {
                 Files.list();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = i18n.js.common.error;
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -92,8 +92,8 @@ class ActionsClass {
 
         swal({
             type: 'input',
-            title: 'Move File',
-            text: 'Please enter the new path for the file below.',
+            title: i18n.js.actions.move_file_title,
+            text: i18n.js.actions.move_file_text,
             showCancelButton: true,
             showConfirmButton: true,
             closeOnConfirm: false,
@@ -118,7 +118,7 @@ class ActionsClass {
                 swal.close();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = i18n.js.common.error;
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -198,7 +198,7 @@ class ActionsClass {
                 inputField.remove();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = i18n.js.common.error;
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -225,8 +225,8 @@ class ActionsClass {
 
         swal({
             type: 'input',
-            title: 'Copy File',
-            text: 'Please enter the new path for the copied file below.',
+            title: i18n.js.actions.copy_file_title,
+            text: i18n.js.actions.copy_file_text,
             showCancelButton: true,
             showConfirmButton: true,
             closeOnConfirm: false,
@@ -250,12 +250,12 @@ class ActionsClass {
                 swal({
                     type: 'success',
                     title: '',
-                    text: 'File successfully copied.'
+                    text: i18n.js.actions.copy_file_success
                 });
                 Files.list();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = i18n.js.common.error;
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -284,7 +284,7 @@ class ActionsClass {
         swal({
             type: 'warning',
             title: '',
-            text: 'Are you sure you want to delete <code>' + delName + '</code>? There is <strong>no</strong> reversing this action.',
+            text: i18n.js.actions.delete_file_text1 + '<code>' + delName + '</code>' + i18n.js.actions.delete_file_text2,
             html: true,
             showCancelButton: true,
             showConfirmButton: true,
@@ -307,15 +307,15 @@ class ActionsClass {
                 nameBlock.parent().addClass('warning').delay(200).fadeOut();
                 swal({
                     type: 'success',
-                    title: 'File Deleted'
+                    title: i18n.js.actions.delete_file_success
                 });
             }).fail(jqXHR => {
                 console.error(jqXHR);
                 swal({
                     type: 'error',
-                    title: 'Whoops!',
+                    title: i18n.js.common.whoops,
                     html: true,
-                    text: 'An error occured while attempting to delete this file. Please try again.',
+                    text: i18n.js.common.error,
                 });
             });
         });
@@ -389,7 +389,7 @@ class ActionsClass {
             swal({
                 type: 'warning',
                 title: '',
-                text: 'Are you sure you want to delete:' + formattedItems + '? There is <strong>no</strong> reversing this action.',
+                text: i18n.js.actions.delete_file_text1 + formattedItems + i18n.js.actions.delete_file_text2,
                 html: true,
                 showCancelButton: true,
                 showConfirmButton: true,
@@ -419,15 +419,15 @@ class ActionsClass {
 
                     swal({
                         type: 'success',
-                        title: 'Files Deleted'
+                        title: i18n.js.actions.delete_file_success
                     });
                 }).fail(jqXHR => {
                     console.error(jqXHR);
                     swal({
                         type: 'error',
-                        title: 'Whoops!',
+                        title: i18n.js.common.whoops,
                         html: true,
-                        text: 'An error occured while attempting to delete these files. Please try again.',
+                        text: i18n.js.common.error,
                     });
                 });
             });
@@ -435,7 +435,7 @@ class ActionsClass {
             swal({
               type: 'warning',
               title: '',
-              text: 'Please select files/folders to delete.',
+              text: i18n.js.actions.delete_selected_select,
             });
         }
     }
@@ -446,8 +446,8 @@ class ActionsClass {
         const compName = decodeURIComponent(nameBlock.data('name'));
 
         swal({
-            title: '<i class="fa fa-refresh fa-spin"></i> Decompressing...',
-            text: 'This might take a few seconds to complete.',
+            title: '<i class="fa fa-refresh fa-spin"></i> ' + i18n.js.actions.decompress_file_title,
+            text: i18n.js.actions.decompress_file_text,
             html: true,
             allowOutsideClick: false,
             allowEscapeKey: false,
@@ -470,13 +470,13 @@ class ActionsClass {
             Files.list(compPath);
         }).fail(jqXHR => {
             console.error(jqXHR);
-            var error = 'An error occured while trying to process this request.';
+            var error = i18n.js.common.error;
             if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                 error = jqXHR.responseJSON.error;
             }
             swal({
                 type: 'error',
-                title: 'Whoops!',
+                title: i18n.js.common.whoops,
                 html: true,
                 text: error
             });
@@ -510,13 +510,13 @@ class ActionsClass {
             });
         }).fail(jqXHR => {
             console.error(jqXHR);
-            var error = 'An error occured while trying to process this request.';
+            var error = i18n.js.common.error;
             if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                 error = jqXHR.responseJSON.error;
             }
             swal({
                 type: 'error',
-                title: 'Whoops!',
+                title: i18n.js.common.whoops,
                 html: true,
                 text: error
             });

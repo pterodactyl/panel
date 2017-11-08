@@ -53,10 +53,11 @@ class RemovedFromServer extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject(trans('email.removed_from_server.subject'))
             ->error()
-            ->greeting('Hello ' . $this->server->user . '.')
-            ->line('You have been removed as a subuser for the following server.')
-            ->line('Server Name: ' . $this->server->name)
-            ->action('Visit Panel', route('index'));
+            ->greeting(trans('email.common.greeting') . ' ' . $this->server->user . '.')
+            ->line(trans('email.removed_from_server.content'))
+            ->line(trans('email.common.server_name') . $this->server->name)
+            ->action(trans('email.removed_from_server.link'), route('index'));
     }
 }

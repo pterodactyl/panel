@@ -26,7 +26,7 @@
                 <h3 class="box-title">@lang('server.users.list')</h3>
                 @can('create-subuser', $server)
                     <div class="box-tools">
-                        <a href="{{ route('server.subusers.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                        <a href="{{ route('server.subusers.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">@lang('strings.create_new')</button></a>
                     </div>
                 @endcan
             </div>
@@ -44,7 +44,7 @@
                         </tr>
                         @foreach($subusers as $subuser)
                             <tr>
-                                <td class="text-center middle"><img class="img-circle" src="https://www.gravatar.com/avatar/{{ md5($subuser->user->email) }}?s=128" style="height:20px;" alt="User Image"></td>
+                                <td class="text-center middle"><img class="img-circle" src="https://www.gravatar.com/avatar/{{ md5($subuser->user->email) }}?s=128" style="height:20px;" alt="@lang('strings.user_image')"></td>
                                 <td class="middle">{{ $subuser->user->username }}
                                 <td class="middle"><code>{{ $subuser->user->email }}</code></td>
                                 <td class="middle text-center">
@@ -89,8 +89,8 @@
             var self = $(this);
             swal({
                 type: 'warning',
-                title: 'Delete Subuser',
-                text: 'This will immediately remove this user from this server and revoke all permissions.',
+                title: '@lang('server.users.delete.title')',
+                text: '@lang('server.users.delete.text')',
                 showCancelButton: true,
                 showConfirmButton: true,
                 closeOnConfirm: false,
@@ -110,17 +110,17 @@
                     swal({
                         type: 'success',
                         title: '',
-                        text: 'Subuser was successfully deleted.'
+                        text: '@lang('server.users.delete.success')'
                     });
                 }).fail(function (jqXHR) {
                     console.error(jqXHR);
-                    var error = 'An error occured while trying to process this request.';
+                    var error = '@lang('js.common.error')';
                     if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                         error = jqXHR.responseJSON.error;
                     }
                     swal({
                         type: 'error',
-                        title: 'Whoops!',
+                        title: '@lang('js.common.whoops')',
                         text: error
                     });
                 });

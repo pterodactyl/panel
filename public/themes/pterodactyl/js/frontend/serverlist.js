@@ -37,27 +37,27 @@
             }
         }).done(function (data) {
             if (typeof data.status === 'undefined') {
-                element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
+                element.find('[data-action="status"]').html('<span class="label label-default">' + i18n.js.serverlist.error + '</span>');
                 return;
             }
             switch (data.status) {
                 case 0:
-                    element.find('[data-action="status"]').html('<span class="label label-danger">Offline</span>');
+                    element.find('[data-action="status"]').html('<span class="label label-danger">' + i18n.js.common.offline + '</span>');
                     break;
                 case 1:
-                    element.find('[data-action="status"]').html('<span class="label label-success">Online</span>');
+                    element.find('[data-action="status"]').html('<span class="label label-success">' + i18n.js.common.online + '</span>');
                     break;
                 case 2:
-                    element.find('[data-action="status"]').html('<span class="label label-info">Starting</span>');
+                    element.find('[data-action="status"]').html('<span class="label label-info">' + i18n.js.common.starting + '</span>');
                     break;
                 case 3:
-                    element.find('[data-action="status"]').html('<span class="label label-info">Stopping</span>');
+                    element.find('[data-action="status"]').html('<span class="label label-info">' + i18n.js.common.stopping + '</span>');
                     break;
                 case 20:
-                    element.find('[data-action="status"]').html('<span class="label label-warning">Installing</span>');
+                    element.find('[data-action="status"]').html('<span class="label label-warning">' + i18n.js.serverlist.installing + '</span>');
                     break;
                 case 30:
-                    element.find('[data-action="status"]').html('<span class="label label-warning">Suspended</span>');
+                    element.find('[data-action="status"]').html('<span class="label label-warning">' + i18n.js.serverlist.suspended + '</span>');
                     break;
             }
             if (data.status > 0 && data.status < 4) {
@@ -81,7 +81,7 @@
             }
         }).fail(function (jqXHR) {
             console.error(jqXHR);
-            element.find('[data-action="status"]').html('<span class="label label-default">Error</span>');
+            element.find('[data-action="status"]').html('<span class="label label-default">' + i18n.js.serverlist.error + '</span>');
         });
     }).promise().done(function () {
         setTimeout(updateServerStatus, 10000);

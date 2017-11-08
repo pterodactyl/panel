@@ -268,7 +268,7 @@ $(document).ready(function () {
                 labels: TimeLabels,
                 datasets: [
                     {
-                        label: "Percent Use",
+                        label: i18n.js.console.cpu_label,
                         fill: false,
                         lineTension: 0.03,
                         backgroundColor: "#3c8dbc",
@@ -294,7 +294,7 @@ $(document).ready(function () {
             options: {
                 title: {
                     display: true,
-                    text: 'CPU Usage (as Percent Total)'
+                    text: i18n.js.console.cpu_text
                 },
                 legend: {
                     display: false,
@@ -313,7 +313,7 @@ $(document).ready(function () {
                 labels: TimeLabels,
                 datasets: [
                     {
-                        label: "Memory Use",
+                        label: i18n.js.console.memory_label,
                         fill: false,
                         lineTension: 0.03,
                         backgroundColor: "#3c8dbc",
@@ -339,7 +339,7 @@ $(document).ready(function () {
             options: {
                 title: {
                     display: true,
-                    text: 'Memory Usage (in Megabytes)'
+                    text: i18n.js.console.memory_text
                 },
                 legend: {
                     display: false,

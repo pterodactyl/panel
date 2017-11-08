@@ -6,7 +6,7 @@
 @extends('layouts.master')
 
 @section('title')
-    @lang('server.schedules.header')
+    @lang('server.schedule.header')
 @endsection
 
 @section('content-header')
@@ -18,6 +18,10 @@
     </ol>
 @endsection
 
+<?php 
+    Carbon::setLocale(config('app.locale'));
+?>
+
 @section('content')
 <div class="row">
     <div class="col-xs-12">
@@ -25,7 +29,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.schedule.current')</h3>
                 <div class="box-tools">
-                    <a href="{{ route('server.schedules.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+                    <a href="{{ route('server.schedules.new', $server->uuidShort) }}"><button class="btn btn-primary btn-sm">@lang('strings.create_new')</button></a>
                 </div>
             </div>
             <div class="box-body table-responsive no-padding">
@@ -79,7 +83,7 @@
                                     <td class="text-center middle"><a href="#" data-action="delete-schedule" data-schedule-id="{{ $schedule->hashid }}"><i class="fa fa-fw fa-trash-o text-danger" data-toggle="tooltip" data-placement="top" title="@lang('strings.delete')"></i></a></td>
                                 @endcan
                                 @can('toggle-schedule', $server)
-                                    <td class="text-center middle"><a href="#" data-action="toggle-schedule" data-active="{{ $schedule->active }}" data-schedule-id="{{ $schedule->hashid }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="@lang('server.schedules.toggle')"></i></a></td>
+                                    <td class="text-center middle"><a href="#" data-action="toggle-schedule" data-active="{{ $schedule->active }}" data-schedule-id="{{ $schedule->hashid }}"><i class="fa fa-fw fa-eye-slash text-primary" data-toggle="tooltip" data-placement="top" title="@lang('server.schedule.toggle')"></i></a></td>
                                 @endcan
                             </tr>
                         @endforeach

@@ -21,6 +21,10 @@ return [
             'header' => 'Server Suspended',
             'desc' => 'This server has been suspended and cannot be accessed.',
         ],
+        '503' => [
+            'header' => 'Be right back.',
+            'desc' => 'Be right back!',
+        ],
     ],
     'index' => [
         'header' => 'Your Servers',
@@ -237,5 +241,6 @@ return [
         '2fa_qr' => 'Confgure 2FA on Your Device',
         '2fa_checkpoint_help' => 'Use the 2FA application on your phone to take a picture of the QR code to the left, or manually enter the code under it. Once you have done so, generate a token and enter it below.',
         '2fa_disable_error' => 'The 2FA token provided was not valid. Protection has not been disabled for this account.',
+        'loading_qr' => 'Loading QR Code...',
     ],
 ];

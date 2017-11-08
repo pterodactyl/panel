@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{{ Settings::get('company', 'Pterodactyl') }} - Console &rarr; {{ $server->name }}</title>
+        <title>{{ Settings::get('company', 'Pterodactyl') }} - @lang('server.index.console') &rarr; {{ $server->name }}</title>
         @include('layouts.scripts')
         {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
         {!! Theme::css('css/terminal.css') !!}
