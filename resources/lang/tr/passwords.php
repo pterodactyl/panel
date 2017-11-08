@@ -15,5 +15,5 @@ return [
     'reset' => 'Şifreniz sıfırlandı!',
     'sent' => 'Şifre sıfırlama linkini emailinize gönderdik!',
     'token' => 'Şifre sıfırlama linki geçersiz.',
-    'user' => "Girilen email adresi ile bir kullanıcı eşleşmedi.",
+    'user' => 'Girilen email adresi ile bir kullanıcı eşleşmedi.',
 ];
