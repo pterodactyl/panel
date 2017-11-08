@@ -66,7 +66,7 @@ foreach ($files as $file) {
     $lang = basename($file);
 
     Route::get('/js/lang/' . $lang . '.js', function () use ($fallback_file, $file, $lang) {
-        $strings = Cache::remember('lang/'.$lang.'.js', 60, function () use ($fallback_file, $file, $lang) {
+        $strings = Cache::remember('lang/' . $lang . '.js', 60, function () use ($fallback_file, $file, $lang) {
             $strings = [];
             if ($lang != config('app.fallback_locale')) {
                 $strings['js'] = array_replace_recursive(require $fallback_file, require $file . '/js.php');
