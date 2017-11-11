@@ -60,7 +60,7 @@ class Allocation extends Model implements CleansAttributes, ValidableContract
         'node_id' => 'exists:nodes,id',
         'ip' => 'ip',
         'port' => 'numeric|between:1024,65553',
-        'alias' => 'string',
+        'ip_alias' => 'nullable|string',
         'server_id' => 'nullable|exists:servers,id',
     ];
 
