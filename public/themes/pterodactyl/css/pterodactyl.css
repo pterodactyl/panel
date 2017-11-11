@@ -420,3 +420,7 @@ label.control-label > span.field-optional:before {
     content: "optional";
     color: #bbbbbb;
 }
+
+.pagination > li > a, .pagination > li > span {
+    padding: 3px 10px !important;
+}

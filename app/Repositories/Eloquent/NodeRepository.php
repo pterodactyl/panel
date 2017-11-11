@@ -105,7 +105,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
         $instance->setRelation(
             'allocations',
             $instance->allocations()->orderBy('ip', 'asc')->orderBy('port', 'asc')
-                ->with('server')->paginate(50)
+                ->with('server')->paginate(2)
         );
 
         return $instance;

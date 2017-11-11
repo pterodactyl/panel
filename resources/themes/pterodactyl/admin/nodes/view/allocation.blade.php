@@ -72,9 +72,11 @@
                     @endforeach
                 </table>
             </div>
-            <div class="box-footer text-center">
-                {{ $node->allocations->render() }}
-            </div>
+            @if($node->allocations->hasPages())
+                <div class="box-footer text-center">
+                    {{ $node->allocations->render() }}
+                </div>
+            @endif
         </div>
     </div>
     <div class="col-sm-4">
