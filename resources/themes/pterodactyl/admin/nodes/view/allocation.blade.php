@@ -177,7 +177,7 @@
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('admin.nodes.view.allocation.removeSingle', { id: Pterodactyl.node.id, allocation: allocation }),
+                url: Router.route('admin.nodes.view.allocation.removeSingle', { node: Pterodactyl.node.id, allocation: allocation }),
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).done(function (data) {
                 element.parent().parent().addClass('warning').delay(100).fadeOut();

@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes missing check in environment setup that would leave the Hashids salt empty.
 * `[beta.1]` — Fixes bug preventing loading of allocations when trying to create a new server.
 * `[beta.1]` — Fixes bug causing inability to create new servers on the Panel.
+* `[beta.1]` — Fixes bug causing inability to delete an allocation due to misconfigured JS.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
