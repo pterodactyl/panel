@@ -13,6 +13,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes bug causing inability to create new servers on the Panel.
 * `[beta.1]` — Fixes bug causing inability to delete an allocation due to misconfigured JS.
 * `[beta.1]` — Fixes bug causing inability to set the IP alias for an allocation to an empty value.
+* `[beta.1]` — Fixes bug that caused startup changes to not propigate to the server correctly on the first save.
+
+### Changed
+* Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added

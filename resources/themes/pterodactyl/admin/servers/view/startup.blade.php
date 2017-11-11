@@ -109,6 +109,18 @@
                     </div>
                 </div>
             </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Docker Container Configuration</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="pDockerImage" class="control-label">Image</label>
+                        <input type="text" name="docker_image" id="pDockerImage" value="{{ $server->image }}" class="form-control" />
+                        <p class="text-muted small">The Docker image to use for this server. The default image for the selected egg is <code id="setDefaultImage"></code>.</p>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-md-6">
             <div class="row" id="appendVariablesTo"></div>
@@ -143,7 +155,11 @@
             var parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
             var objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
-            $('#pDefaultContainer').val(_.get(objectChain, 'docker_image', 'not defined!'));
+            $('#setDefaultImage').html(_.get(objectChain, 'docker_image', 'undefined'));
+            $('#pDockerImage').val(_.get(objectChain, 'docker_image', 'undefined'));
+            if (objectChain.id === parseInt('{{ $server->egg_id }}')) {
+                $('#pDockerImage').val('{{ $server->image }}');
+            }
 
             if (!_.get(objectChain, 'startup', false)) {
                 $('#pDefaultStartupCommand').val(_.get(parentChain, 'startup', 'ERROR: Startup Not Defined!'));

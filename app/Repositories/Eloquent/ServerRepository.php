@@ -187,21 +187,27 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Get data for use when updating a server on the Daemon. Returns an array of
+     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * if they are missing, or refresh is set to true.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return array
      */
-    public function getDaemonServiceData($id)
+    public function getDaemonServiceData(Server $server, bool $refresh = false): array
     {
-        Assert::integerish($id, 'First argument passed to getDaemonServiceData must be integer, received %s.');
+        if (! $server->relationLoaded('egg') || $refresh) {
+            $server->load('egg');
+        }
 
-        $instance = $this->getBuilder()->with('egg.nest', 'pack')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        if (! $server->relationLoaded('pack') || $refresh) {
+            $server->load('pack');
         }
 
         return [
-            'type' => $instance->egg->nest->folder,
-            'option' => $instance->egg->tag,
-            'pack' => (! is_null($instance->pack_id)) ? $instance->pack->uuid : null,
+            'egg' => $server->getRelation('egg')->uuid,
+            'pack' => is_null($server->getRelation('pack')) ? null : $server->getRelation('pack')->uuid,
         ];
     }
 
