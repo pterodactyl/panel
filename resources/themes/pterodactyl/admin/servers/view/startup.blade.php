@@ -122,24 +122,9 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function () {
-        $('#pNestId').select2({
-            placeholder: 'Select a Nest',
-        }).change();
-        $('#pEggId').select2({
-            placeholder: 'Select a Nest Egg',
-        });
-        $('#pPackId').select2({
-            placeholder: 'Select a Service Pack',
-        });
-
-        $('input[data-action="match-regex"]').on('keyup', function (event) {
-            if (! $(this).data('regex')) return;
-
-            var input = $(this).val();
-            var regex = new RegExp($(this).data('regex').replace(/^\/|\/$/g, ''));
-
-            $(this).parent().parent().removeClass('has-success has-error').addClass((! regex.test(input)) ? 'has-error' : 'has-success');
-        });
+        $('#pNestId').select2({placeholder: 'Select a Nest'}).change();
+        $('#pEggId').select2({placeholder: 'Select a Nest Egg'});
+        $('#pPackId').select2({placeholder: 'Select a Service Pack'});
     });
     </script>
     <script>
@@ -192,7 +177,7 @@
                                 <h3 class="box-title">' + isRequired + item.name + '</h3> \
                             </div> \
                             <div class="box-body"> \
-                                <input data-action="match-regex" name="environment[' + item.env_variable + ']" class="form-control" type="text" value="' + setValue + '" /> \
+                                <input name="environment[' + item.env_variable + ']" class="form-control" type="text" id="egg_variable_' + item.env_variable + '" /> \
                                 <p class="no-margin small text-muted">' + item.description + '</p> \
                             </div> \
                             <div class="box-footer"> \
@@ -202,6 +187,7 @@
                         </div> \
                     </div>';
                 $('#appendVariablesTo').append(dataAppend);
+                $('#appendVariablesTo').find('#egg_variable_' + item.env_variable).val(setValue);
             });
         });
     </script>
