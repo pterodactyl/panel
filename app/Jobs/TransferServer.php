@@ -2,22 +2,23 @@
 
 namespace Pterodactyl\Jobs;
 
+use Pterodactyl\Models\Node;
 use Illuminate\Bus\Queueable;
+use Pterodactyl\Models\Server;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Services\Servers\SuspensionService;
 
 class TransferServer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $server, $node;
+    private $server;
+    private $node;
 
     /**
      * Create a new job instance.
@@ -65,7 +66,7 @@ class TransferServer implements ShouldQueue
         $newServer = $creation->create($newServerDetails);
 
         // 7. Verify Server Status
-        if (!$newServer->isWorking()) {
+        if (! $newServer->isWorking()) {
             $deletion->withForce()->handle($newServer);
             abort(500, 'Server failed to startup, please try again.');
         }
