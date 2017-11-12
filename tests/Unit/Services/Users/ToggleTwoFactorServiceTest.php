@@ -1,37 +1,37 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
-use PragmaRX\Google2FA\Contracts\Google2FA;
+use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Users\ToggleTwoFactorService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class ToggleTwoFactorServiceTest extends TestCase
 {
     /**
-     * @var \PragmaRX\Google2FA\Contracts\Google2FA
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
-    protected $google2FA;
+    private $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Illuminate\Contracts\Encryption\Encrypter|\Mockery\Mock
      */
-    protected $repository;
+    private $encrypter;
 
     /**
-     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
+     * @var \PragmaRX\Google2FA\Google2FA|\Mockery\Mock
      */
-    protected $service;
+    private $google2FA;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     */
+    private $repository;
 
     /**
      * Setup tests.
@@ -40,10 +40,10 @@ class ToggleTwoFactorServiceTest extends TestCase
     {
         parent::setUp();
 
+        $this->config = m::mock(Repository::class);
+        $this->encrypter = m::mock(Encrypter::class);
         $this->google2FA = m::mock(Google2FA::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
-
-        $this->service = new ToggleTwoFactorService($this->google2FA, $this->repository);
     }
 
     /**
@@ -53,6 +53,7 @@ class ToggleTwoFactorServiceTest extends TestCase
     {
         $model = factory(User::class)->make(['totp_secret' => 'secret', 'use_totp' => false]);
 
+        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.window')->once()->andReturn(4);
         $this->google2FA->shouldReceive('verifyKey')->with($model->totp_secret, 'test-token', 2)->once()->andReturn(true);
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($model->id, ['use_totp' => true])->once()->andReturnNull();
@@ -113,5 +114,15 @@ class ToggleTwoFactorServiceTest extends TestCase
         $this->repository->shouldReceive('withoutFresh->update')->once()->andReturnNull();
 
         $this->assertTrue($this->service->handle($model->id, 'test-token'));
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Users\ToggleTwoFactorService
+     */
+    private function getService(): ToggleTwoFactorService
+    {
+        return new ToggleTwoFactorService($this->encrypter, $this->google2FA, $this->config, $this->repository);
     }
 }

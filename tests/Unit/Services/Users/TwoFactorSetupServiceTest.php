@@ -1,19 +1,12 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
+use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
-use PragmaRX\Google2FA\Contracts\Google2FA;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -25,7 +18,7 @@ class TwoFactorSetupServiceTest extends TestCase
     protected $config;
 
     /**
-     * @var \PragmaRX\Google2FA\Contracts\Google2FA
+     * @var \PragmaRX\Google2FA\Google2FA
      */
     protected $google2FA;
 
@@ -60,7 +53,8 @@ class TwoFactorSetupServiceTest extends TestCase
     {
         $model = factory(User::class)->make();
 
-        $this->google2FA->shouldReceive('generateSecretKey')->withNoArgs()->once()->andReturn('secretKey');
+        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes')->once()->andReturn(32);
+        $this->google2FA->shouldReceive('generateSecretKey')->with(32)->once()->andReturn('secretKey');
         $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
         $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->with('CompanyName', $model->email, 'secretKey')
             ->once()->andReturn('http://url.com');

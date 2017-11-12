@@ -31,7 +31,7 @@
         "mtdowling/cron-expression": "^1.2",
         "nesbot/carbon": "^1.22",
         "nicolaslopezj/searchable": "^1.9",
-        "pragmarx/google2fa": "^1.0",
+        "pragmarx/google2fa": "^2.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
         "ramsey/uuid": "^3.7",
@@ -46,7 +46,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^2.4",
         "barryvdh/laravel-ide-helper": "^2.4",
-        "friendsofphp/php-cs-fixer": "^2.4",
+        "friendsofphp/php-cs-fixer": "^2.8.0",
         "fzaninotto/faker": "^1.6",
         "mockery/mockery": "^0.9",
         "php-mock/php-mock-phpunit": "^1.1",
