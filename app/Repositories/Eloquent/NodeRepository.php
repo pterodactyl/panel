@@ -18,6 +18,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 {
     use Searchable;
 
+    const THRESHOLD_PERCENTAGE_LOW = 75;
+    const THRESHOLD_PERCENTAGE_MEDIUM = 90;
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +59,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
                         'value' => number_format($value),
                         'max' => number_format($maxUsage),
                         'percent' => $percent,
-                        'css' => ($percent <= 75) ? 'green' : (($percent > 90) ? 'red' : 'yellow'),
+                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
                     ],
                 ];
             })

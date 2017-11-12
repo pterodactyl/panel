@@ -15,6 +15,8 @@ use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class CleanServiceBackupFilesCommand extends Command
 {
+    const BACKUP_THRESHOLD_MINUTES = 5;
+
     /**
      * @var \Carbon\Carbon
      */
@@ -58,7 +60,7 @@ class CleanServiceBackupFilesCommand extends Command
 
         collect($files)->each(function ($file) {
             $lastModified = $this->carbon->timestamp($this->disk->lastModified($file));
-            if ($lastModified->diffInMinutes($this->carbon->now()) > 5) {
+            if ($lastModified->diffInMinutes($this->carbon->now()) > self::BACKUP_THRESHOLD_MINUTES) {
                 $this->disk->delete($file);
                 $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => $file]));
             }
