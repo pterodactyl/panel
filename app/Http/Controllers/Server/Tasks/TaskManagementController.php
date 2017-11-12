@@ -112,7 +112,7 @@ class TaskManagementController extends Controller
         $server = $request->attributes->get('server');
 
         $schedule = $this->creationService->handle($server, $request->normalize(), $request->getTasks());
-        $this->alert->success(trans('server.schedules.task_created'))->flash();
+        $this->alert->success(trans('server.schedule.task_created'))->flash();
 
         return redirect()->route('server.schedules.view', [
             'server' => $server->uuidShort,

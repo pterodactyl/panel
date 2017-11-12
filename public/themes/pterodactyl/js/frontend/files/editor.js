@@ -66,13 +66,13 @@
     function create() {
         if (_.isEmpty($('#file_name').val())) {
             $.notify({
-                message: 'No filename was passed.'
+                message: i18n.js.file_editor.create_empty
             }, {
                 type: 'danger'
             });
             return;
         }
-        $('#create_file').html('<i class="fa fa-spinner fa fa-spin"></i> Creating File').addClass('disabled');
+        $('#create_file').html('<i class="fa fa-spinner fa fa-spin"></i> ' + i18n.js.file_editor.create_message).addClass('disabled');
         $.ajax({
             type: 'POST',
             url: Router.route('server.files.save', { server: Pterodactyl.server.uuidShort }),
@@ -95,13 +95,13 @@
                 type: 'danger'
             });
         }).always(function () {
-            $('#create_file').html('Create File').removeClass('disabled');
+            $('#create_file').html(i18n.js.file_editor.create_button).removeClass('disabled');
         });
     }
 
     function save() {
         var fileName = $('input[name="file"]').val();
-        $('#save_file').html('<i class="fa fw-fw fa-spinner fa-spin"></i> Saving File').addClass('disabled');
+        $('#save_file').html('<i class="fa fw-fw fa-spinner fa-spin"></i> ' + i18n.js.file_editor.save_message).addClass('disabled');
         $.ajax({
             type: 'POST',
             url: Router.route('server.files.save', { server: Pterodactyl.server.uuidShort }),
@@ -114,7 +114,7 @@
             }
         }).done(function (data) {
             $.notify({
-                message: 'File was successfully saved.'
+                message: i18n.js.file_editor.save_success
             }, {
                 type: 'success'
             });
@@ -125,7 +125,7 @@
                 type: 'danger'
             });
         }).always(function () {
-            $('#save_file').html('<i class="fa fa-fw fa-save"></i> &nbsp;Save File').removeClass('disabled');
+            $('#save_file').html('<i class="fa fa-fw fa-save"></i> &nbsp;' + i18n.js.file_editor.save_button).removeClass('disabled');
         });
     }
 })();

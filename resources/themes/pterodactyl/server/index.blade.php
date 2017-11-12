@@ -39,10 +39,10 @@
                 </div>
             </div>
             <div class="box-footer text-center">
-                @can('power-start', $server)<button class="btn btn-success disabled" data-attr="power" data-action="start">Start</button>@endcan
-                @can('power-restart', $server)<button class="btn btn-primary disabled" data-attr="power" data-action="restart">Restart</button>@endcan
-                @can('power-stop', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="stop">Stop</button>@endcan
-                @can('power-kill', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="kill">Kill</button>@endcan
+                @can('power-start', $server)<button class="btn btn-success disabled" data-attr="power" data-action="start">@lang('server.index.start')</button>@endcan
+                @can('power-restart', $server)<button class="btn btn-primary disabled" data-attr="power" data-action="restart">@lang('server.index.restart')</button>@endcan
+                @can('power-stop', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="stop">@lang('server.index.stop')</button>@endcan
+                @can('power-kill', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="kill">@lang('server.index.kill')</button>@endcan
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
     <div class="col-sm-6">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Memory Usage</h3>
+                <h3 class="box-title">@lang('server.index.memory_usage')</h3>
             </div>
             <div class="box-body">
                 <canvas id="chart_memory" style="max-height:300px;"></canvas>
@@ -61,7 +61,7 @@
     <div class="col-sm-6">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">CPU Usage</h3>
+                <h3 class="box-title">@lang('server.index.cpu_usage')</h3>
             </div>
             <div class="box-body">
                 <canvas id="chart_cpu" style="max-height:300px;"></canvas>

@@ -60,7 +60,7 @@ var Server = (function ()  {
         Socket.io.on('connect_error', function (err) {
             if(typeof notifySocketError !== 'object') {
                 notifySocketError = $.notify({
-                    message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
+                    message: i18n.js.server_socket.connection_problem + '<br /><br />' + err,
                 }, {
                     type: 'danger',
                     delay: 0,
@@ -88,16 +88,16 @@ var Server = (function ()  {
     function setStatusIcon(status) {
         switch (status) {
             case 0:
-                $('#server_status_icon').html('<i class="fa fa-circle text-danger"></i> Offline');
+                $('#server_status_icon').html('<i class="fa fa-circle text-danger"></i> ' + i18n.js.common.offline);
                 break;
             case 1:
-                $('#server_status_icon').html('<i class="fa fa-circle text-success"></i> Online');
+                $('#server_status_icon').html('<i class="fa fa-circle text-success"></i> ' + i18n.js.common.online);
                 break;
             case 2:
-                $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Starting');
+                $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> ' + i18n.js.common.starting);
                 break;
             case 3:
-                $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Stopping');
+                $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> ' + i18n.js.common.stopping);
                 break;
             default:
                 break;

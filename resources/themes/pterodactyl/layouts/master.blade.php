@@ -20,6 +20,7 @@
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#367fa9">
+        <script src="/js/lang/{{ config('app.locale') }}.js"></script>
 
         @include('layouts.scripts')
 
@@ -56,7 +57,7 @@
                         <ul class="nav navbar-nav">
                             <li class="dropdown user-menu">
                                 <a href="{{ route('account') }}" class="dropdown-toggle" data-toggle="dropdown">
-                                    <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
+                                    <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="@lang('strings.user_image')">
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
@@ -81,7 +82,7 @@
                         <div class="user-panel">
                             <div class="info">
                               <p>{{ $server->name }}</p>
-                              <a href="#" id="server_status_icon"><i class="fa fa-circle text-default"></i> Checking...</a>
+                              <a href="#" id="server_status_icon"><i class="fa fa-circle text-default"></i> @lang('strings.checking')</a>
                             </div>
                         </div>
                     @endif
@@ -297,12 +298,12 @@
 
                         var that = this;
                         swal({
-                            title: 'Do you want to log out?',
+                            title: '@lang('strings.logout_confirm_title')',
                             type: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d9534f',
                             cancelButtonColor: '#d33',
-                            confirmButtonText: 'Log out'
+                            confirmButtonText: '@lang('strings.logout_confirm_button')'
                         }, function () {
                             window.location = $(that).attr('href');
                         });

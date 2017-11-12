@@ -18,6 +18,10 @@
     </ol>
 @endsection
 
+<?php 
+    Carbon::setLocale(config('app.locale'));
+?>
+
 @section('content')
 <div class="row">
     <div class="col-md-6">
@@ -107,7 +111,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <center><span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> Loading QR Code...</span><img src="" id="qr_image_insert" style="display:none;"/><br /><code id="2fa_secret_insert"></code></center>
+                            <center><span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> @lang('base.security.loading_qr')</span><img src="" id="qr_image_insert" style="display:none;"/><br /><code id="2fa_secret_insert"></code></center>
                         </div>
                         <div class="col-md-6">
                             <div class="alert alert-info">@lang('base.security.2fa_checkpoint_help')</div>

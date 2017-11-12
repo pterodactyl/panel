@@ -52,7 +52,7 @@ var TwoFactorModal = (function () {
             });
             $('#2fa_token_verify').submit(function (event) {
                 event.preventDefault();
-                $('#submit_action').html('<i class="fa fa-spinner fa-spin"></i> Submit').addClass('disabled');
+                $('#submit_action').html('<i class="fa fa-spinner fa-spin"></i> ' + i18n.js.2fa.submit).addClass('disabled');
 
                 $.ajax({
                     type: 'POST',
@@ -66,12 +66,12 @@ var TwoFactorModal = (function () {
                 }).done(function (data) {
                     $('#notice_box_2fa').hide();
                     if (data === 'true') {
-                        $('#notice_box_2fa').html('<div class="alert alert-success">2-Factor Authentication has been enabled on your account. Press \'Close\' below to reload the page.</div>').slideDown();
+                        $('#notice_box_2fa').html('<div class="alert alert-success">' + i18n.js.2fa.enabled + '</div>').slideDown();
                     } else {
-                        $('#notice_box_2fa').html('<div class="alert alert-danger">The token provided was invalid.</div>').slideDown();
+                        $('#notice_box_2fa').html('<div class="alert alert-danger">' + i18n.js.2fa.invalid_token + '</div>').slideDown();
                     }
                 }).fail(function (jqXHR) {
-                    $('#notice_box_2fa').html('<div class="alert alert-danger">There was an error while attempting to enable 2-Factor Authentication on this account.</div>').slideDown();
+                    $('#notice_box_2fa').html('<div class="alert alert-danger">' + i18n.js.2fa.error + '</div>').slideDown();
                     console.error(jqXHR);
                 }).always(function () {
                     $('#submit_action').html('Submit').removeClass('disabled');

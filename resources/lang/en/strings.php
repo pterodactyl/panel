@@ -83,4 +83,9 @@ return [
         'fri' => 'Friday',
         'sat' => 'Saturday',
     ],
+    'user_image' => 'User Image',
+    'checking' => 'Checking...',
+    'logout_confirm_title' => 'Do you want to log out?',
+    'logout_confirm_button' => 'Log out',
+    'create_new' => 'Create New',
 ];
