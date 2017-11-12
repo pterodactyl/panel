@@ -16,7 +16,7 @@ use Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
 
 class TaskCreationService
 {
-    const MAX_INTERVAL_TIME_SECONDS = 90;
+    const MAX_INTERVAL_TIME_SECONDS = 900;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
