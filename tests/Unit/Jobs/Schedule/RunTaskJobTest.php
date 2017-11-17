@@ -64,7 +64,7 @@ class RunTaskJobTest extends TestCase
     {
         parent::setUp();
         Bus::fake();
-        Carbon::setTestNow();
+        Carbon::setTestNow(Carbon::now());
 
         $this->commandRepository = m::mock(CommandRepositoryInterface::class);
         $this->config = m::mock(Repository::class);

@@ -27,7 +27,6 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Services\Users\ToggleTwoFactorService;
