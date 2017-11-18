@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Repository;
+namespace Pterodactyl\Repositories;
 
 use Illuminate\Foundation\Application;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;

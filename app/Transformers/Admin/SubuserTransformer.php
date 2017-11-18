@@ -11,7 +11,6 @@ namespace Pterodactyl\Transformers\Admin;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
 use League\Fractal\TransformerAbstract;
 
 class SubuserTransformer extends TransformerAbstract
