@@ -65,7 +65,7 @@ class PackTransformer extends TransformerAbstract
      * Return the packs associated with this service.
      *
      * @param Pack $pack
-     * @return \Leauge\Fractal\Resource\Item
+     * @return \League\Fractal\Resource\Item
      */
     public function includeOption(Pack $pack)
     {
@@ -80,7 +80,7 @@ class PackTransformer extends TransformerAbstract
      * Return the packs associated with this service.
      *
      * @param Pack $pack
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Pack $pack)
     {

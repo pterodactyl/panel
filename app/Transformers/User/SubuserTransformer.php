@@ -18,6 +18,7 @@ class SubuserTransformer extends TransformerAbstract
     /**
      * Return a generic transformed subuser array.
      *
+     * @param Subuser $subuser
      * @return array
      */
     public function transform(Subuser $subuser)

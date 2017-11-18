@@ -63,7 +63,7 @@ class OptionTransformer extends TransformerAbstract
      * Return the parent service for this service option.
      *
      * @param Egg $option
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeService(Egg $option)
     {
@@ -78,7 +78,7 @@ class OptionTransformer extends TransformerAbstract
      * Return the packs associated with this service option.
      *
      * @param Egg $option
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includePacks(Egg $option)
     {
@@ -93,7 +93,7 @@ class OptionTransformer extends TransformerAbstract
      * Return the servers associated with this service option.
      *
      * @param Egg $option
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Egg $option)
     {
@@ -108,7 +108,7 @@ class OptionTransformer extends TransformerAbstract
      * Return the variables for this service option.
      *
      * @param Egg $option
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeVariables(Egg $option)
     {

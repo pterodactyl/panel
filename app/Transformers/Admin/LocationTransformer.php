@@ -61,7 +61,7 @@ class LocationTransformer extends TransformerAbstract
      * Return the nodes associated with this location.
      *
      * @param Location $location
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Location $location)
     {
@@ -76,7 +76,7 @@ class LocationTransformer extends TransformerAbstract
      * Return the nodes associated with this location.
      *
      * @param Location $location
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeNodes(Location $location)
     {

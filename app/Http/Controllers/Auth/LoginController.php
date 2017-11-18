@@ -102,7 +102,7 @@ class LoginController extends Controller
      * Handle a login request to the application.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response|\Illuminate\Response\RedirectResponse
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function login(Request $request)
     {

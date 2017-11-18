@@ -61,7 +61,7 @@ class UserTransformer extends TransformerAbstract
      * Return the servers associated with this user.
      *
      * @param User $user
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(User $user)
     {
@@ -76,7 +76,7 @@ class UserTransformer extends TransformerAbstract
      * Return the servers that this user can access.
      *
      * @param User $user
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeAccess(User $user)
     {

@@ -58,7 +58,7 @@ class ServerVariableTransformer extends TransformerAbstract
      * Return the parent service variable data.
      *
      * @param ServerVariable $variable
-     * @return \Leauge\Fractal\Resource\Item
+     * @return \League\Fractal\Resource\Item
      */
     public function includeParent(ServerVariable $variable)
     {

@@ -62,7 +62,7 @@ class ServiceTransformer extends TransformerAbstract
      * Return the the service options.
      *
      * @param Nest $service
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeOptions(Nest $service)
     {
@@ -77,7 +77,7 @@ class ServiceTransformer extends TransformerAbstract
      * Return the servers associated with this service.
      *
      * @param Nest $service
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Nest $service)
     {
@@ -92,7 +92,7 @@ class ServiceTransformer extends TransformerAbstract
      * Return the packs associated with this service.
      *
      * @param Nest $service
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includePacks(Nest $service)
     {

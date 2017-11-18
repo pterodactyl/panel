@@ -54,7 +54,7 @@ class ServerTransformer extends TransformerAbstract
      * Return a generic array of allocations for this server.
      *
      * @param Server $server
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeAllocations(Server $server)
     {
@@ -67,7 +67,7 @@ class ServerTransformer extends TransformerAbstract
      * Return a generic array of subusers for this server.
      *
      * @param Server $server
-     * @return \Leauge\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeSubusers(Server $server)
     {
@@ -80,7 +80,7 @@ class ServerTransformer extends TransformerAbstract
      * Return a generic array of allocations for this server.
      *
      * @param Server $server
-     * @return \Leauge\Fractal\Resource\Item
+     * @return \League\Fractal\Resource\Item
      */
     public function includeStats(Server $server)
     {
