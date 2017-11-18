@@ -80,7 +80,7 @@ class ApiKeyTransformer extends TransformerAbstract
 
         $permissions = $subuser->getRelation('permissions')->pluck('permission')->toArray();
         $mappings = Permission::getPermissions(true);
-        $daemonPermissions = [];
+        $daemonPermissions = ['s:console'];
 
         foreach ($permissions as $permission) {
             if (! is_null($mappings[$permission])) {
