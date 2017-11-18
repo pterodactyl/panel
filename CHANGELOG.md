@@ -19,6 +19,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
 * Two-Factor authentication tokens are now 32 bytes in length, and are stored encrypted at rest in the database.
+* Login page UI has been improved to be more sleek and welcoming to users.
+* Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
 
 ### Added
 * Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
