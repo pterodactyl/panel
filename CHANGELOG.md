@@ -14,10 +14,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes bug causing inability to delete an allocation due to misconfigured JS.
 * `[beta.1]` — Fixes bug causing inability to set the IP alias for an allocation to an empty value.
 * `[beta.1]` — Fixes bug that caused startup changes to not propigate to the server correctly on the first save.
+* `[beta.1]` — Fixes bug that prevented subusers from accessing anything over socketio due to a missing permission.
 
 ### Changed
 * Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
 * Two-Factor authentication tokens are now 32 bytes in length, and are stored encrypted at rest in the database.
+
+### Added
+* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
