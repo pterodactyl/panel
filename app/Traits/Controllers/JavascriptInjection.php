@@ -51,6 +51,7 @@ trait JavascriptInjection
                 'uuidShort' => $server->uuidShort,
                 'daemonSecret' => $token,
             ],
+            'server_token' => $token,
             'node' => [
                 'fqdn' => $server->node->fqdn,
                 'scheme' => $server->node->scheme,

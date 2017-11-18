@@ -57,6 +57,17 @@ var Server = (function ()  {
             'query': 'token=' + Pterodactyl.server.daemonSecret,
         });
 
+        Socket.on('error', function (err) {
+            if(typeof notifySocketError !== 'object') {
+                notifySocketError = $.notify({
+                    message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
+                }, {
+                    type: 'danger',
+                    delay: 0,
+                });
+            }
+        });
+
         Socket.io.on('connect_error', function (err) {
             if(typeof notifySocketError !== 'object') {
                 notifySocketError = $.notify({
