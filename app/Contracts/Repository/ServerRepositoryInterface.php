@@ -95,14 +95,15 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getWithDatabases($id);
 
     /**
-     * Return data about the daemon service in a consumable format.
+     * Get data for use when updating a server on the Daemon. Returns an array of
+     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * if they are missing, or refresh is set to true.
      *
-     * @param int $id
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getDaemonServiceData($id);
+    public function getDaemonServiceData(Server $server, bool $refresh = false): array;
 
     /**
      * Return an array of server IDs that a given user can access based on owner and subuser permissions.

@@ -107,6 +107,7 @@ class StartupModificationServiceTest extends TestCase
     {
         $model = factory(Server::class)->make([
             'egg_id' => 123,
+            'image' => 'docker:image',
         ]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
@@ -121,22 +122,29 @@ class StartupModificationServiceTest extends TestCase
             'variable_id' => 1,
         ], ['variable_value' => 'stored-value'])->once()->andReturnNull();
 
-        $this->environmentService->shouldReceive('handle')->with($model)->once()->andReturn(['env']);
-
         $this->repository->shouldReceive('update')->with($model->id, m::subset([
             'installed' => 0,
             'egg_id' => 456,
             'pack_id' => 789,
+            'image' => 'docker:image',
         ]))->once()->andReturn($model);
-        $this->repository->shouldReceive('withColumns->getDaemonServiceData')->with($model->id)->once()->andReturn([]);
+        $this->repository->shouldReceive('getDaemonServiceData')->with($model, true)->once()->andReturn([
+            'egg' => 'abcd1234',
+            'pack' => 'xyz987',
+        ]);
+
+        $this->environmentService->shouldReceive('handle')->with($model)->once()->andReturn(['env']);
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
         $this->daemonServerRepository->shouldReceive('setAccessServer')->with($model->uuid)->once()->andReturnSelf();
         $this->daemonServerRepository->shouldReceive('update')->with([
             'build' => [
                 'env|overwrite' => ['env'],
+                'image' => $model->image,
             ],
             'service' => [
+                'egg' => 'abcd1234',
+                'pack' => 'xyz987',
                 'skip_scripts' => false,
             ],
         ])->once()->andReturnSelf();
@@ -145,7 +153,7 @@ class StartupModificationServiceTest extends TestCase
 
         $service = $this->getService();
         $service->setUserLevel(User::USER_LEVEL_ADMIN);
-        $service->handle($model, ['egg_id' => 456, 'pack_id' => 789, 'environment' => ['test' => 'abcd1234']]);
+        $service->handle($model, ['docker_image' => 'docker:image', 'egg_id' => 456, 'pack_id' => 789, 'environment' => ['test' => 'abcd1234']]);
         $this->assertTrue(true);
     }
 

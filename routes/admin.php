@@ -105,7 +105,6 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{server}/delete', 'ServersController@delete');
 
     Route::patch('/view/{server}/details', 'ServersController@setDetails');
-    Route::patch('/view/{server}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
     Route::patch('/view/{server}/database', 'ServersController@resetDatabasePassword');
 
     Route::delete('/view/{server}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');

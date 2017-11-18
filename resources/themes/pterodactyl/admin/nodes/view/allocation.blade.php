@@ -72,9 +72,11 @@
                     @endforeach
                 </table>
             </div>
-            <div class="box-footer text-center">
-                {{ $node->allocations->render() }}
-            </div>
+            @if($node->allocations->hasPages())
+                <div class="box-footer text-center">
+                    {{ $node->allocations->render() }}
+                </div>
+            @endif
         </div>
     </div>
     <div class="col-sm-4">
@@ -177,7 +179,7 @@
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('admin.nodes.view.allocation.removeSingle', { id: Pterodactyl.node.id, allocation: allocation }),
+                url: Router.route('admin.nodes.view.allocation.removeSingle', { node: Pterodactyl.node.id, allocation: allocation }),
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).done(function (data) {
                 element.parent().parent().addClass('warning').delay(100).fadeOut();

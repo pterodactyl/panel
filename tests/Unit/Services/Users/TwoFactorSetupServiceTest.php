@@ -1,43 +1,37 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
+use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
-use PragmaRX\Google2FA\Contracts\Google2FA;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class TwoFactorSetupServiceTest extends TestCase
 {
     /**
-     * @var \Illuminate\Contracts\Config\Repository
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
-    protected $config;
+    private $config;
 
     /**
-     * @var \PragmaRX\Google2FA\Contracts\Google2FA
+     * @var \Illuminate\Contracts\Encryption\Encrypter|\Mockery\Mock
      */
-    protected $google2FA;
+    private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \PragmaRX\Google2FA\Google2FA|\Mockery\Mock
      */
-    protected $repository;
+    private $google2FA;
 
     /**
-     * @var \Pterodactyl\Services\Users\TwoFactorSetupService
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
-    protected $service;
+    private $repository;
 
     /**
      * Setup tests.
@@ -47,10 +41,9 @@ class TwoFactorSetupServiceTest extends TestCase
         parent::setUp();
 
         $this->config = m::mock(Repository::class);
+        $this->encrypter = m::mock(Encrypter::class);
         $this->google2FA = m::mock(Google2FA::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
-
-        $this->service = new TwoFactorSetupService($this->config, $this->google2FA, $this->repository);
     }
 
     /**
@@ -60,34 +53,25 @@ class TwoFactorSetupServiceTest extends TestCase
     {
         $model = factory(User::class)->make();
 
-        $this->google2FA->shouldReceive('generateSecretKey')->withNoArgs()->once()->andReturn('secretKey');
+        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes')->once()->andReturn(32);
+        $this->google2FA->shouldReceive('generateSecretKey')->with(32)->once()->andReturn('secretKey');
         $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
-        $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->with('CompanyName', $model->email, 'secretKey')
-            ->once()->andReturn('http://url.com');
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, ['totp_secret' => 'secretKey'])->once()->andReturnNull();
+        $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
+        $this->encrypter->shouldReceive('encrypt')->with('secretKey')->once()->andReturn('encryptedSecret');
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, ['totp_secret' => 'encryptedSecret'])->once()->andReturnNull();
 
-        $response = $this->service->handle($model);
+        $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
-        $this->assertArrayHasKey('qrImage', $response);
-        $this->assertArrayHasKey('secret', $response);
-        $this->assertEquals('http://url.com', $response['qrImage']);
-        $this->assertEquals('secretKey', $response['secret']);
+        $this->assertSame('http://url.com', $response);
     }
 
     /**
-     * Test that an integer can be passed in place of the user model.
+     * Return an instance of the service to test with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Users\TwoFactorSetupService
      */
-    public function testIntegerCanBePassedInPlaceOfUserModel()
+    private function getService(): TwoFactorSetupService
     {
-        $model = factory(User::class)->make();
-
-        $this->repository->shouldReceive('find')->with($model->id)->once()->andReturn($model);
-        $this->google2FA->shouldReceive('generateSecretKey')->withNoArgs()->once()->andReturnNull();
-        $this->config->shouldReceive('get')->with('app.name')->once()->andReturnNull();
-        $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh->update')->once()->andReturnNull();
-
-        $this->assertTrue(is_array($this->service->handle($model->id)));
+        return new TwoFactorSetupService($this->config, $this->encrypter, $this->google2FA, $this->repository);
     }
 }

@@ -99,13 +99,16 @@ class StartupModificationService
             });
         }
 
-        $daemonData = ['build' => [
-            'env|overwrite' => $this->environmentService->handle($server),
-        ]];
-
+        $daemonData = [];
         if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
             $this->updateAdministrativeSettings($data, $server, $daemonData);
         }
+
+        $daemonData = array_merge_recursive($daemonData, [
+            'build' => [
+                'env|overwrite' => $this->environmentService->handle($server),
+            ],
+        ]);
 
         try {
             $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
@@ -136,17 +139,15 @@ class StartupModificationService
             'egg_id' => array_get($data, 'egg_id', $server->egg_id),
             'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
             'skip_scripts' => isset($data['skip_scripts']),
+            'image' => array_get($data, 'docker_image', $server->image),
         ]);
 
-        if (
-            $server->nest_id != array_get($data, 'nest_id', $server->nest_id) ||
-            $server->egg_id != array_get($data, 'egg_id', $server->egg_id) ||
-            $server->pack_id != array_get($data, 'pack_id', $server->pack_id)
-        ) {
-            $daemonData['service'] = array_merge(
-                $this->repository->withColumns(['id', 'egg_id', 'pack_id'])->getDaemonServiceData($server->id),
+        $daemonData = array_merge($daemonData, [
+            'build' => ['image' => $server->image],
+            'service' => array_merge(
+                $this->repository->getDaemonServiceData($server, true),
                 ['skip_scripts' => isset($data['skip_scripts'])]
-            );
-        }
+            ),
+        ]);
     }
 }

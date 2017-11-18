@@ -411,25 +411,6 @@ class ServersController extends Controller
     }
 
     /**
-     * Set the new docker container for a server.
-     *
-     * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function setContainer(Request $request, Server $server)
-    {
-        $this->detailsModificationService->setDockerImage($server, $request->input('docker_image'));
-        $this->alert->success(trans('admin/server.alerts.docker_image_updated'))->flash();
-
-        return redirect()->route('admin.servers.view.details', $server->id);
-    }
-
-    /**
      * Toggles the install status for a server.
      *
      * @param \Pterodactyl\Models\Server $server

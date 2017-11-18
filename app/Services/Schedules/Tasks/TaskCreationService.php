@@ -16,6 +16,8 @@ use Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
 
 class TaskCreationService
 {
+    const MAX_INTERVAL_TIME_SECONDS = 900;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
      */
@@ -50,7 +52,7 @@ class TaskCreationService
 
         $schedule = ($schedule instanceof Schedule) ? $schedule->id : $schedule;
         $delay = $data['time_interval'] === 'm' ? $data['time_value'] * 60 : $data['time_value'];
-        if ($delay > 900) {
+        if ($delay > self::MAX_INTERVAL_TIME_SECONDS) {
             throw new TaskIntervalTooLongException(trans('exceptions.tasks.chain_interval_too_long'));
         }
 
