@@ -63,6 +63,7 @@ class User extends Model implements
         'language',
         'use_totp',
         'totp_secret',
+        'totp_authenticated_at',
         'gravatar',
         'root_admin',
     ];
@@ -77,6 +78,11 @@ class User extends Model implements
         'use_totp' => 'boolean',
         'gravatar' => 'boolean',
     ];
+
+    /**
+     * @var array
+     */
+    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'totp_authenticated_at'];
 
     /**
      * The attributes excluded from the model's JSON form.

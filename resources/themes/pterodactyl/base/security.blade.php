@@ -106,8 +106,8 @@
                         <div class="col-md-12" id="notice_box_2fa" style="display:none;"></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <center><span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> Loading QR Code...</span><img src="" id="qr_image_insert" style="display:none;"/><br /><code id="2fa_secret_insert"></code></center>
+                        <div class="col-md-6 text-center">
+                            <span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> Loading QR Code...</span><img src="" id="qr_image_insert" style="display:none;"/>
                         </div>
                         <div class="col-md-6">
                             <div class="alert alert-info">@lang('base.security.2fa_checkpoint_help')</div>

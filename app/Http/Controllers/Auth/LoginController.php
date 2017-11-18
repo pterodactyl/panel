@@ -202,7 +202,7 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
 
-        if (! $G2FA->verifyKey($user->totp_secret, $request->input('2fa_token'), 2)) {
+        if (! $G2FA->verifyKey(Crypt::decrypt($user->totp_secret), $request->input('2fa_token'), 2)) {
             event(new \Illuminate\Auth\Events\Failed($user, $credentials));
 
             return $this->sendFailedLoginResponse($request);

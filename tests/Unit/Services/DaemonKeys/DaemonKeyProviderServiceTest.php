@@ -44,7 +44,7 @@ class DaemonKeyProviderServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Carbon::setTestNow();
+        Carbon::setTestNow(Carbon::now());
 
         $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
         $this->keyUpdateService = m::mock(DaemonKeyUpdateService::class);

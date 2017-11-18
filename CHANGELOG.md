@@ -17,6 +17,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
+* Two-Factor authentication tokens are now 32 bytes in length, and are stored encrypted at rest in the database.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added

@@ -1,66 +1,82 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Users;
 
+use Carbon\Carbon;
 use Pterodactyl\Models\User;
-use PragmaRX\Google2FA\Contracts\Google2FA;
+use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class ToggleTwoFactorService
 {
     /**
-     * @var \PragmaRX\Google2FA\Contracts\Google2FA
+     * @var \Illuminate\Contracts\Config\Repository
      */
-    protected $google2FA;
+    private $config;
+
+    /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
+
+    /**
+     * @var \PragmaRX\Google2FA\Google2FA
+     */
+    private $google2FA;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * ToggleTwoFactorService constructor.
      *
-     * @param \PragmaRX\Google2FA\Contracts\Google2FA                   $google2FA
+     * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
+     * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
+     * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
+        Encrypter $encrypter,
         Google2FA $google2FA,
+        Repository $config,
         UserRepositoryInterface $repository
     ) {
+        $this->config = $config;
+        $this->encrypter = $encrypter;
         $this->google2FA = $google2FA;
         $this->repository = $repository;
     }
 
     /**
-     * @param int|\Pterodactyl\Models\User $user
-     * @param string                       $token
-     * @param null|bool                    $toggleState
+     * Toggle 2FA on an account only if the token provided is valid.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @param string                   $token
+     * @param bool|null                $toggleState
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
-    public function handle($user, $token, $toggleState = null)
+    public function handle(User $user, string $token, bool $toggleState = null): bool
     {
-        if (! $user instanceof User) {
-            $user = $this->repository->find($user);
-        }
+        $window = $this->config->get('pterodactyl.auth.2fa.window');
+        $secret = $this->encrypter->decrypt($user->totp_secret);
 
-        if (! $this->google2FA->verifyKey($user->totp_secret, $token, 2)) {
+        $isValidToken = $this->google2FA->verifyKey($secret, $token, $window);
+
+        if (! $isValidToken) {
             throw new TwoFactorAuthenticationTokenInvalid;
         }
 
         $this->repository->withoutFresh()->update($user->id, [
+            'totp_authenticated_at' => Carbon::now(),
             'use_totp' => (is_null($toggleState) ? ! $user->use_totp : $toggleState),
         ]);
 
