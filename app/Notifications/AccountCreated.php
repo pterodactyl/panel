@@ -28,7 +28,7 @@ class AccountCreated extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param aray $user
+     * @param array $user
      */
     public function __construct(array $user)
     {

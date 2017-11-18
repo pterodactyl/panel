@@ -50,6 +50,7 @@ class NodeTransformer extends TransformerAbstract
     /**
      * Return a generic transformed pack array.
      *
+     * @param Node $node
      * @return array
      */
     public function transform(Node $node)
@@ -60,7 +61,8 @@ class NodeTransformer extends TransformerAbstract
     /**
      * Return the nodes associated with this location.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Node $node
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeAllocations(Node $node)
     {
@@ -74,7 +76,8 @@ class NodeTransformer extends TransformerAbstract
     /**
      * Return the nodes associated with this location.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Node $node
+     * @return \League\Fractal\Resource\Item
      */
     public function includeLocation(Node $node)
     {
@@ -88,7 +91,8 @@ class NodeTransformer extends TransformerAbstract
     /**
      * Return the nodes associated with this location.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Node $node
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Node $node)
     {

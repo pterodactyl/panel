@@ -48,6 +48,7 @@ class AllocationTransformer extends TransformerAbstract
     /**
      * Return a generic transformed allocation array.
      *
+     * @param Allocation $allocation
      * @return array
      */
     public function transform(Allocation $allocation)
@@ -58,6 +59,7 @@ class AllocationTransformer extends TransformerAbstract
     /**
      * Determine which transformer filter to apply.
      *
+     * @param Allocation $allocation
      * @return array
      */
     protected function transformWithFilter(Allocation $allocation)
@@ -73,6 +75,7 @@ class AllocationTransformer extends TransformerAbstract
      * Transform the allocation to only return information not duplicated
      * in the server response (discard node_id and server_id).
      *
+     * @param Allocation $allocation
      * @return array
      */
     protected function transformForServer(Allocation $allocation)

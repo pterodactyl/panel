@@ -24,6 +24,7 @@ class AllocationTransformer extends TransformerAbstract
 
     /**
      * Setup allocation transformer with access to server data.
+     * @param Server $server
      */
     public function __construct(Server $server)
     {
@@ -33,6 +34,7 @@ class AllocationTransformer extends TransformerAbstract
     /**
      * Return a generic transformed allocation array.
      *
+     * @param Allocation $allocation
      * @return array
      */
     public function transform(Allocation $allocation)

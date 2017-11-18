@@ -17,6 +17,7 @@ class OverviewTransformer extends TransformerAbstract
     /**
      * Return a generic transformed server array.
      *
+     * @param Server $server
      * @return array
      */
     public function transform(Server $server)

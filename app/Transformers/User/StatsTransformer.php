@@ -18,6 +18,7 @@ class StatsTransformer extends TransformerAbstract
     /**
      * Return a generic transformed subuser array.
      *
+     * @param Client $client
      * @return array
      */
     public function transform(Client $client)

@@ -46,6 +46,7 @@ class ServerVariableTransformer extends TransformerAbstract
     /**
      * Return a generic transformed server variable array.
      *
+     * @param ServerVariable $variable
      * @return array
      */
     public function transform(ServerVariable $variable)
@@ -56,6 +57,7 @@ class ServerVariableTransformer extends TransformerAbstract
     /**
      * Return the parent service variable data.
      *
+     * @param ServerVariable $variable
      * @return \Leauge\Fractal\Resource\Item
      */
     public function includeParent(ServerVariable $variable)
