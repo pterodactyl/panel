@@ -259,7 +259,7 @@ return [
         'header' => 'El Administrador De Archivos',
         'header_sub' => 'Administrar todos tus archivos directamente desde la web.',
         'loading' => 'La carga inicial de la estructura del archivo, esto puede tardar unos segundos.',
-        'path' => 'Cuando la configuración de rutas de archivo en su servidor de plugins o configuración que debe utilizar :path de acceso como base de la ruta. El tamaño máximo para la web basado en la carga de archivos a este nodo es :tamaño de la.',
+        'path' => 'Cuando la configuración de rutas de archivo en su servidor de plugins o configuración que debe utilizar :path de acceso como base de la ruta. El tamaño máximo para la web basado en la carga de archivos a este nodo es :size de la.',
         'seconds_ago' => 'hace segundos',
         'file_name' => 'Nombre De Archivo',
         'size' => 'Tamaño',
