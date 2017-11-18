@@ -6,7 +6,7 @@ return [
     'authentication_required' => 'La autenticación es necesaria para continuar.',
     'remember_me' => 'Recuérdame',
     'sign_in' => 'Iniciar Sesión',
-    'forgot_password' => 'Olvidé mi contraseña!',
+    'forgot_password' => '¡Olvidé mi contraseña!',
     'request_reset_text' => '¿Olvidaste tu contraseña? No es el fin del mundo, sólo proporcione su correo electrónico a continuación.',
     'reset_password_text' => 'Restablece la contraseña de su cuenta.',
     'reset_password' => 'Restablece contraseña de cuenta.',
