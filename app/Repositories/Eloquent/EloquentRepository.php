@@ -10,7 +10,7 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Repository\Repository;
+use Pterodactyl\Repositories\Repository;
 use Illuminate\Database\Query\Expression;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
