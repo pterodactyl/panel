@@ -26,42 +26,74 @@
     background: #10529f;
 }
 
+#login-position-elements {
+    margin: 25% auto;
+}
+
 .login-logo {
-    color: white;
-    font-weight: bold;
+    color: #fff;
+    font-weight: 400;
 }
 
 .login-copyright {
-    color: white;
+    color: rgba(255, 255, 255, 0.3);
 }
 
-.login-copyright a, .login-copyright a:hover {
-    color: white;
-    font-weight: bold;
+.login-copyright > a {
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .particles-js-canvas-el {
     position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: -1;
 }
 
-.login-box, .register-box {
-    position: absolute;
-    margin: -180px 0 0 -180px;
-    left: 50%;
-    top: 50%;
-    height: 360px;
-    width: 360px;
-    z-index: 100;
+.pterodactyl-login-box {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    padding: 20px;
 }
 
-@media (max-width:768px) {
-    .login-box {
-        width: 90%;
-        margin-top: 20px;
-        margin: 5%;
-        left: 0;
-        top: 0;
-    }
+.pterodactyl-login-input > input {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #000;
+    border-radius: 2px;
+    color: #fff;
+}
+
+.pterodactyl-login-input > .form-control-feedback {
+    color: #fff;
+}
+
+.pterodactyl-login-button--main {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #000;
+    border-radius: 2px;
+    color: #fff;
+}
+
+.pterodactyl-login-button--main:hover {
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid #000;
+    border-radius: 2px;
+    color: #fff;
+}
+
+.pterodactyl-login-button--left {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 2px;
+    color: #fff;
+}
+
+.pterodactyl-login-button--left:hover {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+    color: #fff;
 }
 
 .weight-100 {

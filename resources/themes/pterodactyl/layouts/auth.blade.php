@@ -34,14 +34,16 @@
         @show
     </head>
     <body id="particles-js" class="hold-transition login-page">
-        <div class="login-box">
-            <div class="login-logo">
-                {{ Settings::get('company', 'Pterodactyl') }}
+        <div class="container">
+            <div id="login-position-elements">
+                <div class="login-logo">
+                    {{ Settings::get('company', 'Pterodactyl') }}
+                </div>
+                @yield('content')
+                <p class="small login-copyright text-center">
+                    Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/" target="_blank">Pterodactyl Software</a>.<br />
+                </p>
             </div>
-            @yield('content')
-            <p class="small login-copyright text-center">
-                Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/" target="_blank">Pterodactyl Software</a>.<br />
-            </p>
         </div>
         <div class="login-corner-info small">
             <strong><i class="fa fa-fw {{ $appIsGit ? 'fa-git-square' : 'fa-code-fork' }}"></i></strong> {{ $appVersion }}<br />
