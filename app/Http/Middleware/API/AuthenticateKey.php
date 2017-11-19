@@ -4,10 +4,25 @@ namespace Pterodactyl\Http\Middleware\API;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Auth\AuthManager;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateKey
 {
+    /**
+     * @var \Illuminate\Auth\AuthManager
+     */
+    private $auth;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    private $config;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
      */
@@ -17,9 +32,16 @@ class AuthenticateKey
      * AuthenticateKey constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \Illuminate\Auth\AuthManager                                $auth
+     * @param \Illuminate\Contracts\Config\Repository                     $config
      */
-    public function __construct(ApiKeyRepositoryInterface $repository)
-    {
+    public function __construct(
+        ApiKeyRepositoryInterface $repository,
+        AuthManager $auth,
+        ConfigRepository $config
+    ) {
+        $this->auth = $auth;
+        $this->config = $config;
         $this->repository = $repository;
     }
 
@@ -30,11 +52,23 @@ class AuthenticateKey
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
+     * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        $this->repository->findFirstWhere([
-            '',
-        ]);
+        if (is_null($request->bearerToken())) {
+            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
+        }
+
+        try {
+            $model = $this->repository->findFirstWhere([['token', '=', $request->bearerToken()]]);
+        } catch (RecordNotFoundException $exception) {
+            throw new AccessDeniedHttpException;
+        }
+
+        $this->auth->guard()->loginUsingId($model->user_id);
+        $request->attributes->set('api_key', $model);
+
+        return $next($request);
     }
 }
