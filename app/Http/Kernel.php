@@ -24,6 +24,7 @@ use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\API\AuthenticateIPAccess;
 use Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Pterodactyl\Http\Middleware\API\HasPermissionToResource;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
@@ -94,6 +95,9 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
+
+        // API specific middleware.
+        'api..user_level' => HasPermissionToResource::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //

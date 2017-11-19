@@ -232,3 +232,11 @@ $factory->define(Pterodactyl\Models\APIKey::class, function (Faker\Generator $fa
         'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
     ];
 });
+
+$factory->define(Pterodactyl\Models\APIPermission::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'key_id' => $faker->randomNumber(),
+        'permission' => mb_strtolower($faker->word),
+    ];
+});
