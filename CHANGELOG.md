@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.0-beta.3 (Derelict Dermodactylus)
+### Changed
+* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
+
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.

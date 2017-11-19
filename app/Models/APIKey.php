@@ -19,19 +19,14 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
+    const KEY_LENGTH = 32;
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = 'api_keys';
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['secret'];
 
     /**
      * Cast values to correct type.
@@ -57,8 +52,7 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
     protected static $applicationRules = [
         'memo' => 'required',
         'user_id' => 'required',
-        'secret' => 'required',
-        'public' => 'required',
+        'token' => 'required',
     ];
 
     /**
@@ -68,8 +62,7 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'user_id' => 'exists:users,id',
-        'public' => 'string|size:16',
-        'secret' => 'string',
+        'token' => 'string|size:32',
         'memo' => 'nullable|string|max:500',
         'allowed_ips' => 'nullable|json',
         'expires_at' => 'nullable|datetime',

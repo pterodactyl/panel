@@ -1,60 +1,42 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Api;
 
+use Pterodactyl\Models\APIKey;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
-    const PUB_CRYPTO_LENGTH = 16;
-    const PRIV_CRYPTO_LENGTH = 64;
-
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $connection;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    protected $encrypter;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Services\Api\PermissionService
      */
-    protected $permissionService;
+    private $permissionService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * ApiKeyService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
      * @param \Illuminate\Database\ConnectionInterface                    $connection
-     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      * @param \Pterodactyl\Services\Api\PermissionService                 $permissionService
      */
     public function __construct(
         ApiKeyRepositoryInterface $repository,
         ConnectionInterface $connection,
-        Encrypter $encrypter,
         PermissionService $permissionService
     ) {
         $this->repository = $repository;
         $this->connection = $connection;
-        $this->encrypter = $encrypter;
         $this->permissionService = $permissionService;
     }
 
@@ -64,24 +46,17 @@ class KeyCreationService
      * @param array $data
      * @param array $permissions
      * @param array $administrative
-     * @return string
+     * @return \Pterodactyl\Models\APIKey
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data, array $permissions, array $administrative = [])
+    public function handle(array $data, array $permissions, array $administrative = []): APIKey
     {
-        $publicKey = str_random(self::PUB_CRYPTO_LENGTH);
-        $secretKey = str_random(self::PRIV_CRYPTO_LENGTH);
+        $token = str_random(APIKey::KEY_LENGTH);
+        $data = array_merge($data, ['token' => $token]);
 
-        // Start a Transaction
         $this->connection->beginTransaction();
-
-        $data = array_merge($data, [
-            'public' => $publicKey,
-            'secret' => $this->encrypter->encrypt($secretKey),
-        ]);
-
         $instance = $this->repository->create($data, true, true);
         $nodes = $this->permissionService->getPermissions();
 
@@ -115,6 +90,6 @@ class KeyCreationService
 
         $this->connection->commit();
 
-        return $secretKey;
+        return $instance;
     }
 }

@@ -33,7 +33,7 @@ return [
             'header_sub' => 'Manage your API access keys.',
             'list' => 'API Keys',
             'create_new' => 'Create New API key',
-            'keypair_created' => 'An API Key-Pair has been generated. Your API secret token is <code>:token</code>. Please take note of this key as it will not be displayed again.',
+            'keypair_created' => 'An API Key-Pair has been generated and is listed below.',
         ],
         'new' => [
             'header' => 'New API Key',
