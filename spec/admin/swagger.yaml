@@ -1,0 +1,73 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Pterodactyl Admin API Reference
+  description: Pterodactyl Panel API Documentation
+  contact:
+    name: Dane Everitt
+    url: https://pterodactyl.io
+    email: support@pterodactyl.io
+  license:
+    name: MIT
+host: example.com
+basePath: /api/admin
+schemes:
+  - http
+  - https
+consumes:
+  - application/vnd.pterodactyl.v1+json
+produces:
+  - application/json
+paths:
+  /users:
+    get:
+      description: |
+       Returns all users that exist on the Panel.
+      operationId: findUsers
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+            required: ["data"]
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/definitions/User'
+                  properties:
+                    id:
+                      type: integer
+                    attributes:
+                      type: object
+definitions:
+  User:
+    allOf:
+      - required:
+        - email
+        - username
+        - uuid
+        properties:
+          external_id:
+            type: string
+          uuid:
+            type: string
+          email:
+            type: string
+          username:
+            type: string
+          name_first:
+            type: string
+          name_last:
+            type: string
+          language:
+            type: string
+          root_admin:
+            type: boolean
+          use_totp:
+            type: boolean
+          updated_at:
+            type: string
+          created_at:
+            type: string
+

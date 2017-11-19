@@ -184,14 +184,20 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * {@inheritdoc}
      */
-    public function all()
+    public function all($paginate = null)
     {
+        Assert::nullOrIntegerish($paginate, 'First argument passed to all must be null or integer, received %s.');
+
         $instance = $this->getBuilder();
         if (is_subclass_of(get_called_class(), SearchableInterface::class)) {
             $instance = $instance->search($this->searchTerm);
         }
 
-        return $instance->get($this->getColumns());
+        if (is_null($paginate)) {
+            return $instance->get($this->getColumns());
+        }
+
+        return $instance->paginate($paginate, $this->getColumns());
     }
 
     /**

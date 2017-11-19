@@ -168,9 +168,10 @@ interface RepositoryInterface
     /**
      * Return all records from the model.
      *
+     * @param null $paginate
      * @return mixed
      */
-    public function all();
+    public function all($paginate = null);
 
     /**
      * Insert a single or multiple records into the database at once skipping

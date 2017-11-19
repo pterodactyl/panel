@@ -89,7 +89,7 @@ class User extends Model implements
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token', 'totp_secret'];
+    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
 
     /**
      * Parameters for search querying.
