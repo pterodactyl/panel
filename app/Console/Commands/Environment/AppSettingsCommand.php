@@ -21,7 +21,7 @@ class AppSettingsCommand extends Command
 
     const ALLOWED_CACHE_DRIVERS = [
         'redis' => 'Redis (recommended)',
-        'memcached' => 'Memcached'
+        'memcached' => 'Memcached',
     ];
 
     const ALLOWED_SESSION_DRIVERS = [
