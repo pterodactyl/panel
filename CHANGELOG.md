@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.0-beta.3 (Derelict Dermodactylus)
+### Fixed
+* `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
+
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
