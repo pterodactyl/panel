@@ -319,14 +319,14 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param int $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewStartup($server)
+    public function viewStartup(Server $server)
     {
-        $parameters = $this->repository->getVariablesWithValues($server, true);
+        $parameters = $this->repository->getVariablesWithValues($server->id, true);
         if (! $parameters->server->installed) {
             abort(404);
         }
@@ -334,6 +334,7 @@ class ServersController extends Controller
         $nests = $this->nestRepository->getWithEggs();
 
         Javascript::put([
+            'server' => $server,
             'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
