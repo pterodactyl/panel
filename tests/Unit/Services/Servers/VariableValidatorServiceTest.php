@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Servers;
 
@@ -15,8 +8,7 @@ use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
@@ -27,22 +19,17 @@ class VariableValidatorServiceTest extends TestCase
     /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
-    protected $optionVariableRepository;
+    private $optionVariableRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
-    protected $serverRepository;
+    private $serverRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
-    protected $serverVariableRepository;
-
-    /**
-     * @var \Illuminate\Contracts\Validation\Factory|\Mockery\Mock
-     */
-    protected $validator;
+    private $serverVariableRepository;
 
     /**
      * Setup tests.
@@ -54,7 +41,6 @@ class VariableValidatorServiceTest extends TestCase
         $this->optionVariableRepository = m::mock(EggVariableRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
         $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
-        $this->validator = m::mock(Factory::class);
     }
 
     /**
@@ -76,13 +62,6 @@ class VariableValidatorServiceTest extends TestCase
     {
         $variables = $this->getVariableCollection();
         $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($variables);
-
-        $this->validator->shouldReceive('make')->with([
-            'variable_value' => 'Test_SomeValue_0',
-        ], [
-            'variable_value' => $variables[0]->rules,
-        ])->once()->andReturnSelf();
-        $this->validator->shouldReceive('fails')->withNoArgs()->once()->andReturn(false);
 
         $response = $this->getService()->handle(1, [
             $variables[0]->env_variable => 'Test_SomeValue_0',
@@ -111,15 +90,6 @@ class VariableValidatorServiceTest extends TestCase
     {
         $variables = $this->getVariableCollection();
         $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($variables);
-
-        foreach ($variables as $key => $variable) {
-            $this->validator->shouldReceive('make')->with([
-                'variable_value' => 'Test_SomeValue_' . $key,
-            ], [
-                'variable_value' => $variables[$key]->rules,
-            ])->once()->andReturnSelf();
-            $this->validator->shouldReceive('fails')->withNoArgs()->once()->andReturn(false);
-        }
 
         $service = $this->getService();
         $service->setUserLevel(User::USER_LEVEL_ADMIN);
@@ -152,28 +122,16 @@ class VariableValidatorServiceTest extends TestCase
         $variables = $this->getVariableCollection();
         $this->optionVariableRepository->shouldReceive('findWhere')->with([['egg_id', '=', 1]])->andReturn($variables);
 
-        $this->validator->shouldReceive('make')->with([
-            'variable_value' => null,
-        ], [
-            'variable_value' => $variables[0]->rules,
-        ])->once()->andReturnSelf();
-        $this->validator->shouldReceive('fails')->withNoArgs()->once()->andReturn(true);
-
-        $this->validator->shouldReceive('errors')->withNoArgs()->once()->andReturnSelf();
-        $this->validator->shouldReceive('toArray')->withNoArgs()->once()->andReturn([]);
-
         try {
             $this->getService()->handle(1, [$variables[0]->env_variable => null]);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(DisplayValidationException::class, $exception);
+        } catch (ValidationException $exception) {
+            $messages = $exception->validator->getMessageBag()->all();
 
-            $decoded = json_decode($exception->getMessage());
-            $this->assertEquals(0, json_last_error(), 'Assert that response is decodable JSON.');
-            $this->assertObjectHasAttribute('notice', $decoded);
-            $this->assertEquals(
-                trans('admin/server.exceptions.bad_variable', ['name' => $variables[0]->name]),
-                $decoded->notice[0]
-            );
+            $this->assertNotEmpty($messages);
+            $this->assertSame(1, count($messages));
+            $this->assertSame(trans('validation.required', [
+                'attribute' => trans('validation.internal.variable_value', ['env' => $variables[0]->name]),
+            ]), $messages[0]);
         }
     }
 
@@ -205,7 +163,7 @@ class VariableValidatorServiceTest extends TestCase
             $this->optionVariableRepository,
             $this->serverRepository,
             $this->serverVariableRepository,
-            $this->validator
+            $this->app->make(Factory::class)
         );
     }
 }

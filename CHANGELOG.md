@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
 * `[beta.2]` — Fixes a bug causing the dropdown menu for a server's egg to display the wrong selected value.
+* `[beta.2]` — Fixes a bug that would throw a red page of death when submitting an invalid egg variable value for a server in the Admin CP.
 
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed
