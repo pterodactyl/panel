@@ -38,6 +38,9 @@ class ConsoleController extends Controller
         $server = $request->attributes->get('server');
 
         $this->setRequest($request)->injectJavascript([
+            'server' => [
+                'cpu' => $server->cpu,
+            ],
             'meta' => [
                 'saveFile' => route('server.files.save', $server->uuidShort),
                 'csrfToken' => csrf_token(),
