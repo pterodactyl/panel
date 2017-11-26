@@ -63,14 +63,13 @@ class DatabaseHost extends Model implements CleansAttributes, ValidableContract
         'host' => 'required',
         'port' => 'required',
         'username' => 'required',
-        'node_id' => 'sometimes|required',
+        'node_id' => 'sometimes',
     ];
 
     /**
      * Validation rules to assign to this model.
      *
      * @var array
-     * @todo the node_id field doesn't validate correctly if no node is provided in request
      */
     protected static $dataIntegrityRules = [
         'name' => 'string|max:255',
@@ -78,7 +77,7 @@ class DatabaseHost extends Model implements CleansAttributes, ValidableContract
         'port' => 'numeric|between:1,65535',
         'username' => 'string|max:32',
         'password' => 'nullable|string',
-        'node_id' => 'nullable|exists:nodes,id',
+        'node_id' => 'nullable|integer|exists:nodes,id',
     ];
 
     /**

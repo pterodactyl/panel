@@ -148,7 +148,7 @@
                         text: item.name,
                     };
                 }),
-            }).change();
+            }).val(Pterodactyl.server.egg_id).change();
         });
 
         $('#pEggId').on('change', function (event) {
@@ -157,8 +157,8 @@
 
             $('#setDefaultImage').html(_.get(objectChain, 'docker_image', 'undefined'));
             $('#pDockerImage').val(_.get(objectChain, 'docker_image', 'undefined'));
-            if (objectChain.id === parseInt('{{ $server->egg_id }}')) {
-                $('#pDockerImage').val('{{ $server->image }}');
+            if (objectChain.id === parseInt(Pterodactyl.server.egg_id)) {
+                $('#pDockerImage').val(Pterodactyl.server.image);
             }
 
             if (!_.get(objectChain, 'startup', false)) {
@@ -178,9 +178,9 @@
                 ),
             });
 
-            @if(! is_null($server->pack_id))
-                $('#pPackId').val({{ $server->pack_id }});
-            @endif
+            if (Pterodactyl.server.pack_id !== null) {
+                $('#pPackId').val(Pterodactyl.server.pack_id);
+            }
 
             $('#appendVariablesTo').html('');
             $.each(_.get(objectChain, 'variables', []), function (i, item) {

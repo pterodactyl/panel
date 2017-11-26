@@ -82,6 +82,7 @@ return [
             'timezone' => 'Application Timezone',
             'cache_driver' => 'Cache Driver',
             'session_driver' => 'Session Driver',
+            'queue_driver' => 'Queue Driver',
             'using_redis' => 'You\'ve selected the Redis driver for one or more options, please provide valid connection information below. In most cases you can use the defaults provided unless you have modified your setup.',
             'redis_host' => 'Redis Host',
             'redis_password' => 'Redis Password',

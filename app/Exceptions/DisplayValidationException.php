@@ -9,6 +9,6 @@
 
 namespace Pterodactyl\Exceptions;
 
-class DisplayValidationException extends PterodactylException
+class DisplayValidationException extends DisplayException
 {
 }
