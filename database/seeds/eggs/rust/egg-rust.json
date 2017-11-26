@@ -36,7 +36,7 @@
             "name": "OxideMod",
             "description": "Set whether you want the server to use and auto update OxideMod or not. Valid options are \"1\" for true and \"0\" for false.",
             "env_variable": "OXIDE",
-            "default_value": "false",
+            "default_value": "0",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|boolean"

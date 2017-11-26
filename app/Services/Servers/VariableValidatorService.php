@@ -11,8 +11,8 @@ namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Traits\Services\HasUserLevels;
-use Pterodactyl\Exceptions\DisplayValidationException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
@@ -25,22 +25,22 @@ class VariableValidatorService
     /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
-    protected $optionVariableRepository;
+    private $optionVariableRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $serverRepository;
+    private $serverRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
      */
-    protected $serverVariableRepository;
+    private $serverVariableRepository;
 
     /**
      * @var \Illuminate\Contracts\Validation\Factory
      */
-    protected $validator;
+    private $validator;
 
     /**
      * VariableValidatorService constructor.
@@ -68,32 +68,32 @@ class VariableValidatorService
      * @param int   $egg
      * @param array $fields
      * @return \Illuminate\Support\Collection
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function handle(int $egg, array $fields = []): Collection
     {
         $variables = $this->optionVariableRepository->findWhere([['egg_id', '=', $egg]]);
+        $messages = $this->validator->make([], []);
 
-        return $variables->map(function ($item) use ($fields) {
+        $response = $variables->map(function ($item) use ($fields, $messages) {
             // Skip doing anything if user is not an admin and
             // variable is not user viewable or editable.
             if (! $this->isUserLevel(User::USER_LEVEL_ADMIN) && (! $item->user_editable || ! $item->user_viewable)) {
                 return false;
             }
 
-            $validator = $this->validator->make([
+            $v = $this->validator->make([
                 'variable_value' => array_get($fields, $item->env_variable),
             ], [
                 'variable_value' => $item->rules,
+            ], [], [
+                'variable_value' => trans('validation.internal.variable_value', ['env' => $item->name]),
             ]);
 
-            if ($validator->fails()) {
-                throw new DisplayValidationException(json_encode(
-                    collect([
-                        'notice' => [
-                            trans('admin/server.exceptions.bad_variable', ['name' => $item->name]),
-                        ],
-                    ])->merge($validator->errors()->toArray())
-                ));
+            if ($v->fails()) {
+                foreach ($v->getMessageBag()->all() as $message) {
+                    $messages->getMessageBag()->add($item->env_variable, $message);
+                }
             }
 
             return (object) [
@@ -104,5 +104,11 @@ class VariableValidatorService
         })->filter(function ($item) {
             return is_object($item);
         });
+
+        if (! empty($messages->getMessageBag()->all())) {
+            throw new ValidationException($messages);
+        }
+
+        return $response;
     }
 }
