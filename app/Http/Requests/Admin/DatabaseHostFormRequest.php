@@ -18,6 +18,10 @@ class DatabaseHostFormRequest extends AdminFormRequest
      */
     public function rules()
     {
+        if (! $this->has('node_id')) {
+            $this->merge(['node_id' => null]);
+        }
+
         if ($this->method() !== 'POST') {
             return DatabaseHost::getUpdateRulesForId($this->route()->parameter('host')->id);
         }
