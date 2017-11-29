@@ -3,33 +3,22 @@
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
  */
 
 namespace Pterodactyl\Models;
 
-use Crypt;
-use Config;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class DatabaseHost extends Model
+class DatabaseHost extends Model implements CleansAttributes, ValidableContract
 {
+    use Eloquence, Validable;
+
     /**
      * The table associated with the model.
      *
@@ -50,7 +39,7 @@ class DatabaseHost extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
     ];
 
     /**
@@ -65,24 +54,31 @@ class DatabaseHost extends Model
     ];
 
     /**
-     * Sets the database connection name with the details of the host.
+     * Application validation rules.
      *
-     * @param  string  $connection
-     * @return void
+     * @var array
      */
-    public function setDynamicConnection($connection = 'dynamic')
-    {
-        Config::set('database.connections.' . $connection, [
-            'driver' => 'mysql',
-            'host' => $this->host,
-            'port' => $this->port,
-            'database' => 'mysql',
-            'username' => $this->username,
-            'password' => Crypt::decrypt($this->password),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-        ]);
-    }
+    protected static $applicationRules = [
+        'name' => 'required',
+        'host' => 'required',
+        'port' => 'required',
+        'username' => 'required',
+        'node_id' => 'sometimes',
+    ];
+
+    /**
+     * Validation rules to assign to this model.
+     *
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'name' => 'string|max:255',
+        'host' => 'ip|unique:database_hosts,host',
+        'port' => 'numeric|between:1,65535',
+        'username' => 'string|max:32',
+        'password' => 'nullable|string',
+        'node_id' => 'nullable|integer|exists:nodes,id',
+    ];
 
     /**
      * Gets the node associated with a database host.

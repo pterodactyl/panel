@@ -7,8 +7,6 @@ class AddDatabasesTables extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -26,8 +24,6 @@ class AddDatabasesTables extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

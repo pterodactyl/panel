@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 <!DOCTYPE html>
 <html>
     <head>
@@ -61,7 +47,7 @@
                     <span>{{ Settings::get('company', 'Pterodactyl') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                         <span class="sr-only">Toggle navigation</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -79,7 +65,7 @@
                                 <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
                             </li>
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-power-off"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-sign-out"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -126,9 +112,9 @@
                             </a>
                         </li>
                         <li class="header">SERVICE MANAGEMENT</li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.services') ?: 'active' }}">
-                            <a href="{{ route('admin.services') }}">
-                                <i class="fa fa-th-large"></i> <span>Services</span>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
+                            <a href="{{ route('admin.nests') }}">
+                                <i class="fa fa-th-large"></i> <span>Nests</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">
@@ -147,7 +133,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             @if (count($errors) > 0)
-                                <div class="callout callout-danger">
+                                <div class="alert alert-danger">
                                     @lang('base.validation_error')<br><br>
                                     <ul>
                                         @foreach ($errors->all() as $error)
@@ -158,7 +144,7 @@
                             @endif
                             @foreach (Alert::getMessages() as $type => $messages)
                                 @foreach ($messages as $message)
-                                    <div class="callout callout-{{ $type }} alert-dismissable" role="alert">
+                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
                                         {!! $message !!}
                                     </div>
                                 @endforeach
@@ -192,16 +178,31 @@
             {!! Theme::js('js/admin/functions.js') !!}
             {!! Theme::js('js/autocomplete.js') !!}
 
-            @if(Auth::user()->isRootAdmin())
+            @if(Auth::user()->root_admin)
                 <script>
                     $('#logoutButton').on('click', function (event) {
                         event.preventDefault();
-                        if (confirm('Are you sure you want to logout?')) {
-                            window.location = $(this).attr('href');
-                        }
+
+                        var that = this;
+                        swal({
+                            title: 'Do you want to log out?',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d9534f',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Log out'
+                        }, function () {
+                            window.location = $(that).attr('href');
+                        });
                     });
                 </script>
             @endif
+
+            <script>
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                })
+            </script>
         @show
     </body>
 </html>

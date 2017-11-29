@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.master')
 
 @section('title')
@@ -71,14 +57,14 @@
                                 <td class="middle hidden-xs">{{ $subuser->user->created_at }}</td>
                                 @can('view-subuser', $server)
                                     <td class="text-center middle">
-                                        <a href="{{ route('server.subusers.view', ['server' => $server->uuidShort, 'id' => $subuser->id]) }}">
+                                        <a href="{{ route('server.subusers.view', ['server' => $server->uuidShort, 'subuser' => $subuser->hashid]) }}">
                                             <button class="btn btn-xs btn-primary">@lang('server.users.configure')</button>
                                         </a>
                                     </td>
                                 @endcan
                                 @can('delete-subuser', $server)
                                     <td class="text-center middle">
-                                        <a href="#/delete/{{ $subuser->id }}" data-action="delete" data-id="{{ $subuser->id }}">
+                                        <a href="#/delete/{{ $subuser->hashid }}" data-action="delete" data-id="{{ $subuser->hashid }}">
                                             <button class="btn btn-xs btn-danger">@lang('strings.revoke')</button>
                                         </a>
                                     </td>
@@ -112,9 +98,9 @@
             }, function () {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('server.subusers.delete', {
+                    url: Router.route('server.subusers.view', {
                         server: Pterodactyl.server.uuidShort,
-                        id: self.data('id'),
+                        subuser: self.data('id'),
                     }),
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),

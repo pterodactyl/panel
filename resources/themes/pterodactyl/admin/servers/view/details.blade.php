@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -53,7 +39,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Base Information</h3>
@@ -77,39 +63,11 @@
                         <textarea name="description" rows="3" class="form-control">{{ old('description', $server->description) }}</textarea>
                         <p class="text-muted small">A brief description of this server.</p>
                     </div>
-                    <div class="form-group">
-                        <label for="name" class="control-label">Daemon Secret Token</label>
-                        <input type="text" disabled value="{{ $server->daemonSecret }}" class="form-control" />
-                        <p class="text-muted small">This token should not be shared with anyone as it has full control over this server.</p>
-                    </div>
-                    <div class="form-group">
-                        <input type="checkbox" name="reset_token" id="pResetToken"/> <label for="pResetToken">Reset Daemon Token</label>
-                        <p class="text-muted small">Resetting this token will cause any requests using the old token to fail.</p>
-                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    {!! method_field('PATCH') !!}
                     <input type="submit" class="btn btn-sm btn-primary" value="Update Details" />
-                </div>
-            </form>
-        </div>
-    </div>
-    <div class="col-sm-6">
-        <div class="box box-success">
-            <div class="box-header with-border">
-                <h3 class="box-title">Container Setup</h3>
-            </div>
-            <form action="{{ route('admin.servers.view.details.container', $server->id) }}" method="POST">
-                <div class="box-body">
-                    <div class="form-group">
-                        <label for="name" class="control-label">Docker Container Image</label>
-                        <input type="text" name="docker_image" value="{{ $server->image }}" class="form-control" />
-                        <p class="text-muted small">The docker image to use for this server. The default image for this service and option combination is <code>{{ $server->option->docker_image }}</code>.</p>
-                    </div>
-                </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <input type="submit" class="btn btn-sm btn-primary" value="Update Docker Container" />
                 </div>
             </form>
         </div>

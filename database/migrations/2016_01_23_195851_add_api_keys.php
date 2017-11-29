@@ -7,8 +7,6 @@ class AddApiKeys extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -23,8 +21,6 @@ class AddApiKeys extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

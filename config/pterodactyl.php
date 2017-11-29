@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Service Author
@@ -12,8 +11,7 @@ return [
     | standard Pterodactyl shipped services.
     */
     'service' => [
-        'core' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
-        'author' => env('SERVICE_AUTHOR'),
+        'author' => env('APP_SERVICE_AUTHOR', 'unknown@unknown.com'),
     ],
 
     /*
@@ -25,6 +23,11 @@ return [
     */
     'auth' => [
         'notifications' => env('LOGIN_NOTIFICATIONS', false),
+        '2fa' => [
+            'bytes' => 32,
+            'window' => env('APP_2FA_WINDOW', 4),
+            'verify_newer' => true,
+        ],
     ],
 
     /*
@@ -38,6 +41,11 @@ return [
     'paginate' => [
         'frontend' => [
             'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
+        ],
+        'admin' => [
+            'servers' => env('APP_PAGINATE_ADMIN_SERVERS', 25),
+            'users' => env('APP_PAGINATE_ADMIN_USERS', 25),
+            'packs' => env('APP_PAGINATE_ADMIN_PACKS', 50),
         ],
         'api' => [
             'nodes' => env('APP_PAGINATE_API_NODES', 25),
@@ -55,6 +63,7 @@ return [
     */
     'api' => [
         'include_on_list' => env('API_INCLUDE_ON_LIST', false),
+        'key_expire_time' => env('API_KEY_EXPIRE_TIME', 60 * 12),
     ],
 
     /*
@@ -96,6 +105,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Daemon Connection Details
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for support of the new Golang based daemon.
+    */
+    'daemon' => [
+        'use_new_daemon' => (bool) env('APP_USE_NEW_DAEMON', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Task Timers
     |--------------------------------------------------------------------------
     |
@@ -115,7 +135,7 @@ return [
     | if panel is up to date.
     */
     'cdn' => [
-        'cache' => 60,
+        'cache_time' => 60,
         'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
     ],
 
@@ -133,6 +153,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | File Editor
+    |--------------------------------------------------------------------------
+    |
+    | This array includes the MIME filetypes that can be edited via the web.
+    */
+    'files' => [
+        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 50000),
+        'editable' => [
+            'application/json',
+            'application/javascript',
+            'application/xml',
+            'application/xhtml+xml',
+            'inode/x-empty',
+            'text/xml',
+            'text/css',
+            'text/html',
+            'text/plain',
+            'text/x-perl',
+            'text/x-shellscript',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | JSON Response Routes
     |--------------------------------------------------------------------------
     |
@@ -144,4 +188,21 @@ return [
         'daemon/*',
         'remote/*',
     ],
+
+    'default_api_version' => 'application/vnd.pterodactyl.v1+json',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dynamic Environment Variables
+    |--------------------------------------------------------------------------
+    |
+    | Place dynamic environment variables here that should be auto-appended
+    | to server environment fields when the server is created or updated.
+    |
+    | Items should be in 'key' => 'value' format, where key is the environment
+    | variable name, and value is the server-object key. For example:
+    |
+    | 'P_SERVER_CREATED_AT' => 'created_at'
+    */
+    'environment_variables' => [],
 ];

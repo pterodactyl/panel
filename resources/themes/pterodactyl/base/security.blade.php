@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.master')
 
 @section('title')
@@ -39,30 +25,36 @@
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('base.security.sessions')</h3>
             </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <tbody>
-                        <tr>
-                            <th>@lang('strings.id')</th>
-                            <th>@lang('strings.ip')</th>
-                            <th>@lang('strings.last_activity')</th>
-                            <th></th>
-                        </tr>
-                        @foreach($sessions as $session)
+            @if(!is_null($sessions))
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tbody>
                             <tr>
-                                <td><code>{{ substr($session->id, 0, 6) }}</code></td>
-                                <td>{{ $session->ip_address }}</td>
-                                <td>{{ Carbon::createFromTimestamp($session->last_activity)->diffForHumans() }}</td>
-                                <td>
-                                    <a href="{{ route('account.security.revoke', $session->id) }}">
-                                        <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> @lang('strings.revoke')</button>
-                                    </a>
-                                </td>
+                                <th>@lang('strings.id')</th>
+                                <th>@lang('strings.ip')</th>
+                                <th>@lang('strings.last_activity')</th>
+                                <th></th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                            @foreach($sessions as $session)
+                                <tr>
+                                    <td><code>{{ substr($session->id, 0, 6) }}</code></td>
+                                    <td>{{ $session->ip_address }}</td>
+                                    <td>{{ Carbon::createFromTimestamp($session->last_activity)->diffForHumans() }}</td>
+                                    <td>
+                                        <a href="{{ route('account.security.revoke', $session->id) }}">
+                                            <button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> @lang('strings.revoke')</button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="box-body">
+                    <p class="text-muted">@lang('base.security.session_mgmt_disabled')</p>
+                </div>
+            @endif
         </div>
     </div>
     <div class="col-md-6">
@@ -114,8 +106,8 @@
                         <div class="col-md-12" id="notice_box_2fa" style="display:none;"></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <center><span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> Loading QR Code...</span><img src="" id="qr_image_insert" style="display:none;"/><br /><code id="2fa_secret_insert"></code></center>
+                        <div class="col-md-6 text-center">
+                            <span id="hide_img_load"><i class="fa fa-spinner fa-spin"></i> Loading QR Code...</span><img src="" id="qr_image_insert" style="display:none;"/>
                         </div>
                         <div class="col-md-6">
                             <div class="alert alert-info">@lang('base.security.2fa_checkpoint_help')</div>
