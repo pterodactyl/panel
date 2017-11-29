@@ -43,7 +43,7 @@
 
     var notifySocketError = false;
     // Main Socket Object
-    window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/stats/', {
+    window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/v1/stats/', {
         'query': 'token=' + Pterodactyl.node.daemonSecret,
     });
 

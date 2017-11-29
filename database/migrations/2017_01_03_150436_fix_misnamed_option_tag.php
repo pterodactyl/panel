@@ -6,8 +6,6 @@ class FixMisnamedOptionTag extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -24,8 +22,6 @@ class FixMisnamedOptionTag extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

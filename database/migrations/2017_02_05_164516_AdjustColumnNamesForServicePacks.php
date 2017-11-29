@@ -8,8 +8,6 @@ class AdjustColumnNamesForServicePacks extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -24,8 +22,6 @@ class AdjustColumnNamesForServicePacks extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

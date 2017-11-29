@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.master')
 
 @section('title')
@@ -110,35 +96,37 @@
             @endif
         @endforeach
     </div>
-    <div class="row">
-        @foreach($permissions['admin'] as $block => $perms)
-            <div class="col-lg-4 col-sm-6">
-                <div class="box box-danger">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">@lang('base.api.permissions.admin.' . $block . '_header')</h3>
-                    </div>
-                    <div class="box-body">
-                        @foreach($perms as $permission)
-                            <div class="form-group">
-                                <div class="checkbox {{ $permission === 'delete' ? 'checkbox-danger' : 'checkbox-primary' }} no-margin-bottom">
-                                    <input id="{{ $block . '-' . $permission }}" name="admin_permissions[]" type="checkbox" value="{{ $block . '-' . $permission }}"/>
-                                    <label for="{{ $block . '-' . $permission }}" class="strong">
-                                        @lang('base.api.permissions.admin.' . $block . '.' . $permission . '.title')
-                                    </label>
+    @if(Auth::user()->root_admin)
+        <div class="row">
+            @foreach($permissions['admin'] as $block => $perms)
+                <div class="col-lg-4 col-sm-6">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@lang('base.api.permissions.admin.' . $block . '_header')</h3>
+                        </div>
+                        <div class="box-body">
+                            @foreach($perms as $permission)
+                                <div class="form-group">
+                                    <div class="checkbox {{ $permission === 'delete' ? 'checkbox-danger' : 'checkbox-primary' }} no-margin-bottom">
+                                        <input id="{{ $block . '-' . $permission }}" name="admin_permissions[]" type="checkbox" value="{{ $block . '-' . $permission }}"/>
+                                        <label for="{{ $block . '-' . $permission }}" class="strong">
+                                            @lang('base.api.permissions.admin.' . $block . '.' . $permission . '.title')
+                                        </label>
+                                    </div>
+                                    <p class="text-muted small">@lang('base.api.permissions.admin.' . $block . '.' . $permission . '.desc')</p>
                                 </div>
-                                <p class="text-muted small">@lang('base.api.permissions.admin.' . $block . '.' . $permission . '.desc')</p>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
-            @if ($loop->iteration % 3 === 0)
-                <div class="clearfix visible-lg-block"></div>
-            @endif
-            @if ($loop->iteration % 2 === 0)
-                <div class="clearfix visible-md-block visible-sm-block"></div>
-            @endif
-        @endforeach
-    </div>
+                @if ($loop->iteration % 3 === 0)
+                    <div class="clearfix visible-lg-block"></div>
+                @endif
+                @if ($loop->iteration % 2 === 0)
+                    <div class="clearfix visible-md-block visible-sm-block"></div>
+                @endif
+            @endforeach
+        </div>
+    @endif
 </form>
 @endsection

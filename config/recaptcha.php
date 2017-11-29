@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
      * Enable or disable captchas
      */
@@ -27,5 +26,4 @@ return [
      * as public keys can't have domain verification on google's side enabled (obviously).
      */
     'verify_domain' => true,
-
 ];
