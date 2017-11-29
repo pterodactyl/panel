@@ -3,11 +3,67 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## Unreleased
+## v0.7.0-beta.2 (Derelict Dermodactylus)
+### Fixed
+* `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
+* `[beta.1]` — Fixes bug that would prevent root admins from accessing servers they were not set as the owner of.
+* `[beta.1]` — Fixes wrong URL redirect being provided when creating a subuser.
+* `[beta.1]` — Fixes missing check in environment setup that would leave the Hashids salt empty.
+* `[beta.1]` — Fixes bug preventing loading of allocations when trying to create a new server.
+* `[beta.1]` — Fixes bug causing inability to create new servers on the Panel.
+* `[beta.1]` — Fixes bug causing inability to delete an allocation due to misconfigured JS.
+* `[beta.1]` — Fixes bug causing inability to set the IP alias for an allocation to an empty value.
+* `[beta.1]` — Fixes bug that caused startup changes to not propigate to the server correctly on the first save.
+* `[beta.1]` — Fixes bug that prevented subusers from accessing anything over socketio due to a missing permission.
+
+### Changed
+* Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
+* Two-Factor authentication tokens are now 32 bytes in length, and are stored encrypted at rest in the database.
+* Login page UI has been improved to be more sleek and welcoming to users.
+* Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
+
+### Added
+* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+
+## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
+* Added test suite for core aspects of the project (Services, Repositories, Commands, etc.) to lessen the chances for bugs to escape into releases.
+* New CLI command to disabled 2-Factor Authentication on an account if necessary.
+* Ability to delete users and locations via the CLI.
+* You can now require 2FA for all users, admins only, or at will using a simple configuration in the Admin CP.
+* **Added ability to export and import service options and their associated settings and environment variables via the Admin CP.**
+* Default allocation for a server can be changed on the front-end by users. This includes two new subuser permissions as well.
+* Significant improvements to environment variable control for servers. Now ships with built-in abilities to define extra variables in the Panel's configuration file, or in-code for those heavily modifying the Panel.
+* Quick link to server edit view in ACP on frontend when viewing servers.
+* Databases created in the Panel now include `EXECUTE` privilege.
+
+### Changed
+* **Services renamed to Nests. Service Options renamed to Eggs.** 🥚
+* Theme colors and login pages updated to give a more unique feel to the project.
+* Massive overhaul to the backend code that allows for much easier updating of core functionality as well as support for better testing. This overhaul also reduces complex code logic, and allows for faster response times in the application.
+* CLI commands updated to be easier to type, now stored in the `p:` namespace.
+* Logout icon is now more universal and not just a power icon.
+* Administrative logout notice now uses SWAL rather than a generic javascript popup.
+* Server creation page now only asks for a node to deploy to, rather than requiring a location and then a node.
+* Database passwords are now hidden by default and will only show if clicked on. In addition, database view in ACP now indicates that passwords must be viewed on the front-end.
+* Localhost cannot be used as a connection address in the environment configuration script. `127.0.0.1` is allowed.
+* Application locale can now be quickly set using an environment variable `APP_LOCALE` rather than having to edit core files.
+
+### Fixed
+* Unable to change the daemon secret for a server via the Admin CP.
+* Using default value in rules when creating a new variable if the rules is empty.
+* Fixes a design-flaw in the allocation management part of nodes that would run a MySQL query for each port being allocated. This behavior is now changed to only execute one query to add multiple ports at once.
+* Attempting to create a server when no nodes are configured now redirects to the node creation page.
+* Fixes missing library issue for teamspeak when used with mariadb.
+* Fixes inability to change the default port on front-end when viewing a server.
+* Fixes bug preventing deletion of nests that have other nests referencing them as children.
+* Fixes console sometimes not loading properly on slow connections
+
+### Removed
+* SFTP settings page now only displays connection address and username. Password setting was removed as it is no longer necessary with Daemon changes.
 
 ## v0.6.4 (Courageous Carniadactylus)
 ### Fixed
@@ -246,7 +302,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
 * New server creation page now makes significantly less AJAX calls and is much quicker to respond.
 * Server and Node view pages wee modified to split tabs into individual pages to make re-themeing and modifications significantly easier, and reduce MySQL query loads on page.
-* `[pre.4]` — Services and Pack magement overhauled to be faster, cleaner, and more extensible in the future.
+* `[pre.4]` — Service and Pack magement overhauled to be faster, cleaner, and more extensible in the future.
 * Most of the backend `UnhandledException` display errors now include a clearer error that directs admins to the program's logs.
 * Table seeders for services now can be run during upgrades and will attempt to locate and update, or create new if not found in the database.
 * Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.

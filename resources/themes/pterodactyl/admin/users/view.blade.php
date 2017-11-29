@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -68,6 +54,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    {!! method_field('PATCH') !!}
                     <input type="submit" value="Update User" class="btn btn-primary btn-sm">
                 </div>
             </div>
@@ -98,8 +85,8 @@
                         <label for="root_admin" class="control-label">Administrator</label>
                         <div>
                             <select name="root_admin" class="form-control">
-                                <option value="0">{{ trans('strings.no') }}</option>
-                                <option value="1" {{ $user->root_admin ? 'selected="selected"' : '' }}>{{ trans('strings.yes') }}</option>
+                                <option value="0">@lang('strings.no')</option>
+                                <option value="1" {{ $user->root_admin ? 'selected="selected"' : '' }}>@lang('strings.yes')</option>
                             </select>
                             <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
                         </div>
@@ -126,22 +113,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($user->setAccessLevel('subuser')->access()->get() as $server)
-                            <tr>
-                                <td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>
-                                <td><code>{{ $server->uuidShort }}</code></td>
-                                <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                                <td>
-                                    @if($server->owner_id === $user->id)
-                                        <span class="label bg-purple">Owner</span>
-                                    @else
-                                        <span class="label bg-blue">Subuser</span>
-                                    @endif
-                                </td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
-                                <td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>
-                            </td>
-                        @endforeach
+                        Oh dear, this hasn't been fixed yet?
+                        {{--@foreach($user->setAccessLevel('subuser')->access()->get() as $server)--}}
+                            {{--<tr>--}}
+                                {{--<td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>--}}
+                                {{--<td><code>{{ $server->uuidShort }}</code></td>--}}
+                                {{--<td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>--}}
+                                {{--<td>--}}
+                                    {{--@if($server->owner_id === $user->id)--}}
+                                        {{--<span class="label bg-purple">Owner</span>--}}
+                                    {{--@else--}}
+                                        {{--<span class="label bg-blue">Subuser</span>--}}
+                                    {{--@endif--}}
+                                {{--</td>--}}
+                                {{--<td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>--}}
+                                {{--<td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>--}}
+                            {{--</td>--}}
+                        {{--@endforeach--}}
                     </tbody>
                 </table>
             </div>

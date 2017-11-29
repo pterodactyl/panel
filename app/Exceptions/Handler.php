@@ -2,9 +2,16 @@
 
 namespace Pterodactyl\Exceptions;
 
-use Log;
 use Exception;
+use Prologue\Alerts\Facades\Alert;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -15,12 +22,16 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        \Illuminate\Auth\AuthenticationException::class,
-        \Illuminate\Auth\Access\AuthorizationException::class,
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
-        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
-        \Illuminate\Session\TokenMismatchException::class,
-        \Illuminate\Validation\ValidationException::class,
+        AuthenticationException::class,
+        AuthorizationException::class,
+        DisplayException::class,
+        DataValidationException::class,
+        DisplayValidationException::class,
+        HttpException::class,
+        ModelNotFoundException::class,
+        RecordNotFoundException::class,
+        TokenMismatchException::class,
+        ValidationException::class,
     ];
 
     /**
@@ -28,39 +39,51 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
-     * @return void
+     * @param \Exception $exception
+     *
+     * @throws \Exception
      */
     public function report(Exception $exception)
     {
-        return parent::report($exception);
+        parent::report($exception);
     }
 
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception                $exception
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @param \Exception               $exception
+     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Exception
      */
     public function render($request, Exception $exception)
     {
         if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
             $exception = $this->prepareException($exception);
 
-            if (config('app.debug') || $this->isHttpException($exception)) {
+            if (config('app.debug') || $this->isHttpException($exception) || $exception instanceof DisplayException) {
                 $displayError = $exception->getMessage();
             } else {
                 $displayError = 'An unhandled exception was encountered with this request.';
             }
 
-            $response = response()->json([
-                'error' => $displayError,
-                'http_code' => (! $this->isHttpException($exception)) ?: $exception->getStatusCode(),
-                'trace' => (! config('app.debug')) ? null : class_basename($exception) . ' in ' . $exception->getFile() . ' on line ' . $exception->getLine(),
-            ], ($this->isHttpException($exception)) ? $exception->getStatusCode() : 500, [], JSON_UNESCAPED_SLASHES);
+            $response = response()->json(
+                [
+                    'error' => $displayError,
+                    'http_code' => (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : 500,
+                    'trace' => (! config('app.debug')) ? null : $exception->getTrace(),
+                ],
+                $this->isHttpException($exception) ? $exception->getStatusCode() : 500,
+                $this->isHttpException($exception) ? $exception->getHeaders() : [],
+                JSON_UNESCAPED_SLASHES
+            );
 
             parent::report($exception);
+        } elseif ($exception instanceof DisplayException) {
+            Alert::danger($exception->getMessage())->flash();
+
+            return redirect()->back()->withInput();
         }
 
         return (isset($response)) ? $response : parent::render($request, $exception);
@@ -69,8 +92,8 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param  \Illuminate\Http\Request                  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @param \Illuminate\Http\Request                 $request
+     * @param \Illuminate\Auth\AuthenticationException $exception
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)

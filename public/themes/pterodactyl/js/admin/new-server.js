@@ -18,21 +18,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 $(document).ready(function() {
-    $('#pServiceId').select2({
-        placeholder: 'Select a Service',
+    $('#pNestId').select2({
+        placeholder: 'Select a Nest',
     }).change();
-    $('#pOptionId').select2({
-        placeholder: 'Select a Service Option',
+    $('#pEggId').select2({
+        placeholder: 'Select a Nest Egg',
     });
     $('#pPackId').select2({
         placeholder: 'Select a Service Pack',
     });
-    $('#pLocationId').select2({
-        placeholder: 'Select a Location',
-    }).change();
     $('#pNodeId').select2({
         placeholder: 'Select a Node',
-    });
+    }).change();
     $('#pAllocation').select2({
         placeholder: 'Select a Default Allocation',
     });
@@ -82,14 +79,6 @@ $(document).ready(function() {
     });
 });
 
-function hideLoader() {
-    $('#allocationLoader').hide();
-}
-
-function showLoader() {
-    $('#allocationLoader').show();
-}
-
 var lastActiveBox = null;
 $(document).on('click', function (event) {
     if (lastActiveBox !== null) {
@@ -100,32 +89,9 @@ $(document).on('click', function (event) {
     lastActiveBox.addClass('box-primary');
 });
 
-var currentLocation = null;
-var curentNode = null;
-var NodeData = [];
-
-$('#pLocationId').on('change', function (event) {
-    showLoader();
-    currentLocation = $(this).val();
-    currentNode = null;
-
-    $.ajax({
-        method: 'POST',
-        url: Router.route('admin.servers.new.nodes'),
-        headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
-        data: { location: currentLocation },
-    }).done(function (data) {
-        NodeData = data;
-        $('#pNodeId').html('').select2({data: data}).change();
-    }).fail(function (jqXHR) {
-        cosole.error(jqXHR);
-        currentLocation = null;
-    }).always(hideLoader);
-});
-
-$('#pNodeId').on('change', function (event) {
+$('#pNodeId').on('change', function () {
     currentNode = $(this).val();
-    $.each(NodeData, function (i, v) {
+    $.each(Pterodactyl.nodeData, function (i, v) {
         if (v.id == currentNode) {
             $('#pAllocation').html('').select2({
                 data: v.allocations,
@@ -139,9 +105,9 @@ $('#pNodeId').on('change', function (event) {
     });
 });
 
-$('#pServiceId').on('change', function (event) {
-    $('#pOptionId').html('').select2({
-        data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
+$('#pNestId').on('change', function (event) {
+    $('#pEggId').html('').select2({
+        data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
             return {
                 id: item.id,
                 text: item.name,
@@ -150,9 +116,9 @@ $('#pServiceId').on('change', function (event) {
     }).change();
 });
 
-$('#pOptionId').on('change', function (event) {
-    var parentChain = _.get(Pterodactyl.services, $('#pServiceId').val(), null);
-    var objectChain = _.get(parentChain, 'options.' + $(this).val(), null);
+$('#pEggId').on('change', function (event) {
+    var parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
+    var objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
     $('#pDefaultContainer').val(_.get(objectChain, 'docker_image', 'not defined!'));
 
@@ -179,7 +145,7 @@ $('#pOptionId').on('change', function (event) {
         var dataAppend = ' \
             <div class="form-group col-sm-6"> \
                 <label for="var_ref_' + item.id + '" class="control-label">' + isRequired + item.name + '</label> \
-                <input type="text" id="var_ref_' + item.id + '" autocomplete="off" name="env_' + item.env_variable + '" class="form-control" value="' + item.default_value + '" /> \
+                <input type="text" id="var_ref_' + item.id + '" autocomplete="off" name="environment[' + item.env_variable + ']" class="form-control" value="' + item.default_value + '" /> \
                 <p class="text-muted small">' + item.description + '<br /> \
                 <strong>Access in Startup:</strong> <code>{{' + item.env_variable + '}}</code><br /> \
                 <strong>Validation Rules:</strong> <code>' + item.rules + '</code></small></p> \

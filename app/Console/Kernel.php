@@ -3,7 +3,19 @@
 namespace Pterodactyl\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Pterodactyl\Console\Commands\InfoCommand;
+use Pterodactyl\Console\Commands\User\MakeUserCommand;
+use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Pterodactyl\Console\Commands\Server\RebuildServerCommand;
+use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
+use Pterodactyl\Console\Commands\User\DisableTwoFactorCommand;
+use Pterodactyl\Console\Commands\Environment\AppSettingsCommand;
+use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
+use Pterodactyl\Console\Commands\Schedule\ProcessRunnableCommand;
+use Pterodactyl\Console\Commands\Environment\EmailSettingsCommand;
+use Pterodactyl\Console\Commands\Environment\DatabaseSettingsCommand;
+use Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,30 +25,28 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \Pterodactyl\Console\Commands\Inspire::class,
-        \Pterodactyl\Console\Commands\MakeUser::class,
-        \Pterodactyl\Console\Commands\ShowVersion::class,
-        \Pterodactyl\Console\Commands\UpdateEnvironment::class,
-        \Pterodactyl\Console\Commands\RunTasks::class,
-        \Pterodactyl\Console\Commands\ClearTasks::class,
-        \Pterodactyl\Console\Commands\ClearServices::class,
-        \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
-        \Pterodactyl\Console\Commands\CleanServiceBackup::class,
-        \Pterodactyl\Console\Commands\AddNode::class,
-        \Pterodactyl\Console\Commands\AddLocation::class,
-        \Pterodactyl\Console\Commands\RebuildServer::class,
+        AppSettingsCommand::class,
+        CleanServiceBackupFilesCommand::class,
+        DatabaseSettingsCommand::class,
+        DeleteLocationCommand::class,
+        DeleteUserCommand::class,
+        DisableTwoFactorCommand::class,
+        EmailSettingsCommand::class,
+        InfoCommand::class,
+        MakeLocationCommand::class,
+        MakeUserCommand::class,
+        ProcessRunnableCommand::class,
+        RebuildServerCommand::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('pterodactyl:tasks')->everyMinute()->withoutOverlapping();
-        $schedule->command('pterodactyl:tasks:clearlog')->twiceDaily(3, 15);
-        $schedule->command('pterodactyl:cleanservices')->twiceDaily(1, 13);
+        $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
+        $schedule->command('p:maintenance:clean-service-backups')->daily();
     }
 }

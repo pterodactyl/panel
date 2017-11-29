@@ -1,6 +1,20 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Lockout Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These options are Pterodactyl specific and allow you to configure how
+    | long a user should be locked out for if they input a username or
+    | password incorrectly.
+    |
+    */
+    'lockout' => [
+        'time' => 120,
+        'attempts' => 3,
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -97,5 +111,4 @@ return [
             'expire' => 60,
         ],
     ],
-
 ];

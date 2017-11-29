@@ -62,7 +62,7 @@ class ActionsClass {
                     'X-Access-Server': Pterodactyl.server.uuid,
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/folder`,
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/folder`,
                 timeout: 10000,
                 data: JSON.stringify({
                     path: val,
@@ -107,7 +107,7 @@ class ActionsClass {
                     'X-Access-Server': Pterodactyl.server.uuid,
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/move`,
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/move`,
                 timeout: 10000,
                 data: JSON.stringify({
                     from: `${currentPath}${currentName}`,
@@ -175,7 +175,7 @@ class ActionsClass {
                     'X-Access-Server': Pterodactyl.server.uuid,
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/rename`,
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/rename`,
                 timeout: 10000,
                 data: JSON.stringify({
                     from: `${currentPath}${currentName}`,
@@ -240,7 +240,7 @@ class ActionsClass {
                     'X-Access-Server': Pterodactyl.server.uuid,
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/copy`,
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/copy`,
                 timeout: 10000,
                 data: JSON.stringify({
                     from: `${currentPath}${currentName}`,
@@ -298,7 +298,7 @@ class ActionsClass {
                     'X-Access-Server': Pterodactyl.server.uuid,
                 },
                 contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/delete`,
+                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/delete`,
                 timeout: 10000,
                 data: JSON.stringify({
                     items: [`${delPath}${delName}`]
@@ -403,7 +403,7 @@ class ActionsClass {
                         'X-Access-Server': Pterodactyl.server.uuid,
                     },
                     contentType: 'application/json; charset=utf-8',
-                    url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/delete`,
+                    url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/delete`,
                     timeout: 10000,
                     data: JSON.stringify({
                         items: selectedItems
@@ -456,7 +456,7 @@ class ActionsClass {
 
         $.ajax({
             type: 'POST',
-            url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/decompress`,
+            url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/decompress`,
             headers: {
                 'X-Access-Token': Pterodactyl.server.daemonSecret,
                 'X-Access-Server': Pterodactyl.server.uuid,
@@ -490,7 +490,7 @@ class ActionsClass {
 
         $.ajax({
             type: 'POST',
-            url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/server/file/compress`,
+            url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/compress`,
             headers: {
                 'X-Access-Token': Pterodactyl.server.daemonSecret,
                 'X-Access-Server': Pterodactyl.server.uuid,

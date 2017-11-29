@@ -66,7 +66,7 @@ class FileManager {
             swal({
                 type: 'error',
                 title: 'File Error',
-                text: jqXHR.responseText || 'An error occured while attempting to process this request. Please try again.',
+                text: jqXHR.responseJSON.error || 'An error occured while attempting to process this request. Please try again.',
             });
             console.error(jqXHR);
         });
@@ -113,13 +113,15 @@ class FileManager {
 
     selectRow() {
       $('#file_listing tr').on('mousedown', event => {
-          if($(event.target).is('th') || $(event.target).is('input[data-action="selectAll"]')) {
-              new ActionsClass().highlightAll(event);
-          } else if($(event.target).is('td') || $(event.target).is('input[data-action="addSelection"]')) {
-              new ActionsClass().toggleHighlight(event);
-          }
+          if (event.which === 1) {
+              if ($(event.target).is('th') || $(event.target).is('input[data-action="selectAll"]')) {
+                  new ActionsClass().highlightAll(event);
+              } else if ($(event.target).is('td') || $(event.target).is('input[data-action="addSelection"]')) {
+                  new ActionsClass().toggleHighlight(event);
+              }
 
-          new ActionsClass().toggleMassActions();
+              new ActionsClass().toggleMassActions();
+          }
       });
     }
 

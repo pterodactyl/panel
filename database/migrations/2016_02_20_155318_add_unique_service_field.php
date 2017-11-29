@@ -7,8 +7,6 @@ class AddUniqueServiceField extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,8 +17,6 @@ class AddUniqueServiceField extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -8,9 +8,9 @@ return [
 
     'themes' => [
         'pterodactyl' => [
-            'extends'       => null,
-            'views-path'    => 'pterodactyl',
-            'asset-path'    => 'themes/pterodactyl',
+            'extends' => null,
+            'views-path' => 'pterodactyl',
+            'asset-path' => 'themes/pterodactyl',
         ],
     ],
 ];
