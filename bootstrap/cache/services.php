@@ -1,6 +1,7 @@
-<?php return array (
-  'providers' => 
-  array (
+<?php
+
+return [
+  'providers' => [
     0 => 'Illuminate\\Auth\\AuthServiceProvider',
     1 => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     2 => 'Illuminate\\Bus\\BusServiceProvider',
@@ -38,9 +39,8 @@
     34 => 'Laracasts\\Utilities\\JavaScript\\JavaScriptServiceProvider',
     35 => 'Lord\\Laroute\\LarouteServiceProvider',
     36 => 'Spatie\\Fractal\\FractalServiceProvider',
-  ),
-  'eager' => 
-  array (
+  ],
+  'eager' => [
     0 => 'Illuminate\\Auth\\AuthServiceProvider',
     1 => 'Illuminate\\Cookie\\CookieServiceProvider',
     2 => 'Illuminate\\Database\\DatabaseServiceProvider',
@@ -64,9 +64,8 @@
     20 => 'Laracasts\\Utilities\\JavaScript\\JavaScriptServiceProvider',
     21 => 'Lord\\Laroute\\LarouteServiceProvider',
     22 => 'Spatie\\Fractal\\FractalServiceProvider',
-  ),
-  'deferred' => 
-  array (
+  ],
+  'deferred' => [
     'Illuminate\\Broadcasting\\BroadcastManager' => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     'Illuminate\\Contracts\\Broadcasting\\Factory' => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     'Illuminate\\Contracts\\Broadcasting\\Broadcaster' => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
@@ -158,50 +157,35 @@
     'translator' => 'Pterodactyl\\Providers\\PhraseAppTranslationProvider',
     'translation.loader' => 'Pterodactyl\\Providers\\PhraseAppTranslationProvider',
     'PragmaRX\\Google2FA\\Contracts\\Google2FA' => 'PragmaRX\\Google2FA\\Vendor\\Laravel\\ServiceProvider',
-  ),
-  'when' => 
-  array (
-    'Illuminate\\Broadcasting\\BroadcastServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Bus\\BusServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Cache\\CacheServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Hashing\\HashServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Mail\\MailServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Pipeline\\PipelineServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Queue\\QueueServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Redis\\RedisServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Validation\\ValidationServiceProvider' => 
-    array (
-    ),
-    'Laravel\\Tinker\\TinkerServiceProvider' => 
-    array (
-    ),
-    'Pterodactyl\\Providers\\PhraseAppTranslationProvider' => 
-    array (
-    ),
-    'PragmaRX\\Google2FA\\Vendor\\Laravel\\ServiceProvider' => 
-    array (
-    ),
-  ),
-);
+  ],
+  'when' => [
+    'Illuminate\\Broadcasting\\BroadcastServiceProvider' => [
+    ],
+    'Illuminate\\Bus\\BusServiceProvider' => [
+    ],
+    'Illuminate\\Cache\\CacheServiceProvider' => [
+    ],
+    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' => [
+    ],
+    'Illuminate\\Hashing\\HashServiceProvider' => [
+    ],
+    'Illuminate\\Mail\\MailServiceProvider' => [
+    ],
+    'Illuminate\\Pipeline\\PipelineServiceProvider' => [
+    ],
+    'Illuminate\\Queue\\QueueServiceProvider' => [
+    ],
+    'Illuminate\\Redis\\RedisServiceProvider' => [
+    ],
+    'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider' => [
+    ],
+    'Illuminate\\Validation\\ValidationServiceProvider' => [
+    ],
+    'Laravel\\Tinker\\TinkerServiceProvider' => [
+    ],
+    'Pterodactyl\\Providers\\PhraseAppTranslationProvider' => [
+    ],
+    'PragmaRX\\Google2FA\\Vendor\\Laravel\\ServiceProvider' => [
+    ],
+  ],
+];
