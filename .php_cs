@@ -51,5 +51,5 @@ return PhpCsFixer\Config::create()
             'equal' => false,
             'identical' => false,
             'less_and_greater' => false,
-        ]
+        ],
     ])->setRiskyAllowed(true)->setFinder($finder);
