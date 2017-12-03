@@ -1,53 +1,33 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
-use Tests\TestCase;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\APIKey;
 use Prologue\Alerts\AlertsMessageBag;
-use Tests\Assertions\ControllerAssertionsTrait;
 use Pterodactyl\Services\Api\KeyCreationService;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Base\APIController;
 use Pterodactyl\Http\Requests\Base\ApiKeyFormRequest;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
-class APIControllerTest extends TestCase
+class APIControllerTest extends ControllerTestCase
 {
-    use ControllerAssertionsTrait;
-
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
+     * @var \Prologue\Alerts\AlertsMessageBag|\Mockery\Mock
      */
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Base\APIController
-     */
-    protected $controller;
-
-    /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
+     * @var \Pterodactyl\Services\Api\KeyCreationService|\Mockery\Mock
      */
     protected $keyService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
-
-    /**
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
 
     /**
      * Setup tests.
@@ -59,9 +39,6 @@ class APIControllerTest extends TestCase
         $this->alert = m::mock(AlertsMessageBag::class);
         $this->keyService = m::mock(KeyCreationService::class);
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
-        $this->request = m::mock(Request::class);
-
-        $this->controller = new APIController($this->alert, $this->repository, $this->keyService);
     }
 
     /**
@@ -69,12 +46,11 @@ class APIControllerTest extends TestCase
      */
     public function testIndexController()
     {
-        $model = factory(User::class)->make();
+        $model = $this->setRequestUser();
 
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($model);
         $this->repository->shouldReceive('findWhere')->with([['user_id', '=', $model->id]])->once()->andReturn(['testkeys']);
 
-        $response = $this->controller->index($this->request);
+        $response = $this->getController()->index($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.api.index', $response);
         $this->assertViewHasKey('keys', $response);
@@ -88,10 +64,9 @@ class APIControllerTest extends TestCase
      */
     public function testCreateController($admin)
     {
-        $model = factory(User::class)->make(['root_admin' => $admin]);
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($model);
+        $this->setRequestUser(factory(User::class)->make(['root_admin' => $admin]));
 
-        $response = $this->controller->create($this->request);
+        $response = $this->getController()->create($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.api.new', $response);
         $this->assertViewHasKey('permissions.user', $response);
@@ -111,8 +86,9 @@ class APIControllerTest extends TestCase
      */
     public function testStoreController($admin)
     {
-        $this->request = m::mock(ApiKeyFormRequest::class);
-        $model = factory(User::class)->make(['root_admin' => $admin]);
+        $this->setRequestMockClass(ApiKeyFormRequest::class);
+        $model = $this->setRequestUser(factory(User::class)->make(['root_admin' => $admin]));
+        $keyModel = factory(APIKey::class)->make();
 
         if ($admin) {
             $this->request->shouldReceive('input')->with('admin_permissions', [])->once()->andReturn(['admin.permission']);
@@ -127,12 +103,12 @@ class APIControllerTest extends TestCase
             'user_id' => $model->id,
             'allowed_ips' => null,
             'memo' => null,
-        ], ['test.permission'], ($admin) ? ['admin.permission'] : [])->once()->andReturn('testToken');
+        ], ['test.permission'], ($admin) ? ['admin.permission'] : [])->once()->andReturn($keyModel);
 
-        $this->alert->shouldReceive('success')->with(trans('base.api.index.keypair_created', ['token' => 'testToken']))->once()->andReturnSelf()
-            ->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
+        $this->alert->shouldReceive('success')->with(trans('base.api.index.keypair_created'))->once()->andReturnSelf();
+        $this->alert->shouldReceive('flash')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->controller->store($this->request);
+        $response = $this->getController()->store($this->request);
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectRouteEquals('account.api', $response);
     }
@@ -142,15 +118,14 @@ class APIControllerTest extends TestCase
      */
     public function testRevokeController()
     {
-        $model = factory(User::class)->make();
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($model);
+        $model = $this->setRequestUser();
 
         $this->repository->shouldReceive('deleteWhere')->with([
             ['user_id', '=', $model->id],
-            ['public', '=', 'testKey123'],
+            ['token', '=', 'testKey123'],
         ])->once()->andReturnNull();
 
-        $response = $this->controller->revoke($this->request, 'testKey123');
+        $response = $this->getController()->revoke($this->request, 'testKey123');
         $this->assertIsResponse($response);
         $this->assertEmpty($response->getContent());
         $this->assertResponseCodeEquals(204, $response);
@@ -164,5 +139,15 @@ class APIControllerTest extends TestCase
     public function rootAdminDataProvider()
     {
         return [[0], [1]];
+    }
+
+    /**
+     * Return an instance of the controller with mocked dependencies for testing.
+     *
+     * @return \Pterodactyl\Http\Controllers\Base\APIController
+     */
+    private function getController(): APIController
+    {
+        return new APIController($this->alert, $this->repository, $this->keyService);
     }
 }

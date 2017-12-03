@@ -18,6 +18,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
 
+### Changed
+* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
+
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
