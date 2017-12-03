@@ -47,9 +47,8 @@ class AuthenticateAsSubuser
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function handle(Request $request, Closure $next)
     {

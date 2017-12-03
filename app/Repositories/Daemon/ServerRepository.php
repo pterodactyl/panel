@@ -107,7 +107,13 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function revokeAccessKey($key)
     {
-        Assert::stringNotEmpty($key, 'First argument passed to revokeAccessKey must be a non-empty string, received %s.');
+        if (is_array($key)) {
+            return $this->getHttpClient()->request('POST', 'keys', [
+                'json' => $key,
+            ]);
+        }
+
+        Assert::stringNotEmpty($key, 'First argument passed to revokeAccessKey must be a non-empty string or array, received %s.');
 
         return $this->getHttpClient()->request('DELETE', 'keys/' . $key);
     }

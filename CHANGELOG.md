@@ -10,6 +10,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes a bug that would throw a red page of death when submitting an invalid egg variable value for a server in the Admin CP.
 * `[beta.2]` — Someone found a `@todo` that I never `@todid` and thus database hosts could not be created without being linked to a node. This is fixed...
 * `[beta.2]` — Fixes bug that caused incorrect rendering of CPU usage on server graphs due to missing variable.
+* `[beta.2]` — Fixes bug causing schedules to be un-deletable.
+
+### Changed
+* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
 
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed

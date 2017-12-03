@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
@@ -160,10 +153,30 @@ class UserController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function update(UserFormRequest $request, User $user)
     {
-        $this->updateService->handle($user->id, $request->normalize());
+        $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
+        $data = $this->updateService->handle($user, $request->normalize());
+
+        if (! empty($data->get('exceptions'))) {
+            foreach ($data->get('exceptions') as $node => $exception) {
+                /** @var \GuzzleHttp\Exception\RequestException $exception */
+                /** @var \GuzzleHttp\Psr7\Response|null $response */
+                $response = method_exists($exception, 'getResponse') ? $exception->getResponse() : null;
+                $message = trans('admin/server.exceptions.daemon_exception', [
+                    'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
+                ]);
+
+                $this->alert->danger(trans('exceptions.users.node_revocation_failed', [
+                    'node' => $node,
+                    'error' => $message,
+                    'link' => route('admin.nodes.view', $node),
+                ]))->flash();
+            }
+        }
+
         $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);

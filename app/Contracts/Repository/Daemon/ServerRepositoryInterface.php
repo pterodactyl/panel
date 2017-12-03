@@ -78,8 +78,10 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     /**
      * Revoke an access key on the daemon before the time is expired.
      *
-     * @param string $key
+     * @param string|array $key
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
     public function revokeAccessKey($key);
 }
