@@ -24,8 +24,10 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\DaemonKey;
+use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
@@ -82,5 +84,29 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
         }
 
         return $instance;
+    }
+
+    /**
+     * Get all of the keys for a specific user including the information needed
+     * from their server relation for revocation on the daemon.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @return \Illuminate\Support\Collection
+     */
+    public function getKeysForRevocation(User $user): Collection
+    {
+        return $this->getBuilder()->with('server:id,uuid,node_id')->where('user_id', $user->id)->get($this->getColumns());
+    }
+
+    /**
+     * Delete an array of daemon keys from the database. Used primarily in
+     * conjunction with getKeysForRevocation.
+     *
+     * @param array $ids
+     * @return bool|int
+     */
+    public function deleteKeys(array $ids)
+    {
+        return $this->getBuilder()->whereIn('id', $ids)->delete();
     }
 }

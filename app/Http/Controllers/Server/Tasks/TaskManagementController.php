@@ -149,8 +149,6 @@ class TaskManagementController extends Controller
      *
      * @param \Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(ScheduleCreationFormRequest $request): RedirectResponse
     {
@@ -177,7 +175,7 @@ class TaskManagementController extends Controller
      */
     public function delete(Request $request): Response
     {
-        $server = $request->attributes->get('server_data.model');
+        $server = $request->attributes->get('server');
         $schedule = $request->attributes->get('schedule');
         $this->authorize('delete-schedule', $server);
 

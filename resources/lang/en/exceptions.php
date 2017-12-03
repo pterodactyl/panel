@@ -59,4 +59,7 @@ return [
     'locations' => [
         'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
     ],
+    'users' => [
+        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+    ],
 ];
