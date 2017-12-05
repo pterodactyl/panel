@@ -46,6 +46,7 @@ class ServiceVariableTransformer extends TransformerAbstract
     /**
      * Return a generic transformed server variable array.
      *
+     * @param EggVariable $variable
      * @return array
      */
     public function transform(EggVariable $variable)
@@ -56,7 +57,8 @@ class ServiceVariableTransformer extends TransformerAbstract
     /**
      * Return the server variables associated with this variable.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param EggVariable $variable
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeVariables(EggVariable $variable)
     {

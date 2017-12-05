@@ -49,6 +49,7 @@ class UserTransformer extends TransformerAbstract
     /**
      * Return a generic transformed subuser array.
      *
+     * @param User $user
      * @return array
      */
     public function transform(User $user)
@@ -59,7 +60,8 @@ class UserTransformer extends TransformerAbstract
     /**
      * Return the servers associated with this user.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param User $user
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(User $user)
     {
@@ -73,7 +75,8 @@ class UserTransformer extends TransformerAbstract
     /**
      * Return the servers that this user can access.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param User $user
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeAccess(User $user)
     {

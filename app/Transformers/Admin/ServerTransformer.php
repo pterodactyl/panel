@@ -56,6 +56,7 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic transformed server array.
      *
+     * @param Server $server
      * @return array
      */
     public function transform(Server $server)
@@ -66,7 +67,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array of allocations for this server.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Server $server
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeAllocations(Server $server)
     {
@@ -80,7 +82,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Server $server
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeSubusers(Server $server)
     {
@@ -94,7 +97,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Server $server
+     * @return \League\Fractal\Resource\Item
      */
     public function includeUser(Server $server)
     {
@@ -108,7 +112,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Server $server
+     * @return \League\Fractal\Resource\Item
      */
     public function includePack(Server $server)
     {
@@ -122,7 +127,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array with service information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Server $server
+     * @return \League\Fractal\Resource\Item
      */
     public function includeService(Server $server)
     {
@@ -136,7 +142,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array with service option information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Server $server
+     * @return \League\Fractal\Resource\Item
      */
     public function includeOption(Server $server)
     {
@@ -150,7 +157,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Server $server
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeVariables(Server $server)
     {
@@ -164,7 +172,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Server $server
+     * @return \League\Fractal\Resource\Item
      */
     public function includeLocation(Server $server)
     {
@@ -178,7 +187,8 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item|void
+     * @param Server $server
+     * @return \League\Fractal\Resource\Item|void
      */
     public function includeNode(Server $server)
     {

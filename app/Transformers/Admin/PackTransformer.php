@@ -49,6 +49,7 @@ class PackTransformer extends TransformerAbstract
     /**
      * Return a generic transformed pack array.
      *
+     * @param $pack
      * @return array
      */
     public function transform($pack)
@@ -63,7 +64,8 @@ class PackTransformer extends TransformerAbstract
     /**
      * Return the packs associated with this service.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param Pack $pack
+     * @return \League\Fractal\Resource\Item
      */
     public function includeOption(Pack $pack)
     {
@@ -77,7 +79,8 @@ class PackTransformer extends TransformerAbstract
     /**
      * Return the packs associated with this service.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Pack $pack
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Pack $pack)
     {

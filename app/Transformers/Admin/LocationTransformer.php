@@ -49,6 +49,7 @@ class LocationTransformer extends TransformerAbstract
     /**
      * Return a generic transformed pack array.
      *
+     * @param Location $location
      * @return array
      */
     public function transform(Location $location)
@@ -59,7 +60,8 @@ class LocationTransformer extends TransformerAbstract
     /**
      * Return the nodes associated with this location.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Location $location
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeServers(Location $location)
     {
@@ -73,7 +75,8 @@ class LocationTransformer extends TransformerAbstract
     /**
      * Return the nodes associated with this location.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param Location $location
+     * @return \League\Fractal\Resource\Collection
      */
     public function includeNodes(Location $location)
     {

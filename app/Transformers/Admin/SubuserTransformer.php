@@ -26,6 +26,7 @@ class SubuserTransformer extends TransformerAbstract
      * Setup request object for transformer.
      *
      * @param \Illuminate\Http\Request|bool $request
+     * @throws DisplayException
      */
     public function __construct($request = false)
     {
@@ -39,6 +40,7 @@ class SubuserTransformer extends TransformerAbstract
     /**
      * Return a generic transformed subuser array.
      *
+     * @param Subuser $subuser
      * @return array
      */
     public function transform(Subuser $subuser)
