@@ -19,11 +19,6 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     use Searchable;
 
     /**
-     * @var string
-     */
-    protected $searchTerm;
-
-    /**
      * {@inheritdoc}
      */
     public function model()
