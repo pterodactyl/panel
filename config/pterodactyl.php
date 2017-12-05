@@ -22,7 +22,6 @@ return [
     | Should login success and failure events trigger an email to the user?
     */
     'auth' => [
-        'notifications' => env('LOGIN_NOTIFICATIONS', false),
         '2fa' => [
             'bytes' => 32,
             'window' => env('APP_2FA_WINDOW', 4),

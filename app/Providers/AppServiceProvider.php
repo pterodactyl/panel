@@ -13,7 +13,6 @@ use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Observers\ServerObserver;
 use Pterodactyl\Observers\SubuserObserver;
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
-use DaneEveritt\LoginNotifications\NotificationServiceProvider;
 use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -41,10 +40,6 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment() !== 'production') {
             $this->app->register(DebugbarServiceProvider::class);
             $this->app->register(IdeHelperServiceProvider::class);
-        }
-
-        if (config('pterodactyl.auth.notifications')) {
-            $this->app->register(NotificationServiceProvider::class);
         }
     }
 
