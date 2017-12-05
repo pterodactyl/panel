@@ -1,4 +1,5 @@
 language: php
+sudo: required
 dist: trusty
 php:
   - 7.0
@@ -12,17 +13,33 @@ sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
+env:
+  - TEST_SUITE="vendor/bin/phpunit --coverage-clover coverage.xml"
+  - TEST_SUITE="php artisan dusk"
 services:
   - mysql
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS travis;'
 before_script:
-  - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3 # give xvfb some time to start
   - cp .env.travis .env
-  - composer install --no-interaction --prefer-dist --no-suggest
-  - php artisan migrate --seed
+  - composer install --no-interaction --prefer-dist --no-suggest --verbose
+  - ./vendor/laravel/dusk/bin/chromedriver-linux &
+  - php artisan migrate --seed -v
+  - php artisan serve > /dev/null 2>&1 &
 script:
-  - vendor/bin/phpunit --coverage-clover coverage.xml
+  - "$TEST_SUITE"
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+addons:
+  chrome: stable
+  artifacts:
+    paths:
+    - ./tests/Browser/console
+    - ./tests/Browser/screenshots
+    debug: true
 notifications:
   email: false
   webhooks:
@@ -33,5 +50,3 @@ notifications:
     on_error: always
     on_cancel: always
     on_start: never
-after_success:
-  - bash <(curl -s https://codecov.io/bash)

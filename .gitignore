@@ -1,6 +1,7 @@
 /vendor
 *.DS_Store*
 .env
+.env.dusk.local
 .vagrant/*
 .vscode/*
 storage/framework/*
