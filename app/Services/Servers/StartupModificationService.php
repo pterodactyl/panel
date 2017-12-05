@@ -78,9 +78,10 @@ class StartupModificationService
      * @param \Pterodactyl\Models\Server $server
      * @param array                      $data
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function handle(Server $server, array $data)
     {

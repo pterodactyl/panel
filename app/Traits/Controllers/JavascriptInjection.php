@@ -45,12 +45,13 @@ trait JavascriptInjection
         $server = $request->attributes->get('server');
         $token = $request->attributes->get('server_token');
 
-        $response = array_merge([
+        $response = array_merge_recursive([
             'server' => [
                 'uuid' => $server->uuid,
                 'uuidShort' => $server->uuidShort,
                 'daemonSecret' => $token,
             ],
+            'server_token' => $token,
             'node' => [
                 'fqdn' => $server->node->fqdn,
                 'scheme' => $server->node->scheme,

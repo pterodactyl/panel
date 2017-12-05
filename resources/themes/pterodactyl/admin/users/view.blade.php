@@ -66,10 +66,11 @@
                 </div>
                 <div class="box-body">
                     <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
-                    <div class="form-group">
-                        <label for="password" class="control-label">Password</label>
+                    <div class="form-group no-margin-bottom">
+                        <label for="password" class="control-label">Password <span class="field-optional"></span></label>
                         <div>
                             <input readonly type="password" id="password" name="password" class="form-control form-autocomplete-stop">
+                            <p class="text-muted small">Leave blank to keep this user's password the same. User will not receive any notification if password is changed.</p>
                         </div>
                     </div>
                 </div>
@@ -89,6 +90,11 @@
                                 <option value="1" {{ $user->root_admin ? 'selected="selected"' : '' }}>@lang('strings.yes')</option>
                             </select>
                             <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
+                        </div>
+                        <div class="checkbox checkbox-primary">
+                            <input type="checkbox" id="pIgnoreConnectionError" value="1" name="ignore_connection_error">
+                            <label for="pIgnoreConnectionError"> Ignore exceptions raised while revoking keys.</label>
+                            <p class="text-muted small">If checked, any errors thrown while revoking keys across nodes will be ignored. You should avoid this checkbox if possible as any non-revoked keys could continue to be active for up to 24 hours after this account is changed. If you are needing to revoke account permissions immediately and are facing node issues, you should check this box and then restart any nodes that failed to be updated to clear out any stored keys.</p>
                         </div>
                     </div>
                 </div>

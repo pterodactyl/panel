@@ -13,7 +13,6 @@ use Cache;
 use Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\APIKey as Key;
-use Pterodactyl\Models\APIPermission as Permission;
 
 class APIKeyPolicy
 {

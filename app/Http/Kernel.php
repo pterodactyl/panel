@@ -11,17 +11,20 @@ use Pterodactyl\Http\Middleware\EncryptCookies;
 use Pterodactyl\Http\Middleware\VerifyCsrfToken;
 use Pterodactyl\Http\Middleware\VerifyReCaptcha;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
-use Pterodactyl\Http\Middleware\HMACAuthorization;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Pterodactyl\Http\Middleware\API\AuthenticateKey;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Pterodactyl\Http\Middleware\AccessingValidServer;
+use Pterodactyl\Http\Middleware\API\SetSessionDriver;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Pterodactyl\Http\Middleware\API\AuthenticateIPAccess;
 use Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Pterodactyl\Http\Middleware\API\HasPermissionToResource;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
@@ -42,10 +45,6 @@ class Kernel extends HttpKernel
         EncryptCookies::class,
         AddQueuedCookiesToResponse::class,
         TrimStrings::class,
-
-        /*
-         * Custom middleware applied to all routes.
-         */
         TrustProxies::class,
     ];
 
@@ -66,9 +65,11 @@ class Kernel extends HttpKernel
             RequireTwoFactorAuthentication::class,
         ],
         'api' => [
-            HMACAuthorization::class,
             'throttle:60,1',
-            'bindings',
+            SubstituteBindings::class,
+            SetSessionDriver::class,
+            AuthenticateKey::class,
+            AuthenticateIPAccess::class,
         ],
         'daemon' => [
             SubstituteBindings::class,
@@ -94,6 +95,9 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
+
+        // API specific middleware.
+        'api..user_level' => HasPermissionToResource::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //

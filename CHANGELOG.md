@@ -3,6 +3,25 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.0-beta.3 (Derelict Dermodactylus)
+### Fixed
+* `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
+* `[beta.2]` — Fixes a bug causing the dropdown menu for a server's egg to display the wrong selected value.
+* `[beta.2]` — Fixes a bug that would throw a red page of death when submitting an invalid egg variable value for a server in the Admin CP.
+* `[beta.2]` — Someone found a `@todo` that I never `@todid` and thus database hosts could not be created without being linked to a node. This is fixed...
+* `[beta.2]` — Fixes bug that caused incorrect rendering of CPU usage on server graphs due to missing variable.
+* `[beta.2]` — Fixes bug causing schedules to be un-deletable.
+* `[beta.2]` — Fixes bug that prevented the deletion of nodes due to an allocation deletion cascade issue with the SQL schema.
+
+### Changed
+* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
+
+### Added
+* Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
+
+### Changed
+* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
+
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.1]` — Fixes a CORS header issue due to a wrong API endpoint being provided in the administrative node listing.
@@ -14,9 +33,16 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes bug causing inability to delete an allocation due to misconfigured JS.
 * `[beta.1]` — Fixes bug causing inability to set the IP alias for an allocation to an empty value.
 * `[beta.1]` — Fixes bug that caused startup changes to not propigate to the server correctly on the first save.
+* `[beta.1]` — Fixes bug that prevented subusers from accessing anything over socketio due to a missing permission.
 
 ### Changed
 * Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
+* Two-Factor authentication tokens are now 32 bytes in length, and are stored encrypted at rest in the database.
+* Login page UI has been improved to be more sleek and welcoming to users.
+* Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
+
+### Added
+* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added

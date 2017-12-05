@@ -19,7 +19,11 @@ class UserFormRequest extends AdminFormRequest
     public function rules()
     {
         if ($this->method() === 'PATCH') {
-            return User::getUpdateRulesForId($this->route()->parameter('user')->id);
+            $rules = User::getUpdateRulesForId($this->route()->parameter('user')->id);
+
+            return array_merge($rules, [
+                'ignore_connection_error' => 'sometimes|nullable|boolean',
+            ]);
         }
 
         return User::getCreateRules();
@@ -30,7 +34,7 @@ class UserFormRequest extends AdminFormRequest
         if ($this->method === 'PATCH') {
             return array_merge(
                 $this->intersect('password'),
-                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin'])
+                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin', 'ignore_connection_error'])
             );
         }
 

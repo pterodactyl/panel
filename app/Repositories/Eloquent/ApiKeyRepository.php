@@ -21,4 +21,20 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     {
         return APIKey::class;
     }
+
+    /**
+     * Load permissions for a key onto the model.
+     *
+     * @param \Pterodactyl\Models\APIKey $model
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\APIKey
+     */
+    public function loadPermissions(APIKey $model, bool $refresh = false): APIKey
+    {
+        if (! $model->relationLoaded('permissions') || $refresh) {
+            $model->load('permissions');
+        }
+
+        return $model;
+    }
 }

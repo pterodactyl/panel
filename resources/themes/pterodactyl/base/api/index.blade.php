@@ -20,12 +20,7 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12">
-        <div class="alert alert-danger">
-            API functionality is disabled in this beta release.
-        </div>
-
         <div class="box">
-            <div class="overlay"></div>
             <div class="box-header">
                 <h3 class="box-title">@lang('base.api.index.list')</h3>
                 <div class="box-tools">
@@ -44,7 +39,7 @@
                         </tr>
                         @foreach ($keys as $key)
                             <tr>
-                                <td><code>{{ $key->public }}</code></td>
+                                <td><code>{{ $key->token }}</code></td>
                                 <td>{{ $key->memo }}</td>
                                 <td class="text-center hidden-sm hidden-xs">
                                     {{ (new Carbon($key->created_at))->toDayDateTimeString() }}
@@ -57,7 +52,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->public}}"><i class="fa fa-trash"></i></a>
+                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->token }}"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         @endforeach

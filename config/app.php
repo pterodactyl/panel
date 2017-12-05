@@ -171,7 +171,6 @@ return [
         /*
          * Additional Dependencies
          */
-        PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
@@ -213,7 +212,6 @@ return [
         'File' => Illuminate\Support\Facades\File::class,
         'Fractal' => Spatie\Fractal\FractalFacade::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
-        'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Input' => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,

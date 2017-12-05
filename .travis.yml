@@ -1,9 +1,13 @@
 language: php
 dist: trusty
 php:
-  - '7.0'
-  - '7.1'
-#  - '7.2'
+  - 7.0
+  - 7.1
+  - 7.2
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: 7.2
 sudo: false
 cache:
   directories:
@@ -13,9 +17,10 @@ services:
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS travis;'
 before_script:
+  - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - cp .env.travis .env
-  - composer install --no-interaction --prefer-dist --no-suggest --verbose
-  - php artisan migrate --seed -v
+  - composer install --no-interaction --prefer-dist --no-suggest
+  - php artisan migrate --seed
 script:
   - vendor/bin/phpunit --coverage-clover coverage.xml
 notifications:

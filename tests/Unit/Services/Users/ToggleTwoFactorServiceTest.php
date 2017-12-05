@@ -1,37 +1,42 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
-use PragmaRX\Google2FA\Contracts\Google2FA;
+use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Users\ToggleTwoFactorService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class ToggleTwoFactorServiceTest extends TestCase
 {
-    /**
-     * @var \PragmaRX\Google2FA\Contracts\Google2FA
-     */
-    protected $google2FA;
+    const TEST_WINDOW_INT = 4;
+    const USER_TOTP_SECRET = 'encryptedValue';
+    const DECRYPTED_USER_SECRET = 'decryptedValue';
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
-    protected $repository;
+    private $config;
 
     /**
-     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
+     * @var \Illuminate\Contracts\Encryption\Encrypter|\Mockery\Mock
      */
-    protected $service;
+    private $encrypter;
+
+    /**
+     * @var \PragmaRX\Google2FA\Google2FA|\Mockery\Mock
+     */
+    private $google2FA;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     */
+    private $repository;
 
     /**
      * Setup tests.
@@ -39,11 +44,15 @@ class ToggleTwoFactorServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        Carbon::setTestNow(Carbon::now());
 
+        $this->config = m::mock(Repository::class);
+        $this->encrypter = m::mock(Encrypter::class);
         $this->google2FA = m::mock(Google2FA::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
 
-        $this->service = new ToggleTwoFactorService($this->google2FA, $this->repository);
+        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.window')->once()->andReturn(self::TEST_WINDOW_INT);
+        $this->encrypter->shouldReceive('decrypt')->with(self::USER_TOTP_SECRET)->once()->andReturn(self::DECRYPTED_USER_SECRET);
     }
 
     /**
@@ -51,13 +60,15 @@ class ToggleTwoFactorServiceTest extends TestCase
      */
     public function testTwoFactorIsEnabledForUser()
     {
-        $model = factory(User::class)->make(['totp_secret' => 'secret', 'use_totp' => false]);
+        $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET, 'use_totp' => false]);
 
-        $this->google2FA->shouldReceive('verifyKey')->with($model->totp_secret, 'test-token', 2)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, ['use_totp' => true])->once()->andReturnNull();
+        $this->google2FA->shouldReceive('verifyKey')->with(self::DECRYPTED_USER_SECRET, 'test-token', self::TEST_WINDOW_INT)->once()->andReturn(true);
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+            'totp_authenticated_at' => Carbon::now(),
+            'use_totp' => true,
+        ])->once()->andReturnNull();
 
-        $this->assertTrue($this->service->handle($model, 'test-token'));
+        $this->assertTrue($this->getService()->handle($model, 'test-token'));
     }
 
     /**
@@ -65,13 +76,15 @@ class ToggleTwoFactorServiceTest extends TestCase
      */
     public function testTwoFactorIsDisabled()
     {
-        $model = factory(User::class)->make(['totp_secret' => 'secret', 'use_totp' => true]);
+        $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET, 'use_totp' => true]);
 
-        $this->google2FA->shouldReceive('verifyKey')->with($model->totp_secret, 'test-token', 2)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, ['use_totp' => false])->once()->andReturnNull();
+        $this->google2FA->shouldReceive('verifyKey')->with(self::DECRYPTED_USER_SECRET, 'test-token', self::TEST_WINDOW_INT)->once()->andReturn(true);
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+            'totp_authenticated_at' => Carbon::now(),
+            'use_totp' => false,
+        ])->once()->andReturnNull();
 
-        $this->assertTrue($this->service->handle($model, 'test-token'));
+        $this->assertTrue($this->getService()->handle($model, 'test-token'));
     }
 
     /**
@@ -79,13 +92,15 @@ class ToggleTwoFactorServiceTest extends TestCase
      */
     public function testTwoFactorRemainsDisabledForUser()
     {
-        $model = factory(User::class)->make(['totp_secret' => 'secret', 'use_totp' => false]);
+        $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET, 'use_totp' => false]);
 
-        $this->google2FA->shouldReceive('verifyKey')->with($model->totp_secret, 'test-token', 2)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($model->id, ['use_totp' => false])->once()->andReturnNull();
+        $this->google2FA->shouldReceive('verifyKey')->with(self::DECRYPTED_USER_SECRET, 'test-token', self::TEST_WINDOW_INT)->once()->andReturn(true);
+        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+            'totp_authenticated_at' => Carbon::now(),
+            'use_totp' => false,
+        ])->once()->andReturnNull();
 
-        $this->assertTrue($this->service->handle($model, 'test-token', false));
+        $this->assertTrue($this->getService()->handle($model, 'test-token', false));
     }
 
     /**
@@ -95,23 +110,19 @@ class ToggleTwoFactorServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfTokenIsInvalid()
     {
-        $model = factory(User::class)->make();
+        $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET]);
         $this->google2FA->shouldReceive('verifyKey')->once()->andReturn(false);
 
-        $this->service->handle($model, 'test-token');
+        $this->getService()->handle($model, 'test-token');
     }
 
     /**
-     * Test that an integer can be passed in place of a user model.
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Users\ToggleTwoFactorService
      */
-    public function testIntegerCanBePassedInPlaceOfUserModel()
+    private function getService(): ToggleTwoFactorService
     {
-        $model = factory(User::class)->make(['totp_secret' => 'secret', 'use_totp' => false]);
-
-        $this->repository->shouldReceive('find')->with($model->id)->once()->andReturn($model);
-        $this->google2FA->shouldReceive('verifyKey')->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh->update')->once()->andReturnNull();
-
-        $this->assertTrue($this->service->handle($model->id, 'test-token'));
+        return new ToggleTwoFactorService($this->encrypter, $this->google2FA, $this->config, $this->repository);
     }
 }
