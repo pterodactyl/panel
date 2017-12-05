@@ -12,8 +12,8 @@ namespace Tests\Unit\Services\Api;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
+use Pterodactyl\Models\APIKey;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\PermissionService;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -23,45 +23,30 @@ class KeyCreationServiceTest extends TestCase
     use PHPMock;
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
-    protected $connection;
+    private $connection;
 
     /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
+     * @var \Pterodactyl\Services\Api\PermissionService|\Mockery\Mock
      */
-    protected $encrypter;
+    private $permissionService;
 
     /**
-     * @var \Pterodactyl\Services\Api\PermissionService
+     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
      */
-    protected $permissions;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * Setup tests.
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
-     */
-    protected $service;
-
     public function setUp()
     {
         parent::setUp();
 
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->encrypter = m::mock(Encrypter::class);
-        $this->permissions = m::mock(PermissionService::class);
+        $this->permissionService = m::mock(PermissionService::class);
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
-
-        $this->service = new KeyCreationService(
-            $this->repository,
-            $this->connection,
-            $this->encrypter,
-            $this->permissions
-        );
     }
 
     /**
@@ -69,37 +54,48 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testKeyIsCreated()
     {
+        $model = factory(APIKey::class)->make();
+
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
-            ->expects($this->exactly(2))->willReturn('random_string');
+            ->expects($this->exactly(1))->with(APIKey::KEY_LENGTH)->willReturn($model->token);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->encrypter->shouldReceive('encrypt')->with('random_string')->once()->andReturn('encrypted-secret');
 
         $this->repository->shouldReceive('create')->with([
             'test-data' => 'test',
-            'public' => 'random_string',
-            'secret' => 'encrypted-secret',
-        ], true, true)->once()->andReturn((object) ['id' => 1]);
+            'token' => $model->token,
+        ], true, true)->once()->andReturn($model);
 
-        $this->permissions->shouldReceive('getPermissions')->withNoArgs()->once()->andReturn([
+        $this->permissionService->shouldReceive('getPermissions')->withNoArgs()->once()->andReturn([
             '_user' => ['server' => ['list', 'multiple-dash-test']],
             'server' => ['create', 'admin-dash-test'],
         ]);
 
-        $this->permissions->shouldReceive('create')->with(1, 'user.server-list')->once()->andReturnNull();
-        $this->permissions->shouldReceive('create')->with(1, 'user.server-multiple-dash-test')->once()->andReturnNull();
-        $this->permissions->shouldReceive('create')->with(1, 'server-create')->once()->andReturnNull();
-        $this->permissions->shouldReceive('create')->with(1, 'server-admin-dash-test')->once()->andReturnNull();
+        $this->permissionService->shouldReceive('create')->with($model->id, 'user.server-list')->once()->andReturnNull();
+        $this->permissionService->shouldReceive('create')->with($model->id, 'user.server-multiple-dash-test')->once()->andReturnNull();
+        $this->permissionService->shouldReceive('create')->with($model->id, 'server-create')->once()->andReturnNull();
+        $this->permissionService->shouldReceive('create')->with($model->id, 'server-admin-dash-test')->once()->andReturnNull();
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle(
+        $response = $this->getService()->handle(
             ['test-data' => 'test'],
             ['invalid-node', 'server-list', 'server-multiple-dash-test'],
             ['invalid-node', 'server-create', 'server-admin-dash-test']
         );
 
         $this->assertNotEmpty($response);
-        $this->assertEquals('random_string', $response);
+        $this->assertInstanceOf(APIKey::class, $response);
+        $this->assertSame($model, $response);
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies for testing.
+     *
+     * @return \Pterodactyl\Services\Api\KeyCreationService
+     */
+    private function getService(): KeyCreationService
+    {
+        return new KeyCreationService($this->repository, $this->connection, $this->permissionService);
     }
 }
