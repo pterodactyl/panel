@@ -9,59 +9,49 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\ValidationException;
+use Pterodactyl\Traits\Services\HasUserLevels;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorService
 {
-    /**
-     * @var bool
-     */
-    protected $isAdmin = false;
+    use HasUserLevels;
 
     /**
-     * @var array
+     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
-    protected $fields = [];
-
-    /**
-     * @var array
-     */
-    protected $results = [];
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface
-     */
-    protected $optionVariableRepository;
+    private $optionVariableRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $serverRepository;
+    private $serverRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
      */
-    protected $serverVariableRepository;
+    private $serverVariableRepository;
 
     /**
      * @var \Illuminate\Contracts\Validation\Factory
      */
-    protected $validator;
+    private $validator;
 
     /**
      * VariableValidatorService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\OptionVariableRepositoryInterface $optionVariableRepository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface    $optionVariableRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $serverRepository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Illuminate\Contracts\Validation\Factory                            $validator
      */
     public function __construct(
-        OptionVariableRepositoryInterface $optionVariableRepository,
+        EggVariableRepositoryInterface $optionVariableRepository,
         ServerRepositoryInterface $serverRepository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         ValidationFactory $validator
@@ -73,86 +63,52 @@ class VariableValidatorService
     }
 
     /**
-     * Set the fields with populated data to validate.
-     *
-     * @param array $fields
-     * @return $this
-     */
-    public function setFields(array $fields)
-    {
-        $this->fields = $fields;
-
-        return $this;
-    }
-
-    /**
-     * Set this function to be running at the administrative level.
-     *
-     * @param bool $bool
-     * @return $this
-     */
-    public function isAdmin($bool = true)
-    {
-        $this->isAdmin = $bool;
-
-        return $this;
-    }
-
-    /**
      * Validate all of the passed data aganist the given service option variables.
      *
-     * @param int $option
-     * @return $this
+     * @param int   $egg
+     * @param array $fields
+     * @return \Illuminate\Support\Collection
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function validate($option)
+    public function handle(int $egg, array $fields = []): Collection
     {
-        $variables = $this->optionVariableRepository->findWhere([['option_id', '=', $option]]);
-        if (count($variables) === 0) {
-            $this->results = [];
+        $variables = $this->optionVariableRepository->findWhere([['egg_id', '=', $egg]]);
+        $messages = $this->validator->make([], []);
 
-            return $this;
-        }
-
-        $variables->each(function ($item) {
-            // Skip doing anything if user is not an admin and variable is not user viewable
-            // or editable.
-            if (! $this->isAdmin && (! $item->user_editable || ! $item->user_viewable)) {
-                return;
+        $response = $variables->map(function ($item) use ($fields, $messages) {
+            // Skip doing anything if user is not an admin and
+            // variable is not user viewable or editable.
+            if (! $this->isUserLevel(User::USER_LEVEL_ADMIN) && (! $item->user_editable || ! $item->user_viewable)) {
+                return false;
             }
 
-            $validator = $this->validator->make([
-                'variable_value' => array_key_exists($item->env_variable, $this->fields) ? $this->fields[$item->env_variable] : null,
+            $v = $this->validator->make([
+                'variable_value' => array_get($fields, $item->env_variable),
             ], [
                 'variable_value' => $item->rules,
+            ], [], [
+                'variable_value' => trans('validation.internal.variable_value', ['env' => $item->name]),
             ]);
 
-            if ($validator->fails()) {
-                throw new DisplayValidationException(json_encode(
-                    collect([
-                        'notice' => [
-                            trans('admin/server.exceptions.bad_variable', ['name' => $item->name]),
-                        ],
-                    ])->merge($validator->errors()->toArray())
-                ));
+            if ($v->fails()) {
+                foreach ($v->getMessageBag()->all() as $message) {
+                    $messages->getMessageBag()->add($item->env_variable, $message);
+                }
             }
 
-            $this->results[] = [
+            return (object) [
                 'id' => $item->id,
                 'key' => $item->env_variable,
-                'value' => $this->fields[$item->env_variable],
+                'value' => array_get($fields, $item->env_variable),
             ];
+        })->filter(function ($item) {
+            return is_object($item);
         });
 
-        return $this;
-    }
+        if (! empty($messages->getMessageBag()->all())) {
+            throw new ValidationException($messages);
+        }
 
-    /**
-     * Return the final results after everything has been validated.
-     *
-     * @return array
-     */
-    public function getResults()
-    {
-        return $this->results;
+        return $response;
     }
 }

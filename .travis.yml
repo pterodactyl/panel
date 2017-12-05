@@ -2,9 +2,14 @@ language: php
 sudo: required
 dist: trusty
 php:
-  - '7.0'
-  - '7.1'
-#  - '7.2'
+  - 7.0
+  - 7.1
+  - 7.2
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: 7.2
+sudo: false
 cache:
   directories:
     - $HOME/.composer/cache

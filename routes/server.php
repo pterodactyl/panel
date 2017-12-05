@@ -18,13 +18,27 @@ Route::get('/console', 'ConsoleController@console')->name('server.console');
 |
 */
 Route::group(['prefix' => 'settings'], function () {
-    Route::get('/databases', 'ServerController@getDatabases')->name('server.settings.databases');
-    Route::get('/sftp', 'ServerController@getSFTP')->name('server.settings.sftp');
-    Route::get('/startup', 'ServerController@getStartup')->name('server.settings.startup');
-    Route::get('/allocation', 'ServerController@getAllocation')->name('server.settings.allocation');
+    Route::get('/allocation', 'Settings\AllocationController@index')->name('server.settings.allocation');
+    Route::patch('/allocation', 'Settings\AllocationController@update');
 
-    Route::post('/sftp', 'ServerController@postSettingsSFTP');
-    Route::post('/startup', 'ServerController@postSettingsStartup');
+    Route::get('/sftp', 'Settings\SftpController@index')->name('server.settings.sftp');
+
+    Route::get('/startup', 'Settings\StartupController@index')->name('server.settings.startup');
+    Route::patch('/startup', 'Settings\StartupController@update');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Server Database Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /server/{server}/databases
+|
+*/
+Route::group(['prefix' => 'databases'], function () {
+    Route::get('/', 'DatabaseController@index')->name('server.databases.index');
+
+    Route::patch('/password', 'DatabaseController@update')->middleware('server..database')->name('server.databases.password');
 });
 
 /*
@@ -56,13 +70,13 @@ Route::group(['prefix' => 'files'], function () {
 Route::group(['prefix' => 'users'], function () {
     Route::get('/', 'SubuserController@index')->name('server.subusers');
     Route::get('/new', 'SubuserController@create')->name('server.subusers.new');
-    Route::get('/view/{subuser}', 'SubuserController@view')->middleware('subuser')->name('server.subusers.view');
-
     Route::post('/new', 'SubuserController@store');
 
-    Route::patch('/view/{subuser}', 'SubuserController@update')->middleware('subuser');
-
-    Route::delete('/view/{subuser}/delete', 'SubuserController@delete')->middleware('subuser')->name('server.subusers.delete');
+    Route::group(['middleware' => 'server..subuser'], function () {
+        Route::get('/view/{subuser}', 'SubuserController@view')->name('server.subusers.view');
+        Route::patch('/view/{subuser}', 'SubuserController@update');
+        Route::delete('/view/{subuser}', 'SubuserController@delete');
+    });
 });
 
 /*
@@ -76,24 +90,14 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'schedules'], function () {
     Route::get('/', 'Tasks\TaskManagementController@index')->name('server.schedules');
     Route::get('/new', 'Tasks\TaskManagementController@create')->name('server.schedules.new');
-    Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->middleware('schedule')->name('server.schedules.view');
-
     Route::post('/new', 'Tasks\TaskManagementController@store');
 
-    Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update')->middleware('schedule');
-    Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->middleware('schedule')->name('server.schedules.toggle');
+    Route::group(['middleware' => 'server..schedule'], function () {
+        Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->name('server.schedules.view');
 
-    Route::delete('/view/{schedule}/delete', 'Tasks\TaskManagementController@delete')->middleware('schedule')->name('server.schedules.delete');
-});
+        Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update');
+        Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->name('server.schedules.toggle');
 
-/*
-|--------------------------------------------------------------------------
-| Server Ajax Controller Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /server/{server}/ajax
-|
-*/
-Route::group(['prefix' => 'ajax'], function () {
-    Route::post('/settings/reset-database-password', 'AjaxController@postResetDatabasePassword')->name('server.ajax.reset-database-password');
+        Route::delete('/view/{schedule}', 'Tasks\TaskManagementController@delete');
+    });
 });

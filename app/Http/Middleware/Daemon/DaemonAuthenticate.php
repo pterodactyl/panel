@@ -29,18 +29,23 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
 {
     /**
-     * @var array
-     */
-    protected $except = ['daemon.configuration'];
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
-    protected $repository;
+    private $repository;
+
+    /**
+     * Daemon routes that this middleware should be skipped on.
+     *
+     * @var array
+     */
+    protected $except = [
+        'daemon.configuration',
+    ];
 
     /**
      * DaemonAuthenticate constructor.
@@ -63,6 +68,10 @@ class DaemonAuthenticate
      */
     public function handle(Request $request, Closure $next)
     {
+        if (in_array($request->route()->getName(), $this->except)) {
+            return $next($request);
+        }
+
         $token = $request->bearerToken();
 
         if (is_null($token)) {
@@ -72,10 +81,10 @@ class DaemonAuthenticate
         try {
             $node = $this->repository->findFirstWhere([['daemonSecret', '=', $token]]);
         } catch (RecordNotFoundException $exception) {
-            throw new HttpException(403);
+            throw new AccessDeniedHttpException;
         }
 
-        $request->attributes->set('node.model', $node);
+        $request->attributes->set('node', $node);
 
         return $next($request);
     }

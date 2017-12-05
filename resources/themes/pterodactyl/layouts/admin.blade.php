@@ -112,9 +112,9 @@
                             </a>
                         </li>
                         <li class="header">SERVICE MANAGEMENT</li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.services') ?: 'active' }}">
-                            <a href="{{ route('admin.services') }}">
-                                <i class="fa fa-th-large"></i> <span>Service</span>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
+                            <a href="{{ route('admin.nests') }}">
+                                <i class="fa fa-th-large"></i> <span>Nests</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">
@@ -133,7 +133,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             @if (count($errors) > 0)
-                                <div class="callout callout-danger">
+                                <div class="alert alert-danger">
                                     @lang('base.validation_error')<br><br>
                                     <ul>
                                         @foreach ($errors->all() as $error)
@@ -144,7 +144,7 @@
                             @endif
                             @foreach (Alert::getMessages() as $type => $messages)
                                 @foreach ($messages as $message)
-                                    <div class="callout callout-{{ $type }} alert-dismissable" role="alert">
+                                    <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
                                         {!! $message !!}
                                     </div>
                                 @endforeach
@@ -197,6 +197,12 @@
                     });
                 </script>
             @endif
+
+            <script>
+                $(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                })
+            </script>
         @show
     </body>
 </html>

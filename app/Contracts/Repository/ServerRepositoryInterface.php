@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
@@ -29,6 +30,15 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getDataForRebuild($server = null, $node = null);
+
+    /**
+     * Load the egg relations onto the server model.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
+     */
+    public function loadEggRelations(Server $server, bool $refresh = false): Server;
 
     /**
      * Return a server model and all variables associated with the server.
@@ -53,14 +63,26 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getVariablesWithValues($id, $returnAsObject = false);
 
     /**
-     * Return enough data to be used for the creation of a server via the daemon.
+     * Get the primary allocation for a given server. If a model is passed into
+     * the function, load the allocation relationship onto it. Otherwise, find and
+     * return the server from the database.
      *
-     * @param int $id
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param bool                           $refresh
+     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getDataForCreation($id);
+    public function getPrimaryAllocation($server, bool $refresh = false): Server;
+
+    /**
+     * Return enough data to be used for the creation of a server via the daemon.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
+     */
+    public function getDataForCreation(Server $server, bool $refresh = false): Server;
 
     /**
      * Return a server as well as associated databases and their hosts.
@@ -73,14 +95,15 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getWithDatabases($id);
 
     /**
-     * Return data about the daemon service in a consumable format.
+     * Get data for use when updating a server on the Daemon. Returns an array of
+     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * if they are missing, or refresh is set to true.
      *
-     * @param int $id
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getDaemonServiceData($id);
+    public function getDaemonServiceData(Server $server, bool $refresh = false): array;
 
     /**
      * Return an array of server IDs that a given user can access based on owner and subuser permissions.
@@ -105,7 +128,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return a server by UUID.
      *
      * @param string $uuid
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

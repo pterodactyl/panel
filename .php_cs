@@ -24,6 +24,7 @@ return PhpCsFixer\Config::create()
         'concat_space' => ['spacing' => 'one'],
         'declare_equal_normalize' => ['space' => 'single'],
         'heredoc_to_nowdoc' => true,
+        'increment_style' => ['style' => 'post'],
         'linebreak_after_opening_tag' => true,
         'method_argument_space' => [
             'ensure_fully_multiline' => false,
@@ -45,4 +46,10 @@ return PhpCsFixer\Config::create()
         'psr4' => true,
         'random_api_migration' => true,
         'standardize_not_equals' => true,
+        'ternary_to_null_coalescing' => true,
+        'yoda_style' => [
+            'equal' => false,
+            'identical' => false,
+            'less_and_greater' => false,
+        ],
     ])->setRiskyAllowed(true)->setFinder($finder);

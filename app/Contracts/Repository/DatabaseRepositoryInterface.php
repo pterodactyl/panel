@@ -9,8 +9,35 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Illuminate\Support\Collection;
+
 interface DatabaseRepositoryInterface extends RepositoryInterface
 {
+    const DEFAULT_CONNECTION_NAME = 'dynamic';
+
+    /**
+     * Set the connection name to execute statements against.
+     *
+     * @param string $connection
+     * @return $this
+     */
+    public function setConnection(string $connection);
+
+    /**
+     * Return the connection to execute statements aganist.
+     *
+     * @return string
+     */
+    public function getConnection(): string;
+
+    /**
+     * Return all of the databases belonging to a server.
+     *
+     * @param int $server
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDatabasesForServer(int $server): Collection;
+
     /**
      * Create a new database if it does not already exist on the host with
      * the provided details.
@@ -26,58 +53,52 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Create a new database on a given connection.
      *
-     * @param string      $database
-     * @param null|string $connection
+     * @param string $database
      * @return bool
      */
-    public function createDatabase($database, $connection = null);
+    public function createDatabase($database);
 
     /**
      * Create a new database user on a given connection.
      *
-     * @param string      $username
-     * @param string      $remote
-     * @param string      $password
-     * @param null|string $connection
+     * @param string $username
+     * @param string $remote
+     * @param string $password
      * @return bool
      */
-    public function createUser($username, $remote, $password, $connection = null);
+    public function createUser($username, $remote, $password);
 
     /**
      * Give a specific user access to a given database.
      *
-     * @param string      $database
-     * @param string      $username
-     * @param string      $remote
-     * @param null|string $connection
+     * @param string $database
+     * @param string $username
+     * @param string $remote
      * @return bool
      */
-    public function assignUserToDatabase($database, $username, $remote, $connection = null);
+    public function assignUserToDatabase($database, $username, $remote);
 
     /**
      * Flush the privileges for a given connection.
      *
-     * @param null|string $connection
      * @return mixed
      */
-    public function flush($connection = null);
+    public function flush();
 
     /**
      * Drop a given database on a specific connection.
      *
-     * @param string      $database
-     * @param null|string $connection
+     * @param string $database
      * @return bool
      */
-    public function dropDatabase($database, $connection = null);
+    public function dropDatabase($database);
 
     /**
      * Drop a given user on a specific connection.
      *
-     * @param string      $username
-     * @param string      $remote
-     * @param null|string $connection
+     * @param string $username
+     * @param string $remote
      * @return mixed
      */
-    public function dropUser($username, $remote, $connection = null);
+    public function dropUser($username, $remote);
 }

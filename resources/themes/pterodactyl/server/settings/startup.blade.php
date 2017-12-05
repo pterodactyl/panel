@@ -21,26 +21,20 @@
 
 @section('content')
 <div class="row">
-    <form action="{{ route('server.settings.startup', $server->uuidShort) }}" method="POST">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header with-border">
-                    <h3 class="box-title">@lang('server.config.startup.command')</h3>
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">@lang('server.config.startup.command')</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group no-margin-bottom">
+                    <input type="text" class="form-control" readonly value="{{ $startup }}" />
                 </div>
-                <div class="box-body">
-                    <div class="form-group">
-                        <input type="text" class="form-control" readonly value="{{ $processedStartup }}" />
-                    </div>
-                </div>
-                @can('edit-startup', $server)
-                    <div class="box-footer">
-                        {!! csrf_field() !!}
-                        <input type="submit" class="btn btn-primary btn-sm pull-right" value="@lang('server.config.startup.update')" />
-                    </div>
-                @endcan
             </div>
         </div>
-        @can('edit-startup', $server)
+    </div>
+    @can('edit-startup', $server)
+        <form action="{{ route('server.settings.startup', $server->uuidShort) }}" method="POST">
             @foreach($variables as $v)
                 <div class="col-xs-12 col-md-4 col-sm-6">
                     <div class="box">
@@ -50,11 +44,11 @@
                         <div class="box-body">
                             <input
                                 @if($v->user_editable)
-                                    name="env_{{ $v->id }}"
+                                    name="environment[{{ $v->env_variable }}]"
                                 @else
                                     readonly
                                 @endif
-                            class="form-control" type="text" value="{{ old('env_' . $v->id, $v->server_set_value) }}" />
+                            class="form-control" type="text" value="{{ old('environment.' . $v->env_variable, $server_values[$v->env_variable]) }}" />
                             <p class="small text-muted">{{ $v->description }}</p>
                             <p class="no-margin">
                                 @if($v->required && $v->user_editable )
@@ -68,14 +62,22 @@
                             </p>
                         </div>
                         <div class="box-footer">
-                            <p class="no-margin text-muted small"><strong>@lang('server.config.startup.startup_var'):</strong> <code>{{ $v->env_variable }}</code></p>
                             <p class="no-margin text-muted small"><strong>@lang('server.config.startup.startup_regex'):</strong> <code>{{ $v->rules }}</code></p>
                         </div>
                     </div>
                 </div>
             @endforeach
-        @endcan
-    </form>
+            <div class="col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-footer">
+                        {!! csrf_field() !!}
+                        {!! method_field('PATCH') !!}
+                        <input type="submit" class="btn btn-primary btn-sm pull-right" value="@lang('server.config.startup.update')" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    @endcan
 </div>
 @endsection
 

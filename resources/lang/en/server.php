@@ -189,9 +189,13 @@ return [
                 'title' => 'Delete Subuser',
                 'description' => 'Allows a user to delete other subusers on the server.',
             ],
-            'set_connection' => [
-                'title' => 'Set Default Connection',
-                'description' => 'Allows user to set the default connection used for a server as well as view avaliable ports.',
+            'view_allocations' => [
+                'title' => 'View Allocations',
+                'description' => 'Allows user to view all of the IPs and ports assigned to a server.',
+            ],
+            'edit_allocation' => [
+                'title' => 'Edit Default Connection',
+                'description' => 'Allows user to change the default connection allocation to use for a server.',
             ],
             'view_startup' => [
                 'title' => 'View Startup Command',
@@ -288,8 +292,8 @@ return [
             'command' => 'Startup Command',
             'edit_params' => 'Edit Parameters',
             'update' => 'Update Startup Parameters',
-            'startup_var' => 'Startup Command Variable',
             'startup_regex' => 'Input Rules',
+            'edited' => 'Startup variables have been successfully edited. They will take effect the next time this server is started.',
         ],
         'sftp' => [
             'header' => 'SFTP Configuration',
@@ -297,12 +301,12 @@ return [
             'change_pass' => 'Change SFTP Password',
             'details' => 'SFTP Details',
             'conn_addr' => 'Connection Address',
-            'warning' => 'Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
+            'warning' => 'The SFTP password is your account password. Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
         ],
         'database' => [
             'header' => 'Databases',
             'header_sub' => 'All databases available for this server.',
-            'your_dbs' => 'Your Databases',
+            'your_dbs' => 'Configured Databases',
             'host' => 'MySQL Host',
             'reset_password' => 'Reset Password',
             'no_dbs' => 'There are no databases listed for this server.',

@@ -19,7 +19,7 @@ class AllocationAliasFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'alias' => 'required|nullable|string',
+            'alias' => 'present|nullable|string',
             'allocation_id' => 'required|numeric|exists:allocations,id',
         ];
     }

@@ -14,7 +14,7 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
@@ -32,7 +32,7 @@ class ServerDeletionService
     protected $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseManagementService
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     protected $databaseManagementService;
 
@@ -62,7 +62,7 @@ class ServerDeletionService
      * @param \Illuminate\Database\ConnectionInterface                           $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
-     * @param \Pterodactyl\Services\Database\DatabaseManagementService           $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService          $databaseManagementService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
      * @param \Illuminate\Log\Writer                                             $writer
      */

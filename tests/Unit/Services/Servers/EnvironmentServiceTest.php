@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Servers;
 
@@ -13,25 +6,23 @@ use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
+use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentServiceTest extends TestCase
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    protected $repository;
+    const CONFIG_MAPPING = 'pterodactyl.environment_mappings';
 
     /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
      */
-    protected $service;
+    private $config;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
-    protected $server;
+    private $repository;
 
     /**
      * Setup tests.
@@ -40,24 +31,23 @@ class EnvironmentServiceTest extends TestCase
     {
         parent::setUp();
 
+        $this->config = m::mock(Repository::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
-        $this->server = factory(Server::class)->make([
-            'location' => factory(Location::class)->make(),
-        ]);
-
-        $this->service = new EnvironmentService($this->repository);
     }
 
     /**
-     * Test that set environment key function returns an instance of the class.
+     * Test that set environment key stores the key into a retreviable array.
      */
-    public function testSettingEnvironmentKeyShouldReturnInstanceOfSelf()
+    public function testSettingEnvironmentKeyPersistsItInArray()
     {
-        $instance = $this->service->setEnvironmentKey('TEST_KEY', function () {
+        $service = $this->getService();
+
+        $service->setEnvironmentKey('TEST_KEY', function () {
             return true;
         });
 
-        $this->assertInstanceOf(EnvironmentService::class, $instance);
+        $this->assertNotEmpty($service->getEnvironmentKeys());
+        $this->assertArrayHasKey('TEST_KEY', $service->getEnvironmentKeys());
     }
 
     /**
@@ -65,22 +55,17 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testProcessShouldReturnDefaultEnvironmentVariablesForAServer()
     {
-        $this->repository->shouldReceive('getVariablesWithValues')->with($this->server->id)->once()->andReturn([
+        $model = $this->getServerModel();
+        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([]);
+        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([
             'TEST_VARIABLE' => 'Test Variable',
         ]);
 
-        $response = $this->service->process($this->server);
-
-        $this->assertEquals(count(EnvironmentService::ENVIRONMENT_CASTS) + 1, count($response), 'Assert response contains correct amount of items.');
-        $this->assertTrue(is_array($response), 'Assert that response is an array.');
-
+        $response = $this->getService()->handle($model);
+        $this->assertNotEmpty($response);
+        $this->assertEquals(4, count($response));
         $this->assertArrayHasKey('TEST_VARIABLE', $response);
-        $this->assertEquals('Test Variable', $response['TEST_VARIABLE']);
-
-        foreach (EnvironmentService::ENVIRONMENT_CASTS as $key => $value) {
-            $this->assertArrayHasKey($key, $response);
-            $this->assertEquals(object_get($this->server, $value), $response[$key]);
-        }
+        $this->assertSame('Test Variable', $response['TEST_VARIABLE']);
     }
 
     /**
@@ -88,43 +73,106 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testProcessShouldReturnKeySetAtRuntime()
     {
-        $this->repository->shouldReceive('getVariablesWithValues')->with($this->server->id)->once()->andReturn([]);
+        $model = $this->getServerModel();
+        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([]);
+        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
 
-        $response = $this->service->setEnvironmentKey('TEST_VARIABLE', function ($server) {
+        $service = $this->getService();
+        $service->setEnvironmentKey('TEST_VARIABLE', function ($server) {
             return $server->uuidShort;
-        })->process($this->server);
+        });
 
-        $this->assertTrue(is_array($response), 'Assert response is an array.');
+        $response = $service->handle($model);
+
+        $this->assertNotEmpty($response);
         $this->assertArrayHasKey('TEST_VARIABLE', $response);
-        $this->assertEquals($this->server->uuidShort, $response['TEST_VARIABLE']);
+        $this->assertSame($model->uuidShort, $response['TEST_VARIABLE']);
     }
 
     /**
-     * Test that duplicate variables provided at run-time override the defaults.
+     * Test that duplicate variables provided in config override the defaults.
+     */
+    public function testProcessShouldAllowOverwritingVaraiblesWithConfigurationFile()
+    {
+        $model = $this->getServerModel();
+        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
+        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([
+            'P_SERVER_UUID' => 'name',
+        ]);
+
+        $response = $this->getService()->handle($model);
+
+        $this->assertNotEmpty($response);
+        $this->assertSame(3, count($response));
+        $this->assertArrayHasKey('P_SERVER_UUID', $response);
+        $this->assertSame($model->name, $response['P_SERVER_UUID']);
+    }
+
+    /**
+     * Test that config based environment variables can be done using closures.
+     */
+    public function testVariablesSetInConfigurationAllowForClosures()
+    {
+        $model = $this->getServerModel();
+        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([
+            'P_SERVER_UUID' => function ($server) {
+                return $server->id * 2;
+            },
+        ]);
+        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
+
+        $response = $this->getService()->handle($model);
+
+        $this->assertNotEmpty($response);
+        $this->assertSame(3, count($response));
+        $this->assertArrayHasKey('P_SERVER_UUID', $response);
+        $this->assertSame($model->id * 2, $response['P_SERVER_UUID']);
+    }
+
+    /**
+     * Test that duplicate variables provided at run-time override the defaults and those
+     * that are defined in the configuration file.
      */
     public function testProcessShouldAllowOverwritingDefaultVariablesWithRuntimeProvided()
     {
-        $this->repository->shouldReceive('getVariablesWithValues')->with($this->server->id)->once()->andReturn([]);
+        $model = $this->getServerModel();
+        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([
+            'P_SERVER_UUID' => 'overwritten-config',
+        ]);
+        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
 
-        $response = $this->service->setEnvironmentKey('P_SERVER_UUID', function ($server) {
+        $service = $this->getService();
+        $service->setEnvironmentKey('P_SERVER_UUID', function ($model) {
             return 'overwritten';
-        })->process($this->server);
+        });
 
-        $this->assertTrue(is_array($response), 'Assert response is an array.');
+        $response = $service->handle($model);
+
+        $this->assertNotEmpty($response);
+        $this->assertSame(3, count($response));
         $this->assertArrayHasKey('P_SERVER_UUID', $response);
-        $this->assertEquals('overwritten', $response['P_SERVER_UUID']);
+        $this->assertSame('overwritten', $response['P_SERVER_UUID']);
     }
 
     /**
-     * Test that function can run when an ID is provided rather than a server model.
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Servers\EnvironmentService
      */
-    public function testProcessShouldAcceptAnIntegerInPlaceOfAServerModel()
+    private function getService(): EnvironmentService
     {
-        $this->repository->shouldReceive('find')->with($this->server->id)->once()->andReturn($this->server);
-        $this->repository->shouldReceive('getVariablesWithValues')->with($this->server->id)->once()->andReturn([]);
+        return new EnvironmentService($this->config, $this->repository);
+    }
 
-        $response = $this->service->process($this->server->id);
-
-        $this->assertTrue(is_array($response), 'Assert that response is an array.');
+    /**
+     * Return a server model with a location relationship to be used in the tests.
+     *
+     * @return \Pterodactyl\Models\Server
+     */
+    private function getServerModel(): Server
+    {
+        return factory(Server::class)->make([
+            'location' => factory(Location::class)->make(),
+        ]);
     }
 }

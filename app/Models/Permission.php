@@ -86,7 +86,8 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'delete-subuser' => null,
         ],
         'server' => [
-            'set-connection' => null,
+            'view-allocations' => null,
+            'edit-allocation' => null,
             'view-startup' => null,
             'edit-startup' => null,
         ],

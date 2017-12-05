@@ -60,9 +60,19 @@ class Allocation extends Model implements CleansAttributes, ValidableContract
         'node_id' => 'exists:nodes,id',
         'ip' => 'ip',
         'port' => 'numeric|between:1024,65553',
-        'alias' => 'string',
+        'ip_alias' => 'nullable|string',
         'server_id' => 'nullable|exists:servers,id',
     ];
+
+    /**
+     * Return a hashid encoded string to represent the ID of the allocation.
+     *
+     * @return string
+     */
+    public function getHashidAttribute()
+    {
+        return app()->make('hashids')->encode($this->id);
+    }
 
     /**
      * Accessor to automatically provide the IP alias if defined.

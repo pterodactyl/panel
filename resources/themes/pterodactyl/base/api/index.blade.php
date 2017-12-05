@@ -39,7 +39,7 @@
                         </tr>
                         @foreach ($keys as $key)
                             <tr>
-                                <td><code>{{ $key->public }}</code></td>
+                                <td><code>{{ $key->token }}</code></td>
                                 <td>{{ $key->memo }}</td>
                                 <td class="text-center hidden-sm hidden-xs">
                                     {{ (new Carbon($key->created_at))->toDayDateTimeString() }}
@@ -52,7 +52,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->public}}"><i class="fa fa-trash"></i></a>
+                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->token }}"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         @endforeach

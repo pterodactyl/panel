@@ -11,6 +11,7 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Servers\EnvironmentService;
@@ -25,37 +26,32 @@ class StartupModificationServiceTest extends TestCase
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
-    protected $daemonServerRepository;
+    private $daemonServerRepository;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
-    protected $connection;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService|\Mockery\Mock
      */
-    protected $environmentService;
+    private $environmentService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
-    protected $serverVariableRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\StartupModificationService
-     */
-    protected $service;
+    private $serverVariableRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService|\Mockery\Mock
      */
-    protected $validatorService;
+    private $validatorService;
 
     /**
      * Setup tests.
@@ -70,8 +66,105 @@ class StartupModificationServiceTest extends TestCase
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
         $this->validatorService = m::mock(VariableValidatorService::class);
+    }
 
-        $this->service = new StartupModificationService(
+    /**
+     * Test startup modification as a non-admin user.
+     */
+    public function testStartupModifiedAsNormalUser()
+    {
+        $model = factory(Server::class)->make();
+
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->validatorService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
+        $this->validatorService->shouldReceive('handle')->with(123, ['test' => 'abcd1234'])->once()->andReturn(
+            collect([(object) ['id' => 1, 'value' => 'stored-value']])
+        );
+
+        $this->serverVariableRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
+            'server_id' => $model->id,
+            'variable_id' => 1,
+        ], ['variable_value' => 'stored-value'])->once()->andReturnNull();
+
+        $this->environmentService->shouldReceive('handle')->with($model)->once()->andReturn(['env']);
+        $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('setAccessServer')->with($model->uuid)->once()->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('update')->with([
+            'build' => ['env|overwrite' => ['env']],
+        ])->once()->andReturnSelf();
+
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+
+        $this->getService()->handle($model, ['egg_id' => 123, 'environment' => ['test' => 'abcd1234']]);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Test startup modification as an admin user.
+     */
+    public function testStartupModificationAsAdminUser()
+    {
+        $model = factory(Server::class)->make([
+            'egg_id' => 123,
+            'image' => 'docker:image',
+        ]);
+
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->validatorService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_ADMIN)->once()->andReturnNull();
+        $this->validatorService->shouldReceive('handle')->with(456, ['test' => 'abcd1234'])->once()->andReturn(
+            collect([(object) ['id' => 1, 'value' => 'stored-value']])
+        );
+
+        $this->serverVariableRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
+            'server_id' => $model->id,
+            'variable_id' => 1,
+        ], ['variable_value' => 'stored-value'])->once()->andReturnNull();
+
+        $this->repository->shouldReceive('update')->with($model->id, m::subset([
+            'installed' => 0,
+            'egg_id' => 456,
+            'pack_id' => 789,
+            'image' => 'docker:image',
+        ]))->once()->andReturn($model);
+        $this->repository->shouldReceive('getDaemonServiceData')->with($model, true)->once()->andReturn([
+            'egg' => 'abcd1234',
+            'pack' => 'xyz987',
+        ]);
+
+        $this->environmentService->shouldReceive('handle')->with($model)->once()->andReturn(['env']);
+
+        $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('setAccessServer')->with($model->uuid)->once()->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('update')->with([
+            'build' => [
+                'env|overwrite' => ['env'],
+                'image' => $model->image,
+            ],
+            'service' => [
+                'egg' => 'abcd1234',
+                'pack' => 'xyz987',
+                'skip_scripts' => false,
+            ],
+        ])->once()->andReturnSelf();
+
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+
+        $service = $this->getService();
+        $service->setUserLevel(User::USER_LEVEL_ADMIN);
+        $service->handle($model, ['docker_image' => 'docker:image', 'egg_id' => 456, 'pack_id' => 789, 'environment' => ['test' => 'abcd1234']]);
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Servers\StartupModificationService
+     */
+    private function getService(): StartupModificationService
+    {
+        return new StartupModificationService(
             $this->connection,
             $this->daemonServerRepository,
             $this->environmentService,
@@ -79,17 +172,5 @@ class StartupModificationServiceTest extends TestCase
             $this->serverVariableRepository,
             $this->validatorService
         );
-    }
-
-    /**
-     * Test startup is modified when user is not an administrator.
-     *
-     * @todo this test works, but not for the right reasons...
-     */
-    public function testStartupIsModifiedAsNonAdmin()
-    {
-        $model = factory(Server::class)->make();
-
-        $this->assertTrue(true);
     }
 }

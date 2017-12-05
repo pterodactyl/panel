@@ -11,6 +11,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Javascript;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
@@ -22,14 +23,15 @@ use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Services\Database\DatabaseManagementService;
+use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\StartupModificationService;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServiceRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
@@ -67,9 +69,14 @@ class ServersController extends Controller
     protected $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseManagementService
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     protected $databaseManagementService;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
+     */
+    protected $databasePasswordService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
@@ -92,6 +99,11 @@ class ServersController extends Controller
     protected $locationRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     */
+    protected $nestRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     protected $nodeRepository;
@@ -112,11 +124,6 @@ class ServersController extends Controller
     protected $service;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface
-     */
-    protected $serviceRepository;
-
-    /**
      * @var \Pterodactyl\Services\Servers\StartupModificationService
      */
     private $startupModificationService;
@@ -135,7 +142,8 @@ class ServersController extends Controller
      * @param \Illuminate\Contracts\Config\Repository                         $config
      * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
      * @param \Pterodactyl\Services\Servers\ServerCreationService             $service
-     * @param \Pterodactyl\Services\Database\DatabaseManagementService        $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService       $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabasePasswordService         $databasePasswordService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
      * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
      * @param \Pterodactyl\Services\Servers\ServerDeletionService             $deletionService
@@ -144,7 +152,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
      * @param \Pterodactyl\Services\Servers\ReinstallServerService            $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\ServiceRepositoryInterface    $serviceRepository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface       $nestRepository
      * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
      */
@@ -156,6 +164,7 @@ class ServersController extends Controller
         ContainerRebuildService $containerRebuildService,
         ServerCreationService $service,
         DatabaseManagementService $databaseManagementService,
+        DatabasePasswordService $databasePasswordService,
         DatabaseRepositoryInterface $databaseRepository,
         DatabaseHostRepository $databaseHostRepository,
         ServerDeletionService $deletionService,
@@ -164,7 +173,7 @@ class ServersController extends Controller
         NodeRepositoryInterface $nodeRepository,
         ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository,
-        ServiceRepositoryInterface $serviceRepository,
+        NestRepositoryInterface $nestRepository,
         StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
     ) {
@@ -173,17 +182,18 @@ class ServersController extends Controller
         $this->buildModificationService = $buildModificationService;
         $this->config = $config;
         $this->containerRebuildService = $containerRebuildService;
-        $this->databaseManagementService = $databaseManagementService;
-        $this->databaseRepository = $databaseRepository;
         $this->databaseHostRepository = $databaseHostRepository;
+        $this->databaseManagementService = $databaseManagementService;
+        $this->databasePasswordService = $databasePasswordService;
+        $this->databaseRepository = $databaseRepository;
         $this->detailsModificationService = $detailsModificationService;
         $this->deletionService = $deletionService;
         $this->locationRepository = $locationRepository;
+        $this->nestRepository = $nestRepository;
         $this->nodeRepository = $nodeRepository;
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
         $this->service = $service;
-        $this->serviceRepository = $serviceRepository;
         $this->startupModificationService = $startupModificationService;
         $this->suspensionService = $suspensionService;
     }
@@ -218,19 +228,20 @@ class ServersController extends Controller
             return redirect()->route('admin.nodes');
         }
 
-        $services = $this->serviceRepository->getWithOptions();
+        $nests = $this->nestRepository->getWithEggs();
 
         Javascript::put([
-            'services' => $services->map(function ($item) {
+            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+            'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
-                    'options' => $item->options->keyBy('id')->toArray(),
+                    'eggs' => $item->eggs->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
         ]);
 
         return view('admin.servers.new', [
             'locations' => $this->locationRepository->all(),
-            'services' => $services,
+            'nests' => $nests,
         ]);
     }
 
@@ -250,17 +261,6 @@ class ServersController extends Controller
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
         return redirect()->route('admin.servers.view', $server->id);
-    }
-
-    /**
-     * Returns a tree of all avaliable nodes in a given location.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Support\Collection
-     */
-    public function nodes(Request $request)
-    {
-        return $this->nodeRepository->getNodesForLocation($request->input('location'));
     }
 
     /**
@@ -319,24 +319,25 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param int $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewStartup($server)
+    public function viewStartup(Server $server)
     {
-        $parameters = $this->repository->getVariablesWithValues($server, true);
+        $parameters = $this->repository->getVariablesWithValues($server->id, true);
         if (! $parameters->server->installed) {
             abort(404);
         }
 
-        $services = $this->serviceRepository->getWithOptions();
+        $nests = $this->nestRepository->getWithEggs();
 
         Javascript::put([
-            'services' => $services->map(function ($item) {
+            'server' => $server,
+            'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
-                    'options' => $item->options->keyBy('id')->toArray(),
+                    'eggs' => $item->eggs->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
             'server_variables' => $parameters->data,
@@ -344,7 +345,7 @@ class ServersController extends Controller
 
         return view('admin.servers.view.startup', [
             'server' => $parameters->server,
-            'services' => $services,
+            'nests' => $nests,
         ]);
     }
 
@@ -402,29 +403,10 @@ class ServersController extends Controller
     public function setDetails(Request $request, Server $server)
     {
         $this->detailsModificationService->edit($server, $request->only([
-            'owner_id', 'name', 'description', 'reset_token',
+            'owner_id', 'name', 'description',
         ]));
 
         $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();
-
-        return redirect()->route('admin.servers.view.details', $server->id);
-    }
-
-    /**
-     * Set the new docker container for a server.
-     *
-     * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function setContainer(Request $request, Server $server)
-    {
-        $this->detailsModificationService->setDockerImage($server, $request->input('docker_image'));
-        $this->alert->success(trans('admin/server.alerts.docker_image_updated'))->flash();
 
         return redirect()->route('admin.servers.view.details', $server->id);
     }
@@ -561,10 +543,8 @@ class ServersController extends Controller
      */
     public function saveStartup(Request $request, Server $server)
     {
-        $this->startupModificationService->isAdmin()->handle(
-            $server,
-            $request->except('_token')
-        );
+        $this->startupModificationService->setUserLevel(User::USER_LEVEL_ADMIN);
+        $this->startupModificationService->handle($server, $request->except('_token'));
         $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
         return redirect()->route('admin.servers.view.startup', $server->id);
@@ -609,7 +589,7 @@ class ServersController extends Controller
             ['id', '=', $request->input('database')],
         ]);
 
-        $this->databaseManagementService->changePassword($database->id, str_random(20));
+        $this->databasePasswordService->handle($database, str_random(20));
 
         return response('', 204);
     }

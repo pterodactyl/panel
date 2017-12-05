@@ -27,7 +27,6 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Services\Users\ToggleTwoFactorService;
@@ -53,11 +52,6 @@ class SecurityController extends Controller
     protected $repository;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
-
-    /**
      * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
      */
     protected $toggleTwoFactorService;
@@ -72,7 +66,6 @@ class SecurityController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag                            $alert
      * @param \Illuminate\Contracts\Config\Repository                      $config
-     * @param \Illuminate\Contracts\Session\Session                        $session
      * @param \Pterodactyl\Contracts\Repository\SessionRepositoryInterface $repository
      * @param \Pterodactyl\Services\Users\ToggleTwoFactorService           $toggleTwoFactorService
      * @param \Pterodactyl\Services\Users\TwoFactorSetupService            $twoFactorSetupService
@@ -80,7 +73,6 @@ class SecurityController extends Controller
     public function __construct(
         AlertsMessageBag $alert,
         ConfigRepository $config,
-        Session $session,
         SessionRepositoryInterface $repository,
         ToggleTwoFactorService $toggleTwoFactorService,
         TwoFactorSetupService $twoFactorSetupService
@@ -88,7 +80,6 @@ class SecurityController extends Controller
         $this->alert = $alert;
         $this->config = $config;
         $this->repository = $repository;
-        $this->session = $session;
         $this->toggleTwoFactorService = $toggleTwoFactorService;
         $this->twoFactorSetupService = $twoFactorSetupService;
     }
@@ -122,7 +113,9 @@ class SecurityController extends Controller
      */
     public function generateTotp(Request $request)
     {
-        return response()->json($this->twoFactorSetupService->handle($request->user()));
+        return response()->json([
+            'qrImage' => $this->twoFactorSetupService->handle($request->user()),
+        ]);
     }
 
     /**

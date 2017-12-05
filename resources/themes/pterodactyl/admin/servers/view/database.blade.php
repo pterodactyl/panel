@@ -40,6 +40,9 @@
 </div>
 <div class="row">
     <div class="col-sm-7">
+        <div class="alert alert-info">
+            Database passwords can be viewed when <a href="{{ route('server.databases.index', ['server' => $server->uuidShort]) }}">visiting this server</a> on the front-end.
+        </div>
         <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Active Databases</h3>
@@ -128,7 +131,7 @@
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('admin.servers.view.database.delete', { id: '{{ $server->id }}', database: self.data('id') }),
+                url: Router.route('admin.servers.view.database.delete', { server: '{{ $server->id }}', database: self.data('id') }),
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).done(function () {
                 self.parent().parent().slideUp();
@@ -149,7 +152,7 @@
         $(this).addClass('disabled').find('i').addClass('fa-spin');
         $.ajax({
             type: 'PATCH',
-            url: Router.route('admin.servers.view.database', { id: '{{ $server->id }}' }),
+            url: Router.route('admin.servers.view.database', { server: '{{ $server->id }}' }),
             headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             data: { database: $(this).data('id') },
         }).done(function (data) {

@@ -10,8 +10,8 @@
 namespace Pterodactyl\Transformers\Admin;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\EggVariable;
 use League\Fractal\TransformerAbstract;
-use Pterodactyl\Models\ServiceVariable;
 
 class ServiceVariableTransformer extends TransformerAbstract
 {
@@ -48,7 +48,7 @@ class ServiceVariableTransformer extends TransformerAbstract
      *
      * @return array
      */
-    public function transform(ServiceVariable $variable)
+    public function transform(EggVariable $variable)
     {
         return $variable->toArray();
     }
@@ -58,7 +58,7 @@ class ServiceVariableTransformer extends TransformerAbstract
      *
      * @return \Leauge\Fractal\Resource\Collection
      */
-    public function includeVariables(ServiceVariable $variable)
+    public function includeVariables(EggVariable $variable)
     {
         if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
             return;

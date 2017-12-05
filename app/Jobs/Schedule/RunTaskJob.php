@@ -92,20 +92,21 @@ class RunTaskJob extends Job implements ShouldQueue
         $this->taskRepository = $taskRepository;
 
         $task = $this->taskRepository->getTaskWithServer($this->task);
-        $server = $task->server;
+        $server = $task->getRelation('server');
+        $user = $server->getRelation('user');
 
         // Perform the provided task aganist the daemon.
         switch ($task->action) {
             case 'power':
                 $this->powerRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($keyProviderService->handle($server->id, $server->owner_id))
+                    ->setAccessToken($keyProviderService->handle($server, $user))
                     ->sendSignal($task->payload);
                 break;
             case 'command':
                 $this->commandRepository->setNode($server->node_id)
                     ->setAccessServer($server->uuid)
-                    ->setAccessToken($keyProviderService->handle($server->id, $server->owner_id))
+                    ->setAccessToken($keyProviderService->handle($server, $user))
                     ->send($task->payload);
                 break;
             default:
@@ -162,7 +163,7 @@ class RunTaskJob extends Job implements ShouldQueue
         $repository = app()->make(ScheduleRepositoryInterface::class);
         $repository->withoutFresh()->update($this->schedule, [
             'is_processing' => false,
-            'last_run_at' => app()->make(Carbon::class)->now()->toDateTimeString(),
+            'last_run_at' => Carbon::now()->toDateTimeString(),
         ]);
     }
 

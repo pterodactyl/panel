@@ -40,6 +40,22 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
+     * Load the egg relations onto the server model.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
+     */
+    public function loadEggRelations(Server $server, bool $refresh = false): Server
+    {
+        if (! $server->relationLoaded('egg') || $refresh) {
+            $server->load('egg.scriptFrom');
+        }
+
+        return $server;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getDataForRebuild($server = null, $node = null)
@@ -47,7 +63,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         Assert::nullOrIntegerish($server, 'First argument passed to getDataForRebuild must be null or integer, received %s.');
         Assert::nullOrIntegerish($node, 'Second argument passed to getDataForRebuild must be null or integer, received %s.');
 
-        $instance = $this->getBuilder()->with('node', 'option.service', 'pack');
+        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'egg', 'node');
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
@@ -66,12 +82,42 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     {
         Assert::integerish($id, 'First argument passed to findWithVariables must be integer, received %s.');
 
-        $instance = $this->getBuilder()->with('option.variables', 'variables')
-                         ->where($this->getModel()->getKeyName(), '=', $id)
-                         ->first($this->getColumns());
+        $instance = $this->getBuilder()->with('egg.variables', 'variables')
+            ->where($this->getModel()->getKeyName(), '=', $id)
+            ->first($this->getColumns());
 
         if (is_null($instance)) {
             throw new RecordNotFoundException();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Get the primary allocation for a given server. If a model is passed into
+     * the function, load the allocation relationship onto it. Otherwise, find and
+     * return the server from the database.
+     *
+     * @param int|\Pterodactyl\Models\Server $server
+     * @param bool                           $refresh
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function getPrimaryAllocation($server, bool $refresh = false): Server
+    {
+        $instance = $server;
+        if (! $instance instanceof Server) {
+            Assert::integerish($server, 'First argument passed to getPrimaryAllocation must be instance of \Pterodactyl\Models\Server or integer, received %s.');
+            $instance = $this->getBuilder()->find($server, $this->getColumns());
+        }
+
+        if (! $instance) {
+            throw new RecordNotFoundException;
+        }
+
+        if (! $instance->relationLoaded('allocation') || $refresh) {
+            $instance->load('allocation');
         }
 
         return $instance;
@@ -82,7 +128,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getVariablesWithValues($id, $returnWithObject = false)
     {
-        $instance = $this->getBuilder()->with('variables', 'option.variables')
+        $instance = $this->getBuilder()->with('variables', 'egg.variables')
                          ->find($id, $this->getColumns());
 
         if (! $instance) {
@@ -90,7 +136,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         }
 
         $data = [];
-        $instance->option->variables->each(function ($item) use (&$data, $instance) {
+        $instance->egg->variables->each(function ($item) use (&$data, $instance) {
             $display = $instance->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
 
             $data[$item->env_variable] = $display ?? $item->default_value;
@@ -107,18 +153,21 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Return enough data to be used for the creation of a server via the daemon.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
      */
-    public function getDataForCreation($id)
+    public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
-        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'option.service')
-                         ->find($id, $this->getColumns());
-
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        foreach (['allocation', 'allocations', 'pack', 'egg'] as $relation) {
+            if (! $server->relationLoaded($relation) || $refresh) {
+                $server->load($relation);
+            }
         }
 
-        return $instance;
+        return $server;
     }
 
     /**
@@ -138,20 +187,27 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Get data for use when updating a server on the Daemon. Returns an array of
+     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * if they are missing, or refresh is set to true.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return array
      */
-    public function getDaemonServiceData($id)
+    public function getDaemonServiceData(Server $server, bool $refresh = false): array
     {
-        $instance = $this->getBuilder()->with('option.service', 'pack')->find($id, $this->getColumns());
+        if (! $server->relationLoaded('egg') || $refresh) {
+            $server->load('egg');
+        }
 
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        if (! $server->relationLoaded('pack') || $refresh) {
+            $server->load('pack');
         }
 
         return [
-            'type' => $instance->option->service->folder,
-            'option' => $instance->option->tag,
-            'pack' => (! is_null($instance->pack_id)) ? $instance->pack->uuid : null,
+            'egg' => $server->getRelation('egg')->uuid,
+            'pack' => is_null($server->getRelation('pack')) ? null : $server->getRelation('pack')->uuid,
         ];
     }
 
@@ -213,7 +269,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     {
         Assert::stringNotEmpty($uuid, 'First argument passed to getByUuid must be a non-empty string, received %s.');
 
-        $instance = $this->getBuilder()->with('service', 'node')->where(function ($query) use ($uuid) {
+        $instance = $this->getBuilder()->with('nest', 'node')->where(function ($query) use ($uuid) {
             $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
         })->first($this->getColumns());
 

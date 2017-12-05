@@ -10,35 +10,34 @@
 namespace Pterodactyl\Http\Middleware;
 
 use Closure;
-use Pterodactyl\Models\Node;
-use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
 {
-    /**
-     * The Guard implementation.
-     *
-     * @var \Illuminate\Contracts\Auth\Guard
-     */
-    protected $auth;
-
     /**
      * An array of route names to not apply this middleware to.
      *
      * @var array
      */
-    protected $except = [
+    private $except = [
         'daemon.configuration',
     ];
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    private $repository;
+
+    /**
      * Create a new filter instance.
      *
-     * @param \Illuminate\Contracts\Auth\Guard $auth
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
-    public function __construct(Guard $auth)
+    public function __construct(NodeRepositoryInterface $repository)
     {
-        $this->auth = $auth;
+        $this->repository = $repository;
     }
 
     /**
@@ -47,21 +46,21 @@ class DaemonAuthenticate
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
      * @return mixed
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);
         }
 
         if (! $request->header('X-Access-Node')) {
-            return abort(403);
+            throw new AccessDeniedHttpException;
         }
 
-        $node = Node::where('daemonSecret', $request->header('X-Access-Node'))->first();
-        if (! $node) {
-            return abort(401);
-        }
+        $node = $this->repository->findWhere(['daemonSecret' => $request->header('X-Access-Node')]);
+        $request->attributes->set('node', $node);
 
         return $next($request);
     }

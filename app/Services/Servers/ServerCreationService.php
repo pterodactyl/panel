@@ -1,24 +1,17 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Log\Writer;
-use Illuminate\Database\DatabaseManager;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Nodes\NodeCreationService;
+use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
@@ -27,89 +20,81 @@ class ServerCreationService
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
-    protected $allocationRepository;
+    private $allocationRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $configurationStructureService;
+
+    /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    private $connection;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
-    protected $daemonServerRepository;
-
-    /**
-     * @var \Illuminate\Database\DatabaseManager
-     */
-    protected $database;
+    private $daemonServerRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
-    protected $nodeRepository;
+    private $nodeRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
      */
-    protected $serverVariableRepository;
+    private $serverVariableRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
-    protected $userRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\UsernameGenerationService
-     */
-    protected $usernameService;
+    private $userRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
-    protected $validatorService;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    private $validatorService;
 
     /**
      * CreationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
+     * @param \Illuminate\Database\ConnectionInterface                            $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
-     * @param \Illuminate\Database\DatabaseManager                                $database
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface           $nodeRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService   $configurationStructureService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface           $userRepository
-     * @param \Pterodactyl\Services\Servers\UsernameGenerationService             $usernameService
      * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
-     * @param \Illuminate\Log\Writer                                              $writer
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
+        ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonServerRepository,
-        DatabaseManager $database,
         NodeRepositoryInterface $nodeRepository,
+        ServerConfigurationStructureService $configurationStructureService,
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         UserRepositoryInterface $userRepository,
-        UsernameGenerationService $usernameService,
-        VariableValidatorService $validatorService,
-        Writer $writer
+        VariableValidatorService $validatorService
     ) {
         $this->allocationRepository = $allocationRepository;
+        $this->configurationStructureService = $configurationStructureService;
+        $this->connection = $connection;
         $this->daemonServerRepository = $daemonServerRepository;
-        $this->database = $database;
         $this->nodeRepository = $nodeRepository;
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->userRepository = $userRepository;
-        $this->usernameService = $usernameService;
         $this->validatorService = $validatorService;
-        $this->writer = $writer;
     }
 
     /**
@@ -125,35 +110,30 @@ class ServerCreationService
     public function create(array $data)
     {
         // @todo auto-deployment
-        $validator = $this->validatorService->isAdmin()->setFields($data['environment'])->validate($data['option_id']);
-        $uniqueShort = str_random(8);
 
-        $this->database->beginTransaction();
-
+        $this->connection->beginTransaction();
         $server = $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
-            'uuidShort' => $uniqueShort,
-            'node_id' => $data['node_id'],
-            'name' => $data['name'],
-            'description' => $data['description'],
+            'uuidShort' => str_random(8),
+            'node_id' => array_get($data, 'node_id'),
+            'name' => array_get($data, 'name'),
+            'description' => array_get($data, 'description'),
             'skip_scripts' => isset($data['skip_scripts']),
             'suspended' => false,
-            'owner_id' => $data['owner_id'],
-            'memory' => $data['memory'],
-            'swap' => $data['swap'],
-            'disk' => $data['disk'],
-            'io' => $data['io'],
-            'cpu' => $data['cpu'],
+            'owner_id' => array_get($data, 'owner_id'),
+            'memory' => array_get($data, 'memory'),
+            'swap' => array_get($data, 'swap'),
+            'disk' => array_get($data, 'disk'),
+            'io' => array_get($data, 'io'),
+            'cpu' => array_get($data, 'cpu'),
             'oom_disabled' => isset($data['oom_disabled']),
-            'allocation_id' => $data['allocation_id'],
-            'service_id' => $data['service_id'],
-            'option_id' => $data['option_id'],
+            'allocation_id' => array_get($data, 'allocation_id'),
+            'nest_id' => array_get($data, 'nest_id'),
+            'egg_id' => array_get($data, 'egg_id'),
             'pack_id' => (! isset($data['pack_id']) || $data['pack_id'] == 0) ? null : $data['pack_id'],
-            'startup' => $data['startup'],
-            'daemonSecret' => str_random(NodeCreationService::DAEMON_SECRET_LENGTH),
-            'image' => $data['docker_image'],
-            'username' => $this->usernameService->generate($data['name'], $uniqueShort),
-            'sftp_password' => null,
+            'startup' => array_get($data, 'startup'),
+            'daemonSecret' => str_random(Node::DAEMON_SECRET_LENGTH),
+            'image' => array_get($data, 'docker_image'),
         ]);
 
         // Process allocations and assign them to the server in the database.
@@ -165,29 +145,31 @@ class ServerCreationService
         $this->allocationRepository->assignAllocationsToServer($server->id, $records);
 
         // Process the passed variables and store them in the database.
-        $records = [];
-        foreach ($validator->getResults() as $result) {
-            $records[] = [
-                'server_id' => $server->id,
-                'variable_id' => $result['id'],
-                'variable_value' => $result['value'],
-            ];
-        }
+        $this->validatorService->setUserLevel(User::USER_LEVEL_ADMIN);
+        $results = $this->validatorService->handle(array_get($data, 'egg_id'), array_get($data, 'environment', []));
 
-        $this->serverVariableRepository->insert($records);
+        $records = $results->map(function ($result) use ($server) {
+            return [
+                'server_id' => $server->id,
+                'variable_id' => $result->id,
+                'variable_value' => $result->value,
+            ];
+        })->toArray();
+
+        if (! empty($records)) {
+            $this->serverVariableRepository->insert($records);
+        }
+        $structure = $this->configurationStructureService->handle($server);
 
         // Create the server on the daemon & commit it to the database.
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->create($server->id);
-            $this->database->commit();
+            $this->daemonServerRepository->setNode($server->node_id)->create($structure, [
+                'start_on_completion' => (bool) array_get($data, 'start_on_completion', false),
+            ]);
+            $this->connection->commit();
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-            $this->database->rollBack();
-
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            $this->connection->rollBack();
+            throw new DaemonConnectionException($exception);
         }
 
         return $server;

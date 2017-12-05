@@ -61,6 +61,16 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
+     * Return a hashid encoded string to represent the ID of the subuser.
+     *
+     * @return string
+     */
+    public function getHashidAttribute()
+    {
+        return app()->make('hashids')->encode($this->id);
+    }
+
+    /**
      * Gets the server associated with a subuser.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

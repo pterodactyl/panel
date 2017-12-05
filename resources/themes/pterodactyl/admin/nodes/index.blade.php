@@ -55,7 +55,7 @@
                         </tr>
                         @foreach ($nodes as $node)
                             <tr>
-                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/v1"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                                 <td><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</td>
                                 <td>{{ $node->location->short }}</td>
                                 <td>{{ $node->memory }} MB</td>

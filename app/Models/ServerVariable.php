@@ -74,6 +74,6 @@ class ServerVariable extends Model
      */
     public function variable()
     {
-        return $this->belongsTo(ServiceVariable::class, 'variable_id');
+        return $this->belongsTo(EggVariable::class, 'variable_id');
     }
 }

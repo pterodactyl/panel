@@ -13,8 +13,10 @@ use Mockery as m;
 use Tests\TestCase;
 use Prologue\Alerts\AlertsMessageBag;
 use Tests\Assertions\ControllerAssertionsTrait;
-use Pterodactyl\Services\Database\DatabaseHostService;
 use Pterodactyl\Http\Controllers\Admin\DatabaseController;
+use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
+use Pterodactyl\Services\Databases\Hosts\HostCreationService;
+use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -23,29 +25,34 @@ class DatabaseControllerTest extends TestCase
     use ControllerAssertionsTrait;
 
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
+     * @var \Prologue\Alerts\AlertsMessageBag|\Mockery\Mock
      */
-    protected $alert;
+    private $alert;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Admin\DatabaseController
+     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService|\Mockery\Mock
      */
-    protected $controller;
+    private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \Pterodactyl\Services\Databases\Hosts\HostDeletionService|\Mockery\Mock
      */
-    protected $locationRepository;
+    private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
+    private $locationRepository;
 
     /**
-     * @var \Pterodactyl\Services\Database\DatabaseHostService
+     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
      */
-    protected $service;
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService|\Mockery\Mock
+     */
+    private $updateService;
 
     /**
      * Setup tests.
@@ -55,16 +62,11 @@ class DatabaseControllerTest extends TestCase
         parent::setUp();
 
         $this->alert = m::mock(AlertsMessageBag::class);
+        $this->creationService = m::mock(HostCreationService::class);
+        $this->deletionService = m::mock(HostDeletionService::class);
         $this->locationRepository = m::mock(LocationRepositoryInterface::class);
         $this->repository = m::mock(DatabaseHostRepositoryInterface::class);
-        $this->service = m::mock(DatabaseHostService::class);
-
-        $this->controller = new DatabaseController(
-            $this->alert,
-            $this->repository,
-            $this->service,
-            $this->locationRepository
-        );
+        $this->updateService = m::mock(HostUpdateService::class);
     }
 
     /**
@@ -75,7 +77,7 @@ class DatabaseControllerTest extends TestCase
         $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');
         $this->repository->shouldReceive('getWithViewDetails')->withNoArgs()->once()->andReturn('getWithViewDetails');
 
-        $response = $this->controller->index();
+        $response = $this->getController()->index();
 
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('admin.databases.index', $response);
@@ -93,7 +95,7 @@ class DatabaseControllerTest extends TestCase
         $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');
         $this->repository->shouldReceive('getWithServers')->with(1)->once()->andReturn('getWithServers');
 
-        $response = $this->controller->view(1);
+        $response = $this->getController()->view(1);
 
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('admin.databases.view', $response);
@@ -101,5 +103,22 @@ class DatabaseControllerTest extends TestCase
         $this->assertViewHasKey('host', $response);
         $this->assertViewKeyEquals('locations', 'getAllWithNodes', $response);
         $this->assertViewKeyEquals('host', 'getWithServers', $response);
+    }
+
+    /**
+     * Return an instance of the DatabaseController with mock dependencies.
+     *
+     * @return \Pterodactyl\Http\Controllers\Admin\DatabaseController
+     */
+    private function getController(): DatabaseController
+    {
+        return new DatabaseController(
+            $this->alert,
+            $this->repository,
+            $this->creationService,
+            $this->deletionService,
+            $this->updateService,
+            $this->locationRepository
+        );
     }
 }

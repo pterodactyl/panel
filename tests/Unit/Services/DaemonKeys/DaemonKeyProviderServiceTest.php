@@ -12,32 +12,31 @@ namespace Tests\Unit\Services\DaemonKeys;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
+use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderServiceTest extends TestCase
 {
     /**
-     * @var \Carbon\Carbon|\Mockery\Mock
+     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
      */
-    protected $carbon;
+    private $keyCreationService;
 
     /**
      * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService|\Mockery\Mock
      */
-    protected $keyUpdateService;
+    private $keyUpdateService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
-     */
-    protected $service;
+    private $repository;
 
     /**
      * Setup tests.
@@ -45,29 +44,28 @@ class DaemonKeyProviderServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        Carbon::setTestNow(Carbon::now());
 
-        $this->carbon = new Carbon();
-        $this->carbon->setTestNow();
-
+        $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
         $this->keyUpdateService = m::mock(DaemonKeyUpdateService::class);
         $this->repository = m::mock(DaemonKeyRepositoryInterface::class);
-
-        $this->service = new DaemonKeyProviderService($this->carbon, $this->keyUpdateService, $this->repository);
     }
 
     /**
-     * Test that a key is returned.
+     * Test that a key is returned correctly as a non-admin.
      */
     public function testKeyIsReturned()
     {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make();
         $key = factory(DaemonKey::class)->make();
 
         $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $key->user_id],
-            ['server_id', '=', $key->server_id],
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $response = $this->service->handle($key->server_id, $key->user_id);
+        $response = $this->getService()->handle($server, $user);
         $this->assertNotEmpty($response);
         $this->assertEquals($key->secret, $response);
     }
@@ -77,20 +75,20 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     public function testExpiredKeyIsUpdated()
     {
-        $key = factory(DaemonKey::class)->make([
-            'expires_at' => $this->carbon->subHour(),
-        ]);
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $key->user_id],
-            ['server_id', '=', $key->server_id],
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $this->keyUpdateService->shouldReceive('handle')->with($key->id)->once()->andReturn(true);
+        $this->keyUpdateService->shouldReceive('handle')->with($key->id)->once()->andReturn('abc123');
 
-        $response = $this->service->handle($key->server_id, $key->user_id);
+        $response = $this->getService()->handle($server, $user);
         $this->assertNotEmpty($response);
-        $this->assertTrue($response);
+        $this->assertEquals('abc123', $response);
     }
 
     /**
@@ -98,17 +96,89 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     public function testExpiredKeyIsNotUpdated()
     {
-        $key = factory(DaemonKey::class)->make([
-            'expires_at' => $this->carbon->subHour(),
-        ]);
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([
-            ['user_id', '=', $key->user_id],
-            ['server_id', '=', $key->server_id],
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $response = $this->service->handle($key->server_id, $key->user_id, false);
+        $response = $this->getService()->handle($server, $user, false);
         $this->assertNotEmpty($response);
         $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Test that a key is created if it is missing and the user is a
+     * root administrator.
+     */
+    public function testMissingKeyIsCreatedIfRootAdmin()
+    {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 1]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn($key->secret);
+
+        $response = $this->getService()->handle($server, $user, false);
+        $this->assertNotEmpty($response);
+        $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Test that a key is created if it is missing and the user is the
+     * server owner.
+     */
+    public function testMissingKeyIsCreatedIfUserIsServerOwner()
+    {
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $server = factory(Server::class)->make(['owner_id' => $user->id]);
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn($key->secret);
+
+        $response = $this->getService()->handle($server, $user, false);
+        $this->assertNotEmpty($response);
+        $this->assertEquals($key->secret, $response);
+    }
+
+    /**
+     * Test that an exception is thrown if the user should not get a key.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function testExceptionIsThrownIfUserDoesNotDeserveKey()
+    {
+        $server = factory(Server::class)->make();
+        $user = factory(User::class)->make(['root_admin' => 0]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->getService()->handle($server, $user, false);
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     */
+    private function getService(): DaemonKeyProviderService
+    {
+        return new DaemonKeyProviderService($this->keyCreationService, $this->repository, $this->keyUpdateService);
     }
 }

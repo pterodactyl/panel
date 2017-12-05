@@ -30,7 +30,7 @@
                 <div id="terminal" style="width:100%;"></div>
                 <div id="terminal_input" class="form-group no-margin">
                     <div class="input-group">
-                        <div class="input-group-addon terminal_input--prompt">{{ $server->username }}:~$</div>
+                        <div class="input-group-addon terminal_input--prompt">container:~/$</div>
                         <input type="text" class="form-control terminal_input--input">
                     </div>
                 </div>
@@ -79,7 +79,7 @@
     {!! Theme::js('js/frontend/console.js') !!}
     {!! Theme::js('vendor/chartjs/chart.min.js') !!}
     {!! Theme::js('vendor/jquery/date-format.min.js') !!}
-    @if($server->service->folder === 'minecraft')
+    @if($server->nest->name === 'Minecraft' && $server->nest->author === 'support@pterodactyl.io')
         {!! Theme::js('js/plugins/minecraft/eula.js') !!}
     @endif
 @endsection

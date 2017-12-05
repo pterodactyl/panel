@@ -54,10 +54,10 @@ class PackUpdateService
     public function handle($pack, array $data)
     {
         if (! $pack instanceof Pack) {
-            $pack = $this->repository->withColumns(['id', 'option_id'])->find($pack);
+            $pack = $this->repository->withColumns(['id', 'egg_id'])->find($pack);
         }
 
-        if ((int) array_get($data, 'option_id', $pack->option_id) !== $pack->option_id) {
+        if ((int) array_get($data, 'egg_id', $pack->egg_id) !== $pack->egg_id) {
             $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack->id]]);
 
             if ($count !== 0) {

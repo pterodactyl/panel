@@ -9,10 +9,8 @@
 
 namespace Pterodactyl\Observers;
 
-use Cache;
 use Pterodactyl\Events;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Notifications\ServerCreated;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class ServerObserver
@@ -37,16 +35,6 @@ class ServerObserver
     public function created(Server $server)
     {
         event(new Events\Server\Created($server));
-
-        // Queue Notification Email
-        $server->user->notify((new ServerCreated([
-            'name' => $server->name,
-            'memory' => $server->memory,
-            'node' => $server->node->name,
-            'service' => $server->service->name,
-            'option' => $server->option->name,
-            'uuidShort' => $server->uuidShort,
-        ])));
     }
 
     /**
@@ -106,17 +94,6 @@ class ServerObserver
      */
     public function updated(Server $server)
     {
-        /*
-         * The cached byUuid model calls are tagged with Model:Server:byUuid:<uuid>
-         * so that they can be accessed regardless of if there is an Auth::user()
-         * defined or not.
-         *
-         * We can also delete all cached byUuid items using the Model:Server tag.
-         */
-        Cache::tags('Model:Server:byUuid:' . $server->uuid)->flush();
-        Cache::tags('Model:Server:byUuid:' . $server->uuidShort)->flush();
-        Cache::tags('Downloads:Server:' . $server->uuid)->flush();
-
         event(new Events\Server\Updated($server));
     }
 }

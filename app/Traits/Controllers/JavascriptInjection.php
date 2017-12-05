@@ -10,33 +10,48 @@
 namespace Pterodactyl\Traits\Controllers;
 
 use Javascript;
+use Illuminate\Http\Request;
 
 trait JavascriptInjection
 {
     /**
-     * @var \Illuminate\Contracts\Session\Session
+     * @var \Illuminate\Http\Request
      */
-    protected $session;
+    private $request;
+
+    /**
+     * Set the request object to use when injecting JS.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return $this
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+
+        return $this;
+    }
 
     /**
      * Injects server javascript into the page to be used by other services.
      *
      * @param array $args
      * @param bool  $overwrite
-     * @return mixed
+     * @return array
      */
     public function injectJavascript($args = [], $overwrite = false)
     {
-        $server = $this->session->get('server_data.model');
-        $token = $this->session->get('server_data.token');
+        $request = $this->request ?? app()->make(Request::class);
+        $server = $request->attributes->get('server');
+        $token = $request->attributes->get('server_token');
 
-        $response = array_merge([
+        $response = array_merge_recursive([
             'server' => [
                 'uuid' => $server->uuid,
                 'uuidShort' => $server->uuidShort,
                 'daemonSecret' => $token,
-                'username' => $server->username,
             ],
+            'server_token' => $token,
             'node' => [
                 'fqdn' => $server->node->fqdn,
                 'scheme' => $server->node->scheme,

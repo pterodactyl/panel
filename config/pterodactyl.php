@@ -11,8 +11,7 @@ return [
     | standard Pterodactyl shipped services.
     */
     'service' => [
-        'core' => 'ptrdctyl-v040-11e6-8b77-86f30ca893d3',
-        'author' => env('SERVICE_AUTHOR'),
+        'author' => env('APP_SERVICE_AUTHOR', 'unknown@unknown.com'),
     ],
 
     /*
@@ -24,6 +23,11 @@ return [
     */
     'auth' => [
         'notifications' => env('LOGIN_NOTIFICATIONS', false),
+        '2fa' => [
+            'bytes' => 32,
+            'window' => env('APP_2FA_WINDOW', 4),
+            'verify_newer' => true,
+        ],
     ],
 
     /*
@@ -184,4 +188,21 @@ return [
         'daemon/*',
         'remote/*',
     ],
+
+    'default_api_version' => 'application/vnd.pterodactyl.v1+json',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dynamic Environment Variables
+    |--------------------------------------------------------------------------
+    |
+    | Place dynamic environment variables here that should be auto-appended
+    | to server environment fields when the server is created or updated.
+    |
+    | Items should be in 'key' => 'value' format, where key is the environment
+    | variable name, and value is the server-object key. For example:
+    |
+    | 'P_SERVER_CREATED_AT' => 'created_at'
+    */
+    'environment_variables' => [],
 ];

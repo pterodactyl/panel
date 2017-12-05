@@ -10,33 +10,21 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
-use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Illuminate\Cache\Repository;
-use Illuminate\Contracts\Session\Session;
-use Tests\Assertions\ControllerAssertionsTrait;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Server\Files\DownloadController;
 
-class DownloadControllerTest extends TestCase
+class DownloadControllerTest extends ControllerTestCase
 {
-    use ControllerAssertionsTrait, PHPMock;
+    use PHPMock;
 
     /**
-     * @var \Illuminate\Cache\Repository
+     * @var \Illuminate\Cache\Repository|\Mockery\Mock
      */
     protected $cache;
-
-    /**
-     * @var \Pterodactyl\Http\Controllers\Server\Files\DownloadController
-     */
-    protected $controller;
-
-    /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    protected $session;
 
     /**
      * Setup tests.
@@ -46,9 +34,6 @@ class DownloadControllerTest extends TestCase
         parent::setUp();
 
         $this->cache = m::mock(Repository::class);
-        $this->session = m::mock(Session::class);
-
-        $this->controller = m::mock(DownloadController::class, [$this->cache, $this->session])->makePartial();
     }
 
     /**
@@ -56,22 +41,33 @@ class DownloadControllerTest extends TestCase
      */
     public function testIndexController()
     {
+        $controller = $this->getController();
         $server = factory(Server::class)->make();
-        $node = factory(Node::class)->make();
-        $server->node = $node;
+        $server->setRelation('node', factory(Node::class)->make());
 
-        $this->session->shouldReceive('get')->with('server_data.model')->once()->andReturn($server);
-        $this->controller->shouldReceive('authorize')->with('download-files', $server)->once()->andReturnNull();
+        $this->setRequestAttribute('server', $server);
+
+        $controller->shouldReceive('authorize')->with('download-files', $server)->once()->andReturnNull();
         $this->getFunctionMock('\\Pterodactyl\\Http\\Controllers\\Server\\Files', 'str_random')
             ->expects($this->once())->willReturn('randomString');
 
-        $this->cache->shouldReceive('tags')->with(['Server:Downloads'])->once()->andReturnSelf()
-            ->shouldReceive('put')->with('randomString', ['server' => $server->uuid, 'path' => '/my/file.txt'], 5)->once()->andReturnNull();
+        $this->cache->shouldReceive('tags')->with(['Server:Downloads'])->once()->andReturnSelf();
+        $this->cache->shouldReceive('put')->with('randomString', ['server' => $server->uuid, 'path' => '/my/file.txt'], 5)->once()->andReturnNull();
 
-        $response = $this->controller->index('1234', '/my/file.txt');
+        $response = $controller->index($this->request, $server->uuidShort, '/my/file.txt');
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectUrlEquals(sprintf(
             '%s://%s:%s/v1/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, 'randomString'
         ), $response);
+    }
+
+    /**
+     * Return a mocked instance of the controller to allow access to authorization functionality.
+     *
+     * @return \Pterodactyl\Http\Controllers\Server\Files\DownloadController|\Mockery\Mock
+     */
+    private function getController()
+    {
+        return $this->buildMockedController(DownloadController::class, [$this->cache]);
     }
 }

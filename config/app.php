@@ -66,7 +66,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -171,8 +171,6 @@ return [
         /*
          * Additional Dependencies
          */
-        Barryvdh\Debugbar\ServiceProvider::class,
-        PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Krucas\Settings\Providers\SettingsServiceProvider::class,
@@ -181,6 +179,7 @@ return [
         Lord\Laroute\LarouteServiceProvider::class,
         Spatie\Fractal\FractalServiceProvider::class,
         Sofa\Eloquence\ServiceProvider::class,
+        Appstract\BladeDirectives\BladeDirectivesServiceProvider::class,
     ],
 
     /*
@@ -208,13 +207,11 @@ return [
         'Cron' => Cron\CronExpression::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'DB' => Illuminate\Support\Facades\DB::class,
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,
         'Fractal' => Spatie\Fractal\FractalFacade::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
-        'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Input' => Illuminate\Support\Facades\Input::class,
         'Inspiring' => Illuminate\Foundation\Inspiring::class,

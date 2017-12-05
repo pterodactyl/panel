@@ -18,17 +18,22 @@ return [
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
     ],
-    'service' => [
-        'delete_has_servers' => 'A service with active servers attached to it cannot be deleted from the Panel.',
-        'options' => [
-            'delete_has_servers' => 'A service option with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The service option selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this option must be a child option for the selected service.',
-            'has_children' => 'This service option is a parent to one or more other options. Please delete those options before deleting this option.',
+    'nest' => [
+        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'egg' => [
+            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
+            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
+            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
+            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this service option.',
+            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
+        ],
+        'importer' => [
+            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
+            'file_error' => 'The JSON file provided was not valid.',
+            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
         ],
     ],
     'packs' => [
@@ -53,5 +58,8 @@ return [
     ],
     'locations' => [
         'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+    ],
+    'users' => [
+        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
     ],
 ];

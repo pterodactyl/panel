@@ -18,6 +18,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 {
     use Searchable;
 
+    const THRESHOLD_PERCENTAGE_LOW = 75;
+    const THRESHOLD_PERCENTAGE_MEDIUM = 90;
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +59,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
                         'value' => number_format($value),
                         'max' => number_format($maxUsage),
                         'percent' => $percent,
-                        'css' => ($percent <= 75) ? 'green' : (($percent > 90) ? 'red' : 'yellow'),
+                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
                     ],
                 ];
             })
@@ -104,8 +107,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
         $instance->setRelation(
             'allocations',
-            $instance->allocations()->orderBy('ip', 'asc')->orderBy('port', 'asc')
-                ->with('server')->paginate(50)
+            $instance->allocations()->orderBy('ip', 'asc')->orderBy('port', 'asc')->with('server')->paginate(50)
         );
 
         return $instance;
@@ -116,7 +118,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeServers($id)
     {
-        $instance = $this->getBuilder()->with('servers.user', 'servers.service', 'servers.option')
+        $instance = $this->getBuilder()->with('servers.user', 'servers.nest', 'servers.egg')
             ->find($id, $this->getColumns());
 
         if (! $instance) {
@@ -129,9 +131,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * {@inheritdoc}
      */
-    public function getNodesForLocation($location)
+    public function getNodesForServerCreation()
     {
-        $instance = $this->getBuilder()->with('allocations')->where('location_id', $location)->get();
+        $instance = $this->getBuilder()->with('allocations')->get();
 
         return $instance->map(function ($item) {
             $filtered = $item->allocations->where('server_id', null)->map(function ($map) {

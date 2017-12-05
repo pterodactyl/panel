@@ -38,6 +38,7 @@ Route::group(['prefix' => 'databases'], function () {
 
     Route::post('/', 'DatabaseController@create');
     Route::patch('/view/{host}', 'DatabaseController@update');
+    Route::delete('/view/{host}', 'DatabaseController@delete');
 });
 
 /*
@@ -94,7 +95,6 @@ Route::group(['prefix' => 'servers'], function () {
     Route::get('/view/{server}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
 
     Route::post('/new', 'ServersController@store');
-    Route::post('/new/nodes', 'ServersController@nodes')->name('admin.servers.new.nodes');
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
     Route::post('/view/{server}/startup', 'ServersController@saveStartup');
     Route::post('/view/{server}/database', 'ServersController@newDatabase');
@@ -105,7 +105,6 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{server}/delete', 'ServersController@delete');
 
     Route::patch('/view/{server}/details', 'ServersController@setDetails');
-    Route::patch('/view/{server}/details/container', 'ServersController@setContainer')->name('admin.servers.view.details.container');
     Route::patch('/view/{server}/database', 'ServersController@resetDatabasePassword');
 
     Route::delete('/view/{server}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');
@@ -142,35 +141,37 @@ Route::group(['prefix' => 'nodes'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Service Controller Routes
+| Nest Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /admin/services
+| Endpoint: /admin/nests
 |
 */
-Route::group(['prefix' => 'services'], function () {
-    Route::get('/', 'ServiceController@index')->name('admin.services');
-    Route::get('/new', 'ServiceController@create')->name('admin.services.new');
-    Route::get('/view/{service}', 'ServiceController@view')->name('admin.services.view');
-    Route::get('/view/{service}/functions', 'ServiceController@viewFunctions')->name('admin.services.view.functions');
-    Route::get('/option/new', 'OptionController@create')->name('admin.services.option.new');
-    Route::get('/option/{option}', 'OptionController@viewConfiguration')->name('admin.services.option.view');
-    Route::get('/option/{option}/variables', 'VariableController@view')->name('admin.services.option.variables');
-    Route::get('/option/{option}/scripts', 'OptionController@viewScripts')->name('admin.services.option.scripts');
+Route::group(['prefix' => 'nests'], function () {
+    Route::get('/', 'Nests\NestController@index')->name('admin.nests');
+    Route::get('/new', 'Nests\NestController@create')->name('admin.nests.new');
+    Route::get('/view/{nest}', 'Nests\NestController@view')->name('admin.nests.view');
+    Route::get('/egg/new', 'Nests\EggController@create')->name('admin.nests.egg.new');
+    Route::get('/egg/{egg}', 'Nests\EggController@view')->name('admin.nests.egg.view');
+    Route::get('/egg/{egg}/export', 'Nests\EggShareController@export')->name('admin.nests.egg.export');
+    Route::get('/egg/{egg}/variables', 'Nests\EggVariableController@view')->name('admin.nests.egg.variables');
+    Route::get('/egg/{egg}/scripts', 'Nests\EggScriptController@index')->name('admin.nests.egg.scripts');
 
-    Route::post('/new', 'ServiceController@store');
-    Route::post('/option/new', 'OptionController@store');
-    Route::post('/option/{option}/variables', 'VariableController@store');
+    Route::post('/new', 'Nests\NestController@store');
+    Route::post('/import', 'Nests\EggShareController@import')->name('admin.nests.egg.import');
+    Route::post('/egg/new', 'Nests\EggController@store');
+    Route::post('/egg/{egg}/variables', 'Nests\EggVariableController@store');
 
-    Route::patch('/view/{service}', 'ServiceController@update');
-    Route::patch('/view/{service}/functions', 'ServiceController@updateFunctions');
-    Route::patch('/option/{option}', 'OptionController@editConfiguration');
-    Route::patch('/option/{option}/scripts', 'OptionController@updateScripts');
-    Route::patch('/option/{option}/variables/{variable}', 'VariableController@update')->name('admin.services.option.variables.edit');
+    Route::put('/egg/{egg}', 'Nests\EggShareController@update');
 
-    Route::delete('/view/{service}', 'ServiceController@destroy');
-    Route::delete('/option/{option}', 'OptionController@destroy');
-    Route::delete('/option/{option}/variables/{variable}', 'VariableController@delete');
+    Route::patch('/view/{nest}', 'Nests\NestController@update');
+    Route::patch('/egg/{egg}', 'Nests\EggController@update');
+    Route::patch('/egg/{egg}/scripts', 'Nests\EggScriptController@update');
+    Route::patch('/egg/{egg}/variables/{variable}', 'Nests\EggVariableController@update')->name('admin.nests.egg.variables.edit');
+
+    Route::delete('/view/{nest}', 'Nests\NestController@destroy');
+    Route::delete('/egg/{egg}', 'Nests\EggController@destroy');
+    Route::delete('/egg/{egg}/variables/{variable}', 'Nests\EggVariableController@destroy');
 });
 
 /*

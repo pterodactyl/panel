@@ -78,34 +78,46 @@
                         </p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pServiceId">Service</label>
-                        <select name="service_id" id="pServiceId" class="form-control">
-                            @foreach($services as $service)
-                                <option value="{{ $service->id }}"
-                                    @if($service->id === $server->service_id)
+                        <label for="pNestId">Nest</label>
+                        <select name="nest_id" id="pNestId" class="form-control">
+                            @foreach($nests as $nest)
+                                <option value="{{ $nest->id }}"
+                                    @if($nest->id === $server->nest_id)
                                         selected
                                     @endif
-                                >{{ $service->name }}</option>
+                                >{{ $nest->name }}</option>
                             @endforeach
                         </select>
-                        <p class="small text-muted no-margin">Select the type of service that this server will be running.</p>
+                        <p class="small text-muted no-margin">Select the Nest that this server will be grouped into.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pOptionId">Option</label>
-                        <select name="option_id" id="pOptionId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select the type of sub-service that this server will be running.</p>
+                        <label for="pEggId">Egg</label>
+                        <select name="egg_id" id="pEggId" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select the Egg that will provide processing data for this server.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pPackId">Service Pack</label>
+                        <label for="pPackId">Data Pack</label>
                         <select name="pack_id" id="pPackId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select a service pack to be automatically installed on this server when first created.</p>
+                        <p class="small text-muted no-margin">Select a data pack to be automatically installed on this server when first created.</p>
                     </div>
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
                             <input id="pSkipScripting" name="skip_scripting" type="checkbox" value="1" @if($server->skip_scripts) checked @endif />
-                            <label for="pSkipScripting" class="strong">Skip Service Option Install Script</label>
+                            <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
                         </div>
-                        <p class="small text-muted no-margin">If the selected <code>Option</code> has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Docker Container Configuration</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="pDockerImage" class="control-label">Image</label>
+                        <input type="text" name="docker_image" id="pDockerImage" value="{{ $server->image }}" class="form-control" />
+                        <p class="text-muted small">The Docker image to use for this server. The default image for the selected egg is <code id="setDefaultImage"></code>.</p>
                     </div>
                 </div>
             </div>
@@ -122,43 +134,32 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function () {
-        $('#pServiceId').select2({
-            placeholder: 'Select a Service',
-        }).change();
-        $('#pOptionId').select2({
-            placeholder: 'Select a Service Option',
-        });
-        $('#pPackId').select2({
-            placeholder: 'Select a Service Pack',
-        });
-
-        $('input[data-action="match-regex"]').on('keyup', function (event) {
-            if (! $(this).data('regex')) return;
-
-            var input = $(this).val();
-            var regex = new RegExp($(this).data('regex').replace(/^\/|\/$/g, ''));
-
-            $(this).parent().parent().removeClass('has-success has-error').addClass((! regex.test(input)) ? 'has-error' : 'has-success');
-        });
+        $('#pNestId').select2({placeholder: 'Select a Nest'}).change();
+        $('#pEggId').select2({placeholder: 'Select a Nest Egg'});
+        $('#pPackId').select2({placeholder: 'Select a Service Pack'});
     });
     </script>
     <script>
-        $('#pServiceId').on('change', function (event) {
-            $('#pOptionId').html('').select2({
-                data: $.map(_.get(Pterodactyl.services, $(this).val() + '.options', []), function (item) {
+        $('#pNestId').on('change', function (event) {
+            $('#pEggId').html('').select2({
+                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
                     return {
                         id: item.id,
                         text: item.name,
                     };
                 }),
-            }).val('{{ $server->option_id }}').change();
+            }).val(Pterodactyl.server.egg_id).change();
         });
 
-        $('#pOptionId').on('change', function (event) {
-            var parentChain = _.get(Pterodactyl.services, $('#pServiceId').val(), null);
-            var objectChain = _.get(parentChain, 'options.' + $(this).val(), null);
+        $('#pEggId').on('change', function (event) {
+            var parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
+            var objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
-            $('#pDefaultContainer').val(_.get(objectChain, 'docker_image', 'not defined!'));
+            $('#setDefaultImage').html(_.get(objectChain, 'docker_image', 'undefined'));
+            $('#pDockerImage').val(_.get(objectChain, 'docker_image', 'undefined'));
+            if (objectChain.id === parseInt(Pterodactyl.server.egg_id)) {
+                $('#pDockerImage').val(Pterodactyl.server.image);
+            }
 
             if (!_.get(objectChain, 'startup', false)) {
                 $('#pDefaultStartupCommand').val(_.get(parentChain, 'startup', 'ERROR: Startup Not Defined!'));
@@ -167,7 +168,7 @@
             }
 
             $('#pPackId').html('').select2({
-                data: [{ id: '', text: 'No Service Pack' }].concat(
+                data: [{ id: '0', text: 'No Service Pack' }].concat(
                     $.map(_.get(objectChain, 'packs', []), function (item, i) {
                         return {
                             id: item.id,
@@ -177,9 +178,9 @@
                 ),
             });
 
-            @if(! is_null($server->pack_id))
-                $('#pPackId').val({{ $server->pack_id }});
-            @endif
+            if (Pterodactyl.server.pack_id !== null) {
+                $('#pPackId').val(Pterodactyl.server.pack_id);
+            }
 
             $('#appendVariablesTo').html('');
             $.each(_.get(objectChain, 'variables', []), function (i, item) {
@@ -192,7 +193,7 @@
                                 <h3 class="box-title">' + isRequired + item.name + '</h3> \
                             </div> \
                             <div class="box-body"> \
-                                <input data-action="match-regex" name="environment[' + item.env_variable + ']" class="form-control" type="text" value="' + setValue + '" /> \
+                                <input name="environment[' + item.env_variable + ']" class="form-control" type="text" id="egg_variable_' + item.env_variable + '" /> \
                                 <p class="no-margin small text-muted">' + item.description + '</p> \
                             </div> \
                             <div class="box-footer"> \
@@ -202,6 +203,7 @@
                         </div> \
                     </div>';
                 $('#appendVariablesTo').append(dataAppend);
+                $('#appendVariablesTo').find('#egg_variable_' + item.env_variable).val(setValue);
             });
         });
     </script>

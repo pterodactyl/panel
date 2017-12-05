@@ -57,14 +57,14 @@
                                 <td class="middle hidden-xs">{{ $subuser->user->created_at }}</td>
                                 @can('view-subuser', $server)
                                     <td class="text-center middle">
-                                        <a href="{{ route('server.subusers.view', ['server' => $server->uuidShort, 'id' => $subuser->id]) }}">
+                                        <a href="{{ route('server.subusers.view', ['server' => $server->uuidShort, 'subuser' => $subuser->hashid]) }}">
                                             <button class="btn btn-xs btn-primary">@lang('server.users.configure')</button>
                                         </a>
                                     </td>
                                 @endcan
                                 @can('delete-subuser', $server)
                                     <td class="text-center middle">
-                                        <a href="#/delete/{{ $subuser->id }}" data-action="delete" data-id="{{ $subuser->id }}">
+                                        <a href="#/delete/{{ $subuser->hashid }}" data-action="delete" data-id="{{ $subuser->hashid }}">
                                             <button class="btn btn-xs btn-danger">@lang('strings.revoke')</button>
                                         </a>
                                     </td>
@@ -98,9 +98,9 @@
             }, function () {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('server.subusers.delete', {
+                    url: Router.route('server.subusers.view', {
                         server: Pterodactyl.server.uuidShort,
-                        id: self.data('id'),
+                        subuser: self.data('id'),
                     }),
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),

@@ -10,17 +10,16 @@
 namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
-use Tests\TestCase;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Tests\Assertions\ControllerAssertionsTrait;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Base\IndexController;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
-class IndexControllerTest extends TestCase
+class IndexControllerTest extends ControllerTestCase
 {
     use ControllerAssertionsTrait;
 
@@ -45,11 +44,6 @@ class IndexControllerTest extends TestCase
     protected $repository;
 
     /**
-     * @var \Illuminate\Http\Request|\Mockery\Mock
-     */
-    protected $request;
-
-    /**
      * Setup tests.
      */
     public function setUp()
@@ -59,7 +53,6 @@ class IndexControllerTest extends TestCase
         $this->daemonRepository = m::mock(DaemonServerRepositoryInterface::class);
         $this->keyProviderService = m::mock(DaemonKeyProviderService::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
-        $this->request = m::mock(Request::class);
 
         $this->controller = new IndexController($this->keyProviderService, $this->daemonRepository, $this->repository);
     }
@@ -69,9 +62,8 @@ class IndexControllerTest extends TestCase
      */
     public function testIndexController()
     {
-        $model = factory(User::class)->make();
+        $model = $this->setRequestUser();
 
-        $this->request->shouldReceive('user')->withNoArgs()->andReturn($model);
         $this->request->shouldReceive('input')->with('query')->once()->andReturn('searchTerm');
         $this->repository->shouldReceive('search')->with('searchTerm')->once()->andReturnSelf()
             ->shouldReceive('filterUserAccessServers')->with(
@@ -90,12 +82,11 @@ class IndexControllerTest extends TestCase
      */
     public function testStatusController()
     {
-        $user = factory(User::class)->make();
+        $user = $this->setRequestUser();
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 1]);
 
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
         $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('test123');
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
 
         $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
             ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
@@ -114,12 +105,11 @@ class IndexControllerTest extends TestCase
      */
     public function testStatusControllerWhenServerNotInstalled()
     {
-        $user = factory(User::class)->make();
+        $user = $this->setRequestUser();
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 0]);
 
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
         $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('test123');
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
 
         $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);
@@ -137,7 +127,7 @@ class IndexControllerTest extends TestCase
 
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
         $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
-        $this->keyProviderService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn('test123');
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
 
         $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);

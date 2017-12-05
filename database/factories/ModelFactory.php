@@ -29,9 +29,10 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
         'io' => 500,
         'cpu' => 0,
         'oom_disabled' => 0,
+        'allocation_id' => $faker->randomNumber(),
+        'nest_id' => $faker->randomNumber(),
+        'egg_id' => $faker->randomNumber(),
         'pack_id' => null,
-        'username' => $faker->userName,
-        'sftp_password' => null,
         'installed' => 1,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
@@ -39,6 +40,8 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker\Generator $fa
 });
 
 $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $faker) {
+    static $password;
+
     return [
         'id' => $faker->unique()->randomNumber(),
         'external_id' => null,
@@ -47,7 +50,7 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker\Generator $fake
         'email' => $faker->safeEmail,
         'name_first' => $faker->firstName,
         'name_last' => $faker->lastName,
-        'password' => bcrypt('password'),
+        'password' => $password ?: $password = bcrypt('password'),
         'language' => 'en',
         'root_admin' => false,
         'use_totp' => false,
@@ -71,6 +74,7 @@ $factory->define(Pterodactyl\Models\Location::class, function (Faker\Generator $
 $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
         'public' => true,
         'name' => $faker->firstName,
         'fqdn' => $faker->ipv4,
@@ -88,29 +92,28 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker\Generator $fake
     ];
 });
 
-$factory->define(Pterodactyl\Models\Service::class, function (Faker\Generator $faker) {
+$factory->define(Pterodactyl\Models\Nest::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'author' => $faker->unique()->uuid,
+        'uuid' => $faker->unique()->uuid,
+        'author' => 'testauthor@example.com',
         'name' => $faker->word,
         'description' => null,
-        'folder' => strtolower($faker->unique()->word),
-        'startup' => 'java -jar test.jar',
-        'index_file' => 'indexjs',
     ];
 });
 
-$factory->define(Pterodactyl\Models\ServiceOption::class, function (Faker\Generator $faker) {
+$factory->define(Pterodactyl\Models\Egg::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'service_id' => $faker->unique()->randomNumber(),
+        'uuid' => $faker->unique()->uuid,
+        'nest_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
-        'tag' => $faker->unique()->randomNumber(5),
+        'startup' => 'java -jar test.jar',
     ];
 });
 
-$factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Generator $faker) {
+$factory->define(Pterodactyl\Models\EggVariable::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
         'name' => $faker->firstName,
@@ -120,23 +123,21 @@ $factory->define(Pterodactyl\Models\ServiceVariable::class, function (Faker\Gene
         'user_viewable' => 0,
         'user_editable' => 0,
         'rules' => 'required|string',
-        'created_at' => \Carbon\Carbon::now(),
-        'updated_at' => \Carbon\Carbon::now(),
     ];
 });
 
-$factory->state(Pterodactyl\Models\ServiceVariable::class, 'viewable', function () {
+$factory->state(Pterodactyl\Models\EggVariable::class, 'viewable', function () {
     return ['user_viewable' => 1];
 });
 
-$factory->state(Pterodactyl\Models\ServiceVariable::class, 'editable', function () {
+$factory->state(Pterodactyl\Models\EggVariable::class, 'editable', function () {
     return ['user_editable' => 1];
 });
 
 $factory->define(Pterodactyl\Models\Pack::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'option_id' => $faker->randomNumber(),
+        'egg_id' => $faker->randomNumber(),
         'uuid' => $faker->uuid,
         'name' => $faker->word,
         'description' => null,
@@ -176,6 +177,21 @@ $factory->define(Pterodactyl\Models\DatabaseHost::class, function (Faker\Generat
     ];
 });
 
+$factory->define(Pterodactyl\Models\Database::class, function (Faker\Generator $faker) {
+    static $password;
+
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'server_id' => $faker->randomNumber(),
+        'database_host_id' => $faker->randomNumber(),
+        'database' => str_random(10),
+        'username' => str_random(10),
+        'password' => $password ?: bcrypt('test123'),
+        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
+    ];
+});
+
 $factory->define(Pterodactyl\Models\Schedule::class, function (Faker\Generator $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
@@ -203,5 +219,24 @@ $factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker\Generator 
         'user_id' => $faker->randomNumber(),
         'secret' => 'i_' . str_random(40),
         'expires_at' => \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString(),
+    ];
+});
+
+$factory->define(Pterodactyl\Models\APIKey::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'user_id' => $faker->randomNumber(),
+        'token' => str_random(Pterodactyl\Models\APIKey::KEY_LENGTH),
+        'memo' => 'Test Function Key',
+        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
+    ];
+});
+
+$factory->define(Pterodactyl\Models\APIPermission::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->unique()->randomNumber(),
+        'key_id' => $faker->randomNumber(),
+        'permission' => mb_strtolower($faker->word),
     ];
 });

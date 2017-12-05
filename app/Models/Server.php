@@ -30,18 +30,11 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $table = 'servers';
 
     /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
-    protected $hidden = ['sftp_password'];
-
-    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
      * Always eager load these relationships on the model.
@@ -55,7 +48,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      *
      * @var array
      */
-    protected $guarded = ['id', 'installed', 'created_at', 'updated_at', 'deleted_at'];
+    protected $guarded = ['id', 'installed', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
      * @var array
@@ -68,13 +61,11 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'io' => 'required',
         'cpu' => 'required',
         'disk' => 'required',
-        'service_id' => 'required',
-        'option_id' => 'required',
+        'nest_id' => 'required',
+        'egg_id' => 'required',
         'node_id' => 'required',
         'allocation_id' => 'required',
         'pack_id' => 'sometimes',
-        'auto_deploy' => 'sometimes',
-        'custom_id' => 'sometimes',
         'skip_scripts' => 'sometimes',
     ];
 
@@ -92,13 +83,10 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'cpu' => 'numeric|min:0',
         'disk' => 'numeric|min:0',
         'allocation_id' => 'exists:allocations,id',
-        'service_id' => 'exists:services,id',
-        'option_id' => 'exists:service_options,id',
+        'nest_id' => 'exists:nests,id',
+        'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',
-        'custom_container' => 'nullable|string',
         'startup' => 'nullable|string',
-        'auto_deploy' => 'accepted',
-        'custom_id' => 'numeric|unique:servers,id',
         'skip_scripts' => 'boolean',
     ];
 
@@ -119,8 +107,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'cpu' => 'integer',
         'oom_disabled' => 'integer',
         'allocation_id' => 'integer',
-        'service_id' => 'integer',
-        'option_id' => 'integer',
+        'nest_id' => 'integer',
+        'egg_id' => 'integer',
         'pack_id' => 'integer',
         'installed' => 'integer',
     ];
@@ -132,7 +120,6 @@ class Server extends Model implements CleansAttributes, ValidableContract
      */
     protected $searchableColumns = [
         'name' => 10,
-        'username' => 10,
         'uuidShort' => 9,
         'uuid' => 8,
         'pack.name' => 7,
@@ -202,23 +189,23 @@ class Server extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets information for the service associated with this server.
+     * Gets information for the nest associated with this server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function service()
+    public function nest()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Nest::class);
     }
 
     /**
-     * Gets information for the service option associated with this server.
+     * Gets information for the egg associated with this server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function option()
+    public function egg()
     {
-        return $this->belongsTo(ServiceOption::class);
+        return $this->belongsTo(Egg::class);
     }
 
     /**

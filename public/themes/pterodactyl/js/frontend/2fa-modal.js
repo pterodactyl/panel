@@ -42,7 +42,6 @@ var TwoFactorModal = (function () {
                             $('#qr_image_insert').attr('src', image.src).slideDown();
                         });
                     });
-                    $('#2fa_secret_insert').html(data.secret);
                     $('#open2fa').modal('show');
                 }).fail(function (jqXHR) {
                     alert('An error occured while attempting to load the 2FA setup modal. Please try again.');

@@ -14,6 +14,9 @@ use Throwable;
 
 class DisplayException extends PterodactylException
 {
+    const LEVEL_WARNING = 'warning';
+    const LEVEL_ERROR = 'error';
+
     /**
      * @var string
      */
@@ -25,9 +28,9 @@ class DisplayException extends PterodactylException
      * @param string         $message
      * @param Throwable|null $previous
      * @param string         $level
-     * @internal param mixed $log
+     * @param int            $code
      */
-    public function __construct($message, Throwable $previous = null, $level = 'error')
+    public function __construct($message, Throwable $previous = null, $level = self::LEVEL_ERROR, $code = 0)
     {
         $this->level = $level;
 
@@ -35,7 +38,7 @@ class DisplayException extends PterodactylException
             Log::{$level}($previous);
         }
 
-        parent::__construct($message);
+        parent::__construct($message, $code, $previous);
     }
 
     /**

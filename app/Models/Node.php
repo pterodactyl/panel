@@ -20,6 +20,8 @@ class Node extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Notifiable, Validable;
 
+    const DAEMON_SECRET_LENGTH = 36;
+
     /**
      * The table associated with the model.
      *
@@ -144,13 +146,23 @@ class Node extends Model implements CleansAttributes, ValidableContract
                 ],
             ],
             'docker' => [
+                'container' => [
+                    'user' => null,
+                ],
+                'network' => [
+                    'name' => 'pterodactyl_nw',
+                ],
                 'socket' => '/var/run/docker.sock',
                 'autoupdate_images' => true,
             ],
             'sftp' => [
                 'path' => $this->daemonBase,
+                'ip' => '0.0.0.0',
                 'port' => $this->daemonSFTP,
-                'container' => 'ptdl-sftp',
+                'keypair' => [
+                    'bits' => 2048,
+                    'e' => 65537,
+                ],
             ],
             'logger' => [
                 'path' => 'logs/',

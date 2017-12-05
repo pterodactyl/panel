@@ -10,7 +10,6 @@
 namespace Pterodactyl\Transformers\User;
 
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
 use League\Fractal\TransformerAbstract;
 
 class SubuserTransformer extends TransformerAbstract
