@@ -14,6 +14,7 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Ramsey\Uuid\Uuid;
 
 class AppSettingsCommand extends Command
 {
@@ -135,6 +136,10 @@ class AppSettingsCommand extends Command
             self::ALLOWED_QUEUE_DRIVERS,
             array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
         );
+
+        if (empty($this->config->get('pterodactyl.cloud.uuid'))) {
+            $this->variables['PTERODACTYL_CLOUD_UUID'] = (string) Uuid::uuid4();
+        }
 
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);
