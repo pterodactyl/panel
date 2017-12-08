@@ -10,11 +10,11 @@
 namespace Pterodactyl\Console\Commands\Environment;
 
 use DateTimeZone;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Ramsey\Uuid\Uuid;
 
 class AppSettingsCommand extends Command
 {
