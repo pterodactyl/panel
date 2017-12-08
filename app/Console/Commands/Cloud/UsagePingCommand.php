@@ -2,21 +2,20 @@
 
 namespace Pterodactyl\Console\Commands\Cloud;
 
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Pack;
-use Pterodactyl\Models\Schedule;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Illuminate\Console\Command;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\DatabaseHost;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\RequestException;
 
 class UsagePingCommand extends Command
 {
@@ -96,6 +95,5 @@ class UsagePingCommand extends Command
         } catch (RequestException $e) {
             // do nothing if this fails
         }
-
     }
 }

@@ -3,9 +3,9 @@
 namespace Pterodactyl\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Pterodactyl\Console\Commands\Cloud\UsagePingCommand;
 use Pterodactyl\Console\Commands\InfoCommand;
 use Pterodactyl\Console\Commands\User\MakeUserCommand;
+use Pterodactyl\Console\Commands\Cloud\UsagePingCommand;
 use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Pterodactyl\Console\Commands\Server\RebuildServerCommand;
