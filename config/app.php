@@ -1,5 +1,6 @@
 <?php
 
+
 return [
     'env' => env('APP_ENV', 'production'),
 
@@ -125,6 +126,11 @@ return [
     */
 
     'providers' => [
+        /*
+         * Register Pterodactyl's settings provider...
+         */
+        Pterodactyl\Providers\SettingsServiceProvider::class,
+
         /*
          * Laravel Framework Service Providers...
          */

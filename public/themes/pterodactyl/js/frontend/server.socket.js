@@ -66,6 +66,7 @@ var Server = (function ()  {
                     delay: 0,
                 });
             }
+            setStatusIcon(999);
         });
 
         Socket.io.on('connect_error', function (err) {
@@ -77,6 +78,7 @@ var Server = (function ()  {
                     delay: 0,
                 });
             }
+            setStatusIcon(999);
         });
 
         // Connected to Socket Successfully
@@ -111,6 +113,7 @@ var Server = (function ()  {
                 $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Stopping');
                 break;
             default:
+                $('#server_status_icon').html('<i class="fa fa-question-circle text-danger"></i> Connection Error');
                 break;
         }
     }

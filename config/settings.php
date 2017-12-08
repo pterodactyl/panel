@@ -32,7 +32,7 @@ return [
     | If it is enabled all values gets encrypted and decrypted.
     |
     */
-    'encryption' => env('SETTINGS_ENCRYPTION', false),
+    'encryption' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     | If it is enabled various settings related events will be fired.
     |
     */
-    'events' => true,
+    'events' => false,
 
     /*
     |--------------------------------------------------------------------------

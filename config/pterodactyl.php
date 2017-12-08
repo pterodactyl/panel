@@ -3,6 +3,17 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Restricted Environment
+    |--------------------------------------------------------------------------
+    |
+    | Set this environment variable to true to enable a restricted configuration
+    | setup on the panel. When set to true, configurations stored in the
+    | database will not be applied.
+    */
+    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Service Author
     |--------------------------------------------------------------------------
     |
