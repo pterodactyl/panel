@@ -73,7 +73,7 @@ class UsagePingCommand extends Command
                     ],
                     'usage' => [
                         'databases' => Database::count(),
-                        'database_hosts' => DatabaseHost::count(),
+                        'databaseHosts' => DatabaseHost::count(),
                         'eggs' => Egg::count(),
                         'locations' => Location::count(),
                         'nests' => Nest::count(),
@@ -85,10 +85,10 @@ class UsagePingCommand extends Command
                         'subusers' => Subuser::count(),
                     ],
                     'drivers' => [
-                        'cacheDriver' => config('cache.default'),
-                        'sessionDriver' => config('session.driver'),
-                        'mailDriver' => config('mail.driver'),
-                        'queueDriver' => config('queue.default'),
+                        'cache' => config('cache.default'),
+                        'session' => config('session.driver'),
+                        'mail' => config('mail.driver'),
+                        'queue' => config('queue.default'),
                     ],
                 ],
             ]);
