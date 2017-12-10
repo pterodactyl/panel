@@ -14,13 +14,13 @@ class MailSettingsFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'mail_host' => 'required|string',
-            'mail_port' => 'required|integer|between:1,65535',
-            'mail_encryption' => 'present|string|in:"",tls,ssl',
-            'mail_username' => 'string|max:255',
-            'mail_password' => 'string|max:255',
-            'mail_from_address' => 'required|string|email',
-            'mail_from_name' => 'string|max:255',
+            'mail:host' => 'required|string',
+            'mail:port' => 'required|integer|between:1,65535',
+            'mail:encryption' => 'present|string|in:"",tls,ssl',
+            'mail:username' => 'string|max:255',
+            'mail:password' => 'string|max:255',
+            'mail:from:address' => 'required|string|email',
+            'mail:from:name' => 'string|max:255',
         ];
     }
 
@@ -33,6 +33,12 @@ class MailSettingsFormRequest extends AdminFormRequest
      */
     public function normalize($only = [])
     {
-        return $this->only(array_keys($this->rules()));
+        $keys = array_flip(array_keys($this->rules()));
+
+        if (empty($this->input('mail:password'))) {
+            unset($keys['mail:password']);
+        }
+
+        return $this->only(array_flip($keys));
     }
 }

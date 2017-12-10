@@ -5,37 +5,55 @@ namespace Pterodactyl\Http\Controllers\Admin\Settings;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Providers\SettingsServiceProvider;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest;
 
 class MailController extends Controller
 {
     /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
-    /**
-     * @var \Krucas\Settings\Settings
-     */
-    private $settings;
-    /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     private $alert;
 
     /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    private $config;
+
+    /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
+
+    /**
+     * @var \Illuminate\Contracts\Console\Kernel
+     */
+    private $kernel;
+
+    /**
+     * @var \Krucas\Settings\Settings
+     */
+    private $settings;
+
+    /**
      * MailController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag       $alert
-     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Prologue\Alerts\AlertsMessageBag          $alert
+     * @param \Illuminate\Contracts\Config\Repository    $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \Illuminate\Contracts\Console\Kernel       $kernel
      */
-    public function __construct(AlertsMessageBag $alert, ConfigRepository $config)
+    public function __construct(AlertsMessageBag $alert, ConfigRepository $config, Encrypter $encrypter, Kernel $kernel)
     {
         $this->alert = $alert;
         $this->config = $config;
+        $this->encrypter = $encrypter;
+        $this->kernel = $kernel;
         $this->settings = app()->make('settings');
     }
 
@@ -66,11 +84,21 @@ class MailController extends Controller
             throw new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
         }
 
-        foreach ($request->normalize() as $key => $value) {
-            $this->settings->set('settings.' . str_replace('_', '.', $key), $value);
+        $values = $request->normalize();
+        if (array_get($values, 'mail:password') === '!e') {
+            $values['mail:password'] = '';
         }
 
-        $this->alert->success('Email settings have been updated successfully.')->flash();
+        foreach ($values as $key => $value) {
+            if (in_array(str_replace(':', '.', $key), SettingsServiceProvider::getEncryptedKeys())) {
+                $value = $this->encrypter->encrypt($value);
+            }
+
+            $this->settings->set('settings::' . $key, $value);
+        }
+
+        $this->kernel->call('queue:restart');
+        $this->alert->success('Mail settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
 
         return redirect()->route('admin.settings.mail');
     }

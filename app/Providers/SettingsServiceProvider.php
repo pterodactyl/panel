@@ -74,7 +74,7 @@ class SettingsServiceProvider extends ServiceProvider
         }
 
         foreach ($this->keys as $key) {
-            $value = $settings->get('settings.' . $key, $config->get($key));
+            $value = $settings->get('settings::' . str_replace(':', '.', $key), $config->get($key));
             if (in_array($key, self::$encrypted)) {
                 try {
                     $value = $encrypter->decrypt($value);
