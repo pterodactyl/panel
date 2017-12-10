@@ -32,7 +32,7 @@
                         </div>
                     </div>
                 @else
-                    <form action="" method="POST">
+                    <form action="{{ route('admin.settings.mail') }}" method="POST">
                         <div class="box-body">
                             <div class="row">
                                 <div class="form-group col-md-6">
@@ -98,7 +98,7 @@
                         </div>
                         <div class="box-footer">
                             {{ csrf_field() }}
-                            <button type="submit" class="btn btn-sm btn-primary pull-right">Save</button>
+                            <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
                         </div>
                     </form>
                 @endif

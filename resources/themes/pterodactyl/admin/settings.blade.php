@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label class="control-label">2FA Required</label>
+                                <label class="control-label">Require 2-Factor Authentication</label>
                                 <div>
                                     <div class="btn-group" data-toggle="buttons">
                                         <label class="btn btn-primary @if (old('2fa', Settings::get('2fa', 0)) == 0) active @endif">
@@ -45,13 +45,8 @@
                                             <input type="radio" name="2fa" autocomplete="off" value="2" @if (old('2fa', Settings::get('2fa', 0)) == 2) checked @endif> Everybody
                                         </label>
                                     </div>
-                                    <p class="text-muted"><small>For improved security you can require all administrators to have 2-Factor authentication enabled, or even require it for all users on the Panel.</small></p>
+                                    <p class="text-muted"><small>If enabled, any account falling into the selected grouping will be required to have 2-Factor authentication enabled to use the Panel.</small></p>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="alert alert-info">In order to modify your SMTP settings for sending mail you will need to run <code>php artisan p:environment:mail</code> in this project's root folder.</div>
                             </div>
                         </div>
                     </div>
