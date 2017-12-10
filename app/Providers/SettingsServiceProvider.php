@@ -60,7 +60,7 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(ConfigRepository $config, Encrypter $encrypter)
     {
-        if ((bool) $config->get('pterodactyl.load_environment_only', false)) {
+        if ($config->get('pterodactyl.load_environment_only', false)) {
             return;
         }
 
