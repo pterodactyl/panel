@@ -15,7 +15,7 @@ return [
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
     */
-    'name' => 'Pterodactyl',
+    'name' => env('APP_NAME', 'Pterodactyl'),
 
     /*
     |--------------------------------------------------------------------------
@@ -127,11 +127,6 @@ return [
 
     'providers' => [
         /*
-         * Register Pterodactyl's settings provider...
-         */
-        Pterodactyl\Providers\SettingsServiceProvider::class,
-
-        /*
          * Laravel Framework Service Providers...
          */
         Illuminate\Auth\AuthServiceProvider::class,
@@ -164,6 +159,7 @@ return [
         /*
          * Application Service Providers...
          */
+        Pterodactyl\Providers\SettingsServiceProvider::class,
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
@@ -179,7 +175,6 @@ return [
          */
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
-        Krucas\Settings\Providers\SettingsServiceProvider::class,
         Fideloper\Proxy\TrustedProxyServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
@@ -234,7 +229,6 @@ return [
         'Response' => Illuminate\Support\Facades\Response::class,
         'Route' => Illuminate\Support\Facades\Route::class,
         'Schema' => Illuminate\Support\Facades\Schema::class,
-        'Settings' => Krucas\Settings\Facades\Settings::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'Theme' => igaster\laravelTheme\Facades\Theme::class,

@@ -4,7 +4,6 @@ namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
-use Krucas\Settings\Settings;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
@@ -17,11 +16,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
     private $alert;
 
     /**
-     * @var \Krucas\Settings\Settings|\Mockery\Mock
-     */
-    private $settings;
-
-    /**
      * Setup tests.
      */
     public function setUp()
@@ -29,7 +23,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         parent::setUp();
 
         $this->alert = m::mock(AlertsMessageBag::class);
-        $this->settings = m::mock(Settings::class);
     }
 
     /**
@@ -63,8 +56,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn(true);
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.route');
 
-        $this->settings->shouldReceive('get')->with('2fa', 0)->once()->andReturn(RequireTwoFactorAuthentication::LEVEL_NONE);
-
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
@@ -78,7 +69,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->request->shouldReceive('user')->withNoArgs()->times(3)->andReturn($user);
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.route');
 
-        $this->settings->shouldReceive('get')->with('2fa', 0)->once()->andReturn(RequireTwoFactorAuthentication::LEVEL_ADMIN);
         $this->alert->shouldReceive('danger')->with(trans('auth.2fa_must_be_enabled'))->once()->andReturnSelf();
         $this->alert->shouldReceive('flash')->withNoArgs()->once()->andReturnSelf();
 
@@ -97,8 +87,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->request->shouldReceive('user')->withNoArgs()->times(3)->andReturn($user);
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.route');
 
-        $this->settings->shouldReceive('get')->with('2fa', 0)->once()->andReturn(RequireTwoFactorAuthentication::LEVEL_ADMIN);
-
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
@@ -111,8 +99,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.route');
-
-        $this->settings->shouldReceive('get')->with('2fa', 0)->once()->andReturn(RequireTwoFactorAuthentication::LEVEL_ADMIN);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
@@ -127,7 +113,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.route');
 
-        $this->settings->shouldReceive('get')->with('2fa', 0)->once()->andReturn(RequireTwoFactorAuthentication::LEVEL_ALL);
         $this->alert->shouldReceive('danger')->with(trans('auth.2fa_must_be_enabled'))->once()->andReturnSelf();
         $this->alert->shouldReceive('flash')->withNoArgs()->once()->andReturnSelf();
 
@@ -145,8 +130,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.route');
-
-        $this->settings->shouldReceive('get')->with('2fa', 0)->once()->andReturn(RequireTwoFactorAuthentication::LEVEL_ALL);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
@@ -176,6 +159,6 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
      */
     private function getMiddleware(): RequireTwoFactorAuthentication
     {
-        return new RequireTwoFactorAuthentication($this->alert, $this->settings);
+        return new RequireTwoFactorAuthentication($this->alert);
     }
 }

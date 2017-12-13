@@ -11,6 +11,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Providers\SettingsServiceProvider;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest;
 
 class MailController extends Controller
@@ -36,25 +37,31 @@ class MailController extends Controller
     private $kernel;
 
     /**
-     * @var \Krucas\Settings\Settings
+     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settings;
 
     /**
      * MailController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag          $alert
-     * @param \Illuminate\Contracts\Config\Repository    $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Illuminate\Contracts\Console\Kernel       $kernel
+     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
+     * @param \Illuminate\Contracts\Config\Repository                       $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
+     * @param \Illuminate\Contracts\Console\Kernel                          $kernel
+     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
-    public function __construct(AlertsMessageBag $alert, ConfigRepository $config, Encrypter $encrypter, Kernel $kernel)
-    {
+    public function __construct(
+        AlertsMessageBag $alert,
+        ConfigRepository $config,
+        Encrypter $encrypter,
+        Kernel $kernel,
+        SettingsRepositoryInterface $settings
+    ) {
         $this->alert = $alert;
         $this->config = $config;
         $this->encrypter = $encrypter;
         $this->kernel = $kernel;
-        $this->settings = app()->make('settings');
+        $this->settings = $settings;
     }
 
     /**
@@ -90,7 +97,7 @@ class MailController extends Controller
         }
 
         foreach ($values as $key => $value) {
-            if (in_array(str_replace(':', '.', $key), SettingsServiceProvider::getEncryptedKeys())) {
+            if (in_array($key, SettingsServiceProvider::getEncryptedKeys()) && ! empty($value)) {
                 $value = $this->encrypter->encrypt($value);
             }
 

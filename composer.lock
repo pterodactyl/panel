@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a393763d136e25a93fd5b636229496cf",
+    "content-hash": "bd42f43877e96cca4d4af755c590eb25",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -686,57 +686,6 @@
                 "parser"
             ],
             "time": "2014-09-09T13:34:57+00:00"
-        },
-        {
-            "name": "edvinaskrucas/settings",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/edvinaskrucas/settings.git",
-                "reference": "23f2a912ca8f5b6ba550721a6fc0e6d1acaa9022"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/edvinaskrucas/settings/zipball/23f2a912ca8f5b6ba550721a6fc0e6d1acaa9022",
-                "reference": "23f2a912ca8f5b6ba550721a6fc0e6d1acaa9022",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/console": "^5.2",
-                "illuminate/database": "^5.2",
-                "illuminate/filesystem": "^5.2",
-                "illuminate/support": "^5.2",
-                "php": "^5.5|^7.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "0.9.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Krucas\\Settings\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Edvinas Kručas",
-                    "email": "edv.krucas@gmail.com"
-                }
-            ],
-            "description": "Persistent settings package for Laravel framework.",
-            "keywords": [
-                "Settings",
-                "laravel",
-                "persistent settings"
-            ],
-            "time": "2016-01-19T13:50:39+00:00"
         },
         {
             "name": "erusev/parsedown",
@@ -1673,6 +1622,50 @@
                 "routing"
             ],
             "time": "2017-09-04T02:25:29+00:00"
+        },
+        {
+            "name": "matriphe/iso-639",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matriphe/php-iso-639.git",
+                "reference": "0245d844daeefdd22a54b47103ffdb0e03c323e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matriphe/php-iso-639/zipball/0245d844daeefdd22a54b47103ffdb0e03c323e1",
+                "reference": "0245d844daeefdd22a54b47103ffdb0e03c323e1",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Matriphe\\ISO639\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muhammad Zamroni",
+                    "email": "halo@matriphe.com"
+                }
+            ],
+            "description": "PHP library to convert ISO-639-1 code to language name.",
+            "keywords": [
+                "639",
+                "iso",
+                "iso-639",
+                "lang",
+                "language",
+                "laravel"
+            ],
+            "time": "2017-07-19T15:11:19+00:00"
         },
         {
             "name": "monolog/monolog",

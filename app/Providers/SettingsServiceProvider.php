@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Providers;
 
-use Krucas\Settings\Settings;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class SettingsServiceProvider extends ServiceProvider
 {
@@ -17,13 +17,16 @@ class SettingsServiceProvider extends ServiceProvider
      * @var array
      */
     protected $keys = [
-        'recaptcha.enabled',
-        'recaptcha.secret_key',
-        'recaptcha.website_key',
-        'pterodactyl.guzzle.timeout',
-        'pterodactyl.guzzle.connect_timeout',
-        'pterodactyl.console.count',
-        'pterodactyl.console.frequency',
+        'app:name',
+        'app:locale',
+        'recaptcha:enabled',
+        'recaptcha:secret_key',
+        'recaptcha:website_key',
+        'pterodactyl:guzzle:timeout',
+        'pterodactyl:guzzle:connect_timeout',
+        'pterodactyl:console:count',
+        'pterodactyl:console:frequency',
+        'pterodactyl:auth:2fa_required',
     ];
 
     /**
@@ -33,13 +36,13 @@ class SettingsServiceProvider extends ServiceProvider
      * @var array
      */
     protected $emailKeys = [
-        'mail.host',
-        'mail.port',
-        'mail.from.address',
-        'mail.from.name',
-        'mail.encryption',
-        'mail.username',
-        'mail.password',
+        'mail:host',
+        'mail:port',
+        'mail:from:address',
+        'mail:from:name',
+        'mail:encryption',
+        'mail:username',
+        'mail:password',
     ];
 
     /**
@@ -49,23 +52,21 @@ class SettingsServiceProvider extends ServiceProvider
      * @var array
      */
     protected static $encrypted = [
-        'mail.password',
+        'mail:password',
     ];
 
     /**
      * Boot the service provider.
      *
-     * @param \Illuminate\Contracts\Config\Repository    $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \Illuminate\Contracts\Config\Repository                       $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
+     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter)
+    public function boot(ConfigRepository $config, Encrypter $encrypter, SettingsRepositoryInterface $settings)
     {
         if ($config->get('pterodactyl.load_environment_only', false)) {
             return;
         }
-
-        /** @var Settings $settings */
-        $settings = $this->app->make('settings');
 
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.
@@ -73,8 +74,12 @@ class SettingsServiceProvider extends ServiceProvider
             $this->keys = array_merge($this->keys, $this->emailKeys);
         }
 
+        $values = $settings->all()->mapWithKeys(function ($setting) {
+            return [$setting->key => $setting->value];
+        })->toArray();
+
         foreach ($this->keys as $key) {
-            $value = $settings->get('settings::' . str_replace(':', '.', $key), $config->get($key));
+            $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
             if (in_array($key, self::$encrypted)) {
                 try {
                     $value = $encrypter->decrypt($value);
@@ -82,7 +87,7 @@ class SettingsServiceProvider extends ServiceProvider
                 }
             }
 
-            $config->set($key, $value);
+            $config->set(str_replace(':', '.', $key), $value);
         }
     }
 

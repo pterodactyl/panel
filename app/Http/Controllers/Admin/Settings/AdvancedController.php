@@ -5,8 +5,10 @@ namespace Pterodactyl\Http\Controllers\Admin\Settings;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
 
 class AdvancedController extends Controller
@@ -22,21 +24,33 @@ class AdvancedController extends Controller
     private $config;
 
     /**
-     * @var \Krucas\Settings\Settings
+     * @var \Illuminate\Contracts\Console\Kernel
+     */
+    private $kernel;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settings;
 
     /**
      * AdvancedController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag       $alert
-     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
+     * @param \Illuminate\Contracts\Config\Repository                       $config
+     * @param \Illuminate\Contracts\Console\Kernel                          $kernel
+     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
-    public function __construct(AlertsMessageBag $alert, ConfigRepository $config)
-    {
+    public function __construct(
+        AlertsMessageBag $alert,
+        ConfigRepository $config,
+        Kernel $kernel,
+        SettingsRepositoryInterface $settings
+    ) {
         $this->alert = $alert;
         $this->config = $config;
-        $this->settings = app()->make('settings');
+        $this->kernel = $kernel;
+        $this->settings = $settings;
     }
 
     /**
