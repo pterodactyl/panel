@@ -74,9 +74,6 @@ class RequireTwoFactorAuthentication
         }
 
         switch ((int) config('pterodactyl.auth.2fa_required')) {
-            case self::LEVEL_NONE:
-                return $next($request);
-                break;
             case self::LEVEL_ADMIN:
                 if (! $request->user()->root_admin || $request->user()->use_totp) {
                     return $next($request);
@@ -87,6 +84,9 @@ class RequireTwoFactorAuthentication
                     return $next($request);
                 }
                 break;
+            case self::LEVEL_NONE:
+            default:
+                return $next($request);
         }
 
         $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();
