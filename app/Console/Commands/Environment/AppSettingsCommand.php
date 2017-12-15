@@ -10,6 +10,7 @@
 namespace Pterodactyl\Console\Commands\Environment;
 
 use DateTimeZone;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
@@ -135,6 +136,10 @@ class AppSettingsCommand extends Command
             self::ALLOWED_QUEUE_DRIVERS,
             array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
         );
+
+        if (empty($this->config->get('pterodactyl.cloud.uuid'))) {
+            $this->variables['PTERODACTYL_CLOUD_UUID'] = (string) Uuid::uuid4();
+        }
 
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);

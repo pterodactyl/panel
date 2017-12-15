@@ -5,6 +5,7 @@ namespace Pterodactyl\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Pterodactyl\Console\Commands\InfoCommand;
 use Pterodactyl\Console\Commands\User\MakeUserCommand;
+use Pterodactyl\Console\Commands\Cloud\UsagePingCommand;
 use Pterodactyl\Console\Commands\User\DeleteUserCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Pterodactyl\Console\Commands\Server\RebuildServerCommand;
@@ -37,6 +38,7 @@ class Kernel extends ConsoleKernel
         MakeUserCommand::class,
         ProcessRunnableCommand::class,
         RebuildServerCommand::class,
+        UsagePingCommand::class,
     ];
 
     /**
@@ -48,5 +50,6 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
         $schedule->command('p:maintenance:clean-service-backups')->daily();
+        $schedule->command('p:cloud:ping')->daily();
     }
 }
