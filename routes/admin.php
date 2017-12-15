@@ -1,12 +1,6 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
-Route::get('/', 'BaseController@getIndex')->name('admin.index');
+
+Route::get('/', 'BaseController@index')->name('admin.index');
 
 /*
 |--------------------------------------------------------------------------
@@ -50,9 +44,13 @@ Route::group(['prefix' => 'databases'], function () {
 |
 */
 Route::group(['prefix' => 'settings'], function () {
-    Route::get('/', 'BaseController@getSettings')->name('admin.settings');
+    Route::get('/', 'Settings\IndexController@index')->name('admin.settings');
+    Route::get('/mail', 'Settings\MailController@index')->name('admin.settings.mail');
+    Route::get('/advanced', 'Settings\AdvancedController@index')->name('admin.settings.advanced');
 
-    Route::post('/', 'BaseController@postSettings');
+    Route::patch('/', 'Settings\IndexController@update');
+    Route::patch('/mail', 'Settings\MailController@update');
+    Route::patch('/advanced', 'Settings\AdvancedController@update');
 });
 
 /*

@@ -1,6 +1,18 @@
 <?php
 
+
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Restricted Environment
+    |--------------------------------------------------------------------------
+    |
+    | Set this environment variable to true to enable a restricted configuration
+    | setup on the panel. When set to true, configurations stored in the
+    | database will not be applied.
+    */
+    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
+
     /*
     |--------------------------------------------------------------------------
     | Service Author
@@ -22,7 +34,7 @@ return [
     | Should login success and failure events trigger an email to the user?
     */
     'auth' => [
-        'notifications' => env('LOGIN_NOTIFICATIONS', false),
+        '2fa_required' => env('APP_2FA_REQUIRED', 0),
         '2fa' => [
             'bytes' => 32,
             'window' => env('APP_2FA_WINDOW', 4),
