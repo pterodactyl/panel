@@ -46,6 +46,8 @@ class DaemonAuthenticate
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
      * @return mixed
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function handle(Request $request, Closure $next)
     {

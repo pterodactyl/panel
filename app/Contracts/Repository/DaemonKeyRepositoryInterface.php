@@ -24,7 +24,9 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\DaemonKey;
+use Illuminate\Support\Collection;
 
 interface DaemonKeyRepositoryInterface extends RepositoryInterface
 {
@@ -59,4 +61,22 @@ interface DaemonKeyRepositoryInterface extends RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getKeyWithServer($key);
+
+    /**
+     * Get all of the keys for a specific user including the information needed
+     * from their server relation for revocation on the daemon.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @return \Illuminate\Support\Collection
+     */
+    public function getKeysForRevocation(User $user): Collection;
+
+    /**
+     * Delete an array of daemon keys from the database. Used primarily in
+     * conjunction with getKeysForRevocation.
+     *
+     * @param array $ids
+     * @return bool|int
+     */
+    public function deleteKeys(array $ids);
 }

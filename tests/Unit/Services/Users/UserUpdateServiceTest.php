@@ -1,36 +1,32 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
 
 class UserUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \Illuminate\Contracts\Hashing\Hasher|\Mockery\Mock
      */
-    protected $hasher;
+    private $hasher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
+     * @var \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService|\Mockery\Mock
      */
-    protected $service;
+    private $revocationService;
 
     /**
      * Setup tests.
@@ -41,8 +37,7 @@ class UserUpdateServiceTest extends TestCase
 
         $this->hasher = m::mock(Hasher::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
-
-        $this->service = new UserUpdateService($this->hasher, $this->repository);
+        $this->revocationService = m::mock(RevokeMultipleDaemonKeysService::class);
     }
 
     /**
@@ -50,9 +45,14 @@ class UserUpdateServiceTest extends TestCase
      */
     public function testUpdateUserWithoutTouchingHasherIfNoPasswordPassed()
     {
-        $this->repository->shouldReceive('update')->with(1, ['test-data' => 'value'])->once()->andReturnNull();
+        $user = factory(User::class)->make();
+        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
+        $this->repository->shouldReceive('update')->with($user->id, ['test-data' => 'value'])->once()->andReturnNull();
 
-        $this->assertNull($this->service->handle(1, ['test-data' => 'value']));
+        $response = $this->getService()->handle($user, ['test-data' => 'value']);
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertTrue($response->has('model'));
+        $this->assertTrue($response->has('exceptions'));
     }
 
     /**
@@ -60,9 +60,61 @@ class UserUpdateServiceTest extends TestCase
      */
     public function testUpdateUserAndHashPasswordIfProvided()
     {
+        $user = factory(User::class)->make();
         $this->hasher->shouldReceive('make')->with('raw_pass')->once()->andReturn('enc_pass');
-        $this->repository->shouldReceive('update')->with(1, ['password' => 'enc_pass'])->once()->andReturnNull();
+        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
+        $this->repository->shouldReceive('update')->with($user->id, ['password' => 'enc_pass'])->once()->andReturnNull();
 
-        $this->assertNull($this->service->handle(1, ['password' => 'raw_pass']));
+        $response = $this->getService()->handle($user, ['password' => 'raw_pass']);
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertTrue($response->has('model'));
+        $this->assertTrue($response->has('exceptions'));
+    }
+
+    /**
+     * Test that an admin can revoke a user's administrative status.
+     */
+    public function testAdministrativeUserRevokingAdminStatus()
+    {
+        $user = factory(User::class)->make(['root_admin' => true]);
+        $service = $this->getService();
+        $service->setUserLevel(User::USER_LEVEL_ADMIN);
+
+        $this->revocationService->shouldReceive('handle')->with($user, false)->once()->andReturnNull();
+        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
+        $this->repository->shouldReceive('update')->with($user->id, ['root_admin' => false])->once()->andReturnNull();
+
+        $response = $service->handle($user, ['root_admin' => false]);
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertTrue($response->has('model'));
+        $this->assertTrue($response->has('exceptions'));
+    }
+
+    /**
+     * Test that a normal user is unable to set an administrative status for themselves.
+     */
+    public function testNormalUserShouldNotRevokeAdminStatus()
+    {
+        $user = factory(User::class)->make(['root_admin' => false]);
+        $service = $this->getService();
+        $service->setUserLevel(User::USER_LEVEL_USER);
+
+        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
+        $this->repository->shouldReceive('update')->with($user->id, [])->once()->andReturnNull();
+
+        $response = $service->handle($user, ['root_admin' => true]);
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertTrue($response->has('model'));
+        $this->assertTrue($response->has('exceptions'));
+    }
+
+    /**
+     * Return an instance of the service for testing.
+     *
+     * @return \Pterodactyl\Services\Users\UserUpdateService
+     */
+    private function getService(): UserUpdateService
+    {
+        return new UserUpdateService($this->hasher, $this->revocationService, $this->repository);
     }
 }

@@ -28,6 +28,7 @@
         "laravel/framework": "5.4.27",
         "laravel/tinker": "1.0.1",
         "lord/laroute": "~2.4.5",
+        "matriphe/iso-639": "^1.2",
         "mtdowling/cron-expression": "^1.2",
         "nesbot/carbon": "^1.22",
         "nicolaslopezj/searchable": "^1.9",

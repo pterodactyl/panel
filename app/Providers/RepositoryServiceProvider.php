@@ -26,6 +26,7 @@ use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
+use Pterodactyl\Repositories\Eloquent\SettingsRepository;
 use Pterodactyl\Repositories\Eloquent\DaemonKeyRepository;
 use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Repositories\Eloquent\PermissionRepository;
@@ -47,6 +48,7 @@ use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
@@ -86,9 +88,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ServerRepositoryInterface::class, ServerRepository::class);
         $this->app->bind(ServerVariableRepositoryInterface::class, ServerVariableRepository::class);
         $this->app->bind(SessionRepositoryInterface::class, SessionRepository::class);
+        $this->app->bind(SettingsRepositoryInterface::class, SettingsRepository::class);
         $this->app->bind(SubuserRepositoryInterface::class, SubuserRepository::class);
         $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+
+        $this->app->alias(SettingsRepositoryInterface::class, 'settings');
 
         // Daemon Repositories
         if ($this->app->make('config')->get('pterodactyl.daemon.use_new_daemon')) {

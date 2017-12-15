@@ -8,7 +8,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{{ Settings::get('company', 'Pterodactyl') }} - @yield('title')</title>
+        <title>{{ config('app.name', 'Pterodactyl') }} - @yield('title')</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
@@ -37,7 +37,7 @@
         <div class="container">
             <div id="login-position-elements">
                 <div class="login-logo">
-                    {{ Settings::get('company', 'Pterodactyl') }}
+                    {{ config('app.name', 'Pterodactyl') }}
                 </div>
                 @yield('content')
                 <p class="small login-copyright text-center">

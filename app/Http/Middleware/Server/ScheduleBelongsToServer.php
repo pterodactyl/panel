@@ -49,7 +49,7 @@ class ScheduleBelongsToServer
         $scheduleId = $this->hashids->decodeFirst($request->route()->parameter('schedule'), 0);
         $schedule = $this->repository->getScheduleWithTasks($scheduleId);
 
-        if (object_get($schedule, 'server_id') !== $server->id) {
+        if ($schedule->server_id !== $server->id) {
             throw new NotFoundHttpException;
         }
 
