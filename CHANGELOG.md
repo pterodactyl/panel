@@ -13,16 +13,12 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes bug causing schedules to be un-deletable.
 * `[beta.2]` — Fixes bug that prevented the deletion of nodes due to an allocation deletion cascade issue with the SQL schema.
 
-### Changed
-* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
-
 ### Added
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
+* Settings are now editable via the Admin CP and override config values where possible.
 
 ### Changed
-* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
-
-### Changed
+* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
 * API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
 
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
