@@ -71,6 +71,7 @@ class Handler extends ExceptionHandler
             $response = response()->json(
                 [
                     'error' => $displayError,
+                    'type' => (! config('app.debug')) ? null : class_basename($exception),
                     'http_code' => (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : 500,
                     'trace' => (! config('app.debug')) ? null : $exception->getTrace(),
                 ],

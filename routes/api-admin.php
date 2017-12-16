@@ -10,10 +10,10 @@
 */
 Route::group(['prefix' => '/users'], function () {
     Route::get('/', 'Users\UserController@index')->name('api.admin.user.list');
-    Route::get('/{id}', 'Users\UserController@view');
+    Route::get('/{user}', 'Users\UserController@view')->name('api.admin.user.view');
 
-    Route::post('/', 'Users\UserController@store');
-    Route::put('/{id}', 'Users\UserController@update');
+    Route::post('/', 'Users\UserController@store')->name('api.admin.user.store');
+    Route::put('/{user}', 'Users\UserController@update')->name('api.admin.user.update');
 
-    Route::delete('/{id}', 'Users\UserController@delete');
+    Route::delete('/{user}', 'Users\UserController@delete')->name('api.admin.user.delete');
 });
