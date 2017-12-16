@@ -50,13 +50,13 @@ class AccountControllerTest extends ControllerTestCase
     public function testUpdateControllerForPassword()
     {
         $this->setRequestMockClass(AccountDataFormRequest::class);
-        $user = $this->setRequestUser();
+        $user = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('do_action')->andReturn('password');
         $this->request->shouldReceive('input')->with('new_password')->once()->andReturn('test-password');
 
         $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
-        $this->updateService->shouldReceive('handle')->with($user, ['password' => 'test-password'])->once()->andReturnNull();
+        $this->updateService->shouldReceive('handle')->with($user, ['password' => 'test-password'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->getController()->update($this->request);
@@ -70,13 +70,13 @@ class AccountControllerTest extends ControllerTestCase
     public function testUpdateControllerForEmail()
     {
         $this->setRequestMockClass(AccountDataFormRequest::class);
-        $user = $this->setRequestUser();
+        $user = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('do_action')->andReturn('email');
         $this->request->shouldReceive('input')->with('new_email')->once()->andReturn('test@example.com');
 
         $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
-        $this->updateService->shouldReceive('handle')->with($user, ['email' => 'test@example.com'])->once()->andReturnNull();
+        $this->updateService->shouldReceive('handle')->with($user, ['email' => 'test@example.com'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->getController()->update($this->request);
@@ -90,7 +90,7 @@ class AccountControllerTest extends ControllerTestCase
     public function testUpdateControllerForIdentity()
     {
         $this->setRequestMockClass(AccountDataFormRequest::class);
-        $user = $this->setRequestUser();
+        $user = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('do_action')->andReturn('identity');
         $this->request->shouldReceive('only')->with(['name_first', 'name_last', 'username'])->once()->andReturn([
@@ -98,7 +98,7 @@ class AccountControllerTest extends ControllerTestCase
         ]);
 
         $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
-        $this->updateService->shouldReceive('handle')->with($user, ['test_data' => 'value'])->once()->andReturnNull();
+        $this->updateService->shouldReceive('handle')->with($user, ['test_data' => 'value'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->getController()->update($this->request);

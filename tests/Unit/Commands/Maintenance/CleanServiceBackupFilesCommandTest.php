@@ -48,7 +48,7 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
         $file = new SplFileInfo('testfile.txt');
 
         $this->disk->shouldReceive('files')->with('services/.bak')->once()->andReturn([$file]);
-        $this->disk->shouldReceive('lastModified')->with($file->getPath())->once()->andReturn(Carbon::now()->subDays(100));
+        $this->disk->shouldReceive('lastModified')->with($file->getPath())->once()->andReturn(Carbon::now()->subDays(100)->getTimestamp());
         $this->disk->shouldReceive('delete')->with($file->getPath())->once()->andReturnNull();
 
         $display = $this->runCommand($this->getCommand());
@@ -65,7 +65,7 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
         $file = new SplFileInfo('testfile.txt');
 
         $this->disk->shouldReceive('files')->with('services/.bak')->once()->andReturn([$file]);
-        $this->disk->shouldReceive('lastModified')->with($file->getPath())->once()->andReturn(Carbon::now());
+        $this->disk->shouldReceive('lastModified')->with($file->getPath())->once()->andReturn(Carbon::now()->getTimestamp());
 
         $display = $this->runCommand($this->getCommand());
 

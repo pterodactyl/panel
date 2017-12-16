@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Console\Commands\Maintenance;
 
+use SplFileInfo;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Symfony\Component\Finder\SplFileInfo;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class CleanServiceBackupFilesCommand extends Command
