@@ -113,13 +113,6 @@
                         <th>SHA1 Hash</th>
                         <th>File Size</th>
                     </tr>
-                    @foreach($pack->files() as $file)
-                        <tr>
-                            <td>{{ $file->name }}</td>
-                            <td><code>{{ $file->hash }}</code></td>
-                            <td>{{ $file->size }}</td>
-                        </tr>
-                    @endforeach
                 </table>
             </div>
             <div class="box-footer">

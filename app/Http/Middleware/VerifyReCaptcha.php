@@ -39,7 +39,7 @@ class VerifyReCaptcha
             return $next($request);
         }
 
-        if ($request->has('g-recaptcha-response')) {
+        if ($request->filled('g-recaptcha-response')) {
             $client = new Client();
             $res = $client->post($this->config->get('recaptcha.domain'), [
                 'form_params' => [

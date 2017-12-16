@@ -18,7 +18,7 @@ class DatabaseHostFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        if (! $this->has('node_id')) {
+        if (! $this->filled('node_id')) {
             $this->merge(['node_id' => null]);
         }
 
