@@ -12,8 +12,6 @@ use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Observers\ServerObserver;
 use Pterodactyl\Observers\SubuserObserver;
-use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
-use Barryvdh\Debugbar\ServiceProvider as DebugbarServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,17 +28,6 @@ class AppServiceProvider extends ServiceProvider
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
-    }
-
-    /**
-     * Register any application services.
-     */
-    public function register()
-    {
-        if ($this->app->environment() !== 'production') {
-            $this->app->register(DebugbarServiceProvider::class);
-            $this->app->register(IdeHelperServiceProvider::class);
-        }
     }
 
     /**

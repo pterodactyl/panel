@@ -15,6 +15,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
+* Updated core framework to Laravel 5.5. This includes many dependency updates.
+* Certain AWS specific environment keys were changed, this should have minimal impact on users unless you specifically enabled AWS specific features. The renames are: `AWS_KEY -> AWS_ACCESS_KEY_ID`, `AWS_SECRET -> AWS_SECRET_ACCESS_KEY`, `AWS_REGION -> AWS_DEFAULT_REGION`
 
 ### Added
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
