@@ -10,6 +10,8 @@ return [
     | using this caching library. This connection is used when another is
     | not explicitly specified when executing a given caching function.
     |
+    | Supported: "apc", "array", "database", "file", "memcached", "redis"
+    |
     */
 
     'default' => env('CACHE_DRIVER', 'file'),
@@ -39,6 +41,7 @@ return [
             'table' => 'cache',
             'connection' => null,
         ],
+
         'file' => [
             'driver' => 'file',
             'path' => storage_path('framework/cache/data'),
@@ -80,5 +83,5 @@ return [
     |
     */
 
-    'prefix' => 'pterodactyl',
+    'prefix' => env('CACHE_PREFIX', str_slug(env('APP_NAME', 'pterodactyl'), '_') . '_cache'),
 ];

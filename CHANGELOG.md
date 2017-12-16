@@ -13,13 +13,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes bug causing schedules to be un-deletable.
 * `[beta.2]` — Fixes bug that prevented the deletion of nodes due to an allocation deletion cascade issue with the SQL schema.
 
+### Changed
+* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
+* Updated core framework to Laravel 5.5. This includes many dependency updates.
+* Certain AWS specific environment keys were changed, this should have minimal impact on users unless you specifically enabled AWS specific features. The renames are: `AWS_KEY -> AWS_ACCESS_KEY_ID`, `AWS_SECRET -> AWS_SECRET_ACCESS_KEY`, `AWS_REGION -> AWS_DEFAULT_REGION`
+
 ### Added
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
 * Settings are now editable via the Admin CP and override config values where possible.
-
-### Changed
-* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
-* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
 
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed

@@ -1,14 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\Maintenance;
 
+use SplFileInfo;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
@@ -16,11 +10,6 @@ use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 class CleanServiceBackupFilesCommand extends Command
 {
     const BACKUP_THRESHOLD_MINUTES = 5;
-
-    /**
-     * @var \Carbon\Carbon
-     */
-    protected $carbon;
 
     /**
      * @var string
@@ -40,14 +29,12 @@ class CleanServiceBackupFilesCommand extends Command
     /**
      * CleanServiceBackupFilesCommand constructor.
      *
-     * @param \Carbon\Carbon                           $carbon
      * @param \Illuminate\Contracts\Filesystem\Factory $filesystem
      */
-    public function __construct(Carbon $carbon, FilesystemFactory $filesystem)
+    public function __construct(FilesystemFactory $filesystem)
     {
         parent::__construct();
 
-        $this->carbon = $carbon;
         $this->disk = $filesystem->disk();
     }
 
@@ -58,11 +45,11 @@ class CleanServiceBackupFilesCommand extends Command
     {
         $files = $this->disk->files('services/.bak');
 
-        collect($files)->each(function ($file) {
-            $lastModified = $this->carbon->timestamp($this->disk->lastModified($file));
-            if ($lastModified->diffInMinutes($this->carbon->now()) > self::BACKUP_THRESHOLD_MINUTES) {
-                $this->disk->delete($file);
-                $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => $file]));
+        collect($files)->each(function (SplFileInfo $file) {
+            $lastModified = Carbon::createFromTimestamp($this->disk->lastModified($file->getPath()));
+            if ($lastModified->diffInMinutes(Carbon::now()) > self::BACKUP_THRESHOLD_MINUTES) {
+                $this->disk->delete($file->getPath());
+                $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => $file->getFilename()]));
             }
         });
     }

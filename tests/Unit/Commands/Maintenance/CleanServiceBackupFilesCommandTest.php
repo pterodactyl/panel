@@ -1,14 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Commands\Maintenance;
 
+use SplFileInfo;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\Unit\Commands\CommandTestCase;
@@ -18,11 +12,6 @@ use Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 
 class CleanServiceBackupFilesCommandTest extends CommandTestCase
 {
-    /**
-     * @var \Carbon\Carbon|\Mockery\Mock
-     */
-    protected $carbon;
-
     /**
      * @var \Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand
      */
@@ -45,13 +34,10 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
     {
         parent::setUp();
 
-        $this->carbon = m::mock(Carbon::class);
+        Carbon::setTestNow();
         $this->disk = m::mock(Filesystem::class);
         $this->filesystem = m::mock(Factory::class);
         $this->filesystem->shouldReceive('disk')->withNoArgs()->once()->andReturn($this->disk);
-
-        $this->command = new CleanServiceBackupFilesCommand($this->carbon, $this->filesystem);
-        $this->command->setLaravel($this->app);
     }
 
     /**
@@ -59,14 +45,13 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
      */
     public function testCommandCleansFilesMoreThan5MinutesOld()
     {
-        $this->disk->shouldReceive('files')->with('services/.bak')->once()->andReturn(['testfile.txt']);
-        $this->disk->shouldReceive('lastModified')->with('testfile.txt')->once()->andReturn('disk:last:modified');
-        $this->carbon->shouldReceive('timestamp')->with('disk:last:modified')->once()->andReturnSelf();
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnNull();
-        $this->carbon->shouldReceive('diffInMinutes')->with(null)->once()->andReturn(10);
-        $this->disk->shouldReceive('delete')->with('testfile.txt')->once()->andReturnNull();
+        $file = new SplFileInfo('testfile.txt');
 
-        $display = $this->runCommand($this->command);
+        $this->disk->shouldReceive('files')->with('services/.bak')->once()->andReturn([$file]);
+        $this->disk->shouldReceive('lastModified')->with($file->getPath())->once()->andReturn(Carbon::now()->subDays(100)->getTimestamp());
+        $this->disk->shouldReceive('delete')->with($file->getPath())->once()->andReturnNull();
+
+        $display = $this->runCommand($this->getCommand());
 
         $this->assertNotEmpty($display);
         $this->assertContains(trans('command/messages.maintenance.deleting_service_backup', ['file' => 'testfile.txt']), $display);
@@ -77,14 +62,26 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
      */
     public function testCommandDoesNotCleanFileLessThan5MinutesOld()
     {
-        $this->disk->shouldReceive('files')->with('services/.bak')->once()->andReturn(['testfile.txt']);
-        $this->disk->shouldReceive('lastModified')->with('testfile.txt')->once()->andReturn('disk:last:modified');
-        $this->carbon->shouldReceive('timestamp')->with('disk:last:modified')->once()->andReturnSelf();
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnNull();
-        $this->carbon->shouldReceive('diffInMinutes')->with(null)->once()->andReturn(2);
+        $file = new SplFileInfo('testfile.txt');
 
-        $display = $this->runCommand($this->command);
+        $this->disk->shouldReceive('files')->with('services/.bak')->once()->andReturn([$file]);
+        $this->disk->shouldReceive('lastModified')->with($file->getPath())->once()->andReturn(Carbon::now()->getTimestamp());
+
+        $display = $this->runCommand($this->getCommand());
 
         $this->assertEmpty($display);
+    }
+
+    /**
+     * Return an instance of the command for testing.
+     *
+     * @return \Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand
+     */
+    private function getCommand(): CleanServiceBackupFilesCommand
+    {
+        $command = new CleanServiceBackupFilesCommand($this->filesystem);
+        $command->setLaravel($this->app);
+
+        return $command;
     }
 }

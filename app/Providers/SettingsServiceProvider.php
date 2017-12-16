@@ -87,6 +87,24 @@ class SettingsServiceProvider extends ServiceProvider
                 }
             }
 
+            switch (strtolower($value)) {
+                case 'true':
+                case '(true)':
+                    $value = true;
+                    break;
+                case 'false':
+                case '(false)':
+                    $value = false;
+                    break;
+                case 'empty':
+                case '(empty)':
+                    $value = '';
+                    break;
+                case 'null':
+                case '(null)':
+                    $value = null;
+            }
+
             $config->set(str_replace(':', '.', $key), $value);
         }
     }

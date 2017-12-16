@@ -2,10 +2,10 @@
 
 namespace Pterodactyl\Http;
 
-use Fideloper\Proxy\TrustProxies;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
 use Pterodactyl\Http\Middleware\TrimStrings;
+use Pterodactyl\Http\Middleware\TrustProxies;
 use Illuminate\Session\Middleware\StartSession;
 use Pterodactyl\Http\Middleware\EncryptCookies;
 use Pterodactyl\Http\Middleware\VerifyCsrfToken;
@@ -23,6 +23,7 @@ use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\API\AuthenticateIPAccess;
 use Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\API\HasPermissionToResource;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
@@ -31,6 +32,7 @@ use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
 use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Pterodactyl\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
 
 class Kernel extends HttpKernel
@@ -42,9 +44,9 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         CheckForMaintenanceMode::class,
-        EncryptCookies::class,
-        AddQueuedCookiesToResponse::class,
+        ValidatePostSize::class,
         TrimStrings::class,
+        ConvertEmptyStringsToNull::class,
         TrustProxies::class,
     ];
 

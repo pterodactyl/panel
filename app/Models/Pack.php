@@ -9,8 +9,6 @@
 
 namespace Pterodactyl\Models;
 
-use File;
-use Storage;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
@@ -87,30 +85,6 @@ class Pack extends Model implements CleansAttributes, ValidableContract
         'egg.docker_image' => 5,
         'version' => 2,
     ];
-
-    /**
-     * Returns all of the archived files for a given pack.
-     *
-     * @param bool $collection
-     * @return \Illuminate\Support\Collection|object
-     * @deprecated
-     */
-    public function files($collection = false)
-    {
-        $files = collect(Storage::files('packs/' . $this->uuid));
-
-        $files = $files->map(function ($item) {
-            $path = storage_path('app/' . $item);
-
-            return (object) [
-                'name' => basename($item),
-                'hash' => sha1_file($path),
-                'size' => File::humanReadableSize($path),
-            ];
-        });
-
-        return ($collection) ? $files : (object) $files->all();
-    }
 
     /**
      * Gets egg associated with a service pack.
