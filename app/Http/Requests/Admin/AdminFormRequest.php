@@ -44,9 +44,6 @@ abstract class AdminFormRequest extends FormRequest
      */
     public function normalize($only = [])
     {
-        return array_merge(
-            $this->only($only),
-            $this->intersect(array_keys($this->rules()))
-        );
+        return $this->all(empty($only) ? array_keys($this->rules()) : $only);
     }
 }

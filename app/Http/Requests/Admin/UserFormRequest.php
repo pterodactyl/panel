@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Requests\Admin;
 
@@ -33,7 +26,7 @@ class UserFormRequest extends AdminFormRequest
     {
         if ($this->method === 'PATCH') {
             return array_merge(
-                $this->intersect('password'),
+                $this->all(['password']),
                 $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin', 'ignore_connection_error'])
             );
         }
