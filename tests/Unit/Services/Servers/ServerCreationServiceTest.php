@@ -133,7 +133,7 @@ class ServerCreationServiceTest extends TestCase
         $this->configurationStructureService->shouldReceive('handle')->with($model)->once()->andReturn(['test' => 'struct']);
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
-        $this->daemonServerRepository->shouldReceive('create')->with(['test' => 'struct'], ['start_on_completion' => false])->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('create')->with(['test' => 'struct'], ['start_on_completion' => false])->once();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->getService()->create($model->toArray());

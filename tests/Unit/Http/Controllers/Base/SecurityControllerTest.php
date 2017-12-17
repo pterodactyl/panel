@@ -58,7 +58,7 @@ class SecurityControllerTest extends ControllerTestCase
      */
     public function testIndexControllerWithDatabaseDriver()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
         $this->config->shouldReceive('get')->with('session.driver')->once()->andReturn('database');
         $this->repository->shouldReceive('getUserSessions')->with($model->id)->once()->andReturn(['sessions']);
@@ -89,7 +89,7 @@ class SecurityControllerTest extends ControllerTestCase
      */
     public function testGenerateTotpController()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
         $this->twoFactorSetupService->shouldReceive('handle')->with($model)->once()->andReturn('qrCodeImage');
 
@@ -103,10 +103,10 @@ class SecurityControllerTest extends ControllerTestCase
      */
     public function testDisableTotpControllerSuccess()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('token')->once()->andReturn('testToken');
-        $this->toggleTwoFactorService->shouldReceive('handle')->with($model, 'testToken', false)->once()->andReturnNull();
+        $this->toggleTwoFactorService->shouldReceive('handle')->with($model, 'testToken', false)->once()->andReturn(true);
 
         $response = $this->getController()->disableTotp($this->request);
         $this->assertIsRedirectResponse($response);
@@ -118,7 +118,7 @@ class SecurityControllerTest extends ControllerTestCase
      */
     public function testDisableTotpControllerWhenExceptionIsThrown()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('token')->once()->andReturn('testToken');
         $this->toggleTwoFactorService->shouldReceive('handle')->with($model, 'testToken', false)->once()->andThrow(new TwoFactorAuthenticationTokenInvalid);
@@ -135,7 +135,7 @@ class SecurityControllerTest extends ControllerTestCase
      */
     public function testRevokeController()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
         $this->repository->shouldReceive('deleteUserSession')->with($model->id, 123)->once()->andReturnNull();
 

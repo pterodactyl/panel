@@ -163,7 +163,7 @@ class PackController extends Controller
      */
     public function store(PackFormRequest $request)
     {
-        if ($request->has('from_template')) {
+        if ($request->filled('from_template')) {
             $pack = $this->templateUploadService->handle($request->input('egg_id'), $request->file('file_upload'));
         } else {
             $pack = $this->creationService->handle($request->normalize(), $request->file('file_upload'));
