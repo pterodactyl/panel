@@ -1,7 +1,8 @@
 <?php
 
-namespace Pterodactyl\Transformers;
+namespace Pterodactyl\Transformers\Api;
 
+use Illuminate\Http\Request;
 use League\Fractal\TransformerAbstract;
 use Pterodactyl\Exceptions\PterodactylException;
 
@@ -10,7 +11,27 @@ abstract class ApiTransformer extends TransformerAbstract
     /**
      * @var \Illuminate\Http\Request
      */
-    protected $request;
+    private $request;
+
+    /**
+     * Setup request object for transformer.
+     *
+     * @param \Illuminate\Http\Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * Return the request instance being used for this transformer.
+     *
+     * @return \Illuminate\Http\Request
+     */
+    public function getRequest(): Request
+    {
+        return $this->request;
+    }
 
     /**
      * Determine if an API key from the request has permission to access

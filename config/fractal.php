@@ -13,4 +13,19 @@ return [
     */
 
     'default_serializer' => League\Fractal\Serializer\JsonApiSerializer::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Auto Includes
+    |--------------------------------------------------------------------------
+    |
+    | If enabled Fractal will automatically add the includes who's
+    | names are present in the `include` request parameter.
+    |
+    */
+
+    'auto_includes' => [
+        'enabled' => true,
+        'request_key' => 'include',
+    ],
 ];

@@ -1,10 +1,9 @@
 <?php
 
-namespace Pterodactyl\Transformers\Admin;
+namespace Pterodactyl\Transformers\Api\Admin;
 
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\ApiTransformer;
+use Pterodactyl\Transformers\Api\ApiTransformer;
 
 class UserTransformer extends ApiTransformer
 {
@@ -14,16 +13,6 @@ class UserTransformer extends ApiTransformer
      * @var array
      */
     protected $availableIncludes = ['servers'];
-
-    /**
-     * Setup request object for transformer.
-     *
-     * @param \Illuminate\Http\Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
 
     /**
      * Return a generic transformed subuser array.
@@ -54,6 +43,6 @@ class UserTransformer extends ApiTransformer
             $user->load('servers');
         }
 
-        return $this->collection($user->getRelation('servers'), new ServerTransformer($this->request), 'server');
+        return $this->collection($user->getRelation('servers'), new ServerTransformer($this->getRequest()), 'server');
     }
 }

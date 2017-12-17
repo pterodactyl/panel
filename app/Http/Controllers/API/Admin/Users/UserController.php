@@ -11,8 +11,8 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Transformers\Admin\UserTransformer;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Transformers\Api\Admin\UserTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -83,7 +83,7 @@ class UserController extends Controller
             ->withResourceName('user')
             ->paginateWith(new IlluminatePaginatorAdapter($users));
 
-        if (config('pterodactyl.api.include_on_list') && $request->has('include')) {
+        if (config('pterodactyl.api.include_on_list') && $request->filled('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 
@@ -104,7 +104,7 @@ class UserController extends Controller
             ->transformWith(new UserTransformer($request))
             ->withResourceName('user');
 
-        if ($request->has('include')) {
+        if ($request->filled('include')) {
             $fractal->parseIncludes(explode(',', $request->input('include')));
         }
 

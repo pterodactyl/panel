@@ -17,3 +17,8 @@ Route::group(['prefix' => '/users'], function () {
 
     Route::delete('/{user}', 'Users\UserController@delete')->name('api.admin.user.delete');
 });
+
+Route::group(['prefix' => '/nodes'], function () {
+    Route::get('/', 'Nodes\NodeController@index')->name('api.admin.node.list');
+    Route::get('/{node}', 'Nodes\NodeController@view')->name('api.admin.node.view');
+});
