@@ -135,7 +135,7 @@ class AppSettingsCommand extends Command
             self::ALLOWED_QUEUE_DRIVERS,
             array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
         );
-        
+
         $this->variables['APP_ENVIRONMENT_ONLY'] = false;
 
         $this->checkForRedis();
