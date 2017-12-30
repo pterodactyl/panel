@@ -64,10 +64,6 @@ class SettingsServiceProvider extends ServiceProvider
      */
     public function boot(ConfigRepository $config, Encrypter $encrypter, SettingsRepositoryInterface $settings)
     {
-        if ($config->get('pterodactyl.load_environment_only', false)) {
-            return;
-        }
-
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.
         if ($config->get('mail.driver') === 'smtp') {

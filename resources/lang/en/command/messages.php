@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 return [
     'location' => [
@@ -74,6 +67,7 @@ return [
             'try_again' => 'Go back and try again?',
         ],
         'app' => [
+            'settings' => 'Enable UI based settings editor?',
             'author' => 'Egg Author Email',
             'author_help' => 'Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.',
             'app_url_help' => 'The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.',
