@@ -125,7 +125,7 @@
                             <div class="form-group">
                                 <label for="pConfigFrom" class="form-label">Copy Settings From</label>
                                 <select name="config_from" id="pConfigFrom" class="form-control">
-                                    <option value="0">None</option>
+                                    <option value="">None</option>
                                     @foreach($egg->nest->eggs as $o)
                                         <option value="{{ $o->id }}" {{ ($egg->config_from !== $o->id) ?: 'selected' }}>{{ $o->name }} &lt;{{ $o->author }}&gt;</option>
                                     @endforeach
