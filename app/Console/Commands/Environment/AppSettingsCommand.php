@@ -138,9 +138,9 @@ class AppSettingsCommand extends Command
         );
 
         if ($this->option('disable-settings-ui')) {
-            $this->variables['APP_ENVIRONMENT_ONLY'] = true;
+            $this->variables['APP_ENVIRONMENT_ONLY'] = 'true';
         } else {
-            $this->variables['APP_ENVIRONMENT_ONLY'] = ! $this->confirm(trans('command/messages.environment.app.settings'), true);
+            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
         }
 
         $this->checkForRedis();
