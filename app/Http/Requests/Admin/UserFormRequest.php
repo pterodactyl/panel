@@ -22,12 +22,16 @@ class UserFormRequest extends AdminFormRequest
         return User::getCreateRules();
     }
 
-    public function normalize($only = [])
+    /**
+     * @param array|null $only
+     * @return array
+     */
+    public function normalize(array $only = null)
     {
         if ($this->method === 'PATCH') {
             return array_merge(
                 $this->all(['password']),
-                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin', 'ignore_connection_error'])
+                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin', 'language', 'ignore_connection_error'])
             );
         }
 

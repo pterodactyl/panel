@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Requests\Admin;
 
@@ -39,11 +32,11 @@ abstract class AdminFormRequest extends FormRequest
      * Return only the fields that we are interested in from the request.
      * This will include empty fields as a null value.
      *
-     * @param array $only
+     * @param array|null $only
      * @return array
      */
-    public function normalize($only = [])
+    public function normalize(array $only = null)
     {
-        return $this->all(empty($only) ? array_keys($this->rules()) : $only);
+        return $this->only($only ?? array_keys($this->rules()));
     }
 }

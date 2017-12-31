@@ -51,6 +51,17 @@
                             <input type="text" autocomplete="off" name="name_last" value="{{ old('name_last') }}" class="form-control" />
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Default Langauge</label>
+                        <div>
+                            <select name="language" class="form-control">
+                                @foreach($languages as $key => $value)
+                                    <option value="{{ $key }}" @if(config('app.locale') === $key) selected @endif>{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-muted"><small>The default language to use when rendering the Panel for this user.</small></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}

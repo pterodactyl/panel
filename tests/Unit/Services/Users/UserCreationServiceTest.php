@@ -1,16 +1,10 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services;
 
 use Mockery as m;
 use Tests\TestCase;
+use Tests\Traits\MocksUuids;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
@@ -22,6 +16,8 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationServiceTest extends TestCase
 {
+    use MocksUuids;
+
     /**
      * @var \Illuminate\Foundation\Application
      */
@@ -93,9 +89,10 @@ class UserCreationServiceTest extends TestCase
 
         $this->hasher->shouldReceive('make')->with('raw-password')->once()->andReturn('enc-password');
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->hasher->shouldNotReceive('make');
-        $this->passwordService->shouldNotReceive('handle');
-        $this->repository->shouldReceive('create')->with(['password' => 'enc-password'])->once()->andReturn($user);
+        $this->repository->shouldReceive('create')->with([
+            'password' => 'enc-password',
+            'uuid' => $this->getKnownUuid(),
+        ])->once()->andReturn($user);
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
         $this->appMock->shouldReceive('makeWith')->with(AccountCreated::class, [
             'user' => [
@@ -109,6 +106,37 @@ class UserCreationServiceTest extends TestCase
 
         $response = $this->service->handle([
             'password' => 'raw-password',
+        ]);
+
+        $this->assertNotNull($response);
+        $this->assertEquals($user->username, $response->username);
+        $this->assertEquals($user->name_first, 'FirstName');
+    }
+
+    /**
+     * Test that a UUID passed in the submission data is not used when
+     * creating the user.
+     */
+    public function testUuidPassedInDataIsIgnored()
+    {
+        $user = (object) [
+            'name_first' => 'FirstName',
+            'username' => 'user_name',
+        ];
+
+        $this->hasher->shouldReceive('make')->andReturn('enc-password');
+        $this->database->shouldReceive('beginTransaction')->andReturnNull();
+        $this->repository->shouldReceive('create')->with([
+            'password' => 'enc-password',
+            'uuid' => $this->getKnownUuid(),
+        ])->once()->andReturn($user);
+        $this->database->shouldReceive('commit')->andReturnNull();
+        $this->appMock->shouldReceive('makeWith')->andReturnNull();
+        $this->notification->shouldReceive('send')->andReturnNull();
+
+        $response = $this->service->handle([
+            'password' => 'raw-password',
+            'uuid' => 'test-uuid',
         ]);
 
         $this->assertNotNull($response);
@@ -138,6 +166,7 @@ class UserCreationServiceTest extends TestCase
         $this->repository->shouldReceive('create')->with([
             'password' => 'created-enc-password',
             'email' => 'user@example.com',
+            'uuid' => $this->getKnownUuid(),
         ])->once()->andReturn($user);
 
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();

@@ -9,6 +9,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
@@ -16,6 +17,8 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
 {
+    use AvailableLanguages;
+
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
@@ -92,7 +95,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('admin.users.new');
+        return view('admin.users.new', [
+            'languages' => $this->getAvailableLanguages(true),
+        ]);
     }
 
     /**
@@ -103,7 +108,10 @@ class UserController extends Controller
      */
     public function view(User $user)
     {
-        return view('admin.users.view', ['user' => $user]);
+        return view('admin.users.view', [
+            'user' => $user,
+            'languages' => $this->getAvailableLanguages(true),
+        ]);
     }
 
     /**
