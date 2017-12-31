@@ -65,7 +65,7 @@ class DisplayException extends PterodactylException
         if ($request->expectsJson()) {
             return response()->json(Handler::convertToArray($this, [
                 'detail' => $this->getMessage(),
-            ]), 500);
+            ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : 500);
         }
 
         app()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();

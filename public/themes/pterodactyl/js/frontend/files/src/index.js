@@ -63,6 +63,11 @@ class FileManager {
             if (_.isFunction(next)) {
                 return next(new Error('Failed to load file listing.'));
             }
+
+            if ((path !== '' && path !== '/') && jqXHR.status === 404) {
+                return this.list('', next);
+            }
+
             swal({
                 type: 'error',
                 title: 'File Error',

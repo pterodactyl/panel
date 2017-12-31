@@ -173,7 +173,6 @@ return [
         /*
          * Application Service Providers...
          */
-        Pterodactyl\Providers\SettingsServiceProvider::class,
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,

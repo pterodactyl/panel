@@ -3,6 +3,13 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.0-beta.4 (Derelict Dermodactylus)
+### Fixed
+* `[beta.3]` — Fixes a bug with the default environment file that was causing an inability to perform a fresh install when running package discovery.
+* `[beta.3]` — Fixes an edge case caused by the Laravel 5.5 upgrade that would try to perform an in_array check aganist a null value.
+* `[beta.3]` — Fixes a bug that would cause an error when attempting to create a new user on the Panel.
+* `[beta.3]` — Fixes error handling of the settings service provider when no migrations have been run.
+
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
@@ -12,15 +19,17 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes bug that caused incorrect rendering of CPU usage on server graphs due to missing variable.
 * `[beta.2]` — Fixes bug causing schedules to be un-deletable.
 * `[beta.2]` — Fixes bug that prevented the deletion of nodes due to an allocation deletion cascade issue with the SQL schema.
+* `[beta.2]` — Fixes a bug causing eggs not extending other eggs to fail validation.
 
 ### Changed
 * Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
 * Updated core framework to Laravel 5.5. This includes many dependency updates.
 * Certain AWS specific environment keys were changed, this should have minimal impact on users unless you specifically enabled AWS specific features. The renames are: `AWS_KEY -> AWS_ACCESS_KEY_ID`, `AWS_SECRET -> AWS_SECRET_ACCESS_KEY`, `AWS_REGION -> AWS_DEFAULT_REGION`
+* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
 
 ### Added
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
-* Settings are now editable via the Admin CP and override config values where possible.
+* Creating a new node will now requires a SSL connection if the Panel is configured to use SSL as well.
 
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed

@@ -1,17 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Eggs\Variables;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
@@ -68,6 +60,26 @@ class VariableCreationServiceTest extends TestCase
             'user_editable' => true,
             'env_variable' => 'TEST_VAR_123',
             'options' => ['user_viewable', 'user_editable'],
+        ])->once()->andReturn(new EggVariable);
+
+        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
+    }
+
+    /**
+     * Test that an empty (null) value passed in the option key is handled
+     * properly as an array.
+     *
+     * @see https://github.com/Pterodactyl/Panel/issues/841
+     */
+    public function testNullOptionValueIsPassedAsArray()
+    {
+        $data = ['env_variable' => 'TEST_VAR_123', 'options' => null];
+        $this->repository->shouldReceive('create')->with([
+            'egg_id' => 1,
+            'user_viewable' => false,
+            'user_editable' => false,
+            'env_variable' => 'TEST_VAR_123',
+            'options' => null,
         ])->once()->andReturn(new EggVariable);
 
         $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));

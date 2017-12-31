@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Users;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
@@ -96,7 +97,10 @@ class UserCreationService
             $token = $this->passwordService->handle($data['email']);
         }
 
-        $user = $this->repository->create($data);
+        $user = $this->repository->create(array_merge($data, [
+            'uuid' => Uuid::uuid4()->toString(),
+        ]));
+
         $this->connection->commit();
 
         // @todo fire event, handle notification there

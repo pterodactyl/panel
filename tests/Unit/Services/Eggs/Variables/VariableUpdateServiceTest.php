@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Eggs\Variables;
 
@@ -98,6 +91,24 @@ class VariableUpdateServiceTest extends TestCase
             ])->once()->andReturn(true);
 
         $this->assertTrue($this->service->handle($this->model, ['env_variable' => 'TEST_VAR_123']));
+    }
+
+    /**
+     * Test that an empty (null) value passed in the option key is handled
+     * properly as an array.
+     *
+     * @see https://github.com/Pterodactyl/Panel/issues/841
+     */
+    public function testNullOptionValueIsPassedAsArray()
+    {
+        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, [
+                'user_viewable' => false,
+                'user_editable' => false,
+                'options' => null,
+            ])->once()->andReturn(true);
+
+        $this->assertTrue($this->service->handle($this->model, ['options' => null]));
     }
 
     /**

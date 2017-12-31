@@ -32,6 +32,5 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="MAIL_DRIVER" value="array"/>
-        <env name="APP_ENVIRONMENT_ONLY" value="true"/>
     </php>
 </phpunit>

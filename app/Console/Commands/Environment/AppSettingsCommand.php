@@ -66,7 +66,8 @@ class AppSettingsCommand extends Command
                             {--queue= : The queue driver backend to use.}
                             {--redis-host= : Redis host to use for connections.}
                             {--redis-pass= : Password used to connect to redis.}
-                            {--redis-port= : Port to connect to redis over.}';
+                            {--redis-port= : Port to connect to redis over.}
+                            {--disable-settings-ui}';
 
     /**
      * @var array
@@ -135,6 +136,12 @@ class AppSettingsCommand extends Command
             self::ALLOWED_QUEUE_DRIVERS,
             array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
         );
+
+        if ($this->option('disable-settings-ui')) {
+            $this->variables['APP_ENVIRONMENT_ONLY'] = 'true';
+        } else {
+            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
+        }
 
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);

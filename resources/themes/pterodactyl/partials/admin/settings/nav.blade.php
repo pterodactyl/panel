@@ -1,4 +1,7 @@
+@include('partials/admin.settings.notice')
+
 @section('settings::nav')
+    @yield('settings::notice')
     <div class="row">
         <div class="col-xs-12">
             <div class="nav-tabs-custom nav-tabs-floating">

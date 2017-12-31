@@ -1,26 +1,13 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Observers;
 
 use Pterodactyl\Events;
 use Pterodactyl\Models\User;
-use Pterodactyl\Services\Components\UuidService;
 
 class UserObserver
 {
     protected $uuid;
-
-    public function __construct(UuidService $uuid)
-    {
-        $this->uuid = $uuid;
-    }
 
     /**
      * Listen to the User creating event.
@@ -29,8 +16,6 @@ class UserObserver
      */
     public function creating(User $user)
     {
-        $user->uuid = $this->uuid->generate('users', 'uuid');
-
         event(new Events\User\Creating($user));
     }
 

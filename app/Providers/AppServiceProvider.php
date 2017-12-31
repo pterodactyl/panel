@@ -31,6 +31,18 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register application service providers.
+     */
+    public function register()
+    {
+        // Only load the settings service provider if the environment
+        // is configured to allow it.
+        if (! config('pterodactyl.load_environment_only', false) && $this->app->environment() !== 'testing') {
+            $this->app->register(SettingsServiceProvider::class);
+        }
+    }
+
+    /**
      * Return version information for the footer.
      *
      * @return array

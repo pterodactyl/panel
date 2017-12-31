@@ -51,6 +51,17 @@
                             <input readonly type="text" name="name_last" value="{{ $user->name_last }}" class="form-control form-autocomplete-stop">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Default Langauge</label>
+                        <div>
+                            <select name="language" class="form-control">
+                                @foreach($languages as $key => $value)
+                                    <option value="{{ $key }}" @if($user->language === $key) selected @endif>{{ $value }}</option>
+                                @endforeach
+                            </select>
+                            <p class="text-muted"><small>The default language to use when rendering the Panel for this user.</small></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
@@ -101,25 +112,24 @@
             </div>
         </div>
     </form>
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Associated Servers</h3>
-            </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th style="width:2%;"></th>
-                            <th>Identifier</th>
-                            <th>Server Name</th>
-                            <th>Access</th>
-                            <th>Node</th>
-                            <th style="width:10%;"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        Oh dear, this hasn't been fixed yet?
+    {{--<div class="col-xs-12">--}}
+        {{--<div class="box">--}}
+            {{--<div class="box-header with-border">--}}
+                {{--<h3 class="box-title">Associated Servers</h3>--}}
+            {{--</div>--}}
+            {{--<div class="box-body table-responsive no-padding">--}}
+                {{--<table class="table table-hover">--}}
+                    {{--<thead>--}}
+                        {{--<tr>--}}
+                            {{--<th style="width:2%;"></th>--}}
+                            {{--<th>Identifier</th>--}}
+                            {{--<th>Server Name</th>--}}
+                            {{--<th>Access</th>--}}
+                            {{--<th>Node</th>--}}
+                            {{--<th style="width:10%;"></th>--}}
+                        {{--</tr>--}}
+                    {{--</thead>--}}
+                    {{--<tbody>--}}
                         {{--@foreach($user->setAccessLevel('subuser')->access()->get() as $server)--}}
                             {{--<tr>--}}
                                 {{--<td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>--}}
@@ -136,12 +146,11 @@
                                 {{--<td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>--}}
                             {{--</td>--}}
                         {{--@endforeach--}}
-                    </tbody>
-                </table>
-            </div>
-            </form>
-        </div>
-    </div>
+                    {{--</tbody>--}}
+                {{--</table>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
     <div class="col-xs-12">
         <div class="box box-danger">
             <div class="box-header with-border">
