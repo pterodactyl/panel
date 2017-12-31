@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs\Variables;
 
@@ -69,7 +62,7 @@ class VariableUpdateService
             }
         }
 
-        $options = array_get($data, 'options', []);
+        $options = array_get($data, 'options') ?? [];
 
         return $this->repository->withoutFresh()->update($variable->id, array_merge($data, [
             'user_viewable' => in_array('user_viewable', $options),
