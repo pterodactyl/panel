@@ -10,6 +10,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.3]` — Fixes a bug that would cause an error when attempting to create a new user on the Panel.
 * `[beta.3]` — Fixes error handling of the settings service provider when no migrations have been run.
 
+### Added
+* Nest and Egg listings now show the associated ID in order to make API requests easier.
+
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
