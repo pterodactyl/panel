@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Providers;
 
+use Illuminate\Contracts\Logging\Log;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -60,9 +62,10 @@ class SettingsServiceProvider extends ServiceProvider
      *
      * @param \Illuminate\Contracts\Config\Repository                       $config
      * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
+     * @param \Illuminate\Contracts\Logging\Log                             $log
      * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, SettingsRepositoryInterface $settings)
+    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings)
     {
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.
@@ -70,9 +73,15 @@ class SettingsServiceProvider extends ServiceProvider
             $this->keys = array_merge($this->keys, $this->emailKeys);
         }
 
-        $values = $settings->all()->mapWithKeys(function ($setting) {
-            return [$setting->key => $setting->value];
-        })->toArray();
+        try {
+            $values = $settings->all()->mapWithKeys(function ($setting) {
+                return [$setting->key => $setting->value];
+            })->toArray();
+        } catch (QueryException $exception) {
+            $log->notice('A query exception was encountered while trying to load settings from the database.');
+
+            return;
+        }
 
         foreach ($this->keys as $key) {
             $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
