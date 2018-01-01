@@ -7,34 +7,21 @@ use Pterodactyl\Models\User;
 class UserFormRequest extends AdminFormRequest
 {
     /**
-     * {@inheritdoc}
+     * Rules to apply to requests for updating or creating a user
+     * in the Admin CP.
      */
     public function rules()
     {
+        $rules = collect(User::getCreateRules());
         if ($this->method() === 'PATCH') {
-            $rules = User::getUpdateRulesForId($this->route()->parameter('user')->id);
-
-            return array_merge($rules, [
-                'ignore_connection_error' => 'sometimes|nullable|boolean',
+            $rules = collect(User::getUpdateRulesForId($this->route()->parameter('user')->id))->merge([
+                'ignore_connection_error' => ['sometimes', 'nullable', 'boolean'],
             ]);
         }
 
-        return User::getCreateRules();
-    }
-
-    /**
-     * @param array|null $only
-     * @return array
-     */
-    public function normalize(array $only = null)
-    {
-        if ($this->method === 'PATCH') {
-            return array_merge(
-                $this->all(['password']),
-                $this->only(['email', 'username', 'name_first', 'name_last', 'root_admin', 'language', 'ignore_connection_error'])
-            );
-        }
-
-        return parent::normalize();
+        return $rules->only([
+            'email', 'username', 'name_first', 'name_last', 'password',
+            'language', 'ignore_connection_error', 'root_admin',
+        ])->toArray();
     }
 }

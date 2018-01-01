@@ -4,11 +4,11 @@ namespace Tests\Unit\Services;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\User;
 use Tests\Traits\MocksUuids;
-use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Notifications\ChannelManager;
+use Illuminate\Support\Facades\Notification;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
@@ -19,39 +19,24 @@ class UserCreationServiceTest extends TestCase
     use MocksUuids;
 
     /**
-     * @var \Illuminate\Foundation\Application
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
-    protected $appMock;
+    private $connection;
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Contracts\Hashing\Hasher|\Mockery\Mock
      */
-    protected $database;
+    private $hasher;
 
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \Pterodactyl\Services\Helpers\TemporaryPasswordService|\Mockery\Mock
      */
-    protected $hasher;
+    private $passwordService;
 
     /**
-     * @var \Illuminate\Notifications\ChannelManager
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
-    protected $notification;
-
-    /**
-     * @var \Pterodactyl\Services\Helpers\TemporaryPasswordService
-     */
-    protected $passwordService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    protected $service;
+    private $repository;
 
     /**
      * Setup tests.
@@ -60,21 +45,11 @@ class UserCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->appMock = m::mock(Application::class);
-        $this->database = m::mock(ConnectionInterface::class);
+        Notification::fake();
+        $this->connection = m::mock(ConnectionInterface::class);
         $this->hasher = m::mock(Hasher::class);
-        $this->notification = m::mock(ChannelManager::class);
         $this->passwordService = m::mock(TemporaryPasswordService::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
-
-        $this->service = new UserCreationService(
-            $this->appMock,
-            $this->notification,
-            $this->database,
-            $this->hasher,
-            $this->passwordService,
-            $this->repository
-        );
     }
 
     /**
@@ -82,35 +57,27 @@ class UserCreationServiceTest extends TestCase
      */
     public function testUserIsCreatedWhenPasswordIsProvided()
     {
-        $user = (object) [
-            'name_first' => 'FirstName',
-            'username' => 'user_name',
-        ];
+        $user = factory(User::class)->make();
 
         $this->hasher->shouldReceive('make')->with('raw-password')->once()->andReturn('enc-password');
-        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->with([
             'password' => 'enc-password',
             'uuid' => $this->getKnownUuid(),
-        ])->once()->andReturn($user);
-        $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-        $this->appMock->shouldReceive('makeWith')->with(AccountCreated::class, [
-            'user' => [
-                'name' => 'FirstName',
-                'username' => 'user_name',
-                'token' => null,
-            ],
-        ])->once()->andReturnNull();
+        ], true, true)->once()->andReturn($user);
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->notification->shouldReceive('send')->with($user, null)->once()->andReturnNull();
-
-        $response = $this->service->handle([
+        $response = $this->getService()->handle([
             'password' => 'raw-password',
         ]);
 
         $this->assertNotNull($response);
-        $this->assertEquals($user->username, $response->username);
-        $this->assertEquals($user->name_first, 'FirstName');
+        Notification::assertSentTo($user, AccountCreated::class, function ($notification) use ($user) {
+            $this->assertSame($user, $notification->user);
+            $this->assertNull($notification->token);
+
+            return true;
+        });
     }
 
     /**
@@ -119,29 +86,29 @@ class UserCreationServiceTest extends TestCase
      */
     public function testUuidPassedInDataIsIgnored()
     {
-        $user = (object) [
-            'name_first' => 'FirstName',
-            'username' => 'user_name',
-        ];
+        $user = factory(User::class)->make();
 
         $this->hasher->shouldReceive('make')->andReturn('enc-password');
-        $this->database->shouldReceive('beginTransaction')->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->andReturnNull();
         $this->repository->shouldReceive('create')->with([
             'password' => 'enc-password',
             'uuid' => $this->getKnownUuid(),
-        ])->once()->andReturn($user);
-        $this->database->shouldReceive('commit')->andReturnNull();
-        $this->appMock->shouldReceive('makeWith')->andReturnNull();
-        $this->notification->shouldReceive('send')->andReturnNull();
+        ], true, true)->once()->andReturn($user);
+        $this->connection->shouldReceive('commit')->andReturnNull();
 
-        $response = $this->service->handle([
+        $response = $this->getService()->handle([
             'password' => 'raw-password',
             'uuid' => 'test-uuid',
         ]);
 
         $this->assertNotNull($response);
-        $this->assertEquals($user->username, $response->username);
-        $this->assertEquals($user->name_first, 'FirstName');
+        $this->assertInstanceOf(User::class, $response);
+        Notification::assertSentTo($user, AccountCreated::class, function ($notification) use ($user) {
+            $this->assertSame($user, $notification->user);
+            $this->assertNull($notification->token);
+
+            return true;
+        });
     }
 
     /**
@@ -149,44 +116,42 @@ class UserCreationServiceTest extends TestCase
      */
     public function testUserIsCreatedWhenNoPasswordIsProvided()
     {
-        $user = (object) [
-            'name_first' => 'FirstName',
-            'username' => 'user_name',
-            'email' => 'user@example.com',
-        ];
+        $user = factory(User::class)->make();
 
         $this->hasher->shouldNotReceive('make');
-        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->hasher->shouldReceive('make')->once()->andReturn('created-enc-password');
-        $this->passwordService->shouldReceive('handle')
-            ->with('user@example.com')
-            ->once()
-            ->andReturn('random-token');
+        $this->passwordService->shouldReceive('handle')->with($user->email)->once()->andReturn('random-token');
 
         $this->repository->shouldReceive('create')->with([
             'password' => 'created-enc-password',
-            'email' => 'user@example.com',
+            'email' => $user->email,
             'uuid' => $this->getKnownUuid(),
-        ])->once()->andReturn($user);
+        ], true, true)->once()->andReturn($user);
 
-        $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-        $this->appMock->shouldReceive('makeWith')->with(AccountCreated::class, [
-            'user' => [
-                'name' => 'FirstName',
-                'username' => 'user_name',
-                'token' => 'random-token',
-            ],
-        ])->once()->andReturnNull();
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->notification->shouldReceive('send')->with($user, null)->once()->andReturnNull();
-
-        $response = $this->service->handle([
-            'email' => 'user@example.com',
+        $response = $this->getService()->handle([
+            'email' => $user->email,
         ]);
 
         $this->assertNotNull($response);
-        $this->assertEquals($user->username, $response->username);
-        $this->assertEquals($user->name_first, 'FirstName');
-        $this->assertEquals($user->email, $response->email);
+        $this->assertInstanceOf(User::class, $response);
+        Notification::assertSentTo($user, AccountCreated::class, function ($notification) use ($user) {
+            $this->assertSame($user, $notification->user);
+            $this->assertSame('random-token', $notification->token);
+
+            return true;
+        });
+    }
+
+    /**
+     * Return a new instance of the service using mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Users\UserCreationService
+     */
+    private function getService(): UserCreationService
+    {
+        return new UserCreationService($this->connection, $this->hasher, $this->passwordService, $this->repository);
     }
 }
