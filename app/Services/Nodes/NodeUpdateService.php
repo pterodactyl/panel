@@ -9,82 +9,71 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class NodeUpdateService
 {
+    use ReturnsUpdatedModels;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface
      */
-    protected $configRepository;
+    private $configRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
-    protected $repository;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    private $repository;
 
     /**
      * UpdateService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface $configurationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface                 $repository
-     * @param \Illuminate\Log\Writer                                                    $writer
      */
     public function __construct(
         ConfigurationRepositoryInterface $configurationRepository,
-        NodeRepositoryInterface $repository,
-        Writer $writer
+        NodeRepositoryInterface $repository
     ) {
         $this->configRepository = $configurationRepository;
         $this->repository = $repository;
-        $this->writer = $writer;
     }
 
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param int|\Pterodactyl\Models\Node $node
-     * @param array                        $data
-     * @return mixed
+     * @param \Pterodactyl\Models\Node $node
+     * @param array                    $data
+     * @return \Pterodactyl\Models\Node|mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($node, array $data)
+    public function handle(Node $node, array $data)
     {
-        if (! $node instanceof Node) {
-            $node = $this->repository->find($node);
-        }
-
         if (! is_null(array_get($data, 'reset_secret'))) {
-            $data['daemonSecret'] = str_random(NodeCreationService::DAEMON_SECRET_LENGTH);
+            $data['daemonSecret'] = str_random(Node::DAEMON_SECRET_LENGTH);
             unset($data['reset_secret']);
         }
 
-        $updateResponse = $this->repository->withoutFresh()->update($node->id, $data);
+        if ($this->getUpdatedModel()) {
+            $response = $this->repository->update($node->id, $data);
+        } else {
+            $response = $this->repository->withoutFresh()->update($node->id, $data);
+        }
 
         try {
             $this->configRepository->setNode($node->id)->update();
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
-            throw new DisplayException(trans('exceptions.node.daemon_off_config_updated', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
 
-        return $updateResponse;
+        return $response;
     }
 }

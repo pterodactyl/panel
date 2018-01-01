@@ -84,16 +84,17 @@ class NodeUpdateServiceTest extends TestCase
         $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
             ->expects($this->once())->willReturn('random_string');
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->node->id, [
-                'name' => 'NewName',
-                'daemonSecret' => 'random_string',
-            ])->andReturn(true);
+        $this->repository->->shouldReceive('update')->with($this->node->id, [
+            'name' => 'NewName',
+            'daemonSecret' => 'random_string',
+        ])->andReturn($this->node);
 
         $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
             ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
 
-        $this->assertTrue($this->service->handle($this->node, ['name' => 'NewName', 'reset_secret' => true]));
+        $response = $this->service->handle($this->node, ['name' => 'NewName', 'reset_secret' => true]);
+        $this->assertInstanceOf(Node::class, $response);
+        $this->assertSame($this->node, $response);
     }
 
     /**
@@ -101,15 +102,16 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testNodeIsUpdatedAndDaemonSecretIsNotChanged()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->node->id, [
-                'name' => 'NewName',
-            ])->andReturn(true);
+        $this->repository->shouldReceive('update')->with($this->node->id, [
+            'name' => 'NewName',
+        ])->andReturn($this->node);
 
         $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
             ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
 
-        $this->assertTrue($this->service->handle($this->node, ['name' => 'NewName']));
+        $response = $this->service->handle($this->node, ['name' => 'NewName']);
+        $this->assertInstanceOf(Node::class, $response);
+        $this->assertSame($this->node, $response);
     }
 
     /**
@@ -117,8 +119,7 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testExceptionCausedByDaemonIsHandled()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->node->id, [
+        $this->repository->->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
             ])->andReturn(true);
 

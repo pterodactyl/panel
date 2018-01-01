@@ -11,6 +11,7 @@ namespace Pterodactyl\Exceptions;
 
 use Log;
 use Throwable;
+use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
 
 class DisplayException extends PterodactylException
@@ -65,7 +66,7 @@ class DisplayException extends PterodactylException
         if ($request->expectsJson()) {
             return response()->json(Handler::convertToArray($this, [
                 'detail' => $this->getMessage(),
-            ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : 500);
+            ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         app()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();

@@ -146,13 +146,17 @@ class UserController extends Controller
             }
         }
 
-        return $this->fractal->item($collection->get('user'))
+        $response = $this->fractal->item($collection->get('model'))
             ->transformWith(new UserTransformer($request))
-            ->withResourceName('user')
-            ->addMeta([
+            ->withResourceName('user');
+
+        if (count($errors) > 0) {
+            $response->addMeta([
                 'revocation_errors' => $errors,
-            ])
-            ->toArray();
+            ]);
+        }
+
+        return $response->toArray();
     }
 
     /**

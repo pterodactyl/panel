@@ -4,11 +4,13 @@ namespace Pterodactyl\Models;
 
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -23,7 +25,9 @@ class User extends Model implements
     CleansAttributes,
     ValidableContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
+    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Eloquence, Notifiable, Validable {
+        gatherRules as eloquenceGatherRules;
+    }
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
@@ -138,10 +142,22 @@ class User extends Model implements
         'name_last' => 'string|between:1,255',
         'password' => 'nullable|string',
         'root_admin' => 'boolean',
-        'language' => 'string|between:2,5',
+        'language' => 'string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
     ];
+
+    /**
+     * Implement language verification by overriding Eloquence's gather
+     * rules function.
+     */
+    protected static function gatherRules()
+    {
+        $rules = self::eloquenceGatherRules();
+        $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
+
+        return $rules;
+    }
 
     /**
      * Send the password reset notification.
