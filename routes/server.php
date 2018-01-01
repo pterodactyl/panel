@@ -52,7 +52,7 @@ Route::group(['prefix' => 'databases'], function () {
 Route::group(['prefix' => 'files'], function () {
     Route::get('/', 'Files\FileActionsController@index')->name('server.files.index');
     Route::get('/add', 'Files\FileActionsController@create')->name('server.files.add');
-    Route::get('/edit/{file}', 'Files\FileActionsController@update')->name('server.files.edit')->where('file', '.*');
+    Route::get('/edit/{file}', 'Files\FileActionsController@view')->name('server.files.edit')->where('file', '.*');
     Route::get('/download/{file}', 'Files\DownloadController@index')->name('server.files.edit')->where('file', '.*');
 
     Route::post('/directory-list', 'Files\RemoteRequestController@directory')->name('server.files.directory-list');
