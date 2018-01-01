@@ -95,9 +95,9 @@ class DetailsModificationService
 
         $this->connection->beginTransaction();
         $this->repository->withoutFresh()->update($server->id, [
-            'owner_id' => array_get($data, 'owner_id') ?? $server->owner_id,
-            'name' => array_get($data, 'name') ?? $server->name,
-            'description' => array_get($data, 'description') ?? $server->description,
+            'owner_id' => array_get($data, 'owner_id'),
+            'name' => array_get($data, 'name'),
+            'description' => array_get($data, 'description', ''),
         ], true, true);
 
         if (array_get($data, 'owner_id') != $server->owner_id) {
