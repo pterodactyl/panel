@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
@@ -113,6 +106,7 @@ class BuildModificationService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($server, array $data)
     {
@@ -138,11 +132,11 @@ class BuildModificationService
         }
 
         $server = $this->repository->update($server->id, [
-            'memory' => array_get($data, 'memory', $server->memory),
-            'swap' => array_get($data, 'swap', $server->swap),
-            'io' => array_get($data, 'io', $server->io),
-            'cpu' => array_get($data, 'cpu', $server->cpu),
-            'disk' => array_get($data, 'disk', $server->disk),
+            'memory' => (int) array_get($data, 'memory', $server->memory),
+            'swap' => (int) array_get($data, 'swap', $server->swap),
+            'io' => (int) array_get($data, 'io', $server->io),
+            'cpu' => (int) array_get($data, 'cpu', $server->cpu),
+            'disk' => (int) array_get($data, 'disk', $server->disk),
             'allocation_id' => array_get($data, 'allocation_id', $server->allocation_id),
         ]);
 
