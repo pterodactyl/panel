@@ -12,6 +12,7 @@ namespace Pterodactyl\Http\Requests\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -80,7 +81,12 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
                 ->setAccessToken($token)
                 ->getFileStat($this->route()->parameter('file'));
         } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
+            switch ($exception->getCode()) {
+                case 404:
+                    throw new NotFoundHttpException;
+                default:
+                    throw new DaemonConnectionException($exception);
+            }
         }
 
         if (! $stats->file || ! in_array($stats->mime, $config->get('pterodactyl.files.editable'))) {

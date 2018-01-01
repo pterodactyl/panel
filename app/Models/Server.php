@@ -76,7 +76,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'owner_id' => 'exists:users,id',
         'name' => 'regex:/^([\w .-]{1,200})$/',
         'node_id' => 'exists:nodes,id',
-        'description' => 'nullable|string',
+        'description' => 'string',
         'memory' => 'numeric|min:0',
         'swap' => 'numeric|min:-1',
         'io' => 'numeric|between:10,1000',

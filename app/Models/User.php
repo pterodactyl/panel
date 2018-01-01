@@ -115,6 +115,7 @@ class User extends Model implements
      * @var array
      */
     protected static $applicationRules = [
+        'uuid' => 'required',
         'email' => 'required',
         'username' => 'required',
         'name_first' => 'required',
@@ -130,6 +131,7 @@ class User extends Model implements
      * @var array
      */
     protected static $dataIntegrityRules = [
+        'uuid' => 'string|size:36|unique:users,uuid',
         'email' => 'email|unique:users,email',
         'username' => 'alpha_dash|between:1,255|unique:users,username',
         'name_first' => 'string|between:1,255',

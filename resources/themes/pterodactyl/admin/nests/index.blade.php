@@ -38,6 +38,7 @@
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tr>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th class="text-center">Eggs</th>
@@ -46,11 +47,12 @@
                     </tr>
                     @foreach($nests as $nest)
                         <tr>
+                            <td class="middle"><code>{{ $nest->id }}</code></td>
                             <td class="middle"><a href="{{ route('admin.nests.view', $nest->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $nest->author }}">{{ $nest->name }}</a></td>
                             <td class="col-xs-6 middle">{{ $nest->description }}</td>
-                            <td class="text-center middle"><code>{{ $nest->eggs_count }}</code></td>
-                            <td class="text-center middle"><code>{{ $nest->packs_count }}</code></td>
-                            <td class="text-center middle"><code>{{ $nest->servers_count }}</code></td>
+                            <td class="text-center middle">{{ $nest->eggs_count }}</td>
+                            <td class="text-center middle">{{ $nest->packs_count }}</td>
+                            <td class="text-center middle">{{ $nest->servers_count }}</td>
                         </tr>
                     @endforeach
                 </table>

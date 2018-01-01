@@ -101,7 +101,7 @@ class RemoteRequestController extends Controller
             $this->repository->setNode($server->node_id)
                 ->setAccessServer($server->uuid)
                 ->setAccessToken($request->attributes->get('server_token'))
-                ->putContent($request->input('file'), $request->input('contents'));
+                ->putContent($request->input('file'), $request->input('contents') ?? '');
 
             return response('', 204);
         } catch (RequestException $exception) {

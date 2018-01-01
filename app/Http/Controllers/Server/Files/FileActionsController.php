@@ -95,11 +95,10 @@ class FileActionsController extends Controller
      * @param string                                                          $file
      * @return \Illuminate\View\View
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateFileContentsFormRequest $request, string $uuid, string $file): View
+    public function view(UpdateFileContentsFormRequest $request, string $uuid, string $file): View
     {
         $server = $request->attributes->get('server');
 
