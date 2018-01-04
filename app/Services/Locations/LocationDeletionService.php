@@ -10,6 +10,7 @@
 namespace Pterodactyl\Services\Locations;
 
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Location;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
@@ -43,15 +44,16 @@ class LocationDeletionService
     /**
      * Delete an existing location.
      *
-     * @param int $location
+     * @param int|\Pterodactyl\Models\Location $location
      * @return int|null
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
     public function handle($location)
     {
-        Assert::integerish($location, 'First argument passed to handle must be numeric, received %s.');
+        $location = ($location instanceof Location) ? $location->id : $location;
+
+        Assert::integerish($location, 'First argument passed to handle must be numeric or an instance of ' . Location::class . ', received %s.');
 
         $count = $this->nodeRepository->findCountWhere([['location_id', '=', $location]]);
         if ($count > 0) {

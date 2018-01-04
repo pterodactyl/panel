@@ -78,16 +78,11 @@ class UserController extends Controller
     {
         $users = $this->repository->all(config('pterodactyl.paginate.api.users'));
 
-        $fractal = $this->fractal->collection($users)
+        return $this->fractal->collection($users)
             ->transformWith(new UserTransformer($request))
             ->withResourceName('user')
-            ->paginateWith(new IlluminatePaginatorAdapter($users));
-
-        if (config('pterodactyl.api.include_on_list') && $request->filled('include')) {
-            $fractal->parseIncludes(explode(',', $request->input('include')));
-        }
-
-        return $fractal->toArray();
+            ->paginateWith(new IlluminatePaginatorAdapter($users))
+            ->toArray();
     }
 
     /**
@@ -100,15 +95,10 @@ class UserController extends Controller
      */
     public function view(Request $request, User $user): array
     {
-        $fractal = $this->fractal->item($user)
+        return $this->fractal->item($user)
             ->transformWith(new UserTransformer($request))
-            ->withResourceName('user');
-
-        if ($request->filled('include')) {
-            $fractal->parseIncludes(explode(',', $request->input('include')));
-        }
-
-        return $fractal->toArray();
+            ->withResourceName('user')
+            ->toArray();
     }
 
     /**

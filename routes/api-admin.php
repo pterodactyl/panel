@@ -35,3 +35,21 @@ Route::group(['prefix' => '/nodes'], function () {
 
     Route::delete('/{node}', 'Nodes\NodeController@delete')->name('api.admin.node.delete');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/admin/locations
+|
+*/
+Route::group(['prefix' => '/locations'], function () {
+    Route::get('/', 'Locations\LocationController@index')->name('api.admin.location.list');
+    Route::get('/{location}', 'Locations\LocationController@view')->name('api.admin.location.view');
+
+    Route::post('/', 'Locations\LocationController@store')->name('api.admin.location.store');
+    Route::patch('/{location}', 'Locations\LocationController@update')->name('api.admin.location.update');
+
+    Route::delete('/{location}', 'Locations\LocationController@delete')->name('api.admin.location.delete');
+});
