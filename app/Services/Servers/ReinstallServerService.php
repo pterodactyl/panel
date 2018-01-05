@@ -72,7 +72,7 @@ class ReinstallServerService
         }
 
         $this->database->beginTransaction();
-        $this->repository->withoutFresh()->update($server->id, [
+        $this->repository->withoutFreshModel()->update($server->id, [
             'installed' => 0,
         ]);
 

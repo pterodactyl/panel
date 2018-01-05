@@ -43,7 +43,7 @@ class PermissionServiceTest extends TestCase
      */
     public function test_create_function()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('create')->with(['key_id' => 1, 'permission' => 'test-permission'])
             ->once()->andReturn(true);
 

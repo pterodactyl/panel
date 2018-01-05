@@ -45,7 +45,7 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testVariableIsUpdatedWhenNoEnvironmentVariableIsPassed()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, [
                 'user_viewable' => false,
                 'user_editable' => false,
@@ -61,7 +61,7 @@ class VariableUpdateServiceTest extends TestCase
     public function testVariableIdCanBePassedInPlaceOfModel()
     {
         $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, [
                 'user_viewable' => false,
                 'user_editable' => false,
@@ -83,7 +83,7 @@ class VariableUpdateServiceTest extends TestCase
                 ['id', '!=', $this->model->id],
             ])->once()->andReturn(0);
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, [
                 'user_viewable' => false,
                 'user_editable' => false,
@@ -101,7 +101,7 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testNullOptionValueIsPassedAsArray()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, [
                 'user_viewable' => false,
                 'user_editable' => false,
@@ -123,7 +123,7 @@ class VariableUpdateServiceTest extends TestCase
                 ['id', '!=', $this->model->id],
             ])->once()->andReturn(0);
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, [
                 'user_viewable' => false,
                 'user_editable' => false,

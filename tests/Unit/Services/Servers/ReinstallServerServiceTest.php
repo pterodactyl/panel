@@ -89,7 +89,7 @@ class ReinstallServerServiceTest extends TestCase
         $this->repository->shouldNotReceive('find');
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, [
                 'installed' => 0,
             ])->once()->andReturnNull();
@@ -110,7 +110,7 @@ class ReinstallServerServiceTest extends TestCase
         $this->repository->shouldReceive('find')->with($this->server->id)->once()->andReturn($this->server);
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, [
                 'installed' => 0,
             ])->once()->andReturnNull();
@@ -129,7 +129,7 @@ class ReinstallServerServiceTest extends TestCase
     public function testExceptionThrownByGuzzleShouldBeReRenderedAsDisplayable()
     {
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, [
                 'installed' => 0,
             ])->once()->andReturnNull();
@@ -161,7 +161,7 @@ class ReinstallServerServiceTest extends TestCase
     public function testExceptionNotThrownByGuzzleShouldNotBeTransformedToDisplayable()
     {
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, [
                 'installed' => 0,
             ])->once()->andReturnNull();

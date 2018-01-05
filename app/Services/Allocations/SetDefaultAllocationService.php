@@ -83,7 +83,7 @@ class SetDefaultAllocationService
         }
 
         $this->connection->beginTransaction();
-        $this->serverRepository->withoutFresh()->update($server->id, ['allocation_id' => $model->id]);
+        $this->serverRepository->withoutFreshModel()->update($server->id, ['allocation_id' => $model->id]);
 
         // Update on the daemon.
         try {

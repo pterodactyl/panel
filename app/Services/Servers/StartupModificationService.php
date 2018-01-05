@@ -91,7 +91,7 @@ class StartupModificationService
             $results = $this->validatorService->handle(array_get($data, 'egg_id', $server->egg_id), array_get($data, 'environment', []));
 
             $results->each(function ($result) use ($server) {
-                $this->serverVariableRepository->withoutFresh()->updateOrCreate([
+                $this->serverVariableRepository->withoutFreshModel()->updateOrCreate([
                     'server_id' => $server->id,
                     'variable_id' => $result->id,
                 ], [

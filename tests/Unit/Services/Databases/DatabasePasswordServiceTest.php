@@ -63,7 +63,7 @@ class DatabasePasswordServiceTest extends TestCase
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->encrypter->shouldReceive('encrypt')->with('test123')->once()->andReturn('enc123');
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->repository->shouldReceive('update')->with($model->id, ['password' => 'enc123'])->once()->andReturn(true);
 
         $this->repository->shouldReceive('dropUser')->with($model->username, $model->remote)->once()->andReturn(true);

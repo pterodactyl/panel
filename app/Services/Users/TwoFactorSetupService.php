@@ -72,7 +72,7 @@ class TwoFactorSetupService
         $secret = $this->google2FA->generateSecretKey($this->config->get('pterodactyl.auth.2fa.bytes'));
         $image = $this->google2FA->getQRCodeGoogleUrl($this->config->get('app.name'), $user->email, $secret);
 
-        $this->repository->withoutFresh()->update($user->id, [
+        $this->repository->withoutFreshModel()->update($user->id, [
             'totp_secret' => $this->encrypter->encrypt($secret),
         ]);
 

@@ -52,7 +52,7 @@ class EggUpdateServiceTest extends TestCase
      */
     public function testEggIsUpdatedWhenNoConfigFromIsProvided()
     {
-        $this->repository->shouldReceive('withoutFresh->update')
+        $this->repository->shouldReceive('withoutFreshModel->update')
             ->with($this->model->id, ['test_field' => 'field_value'])->once()->andReturnNull();
 
         $this->service->handle($this->model, ['test_field' => 'field_value']);
@@ -70,7 +70,7 @@ class EggUpdateServiceTest extends TestCase
             ['id', '=', 1],
         ])->once()->andReturn(1);
 
-        $this->repository->shouldReceive('withoutFresh->update')
+        $this->repository->shouldReceive('withoutFreshModel->update')
             ->with($this->model->id, ['config_from' => 1])->once()->andReturnNull();
 
         $this->service->handle($this->model, ['config_from' => 1]);
@@ -102,7 +102,7 @@ class EggUpdateServiceTest extends TestCase
     public function testIntegerCanBePassedInPlaceOfModel()
     {
         $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->repository->shouldReceive('withoutFresh->update')
+        $this->repository->shouldReceive('withoutFreshModel->update')
             ->with($this->model->id, ['test_field' => 'field_value'])->once()->andReturnNull();
 
         $this->service->handle($this->model->id, ['test_field' => 'field_value']);

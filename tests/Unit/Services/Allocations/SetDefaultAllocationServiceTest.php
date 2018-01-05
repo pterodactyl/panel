@@ -68,7 +68,7 @@ class SetDefaultAllocationServiceTest extends TestCase
 
         $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $model->id]])->once()->andReturn($allocations);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->serverRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverRepository->shouldReceive('update')->with($model->id, [
             'allocation_id' => $allocations->first()->id,
         ])->once()->andReturnNull();
@@ -118,7 +118,7 @@ class SetDefaultAllocationServiceTest extends TestCase
 
         $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $model->id]])->once()->andReturn(collect([$allocation]));
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->serverRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverRepository->shouldReceive('update')->with($model->id, [
             'allocation_id' => $allocation->id,
         ])->once()->andReturnNull();

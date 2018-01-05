@@ -98,7 +98,7 @@ class RunTaskJobTest extends TestCase
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
 
-        $this->scheduleRepository->shouldReceive('withoutFresh->update')->with($schedule->id, [
+        $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
             'last_run_at' => Carbon::now()->toDateTimeString(),
         ])->once()->andReturnNull();
@@ -128,7 +128,7 @@ class RunTaskJobTest extends TestCase
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
 
-        $this->scheduleRepository->shouldReceive('withoutFresh->update')->with($schedule->id, [
+        $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
             'last_run_at' => Carbon::now()->toDateTimeString(),
         ])->once()->andReturnNull();

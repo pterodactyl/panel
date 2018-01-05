@@ -89,7 +89,7 @@ class EggUpdateImporterService
 
         // Update Existing Variables
         collect($parsed->variables)->each(function ($variable) use ($egg) {
-            $this->variableRepository->withoutFresh()->updateOrCreate([
+            $this->variableRepository->withoutFreshModel()->updateOrCreate([
                 'egg_id' => $egg,
                 'env_variable' => $variable->env_variable,
             ], collect($variable)->except(['egg_id', 'env_variable'])->toArray());

@@ -101,7 +101,7 @@ class SuspensionServiceTest extends TestCase
         $this->server->suspended = 0;
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, ['suspended' => true])->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($this->server->node_id)->once()->andReturnSelf()
@@ -120,7 +120,7 @@ class SuspensionServiceTest extends TestCase
         $this->server->suspended = 1;
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, ['suspended' => false])->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($this->server->node_id)->once()->andReturnSelf()
@@ -159,7 +159,7 @@ class SuspensionServiceTest extends TestCase
         $this->server->suspended = 0;
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, ['suspended' => true])->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($this->server->node_id)

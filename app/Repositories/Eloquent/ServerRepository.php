@@ -236,7 +236,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             $instance->whereNotIn('id', $this->getUserAccessServers($user->id));
         }
 
-        return $instance->setSearchTerm($this->getSearchTerm())->paginate(25);
+        return $instance->search($this->getSearchTerm())->paginate(25);
     }
 
     /**

@@ -70,6 +70,6 @@ class PackUpdateService
         $data['visible'] = isset($data['visible']);
         $data['locked'] = isset($data['locked']);
 
-        return $this->repository->withoutFresh()->update($pack->id, $data);
+        return $this->repository->withoutFreshModel()->update($pack->id, $data);
     }
 }

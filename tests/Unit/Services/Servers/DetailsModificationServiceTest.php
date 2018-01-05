@@ -103,7 +103,7 @@ class DetailsModificationServiceTest extends TestCase
         $data = ['owner_id' => 1, 'name' => 'New Name', 'description' => 'New Description'];
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
@@ -129,7 +129,7 @@ class DetailsModificationServiceTest extends TestCase
 
         $this->repository->shouldReceive('find')->with($server->id)->once()->andReturn($server);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
@@ -155,7 +155,7 @@ class DetailsModificationServiceTest extends TestCase
         $data = ['owner_id' => 2, 'name' => 'New Name', 'description' => 'New Description'];
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
@@ -178,7 +178,7 @@ class DetailsModificationServiceTest extends TestCase
         $server = factory(Server::class)->make(['node_id' => 1]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'image' => 'new/image',
             ])->once()->andReturnNull();
@@ -206,7 +206,7 @@ class DetailsModificationServiceTest extends TestCase
 
         $this->repository->shouldReceive('find')->with($server->id)->once()->andReturn($server);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'image' => 'new/image',
             ])->once()->andReturnNull();
@@ -233,7 +233,7 @@ class DetailsModificationServiceTest extends TestCase
         $server = factory(Server::class)->make(['node_id' => 1]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'image' => 'new/image',
             ])->once()->andReturnNull();
@@ -266,7 +266,7 @@ class DetailsModificationServiceTest extends TestCase
         $server = factory(Server::class)->make(['node_id' => 1]);
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($server->id, [
                 'image' => 'new/image',
             ])->once()->andReturnNull();

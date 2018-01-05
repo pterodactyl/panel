@@ -81,7 +81,7 @@ class EggUpdateImporterServiceTest extends TestCase
             'name' => $egg->name,
         ]), true, true)->once()->andReturn($egg);
 
-        $this->variableRepository->shouldReceive('withoutFresh->updateOrCreate')->with([
+        $this->variableRepository->shouldReceive('withoutFreshModel->updateOrCreate')->with([
             'egg_id' => $egg->id,
             'env_variable' => $variable->env_variable,
         ], collect($variable)->except(['egg_id', 'env_variable'])->toArray())->once()->andReturnNull();
@@ -121,7 +121,7 @@ class EggUpdateImporterServiceTest extends TestCase
             'name' => $egg->name,
         ]), true, true)->once()->andReturn($egg);
 
-        $this->variableRepository->shouldReceive('withoutFresh->updateOrCreate')->with([
+        $this->variableRepository->shouldReceive('withoutFreshModel->updateOrCreate')->with([
             'egg_id' => $egg->id,
             'env_variable' => $variable1->env_variable,
         ], collect($variable1)->except(['egg_id', 'env_variable'])->toArray())->once()->andReturnNull();

@@ -81,7 +81,7 @@ class StartupModificationServiceTest extends TestCase
             collect([(object) ['id' => 1, 'value' => 'stored-value']])
         );
 
-        $this->serverVariableRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverVariableRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
             'server_id' => $model->id,
             'variable_id' => 1,
@@ -116,7 +116,7 @@ class StartupModificationServiceTest extends TestCase
             collect([(object) ['id' => 1, 'value' => 'stored-value']])
         );
 
-        $this->serverVariableRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverVariableRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
             'server_id' => $model->id,
             'variable_id' => 1,

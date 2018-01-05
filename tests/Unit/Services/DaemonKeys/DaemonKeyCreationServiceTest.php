@@ -83,7 +83,7 @@ class DaemonKeyCreationServiceTest extends TestCase
             ->shouldReceive('addMinutes')->with(100)->once()->andReturnSelf()
             ->shouldReceive('toDateTimeString')->withNoArgs()->once()->andReturn('00:00:00');
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('create')->with([
                 'user_id' => 1,
                 'server_id' => 2,

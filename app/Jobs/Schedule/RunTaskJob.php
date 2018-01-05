@@ -161,7 +161,7 @@ class RunTaskJob extends Job implements ShouldQueue
     private function markScheduleComplete()
     {
         $repository = app()->make(ScheduleRepositoryInterface::class);
-        $repository->withoutFresh()->update($this->schedule, [
+        $repository->withoutFreshModel()->update($this->schedule, [
             'is_processing' => false,
             'last_run_at' => Carbon::now()->toDateTimeString(),
         ]);

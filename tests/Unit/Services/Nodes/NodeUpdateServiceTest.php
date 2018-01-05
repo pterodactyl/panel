@@ -84,7 +84,7 @@ class NodeUpdateServiceTest extends TestCase
         $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
             ->expects($this->once())->willReturn('random_string');
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
                 'daemonSecret' => 'random_string',
@@ -101,7 +101,7 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testNodeIsUpdatedAndDaemonSecretIsNotChanged()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
             ])->andReturn(true);
@@ -117,7 +117,7 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testExceptionCausedByDaemonIsHandled()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
             ])->andReturn(true);
@@ -144,7 +144,7 @@ class NodeUpdateServiceTest extends TestCase
     public function testFunctionCanAcceptANodeIdInPlaceOfModel()
     {
         $this->repository->shouldReceive('find')->with($this->node->id)->once()->andReturn($this->node);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
             ])->andReturn(true);
