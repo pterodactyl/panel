@@ -76,7 +76,7 @@ class PackDeletionServiceTest extends TestCase
 
         $this->serverRepository->shouldReceive('findCountWhere')->with([['pack_id', '=', $model->id]])->once()->andReturn(0);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturn(1);
         $this->storage->shouldReceive('disk')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('deleteDirectory')->with('packs/' . $model->uuid)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
@@ -91,11 +91,11 @@ class PackDeletionServiceTest extends TestCase
     {
         $model = factory(Pack::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'uuid'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with(['id', 'uuid'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($model->id)->once()->andReturn($model);
         $this->serverRepository->shouldReceive('findCountWhere')->with([['pack_id', '=', $model->id]])->once()->andReturn(0);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturn(1);
         $this->storage->shouldReceive('disk')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('deleteDirectory')->with('packs/' . $model->uuid)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();

@@ -116,7 +116,7 @@ class ServerCreationServiceTest extends TestCase
             'egg_id' => $model->egg_id,
         ]))->once()->andReturn($model);
 
-        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->with($model->id, [$model->allocation_id])->once()->andReturnNull();
+        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->with($model->id, [$model->allocation_id])->once()->andReturn(1);
 
         $this->validatorService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_ADMIN)->once()->andReturnNull();
         $this->validatorService->shouldReceive('handle')->with($model->egg_id, [])->once()->andReturn(
@@ -129,7 +129,7 @@ class ServerCreationServiceTest extends TestCase
                 'variable_id' => 123,
                 'variable_value' => 'var1-value',
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->configurationStructureService->shouldReceive('handle')->with($model)->once()->andReturn(['test' => 'struct']);
 
         $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
@@ -154,7 +154,7 @@ class ServerCreationServiceTest extends TestCase
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->once()->andReturn($model);
-        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturnNull();
+        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturn(1);
         $this->validatorService->shouldReceive('setUserLevel')->once()->andReturnNull();
         $this->validatorService->shouldReceive('handle')->once()->andReturn(collect([]));
         $this->configurationStructureService->shouldReceive('handle')->once()->andReturn([]);

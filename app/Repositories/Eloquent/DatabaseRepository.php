@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
@@ -34,17 +27,17 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      * @param \Illuminate\Foundation\Application   $application
      * @param \Illuminate\Database\DatabaseManager $database
      */
-    public function __construct(
-        Application $application,
-        DatabaseManager $database
-    ) {
+    public function __construct(Application $application, DatabaseManager $database)
+    {
         parent::__construct($application);
 
         $this->database = $database;
     }
 
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -86,18 +79,24 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * {@inheritdoc}
-     * @return bool|\Illuminate\Database\Eloquent\Model
+     * Create a new database if it does not already exist on the host with
+     * the provided details.
+     *
+     * @param array $data
+     * @return \Pterodactyl\Models\Database
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
      */
-    public function createIfNotExists(array $data)
+    public function createIfNotExists(array $data): Database
     {
-        $instance = $this->getBuilder()->where([
+        $count = $this->getBuilder()->where([
             ['server_id', '=', array_get($data, 'server_id')],
             ['database_host_id', '=', array_get($data, 'database_host_id')],
             ['database', '=', array_get($data, 'database')],
         ])->count();
 
-        if ($instance > 0) {
+        if ($count > 0) {
             throw new DuplicateDatabaseNameException('A database with those details already exists for the specified server.');
         }
 
@@ -105,27 +104,40 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * {@inheritdoc}
+     * Create a new database on a given connection.
+     *
+     * @param string $database
+     * @return bool
      */
-    public function createDatabase($database)
+    public function createDatabase(string $database): bool
     {
-        return $this->runStatement(sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database));
+        return $this->run(sprintf('CREATE DATABASE IF NOT EXISTS `%s`', $database));
     }
 
     /**
-     * {@inheritdoc}
+     * Create a new database user on a given connection.
+     *
+     * @param string $username
+     * @param string $remote
+     * @param string $password
+     * @return bool
      */
-    public function createUser($username, $remote, $password)
+    public function createUser(string $username, string $remote, string $password): bool
     {
-        return $this->runStatement(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
+        return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
     }
 
     /**
-     * {@inheritdoc}
+     * Give a specific user access to a given database.
+     *
+     * @param string $database
+     * @param string $username
+     * @param string $remote
+     * @return bool
      */
-    public function assignUserToDatabase($database, $username, $remote)
+    public function assignUserToDatabase(string $database, string $username, string $remote): bool
     {
-        return $this->runStatement(sprintf(
+        return $this->run(sprintf(
             'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, EXECUTE ON `%s`.* TO `%s`@`%s`',
             $database,
             $username,
@@ -134,27 +146,36 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * {@inheritdoc}
+     * Flush the privileges for a given connection.
+     *
+     * @return bool
      */
-    public function flush()
+    public function flush(): bool
     {
-        return $this->runStatement('FLUSH PRIVILEGES');
+        return $this->run('FLUSH PRIVILEGES');
     }
 
     /**
-     * {@inheritdoc}
+     * Drop a given database on a specific connection.
+     *
+     * @param string $database
+     * @return bool
      */
-    public function dropDatabase($database)
+    public function dropDatabase(string $database): bool
     {
-        return $this->runStatement(sprintf('DROP DATABASE IF EXISTS `%s`', $database));
+        return $this->run(sprintf('DROP DATABASE IF EXISTS `%s`', $database));
     }
 
     /**
-     * {@inheritdoc}
+     * Drop a given user on a specific connection.
+     *
+     * @param string $username
+     * @param string $remote
+     * @return mixed
      */
-    public function dropUser($username, $remote)
+    public function dropUser(string $username, string $remote): bool
     {
-        return $this->runStatement(sprintf('DROP USER IF EXISTS `%s`@`%s`', $username, $remote));
+        return $this->run(sprintf('DROP USER IF EXISTS `%s`@`%s`', $username, $remote));
     }
 
     /**
@@ -163,7 +184,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      * @param string $statement
      * @return bool
      */
-    protected function runStatement($statement)
+    private function run(string $statement): bool
     {
         return $this->database->connection($this->getConnection())->statement($statement);
     }

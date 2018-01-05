@@ -352,14 +352,12 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param int $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewDatabase($server)
+    public function viewDatabase(Server $server)
     {
-        $server = $this->repository->getWithDatabases($server);
+        $this->repository->loadDatabaseRelations($server);
 
         return view('admin.servers.view.database', [
             'hosts' => $this->databaseHostRepository->all(),

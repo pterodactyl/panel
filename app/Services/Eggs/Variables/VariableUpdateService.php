@@ -49,7 +49,7 @@ class VariableUpdateService
                 ]));
             }
 
-            $search = $this->repository->withColumns('id')->findCountWhere([
+            $search = $this->repository->setColumns('id')->findCountWhere([
                 ['env_variable', '=', array_get($data, 'env_variable')],
                 ['egg_id', '=', $variable->egg_id],
                 ['id', '!=', $variable->id],

@@ -10,16 +10,15 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
     /**
      * @var array
      */
-    private $cache = [];
+    private static $cache = [];
 
     /**
      * @var array
      */
-    private $databaseMiss = [];
+    private static $databaseMiss = [];
 
     /**
-     * Return an instance of the model that acts as the base for
-     * this repository.
+     * Return the model backing this repository.
      *
      * @return string
      */
@@ -33,12 +32,17 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
      *
      * @param string $key
      * @param string $value
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function set(string $key, string $value)
     {
         // Clear item from the cache.
         $this->clearCache($key);
-        $this->withoutFresh()->updateOrCreate(['key' => $key], ['value' => $value]);
+        $this->withoutFreshModel()->updateOrCreate(['key' => $key], ['value' => $value]);
+
+        self::$cache[$key] = $value;
     }
 
     /**
@@ -51,32 +55,27 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
     public function get(string $key, $default = null)
     {
         // If item has already been requested return it from the cache. If
-        // we already know it is missing, immediately return the default
-        // value.
-        if (array_key_exists($key, $this->cache)) {
-            return $this->cache[$key];
-        } elseif (array_key_exists($key, $this->databaseMiss)) {
-            return $default;
+        // we already know it is missing, immediately return the default value.
+        if (array_key_exists($key, self::$cache)) {
+            return self::$cache[$key];
+        } elseif (array_key_exists($key, self::$databaseMiss)) {
+            return value($default);
         }
 
         $instance = $this->getBuilder()->where('key', $key)->first();
-
         if (is_null($instance)) {
-            $this->databaseMiss[$key] = true;
+            self::$databaseMiss[$key] = true;
 
-            return $default;
+            return value($default);
         }
 
-        $this->cache[$key] = $instance->value;
-
-        return $this->cache[$key];
+        return self::$cache[$key] = $instance->value;
     }
 
     /**
      * Remove a key from the database cache.
      *
      * @param string $key
-     * @return mixed
      */
     public function forget(string $key)
     {
@@ -89,8 +88,8 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
      *
      * @param string $key
      */
-    protected function clearCache(string $key)
+    private function clearCache(string $key)
     {
-        unset($this->cache[$key], $this->databaseMiss[$key]);
+        unset(self::$cache[$key], self::$databaseMiss[$key]);
     }
 }

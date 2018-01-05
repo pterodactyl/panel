@@ -61,7 +61,7 @@ class DeleteUserCommand extends Command
         $search = $this->option('user') ?? $this->ask(trans('command/messages.user.search_users'));
         Assert::notEmpty($search, 'Search term must be a non-null value, received %s.');
 
-        $results = $this->repository->search($search)->all();
+        $results = $this->repository->setSearchTerm($search)->all();
         if (count($results) < 1) {
             $this->error(trans('command/messages.user.no_users_found'));
             if ($this->input->isInteractive()) {

@@ -83,7 +83,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->repository->search($request->input('query'))->getAllUsersWithCounts();
+        $users = $this->repository->setSearchTerm($request->input('query'))->getAllUsersWithCounts();
 
         return view('admin.users.index', ['users' => $users]);
     }

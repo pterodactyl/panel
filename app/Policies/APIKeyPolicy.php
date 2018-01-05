@@ -39,7 +39,7 @@ class APIKeyPolicy
             })->values();
         });
 
-        return $permissions->search($permission, true) !== false;
+        return $permissions->setSearchTerm($permission, true) !== false;
     }
 
     /**

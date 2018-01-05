@@ -85,7 +85,7 @@ class PackUpdateServiceTest extends TestCase
     {
         $model = factory(Pack::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($model->id)->once()->andReturn($model);
         $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
                 'locked' => false,

@@ -68,7 +68,7 @@ class AuthenticateUsingPasswordService
         }
 
         try {
-            $user = $this->userRepository->withColumns(['id', 'root_admin', 'password'])->findFirstWhere([['username', '=', $username]]);
+            $user = $this->userRepository->setColumns(['id', 'root_admin', 'password'])->findFirstWhere([['username', '=', $username]]);
 
             if (! password_verify($password, $user->password)) {
                 throw new AuthenticationException;
@@ -77,7 +77,7 @@ class AuthenticateUsingPasswordService
             throw new AuthenticationException;
         }
 
-        $server = $this->repository->withColumns(['id', 'node_id', 'owner_id', 'uuid'])->getByUuid($server);
+        $server = $this->repository->setColumns(['id', 'node_id', 'owner_id', 'uuid'])->getByUuid($server);
         if ($server->node_id !== $node || (! $user->root_admin && $server->owner_id !== $user->id)) {
             throw new RecordNotFoundException;
         }

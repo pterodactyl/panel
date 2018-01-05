@@ -86,7 +86,7 @@ class SubuserUpdateServiceTest extends TestCase
 
         $this->repository->shouldReceive('loadServerAndUserRelations')->with($subuser)->once()->andReturn($subuser);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->permissionRepository->shouldReceive('deleteWhere')->with([['subuser_id', '=', $subuser->id]])->once()->andReturnNull();
+        $this->permissionRepository->shouldReceive('deleteWhere')->with([['subuser_id', '=', $subuser->id]])->once()->andReturn(1);
         $this->permissionService->shouldReceive('handle')->with($subuser->id, ['some-permission'])->once()->andReturnNull();
 
         $this->keyProviderService->shouldReceive('handle')->with($subuser->server, $subuser->user, false)->once()->andReturn('test123');
@@ -112,7 +112,7 @@ class SubuserUpdateServiceTest extends TestCase
 
         $this->repository->shouldReceive('loadServerAndUserRelations')->with($subuser)->once()->andReturn($subuser);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->permissionRepository->shouldReceive('deleteWhere')->with([['subuser_id', '=', $subuser->id]])->once()->andReturnNull();
+        $this->permissionRepository->shouldReceive('deleteWhere')->with([['subuser_id', '=', $subuser->id]])->once()->andReturn(1);
         $this->permissionService->shouldReceive('handle')->with($subuser->id, [])->once()->andReturnNull();
 
         $this->keyProviderService->shouldReceive('handle')->with($subuser->server, $subuser->user, false)->once()->andReturn('test123');

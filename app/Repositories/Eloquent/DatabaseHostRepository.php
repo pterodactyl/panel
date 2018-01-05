@@ -1,23 +1,19 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Webmozart\Assert\Assert;
+use Illuminate\Support\Collection;
 use Pterodactyl\Models\DatabaseHost;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -25,25 +21,31 @@ class DatabaseHostRepository extends EloquentRepository implements DatabaseHostR
     }
 
     /**
-     * {@inheritdoc}
+     * Return database hosts with a count of databases and the node
+     * information for which it is attached.
+     *
+     * @return \Illuminate\Support\Collection
      */
-    public function getWithViewDetails()
+    public function getWithViewDetails(): Collection
     {
         return $this->getBuilder()->withCount('databases')->with('node')->get();
     }
 
     /**
-     * {@inheritdoc}
+     * Return a database host with the databases and associated servers
+     * that are attached to said databases.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\DatabaseHost
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithServers($id)
+    public function getWithServers(int $id): DatabaseHost
     {
-        Assert::numeric($id, 'First argument passed to getWithServers must be numeric, recieved %s.');
-
-        $instance = $this->getBuilder()->with('databases.server')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        try {
+            return $this->getBuilder()->with('databases.server')->findOrFail($id, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
+            throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 }

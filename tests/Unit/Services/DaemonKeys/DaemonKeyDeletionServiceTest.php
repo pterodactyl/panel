@@ -97,7 +97,7 @@ class DaemonKeyDeletionServiceTest extends TestCase
             ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $this->repository->shouldReceive('delete')->with($key->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($key->id)->once()->andReturn(1);
         $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
             ->shouldReceive('revokeAccessKey')->with($key->secret)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
@@ -121,7 +121,7 @@ class DaemonKeyDeletionServiceTest extends TestCase
             ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $this->repository->shouldReceive('delete')->with($key->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($key->id)->once()->andReturn(1);
         $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
             ->shouldReceive('revokeAccessKey')->with($key->secret)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
@@ -144,7 +144,7 @@ class DaemonKeyDeletionServiceTest extends TestCase
             ['server_id', '=', $server->id],
         ])->once()->andReturn($key);
 
-        $this->repository->shouldReceive('delete')->with($key->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($key->id)->once()->andReturn(1);
         $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($this->exception);
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
         $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();

@@ -76,7 +76,7 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testVariableIsUpdatedWhenValidEnvironmentVariableIsPassed()
     {
-        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['egg_id', '=', $this->model->option_id],
@@ -116,7 +116,7 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testDataPassedIntoHandlerTakesLowerPriorityThanDataSet()
     {
-        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['egg_id', '=', $this->model->option_id],
@@ -138,7 +138,7 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsNotUnique()
     {
-        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['egg_id', '=', $this->model->option_id],

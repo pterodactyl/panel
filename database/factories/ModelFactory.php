@@ -186,6 +186,7 @@ $factory->define(Pterodactyl\Models\Database::class, function (Faker $faker) {
         'database_host_id' => $faker->randomNumber(),
         'database' => str_random(10),
         'username' => str_random(10),
+        'remote' => '%',
         'password' => $password ?: bcrypt('test123'),
         'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
         'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),

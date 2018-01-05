@@ -86,8 +86,8 @@ class EggUpdateImporterServiceTest extends TestCase
             'env_variable' => $variable->env_variable,
         ], collect($variable)->except(['egg_id', 'env_variable'])->toArray())->once()->andReturnNull();
 
-        $this->variableRepository->shouldReceive('withColumns')->with(['id', 'env_variable'])->once()->andReturnSelf()
-            ->shouldReceive('findWhere')->with([['egg_id', '=', $egg->id]])->once()->andReturn([$variable]);
+        $this->variableRepository->shouldReceive('setColumns')->with(['id', 'env_variable'])->once()->andReturnSelf()
+            ->shouldReceive('findWhere')->with([['egg_id', '=', $egg->id]])->once()->andReturn(collect([$variable]));
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
@@ -126,13 +126,13 @@ class EggUpdateImporterServiceTest extends TestCase
             'env_variable' => $variable1->env_variable,
         ], collect($variable1)->except(['egg_id', 'env_variable'])->toArray())->once()->andReturnNull();
 
-        $this->variableRepository->shouldReceive('withColumns')->with(['id', 'env_variable'])->once()->andReturnSelf()
-            ->shouldReceive('findWhere')->with([['egg_id', '=', $egg->id]])->once()->andReturn([$variable1, $variable2]);
+        $this->variableRepository->shouldReceive('setColumns')->with(['id', 'env_variable'])->once()->andReturnSelf()
+            ->shouldReceive('findWhere')->with([['egg_id', '=', $egg->id]])->once()->andReturn(collect([$variable1, $variable2]));
 
         $this->variableRepository->shouldReceive('deleteWhere')->with([
             ['egg_id', '=', $egg->id],
             ['env_variable', '=', $variable2->env_variable],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(1);
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 

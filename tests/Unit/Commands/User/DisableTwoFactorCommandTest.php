@@ -47,7 +47,7 @@ class DisableTwoFactorCommandTest extends CommandTestCase
     {
         $user = factory(User::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'email'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with(['id', 'email'])->once()->andReturnSelf()
             ->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($user->id, [
@@ -68,7 +68,7 @@ class DisableTwoFactorCommandTest extends CommandTestCase
     {
         $user = factory(User::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'email'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with(['id', 'email'])->once()->andReturnSelf()
             ->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($user->id, [

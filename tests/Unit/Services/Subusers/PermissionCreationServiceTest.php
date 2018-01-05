@@ -48,7 +48,7 @@ class PermissionCreationServiceTest extends TestCase
             ->shouldReceive('insert')->with([
                 ['subuser_id' => 1, 'permission' => 'reset-sftp'],
                 ['subuser_id' => 1, 'permission' => 'view-sftp'],
-            ])->once()->andReturnNull();
+            ])->once()->andReturn(true);
 
         $this->service->handle(1, $permissions);
         $this->assertTrue(true);

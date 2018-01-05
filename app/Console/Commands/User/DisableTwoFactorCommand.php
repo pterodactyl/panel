@@ -54,7 +54,7 @@ class DisableTwoFactorCommand extends Command
         }
 
         $email = $this->option('email') ?? $this->ask(trans('command/messages.user.ask_email'));
-        $user = $this->repository->withColumns(['id', 'email'])->findFirstWhere([['email', '=', $email]]);
+        $user = $this->repository->setColumns(['id', 'email'])->findFirstWhere([['email', '=', $email]]);
 
         $this->repository->withoutFresh()->update($user->id, [
             'use_totp' => false,

@@ -32,7 +32,7 @@ class ServerPolicy
             })->values();
         });
 
-        return $permissions->search($permission, true) !== false;
+        return $permissions->setSearchTerm($permission, true) !== false;
     }
 
     /**

@@ -66,11 +66,11 @@ class DatabasePasswordServiceTest extends TestCase
         $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
         $this->repository->shouldReceive('update')->with($model->id, ['password' => 'enc123'])->once()->andReturn(true);
 
-        $this->repository->shouldReceive('dropUser')->with($model->username, $model->remote)->once()->andReturnNull();
-        $this->repository->shouldReceive('createUser')->with($model->username, $model->remote, 'test123')->once()->andReturnNull();
-        $this->repository->shouldReceive('assignUserToDatabase')->with($model->database, $model->username, $model->remote)->once()->andReturnNull();
-        $this->repository->shouldReceive('flush')->withNoArgs()->once()->andReturnNull();
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('dropUser')->with($model->username, $model->remote)->once()->andReturn(true);
+        $this->repository->shouldReceive('createUser')->with($model->username, $model->remote, 'test123')->once()->andReturn(true);
+        $this->repository->shouldReceive('assignUserToDatabase')->with($model->database, $model->username, $model->remote)->once()->andReturn(true);
+        $this->repository->shouldReceive('flush')->withNoArgs()->once()->andReturn(true);
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturn(true);
 
         $response = $this->getService()->handle($useModel ? $model : 1234, 'test123');
         $this->assertNotEmpty($response);

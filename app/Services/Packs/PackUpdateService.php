@@ -54,7 +54,7 @@ class PackUpdateService
     public function handle($pack, array $data)
     {
         if (! $pack instanceof Pack) {
-            $pack = $this->repository->withColumns(['id', 'egg_id'])->find($pack);
+            $pack = $this->repository->setColumns(['id', 'egg_id'])->find($pack);
         }
 
         if ((int) array_get($data, 'egg_id', $pack->egg_id) !== $pack->egg_id) {

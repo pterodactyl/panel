@@ -103,7 +103,7 @@ class FileActionsControllerTest extends ControllerTestCase
             ->shouldReceive('setAccessToken')->with('abc123')->once()->andReturnSelf()
             ->shouldReceive('getContent')->with($file)->once()->andReturn('file contents');
 
-        $response = $controller->update($this->request, '1234', $file);
+        $response = $controller->view($this->request, '1234', $file);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.files.edit', $response);
         $this->assertViewHasKey('file', $response);
@@ -134,7 +134,7 @@ class FileActionsControllerTest extends ControllerTestCase
         $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($this->getExceptionMock());
 
         try {
-            $controller->update($this->request, '1234', 'file.txt');
+            $controller->view($this->request, '1234', 'file.txt');
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(DaemonConnectionException::class, $exception);
             $this->assertInstanceOf(RequestException::class, $exception->getPrevious());

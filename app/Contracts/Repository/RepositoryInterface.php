@@ -1,13 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository;
+
+use Illuminate\Support\Collection;
 
 interface RepositoryInterface
 {
@@ -42,17 +37,34 @@ interface RepositoryInterface
     /**
      * An array of columns to filter the response by.
      *
-     * @param array $columns
+     * @param array|string $columns
      * @return $this
      */
-    public function withColumns($columns = ['*']);
+    public function setColumns($columns = ['*']);
 
     /**
-     * Disable returning a fresh model when data is inserted or updated.
+     * Stop repository update functions from returning a fresh
+     * model when changes are committed.
      *
      * @return $this
      */
-    public function withoutFresh();
+    public function withoutFreshModel();
+
+    /**
+     * Return a fresh model with a repository updates a model.
+     *
+     * @return $this
+     */
+    public function withFreshModel();
+
+    /**
+     * Set wether or not the repository should return a fresh model
+     * when changes are committed.
+     *
+     * @param bool $fresh
+     * @return $this
+     */
+    public function setFreshModel(bool $fresh = true);
 
     /**
      * Create a new model instance and persist it to the database.
@@ -64,23 +76,7 @@ interface RepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $fields, $validate = true, $force = false);
-
-    /**
-     * Delete a given record from the database.
-     *
-     * @param int $id
-     * @return int
-     */
-    public function delete($id);
-
-    /**
-     * Delete records matching the given attributes.
-     *
-     * @param array $attributes
-     * @return int
-     */
-    public function deleteWhere(array $attributes);
+    public function create(array $fields, bool $validate = true, bool $force = false);
 
     /**
      * Find a model that has the specific ID passed.
@@ -90,15 +86,15 @@ interface RepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function find($id);
+    public function find(int $id);
 
     /**
      * Find a model matching an array of where clauses.
      *
      * @param array $fields
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
-    public function findWhere(array $fields);
+    public function findWhere(array $fields): Collection;
 
     /**
      * Find and return the first matching instance for the given fields.
@@ -116,7 +112,23 @@ interface RepositoryInterface
      * @param array $fields
      * @return int
      */
-    public function findCountWhere(array $fields);
+    public function findCountWhere(array $fields): int;
+
+    /**
+     * Delete a given record from the database.
+     *
+     * @param int $id
+     * @return int
+     */
+    public function delete(int $id): int;
+
+    /**
+     * Delete records matching the given attributes.
+     *
+     * @param array $attributes
+     * @return int
+     */
+    public function deleteWhere(array $attributes): int;
 
     /**
      * Update a given ID with the passed array of fields.
@@ -130,7 +142,7 @@ interface RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update($id, array $fields, $validate = true, $force = false);
+    public function update($id, array $fields, bool $validate = true, bool $force = false);
 
     /**
      * Perform a mass update where matching records are updated using whereIn.
@@ -141,7 +153,7 @@ interface RepositoryInterface
      * @param array  $fields
      * @return int
      */
-    public function updateWhereIn($column, array $values, array $fields);
+    public function updateWhereIn(string $column, array $values, array $fields): int;
 
     /**
      * Update a record if it exists in the database, otherwise create it.
@@ -154,23 +166,14 @@ interface RepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function updateOrCreate(array $where, array $fields, $validate = true, $force = false);
+    public function updateOrCreate(array $where, array $fields, bool $validate = true, bool $force = false);
 
     /**
-     * Update multiple records matching the passed clauses.
+     * Return all records associated with the given model.
      *
-     * @param array $where
-     * @param array $fields
-     * @return mixed
+     * @return Collection
      */
-    public function massUpdate(array $where, array $fields);
-
-    /**
-     * Return all records from the model.
-     *
-     * @return mixed
-     */
-    public function all();
+    public function all(): Collection;
 
     /**
      * Insert a single or multiple records into the database at once skipping
@@ -179,7 +182,7 @@ interface RepositoryInterface
      * @param array $data
      * @return bool
      */
-    public function insert(array $data);
+    public function insert(array $data): bool;
 
     /**
      * Insert multiple records into the database and ignore duplicates.
@@ -187,5 +190,5 @@ interface RepositoryInterface
      * @param array $values
      * @return bool
      */
-    public function insertIgnore(array $values);
+    public function insertIgnore(array $values): bool;
 }

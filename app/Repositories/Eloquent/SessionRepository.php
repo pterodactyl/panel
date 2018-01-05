@@ -1,21 +1,17 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Session;
+use Illuminate\Support\Collection;
 use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
 
 class SessionRepository extends EloquentRepository implements SessionRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -23,17 +19,24 @@ class SessionRepository extends EloquentRepository implements SessionRepositoryI
     }
 
     /**
-     * {@inheritdoc}
+     * Return all of the active sessions for a user.
+     *
+     * @param int $user
+     * @return \Illuminate\Support\Collection
      */
-    public function getUserSessions($user)
+    public function getUserSessions(int $user): Collection
     {
         return $this->getBuilder()->where('user_id', $user)->get($this->getColumns());
     }
 
     /**
-     * {@inheritdoc}
+     * Delete a session for a given user.
+     *
+     * @param int $user
+     * @param int $session
+     * @return null|int
      */
-    public function deleteUserSession($user, $session)
+    public function deleteUserSession(int $user, int $session)
     {
         return $this->getBuilder()->where('user_id', $user)->where('id', $session)->delete();
     }

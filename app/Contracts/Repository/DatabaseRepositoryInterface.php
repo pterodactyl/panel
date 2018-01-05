@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
 
 interface DatabaseRepositoryInterface extends RepositoryInterface
@@ -43,12 +44,12 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * the provided details.
      *
      * @param array $data
-     * @return mixed
+     * @return \Pterodactyl\Models\Database
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
      */
-    public function createIfNotExists(array $data);
+    public function createIfNotExists(array $data): Database;
 
     /**
      * Create a new database on a given connection.
@@ -56,7 +57,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $database
      * @return bool
      */
-    public function createDatabase($database);
+    public function createDatabase(string $database): bool;
 
     /**
      * Create a new database user on a given connection.
@@ -66,7 +67,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $password
      * @return bool
      */
-    public function createUser($username, $remote, $password);
+    public function createUser(string $username, string $remote, string $password): bool;
 
     /**
      * Give a specific user access to a given database.
@@ -76,14 +77,14 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $remote
      * @return bool
      */
-    public function assignUserToDatabase($database, $username, $remote);
+    public function assignUserToDatabase(string $database, string $username, string $remote): bool;
 
     /**
      * Flush the privileges for a given connection.
      *
-     * @return mixed
+     * @return bool
      */
-    public function flush();
+    public function flush(): bool;
 
     /**
      * Drop a given database on a specific connection.
@@ -91,7 +92,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $database
      * @return bool
      */
-    public function dropDatabase($database);
+    public function dropDatabase(string $database): bool;
 
     /**
      * Drop a given user on a specific connection.
@@ -100,5 +101,5 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $remote
      * @return mixed
      */
-    public function dropUser($username, $remote);
+    public function dropUser(string $username, string $remote): bool;
 }

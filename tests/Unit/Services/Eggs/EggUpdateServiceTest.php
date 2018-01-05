@@ -9,7 +9,6 @@
 
 namespace Tests\Unit\Services\Services\Options;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Egg;
