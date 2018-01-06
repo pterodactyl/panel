@@ -11,6 +11,7 @@ namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
@@ -85,20 +86,18 @@ class IndexControllerTest extends ControllerTestCase
     {
         $user = $this->generateRequestUserModel();
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 1]);
+        $psrResponse = new Response;
 
         $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
         $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
 
-        $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('test123')->once()->andReturnSelf()
-            ->shouldReceive('details')->withNoArgs()->once()->andReturnSelf();
-
-        $this->daemonRepository->shouldReceive('getBody')->withNoArgs()->once()->andReturn('["test"]');
+        $this->daemonRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('test123')->once()->andReturnSelf()
+            ->shouldReceive('details')->withNoArgs()->once()->andReturn($psrResponse);
 
         $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);
-        $this->assertResponseJsonEquals(['test'], $response);
+        $this->assertResponseJsonEquals(json_encode($psrResponse->getBody()), $response);
     }
 
     /**

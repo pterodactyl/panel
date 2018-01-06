@@ -13,6 +13,7 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -183,13 +184,12 @@ class DetailsModificationServiceTest extends TestCase
                 'image' => 'new/image',
             ])->once()->andReturnNull();
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
+        $this->daemonServerRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
             ->shouldReceive('update')->with([
                 'build' => [
                     'image' => 'new/image',
                 ],
-            ])->once()->andReturnNull();
+            ])->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
@@ -211,13 +211,12 @@ class DetailsModificationServiceTest extends TestCase
                 'image' => 'new/image',
             ])->once()->andReturnNull();
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
+        $this->daemonServerRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
             ->shouldReceive('update')->with([
                 'build' => [
                     'image' => 'new/image',
                 ],
-            ])->once()->andReturnNull();
+            ])->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
@@ -238,7 +237,7 @@ class DetailsModificationServiceTest extends TestCase
                 'image' => 'new/image',
             ])->once()->andReturnNull();
 
-        $this->daemonServerRepository->shouldReceive('setNode')->andThrow($this->exception);
+        $this->daemonServerRepository->shouldReceive('setServer')->andThrow($this->exception);
         $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);

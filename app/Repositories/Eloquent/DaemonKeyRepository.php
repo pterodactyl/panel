@@ -70,7 +70,7 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
      */
     public function getKeysForRevocation(User $user): Collection
     {
-        return $this->getBuilder()->with('server:id,uuid,node_id')->where('user_id', $user->id)->get($this->getColumns());
+        return $this->getBuilder()->with('node')->where('user_id', $user->id)->get($this->getColumns());
     }
 
     /**

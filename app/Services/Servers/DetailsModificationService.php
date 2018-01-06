@@ -128,7 +128,7 @@ class DetailsModificationService
         $this->repository->withoutFreshModel()->update($server->id, ['image' => $image]);
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update([
+            $this->daemonServerRepository->setServer($server)->update([
                 'build' => [
                     'image' => $image,
                 ],

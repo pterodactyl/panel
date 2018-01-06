@@ -457,12 +457,10 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function rebuildContainer(Server $server)
     {
-        $this->containerRebuildService->rebuild($server);
+        $this->containerRebuildService->handle($server);
         $this->alert->success(trans('admin/server.alerts.rebuild_on_boot'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);

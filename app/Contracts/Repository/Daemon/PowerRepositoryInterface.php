@@ -1,13 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository\Daemon;
+
+use Psr\Http\Message\ResponseInterface;
 
 interface PowerRepositoryInterface extends BaseRepositoryInterface
 {
@@ -24,5 +19,5 @@ interface PowerRepositoryInterface extends BaseRepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
-    public function sendSignal($signal);
+    public function sendSignal(string $signal): ResponseInterface;
 }

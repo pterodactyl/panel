@@ -80,10 +80,7 @@ class IndexController extends Controller
         }
 
         try {
-            $response = $this->daemonRepository->setNode($server->node_id)
-                ->setAccessServer($server->uuid)
-                ->setAccessToken($token)
-                ->details();
+            $response = $this->daemonRepository->setServer($server)->setToken($token)->details();
         } catch (RequestException $exception) {
             throw new HttpException(500, $exception->getMessage());
         }

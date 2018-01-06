@@ -1,13 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository\Daemon;
+
+use stdClass;
+use Psr\Http\Message\ResponseInterface;
 
 interface FileRepositoryInterface extends BaseRepositoryInterface
 {
@@ -15,21 +11,21 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * Return stat information for a given file.
      *
      * @param string $path
-     * @return object
+     * @return \stdClass
      *
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function getFileStat($path);
+    public function getFileStat(string $path): stdClass;
 
     /**
      * Return the contents of a given file if it can be edited in the Panel.
      *
      * @param string $path
-     * @return object
+     * @return \stdClass
      *
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function getContent($path);
+    public function getContent(string $path): stdClass;
 
     /**
      * Save new contents to a given file.
@@ -40,7 +36,7 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      *
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function putContent($path, $content);
+    public function putContent(string $path, string $content): ResponseInterface;
 
     /**
      * Return a directory listing for a given path.
@@ -50,5 +46,5 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      *
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function getDirectory($path);
+    public function getDirectory(string $path): array;
 }

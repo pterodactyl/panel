@@ -1,13 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository\Daemon;
+
+use Psr\Http\Message\ResponseInterface;
 
 interface CommandRepositoryInterface extends BaseRepositoryInterface
 {
@@ -17,5 +12,5 @@ interface CommandRepositoryInterface extends BaseRepositoryInterface
      * @param string $command
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function send($command);
+    public function send(string $command): ResponseInterface;
 }

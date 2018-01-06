@@ -98,15 +98,13 @@ class RunTaskJob extends Job implements ShouldQueue
         // Perform the provided task aganist the daemon.
         switch ($task->action) {
             case 'power':
-                $this->powerRepository->setNode($server->node_id)
-                    ->setAccessServer($server->uuid)
-                    ->setAccessToken($keyProviderService->handle($server, $user))
+                $this->powerRepository->setServer($server)
+                    ->setToken($keyProviderService->handle($server, $user))
                     ->sendSignal($task->payload);
                 break;
             case 'command':
-                $this->commandRepository->setNode($server->node_id)
-                    ->setAccessServer($server->uuid)
-                    ->setAccessToken($keyProviderService->handle($server, $user))
+                $this->commandRepository->setServer($server)
+                    ->setToken($keyProviderService->handle($server, $user))
                     ->send($task->payload);
                 break;
             default:

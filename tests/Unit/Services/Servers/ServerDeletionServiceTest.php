@@ -13,6 +13,7 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -111,9 +112,8 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testServerCanBeDeletedWithoutForce()
     {
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->model->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->model->uuid)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
+            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
@@ -133,8 +133,7 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testServerShouldBeDeletedEvenWhenFailureOccursIfForceIsSet()
     {
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->model->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->model->uuid)->once()->andReturnSelf()
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
             ->shouldReceive('delete')->withNoArgs()->once()->andThrow($this->exception);
 
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
@@ -157,7 +156,7 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testExceptionShouldBeThrownIfDaemonReturnsAnErrorAndForceIsNotSet()
     {
-        $this->daemonServerRepository->shouldReceive('setNode->setAccessServer->delete')->once()->andThrow($this->exception);
+        $this->daemonServerRepository->shouldReceive('setServer->delete')->once()->andThrow($this->exception);
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
         $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
@@ -179,9 +178,8 @@ class ServerDeletionServiceTest extends TestCase
         $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'uuid'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->model->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->model->uuid)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(1);
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
+            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()

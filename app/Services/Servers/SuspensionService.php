@@ -96,7 +96,7 @@ class SuspensionService
         ]);
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->$action();
+            $this->daemonServerRepository->setServer($server)->$action();
             $this->database->commit();
 
             return true;

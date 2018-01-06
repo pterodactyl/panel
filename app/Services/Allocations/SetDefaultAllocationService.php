@@ -87,7 +87,7 @@ class SetDefaultAllocationService
 
         // Update on the daemon.
         try {
-            $this->daemonRepository->setAccessServer($server->uuid)->setNode($server->node_id)->update([
+            $this->daemonRepository->setServer($server)->update([
                 'build' => [
                     'default' => [
                         'ip' => $model->ip,

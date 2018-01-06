@@ -75,7 +75,7 @@ class NodeUpdateService
         $updateResponse = $this->repository->withoutFreshModel()->update($node->id, $data);
 
         try {
-            $this->configRepository->setNode($node->id)->update();
+            $this->configRepository->setNode($node)->update();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
             $this->writer->warning($exception);

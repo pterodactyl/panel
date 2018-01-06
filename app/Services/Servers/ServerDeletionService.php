@@ -110,7 +110,7 @@ class ServerDeletionService
         }
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->delete();
+            $this->daemonServerRepository->setServer($server)->delete();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
 

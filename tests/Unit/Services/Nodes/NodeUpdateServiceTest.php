@@ -15,6 +15,7 @@ use Tests\TestCase;
 use Illuminate\Log\Writer;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Node;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
@@ -90,8 +91,8 @@ class NodeUpdateServiceTest extends TestCase
                 'daemonSecret' => 'random_string',
             ])->andReturn(true);
 
-        $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
-            ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
+        $this->configRepository->shouldReceive('setNode')->with($this->node)->once()->andReturnSelf()
+            ->shouldReceive('update')->withNoArgs()->once()->andReturn(new Response);
 
         $this->assertTrue($this->service->handle($this->node, ['name' => 'NewName', 'reset_secret' => true]));
     }
@@ -106,8 +107,8 @@ class NodeUpdateServiceTest extends TestCase
                 'name' => 'NewName',
             ])->andReturn(true);
 
-        $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
-            ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
+        $this->configRepository->shouldReceive('setNode')->with($this->node)->once()->andReturnSelf()
+            ->shouldReceive('update')->withNoArgs()->once()->andReturn(new Response);
 
         $this->assertTrue($this->service->handle($this->node, ['name' => 'NewName']));
     }
@@ -120,9 +121,9 @@ class NodeUpdateServiceTest extends TestCase
         $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->node->id, [
                 'name' => 'NewName',
-            ])->andReturn(true);
+            ])->andReturn(new Response);
 
-        $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andThrow($this->exception);
+        $this->configRepository->shouldReceive('setNode')->with($this->node)->once()->andThrow($this->exception);
         $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('getStatusCode')->withNoArgs()->once()->andReturn(400);
@@ -149,8 +150,8 @@ class NodeUpdateServiceTest extends TestCase
                 'name' => 'NewName',
             ])->andReturn(true);
 
-        $this->configRepository->shouldReceive('setNode')->with($this->node->id)->once()->andReturnSelf()
-            ->shouldReceive('update')->withNoArgs()->once()->andReturnNull();
+        $this->configRepository->shouldReceive('setNode')->with($this->node)->once()->andReturnSelf()
+            ->shouldReceive('update')->withNoArgs()->once()->andReturn(new Response);
 
         $this->assertTrue($this->service->handle($this->node->id, ['name' => 'NewName']));
     }

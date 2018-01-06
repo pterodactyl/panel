@@ -96,7 +96,7 @@ class SubuserUpdateService
 
         try {
             $token = $this->keyProviderService->handle($subuser->getRelation('server'), $subuser->getRelation('user'), false);
-            $this->daemonRepository->setNode($subuser->getRelation('server')->node_id)->revokeAccessKey($token);
+            $this->daemonRepository->setServer($subuser->getRelation('server'))->revokeAccessKey($token);
         } catch (RequestException $exception) {
             $this->connection->rollBack();
             throw new DaemonConnectionException($exception);

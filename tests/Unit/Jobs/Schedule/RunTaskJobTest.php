@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
@@ -90,10 +91,9 @@ class RunTaskJobTest extends TestCase
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
         $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->powerRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('sendSignal')->with($task->payload)->once()->andReturnNull();
+        $this->powerRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
+            ->shouldReceive('sendSignal')->with($task->payload)->once()->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
@@ -120,10 +120,9 @@ class RunTaskJobTest extends TestCase
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
         $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('send')->with($task->payload)->once()->andReturnNull();
+        $this->commandRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
+            ->shouldReceive('send')->with($task->payload)->once()->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
@@ -150,10 +149,9 @@ class RunTaskJobTest extends TestCase
 
         $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
         $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('send')->with($task->payload)->once()->andReturnNull();
+        $this->commandRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
+            ->shouldReceive('send')->with($task->payload)->once()->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
 

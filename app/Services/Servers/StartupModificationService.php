@@ -112,7 +112,7 @@ class StartupModificationService
         ]);
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->update($daemonData);
+            $this->daemonServerRepository->setServer($server)->update($daemonData);
         } catch (RequestException $exception) {
             $this->connection->rollBack();
             throw new DaemonConnectionException($exception);
