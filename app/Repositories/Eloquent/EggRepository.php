@@ -32,7 +32,7 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     public function getWithVariables(int $id): Egg
     {
         try {
-            return $this->getBuilder()->with('variables')->firstOrFail($id, $this->getColumns());
+            return $this->getBuilder()->with('variables')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
@@ -79,7 +79,7 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     public function getWithExportAttributes(int $id): Egg
     {
         try {
-            return $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->find($id, $this->getColumns());
+            return $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
