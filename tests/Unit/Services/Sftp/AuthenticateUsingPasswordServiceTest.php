@@ -49,10 +49,10 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $user = factory(User::class)->make(['root_admin' => 0]);
         $server = factory(Server::class)->make(['node_id' => 1, 'owner_id' => $user->id]);
 
-        $this->userRepository->shouldReceive('withColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('server_token');
@@ -74,10 +74,10 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $user = factory(User::class)->make(['root_admin' => 1]);
         $server = factory(Server::class)->make(['node_id' => 1, 'owner_id' => $user->id + 1]);
 
-        $this->userRepository->shouldReceive('withColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('server_token');
@@ -110,7 +110,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     {
         $user = factory(User::class)->make();
 
-        $this->userRepository->shouldReceive('withColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
         $this->getService()->handle($user->username, 'wrongpassword', 1, '1234');
@@ -123,7 +123,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfNoUserAccountIsFound()
     {
-        $this->userRepository->shouldReceive('withColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', 'something']])->once()->andThrow(new RecordNotFoundException);
 
         $this->getService()->handle('something', 'password', 1, '1234');
@@ -140,10 +140,10 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $user = factory(User::class)->make(['root_admin' => 0]);
         $server = factory(Server::class)->make(['node_id' => 1, 'owner_id' => $user->id + 1]);
 
-        $this->userRepository->shouldReceive('withColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
@@ -160,10 +160,10 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $user = factory(User::class)->make(['root_admin' => 0]);
         $server = factory(Server::class)->make(['node_id' => 2, 'owner_id' => $user->id]);
 
-        $this->userRepository->shouldReceive('withColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);

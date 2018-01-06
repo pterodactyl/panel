@@ -69,7 +69,6 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
      * @throws \Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     private function checkFileCanBeEdited($server, $token)
     {
@@ -77,9 +76,7 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
         $repository = app()->make(FileRepositoryInterface::class);
 
         try {
-            $stats = $repository->setNode($server->node_id)->setAccessServer($server->uuid)
-                ->setAccessToken($token)
-                ->getFileStat($this->route()->parameter('file'));
+            $stats = $repository->setServer($server)->setToken($token)->getFileStat($this->route()->parameter('file'));
         } catch (RequestException $exception) {
             switch ($exception->getCode()) {
                 case 404:

@@ -49,7 +49,7 @@ class VariableUpdateService
                 ]));
             }
 
-            $search = $this->repository->withColumns('id')->findCountWhere([
+            $search = $this->repository->setColumns('id')->findCountWhere([
                 ['env_variable', '=', array_get($data, 'env_variable')],
                 ['egg_id', '=', $variable->egg_id],
                 ['id', '!=', $variable->id],
@@ -64,7 +64,7 @@ class VariableUpdateService
 
         $options = array_get($data, 'options') ?? [];
 
-        return $this->repository->withoutFresh()->update($variable->id, array_merge($data, [
+        return $this->repository->withoutFreshModel()->update($variable->id, array_merge($data, [
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
         ]));

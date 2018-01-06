@@ -4,8 +4,9 @@ namespace Tests\Unit\Services\DaemonKeys;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\DaemonKey;
 use Tests\Traits\MocksRequestException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
@@ -43,13 +44,13 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
     public function testSuccessfulKeyRevocation()
     {
         $user = factory(User::class)->make();
-        $server = factory(Server::class)->make();
+        $node = factory(Node::class)->make();
         $key = factory(DaemonKey::class)->make(['user_id' => $user->id]);
-        $key->setRelation('server', $server);
+        $key->setRelation('node', $node);
 
         $this->repository->shouldReceive('getKeysForRevocation')->with($user)->once()->andReturn(collect([$key]));
-        $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf();
-        $this->daemonRepository->shouldReceive('revokeAccessKey')->with([$key->secret])->once()->andReturnNull();
+        $this->daemonRepository->shouldReceive('setNode')->with($node)->once()->andReturnSelf();
+        $this->daemonRepository->shouldReceive('revokeAccessKey')->with([$key->secret])->once()->andReturn(new Response);
 
         $this->repository->shouldReceive('deleteKeys')->with([$key->id])->once()->andReturnNull();
 
@@ -67,9 +68,9 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
         $this->configureExceptionMock();
 
         $user = factory(User::class)->make();
-        $server = factory(Server::class)->make();
+        $node = factory(Node::class)->make();
         $key = factory(DaemonKey::class)->make(['user_id' => $user->id]);
-        $key->setRelation('server', $server);
+        $key->setRelation('node', $node);
 
         $this->repository->shouldReceive('getKeysForRevocation')->with($user)->once()->andReturn(collect([$key]));
         $this->daemonRepository->shouldReceive('setNode->revokeAccessKey')->with([$key->secret])->once()->andThrow($this->getExceptionMock());
@@ -86,9 +87,9 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
         $this->configureExceptionMock();
 
         $user = factory(User::class)->make();
-        $server = factory(Server::class)->make();
+        $node = factory(Node::class)->make();
         $key = factory(DaemonKey::class)->make(['user_id' => $user->id]);
-        $key->setRelation('server', $server);
+        $key->setRelation('node', $node);
 
         $this->repository->shouldReceive('getKeysForRevocation')->with($user)->once()->andReturn(collect([$key]));
         $this->daemonRepository->shouldReceive('setNode->revokeAccessKey')->with([$key->secret])->once()->andThrow($this->getExceptionMock());
@@ -98,8 +99,8 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
         $service = $this->getService();
         $service->handle($user, true);
         $this->assertNotEmpty($service->getExceptions());
-        $this->assertArrayHasKey($server->node_id, $service->getExceptions());
-        $this->assertSame(array_get($service->getExceptions(), $server->node_id), $this->getExceptionMock());
+        $this->assertArrayHasKey($node->id, $service->getExceptions());
+        $this->assertSame(array_get($service->getExceptions(), $node->id), $this->getExceptionMock());
         $this->assertTrue(true);
     }
 

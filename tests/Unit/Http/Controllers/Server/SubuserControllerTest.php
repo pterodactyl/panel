@@ -76,7 +76,7 @@ class SubuserControllerTest extends ControllerTestCase
         $this->mockInjectJavascript();
 
         $controller->shouldReceive('authorize')->with('list-subusers', $server)->once()->andReturnNull();
-        $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $server->id]])->once()->andReturn([]);
+        $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $server->id]])->once()->andReturn(collect());
 
         $response = $controller->index($this->request);
         $this->assertIsViewResponse($response);

@@ -55,7 +55,7 @@ class SubuserDeletionServiceTest extends TestCase
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->keyDeletionService->shouldReceive('handle')->with($subuser->server_id, $subuser->user_id)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($subuser->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($subuser->id)->once()->andReturn(1);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->getService()->handle($subuser);

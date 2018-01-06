@@ -78,7 +78,7 @@ class DaemonKeyUpdateService
         Assert::integerish($key, 'First argument passed to handle must be an integer, received %s.');
 
         $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40);
-        $this->repository->withoutFresh()->update($key, [
+        $this->repository->withoutFreshModel()->update($key, [
             'secret' => $secret,
             'expires_at' => $this->carbon->now()->addMinutes($this->config->get('pterodactyl.api.key_expire_time'))->toDateTimeString(),
         ]);

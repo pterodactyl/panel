@@ -122,7 +122,7 @@ class EggSeeder extends Seeder
             $file = new UploadedFile($file->getPathname(), $file->getFilename(), 'application/json', $file->getSize());
 
             try {
-                $egg = $this->repository->withColumns('id')->findFirstWhere([
+                $egg = $this->repository->setColumns('id')->findFirstWhere([
                     ['author', '=', $decoded->author],
                     ['name', '=', $decoded->name],
                     ['nest_id', '=', $nest->id],

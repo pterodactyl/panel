@@ -1,23 +1,23 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use Webmozart\Assert\Assert;
+use stdClass;
+use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 
 class FileRepository extends BaseRepository implements FileRepositoryInterface
 {
-    public function getFileStat($path)
+    /**
+     * Return stat information for a given file.
+     *
+     * @param string $path
+     * @return \stdClass
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
+     */
+    public function getFileStat(string $path): stdClass
     {
-        Assert::stringNotEmpty($path, 'First argument passed to getStat must be a non-empty string, received %s.');
-
         $file = pathinfo($path);
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
@@ -30,12 +30,15 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Return the contents of a given file if it can be edited in the Panel.
+     *
+     * @param string $path
+     * @return \stdClass
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function getContent($path)
+    public function getContent(string $path): stdClass
     {
-        Assert::stringNotEmpty($path, 'First argument passed to getContent must be a non-empty string, received %s.');
-
         $file = pathinfo($path);
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
@@ -48,13 +51,16 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Save new contents to a given file.
+     *
+     * @param string $path
+     * @param string $content
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function putContent($path, $content)
+    public function putContent(string $path, string $content): ResponseInterface
     {
-        Assert::stringNotEmpty($path, 'First argument passed to putContent must be a non-empty string, received %s.');
-        Assert::string($content, 'Second argument passed to putContent must be a string, received %s.');
-
         $file = pathinfo($path);
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
@@ -67,20 +73,19 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Return a directory listing for a given path.
+     *
+     * @param string $path
+     * @return array
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function getDirectory($path)
+    public function getDirectory(string $path): array
     {
-        Assert::string($path, 'First argument passed to getDirectory must be a string, received %s.');
-
-        $response = $this->getHttpClient()->request('GET', sprintf(
-            'server/directory/%s',
-            rawurlencode($path)
-        ));
+        $response = $this->getHttpClient()->request('GET', sprintf('server/directory/%s', rawurlencode($path)));
 
         $contents = json_decode($response->getBody());
-        $files = [];
-        $folders = [];
+        $files = $folders = [];
 
         foreach ($contents as $value) {
             if ($value->directory) {

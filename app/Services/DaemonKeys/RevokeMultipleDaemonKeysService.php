@@ -46,22 +46,20 @@ class RevokeMultipleDaemonKeysService
      *
      * @param \Pterodactyl\Models\User $user
      * @param bool                     $ignoreConnectionErrors
-     *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function handle(User $user, bool $ignoreConnectionErrors = false)
     {
         $keys = $this->repository->getKeysForRevocation($user);
 
-        $keys->groupBy('server.node_id')->each(function ($group, $node) use ($ignoreConnectionErrors) {
+        $keys->groupBy('node.id')->each(function ($group, $nodeId) use ($ignoreConnectionErrors) {
             try {
-                $this->daemonRepository->setNode($node)->revokeAccessKey(collect($group)->pluck('secret')->toArray());
+                $this->daemonRepository->setNode(collect($group)->first()->getRelation('node'))->revokeAccessKey(collect($group)->pluck('secret')->toArray());
             } catch (RequestException $exception) {
                 if (! $ignoreConnectionErrors) {
                     throw new DaemonConnectionException($exception);
                 }
 
-                $this->setConnectionException($node, $exception);
+                $this->setConnectionException($nodeId, $exception);
             }
 
             $this->repository->deleteKeys(collect($group)->pluck('id')->toArray());

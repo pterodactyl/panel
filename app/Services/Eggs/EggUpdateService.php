@@ -57,6 +57,6 @@ class EggUpdateService
             }
         }
 
-        $this->repository->withoutFresh()->update($egg->id, $data);
+        $this->repository->withoutFreshModel()->update($egg->id, $data);
     }
 }

@@ -61,13 +61,13 @@ class SecurityControllerTest extends ControllerTestCase
         $model = $this->generateRequestUserModel();
 
         $this->config->shouldReceive('get')->with('session.driver')->once()->andReturn('database');
-        $this->repository->shouldReceive('getUserSessions')->with($model->id)->once()->andReturn(['sessions']);
+        $this->repository->shouldReceive('getUserSessions')->with($model->id)->once()->andReturn(collect(['sessions']));
 
         $response = $this->getController()->index($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.security', $response);
         $this->assertViewHasKey('sessions', $response);
-        $this->assertViewKeyEquals('sessions', ['sessions'], $response);
+        $this->assertViewKeyEquals('sessions', collect(['sessions']), $response);
     }
 
     /**

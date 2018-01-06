@@ -28,6 +28,11 @@ class User extends Model implements
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
 
+    const FILTER_LEVEL_ALL = 0;
+    const FILTER_LEVEL_OWNER = 1;
+    const FILTER_LEVEL_ADMIN = 2;
+    const FILTER_LEVEL_SUBUSER = 3;
+
     /**
      * Level of servers to display when using access() on a user.
      *

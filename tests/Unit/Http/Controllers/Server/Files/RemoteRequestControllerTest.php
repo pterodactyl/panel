@@ -10,6 +10,7 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\RequestException;
@@ -58,9 +59,8 @@ class RemoteRequestControllerTest extends ControllerTestCase
 
         $controller->shouldReceive('authorize')->with('list-files', $server)->once()->andReturnNull();
         $this->request->shouldReceive('input')->with('directory', '/')->once()->andReturn('/');
-        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('abc123')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('abc123')->once()->andReturnSelf()
             ->shouldReceive('getDirectory')->with('/')->once()->andReturn(['folders' => 1, 'files' => 2]);
         $this->config->shouldReceive('get')->with('pterodactyl.files.editable')->once()->andReturn([]);
 
@@ -91,7 +91,7 @@ class RemoteRequestControllerTest extends ControllerTestCase
 
         $controller->shouldReceive('authorize')->with('list-files', $server)->once()->andReturnNull();
         $this->request->shouldReceive('input')->with('directory', '/')->once()->andReturn('/');
-        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($this->getExceptionMock());
+        $this->repository->shouldReceive('setServer')->with($server)->once()->andThrow($this->getExceptionMock());
 
         try {
             $controller->directory($this->request);
@@ -115,10 +115,9 @@ class RemoteRequestControllerTest extends ControllerTestCase
         $controller->shouldReceive('authorize')->with('save-files', $server)->once()->andReturnNull();
         $this->request->shouldReceive('input')->with('file')->once()->andReturn('file.txt');
         $this->request->shouldReceive('input')->with('contents')->once()->andReturn('file contents');
-        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('abc123')->once()->andReturnSelf()
-            ->shouldReceive('putContent')->with('file.txt', 'file contents')->once()->andReturnNull();
+        $this->repository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('abc123')->once()->andReturnSelf()
+            ->shouldReceive('putContent')->with('file.txt', 'file contents')->once()->andReturn(new Response);
 
         $response = $controller->store($this->request);
         $this->assertIsResponse($response);
@@ -137,7 +136,7 @@ class RemoteRequestControllerTest extends ControllerTestCase
         $this->setRequestAttribute('server', $server);
 
         $controller->shouldReceive('authorize')->with('save-files', $server)->once()->andReturnNull();
-        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($this->getExceptionMock());
+        $this->repository->shouldReceive('setServer')->with($server)->once()->andThrow($this->getExceptionMock());
 
         try {
             $controller->store($this->request);

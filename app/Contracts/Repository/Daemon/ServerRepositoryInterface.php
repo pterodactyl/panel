@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository\Daemon;
 
@@ -30,7 +23,7 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @param array $data
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function update(array $data);
+    public function update(array $data): ResponseInterface;
 
     /**
      * Mark a server to be reinstalled on the system.
@@ -38,42 +31,42 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      * @param array|null $data
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function reinstall($data = null);
+    public function reinstall(array $data = null): ResponseInterface;
 
     /**
      * Mark a server as needing a container rebuild the next time the server is booted.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function rebuild();
+    public function rebuild(): ResponseInterface;
 
     /**
      * Suspend a server on the daemon.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function suspend();
+    public function suspend(): ResponseInterface;
 
     /**
      * Un-suspend a server on the daemon.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function unsuspend();
+    public function unsuspend(): ResponseInterface;
 
     /**
      * Delete a server on the daemon.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function delete();
+    public function delete(): ResponseInterface;
 
     /**
      * Return detials on a specific server.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function details();
+    public function details(): ResponseInterface;
 
     /**
      * Revoke an access key on the daemon before the time is expired.
@@ -83,5 +76,5 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
      *
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function revokeAccessKey($key);
+    public function revokeAccessKey($key): ResponseInterface;
 }

@@ -63,7 +63,7 @@ class UserDeletionService
             $user = $user->id;
         }
 
-        $servers = $this->serverRepository->withColumns('id')->findCountWhere([['owner_id', '=', $user]]);
+        $servers = $this->serverRepository->setColumns('id')->findCountWhere([['owner_id', '=', $user]]);
         if ($servers > 0) {
             throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
         }

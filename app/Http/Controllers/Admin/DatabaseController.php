@@ -139,7 +139,6 @@ class DatabaseController extends Controller
      * @param int                                                      $host
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

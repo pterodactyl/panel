@@ -9,12 +9,11 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ReinstallServerService
@@ -35,28 +34,20 @@ class ReinstallServerService
     protected $repository;
 
     /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
-
-    /**
      * ReinstallService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $database
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Illuminate\Log\Writer                                             $writer
      */
     public function __construct(
         ConnectionInterface $database,
         DaemonServerRepositoryInterface $daemonServerRepository,
-        ServerRepositoryInterface $repository,
-        Writer $writer
+        ServerRepositoryInterface $repository
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
         $this->database = $database;
         $this->repository = $repository;
-        $this->writer = $writer;
     }
 
     /**
@@ -64,6 +55,7 @@ class ReinstallServerService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function reinstall($server)
     {
@@ -72,20 +64,15 @@ class ReinstallServerService
         }
 
         $this->database->beginTransaction();
-        $this->repository->withoutFresh()->update($server->id, [
+        $this->repository->withoutFreshModel()->update($server->id, [
             'installed' => 0,
         ]);
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->reinstall();
+            $this->daemonServerRepository->setServer($server)->reinstall();
             $this->database->commit();
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
     }
 }

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Daemon;
 
@@ -26,9 +19,8 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      */
     public function create(array $structure, array $overrides = []): ResponseInterface
     {
-        // Loop through overrides.
         foreach ($overrides as $key => $value) {
-            array_set($structure, $key, $value);
+            $structure[$key] = value($value);
         }
 
         return $this->getHttpClient()->request('POST', 'servers', [
@@ -37,9 +29,12 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     }
 
     /**
-     * {@inheritdoc}
+     * Update server details on the daemon.
+     *
+     * @param array $data
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function update(array $data)
+    public function update(array $data): ResponseInterface
     {
         return $this->getHttpClient()->request('PATCH', 'server', [
             'json' => $data,
@@ -47,65 +42,77 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     }
 
     /**
-     * {@inheritdoc}
+     * Mark a server to be reinstalled on the system.
+     *
+     * @param array|null $data
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function reinstall($data = null)
+    public function reinstall(array $data = null): ResponseInterface
     {
-        Assert::nullOrIsArray($data, 'First argument passed to reinstall must be null or an array, received %s.');
-
-        if (is_null($data)) {
-            return $this->getHttpClient()->request('POST', 'server/reinstall');
-        }
-
         return $this->getHttpClient()->request('POST', 'server/reinstall', [
-            'json' => $data,
+            'json' => $data ?? [],
         ]);
     }
 
     /**
-     * {@inheritdoc}
+     * Mark a server as needing a container rebuild the next time the server is booted.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function rebuild()
+    public function rebuild(): ResponseInterface
     {
         return $this->getHttpClient()->request('POST', 'server/rebuild');
     }
 
     /**
-     * {@inheritdoc}
+     * Suspend a server on the daemon.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function suspend()
+    public function suspend(): ResponseInterface
     {
         return $this->getHttpClient()->request('POST', 'server/suspend');
     }
 
     /**
-     * {@inheritdoc}
+     * Un-suspend a server on the daemon.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function unsuspend()
+    public function unsuspend(): ResponseInterface
     {
         return $this->getHttpClient()->request('POST', 'server/unsuspend');
     }
 
     /**
-     * {@inheritdoc}
+     * Delete a server on the daemon.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function delete()
+    public function delete(): ResponseInterface
     {
         return $this->getHttpClient()->request('DELETE', 'servers');
     }
 
     /**
-     * {@inheritdoc}
+     * Return detials on a specific server.
+     *
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function details()
+    public function details(): ResponseInterface
     {
         return $this->getHttpClient()->request('GET', 'server');
     }
 
     /**
-     * {@inheritdoc}
+     * Revoke an access key on the daemon before the time is expired.
+     *
+     * @param string|array $key
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function revokeAccessKey($key)
+    public function revokeAccessKey($key): ResponseInterface
     {
         if (is_array($key)) {
             return $this->getHttpClient()->request('POST', 'keys', [

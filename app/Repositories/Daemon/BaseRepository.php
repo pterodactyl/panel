@@ -1,84 +1,71 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Daemon;
 
+use RuntimeException;
 use GuzzleHttp\Client;
-use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
 use Illuminate\Foundation\Application;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\Daemon\BaseRepositoryInterface;
 
-class BaseRepository implements BaseRepositoryInterface
+abstract class BaseRepository implements BaseRepositoryInterface
 {
     /**
      * @var \Illuminate\Foundation\Application
      */
-    protected $app;
+    private $app;
 
     /**
-     * @var
+     * @var \Pterodactyl\Models\Server
      */
-    protected $accessServer;
+    private $server;
 
     /**
-     * @var
+     * @var string|null
      */
-    protected $accessToken;
+    private $token;
 
     /**
-     * @var
+     * @var \Pterodactyl\Models\Node|null
      */
-    protected $node;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
+    private $node;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
-    protected $nodeRepository;
+    private $nodeRepository;
 
     /**
      * BaseRepository constructor.
      *
      * @param \Illuminate\Foundation\Application                        $app
-     * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
      */
-    public function __construct(
-        Application $app,
-        ConfigRepository $config,
-        NodeRepositoryInterface $nodeRepository
-    ) {
+    public function __construct(Application $app, NodeRepositoryInterface $nodeRepository)
+    {
         $this->app = $app;
-        $this->config = $config;
         $this->nodeRepository = $nodeRepository;
     }
 
     /**
-     * {@inheritdoc}
+     * Set the node model to be used for this daemon connection.
+     *
+     * @param \Pterodactyl\Models\Node $node
+     * @return $this
      */
-    public function setNode($id)
+    public function setNode(Node $node)
     {
-        Assert::numeric($id, 'The first argument passed to setNode must be numeric, received %s.');
-
-        $this->node = $this->nodeRepository->find($id);
+        $this->node = $node;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Return the node model being used.
+     *
+     * @return \Pterodactyl\Models\Node|null
      */
     public function getNode()
     {
@@ -86,64 +73,80 @@ class BaseRepository implements BaseRepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Set the Server model to use when requesting information from the Daemon.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return $this
      */
-    public function setAccessServer($server = null)
+    public function setServer(Server $server)
     {
-        Assert::nullOrString($server, 'The first argument passed to setAccessServer must be null or a string, received %s.');
-
-        $this->accessServer = $server;
+        $this->server = $server;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Return the Server model.
+     *
+     * @return \Pterodactyl\Models\Server|null
      */
-    public function getAccessServer()
+    public function getServer()
     {
-        return $this->accessServer;
+        return $this->server;
     }
 
     /**
-     * {@inheritdoc}
+     * Set the token to be used in the X-Access-Token header for requests to the daemon.
+     *
+     * @param string $token
+     * @return $this
      */
-    public function setAccessToken($token = null)
+    public function setToken(string $token)
     {
-        Assert::nullOrString($token, 'The first argument passed to setAccessToken must be null or a string, received %s.');
-
-        $this->accessToken = $token;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Return the access token being used for requests.
+     *
+     * @return string|null
      */
-    public function getAccessToken()
+    public function getToken()
     {
-        return $this->accessToken;
+        return $this->token;
     }
 
     /**
-     * {@inheritdoc}
+     * Return an instance of the Guzzle HTTP Client to be used for requests.
+     *
+     * @param array $headers
+     * @return \GuzzleHttp\Client
      */
-    public function getHttpClient(array $headers = [])
+    public function getHttpClient(array $headers = []): Client
     {
-        if (! is_null($this->accessServer)) {
-            $headers['X-Access-Server'] = $this->getAccessServer();
+        // If no node is set, load the relationship onto the Server model
+        // and pass that to the setNode function.
+        if (! $this->getNode() instanceof Node) {
+            if (! $this->getServer() instanceof  Server) {
+                throw new RuntimeException('An instance of ' . Node::class . ' or ' . Server::class . ' must be set on this repository in order to return a client.');
+            }
+
+            $this->getServer()->loadMissing('node');
+            $this->setNode($this->getServer()->getRelation('node'));
         }
 
-        if (! is_null($this->accessToken)) {
-            $headers['X-Access-Token'] = $this->getAccessToken();
-        } elseif (! is_null($this->node)) {
-            $headers['X-Access-Token'] = $this->getNode()->daemonSecret;
+        if ($this->getServer() instanceof Server) {
+            $headers['X-Access-Server'] = $this->getServer()->uuid;
         }
+
+        $headers['X-Access-Token'] = $this->getToken() ?? $this->getNode()->daemonSecret;
 
         return new Client([
             'base_uri' => sprintf('%s://%s:%s/v1/', $this->getNode()->scheme, $this->getNode()->fqdn, $this->getNode()->daemonListen),
-            'timeout' => $this->config->get('pterodactyl.guzzle.timeout'),
-            'connect_timeout' => $this->config->get('pterodactyl.guzzle.connect_timeout'),
+            'timeout' => config('pterodactyl.guzzle.timeout'),
+            'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
             'headers' => $headers,
         ]);
     }

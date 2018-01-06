@@ -1,14 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
@@ -18,13 +13,13 @@ interface UserRepositoryInterface extends RepositoryInterface, SearchableInterfa
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllUsersWithCounts();
+    public function getAllUsersWithCounts(): LengthAwarePaginator;
 
     /**
      * Return all matching models for a user in a format that can be used for dropdowns.
      *
      * @param string $query
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
-    public function filterUsersByQuery($query);
+    public function filterUsersByQuery(string $query): Collection;
 }

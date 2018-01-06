@@ -12,6 +12,7 @@ namespace Tests\Unit\Services\Servers;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Servers\EnvironmentService;
@@ -81,18 +82,17 @@ class StartupModificationServiceTest extends TestCase
             collect([(object) ['id' => 1, 'value' => 'stored-value']])
         );
 
-        $this->serverVariableRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverVariableRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
             'server_id' => $model->id,
             'variable_id' => 1,
         ], ['variable_value' => 'stored-value'])->once()->andReturnNull();
 
         $this->environmentService->shouldReceive('handle')->with($model)->once()->andReturn(['env']);
-        $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
-        $this->daemonServerRepository->shouldReceive('setAccessServer')->with($model->uuid)->once()->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($model)->once()->andReturnSelf();
         $this->daemonServerRepository->shouldReceive('update')->with([
             'build' => ['env|overwrite' => ['env']],
-        ])->once()->andReturnSelf();
+        ])->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
@@ -116,7 +116,7 @@ class StartupModificationServiceTest extends TestCase
             collect([(object) ['id' => 1, 'value' => 'stored-value']])
         );
 
-        $this->serverVariableRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverVariableRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
             'server_id' => $model->id,
             'variable_id' => 1,
@@ -135,8 +135,7 @@ class StartupModificationServiceTest extends TestCase
 
         $this->environmentService->shouldReceive('handle')->with($model)->once()->andReturn(['env']);
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
-        $this->daemonServerRepository->shouldReceive('setAccessServer')->with($model->uuid)->once()->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($model)->once()->andReturnSelf();
         $this->daemonServerRepository->shouldReceive('update')->with([
             'build' => [
                 'env|overwrite' => ['env'],
@@ -147,7 +146,7 @@ class StartupModificationServiceTest extends TestCase
                 'pack' => 'xyz987',
                 'skip_scripts' => false,
             ],
-        ])->once()->andReturnSelf();
+        ])->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 

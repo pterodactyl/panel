@@ -46,15 +46,15 @@ class APIControllerTest extends ControllerTestCase
      */
     public function testIndexController()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
-        $this->repository->shouldReceive('findWhere')->with([['user_id', '=', $model->id]])->once()->andReturn(['testkeys']);
+        $this->repository->shouldReceive('findWhere')->with([['user_id', '=', $model->id]])->once()->andReturn(collect(['testkeys']));
 
         $response = $this->getController()->index($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.api.index', $response);
         $this->assertViewHasKey('keys', $response);
-        $this->assertViewKeyEquals('keys', ['testkeys'], $response);
+        $this->assertViewKeyEquals('keys', collect(['testkeys']), $response);
     }
 
     /**
@@ -64,7 +64,7 @@ class APIControllerTest extends ControllerTestCase
      */
     public function testCreateController($admin)
     {
-        $this->setRequestUser(factory(User::class)->make(['root_admin' => $admin]));
+        $this->generateRequestUserModel(['root_admin' => $admin]);
 
         $response = $this->getController()->create($this->request);
         $this->assertIsViewResponse($response);
@@ -87,7 +87,7 @@ class APIControllerTest extends ControllerTestCase
     public function testStoreController($admin)
     {
         $this->setRequestMockClass(ApiKeyFormRequest::class);
-        $model = $this->setRequestUser(factory(User::class)->make(['root_admin' => $admin]));
+        $model = $this->generateRequestUserModel(['root_admin' => $admin]);
         $keyModel = factory(APIKey::class)->make();
 
         if ($admin) {
@@ -118,12 +118,12 @@ class APIControllerTest extends ControllerTestCase
      */
     public function testRevokeController()
     {
-        $model = $this->setRequestUser();
+        $model = $this->generateRequestUserModel();
 
         $this->repository->shouldReceive('deleteWhere')->with([
             ['user_id', '=', $model->id],
             ['token', '=', 'testKey123'],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(1);
 
         $response = $this->getController()->revoke($this->request, 'testKey123');
         $this->assertIsResponse($response);

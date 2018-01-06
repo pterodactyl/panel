@@ -34,7 +34,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
         $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.name');
         $this->request->shouldReceive('header')->with('X-Access-Node')->twice()->andReturn($node->uuid);
 
-        $this->repository->shouldReceive('findWhere')->with(['daemonSecret' => $node->uuid])->once()->andReturn($node);
+        $this->repository->shouldReceive('findFirstWhere')->with(['daemonSecret' => $node->uuid])->once()->andReturn($node);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertRequestHasAttribute('node');

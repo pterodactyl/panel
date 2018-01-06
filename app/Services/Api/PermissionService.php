@@ -40,7 +40,7 @@ class PermissionService
     public function create($key, $permission)
     {
         // @todo handle an array of permissions to do a mass assignment?
-        return $this->repository->withoutFresh()->create([
+        return $this->repository->withoutFreshModel()->create([
             'key_id' => $key,
             'permission' => $permission,
         ]);

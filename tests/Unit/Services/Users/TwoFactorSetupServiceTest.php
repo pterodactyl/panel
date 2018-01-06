@@ -58,7 +58,7 @@ class TwoFactorSetupServiceTest extends TestCase
         $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
         $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
         $this->encrypter->shouldReceive('encrypt')->with('secretKey')->once()->andReturn('encryptedSecret');
-        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, ['totp_secret' => 'encryptedSecret'])->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, ['totp_secret' => 'encryptedSecret'])->once()->andReturnNull();
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);

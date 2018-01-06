@@ -42,6 +42,6 @@ class NestUpdateService
             unset($data['author']);
         }
 
-        $this->repository->withoutFresh()->update($nest, $data);
+        $this->repository->withoutFreshModel()->update($nest, $data);
     }
 }

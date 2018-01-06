@@ -163,8 +163,9 @@ class ServerCreationService
         $structure = $this->configurationStructureService->handle($server);
 
         // Create the server on the daemon & commit it to the database.
+        $node = $this->nodeRepository->find($server->node_id);
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->create($structure, [
+            $this->daemonServerRepository->setNode($node)->create($structure, [
                 'start_on_completion' => (bool) array_get($data, 'start_on_completion', false),
             ]);
             $this->connection->commit();

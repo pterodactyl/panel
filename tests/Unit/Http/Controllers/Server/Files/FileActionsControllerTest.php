@@ -98,12 +98,11 @@ class FileActionsControllerTest extends ControllerTestCase
         $this->setRequestAttribute('file_stats', 'fileStatsObject');
         $this->mockInjectJavascript(['stat' => 'fileStatsObject']);
 
-        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('abc123')->once()->andReturnSelf()
-            ->shouldReceive('getContent')->with($file)->once()->andReturn('file contents');
+        $this->repository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('abc123')->once()->andReturnSelf()
+            ->shouldReceive('getContent')->with($file)->once()->andReturn((object) ['test']);
 
-        $response = $controller->update($this->request, '1234', $file);
+        $response = $controller->view($this->request, '1234', $file);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('server.files.edit', $response);
         $this->assertViewHasKey('file', $response);
@@ -112,7 +111,7 @@ class FileActionsControllerTest extends ControllerTestCase
         $this->assertViewHasKey('directory', $response);
         $this->assertViewKeyEquals('file', $file, $response);
         $this->assertViewKeyEquals('stat', 'fileStatsObject', $response);
-        $this->assertViewKeyEquals('contents', 'file contents', $response);
+        $this->assertViewKeyEquals('contents', (object) ['test'], $response);
         $this->assertViewKeyEquals('directory', $expected, $response);
     }
 
@@ -131,10 +130,10 @@ class FileActionsControllerTest extends ControllerTestCase
         $this->setRequestAttribute('server_token', 'abc123');
         $this->setRequestAttribute('file_stats', 'fileStatsObject');
 
-        $this->repository->shouldReceive('setNode')->with($server->node_id)->once()->andThrow($this->getExceptionMock());
+        $this->repository->shouldReceive('setServer')->with($server)->once()->andThrow($this->getExceptionMock());
 
         try {
-            $controller->update($this->request, '1234', 'file.txt');
+            $controller->view($this->request, '1234', 'file.txt');
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(DaemonConnectionException::class, $exception);
             $this->assertInstanceOf(RequestException::class, $exception->getPrevious());

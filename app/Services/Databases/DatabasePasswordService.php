@@ -69,7 +69,7 @@ class DatabasePasswordService
         $this->dynamic->set('dynamic', $database->database_host_id);
         $this->connection->beginTransaction();
 
-        $updated = $this->repository->withoutFresh()->update($database->id, [
+        $updated = $this->repository->withoutFreshModel()->update($database->id, [
             'password' => $this->encrypter->encrypt($password),
         ]);
 

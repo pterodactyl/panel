@@ -72,10 +72,10 @@ class NodeUpdateService
             unset($data['reset_secret']);
         }
 
-        $updateResponse = $this->repository->withoutFresh()->update($node->id, $data);
+        $updateResponse = $this->repository->withoutFreshModel()->update($node->id, $data);
 
         try {
-            $this->configRepository->setNode($node->id)->update();
+            $this->configRepository->setNode($node)->update();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
             $this->writer->warning($exception);

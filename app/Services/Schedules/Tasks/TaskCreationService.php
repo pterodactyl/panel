@@ -56,7 +56,7 @@ class TaskCreationService
             throw new TaskIntervalTooLongException(trans('exceptions.tasks.chain_interval_too_long'));
         }
 
-        $repository = ($returnModel) ? $this->repository : $this->repository->withoutFresh();
+        $repository = ($returnModel) ? $this->repository : $this->repository->withoutFreshModel();
         $task = $repository->create([
             'schedule_id' => $schedule,
             'sequence_id' => $data['sequence_id'],

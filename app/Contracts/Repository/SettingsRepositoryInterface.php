@@ -9,7 +9,9 @@ interface SettingsRepositoryInterface extends RepositoryInterface
      *
      * @param string $key
      * @param string $value
-     * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function set(string $key, string $value);
 
@@ -26,7 +28,6 @@ interface SettingsRepositoryInterface extends RepositoryInterface
      * Remove a key from the database cache.
      *
      * @param string $key
-     * @return mixed
      */
     public function forget(string $key);
 }

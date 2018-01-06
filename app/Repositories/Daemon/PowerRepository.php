@@ -1,27 +1,23 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Daemon;
 
-use Webmozart\Assert\Assert;
+use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException;
 
 class PowerRepository extends BaseRepository implements PowerRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Send a power signal to a server.
+     *
+     * @param string $signal
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
-    public function sendSignal($signal)
+    public function sendSignal(string $signal): ResponseInterface
     {
-        Assert::stringNotEmpty($signal, 'The first argument passed to sendSignal must be a non-empty string, received %s.');
-
         switch ($signal) {
             case self::SIGNAL_START:
             case self::SIGNAL_STOP:
@@ -32,9 +28,8 @@ class PowerRepository extends BaseRepository implements PowerRepositoryInterface
                         'action' => $signal,
                     ],
                 ]);
-                break;
             default:
-                throw new InvalidPowerSignalException('The signal ' . $signal . ' is not defined and could not be processed.');
+                throw new InvalidPowerSignalException('The signal "' . $signal . '" is not defined and could not be processed.');
         }
     }
 }
