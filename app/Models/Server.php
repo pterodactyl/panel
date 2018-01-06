@@ -119,13 +119,13 @@ class Server extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $searchableColumns = [
-        'name' => 10,
-        'uuidShort' => 9,
-        'uuid' => 8,
-        'pack.name' => 7,
-        'user.email' => 6,
-        'user.username' => 6,
-        'node.name' => 2,
+        'name' => 50,
+        'uuidShort' => 10,
+        'uuid' => 10,
+        'pack.name' => 5,
+        'user.email' => 20,
+        'user.username' => 20,
+        'node.name' => 10,
     ];
 
     /**
