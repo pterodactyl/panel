@@ -1,0 +1,21 @@
+<?php
+return [
+    'not_authorized' => 'U bent niet gemachtigd om deze actie uit te voeren.',
+    'auth_error' => 'Er is een fout opgetreden tijdens het inloggen.',
+    'authentication_required' => 'Authenticatie is verplicht om verder te gaan.',
+    'remember_me' => 'Onthoud mij',
+    'sign_in' => 'Aanmelden',
+    'forgot_password' => 'Ik ben mijn wachtwoord vergeten!',
+    'request_reset_text' => 'Wachtwoord vergeten? Dat is niet het einde van de wereld, geef uw e-mailadres hieronder op.',
+    'reset_password_text' => 'Uw wachtwoord opnieuw instellen.',
+    'reset_password' => 'Wachtwoord opnieuw instellen',
+    'email_sent' => 'Er is een e-mail naar u verzonden met verdere instructies voor het opnieuw instellen van uw wachtwoord.',
+    'failed' => 'De inloggegevens die zijn opgegeven komen niet overeen met de gegevens die we hebben geregistreerd, of de opgegeven 2FA-token was ongeldig.',
+    'throttle' => 'Te veel inlogpogingen, probeer het opnieuw in :seconds seconden.',
+    'password_requirements' => 'Wachtwoorden moeten ten minste één hoofdletter, kleine letter en cijfer bevatten en moeten ten minste acht tekens lang zijn.',
+    'request_reset' => 'Zoek account',
+    '2fa_required' => '2-Factor Authenticatie',
+    '2fa_failed' => 'De opgegeven 2FA token is ongeldig.',
+    'totp_failed' => 'Er is een fout opgetreden bij het valideren van de TOTP.',
+    '2fa_must_be_enabled' => 'De beheerder heeft 2-Factor Authenticatie voor uw account vereist om het paneel te kunnen gebruiken.',
+];
