@@ -34,7 +34,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getAllServers(int $paginate): LengthAwarePaginator
     {
-        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->setSearchTerm($this->getSearchTerm());
+        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->getSearchTerm());
 
         return $instance->paginate($paginate, $this->getColumns());
     }

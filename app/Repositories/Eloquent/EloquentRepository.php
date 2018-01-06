@@ -228,7 +228,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     {
         $instance = $this->getBuilder();
         if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
-            $instance = $instance->setSearchTerm($this->getSearchTerm());
+            $instance = $instance->search($this->getSearchTerm());
         }
 
         return $instance->get($this->getColumns());

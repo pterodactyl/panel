@@ -47,7 +47,7 @@ class PackRepository extends EloquentRepository implements PackRepositoryInterfa
     public function paginateWithEggAndServerCount(): LengthAwarePaginator
     {
         return $this->getBuilder()->with('egg')->withCount('servers')
-            ->setSearchTerm($this->getSearchTerm())
+            ->search($this->getSearchTerm())
             ->paginate(50, $this->getColumns());
     }
 }

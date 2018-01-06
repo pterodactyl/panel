@@ -46,7 +46,7 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
             'id', 'email', 'username', 'name_first', 'name_last',
         ]);
 
-        $instance = $this->getBuilder()->setSearchTerm($query)->get($this->getColumns());
+        $instance = $this->getBuilder()->search($query)->get($this->getColumns());
 
         return $instance->transform(function ($item) {
             $item->md5 = md5(strtolower($item->email));
