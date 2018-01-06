@@ -21,7 +21,10 @@ class ServerFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        return Server::getCreateRules();
+        $rules = Server::getCreateRules();
+        $rules['description'][] = 'nullable';
+
+        return $rules;
     }
 
     /**

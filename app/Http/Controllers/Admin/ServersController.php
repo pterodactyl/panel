@@ -254,6 +254,7 @@ class ServersController extends Controller
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(ServerFormRequest $request)
     {

@@ -118,7 +118,7 @@ class ServerCreationService
             'uuidShort' => str_random(8),
             'node_id' => array_get($data, 'node_id'),
             'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description', ''),
+            'description' => array_get($data, 'description') ?? '',
             'skip_scripts' => isset($data['skip_scripts']),
             'suspended' => false,
             'owner_id' => array_get($data, 'owner_id'),
