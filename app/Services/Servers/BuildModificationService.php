@@ -154,7 +154,7 @@ class BuildModificationService
         })->toArray());
 
         try {
-            $this->daemonServerRepository->setServer($server->uuid)->update([
+            $this->daemonServerRepository->setServer($server)->update([
                 'build' => $this->getBuild(),
             ]);
 
