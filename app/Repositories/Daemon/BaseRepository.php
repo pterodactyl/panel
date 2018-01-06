@@ -28,7 +28,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     private $token;
 
     /**
-     * @var \Pterodactyl\Models\Node
+     * @var \Pterodactyl\Models\Node|null
      */
     private $node;
 
@@ -65,9 +65,9 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Return the node model being used.
      *
-     * @return \Pterodactyl\Models\Node
+     * @return \Pterodactyl\Models\Node|null
      */
-    public function getNode(): Node
+    public function getNode()
     {
         return $this->node;
     }

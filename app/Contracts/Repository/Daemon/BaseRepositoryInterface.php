@@ -19,9 +19,9 @@ interface BaseRepositoryInterface
     /**
      * Return the node model being used.
      *
-     * @return \Pterodactyl\Models\Node
+     * @return \Pterodactyl\Models\Node|null
      */
-    public function getNode(): Node;
+    public function getNode();
 
     /**
      * Set the Server model to use when requesting information from the Daemon.
