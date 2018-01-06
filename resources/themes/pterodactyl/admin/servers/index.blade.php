@@ -45,6 +45,7 @@
                             <th>Node</th>
                             <th>Connection</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         @foreach ($servers as $server)
                             <tr data-server="{{ $server->uuidShort }}">
@@ -64,6 +65,10 @@
                                         <span class="label label-success">Active</span>
                                     @endif
                                 </td>
+                                <td class="text-center">
+                                    <a class="btn btn-xs btn-default" href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-wrench"></i></a>
+                                    <a class="btn btn-xs btn-default console-popout" href="{{ route('server.console', $server->uuidShort) }}"><i class="fa fa-terminal"></i></a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -77,4 +82,14 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+    <script>
+        $('.console-popout').on('click', function (event) {
+            event.preventDefault();
+            window.open($(this).attr('href'), 'Pterodactyl Console', 'width=800,height=400');
+        });
+    </script>
 @endsection

@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $server->name }}<small>{{ $server->uuid }}</small></h1>
+    <h1>{{ $server->name }}<small>{{ str_limit($server->description) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.servers') }}">Servers</a></li>
