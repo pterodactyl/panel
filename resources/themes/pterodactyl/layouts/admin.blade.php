@@ -55,8 +55,8 @@
                     </a>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <li class="dropdown user-menu">
-                                <a href="{{ route('account') }}" class="dropdown-toggle" data-toggle="dropdown">
+                            <li class="user-menu">
+                                <a href="{{ route('account') }}">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
