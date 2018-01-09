@@ -1,17 +1,10 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Schedules;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Node;
+use Cron\CronExpression;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Database\ConnectionInterface;
@@ -54,7 +47,6 @@ class ScheduleCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->cron = m::mock('overload:\Cron\CronExpression');
         $this->repository = m::mock(ScheduleRepositoryInterface::class);
         $this->taskCreationService = m::mock(TaskCreationService::class);
 
@@ -69,18 +61,15 @@ class ScheduleCreationServiceTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $server = factory(Server::class)->make();
 
-        $this->cron->shouldReceive('factory')->with('* * * * * *')->once()->andReturnSelf()
-            ->shouldReceive('getNextRunDate')->withNoArgs()->once()->andReturn('nextDate');
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->with([
             'server_id' => $server->id,
-            'next_run_at' => 'nextDate',
-            'test_data' => 'test_value',
+            'next_run_at' => CronExpression::factory('* * * * * *')->getNextRunDate(),
+            'test_key' => 'value',
         ])->once()->andReturn($schedule);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($server, ['test_data' => 'test_value']);
-        $this->assertNotEmpty($response);
+        $response = $this->service->handle($server, ['test_key' => 'value', 'server_id' => '123abc']);
         $this->assertInstanceOf(Schedule::class, $response);
         $this->assertEquals($schedule, $response);
     }
@@ -93,14 +82,13 @@ class ScheduleCreationServiceTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $server = factory(Server::class)->make();
 
-        $this->cron->shouldReceive('factory')->with('* * * * * *')->once()->andReturnSelf()
-            ->shouldReceive('getNextRunDate')->withNoArgs()->once()->andReturn('nextDate');
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->with([
-            'next_run_at' => 'nextDate',
             'server_id' => $server->id,
-            'test_data' => 'test_value',
+            'next_run_at' => CronExpression::factory('* * * * * *')->getNextRunDate(),
+            'test_key' => 'value',
         ])->once()->andReturn($schedule);
+
         $this->taskCreationService->shouldReceive('handle')->with($schedule, [
             'time_interval' => 'm',
             'time_value' => 10,
@@ -111,62 +99,10 @@ class ScheduleCreationServiceTest extends TestCase
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($server, ['test_data' => 'test_value'], [
+        $response = $this->service->handle($server, ['test_key' => 'value'], [
             ['time_interval' => 'm', 'time_value' => 10, 'action' => 'test', 'payload' => 'testpayload'],
         ]);
-        $this->assertNotEmpty($response);
         $this->assertInstanceOf(Schedule::class, $response);
         $this->assertEquals($schedule, $response);
-    }
-
-    /**
-     * Test that an ID can be passed in place of the server model.
-     */
-    public function testIdCanBePassedInPlaceOfServerModel()
-    {
-        $schedule = factory(Schedule::class)->make();
-
-        $this->cron->shouldReceive('factory')->with('* * * * * *')->once()->andReturnSelf()
-            ->shouldReceive('getNextRunDate')->withNoArgs()->once()->andReturn('nextDate');
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('create')->with([
-            'next_run_at' => 'nextDate',
-            'server_id' => 1234,
-            'test_data' => 'test_value',
-        ])->once()->andReturn($schedule);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-
-        $response = $this->service->handle(1234, ['test_data' => 'test_value']);
-        $this->assertNotEmpty($response);
-        $this->assertInstanceOf(Schedule::class, $response);
-        $this->assertEquals($schedule, $response);
-    }
-
-    /**
-     * Test that an exception is raised if invalid data is passed.
-     *
-     * @dataProvider invalidServerArgumentProvider
-     * @expectedException \InvalidArgumentException
-     */
-    public function testExceptionIsThrownIfServerIsInvalid($attribute)
-    {
-        $this->service->handle($attribute, []);
-    }
-
-    /**
-     * Return an array of invalid server data to test aganist.
-     *
-     * @return array
-     */
-    public function invalidServerArgumentProvider()
-    {
-        return [
-            [123.456],
-            ['server'],
-            ['abc123'],
-            ['123_test'],
-            [new Node()],
-            [Server::class],
-        ];
     }
 }

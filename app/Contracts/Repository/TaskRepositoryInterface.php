@@ -14,7 +14,7 @@ interface TaskRepositoryInterface extends RepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getTaskWithServer(int $id): Task;
+    public function getTaskForJobProcess(int $id): Task;
 
     /**
      * Returns the next task in a schedule.

@@ -27,10 +27,10 @@ class TaskRepository extends EloquentRepository implements TaskRepositoryInterfa
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getTaskWithServer(int $id): Task
+    public function getTaskForJobProcess(int $id): Task
     {
         try {
-            return $this->getBuilder()->with('server.user')->findOrFail($id, $this->getColumns());
+            return $this->getBuilder()->with('server.user', 'schedule')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
