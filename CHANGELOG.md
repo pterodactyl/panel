@@ -18,7 +18,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Changed behavior of allocation IP Address/Ports box to automatically store the value entered if a user unfocuses the field without hitting space.
-* c order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
+* Changed order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
+
+### Removed
+* OOM exceptions can no longer be disabled on servers due to a startling number of users that were using it to avoid allocating proper amounts of resources to servers.
 
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed
