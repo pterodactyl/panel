@@ -18,6 +18,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Changed behavior of allocation IP Address/Ports box to automatically store the value entered if a user unfocuses the field without hitting space.
+* c order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
 
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed
