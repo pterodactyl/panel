@@ -40,4 +40,18 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
     {
         return $this->getBuilder()->where('node_id', $node)->get($this->getColumns());
     }
+
+    /**
+     * Return all of the unique IPs that exist for a given node.
+     *
+     * @param int $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUniqueAllocationIpsForNode(int $node): Collection
+    {
+        return $this->getBuilder()->where('node_id', $node)
+            ->groupBy('ip')
+            ->orderByRaw('INET_ATON(ip) ASC')
+            ->get($this->getColumns());
+    }
 }

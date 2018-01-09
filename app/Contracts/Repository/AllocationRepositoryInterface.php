@@ -22,4 +22,12 @@ interface AllocationRepositoryInterface extends RepositoryInterface
      * @return \Illuminate\Support\Collection
      */
     public function getAllocationsForNode(int $node): Collection;
+
+    /**
+     * Return all of the unique IPs that exist for a given node.
+     *
+     * @param int $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUniqueAllocationIpsForNode(int $node): Collection;
 }

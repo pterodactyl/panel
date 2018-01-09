@@ -210,15 +210,16 @@ class NodesController extends Controller
      *
      * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewAllocation(Node $node)
     {
         $this->repository->loadNodeAllocations($node);
         Javascript::put(['node' => collect($node)->only(['id'])]);
 
-        return view('admin.nodes.view.allocation', ['node' => $node]);
+        return view('admin.nodes.view.allocation', [
+            'allocations' => $this->allocationRepository->setColumns(['ip'])->getUniqueAllocationIpsForNode($node->id),
+            'node' => $node,
+        ]);
     }
 
     /**
