@@ -17,6 +17,6 @@ return [
     'request_reset' => 'Trouver le compte',
     '2fa_required' => '2-Factor Authentication',
     '2fa_failed' => 'La clé 2FA est invalide.',
-    'totp_failed' => 'Une erreur s'est produite lors de la tentative de validation de TOTP.',
-    '2fa_must_be_enabled' => 'L'administrateur a demandé que l'authentification à 2 facteurs (2FA) soit activée pour votre compte afin d'utiliser le panel.',
+    'totp_failed' => 'Une erreur s\'est produite lors de la tentative de validation de TOTP.',
+    '2fa_must_be_enabled' => 'L\'administrateur a demandé que l\'authentification à 2 facteurs (2FA) soit activée pour votre compte afin d\'utiliser le panel.',
 ];
