@@ -74,7 +74,7 @@ class NodeController extends Controller
      */
     public function index(Request $request): array
     {
-        $nodes = $this->repository->all(config('pterodactyl.paginate.api.nodes'));
+        $nodes = $this->repository->paginated(100);
 
         $fractal = $this->fractal->collection($nodes)
             ->transformWith(new NodeTransformer($request))

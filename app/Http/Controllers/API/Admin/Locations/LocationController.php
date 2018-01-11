@@ -74,7 +74,7 @@ class LocationController extends Controller
      */
     public function index(Request $request): array
     {
-        $locations = $this->repository->all(50);
+        $locations = $this->repository->paginated(100);
 
         return $this->fractal->collection($locations)
             ->transformWith(new LocationTransformer($request))

@@ -35,13 +35,11 @@ class UserTransformer extends ApiTransformer
      */
     public function includeServers(User $user)
     {
-        if ($this->authorize('server-list')) {
+        if (! $this->authorize('server-list')) {
             return false;
         }
 
-        if (! $user->relationLoaded('servers')) {
-            $user->load('servers');
-        }
+        $user->loadMissing('servers');
 
         return $this->collection($user->getRelation('servers'), new ServerTransformer($this->getRequest()), 'server');
     }

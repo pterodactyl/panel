@@ -3,6 +3,7 @@
 namespace Pterodactyl\Contracts\Repository;
 
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface RepositoryInterface
 {
@@ -174,6 +175,14 @@ interface RepositoryInterface
      * @return Collection
      */
     public function all(): Collection;
+
+    /**
+     * Return a paginated result set using a search term if set on the repository.
+     *
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginated(int $perPage): LengthAwarePaginator;
 
     /**
      * Insert a single or multiple records into the database at once skipping

@@ -105,4 +105,14 @@ class Allocation extends Model implements CleansAttributes, ValidableContract
     {
         return $this->belongsTo(Server::class);
     }
+
+    /**
+     * Return the Node model associated with this allocation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function node()
+    {
+        return $this->belongsTo(Node::class);
+    }
 }

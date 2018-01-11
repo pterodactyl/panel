@@ -76,7 +76,7 @@ class UserController extends Controller
      */
     public function index(Request $request): array
     {
-        $users = $this->repository->all(config('pterodactyl.paginate.api.users'));
+        $users = $this->repository->paginated(100);
 
         return $this->fractal->collection($users)
             ->transformWith(new UserTransformer($request))
@@ -113,7 +113,6 @@ class UserController extends Controller
      * @param \Pterodactyl\Models\User                         $user
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

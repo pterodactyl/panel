@@ -21,29 +21,23 @@ trait MocksRequestException
     /**
      * Configure the exception mock to work with the Panel's default exception
      * handler actions.
+     *
+     * @param string $abstract
+     * @param null   $response
      */
-    public function configureExceptionMock()
+    protected function configureExceptionMock(string $abstract = RequestException::class, $response = null)
     {
-        $this->getExceptionMock()->shouldReceive('getResponse')->andReturn($this->exceptionResponse);
+        $this->getExceptionMock($abstract)->shouldReceive('getResponse')->andReturn(value($response));
     }
 
     /**
      * Return a mocked instance of the request exception.
      *
+     * @param string $abstract
      * @return \Mockery\MockInterface
      */
-    private function getExceptionMock(): MockInterface
+    protected function getExceptionMock(string $abstract = RequestException::class): MockInterface
     {
-        return $this->exception ?? $this->exception = Mockery::mock(RequestException::class);
-    }
-
-    /**
-     * Set the exception response.
-     *
-     * @param mixed $response
-     */
-    protected function setExceptionResponse($response)
-    {
-        $this->exceptionResponse = $response;
+        return $this->exception ?? $this->exception = Mockery::mock($abstract);
     }
 }

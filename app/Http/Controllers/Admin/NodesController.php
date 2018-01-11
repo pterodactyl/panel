@@ -12,6 +12,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Javascript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
+use Illuminate\Http\Response;
+use Pterodactyl\Models\Allocation;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
@@ -23,6 +25,7 @@ use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
+use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
@@ -78,11 +81,16 @@ class NodesController extends Controller
      * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
      */
     protected $versionService;
+    /**
+     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
+     */
+    private $allocationDeletionService;
 
     /**
      * NodesController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                               $alert
+     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $allocationDeletionService
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
      * @param \Illuminate\Cache\Repository                                    $cache
@@ -95,6 +103,7 @@ class NodesController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
+        AllocationDeletionService $allocationDeletionService,
         AllocationRepositoryInterface $allocationRepository,
         AssignmentService $assignmentService,
         CacheRepository $cache,
@@ -106,6 +115,7 @@ class NodesController extends Controller
         SoftwareVersionService $versionService
     ) {
         $this->alert = $alert;
+        $this->allocationDeletionService = $allocationDeletionService;
         $this->allocationRepository = $allocationRepository;
         $this->assignmentService = $assignmentService;
         $this->cache = $cache;
@@ -262,17 +272,14 @@ class NodesController extends Controller
     /**
      * Removes a single allocation from a node.
      *
-     * @param int $node
-     * @param int $allocation
-     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @param \Pterodactyl\Models\Allocation $allocation
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function allocationRemoveSingle($node, $allocation)
+    public function allocationRemoveSingle(Allocation $allocation): Response
     {
-        $this->allocationRepository->deleteWhere([
-            ['id', '=', $allocation],
-            ['node_id', '=', $node],
-            ['server_id', '=', null],
-        ]);
+        $this->allocationDeletionService->handle($allocation);
 
         return response('', 204);
     }

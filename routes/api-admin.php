@@ -34,6 +34,12 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::patch('/{node}', 'Nodes\NodeController@update')->name('api.admin.node.update');
 
     Route::delete('/{node}', 'Nodes\NodeController@delete')->name('api.admin.node.delete');
+
+    Route::group(['prefix' => '/{node}/allocations'], function () {
+        Route::get('/', 'Nodes\AllocationController@index')->name('api.admin.node.allocations.list');
+
+        Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.admin.node.allocations.delete');
+    });
 });
 
 /*

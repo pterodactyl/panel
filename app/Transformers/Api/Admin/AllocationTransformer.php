@@ -8,6 +8,16 @@ use Pterodactyl\Transformers\Api\ApiTransformer;
 class AllocationTransformer extends ApiTransformer
 {
     /**
+     * Relationships that can be loaded onto allocation transformations.
+     *
+     * @var array
+     */
+    protected $availableIncludes = [
+        'node',
+        'server',
+    ];
+
+    /**
      * Return a generic transformed allocation array.
      *
      * @param \Pterodactyl\Models\Allocation $allocation
@@ -15,17 +25,50 @@ class AllocationTransformer extends ApiTransformer
      */
     public function transform(Allocation $allocation)
     {
-        return $this->transformWithFilter($allocation);
+        return [
+            'id' => $allocation->id,
+            'ip' => $allocation->ip,
+            'alias' => $allocation->ip_alias,
+            'port' => $allocation->port,
+            'assigned' => ! is_null($allocation->server_id),
+        ];
     }
 
     /**
-     * Determine which transformer filter to apply.
+     * Load the node relationship onto a given transformation.
      *
      * @param \Pterodactyl\Models\Allocation $allocation
-     * @return array
+     * @return bool|\League\Fractal\Resource\Item
+     *
+     * @throws \Pterodactyl\Exceptions\PterodactylException
      */
-    protected function transformWithFilter(Allocation $allocation)
+    public function includeNode(Allocation $allocation)
     {
-        return $allocation->toArray();
+        if (! $this->authorize('node-view')) {
+            return false;
+        }
+
+        $allocation->loadMissing('node');
+
+        return $this->item($allocation->getRelation('node'), new NodeTransformer($this->getRequest()), 'node');
+    }
+
+    /**
+     * Load the server relationship onto a given transformation.
+     *
+     * @param \Pterodactyl\Models\Allocation $allocation
+     * @return bool|\League\Fractal\Resource\Item
+     *
+     * @throws \Pterodactyl\Exceptions\PterodactylException
+     */
+    public function includeServer(Allocation $allocation)
+    {
+        if (! $this->authorize('server-view')) {
+            return false;
+        }
+
+        $allocation->loadMissing('server');
+
+        return $this->item($allocation->getRelation('server'), new ServerTransformer($this->getRequest()), 'server');
     }
 }
