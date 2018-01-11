@@ -52,7 +52,7 @@ class InstallScriptService
             }
         }
 
-        $this->repository->withoutFresh()->update($egg->id, [
+        $this->repository->withoutFreshModel()->update($egg->id, [
             'script_install' => array_get($data, 'script_install'),
             'script_is_privileged' => array_get($data, 'script_is_privileged', 1),
             'script_entry' => array_get($data, 'script_entry'),

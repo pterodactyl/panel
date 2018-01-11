@@ -1,30 +1,36 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Concerns;
 
 trait Searchable
 {
     /**
-     * The term to search.
+     * The search term to use when filtering results.
      *
-     * @var bool|string
+     * @var null|string
      */
-    protected $searchTerm = false;
+    protected $searchTerm;
 
     /**
-     * Perform a search of the model using the given term.
+     * Set the search term.
      *
-     * @param string $term
+     * @param string|null $term
      * @return $this
+     * @deprecated
      */
     public function search($term)
+    {
+        return $this->setSearchTerm($term);
+    }
+
+    /**
+     * Set the search term to use when requesting all records from
+     * the model.
+     *
+     * @param string|null $term
+     * @return $this
+     */
+    public function setSearchTerm(string $term = null)
     {
         if (empty($term)) {
             return $this;
@@ -34,5 +40,25 @@ trait Searchable
         $clone->searchTerm = $term;
 
         return $clone;
+    }
+
+    /**
+     * Determine if a valid search term is set on this repository.
+     *
+     * @return bool
+     */
+    public function hasSearchTerm(): bool
+    {
+        return ! empty($this->searchTerm);
+    }
+
+    /**
+     * Return the search term.
+     *
+     * @return string|null
+     */
+    public function getSearchTerm()
+    {
+        return $this->searchTerm;
     }
 }

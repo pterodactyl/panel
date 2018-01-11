@@ -34,7 +34,7 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
     {
         parent::setUp();
 
-        Carbon::setTestNow();
+        Carbon::setTestNow(Carbon::now());
         $this->disk = m::mock(Filesystem::class);
         $this->filesystem = m::mock(Factory::class);
         $this->filesystem->shouldReceive('disk')->withNoArgs()->once()->andReturn($this->disk);

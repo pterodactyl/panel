@@ -108,7 +108,7 @@ class DaemonKeyDeletionService
         $this->repository->delete($key->id);
 
         try {
-            $this->daemonRepository->setNode($server->node_id)->revokeAccessKey($key->secret);
+            $this->daemonRepository->setServer($server)->revokeAccessKey($key->secret);
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
             $this->connection->rollBack();

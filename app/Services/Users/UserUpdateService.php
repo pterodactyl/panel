@@ -55,7 +55,6 @@ class UserUpdateService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function handle(User $user, array $data): Collection
     {

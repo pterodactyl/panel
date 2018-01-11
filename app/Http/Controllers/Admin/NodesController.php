@@ -126,7 +126,7 @@ class NodesController extends Controller
     public function index(Request $request)
     {
         return view('admin.nodes.index', [
-            'nodes' => $this->repository->search($request->input('query'))->getNodeListingData(),
+            'nodes' => $this->repository->setSearchTerm($request->input('query'))->getNodeListingData(),
         ]);
     }
 
@@ -166,15 +166,15 @@ class NodesController extends Controller
     /**
      * Shows the index overview page for a specific node.
      *
-     * @param int $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewIndex($node)
+    public function viewIndex(Node $node)
     {
         return view('admin.nodes.view.index', [
-            'node' => $this->repository->getSingleNode($node),
+            'node' => $this->repository->loadLocationAndServerCount($node),
             'stats' => $this->repository->getUsageStats($node),
             'version' => $this->versionService,
         ]);
@@ -208,17 +208,18 @@ class NodesController extends Controller
     /**
      * Shows the allocation page for a specific node.
      *
-     * @param int $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewAllocation($node)
+    public function viewAllocation(Node $node)
     {
-        $node = $this->repository->getNodeAllocations($node);
+        $this->repository->loadNodeAllocations($node);
         Javascript::put(['node' => collect($node)->only(['id'])]);
 
-        return view('admin.nodes.view.allocation', ['node' => $node]);
+        return view('admin.nodes.view.allocation', [
+            'allocations' => $this->allocationRepository->setColumns(['ip'])->getUniqueAllocationIpsForNode($node->id),
+            'node' => $node,
+        ]);
     }
 
     /**

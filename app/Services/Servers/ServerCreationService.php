@@ -118,7 +118,7 @@ class ServerCreationService
             'uuidShort' => str_random(8),
             'node_id' => array_get($data, 'node_id'),
             'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description', ''),
+            'description' => array_get($data, 'description') ?? '',
             'skip_scripts' => isset($data['skip_scripts']),
             'suspended' => false,
             'owner_id' => array_get($data, 'owner_id'),
@@ -127,7 +127,7 @@ class ServerCreationService
             'disk' => array_get($data, 'disk'),
             'io' => array_get($data, 'io'),
             'cpu' => array_get($data, 'cpu'),
-            'oom_disabled' => isset($data['oom_disabled']),
+            'oom_disabled' => false,
             'allocation_id' => array_get($data, 'allocation_id'),
             'nest_id' => array_get($data, 'nest_id'),
             'egg_id' => array_get($data, 'egg_id'),
@@ -163,8 +163,9 @@ class ServerCreationService
         $structure = $this->configurationStructureService->handle($server);
 
         // Create the server on the daemon & commit it to the database.
+        $node = $this->nodeRepository->find($server->node_id);
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->create($structure, [
+            $this->daemonServerRepository->setNode($node)->create($structure, [
                 'start_on_completion' => (bool) array_get($data, 'start_on_completion', false),
             ]);
             $this->connection->commit();

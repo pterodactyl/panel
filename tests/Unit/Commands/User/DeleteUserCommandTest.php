@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Commands\User;
 
@@ -60,7 +53,7 @@ class DeleteUserCommandTest extends CommandTestCase
             $user2 = factory(User::class)->make(),
         ]);
 
-        $this->repository->shouldReceive('search')->with($user1->username)->once()->andReturnSelf()
+        $this->repository->shouldReceive('setSearchTerm')->with($user1->username)->once()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1->id)->once()->andReturnNull();
 
@@ -82,9 +75,9 @@ class DeleteUserCommandTest extends CommandTestCase
             $user1 = factory(User::class)->make(),
         ]);
 
-        $this->repository->shouldReceive('search')->with('noResults')->once()->andReturnSelf()
-            ->shouldReceive('all')->withNoArgs()->once()->andReturn([]);
-        $this->repository->shouldReceive('search')->with($user1->username)->once()->andReturnSelf()
+        $this->repository->shouldReceive('setSearchTerm')->with('noResults')->once()->andReturnSelf()
+            ->shouldReceive('all')->withNoArgs()->once()->andReturn(collect());
+        $this->repository->shouldReceive('setSearchTerm')->with($user1->username)->once()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1->id)->once()->andReturnNull();
 
@@ -107,7 +100,7 @@ class DeleteUserCommandTest extends CommandTestCase
             $user1 = factory(User::class)->make(),
         ]);
 
-        $this->repository->shouldReceive('search')->with($user1->username)->twice()->andReturnSelf()
+        $this->repository->shouldReceive('setSearchTerm')->with($user1->username)->twice()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->twice()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1->id)->once()->andReturnNull();
 
@@ -130,7 +123,7 @@ class DeleteUserCommandTest extends CommandTestCase
             $user1 = factory(User::class)->make(),
         ]);
 
-        $this->repository->shouldReceive('search')->with($user1->username)->once()->andReturnSelf()
+        $this->repository->shouldReceive('setSearchTerm')->with($user1->username)->once()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldNotReceive('handle');
 
@@ -149,7 +142,7 @@ class DeleteUserCommandTest extends CommandTestCase
             $user1 = factory(User::class)->make(),
         ]);
 
-        $this->repository->shouldReceive('search')->with($user1->username)->once()->andReturnSelf()
+        $this->repository->shouldReceive('setSearchTerm')->with($user1->username)->once()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldReceive('handle')->with($user1)->once()->andReturnNull();
 
@@ -169,7 +162,7 @@ class DeleteUserCommandTest extends CommandTestCase
             $user2 = factory(User::class)->make(),
         ]);
 
-        $this->repository->shouldReceive('search')->with($user1->username)->once()->andReturnSelf()
+        $this->repository->shouldReceive('setSearchTerm')->with($user1->username)->once()->andReturnSelf()
             ->shouldReceive('all')->withNoArgs()->once()->andReturn($users);
         $this->deletionService->shouldNotReceive('handle');
 
@@ -184,8 +177,8 @@ class DeleteUserCommandTest extends CommandTestCase
      */
     public function testNoInteractionWithNoResults()
     {
-        $this->repository->shouldReceive('search')->with(123456)->once()->andReturnSelf()
-            ->shouldReceive('all')->withNoArgs()->once()->andReturn([]);
+        $this->repository->shouldReceive('setSearchTerm')->with(123456)->once()->andReturnSelf()
+            ->shouldReceive('all')->withNoArgs()->once()->andReturn(collect());
 
         $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => 123456]);
 

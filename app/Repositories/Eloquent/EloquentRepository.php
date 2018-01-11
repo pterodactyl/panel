@@ -1,17 +1,12 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Webmozart\Assert\Assert;
+use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Repository;
 use Illuminate\Database\Query\Expression;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -20,7 +15,19 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 abstract class EloquentRepository extends Repository implements RepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return an instance of the eloquent model bound to this
+     * repository instance.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function getModel()
+    {
+        return $this->model;
+    }
+
+    /**
+     * Return an instance of the builder to use for this repository.
+     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function getBuilder()
@@ -29,22 +36,19 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * {@inheritdoc}
-     * @param bool $force
+     * Create a new record in the database and return the associated model.
+     *
+     * @param array $fields
+     * @param bool  $validate
+     * @param bool  $force
      * @return \Illuminate\Database\Eloquent\Model|bool
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $fields, $validate = true, $force = false)
+    public function create(array $fields, bool $validate = true, bool $force = false)
     {
-        Assert::boolean($validate, 'Second argument passed to create must be boolean, recieved %s.');
-        Assert::boolean($force, 'Third argument passed to create must be boolean, received %s.');
-
         $instance = $this->getBuilder()->newModelInstance();
-
-        if ($force) {
-            $instance->forceFill($fields);
-        } else {
-            $instance->fill($fields);
-        }
+        ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
         if (! $validate) {
             $saved = $instance->skipValidation()->save();
@@ -58,99 +62,108 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * {@inheritdoc}
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+     * Find a model that has the specific ID passed.
+     *
+     * @param int $id
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function find($id)
+    public function find(int $id)
     {
-        Assert::numeric($id, 'First argument passed to find must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->find($id, $this->getColumns());
-
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        try {
+            return $this->getBuilder()->findOrFail($id, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
+            throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
-     * {@inheritdoc}
-     * @return \Illuminate\Database\Eloquent\Collection
+     * Find a model matching an array of where clauses.
+     *
+     * @param array $fields
+     * @return \Illuminate\Support\Collection
      */
-    public function findWhere(array $fields)
+    public function findWhere(array $fields): Collection
     {
         return $this->getBuilder()->where($fields)->get($this->getColumns());
     }
 
     /**
-     * {@inheritdoc}
+     * Find and return the first matching instance for the given fields.
+     *
+     * @param array $fields
      * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function findFirstWhere(array $fields)
     {
-        $instance = $this->getBuilder()->where($fields)->first($this->getColumns());
-
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->where($fields)->firstOrFail($this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
-     * {@inheritdoc}.
+     * Return a count of records matching the passed arguments.
+     *
+     * @param array $fields
+     * @return int
      */
-    public function findCountWhere(array $fields)
+    public function findCountWhere(array $fields): int
     {
         return $this->getBuilder()->where($fields)->count($this->getColumns());
     }
 
     /**
-     * {@inheritdoc}
+     * Delete a given record from the database.
+     *
+     * @param int  $id
+     * @param bool $destroy
+     * @return int
      */
-    public function delete($id, $destroy = false)
+    public function delete(int $id, bool $destroy = false): int
     {
-        Assert::numeric($id, 'First argument passed to delete must be numeric, received %s.');
-        Assert::boolean($destroy, 'Second argument passed to delete must be boolean, received %s.');
-
-        $instance = $this->getBuilder()->where($this->getModel()->getKeyName(), $id);
-
-        return ($destroy) ? $instance->forceDelete() : $instance->delete();
+        return $this->deleteWhere(['id' => $id], $destroy);
     }
 
     /**
-     * {@inheritdoc}
+     * Delete records matching the given attributes.
+     *
+     * @param array $attributes
+     * @param bool  $force
+     * @return int
      */
-    public function deleteWhere(array $attributes, $force = false)
+    public function deleteWhere(array $attributes, bool $force = false): int
     {
-        Assert::boolean($force, 'Second argument passed to deleteWhere must be boolean, received %s.');
-
         $instance = $this->getBuilder()->where($attributes);
 
         return ($force) ? $instance->forceDelete() : $instance->delete();
     }
 
     /**
-     * {@inheritdoc}
+     * Update a given ID with the passed array of fields.
+     *
+     * @param int   $id
+     * @param array $fields
+     * @param bool  $validate
+     * @param bool  $force
+     * @return \Illuminate\Database\Eloquent\Model|bool
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update($id, array $fields, $validate = true, $force = false)
+    public function update($id, array $fields, bool $validate = true, bool $force = false)
     {
-        Assert::numeric($id, 'First argument passed to update must be numeric, received %s.');
-        Assert::boolean($validate, 'Third argument passed to update must be boolean, received %s.');
-        Assert::boolean($force, 'Fourth argument passed to update must be boolean, received %s.');
-
-        $instance = $this->getBuilder()->where('id', $id)->first();
-
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        try {
+            $instance = $this->getBuilder()->where('id', $id)->firstOrFail();
+        } catch (ModelNotFoundException $exception) {
+            throw new RecordNotFoundException;
         }
 
-        if ($force) {
-            $instance->forceFill($fields);
-        } else {
-            $instance->fill($fields);
-        }
+        ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
         if (! $validate) {
             $saved = $instance->skipValidation()->save();
@@ -164,46 +177,71 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * {@inheritdoc}
+     * Perform a mass update where matching records are updated using whereIn.
+     * This does not perform any model data validation.
+     *
+     * @param string $column
+     * @param array  $values
+     * @param array  $fields
+     * @return int
      */
-    public function updateWhereIn($column, array $values, array $fields)
+    public function updateWhereIn(string $column, array $values, array $fields): int
     {
-        Assert::stringNotEmpty($column, 'First argument passed to updateWhereIn must be a non-empty string, received %s.');
+        Assert::notEmpty($column, 'First argument passed to updateWhereIn must be a non-empty string.');
 
         return $this->getBuilder()->whereIn($column, $values)->update($fields);
     }
 
     /**
-     * {@inheritdoc}
+     * Update a record if it exists in the database, otherwise create it.
+     *
+     * @param array $where
+     * @param array $fields
+     * @param bool  $validate
+     * @param bool  $force
+     * @return \Illuminate\Database\Eloquent\Model
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function massUpdate(array $where, array $fields)
+    public function updateOrCreate(array $where, array $fields, bool $validate = true, bool $force = false)
     {
-        // TODO: Implement massUpdate() method.
+        foreach ($where as $item) {
+            Assert::true(is_scalar($item) || is_null($item), 'First argument passed to updateOrCreate should be an array of scalar or null values, received an array value of %s.');
+        }
+
+        try {
+            $instance = $this->setColumns('id')->findFirstWhere($where);
+        } catch (RecordNotFoundException $exception) {
+            return $this->create(array_merge($where, $fields), $validate, $force);
+        }
+
+        return $this->update($instance->id, $fields, $validate, $force);
     }
 
     /**
-     * {@inheritdoc}
+     * Return all records associated with the given model.
+     *
+     * @return \Illuminate\Support\Collection
      */
-    public function all($paginate = null)
+    public function all(): Collection
     {
-        Assert::nullOrIntegerish($paginate, 'First argument passed to all must be null or integer, received %s.');
-
         $instance = $this->getBuilder();
-        if (is_subclass_of(get_called_class(), SearchableInterface::class)) {
-            $instance = $instance->search($this->searchTerm);
+        if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
+            $instance = $instance->search($this->getSearchTerm());
         }
 
-        if (is_null($paginate)) {
-            return $instance->get($this->getColumns());
-        }
-
-        return $instance->paginate($paginate, $this->getColumns());
+        return $instance->get($this->getColumns());
     }
 
     /**
-     * {@inheritdoc}
+     * Insert a single or multiple records into the database at once skipping
+     * validation and mass assignment checking.
+     *
+     * @param array $data
+     * @return bool
      */
-    public function insert(array $data)
+    public function insert(array $data): bool
     {
         return $this->getBuilder()->insert($data);
     }
@@ -214,19 +252,15 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * @param array $values
      * @return bool
      */
-    public function insertIgnore(array $values)
+    public function insertIgnore(array $values): bool
     {
         if (empty($values)) {
             return true;
         }
 
-        if (! is_array(reset($values))) {
-            $values = [$values];
-        } else {
-            foreach ($values as $key => $value) {
-                ksort($value);
-                $values[$key] = $value;
-            }
+        foreach ($values as $key => $value) {
+            ksort($value);
+            $values[$key] = $value;
         }
 
         $bindings = array_values(array_filter(array_flatten($values, 1), function ($binding) {
@@ -244,27 +278,5 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         $statement = "insert ignore into $table ($columns) values $parameters";
 
         return $this->getBuilder()->getConnection()->statement($statement, $bindings);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @return bool|\Illuminate\Database\Eloquent\Model
-     */
-    public function updateOrCreate(array $where, array $fields, $validate = true, $force = false)
-    {
-        Assert::boolean($validate, 'Third argument passed to updateOrCreate must be boolean, received %s.');
-        Assert::boolean($force, 'Fourth argument passed to updateOrCreate must be boolean, received %s.');
-
-        foreach ($where as $item) {
-            Assert::true(is_scalar($item) || is_null($item), 'First argument passed to updateOrCreate should be an array of scalar or null values, received an array value of %s.');
-        }
-
-        $instance = $this->withColumns('id')->findWhere($where)->first();
-
-        if (! $instance) {
-            return $this->create(array_merge($where, $fields), $validate, $force);
-        }
-
-        return $this->update($instance->id, $fields, $validate, $force);
     }
 }

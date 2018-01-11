@@ -1,23 +1,18 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Task;
-use Webmozart\Assert\Assert;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class TaskRepository extends EloquentRepository implements TaskRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -25,28 +20,31 @@ class TaskRepository extends EloquentRepository implements TaskRepositoryInterfa
     }
 
     /**
-     * {@inheritdoc}
+     * Get a task and the server relationship for that task.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\Task
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getTaskWithServer($id)
+    public function getTaskForJobProcess(int $id): Task
     {
-        Assert::integerish($id, 'First argument passed to getTaskWithServer must be numeric, received %s.');
-
-        $instance = $this->getBuilder()->with('server.user')->find($id, $this->getColumns());
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->with('server.user', 'schedule')->findOrFail($id, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the next task in a schedule.
+     *
+     * @param int $schedule
+     * @param int $index
+     * @return null|\Pterodactyl\Models\Task
      */
-    public function getNextTask($schedule, $index)
+    public function getNextTask(int $schedule, int $index)
     {
-        Assert::integerish($schedule, 'First argument passed to getNextTask must be integer, received %s.');
-        Assert::integerish($index, 'Second argument passed to getNextTask must be integer, received %s.');
-
         return $this->getBuilder()->where('schedule_id', '=', $schedule)
             ->where('sequence_id', '=', $index + 1)
             ->first($this->getColumns());

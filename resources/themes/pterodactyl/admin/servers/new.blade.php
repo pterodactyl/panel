@@ -121,18 +121,9 @@
                             <span class="input-group-addon">MB</span>
                         </div>
                     </div>
-                    <div class="form-group col-sm-4">
-                        <label for="pOOMDisabled">Out-of-Memory Killer</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="checkbox" id="pOOMDisabled" name="oom_disabled"/>
-                            </span>
-                            <input type="text" class="form-control" readonly style="background:transparent !important;" value="Disable OOM Killer" />
-                        </div>
-                    </div>
                 </div>
                 <div class="box-footer no-border no-pad-top no-pad-bottom">
-                    <p class="text-muted small">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.<p>
+                    <p class="text-muted small">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field.<p>
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-sm-4">

@@ -11,9 +11,17 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.3]` — Fixes error handling of the settings service provider when no migrations have been run.
 * `[beta.3]` — Fixes validation error when trying to use 'None' as the 'Copy Script From' option for an egg script.
 * Fixes a design bug in the database that prevented the storage of negative numbers, thus preventing a server from being assigned unlimited swap.
+* Fixes a bug where the 'Assign New Allocations' box would only show IPs that were present in the current pagination block.
 
 ### Added
 * Nest and Egg listings now show the associated ID in order to make API requests easier.
+
+### Changed
+* Changed behavior of allocation IP Address/Ports box to automatically store the value entered if a user unfocuses the field without hitting space.
+* Changed order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
+
+### Removed
+* OOM exceptions can no longer be disabled on servers due to a startling number of users that were using it to avoid allocating proper amounts of resources to servers.
 
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed

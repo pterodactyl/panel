@@ -106,11 +106,11 @@ class ServerDeletionService
     public function handle($server)
     {
         if (! $server instanceof Server) {
-            $server = $this->repository->withColumns(['id', 'node_id', 'uuid'])->find($server);
+            $server = $this->repository->setColumns(['id', 'node_id', 'uuid'])->find($server);
         }
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->delete();
+            $this->daemonServerRepository->setServer($server)->delete();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
 
@@ -128,7 +128,7 @@ class ServerDeletionService
         }
 
         $this->connection->beginTransaction();
-        $this->databaseRepository->withColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
+        $this->databaseRepository->setColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
             $this->databaseManagementService->delete($item->id);
         });
 

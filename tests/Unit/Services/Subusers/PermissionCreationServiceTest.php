@@ -44,11 +44,11 @@ class PermissionCreationServiceTest extends TestCase
     {
         $permissions = ['reset-sftp', 'view-sftp'];
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('insert')->with([
                 ['subuser_id' => 1, 'permission' => 'reset-sftp'],
                 ['subuser_id' => 1, 'permission' => 'view-sftp'],
-            ])->once()->andReturnNull();
+            ])->once()->andReturn(true);
 
         $this->service->handle(1, $permissions);
         $this->assertTrue(true);

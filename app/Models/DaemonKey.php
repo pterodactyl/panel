@@ -27,12 +27,13 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
 class DaemonKey extends Model implements CleansAttributes, ValidableContract
 {
-    use Eloquence, Validable;
+    use BelongsToThrough, Eloquence, Validable;
 
     /**
      * @var string
@@ -89,6 +90,17 @@ class DaemonKey extends Model implements CleansAttributes, ValidableContract
     public function server()
     {
         return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Return the node relation.
+     *
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
+     * @throws \Exception
+     */
+    public function node()
+    {
+        return $this->belongsToThrough(Node::class, Server::class);
     }
 
     /**

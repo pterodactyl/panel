@@ -84,7 +84,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node->id, $data);
@@ -123,7 +123,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node->id, $data);
@@ -149,7 +149,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => 'my.alias.net',
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node->id, $data);
@@ -177,7 +177,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node->id, $data);
@@ -202,7 +202,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
 
         $this->repository->shouldReceive('insertIgnore')->with([
             [
@@ -212,7 +212,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node->id, $data);
@@ -303,7 +303,7 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->node, $data);

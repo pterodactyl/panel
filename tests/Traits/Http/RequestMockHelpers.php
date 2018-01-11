@@ -45,11 +45,12 @@ trait RequestMockHelpers
     /**
      * Generates a new request user model and also returns the generated model.
      *
+     * @param array $args
      * @return \Pterodactyl\Models\User
      */
-    public function generateRequestUserModel(): User
+    public function generateRequestUserModel(array $args = []): User
     {
-        $user = factory(User::class)->make();
+        $user = factory(User::class)->make($args);
         $this->setRequestUserModel($user);
 
         return $user;

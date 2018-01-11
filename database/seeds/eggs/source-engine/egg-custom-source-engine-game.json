@@ -6,7 +6,7 @@
     "exported_at": "2017-11-03T22:30:06-05:00",
     "name": "Custom Source Engine Game",
     "author": "support@pterodactyl.io",
-    "description": "This option allows modifying the startup arguments and other details to run a custo SRCDS based game on the panel.",
+    "description": "This option allows modifying the startup arguments and other details to run a custom SRCDS based game on the panel.",
     "image": "quay.io\/pterodactyl\/core:source",
     "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
     "config": {

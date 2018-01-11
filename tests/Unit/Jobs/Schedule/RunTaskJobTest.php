@@ -1,11 +1,4 @@
 <?php
-/*
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Jobs\Schedule;
 
@@ -14,6 +7,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
@@ -86,19 +80,19 @@ class RunTaskJobTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'power', 'sequence_id' => 1]);
         $task->setRelation('server', $server = factory(Server::class)->make());
+        $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
+        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
         $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->powerRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('sendSignal')->with($task->payload)->once()->andReturnNull();
+        $this->powerRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
+            ->shouldReceive('sendSignal')->with($task->payload)->once()->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
 
-        $this->scheduleRepository->shouldReceive('withoutFresh->update')->with($schedule->id, [
+        $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
             'last_run_at' => Carbon::now()->toDateTimeString(),
         ])->once()->andReturnNull();
@@ -116,19 +110,19 @@ class RunTaskJobTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'command', 'sequence_id' => 1]);
         $task->setRelation('server', $server = factory(Server::class)->make());
+        $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
+        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
         $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('send')->with($task->payload)->once()->andReturnNull();
+        $this->commandRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
+            ->shouldReceive('send')->with($task->payload)->once()->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
 
-        $this->scheduleRepository->shouldReceive('withoutFresh->update')->with($schedule->id, [
+        $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
             'last_run_at' => Carbon::now()->toDateTimeString(),
         ])->once()->andReturnNull();
@@ -146,14 +140,14 @@ class RunTaskJobTest extends TestCase
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'command', 'sequence_id' => 1]);
         $task->setRelation('server', $server = factory(Server::class)->make());
+        $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
+        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
         $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setNode')->with($task->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($task->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('send')->with($task->payload)->once()->andReturnNull();
+        $this->commandRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
+            ->shouldReceive('send')->with($task->payload)->once()->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
 
@@ -178,17 +172,43 @@ class RunTaskJobTest extends TestCase
      * Test that an exception is thrown if an invalid task action is supplied.
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Cannot run a task that points to a non-existant action.
+     * @expectedExceptionMessage Cannot run a task that points to a non-existent action.
      */
     public function testInvalidActionPassedToJob()
     {
+        $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'invalid', 'sequence_id' => 1]);
         $task->setRelation('server', $server = factory(Server::class)->make());
+        $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskWithServer')->with($task->id)->once()->andReturn($task);
+        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
 
         $this->getJobInstance($task->id, 1234);
+    }
+
+    /**
+     * Test that a schedule marked as disabled does not get processed.
+     */
+    public function testScheduleMarkedAsDisabledDoesNotProcess()
+    {
+        $schedule = factory(Schedule::class)->make(['is_active' => false]);
+        $task = factory(Task::class)->make(['action' => 'invalid', 'sequence_id' => 1]);
+        $task->setRelation('server', $server = factory(Server::class)->make());
+        $task->setRelation('schedule', $schedule);
+        $server->setRelation('user', factory(User::class)->make());
+
+        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
+
+        $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
+            'is_processing' => false,
+            'last_run_at' => Carbon::now()->toDateTimeString(),
+        ])->once()->andReturn(1);
+
+        $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturn(1);
+
+        $this->getJobInstance($task->id, $schedule->id);
+        $this->assertTrue(true);
     }
 
     /**

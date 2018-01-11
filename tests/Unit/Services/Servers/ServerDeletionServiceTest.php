@@ -13,6 +13,7 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -111,18 +112,17 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testServerCanBeDeletedWithoutForce()
     {
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->model->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->model->uuid)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
+            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->databaseRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findWhere')->with([
                 ['server_id', '=', $this->model->id],
             ])->once()->andReturn(collect([(object) ['id' => 50]]));
 
         $this->databaseManagementService->shouldReceive('delete')->with(50)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturn(1);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->model);
@@ -133,20 +133,19 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testServerShouldBeDeletedEvenWhenFailureOccursIfForceIsSet()
     {
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->model->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->model->uuid)->once()->andReturnSelf()
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
             ->shouldReceive('delete')->withNoArgs()->once()->andThrow($this->exception);
 
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
         $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->databaseRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findWhere')->with([
                 ['server_id', '=', $this->model->id],
             ])->once()->andReturn(collect([(object) ['id' => 50]]));
 
         $this->databaseManagementService->shouldReceive('delete')->with(50)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturn(1);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->withForce()->handle($this->model);
@@ -157,7 +156,7 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testExceptionShouldBeThrownIfDaemonReturnsAnErrorAndForceIsNotSet()
     {
-        $this->daemonServerRepository->shouldReceive('setNode->setAccessServer->delete')->once()->andThrow($this->exception);
+        $this->daemonServerRepository->shouldReceive('setServer->delete')->once()->andThrow($this->exception);
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
         $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
 
@@ -176,21 +175,20 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testIntegerCanBePassedInPlaceOfServerModel()
     {
-        $this->repository->shouldReceive('withColumns')->with(['id', 'node_id', 'uuid'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'uuid'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->model->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->model->uuid)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
+            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(new Response);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->databaseRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findWhere')->with([
                 ['server_id', '=', $this->model->id],
             ])->once()->andReturn(collect([(object) ['id' => 50]]));
 
         $this->databaseManagementService->shouldReceive('delete')->with(50)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturnNull();
+        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturn(1);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->service->handle($this->model->id);

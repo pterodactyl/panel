@@ -4,6 +4,7 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Tests\Traits\MocksUuids;
 use Pterodactyl\Models\Server;
@@ -116,7 +117,7 @@ class ServerCreationServiceTest extends TestCase
             'egg_id' => $model->egg_id,
         ]))->once()->andReturn($model);
 
-        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->with($model->id, [$model->allocation_id])->once()->andReturnNull();
+        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->with($model->id, [$model->allocation_id])->once()->andReturn(1);
 
         $this->validatorService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_ADMIN)->once()->andReturnNull();
         $this->validatorService->shouldReceive('handle')->with($model->egg_id, [])->once()->andReturn(
@@ -129,10 +130,13 @@ class ServerCreationServiceTest extends TestCase
                 'variable_id' => 123,
                 'variable_value' => 'var1-value',
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(true);
         $this->configurationStructureService->shouldReceive('handle')->with($model)->once()->andReturn(['test' => 'struct']);
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
+        $node = factory(Node::class)->make();
+        $this->nodeRepository->shouldReceive('find')->with($model->node_id)->once()->andReturn($node);
+
+        $this->daemonServerRepository->shouldReceive('setNode')->with($node)->once()->andReturnSelf();
         $this->daemonServerRepository->shouldReceive('create')->with(['test' => 'struct'], ['start_on_completion' => false])->once();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
@@ -154,11 +158,14 @@ class ServerCreationServiceTest extends TestCase
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->once()->andReturn($model);
-        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturnNull();
+        $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturn(1);
         $this->validatorService->shouldReceive('setUserLevel')->once()->andReturnNull();
         $this->validatorService->shouldReceive('handle')->once()->andReturn(collect([]));
         $this->configurationStructureService->shouldReceive('handle')->once()->andReturn([]);
-        $this->daemonServerRepository->shouldReceive('setNode')->with($model->node_id)->once()->andThrow($this->exception);
+
+        $node = factory(Node::class)->make();
+        $this->nodeRepository->shouldReceive('find')->with($model->node_id)->once()->andReturn($node);
+        $this->daemonServerRepository->shouldReceive('setNode')->with($node)->once()->andThrow($this->exception);
         $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 
         try {

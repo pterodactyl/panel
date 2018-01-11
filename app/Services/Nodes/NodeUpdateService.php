@@ -65,11 +65,11 @@ class NodeUpdateService
         if ($this->getUpdatedModel()) {
             $response = $this->repository->update($node->id, $data);
         } else {
-            $response = $this->repository->withoutFresh()->update($node->id, $data);
+            $response = $this->repository->withoutFreshModel()->update($node->id, $data);
         }
 
         try {
-            $this->configRepository->setNode($node->id)->update();
+            $this->configRepository->setNode($node)->update();
         } catch (RequestException $exception) {
             throw new DaemonConnectionException($exception);
         }

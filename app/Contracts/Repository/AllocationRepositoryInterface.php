@@ -1,13 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository;
+
+use Illuminate\Support\Collection;
 
 interface AllocationRepositoryInterface extends RepositoryInterface
 {
@@ -18,13 +13,21 @@ interface AllocationRepositoryInterface extends RepositoryInterface
      * @param array    $ids
      * @return int
      */
-    public function assignAllocationsToServer($server, array $ids);
+    public function assignAllocationsToServer(int $server = null, array $ids): int;
 
     /**
      * Return all of the allocations for a specific node.
      *
      * @param int $node
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
-    public function getAllocationsForNode($node);
+    public function getAllocationsForNode(int $node): Collection;
+
+    /**
+     * Return all of the unique IPs that exist for a given node.
+     *
+     * @param int $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUniqueAllocationIpsForNode(int $node): Collection;
 }

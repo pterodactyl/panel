@@ -11,6 +11,7 @@ namespace Tests\Unit\Http\Controllers\Admin;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\DatabaseHost;
 use Prologue\Alerts\AlertsMessageBag;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Pterodactyl\Http\Controllers\Admin\DatabaseController;
@@ -74,8 +75,8 @@ class DatabaseControllerTest extends TestCase
      */
     public function testIndexController()
     {
-        $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');
-        $this->repository->shouldReceive('getWithViewDetails')->withNoArgs()->once()->andReturn('getWithViewDetails');
+        $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn(collect(['getAllWithNodes']));
+        $this->repository->shouldReceive('getWithViewDetails')->withNoArgs()->once()->andReturn(collect(['getWithViewDetails']));
 
         $response = $this->getController()->index();
 
@@ -83,8 +84,8 @@ class DatabaseControllerTest extends TestCase
         $this->assertViewNameEquals('admin.databases.index', $response);
         $this->assertViewHasKey('locations', $response);
         $this->assertViewHasKey('hosts', $response);
-        $this->assertViewKeyEquals('locations', 'getAllWithNodes', $response);
-        $this->assertViewKeyEquals('hosts', 'getWithViewDetails', $response);
+        $this->assertViewKeyEquals('locations', collect(['getAllWithNodes']), $response);
+        $this->assertViewKeyEquals('hosts', collect(['getWithViewDetails']), $response);
     }
 
     /**
@@ -92,8 +93,10 @@ class DatabaseControllerTest extends TestCase
      */
     public function testViewController()
     {
-        $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn('getAllWithNodes');
-        $this->repository->shouldReceive('getWithServers')->with(1)->once()->andReturn('getWithServers');
+        $model = factory(DatabaseHost::class)->make();
+
+        $this->locationRepository->shouldReceive('getAllWithNodes')->withNoArgs()->once()->andReturn(collect(['getAllWithNodes']));
+        $this->repository->shouldReceive('getWithServers')->with(1)->once()->andReturn($model);
 
         $response = $this->getController()->view(1);
 
@@ -101,8 +104,8 @@ class DatabaseControllerTest extends TestCase
         $this->assertViewNameEquals('admin.databases.view', $response);
         $this->assertViewHasKey('locations', $response);
         $this->assertViewHasKey('host', $response);
-        $this->assertViewKeyEquals('locations', 'getAllWithNodes', $response);
-        $this->assertViewKeyEquals('host', 'getWithServers', $response);
+        $this->assertViewKeyEquals('locations', collect(['getAllWithNodes']), $response);
+        $this->assertViewKeyEquals('host', $model, $response);
     }
 
     /**

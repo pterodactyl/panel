@@ -1,21 +1,17 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class AllocationRepository extends EloquentRepository implements AllocationRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -23,18 +19,39 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
     }
 
     /**
-     * {@inheritdoc}
+     * Set an array of allocation IDs to be assigned to a specific server.
+     *
+     * @param int|null $server
+     * @param array    $ids
+     * @return int
      */
-    public function assignAllocationsToServer($server, array $ids)
+    public function assignAllocationsToServer(int $server = null, array $ids): int
     {
         return $this->getBuilder()->whereIn('id', $ids)->update(['server_id' => $server]);
     }
 
     /**
-     * {@inheritdoc}
+     * Return all of the allocations for a specific node.
+     *
+     * @param int $node
+     * @return \Illuminate\Support\Collection
      */
-    public function getAllocationsForNode($node)
+    public function getAllocationsForNode(int $node): Collection
     {
-        return $this->getBuilder()->where('node_id', $node)->get();
+        return $this->getBuilder()->where('node_id', $node)->get($this->getColumns());
+    }
+
+    /**
+     * Return all of the unique IPs that exist for a given node.
+     *
+     * @param int $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getUniqueAllocationIpsForNode(int $node): Collection
+    {
+        return $this->getBuilder()->where('node_id', $node)
+            ->groupBy('ip')
+            ->orderByRaw('INET_ATON(ip) ASC')
+            ->get($this->getColumns());
     }
 }

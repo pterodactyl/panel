@@ -90,7 +90,7 @@
                         <label for="pAllocationIP" class="control-label">IP Address</label>
                         <div>
                             <select class="form-control" name="allocation_ip" id="pAllocationIP" multiple>
-                                @foreach($node->allocations->unique('ip')->values()->all() as $allocation)
+                                @foreach($allocations as $allocation)
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
@@ -132,7 +132,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <select class="form-control" name="ip">
-                                @foreach($node->allocations->unique('ip')->values()->all() as $allocation)
+                                @foreach($allocations as $allocation)
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
@@ -156,10 +156,12 @@
     $('#pAllocationIP').select2({
         tags: true,
         maximumSelectionLength: 1,
+        selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
     $('#pAllocationPorts').select2({
         tags: true,
+        selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
     $('button[data-action="deallocate"]').click(function (event) {

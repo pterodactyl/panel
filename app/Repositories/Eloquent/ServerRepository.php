@@ -1,17 +1,14 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
+use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Concerns\Searchable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -20,7 +17,9 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     use Searchable;
 
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -28,15 +27,16 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a listing of all servers that exist including relationships.
+     *
+     * @param int $paginate
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllServers($paginate = 25)
+    public function getAllServers(int $paginate): LengthAwarePaginator
     {
-        Assert::nullOrIntegerish($paginate, 'First argument passed to getAllServers must be integer or null, received %s.');
+        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->getSearchTerm());
 
-        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->searchTerm);
-
-        return is_null($paginate) ? $instance->get($this->getColumns()) : $instance->paginate($paginate, $this->getColumns());
+        return $instance->paginate($paginate, $this->getColumns());
     }
 
     /**
@@ -56,14 +56,15 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Return a collection of servers with their associated data for rebuild operations.
+     *
+     * @param int|null $server
+     * @param int|null $node
+     * @return \Illuminate\Support\Collection
      */
-    public function getDataForRebuild($server = null, $node = null)
+    public function getDataForRebuild(int $server = null, int $node = null): Collection
     {
-        Assert::nullOrIntegerish($server, 'First argument passed to getDataForRebuild must be null or integer, received %s.');
-        Assert::nullOrIntegerish($node, 'Second argument passed to getDataForRebuild must be null or integer, received %s.');
-
-        $instance = $this->getBuilder()->with('allocation', 'allocations', 'pack', 'egg', 'node');
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
@@ -75,22 +76,22 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
-     * @return \Illuminate\Database\Eloquent\Model
+     * Return a server model and all variables associated with the server.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function findWithVariables($id)
+    public function findWithVariables(int $id): Server
     {
-        Assert::integerish($id, 'First argument passed to findWithVariables must be integer, received %s.');
-
-        $instance = $this->getBuilder()->with('egg.variables', 'variables')
-            ->where($this->getModel()->getKeyName(), '=', $id)
-            ->first($this->getColumns());
-
-        if (is_null($instance)) {
-            throw new RecordNotFoundException();
+        try {
+            return $this->getBuilder()->with('egg.variables', 'variables')
+                ->where($this->getModel()->getKeyName(), '=', $id)
+                ->firstOrFail($this->getColumns());
+        } catch (ModelNotFoundException $exception) {
+            throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
@@ -98,51 +99,45 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      * the function, load the allocation relationship onto it. Otherwise, find and
      * return the server from the database.
      *
-     * @param int|\Pterodactyl\Models\Server $server
-     * @param bool                           $refresh
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
      * @return \Pterodactyl\Models\Server
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getPrimaryAllocation($server, bool $refresh = false): Server
+    public function getPrimaryAllocation(Server $server, bool $refresh = false): Server
     {
-        $instance = $server;
-        if (! $instance instanceof Server) {
-            Assert::integerish($server, 'First argument passed to getPrimaryAllocation must be instance of \Pterodactyl\Models\Server or integer, received %s.');
-            $instance = $this->getBuilder()->find($server, $this->getColumns());
+        if (! $server->relationLoaded('allocation') || $refresh) {
+            $server->load('allocation');
         }
 
-        if (! $instance) {
-            throw new RecordNotFoundException;
-        }
-
-        if (! $instance->relationLoaded('allocation') || $refresh) {
-            $instance->load('allocation');
-        }
-
-        return $instance;
+        return $server;
     }
 
     /**
-     * {@inheritdoc}
+     * Return all of the server variables possible and default to the variable
+     * default if there is no value defined for the specific server requested.
+     *
+     * @param int  $id
+     * @param bool $returnAsObject
+     * @return array|object
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getVariablesWithValues($id, $returnWithObject = false)
+    public function getVariablesWithValues(int $id, bool $returnAsObject = false)
     {
-        $instance = $this->getBuilder()->with('variables', 'egg.variables')
-                         ->find($id, $this->getColumns());
-
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        try {
+            $instance = $this->getBuilder()->with('variables', 'egg.variables')->find($id, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
+            throw new RecordNotFoundException;
         }
 
         $data = [];
-        $instance->egg->variables->each(function ($item) use (&$data, $instance) {
-            $display = $instance->variables->where('variable_id', $item->id)->pluck('variable_value')->first();
+        $instance->getRelation('egg')->getRelation('variables')->each(function ($item) use (&$data, $instance) {
+            $display = $instance->getRelation('variables')->where('variable_id', $item->id)->pluck('variable_value')->first();
 
             $data[$item->env_variable] = $display ?? $item->default_value;
         });
 
-        if ($returnWithObject) {
+        if ($returnAsObject) {
             return (object) [
                 'data' => $data,
                 'server' => $instance,
@@ -171,19 +166,19 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Load associated databases onto the server model.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param bool                       $refresh
+     * @return \Pterodactyl\Models\Server
      */
-    public function getWithDatabases($id)
+    public function loadDatabaseRelations(Server $server, bool $refresh = false): Server
     {
-        $instance = $this->getBuilder()->with('databases.host')
-                         ->where('installed', 1)
-                         ->find($id, $this->getColumns());
-
-        if (! $instance) {
-            throw new RecordNotFoundException();
+        if (! $server->relationLoaded('databases') || $refresh) {
+            $server->load('databases.host');
         }
 
-        return $instance;
+        return $server;
     }
 
     /**
@@ -212,71 +207,70 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * {@inheritdoc}
+     * Return a paginated list of servers that a user can access at a given level.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @param int                      $level
+     * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function getUserAccessServers($user)
+    public function filterUserAccessServers(User $user, int $level): LengthAwarePaginator
     {
-        Assert::numeric($user, 'First argument passed to getUserAccessServers must be numeric, received %s.');
-
-        $subuser = $this->app->make(SubuserRepository::class);
-
-        return $this->getBuilder()->select('id')->where('owner_id', $user)->union(
-            $subuser->getBuilder()->select('server_id')->where('user_id', $user)
-        )->pluck('id')->all();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function filterUserAccessServers($user, $admin = false, $level = 'all', array $relations = [])
-    {
-        Assert::numeric($user, 'First argument passed to filterUserAccessServers must be numeric, received %s.');
-        Assert::boolean($admin, 'Second argument passed to filterUserAccessServers must be boolean, received %s.');
-        Assert::stringNotEmpty($level, 'Third argument passed to filterUserAccessServers must be a non-empty string, received %s.');
-
-        $instance = $this->getBuilder()->with($relations);
+        $instance = $this->getBuilder()->with(['user']);
 
         // If access level is set to owner, only display servers
         // that the user owns.
-        if ($level === 'owner') {
-            $instance->where('owner_id', $user);
+        if ($level === User::FILTER_LEVEL_OWNER) {
+            $instance->where('owner_id', $user->id);
         }
 
         // If set to all, display all servers they can access, including
-        // those they access as an admin.
-        //
-        // If set to subuser, only return the servers they can access because
+        // those they access as an admin. If set to subuser, only return the servers they can access because
         // they are owner, or marked as a subuser of the server.
-        if (($level === 'all' && ! $admin) || $level === 'subuser') {
-            $instance->whereIn('id', $this->getUserAccessServers($user));
+        elseif (($level === User::FILTER_LEVEL_ALL && ! $user->root_admin) || $level === User::FILTER_LEVEL_SUBUSER) {
+            $instance->whereIn('id', $this->getUserAccessServers($user->id));
         }
 
         // If set to admin, only display the servers a user can access
         // as an administrator (leaves out owned and subuser of).
-        if ($level === 'admin' && $admin) {
-            $instance->whereIn('id', $this->getUserAccessServers($user));
+        elseif ($level === User::FILTER_LEVEL_ADMIN && $user->root_admin) {
+            $instance->whereNotIn('id', $this->getUserAccessServers($user->id));
         }
 
-        return $instance->search($this->searchTerm)->paginate(
-            $this->app->make('config')->get('pterodactyl.paginate.frontend.servers')
-        );
+        return $instance->search($this->getSearchTerm())->paginate(25);
     }
 
     /**
-     * {@inheritdoc}
+     * Return a server by UUID.
+     *
+     * @param string $uuid
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getByUuid($uuid)
+    public function getByUuid(string $uuid): Server
     {
-        Assert::stringNotEmpty($uuid, 'First argument passed to getByUuid must be a non-empty string, received %s.');
+        Assert::notEmpty($uuid, 'Expected non-empty string as first argument passed to ' . __METHOD__);
 
-        $instance = $this->getBuilder()->with('nest', 'node')->where(function ($query) use ($uuid) {
-            $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
-        })->first($this->getColumns());
-
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->with('nest', 'node')->where(function ($query) use ($uuid) {
+                $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+            })->firstOrFail($this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
+    }
 
-        return $instance;
+    /**
+     * Return an array of server IDs that a given user can access based
+     * on owner and subuser permissions.
+     *
+     * @param int $user
+     * @return int[]
+     */
+    private function getUserAccessServers(int $user): array
+    {
+        return $this->getBuilder()->select('id')->where('owner_id', $user)->union(
+            $this->app->make(SubuserRepository::class)->getBuilder()->select('server_id')->where('user_id', $user)
+        )->pluck('id')->all();
     }
 }

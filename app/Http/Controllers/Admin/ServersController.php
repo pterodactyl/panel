@@ -254,6 +254,7 @@ class ServersController extends Controller
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(ServerFormRequest $request)
     {
@@ -352,14 +353,12 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param int $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewDatabase($server)
+    public function viewDatabase(Server $server)
     {
-        $server = $this->repository->getWithDatabases($server);
+        $this->repository->loadDatabaseRelations($server);
 
         return view('admin.servers.view.database', [
             'hosts' => $this->databaseHostRepository->all(),
@@ -459,12 +458,10 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function rebuildContainer(Server $server)
     {
-        $this->containerRebuildService->rebuild($server);
+        $this->containerRebuildService->handle($server);
         $this->alert->success(trans('admin/server.alerts.rebuild_on_boot'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);

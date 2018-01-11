@@ -1,18 +1,10 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Jobs\Schedule;
 
 use Exception;
 use Carbon\Carbon;
 use Pterodactyl\Jobs\Job;
-use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -59,12 +51,9 @@ class RunTaskJob extends Job implements ShouldQueue
      * @param int $task
      * @param int $schedule
      */
-    public function __construct($task, $schedule)
+    public function __construct(int $task, int $schedule)
     {
-        Assert::integerish($task, 'First argument passed to constructor must be integer, received %s.');
-        Assert::integerish($schedule, 'Second argument passed to constructor must be integer, received %s.');
-
-        $this->queue = app()->make('config')->get('pterodactyl.queues.standard');
+        $this->queue = config('pterodactyl.queues.standard');
         $this->task = $task;
         $this->schedule = $schedule;
     }
@@ -91,26 +80,32 @@ class RunTaskJob extends Job implements ShouldQueue
         $this->powerRepository = $powerRepository;
         $this->taskRepository = $taskRepository;
 
-        $task = $this->taskRepository->getTaskWithServer($this->task);
+        $task = $this->taskRepository->getTaskForJobProcess($this->task);
         $server = $task->getRelation('server');
         $user = $server->getRelation('user');
+
+        // Do not process a task that is not set to active.
+        if (! $task->getRelation('schedule')->is_active) {
+            $this->markTaskNotQueued();
+            $this->markScheduleComplete();
+
+            return;
+        }
 
         // Perform the provided task aganist the daemon.
         switch ($task->action) {
             case 'power':
-                $this->powerRepository->setNode($server->node_id)
-                    ->setAccessServer($server->uuid)
-                    ->setAccessToken($keyProviderService->handle($server, $user))
+                $this->powerRepository->setServer($server)
+                    ->setToken($keyProviderService->handle($server, $user))
                     ->sendSignal($task->payload);
                 break;
             case 'command':
-                $this->commandRepository->setNode($server->node_id)
-                    ->setAccessServer($server->uuid)
-                    ->setAccessToken($keyProviderService->handle($server, $user))
+                $this->commandRepository->setServer($server)
+                    ->setToken($keyProviderService->handle($server, $user))
                     ->send($task->payload);
                 break;
             default:
-                throw new InvalidArgumentException('Cannot run a task that points to a non-existant action.');
+                throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
         }
 
         $this->markTaskNotQueued();
@@ -161,7 +156,7 @@ class RunTaskJob extends Job implements ShouldQueue
     private function markScheduleComplete()
     {
         $repository = app()->make(ScheduleRepositoryInterface::class);
-        $repository->withoutFresh()->update($this->schedule, [
+        $repository->withoutFreshModel()->update($this->schedule, [
             'is_processing' => false,
             'last_run_at' => Carbon::now()->toDateTimeString(),
         ]);

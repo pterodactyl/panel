@@ -43,7 +43,7 @@ class NestUpdateServiceTest extends TestCase
      */
     public function testAuthorArrayKeyIsRemovedIfPassed()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with(1, ['otherfield' => 'value'])->once()->andReturnNull();
 
         $this->service->handle(1, ['author' => 'author1', 'otherfield' => 'value']);
@@ -54,7 +54,7 @@ class NestUpdateServiceTest extends TestCase
      */
     public function testServiceIsUpdatedWhenNoAuthorKeyIsPassed()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with(1, ['otherfield' => 'value'])->once()->andReturnNull();
 
         $this->service->handle(1, ['otherfield' => 'value']);

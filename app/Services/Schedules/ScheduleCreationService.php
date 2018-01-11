@@ -1,16 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Schedules;
 
 use Cron\CronExpression;
-use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Schedules\Tasks\TaskCreationService;
@@ -53,37 +45,32 @@ class ScheduleCreationService
     /**
      * Create a new schedule for a specific server.
      *
-     * @param int|\Pterodactyl\Models\Server $server
-     * @param array                          $data
-     * @param array                          $tasks
+     * @param \Pterodactyl\Models\Server $server
+     * @param array                      $data
+     * @param array                      $tasks
      * @return \Pterodactyl\Models\Schedule
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
-    public function handle($server, array $data, array $tasks = [])
+    public function handle(Server $server, array $data, array $tasks = [])
     {
-        Assert::true(($server instanceof Server || is_digit($server)),
-            'First argument passed to handle must be numeric or instance of \Pterodactyl\Models\Server, received %s.'
-        );
-
-        $server = ($server instanceof Server) ? $server->id : $server;
-        $data['server_id'] = $server;
-        $data['next_run_at'] = $this->getCronTimestamp($data);
+        $data = array_merge($data, [
+            'server_id' => $server->id,
+            'next_run_at' => $this->getCronTimestamp($data),
+        ]);
 
         $this->connection->beginTransaction();
         $schedule = $this->repository->create($data);
 
-        if (! empty($tasks)) {
-            foreach ($tasks as $index => $task) {
-                $this->taskCreationService->handle($schedule, [
-                    'time_interval' => array_get($task, 'time_interval'),
-                    'time_value' => array_get($task, 'time_value'),
-                    'sequence_id' => $index + 1,
-                    'action' => array_get($task, 'action'),
-                    'payload' => array_get($task, 'payload'),
-                ], false);
-            }
+        foreach ($tasks as $index => $task) {
+            $this->taskCreationService->handle($schedule, [
+                'time_interval' => array_get($task, 'time_interval'),
+                'time_value' => array_get($task, 'time_value'),
+                'sequence_id' => $index + 1,
+                'action' => array_get($task, 'action'),
+                'payload' => array_get($task, 'payload'),
+            ], false);
         }
 
         $this->connection->commit();

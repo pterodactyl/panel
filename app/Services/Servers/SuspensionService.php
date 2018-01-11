@@ -91,12 +91,12 @@ class SuspensionService
         }
 
         $this->database->beginTransaction();
-        $this->repository->withoutFresh()->update($server->id, [
+        $this->repository->withoutFreshModel()->update($server->id, [
             'suspended' => $action === 'suspend',
         ]);
 
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->$action();
+            $this->daemonServerRepository->setServer($server)->$action();
             $this->database->commit();
 
             return true;

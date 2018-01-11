@@ -81,7 +81,7 @@ class TaskCreationServiceTest extends TestCase
     {
         $schedule = factory(Schedule::class)->make();
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('create')->with([
                 'schedule_id' => $schedule->id,
                 'sequence_id' => 1,
@@ -108,7 +108,7 @@ class TaskCreationServiceTest extends TestCase
      */
     public function testIdCanBePassedInPlaceOfScheduleModel()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('create')->with([
                 'schedule_id' => 1234,
                 'sequence_id' => 1,
