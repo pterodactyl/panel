@@ -3,9 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\Location;
-use Pterodactyl\Transformers\Api\ApiTransformer;
+use Pterodactyl\Transformers\Api\BaseTransformer;
 
-class LocationTransformer extends ApiTransformer
+class LocationTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.

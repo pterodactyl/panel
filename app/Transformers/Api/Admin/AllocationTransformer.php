@@ -3,9 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Transformers\Api\ApiTransformer;
+use Pterodactyl\Transformers\Api\BaseTransformer;
 
-class AllocationTransformer extends ApiTransformer
+class AllocationTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto allocation transformations.

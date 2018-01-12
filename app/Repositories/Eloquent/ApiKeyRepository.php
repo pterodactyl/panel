@@ -22,6 +22,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
      *
      * @param \Pterodactyl\Models\APIKey $model
      * @param bool                       $refresh
+     * @deprecated
      * @return \Pterodactyl\Models\APIKey
      */
     public function loadPermissions(APIKey $model, bool $refresh = false): APIKey

@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Http\Requests\API\Remote;
 
-use Pterodactyl\Http\Requests\Request;
+use Illuminate\Foundation\Http\FormRequest;
 
-class SftpAuthenticationFormRequest extends Request
+class SftpAuthenticationFormRequest extends FormRequest
 {
     /**
      * Authenticate the request.

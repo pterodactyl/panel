@@ -3,9 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\ApiTransformer;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 
-class UserTransformer extends ApiTransformer
+class UserTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
@@ -29,18 +29,16 @@ class UserTransformer extends ApiTransformer
      * Return the servers associated with this user.
      *
      * @param \Pterodactyl\Models\User $user
-     * @return bool|\League\Fractal\Resource\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeServers(User $user)
     {
-        if (! $this->authorize('server-list')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+            return $this->null();
         }
 
         $user->loadMissing('servers');
 
-        return $this->collection($user->getRelation('servers'), new ServerTransformer($this->getRequest()), 'server');
+        return $this->collection($user->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server');
     }
 }

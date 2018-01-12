@@ -1,5 +1,7 @@
 <?php
 
+use Pterodactyl\Models\User;
+
 /*
 |--------------------------------------------------------------------------
 | User Controller Routes
@@ -9,6 +11,10 @@
 |
 */
 Route::group(['prefix' => '/users'], function () {
+    Route::bind('user', function ($value) {
+        return User::find($value) ?? new User;
+    });
+
     Route::get('/', 'Users\UserController@index')->name('api.admin.user.list');
     Route::get('/{user}', 'Users\UserController@view')->name('api.admin.user.view');
 

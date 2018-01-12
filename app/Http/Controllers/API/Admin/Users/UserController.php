@@ -15,6 +15,8 @@ use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Http\Requests\API\Admin\Users\GetUserRequest;
+use Pterodactyl\Http\Requests\API\Admin\Users\GetUsersRequest;
 
 class UserController extends Controller
 {
@@ -67,19 +69,19 @@ class UserController extends Controller
     }
 
     /**
-     * Handle request to list all users on the panel. Returns a JSONAPI representation
+     * Handle request to list all users on the panel. Returns a JSON-API representation
      * of a collection of users including any defined relations passed in
      * the request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Http\Requests\API\Admin\Users\GetUsersRequest $request
      * @return array
      */
-    public function index(Request $request): array
+    public function index(GetUsersRequest $request): array
     {
         $users = $this->repository->paginated(100);
 
         return $this->fractal->collection($users)
-            ->transformWith(new UserTransformer($request))
+            ->transformWith((new UserTransformer)->setKey($request->key()))
             ->withResourceName('user')
             ->paginateWith(new IlluminatePaginatorAdapter($users))
             ->toArray();
@@ -89,14 +91,14 @@ class UserController extends Controller
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\User $user
+     * @param \Pterodactyl\Http\Requests\API\Admin\Users\GetUserRequest $request
+     * @param \Pterodactyl\Models\User                                  $user
      * @return array
      */
-    public function view(Request $request, User $user): array
+    public function view(GetUserRequest $request, User $user): array
     {
         return $this->fractal->item($user)
-            ->transformWith(new UserTransformer($request))
+            ->transformWith((new UserTransformer)->setKey($request->key()))
             ->withResourceName('user')
             ->toArray();
     }

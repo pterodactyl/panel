@@ -29,10 +29,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-//        Route::middleware(['api'])->prefix('/api/user')
-//              ->namespace($this->namespace . '\API\User')
-//              ->group(base_path('routes/api.php'));
-
         Route::middleware(['web', 'auth', 'csrf'])
              ->namespace($this->namespace . '\Base')
              ->group(base_path('routes/base.php'));
@@ -49,7 +45,7 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace . '\Server')
              ->group(base_path('routes/server.php'));
 
-        Route::middleware(['api', 'api..user_level:admin'])->prefix('/api/admin')
+        Route::middleware(['api'])->prefix('/api/admin')
             ->namespace($this->namespace . '\API\Admin')
             ->group(base_path('routes/api-admin.php'));
 

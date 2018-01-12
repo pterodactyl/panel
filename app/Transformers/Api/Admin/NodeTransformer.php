@@ -3,9 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\Node;
-use Pterodactyl\Transformers\Api\ApiTransformer;
+use Pterodactyl\Transformers\Api\BaseTransformer;
 
-class NodeTransformer extends ApiTransformer
+class NodeTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
