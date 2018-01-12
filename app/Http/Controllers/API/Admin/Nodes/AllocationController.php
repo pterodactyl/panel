@@ -64,6 +64,8 @@ class AllocationController extends Controller
     /**
      * Delete a specific allocation from the Panel.
      *
+     * @param \Illuminate\Http\Request       $request
+     * @param int                            $node
      * @param \Pterodactyl\Models\Allocation $allocation
      * @return \Illuminate\Http\Response
      *
