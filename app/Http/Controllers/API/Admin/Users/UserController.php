@@ -11,12 +11,14 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Transformers\Api\Admin\UserTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Requests\API\Admin\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\API\Admin\Users\GetUsersRequest;
+use Pterodactyl\Http\Requests\API\Admin\Users\StoreUserRequest;
+use Pterodactyl\Http\Requests\API\Admin\Users\DeleteUserRequest;
+use Pterodactyl\Http\Requests\API\Admin\Users\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -111,17 +113,17 @@ class UserController extends Controller
      * Revocation errors are returned under the 'revocation_errors' key in the response
      * meta. If there are no errors this is an empty array.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
-     * @param \Pterodactyl\Models\User                         $user
+     * @param \Pterodactyl\Http\Requests\API\Admin\Users\UpdateUserRequest $request
+     * @param \Pterodactyl\Models\User                                     $user
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UserFormRequest $request, User $user): array
+    public function update(UpdateUserRequest $request, User $user): array
     {
         $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
-        $collection = $this->updateService->handle($user, $request->normalize());
+        $collection = $this->updateService->handle($user, $request->validated());
 
         $errors = [];
         if (! empty($collection->get('exceptions'))) {
@@ -138,7 +140,7 @@ class UserController extends Controller
         }
 
         $response = $this->fractal->item($collection->get('model'))
-            ->transformWith(new UserTransformer($request))
+            ->transformWith((new UserTransformer)->setKey($request->key()))
             ->withResourceName('user');
 
         if (count($errors) > 0) {
@@ -154,18 +156,18 @@ class UserController extends Controller
      * Store a new user on the system. Returns the created user and a HTTP/201
      * header on successful creation.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
+     * @param \Pterodactyl\Http\Requests\API\Admin\Users\StoreUserRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(UserFormRequest $request): JsonResponse
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        $user = $this->creationService->handle($request->normalize());
+        $user = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($user)
-            ->transformWith(new UserTransformer($request))
+            ->transformWith((new UserTransformer)->setKey($request->key()))
             ->withResourceName('user')
             ->addMeta([
                 'link' => route('api.admin.user.view', ['user' => $user->id]),
@@ -177,12 +179,13 @@ class UserController extends Controller
      * Handle a request to delete a user from the Panel. Returns a HTTP/204 response
      * on successful deletion.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \Pterodactyl\Http\Requests\API\Admin\Users\DeleteUserRequest $request
+     * @param \Pterodactyl\Models\User                                     $user
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(User $user): Response
+    public function delete(DeleteUserRequest $request, User $user): Response
     {
         $this->deletionService->handle($user);
 

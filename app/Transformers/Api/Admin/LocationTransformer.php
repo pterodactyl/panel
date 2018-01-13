@@ -3,7 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\Location;
-use Pterodactyl\Transformers\Api\BaseTransformer;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class LocationTransformer extends BaseTransformer
 {
@@ -29,41 +29,33 @@ class LocationTransformer extends BaseTransformer
      * Return the nodes associated with this location.
      *
      * @param \Pterodactyl\Models\Location $location
-     * @return bool|\League\Fractal\Resource\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeServers(Location $location)
     {
-        if (! $this->authorize('server-list')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+            return $this->null();
         }
 
-        if (! $location->relationLoaded('servers')) {
-            $location->load('servers');
-        }
+        $location->loadMissing('servers');
 
-        return $this->collection($location->getRelation('servers'), new ServerTransformer($this->getRequest()), 'server');
+        return $this->collection($location->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server');
     }
 
     /**
      * Return the nodes associated with this location.
      *
      * @param \Pterodactyl\Models\Location $location
-     * @return bool|\League\Fractal\Resource\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeNodes(Location $location)
     {
-        if (! $this->authorize('node-list')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
+            return $this->null();
         }
 
-        if (! $location->relationLoaded('nodes')) {
-            $location->load('nodes');
-        }
+        $location->loadMissing('nodes');
 
-        return $this->collection($location->getRelation('nodes'), new NodeTransformer($this->getRequest()), 'node');
+        return $this->collection($location->getRelation('nodes'), $this->makeTransformer(NodeTransformer::class), 'node');
     }
 }

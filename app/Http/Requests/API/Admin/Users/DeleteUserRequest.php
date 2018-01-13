@@ -3,9 +3,21 @@
 namespace Pterodactyl\Http\Requests\API\Admin\Users;
 
 use Pterodactyl\Models\User;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Http\Requests\API\Admin\ApiAdminRequest;
 
-class GetUserRequest extends GetUsersRequest
+class DeleteUserRequest extends ApiAdminRequest
 {
+    /**
+     * @var string
+     */
+    protected $resource = AdminAcl::RESOURCE_USERS;
+
+    /**
+     * @var int
+     */
+    protected $permission = AdminAcl::WRITE;
+
     /**
      * Determine if the requested user exists on the Panel.
      *

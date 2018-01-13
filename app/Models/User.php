@@ -126,6 +126,7 @@ class User extends Model implements
     protected static $applicationRules = [
         'uuid' => 'required',
         'email' => 'required',
+        'external_id' => 'sometimes',
         'username' => 'required',
         'name_first' => 'required',
         'name_last' => 'required',
@@ -142,6 +143,7 @@ class User extends Model implements
     protected static $dataIntegrityRules = [
         'uuid' => 'string|size:36|unique:users,uuid',
         'email' => 'email|unique:users,email',
+        'external_id' => 'nullable|string|max:255|unique:users,external_id',
         'username' => 'alpha_dash|between:1,255|unique:users,username',
         'name_first' => 'string|between:1,255',
         'name_last' => 'string|between:1,255',

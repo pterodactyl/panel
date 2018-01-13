@@ -1,6 +1,9 @@
 <?php
 
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Allocation;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +36,10 @@ Route::group(['prefix' => '/users'], function () {
 |
 */
 Route::group(['prefix' => '/nodes'], function () {
+    Route::bind('node', function ($value) {
+        return Node::find($value) ?? new Node;
+    });
+
     Route::get('/', 'Nodes\NodeController@index')->name('api.admin.node.list');
     Route::get('/{node}', 'Nodes\NodeController@view')->name('api.admin.node.view');
 
@@ -42,6 +49,10 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::delete('/{node}', 'Nodes\NodeController@delete')->name('api.admin.node.delete');
 
     Route::group(['prefix' => '/{node}/allocations'], function () {
+        Route::bind('allocation', function ($value) {
+            return Allocation::find($value) ?? new Allocation;
+        });
+
         Route::get('/', 'Nodes\AllocationController@index')->name('api.admin.node.allocations.list');
 
         Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.admin.node.allocations.delete');
@@ -57,6 +68,10 @@ Route::group(['prefix' => '/nodes'], function () {
 |
 */
 Route::group(['prefix' => '/locations'], function () {
+    Route::bind('location', function ($value) {
+        return Location::find($value) ?? new Location;
+    });
+
     Route::get('/', 'Locations\LocationController@index')->name('api.admin.location.list');
     Route::get('/{location}', 'Locations\LocationController@view')->name('api.admin.location.view');
 

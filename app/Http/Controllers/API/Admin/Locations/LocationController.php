@@ -3,18 +3,19 @@
 namespace Pterodactyl\Http\Controllers\API\Admin\Locations;
 
 use Spatie\Fractal\Fractal;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\LocationFormRequest;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
 use Pterodactyl\Transformers\Api\Admin\LocationTransformer;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Pterodactyl\Http\Requests\API\Admin\Locations\GetLocationsRequest;
+use Pterodactyl\Http\Requests\API\Admin\Locations\DeleteLocationRequest;
+use Pterodactyl\Http\Requests\API\Admin\Locations\UpdateLocationRequest;
 
 class LocationController extends Controller
 {
@@ -69,15 +70,15 @@ class LocationController extends Controller
     /**
      * Return all of the locations currently registered on the Panel.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Http\Requests\API\Admin\Locations\GetLocationsRequest $request
      * @return array
      */
-    public function index(Request $request): array
+    public function index(GetLocationsRequest $request): array
     {
         $locations = $this->repository->paginated(100);
 
         return $this->fractal->collection($locations)
-            ->transformWith(new LocationTransformer($request))
+            ->transformWith((new LocationTransformer)->setKey($request->key()))
             ->withResourceName('location')
             ->paginateWith(new IlluminatePaginatorAdapter($locations))
             ->toArray();
@@ -86,59 +87,67 @@ class LocationController extends Controller
     /**
      * Return a single location.
      *
-     * @param \Illuminate\Http\Request     $request
-     * @param \Pterodactyl\Models\Location $location
+     * @param \Pterodactyl\Http\Controllers\API\Admin\Locations\GetLocationRequest $request
+     * @param \Pterodactyl\Models\Location                                         $location
      * @return array
      */
-    public function view(Request $request, Location $location): array
+    public function view(GetLocationRequest $request, Location $location): array
     {
         return $this->fractal->item($location)
-            ->transformWith(new LocationTransformer($request))
+            ->transformWith((new LocationTransformer)->setKey($request->key()))
             ->withResourceName('location')
             ->toArray();
     }
 
     /**
-     * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
+     * Store a new location on the Panel and return a HTTP/201 response code with the
+     * new location attached.
+     *
+     * @param \Pterodactyl\Http\Controllers\API\Admin\Locations\StoreLocationRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(LocationFormRequest $request): JsonResponse
+    public function store(StoreLocationRequest $request): JsonResponse
     {
-        $location = $this->creationService->handle($request->normalize());
+        $location = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($location)
-            ->transformWith(new LocationTransformer($request))
+            ->transformWith((new LocationTransformer)->setKey($request->key()))
             ->withResourceName('location')
             ->respond(201);
     }
 
     /**
-     * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
-     * @param \Pterodactyl\Models\Location                         $location
+     * Update a location on the Panel and return the updated record to the user.
+     *
+     * @param \Pterodactyl\Http\Requests\API\Admin\Locations\UpdateLocationRequest $request
+     * @param \Pterodactyl\Models\Location                                         $location
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(LocationFormRequest $request, Location $location): array
+    public function update(UpdateLocationRequest $request, Location $location): array
     {
-        $location = $this->updateService->handle($location, $request->normalize());
+        $location = $this->updateService->handle($location, $request->validated());
 
         return $this->fractal->item($location)
-            ->transformWith(new LocationTransformer($request))
+            ->transformWith((new LocationTransformer)->setKey($request->key()))
             ->withResourceName('location')
             ->toArray();
     }
 
     /**
-     * @param \Pterodactyl\Models\Location $location
+     * Delete a location from the Panel.
+     *
+     * @param \Pterodactyl\Http\Requests\API\Admin\Locations\DeleteLocationRequest $request
+     * @param \Pterodactyl\Models\Location                                         $location
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
-    public function delete(Location $location): Response
+    public function delete(DeleteLocationRequest $request, Location $location): Response
     {
         $this->deletionService->handle($location);
 
