@@ -3,7 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Transformers\Api\BaseTransformer;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class AllocationTransformer extends BaseTransformer
 {
@@ -12,10 +12,7 @@ class AllocationTransformer extends BaseTransformer
      *
      * @var array
      */
-    protected $availableIncludes = [
-        'node',
-        'server',
-    ];
+    protected $availableIncludes = ['node', 'server'];
 
     /**
      * Return a generic transformed allocation array.
@@ -38,37 +35,37 @@ class AllocationTransformer extends BaseTransformer
      * Load the node relationship onto a given transformation.
      *
      * @param \Pterodactyl\Models\Allocation $allocation
-     * @return bool|\League\Fractal\Resource\Item
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeNode(Allocation $allocation)
     {
-        if (! $this->authorize('node-view')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
+            return $this->null();
         }
 
         $allocation->loadMissing('node');
 
-        return $this->item($allocation->getRelation('node'), new NodeTransformer($this->getRequest()), 'node');
+        return $this->item(
+            $allocation->getRelation('node'), $this->makeTransformer(NodeTransformer::class), 'node'
+        );
     }
 
     /**
      * Load the server relationship onto a given transformation.
      *
      * @param \Pterodactyl\Models\Allocation $allocation
-     * @return bool|\League\Fractal\Resource\Item
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeServer(Allocation $allocation)
     {
-        if (! $this->authorize('server-view')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+            return $this->null();
         }
 
         $allocation->loadMissing('server');
 
-        return $this->item($allocation->getRelation('server'), new ServerTransformer($this->getRequest()), 'server');
+        return $this->item(
+            $allocation->getRelation('server'), $this->makeTransformer(ServerTransformer::class), 'server'
+        );
     }
 }

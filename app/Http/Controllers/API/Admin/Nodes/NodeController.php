@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\API\Admin\Nodes;
 
 use Spatie\Fractal\Fractal;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -13,8 +12,12 @@ use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Transformers\Api\Admin\NodeTransformer;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Http\Requests\API\Admin\Nodes\GetNodeRequest;
+use Pterodactyl\Http\Requests\API\Admin\Nodes\GetNodesRequest;
+use Pterodactyl\Http\Requests\API\Admin\Nodes\StoreNodeRequest;
+use Pterodactyl\Http\Requests\API\Admin\Nodes\DeleteNodeRequest;
+use Pterodactyl\Http\Requests\API\Admin\Nodes\UpdateNodeRequest;
 
 class NodeController extends Controller
 {
@@ -69,52 +72,50 @@ class NodeController extends Controller
     /**
      * Return all of the nodes currently available on the Panel.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Http\Requests\API\Admin\Nodes\GetNodesRequest $request
      * @return array
      */
-    public function index(Request $request): array
+    public function index(GetNodesRequest $request): array
     {
         $nodes = $this->repository->paginated(100);
 
-        $fractal = $this->fractal->collection($nodes)
-            ->transformWith(new NodeTransformer($request))
+        return $this->fractal->collection($nodes)
+            ->transformWith((new NodeTransformer)->setKey($request->key()))
             ->withResourceName('node')
-            ->paginateWith(new IlluminatePaginatorAdapter($nodes));
-
-        return $fractal->toArray();
+            ->paginateWith(new IlluminatePaginatorAdapter($nodes))
+            ->toArray();
     }
 
     /**
      * Return data for a single instance of a node.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
+     * @param \Pterodactyl\Http\Requests\API\Admin\Nodes\GetNodeRequest $request
+     * @param \Pterodactyl\Models\Node                                  $node
      * @return array
      */
-    public function view(Request $request, Node $node): array
+    public function view(GetNodeRequest $request, Node $node): array
     {
-        $fractal = $this->fractal->item($node)
-            ->transformWith(new NodeTransformer($request))
-            ->withResourceName('node');
-
-        return $fractal->toArray();
+        return $this->fractal->item($node)
+            ->transformWith((new NodeTransformer)->setKey($request->key()))
+            ->withResourceName('node')
+            ->toArray();
     }
 
     /**
      * Create a new node on the Panel. Returns the created node and a HTTP/201
      * status response on success.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
+     * @param \Pterodactyl\Http\Requests\API\Admin\Nodes\StoreNodeRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(NodeFormRequest $request): JsonResponse
+    public function store(StoreNodeRequest $request): JsonResponse
     {
-        $node = $this->creationService->handle($request->normalize());
+        $node = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($node)
-            ->transformWith(new NodeTransformer($request))
+            ->transformWith((new NodeTransformer)->setKey($request->key()))
             ->withResourceName('node')
             ->addMeta([
                 'link' => route('api.admin.node.view', ['node' => $node->id]),
@@ -125,20 +126,20 @@ class NodeController extends Controller
     /**
      * Update an existing node on the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
-     * @param \Pterodactyl\Models\Node                              $node
+     * @param \Pterodactyl\Http\Requests\API\Admin\Nodes\UpdateNodeRequest $request
+     * @param \Pterodactyl\Models\Node                                     $node
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(NodeFormRequest $request, Node $node): array
+    public function update(UpdateNodeRequest $request, Node $node): array
     {
-        $node = $this->updateService->returnUpdatedModel()->handle($node, $request->normalize());
+        $node = $this->updateService->returnUpdatedModel()->handle($node, $request->validated());
 
         return $this->fractal->item($node)
-            ->transformWith(new NodeTransformer($request))
+            ->transformWith((new NodeTransformer)->setKey($request->key()))
             ->withResourceName('node')
             ->toArray();
     }
@@ -147,15 +148,16 @@ class NodeController extends Controller
      * Deletes a given node from the Panel as long as there are no servers
      * currently attached to it.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \Pterodactyl\Http\Requests\API\Admin\Nodes\DeleteNodeRequest $request
+     * @param \Pterodactyl\Models\Node                                     $node
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(Node $node): Response
+    public function delete(DeleteNodeRequest $request, Node $node): Response
     {
         $this->deletionService->handle($node);
 
-        return response('', 201);
+        return response('', 204);
     }
 }

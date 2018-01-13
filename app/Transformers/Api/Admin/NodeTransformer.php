@@ -3,7 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Pterodactyl\Models\Node;
-use Pterodactyl\Transformers\Api\BaseTransformer;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class NodeTransformer extends BaseTransformer
 {
@@ -15,70 +15,82 @@ class NodeTransformer extends BaseTransformer
     protected $availableIncludes = ['allocations', 'location', 'servers'];
 
     /**
-     * Return a generic transformed pack array.
+     * Return a node transformed into a format that can be consumed by the
+     * external administrative API.
      *
      * @param \Pterodactyl\Models\Node $node
      * @return array
      */
     public function transform(Node $node): array
     {
-        return $node->toArray();
+        $response = collect($node->toArray())->mapWithKeys(function ($value, $key) {
+            // I messed up early in 2016 when I named this column as poorly
+            // as I did. This is the tragic result of my mistakes.
+            $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
+
+            return [snake_case($key) => $value];
+        })->toArray();
+
+        $response[$node->getUpdatedAtColumn()] = $this->formatTimestamp($node->updated_at);
+        $response[$node->getCreatedAtColumn()] = $this->formatTimestamp($node->created_at);
+
+        return $response;
     }
 
     /**
      * Return the nodes associated with this location.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @return \League\Fractal\Resource\Collection
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeAllocations(Node $node)
     {
-        if (! $node->relationLoaded('allocations')) {
-            $node->load('allocations');
+        if (! $this->authorize(AdminAcl::RESOURCE_ALLOCATIONS)) {
+            return $this->null();
         }
 
-        return $this->collection($node->getRelation('allocations'), new AllocationTransformer($this->getRequest()), 'allocation');
+        $node->loadMissing('allocations');
+
+        return $this->collection(
+            $node->getRelation('allocations'), $this->makeTransformer(AllocationTransformer::class), 'allocation'
+        );
     }
 
     /**
      * Return the nodes associated with this location.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @return bool|\League\Fractal\Resource\Item
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeLocation(Node $node)
     {
-        if (! $this->authorize('location-list')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_LOCATIONS)) {
+            return $this->null();
         }
 
-        if (! $node->relationLoaded('location')) {
-            $node->load('location');
-        }
+        $node->loadMissing('location');
 
-        return $this->item($node->getRelation('location'), new LocationTransformer($this->getRequest()), 'location');
+        return $this->item(
+            $node->getRelation('location'), $this->makeTransformer(LocationTransformer::class), 'location'
+        );
     }
 
     /**
      * Return the nodes associated with this location.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @return bool|\League\Fractal\Resource\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeServers(Node $node)
     {
-        if (! $this->authorize('server-list')) {
-            return false;
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+            return $this->null();
         }
 
-        if (! $node->relationLoaded('servers')) {
-            $node->load('servers');
-        }
+        $node->loadMissing('servers');
 
-        return $this->collection($node->getRelation('servers'), new ServerTransformer($this->getRequest()), 'server');
+        return $this->collection(
+            $node->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server'
+        );
     }
 }

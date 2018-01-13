@@ -17,6 +17,7 @@
         "ext-zip": "*",
         "appstract/laravel-blade-directives": "^0.7",
         "aws/aws-sdk-php": "^3.48",
+        "cakephp/chronos": "^1.1",
         "doctrine/dbal": "^2.5",
         "fideloper/proxy": "^3.3",
         "guzzlehttp/guzzle": "^6.3",

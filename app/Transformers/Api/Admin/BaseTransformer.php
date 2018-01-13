@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Admin;
 
+use Cake\Chronos\Chronos;
 use Pterodactyl\Models\APIKey;
 use Illuminate\Container\Container;
 use League\Fractal\TransformerAbstract;
@@ -9,6 +10,8 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 abstract class BaseTransformer extends TransformerAbstract
 {
+    const RESPONSE_TIMEZONE = 'UTC';
+
     /**
      * @var \Pterodactyl\Models\APIKey
      */
@@ -65,5 +68,18 @@ abstract class BaseTransformer extends TransformerAbstract
         $transformer->setKey($this->getKey());
 
         return $transformer;
+    }
+
+    /**
+     * Return an ISO-8601 formatted timestamp to use in the API response.
+     *
+     * @param string $timestamp
+     * @return string
+     */
+    protected function formatTimestamp(string $timestamp): string
+    {
+        return Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $timestamp)
+            ->setTimezone(self::RESPONSE_TIMEZONE)
+            ->toIso8601String();
     }
 }
