@@ -227,7 +227,8 @@ $factory->define(Pterodactyl\Models\APIKey::class, function (Faker $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
         'user_id' => $faker->randomNumber(),
-        'token' => str_random(Pterodactyl\Models\APIKey::KEY_LENGTH),
+        'identifier' => str_random(Pterodactyl\Models\APIKey::IDENTIFIER_LENGTH),
+        'token' => 'encrypted_string',
         'memo' => 'Test Function Key',
         'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
         'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),

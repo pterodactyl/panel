@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Api;
 
 use Pterodactyl\Models\APIKey;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
@@ -14,9 +15,9 @@ class KeyCreationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Services\Api\PermissionService
+     * @var \Illuminate\Contracts\Encryption\Encrypter
      */
-    private $permissionService;
+    private $encrypter;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
@@ -28,67 +29,36 @@ class KeyCreationService
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
      * @param \Illuminate\Database\ConnectionInterface                    $connection
-     * @param \Pterodactyl\Services\Api\PermissionService                 $permissionService
+     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      */
     public function __construct(
         ApiKeyRepositoryInterface $repository,
         ConnectionInterface $connection,
-        PermissionService $permissionService
+        Encrypter $encrypter
     ) {
         $this->repository = $repository;
         $this->connection = $connection;
-        $this->permissionService = $permissionService;
+        $this->encrypter = $encrypter;
     }
 
     /**
-     * Create a new API Key on the system with the given permissions.
+     * Create a new API key for the Panel using the permissions passed in the data request.
+     * This will automatically generate an identifer and an encrypted token that are
+     * stored in the database.
      *
      * @param array $data
-     * @param array $permissions
-     * @param array $administrative
      * @return \Pterodactyl\Models\APIKey
      *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data, array $permissions, array $administrative = []): APIKey
+    public function handle(array $data): APIKey
     {
-        $token = str_random(APIKey::KEY_LENGTH);
-        $data = array_merge($data, ['token' => $token]);
+        $data = array_merge($data, [
+            'identifer' => str_random(APIKey::IDENTIFIER_LENGTH),
+            'token' => $this->encrypter->encrypt(str_random(APIKey::KEY_LENGTH)),
+        ]);
 
-        $this->connection->beginTransaction();
         $instance = $this->repository->create($data, true, true);
-        $nodes = $this->permissionService->getPermissions();
-
-        foreach ($permissions as $permission) {
-            @list($block, $search) = explode('-', $permission, 2);
-
-            if (
-                (empty($block) || empty($search)) ||
-                ! array_key_exists($block, $nodes['_user']) ||
-                ! in_array($search, $nodes['_user'][$block])
-            ) {
-                continue;
-            }
-
-            $this->permissionService->create($instance->id, sprintf('user.%s', $permission));
-        }
-
-        foreach ($administrative as $permission) {
-            @list($block, $search) = explode('-', $permission, 2);
-
-            if (
-                (empty($block) || empty($search)) ||
-                ! array_key_exists($block, $nodes) ||
-                ! in_array($search, $nodes[$block])
-            ) {
-                continue;
-            }
-
-            $this->permissionService->create($instance->id, $permission);
-        }
-
-        $this->connection->commit();
 
         return $instance;
     }

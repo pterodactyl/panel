@@ -31,25 +31,25 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>@lang('strings.public_key')</th>
                             <th>@lang('strings.memo')</th>
-                            <th class="text-center hidden-sm hidden-xs">@lang('strings.created')</th>
-                            <th class="text-center hidden-sm hidden-xs">@lang('strings.expires')</th>
+                            <th>@lang('strings.public_key')</th>
+                            <th class="text-right hidden-sm hidden-xs">@lang('strings.last_used')</th>
+                            <th class="text-right hidden-sm hidden-xs">@lang('strings.created')</th>
                             <th></th>
                         </tr>
                         @foreach ($keys as $key)
                             <tr>
-                                <td><code>{{ $key->token }}</code></td>
                                 <td>{{ $key->memo }}</td>
-                                <td class="text-center hidden-sm hidden-xs">
-                                    {{ (new Carbon($key->created_at))->toDayDateTimeString() }}
-                                </td>
-                                <td class="text-center hidden-sm hidden-xs">
-                                    @if(is_null($key->expires_at))
-                                        <span class="label label-default">@lang('strings.never')</span>
+                                <td><code>{{ $key->identifier . decrypt($key->token) }}</code></td>
+                                <td class="text-right hidden-sm hidden-xs">
+                                    @if(!is_null($key->last_used_at))
+                                        @datetimeHuman($key->last_used_at)
                                     @else
-                                        {{ (new Carbon($key->expires_at))->toDayDateTimeString() }}
+                                        &mdash;
                                     @endif
+                                </td>
+                                <td class="text-right hidden-sm hidden-xs">
+                                    @datetimeHuman($key->created_at)
                                 </td>
                                 <td class="text-center">
                                     <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->token }}"><i class="fa fa-trash"></i></a>

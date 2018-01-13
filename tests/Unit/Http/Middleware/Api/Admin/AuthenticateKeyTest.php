@@ -1,13 +1,14 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\API;
+namespace Tests\Unit\Http\Middleware\Api;
 
 use Mockery as m;
 use Pterodactyl\Models\APIKey;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\API\AuthenticateKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Http\Middleware\Api\Admin\AuthenticateKey;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
@@ -17,6 +18,11 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      * @var \Illuminate\Auth\AuthManager|\Mockery\Mock
      */
     private $auth;
+
+    /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter|\Mockery\Mock
+     */
+    private $encrypter;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
@@ -31,6 +37,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
         parent::setUp();
 
         $this->auth = m::mock(AuthManager::class);
+        $this->encrypter = m::mock(Encrypter::class);
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
     }
 
@@ -50,11 +57,11 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that an invalid API token throws an exception.
+     * Test that an invalid API identifer throws an exception.
      *
      * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
-    public function testInvalidTokenThrowsException()
+    public function testInvalidIdentifier()
     {
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn('abcd1234');
         $this->repository->shouldReceive('findFirstWhere')->andThrow(new RecordNotFoundException);
@@ -69,9 +76,9 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     {
         $model = factory(APIKey::class)->make();
 
-        $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->token);
-        $this->repository->shouldReceive('findFirstWhere')->with([['token', '=', $model->token]])->once()->andReturn($model);
-
+        $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'decrypted');
+        $this->repository->shouldReceive('findFirstWhere')->with([['identifier', '=', $model->identifier]])->once()->andReturn($model);
+        $this->encrypter->shouldReceive('decrypt')->with($model->token)->once()->andReturn('decrypted');
         $this->auth->shouldReceive('guard->loginUsingId')->with($model->user_id)->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
@@ -79,12 +86,29 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     }
 
     /**
+     * Test that a valid token identifier with an invalid token attached to it
+     * triggers an exception.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     */
+    public function testInvalidTokenForIdentifier()
+    {
+        $model = factory(APIKey::class)->make();
+
+        $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'asdf');
+        $this->repository->shouldReceive('findFirstWhere')->with([['identifier', '=', $model->identifier]])->once()->andReturn($model);
+        $this->encrypter->shouldReceive('decrypt')->with($model->token)->once()->andReturn('decrypted');
+
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    }
+
+    /**
      * Return an instance of the middleware with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Http\Middleware\API\AuthenticateKey
+     * @return \Pterodactyl\Http\Middleware\Api\Admin\AuthenticateKey
      */
     private function getMiddleware(): AuthenticateKey
     {
-        return new AuthenticateKey($this->repository, $this->auth);
+        return new AuthenticateKey($this->repository, $this->auth, $this->encrypter);
     }
 }

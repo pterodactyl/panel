@@ -1,21 +1,13 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\API;
+namespace Tests\Unit\Http\Middleware\Api\Admin;
 
 use Pterodactyl\Models\APIKey;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\API\AuthenticateIPAccess;
+use Pterodactyl\Http\Middleware\Api\Admin\AuthenticateIPAccess;
 
 class AuthenticateIPAccessTest extends MiddlewareTestCase
 {
-    /**
-     * Setup tests.
-     */
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     /**
      * Test middleware when there are no IP restrictions.
      */
@@ -73,7 +65,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware to be used when testing.
      *
-     * @return \Pterodactyl\Http\Middleware\API\AuthenticateIPAccess
+     * @return \Pterodactyl\Http\Middleware\Api\Admin\AuthenticateIPAccess
      */
     private function getMiddleware(): AuthenticateIPAccess
     {

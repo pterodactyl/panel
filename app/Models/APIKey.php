@@ -6,6 +6,7 @@ use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
@@ -13,6 +14,15 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 
+    /**
+     * The length of API key identifiers.
+     */
+    const IDENTIFIER_LENGTH = 16;
+
+    /**
+     * The length of the actual API key that is encrypted and stored
+     * in the database.
+     */
     const KEY_LENGTH = 32;
 
     /**
@@ -47,11 +57,19 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $fillable = [
+        'identifier',
         'token',
         'allowed_ips',
         'memo',
-        'expires_at',
     ];
+
+    /**
+     * Fields that should not be included when calling toArray() or toJson()
+     * on this model.
+     *
+     * @var array
+     */
+    protected $hidden = ['token'];
 
     /**
      * Rules defining what fields must be passed when making a model.
@@ -59,6 +77,7 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $applicationRules = [
+        'identifier' => 'required',
         'memo' => 'required',
         'user_id' => 'required',
         'token' => 'required',
@@ -71,10 +90,11 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'user_id' => 'exists:users,id',
-        'token' => 'string|size:32',
+        'identifier' => 'string|size:16|unique:api_keys,identifier',
+        'token' => 'string',
         'memo' => 'nullable|string|max:500',
         'allowed_ips' => 'nullable|json',
-        'expires_at' => 'nullable|datetime',
+        'last_used_at' => 'nullable|date',
         'r_' . AdminAcl::RESOURCE_USERS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_DATABASES => 'integer|min:0|max:3',
@@ -92,8 +112,18 @@ class APIKey extends Model implements CleansAttributes, ValidableContract
     protected $dates = [
         self::CREATED_AT,
         self::UPDATED_AT,
-        'expires_at',
+        'last_used_at',
     ];
+
+    /**
+     * Return a decrypted version of the token.
+     *
+     * @return string
+     */
+    public function getDecryptedTokenAttribute()
+    {
+        return app()->make(Encrypter::class)->decrypt($this->token);
+    }
 
     /**
      * Gets the permissions associated with a key.

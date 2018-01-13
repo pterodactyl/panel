@@ -49,8 +49,6 @@ class APIController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(Request $request)
     {

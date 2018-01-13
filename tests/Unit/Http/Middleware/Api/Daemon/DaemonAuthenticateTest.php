@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Daemon;
+namespace Tests\Unit\Http\Middleware\Api\Daemon;
 
 use Mockery as m;
 use Pterodactyl\Models\Node;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 
 class DaemonAuthenticateTest extends MiddlewareTestCase
 {
@@ -93,7 +93,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\Daemon\DaemonAuthenticate
+     * @return \Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate
      */
     private function getMiddleware(): DaemonAuthenticate
     {

@@ -1,10 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\API;
+namespace Pterodactyl\Http\Middleware\Api\Admin;
 
 use Closure;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\APIKey;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -18,6 +20,11 @@ class AuthenticateKey
     private $auth;
 
     /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
      */
     private $repository;
@@ -27,19 +34,18 @@ class AuthenticateKey
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
      * @param \Illuminate\Auth\AuthManager                                $auth
+     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      */
-    public function __construct(
-        ApiKeyRepositoryInterface $repository,
-        AuthManager $auth
-    ) {
+    public function __construct(ApiKeyRepositoryInterface $repository, AuthManager $auth, Encrypter $encrypter)
+    {
         $this->auth = $auth;
+        $this->encrypter = $encrypter;
         $this->repository = $repository;
     }
 
     /**
      * Handle an API request by verifying that the provided API key
-     * is in a valid format, and the route being accessed is allowed
-     * for the given key.
+     * is in a valid format and exists in the database.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
@@ -54,9 +60,17 @@ class AuthenticateKey
             throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
         }
 
+        $raw = $request->bearerToken();
+        $identifier = substr($raw, 0, APIKey::IDENTIFIER_LENGTH);
+        $token = substr($raw, APIKey::IDENTIFIER_LENGTH);
+
         try {
-            $model = $this->repository->findFirstWhere([['token', '=', $request->bearerToken()]]);
+            $model = $this->repository->findFirstWhere([['identifier', '=', $identifier]]);
         } catch (RecordNotFoundException $exception) {
+            throw new AccessDeniedHttpException;
+        }
+
+        if (! hash_equals($this->encrypter->decrypt($model->token), $token)) {
             throw new AccessDeniedHttpException;
         }
 

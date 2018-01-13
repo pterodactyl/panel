@@ -175,6 +175,7 @@ return [
          */
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
+        Pterodactyl\Providers\BladeServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
         Pterodactyl\Providers\HashidsServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
