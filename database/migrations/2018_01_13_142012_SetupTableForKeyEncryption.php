@@ -25,15 +25,6 @@ class SetupTableForKeyEncryption extends Migration
         Schema::table('api_keys', function (Blueprint $table) {
             $table->text('token')->change();
         });
-
-        DB::transaction(function () {
-            foreach (DB::table('api_keys')->cursor() as $key) {
-                DB::table('api_keys')->where('id', $key->id)->update([
-                    'identifier' => str_random(16),
-                    'token' => Crypt::encrypt($key->token),
-                ]);
-            }
-        });
     }
 
     /**
@@ -45,15 +36,6 @@ class SetupTableForKeyEncryption extends Migration
      */
     public function down()
     {
-        /* @var \Pterodactyl\Models\APIKey $key */
-        DB::transaction(function () {
-            foreach (DB::table('api_keys')->cursor() as $key) {
-                DB::table('api_keys')->where('id', $key->id)->update([
-                    'token' => Crypt::decrypt($key->token),
-                ]);
-            }
-        });
-
         Schema::table('api_keys', function (Blueprint $table) {
             $table->dropColumn('identifier');
             $table->string('token', 32)->unique()->change();

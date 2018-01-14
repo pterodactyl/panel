@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Models\APIPermission;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Http\Requests\Base\ApiKeyFormRequest;
@@ -65,12 +64,6 @@ class APIController extends Controller
      */
     public function create(Request $request)
     {
-        return view('base.api.new', [
-            'permissions' => [
-                'user' => collect(APIPermission::CONST_PERMISSIONS)->pull('_user'),
-                'admin' => ! $request->user()->root_admin ? null : collect(APIPermission::CONST_PERMISSIONS)->except('_user')->toArray(),
-            ],
-        ]);
     }
 
     /**

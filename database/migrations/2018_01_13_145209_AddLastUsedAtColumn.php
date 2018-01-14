@@ -14,6 +14,7 @@ class AddLastUsedAtColumn extends Migration
     public function up()
     {
         Schema::table('api_keys', function (Blueprint $table) {
+            $table->unsignedTinyInteger('key_type')->after('user_id')->default(0);
             $table->timestamp('last_used_at')->after('memo')->nullable();
             $table->dropColumn('expires_at');
         });
@@ -28,7 +29,7 @@ class AddLastUsedAtColumn extends Migration
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->timestamp('expires_at')->after('memo')->nullable();
-            $table->dropColumn('last_used_at');
+            $table->dropColumn('last_used_at', 'key_type');
         });
     }
 }

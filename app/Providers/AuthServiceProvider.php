@@ -13,7 +13,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'Pterodactyl\Models\Server' => 'Pterodactyl\Policies\ServerPolicy',
-        'Pterodactyl\Models\APIKey' => 'Pterodactyl\Policies\APIKeyPolicy',
     ];
 
     /**

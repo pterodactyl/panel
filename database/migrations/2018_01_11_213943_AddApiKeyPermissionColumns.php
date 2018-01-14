@@ -13,6 +13,8 @@ class AddApiKeyPermissionColumns extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('api_permissions');
+
         Schema::table('api_keys', function (Blueprint $table) {
             $table->unsignedTinyInteger('r_servers')->default(0);
             $table->unsignedTinyInteger('r_nodes')->default(0);
@@ -33,6 +35,14 @@ class AddApiKeyPermissionColumns extends Migration
      */
     public function down()
     {
+        Schema::create('api_permissions', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('key_id');
+            $table->string('permission');
+
+            $table->foreign('key_id')->references('id')->on('keys')->onDelete('cascade');
+        });
+
         Schema::table('api_keys', function (Blueprint $table) {
             $table->dropColumn([
                 'r_servers',

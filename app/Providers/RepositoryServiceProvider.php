@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Providers;
 
@@ -39,7 +32,6 @@ use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Repositories\Eloquent\ApiPermissionRepository;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
@@ -56,7 +48,6 @@ use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ApiPermissionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
@@ -73,7 +64,6 @@ class RepositoryServiceProvider extends ServiceProvider
         // Eloquent Repositories
         $this->app->bind(AllocationRepositoryInterface::class, AllocationRepository::class);
         $this->app->bind(ApiKeyRepositoryInterface::class, ApiKeyRepository::class);
-        $this->app->bind(ApiPermissionRepositoryInterface::class, ApiPermissionRepository::class);
         $this->app->bind(DaemonKeyRepositoryInterface::class, DaemonKeyRepository::class);
         $this->app->bind(DatabaseRepositoryInterface::class, DatabaseRepository::class);
         $this->app->bind(DatabaseHostRepositoryInterface::class, DatabaseHostRepository::class);
@@ -93,21 +83,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
-        $this->app->alias(SettingsRepositoryInterface::class, 'settings');
-
         // Daemon Repositories
-        if ($this->app->make('config')->get('pterodactyl.daemon.use_new_daemon')) {
-            $this->app->bind(ConfigurationRepositoryInterface::class, \Pterodactyl\Repositories\Wings\ConfigurationRepository::class);
-            $this->app->bind(CommandRepositoryInterface::class, \Pterodactyl\Repositories\Wings\CommandRepository::class);
-            $this->app->bind(DaemonServerRepositoryInterface::class, \Pterodactyl\Repositories\Wings\ServerRepository::class);
-            $this->app->bind(FileRepositoryInterface::class, \Pterodactyl\Repositories\Wings\FileRepository::class);
-            $this->app->bind(PowerRepositoryInterface::class, \Pterodactyl\Repositories\Wings\PowerRepository::class);
-        } else {
-            $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
-            $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
-            $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
-            $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
-            $this->app->bind(PowerRepositoryInterface::class, PowerRepository::class);
-        }
+        $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
+        $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
+        $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
+        $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
+        $this->app->bind(PowerRepositoryInterface::class, PowerRepository::class);
     }
 }
