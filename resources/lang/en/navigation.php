@@ -6,7 +6,7 @@ return [
         'header' => 'ACCOUNT MANAGEMENT',
         'my_account' => 'My Account',
         'security_controls' => 'Security Controls',
-        'api_access' => 'API Access',
+        'api_access' => 'Account API',
         'my_servers' => 'My Servers',
     ],
     'server' => [

@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -16,6 +17,16 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         $this->setKnownUuidFactory();
+    }
+
+    /**
+     * Tear down tests.
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        Chronos::setTestNow();
     }
 
     /**

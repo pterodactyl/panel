@@ -2,14 +2,17 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Pterodactyl\Models\ApiKey;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Http\Requests\Base\ApiKeyFormRequest;
+use Pterodactyl\Http\Requests\Base\StoreAccountKeyRequest;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
-class APIController extends Controller
+class AccountKeyController extends Controller
 {
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -44,49 +47,44 @@ class APIController extends Controller
     }
 
     /**
-     * Display base API index page.
+     * Display a listing of all account API keys.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         return view('base.api.index', [
-            'keys' => $this->repository->findWhere([['user_id', '=', $request->user()->id]]),
+            'keys' => $this->repository->getAccountKeys($request->user()),
         ]);
     }
 
     /**
-     * Display API key creation page.
+     * Display account API key creation page.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
+        return view('base.api.new');
     }
 
     /**
-     * Handle saving new API key.
+     * Handle saving new account API key.
      *
-     * @param \Pterodactyl\Http\Requests\Base\ApiKeyFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Base\StoreAccountKeyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(ApiKeyFormRequest $request)
+    public function store(StoreAccountKeyRequest $request)
     {
-        $adminPermissions = [];
-        if ($request->user()->root_admin) {
-            $adminPermissions = $request->input('admin_permissions', []);
-        }
-
-        $secret = $this->keyService->handle([
+        $this->keyService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
             'user_id' => $request->user()->id,
             'allowed_ips' => $request->input('allowed_ips'),
             'memo' => $request->input('memo'),
-        ], $request->input('permissions', []), $adminPermissions);
+        ]);
 
         $this->alert->success(trans('base.api.index.keypair_created'))->flash();
 
@@ -94,18 +92,15 @@ class APIController extends Controller
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $key
-     * @return \Illuminate\Http\Response
+     * Delete an account API key from the Panel via an AJAX request.
      *
-     * @throws \Exception
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $identifier
+     * @return \Illuminate\Http\Response
      */
-    public function revoke(Request $request, $key)
+    public function revoke(Request $request, string $identifier): Response
     {
-        $this->repository->deleteWhere([
-            ['user_id', '=', $request->user()->id],
-            ['token', '=', $key],
-        ]);
+        $this->repository->deleteAccountKey($request->user(), $identifier);
 
         return response('', 204);
     }

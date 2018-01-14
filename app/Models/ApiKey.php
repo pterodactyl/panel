@@ -6,7 +6,6 @@ use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
@@ -18,7 +17,7 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
      * Different API keys that can exist on the system.
      */
     const TYPE_NONE = 0;
-    const TYPE_USER = 1;
+    const TYPE_ACCOUNT = 1;
     const TYPE_APPLICATION = 2;
     const TYPE_DAEMON_USER = 3;
     const TYPE_DAEMON_APPLICATION = 4;
@@ -70,6 +69,7 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
         'token',
         'allowed_ips',
         'memo',
+        'last_used_at',
     ];
 
     /**
@@ -90,6 +90,7 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
         'memo' => 'required',
         'user_id' => 'required',
         'token' => 'required',
+        'key_type' => 'present',
     ];
 
     /**
@@ -99,6 +100,7 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'user_id' => 'exists:users,id',
+        'key_type' => 'integer|min:0|max:4',
         'identifier' => 'string|size:16|unique:api_keys,identifier',
         'token' => 'string',
         'memo' => 'nullable|string|max:500',
@@ -123,14 +125,4 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
         self::UPDATED_AT,
         'last_used_at',
     ];
-
-    /**
-     * Return a decrypted version of the token.
-     *
-     * @return string
-     */
-    public function getDecryptedTokenAttribute()
-    {
-        return app()->make(Encrypter::class)->decrypt($this->token);
-    }
 }

@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Middleware\Api\Admin;
 
 use Closure;
+use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
@@ -51,8 +52,8 @@ class AuthenticateKey
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
-     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Request $request, Closure $next)
     {
@@ -65,7 +66,10 @@ class AuthenticateKey
         $token = substr($raw, ApiKey::IDENTIFIER_LENGTH);
 
         try {
-            $model = $this->repository->findFirstWhere([['identifier', '=', $identifier]]);
+            $model = $this->repository->findFirstWhere([
+                ['identifier', '=', $identifier],
+                ['key_type', '=', ApiKey::TYPE_APPLICATION],
+            ]);
         } catch (RecordNotFoundException $exception) {
             throw new AccessDeniedHttpException;
         }
@@ -76,6 +80,7 @@ class AuthenticateKey
 
         $this->auth->guard()->loginUsingId($model->user_id);
         $request->attributes->set('api_key', $model);
+        $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => Chronos::now()]);
 
         return $next($request);
     }

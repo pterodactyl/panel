@@ -52,7 +52,7 @@
                                     @datetimeHuman($key->created_at)
                                 </td>
                                 <td class="text-center">
-                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->token }}"><i class="fa fa-trash"></i></a>
+                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->identifier }}"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -84,7 +84,7 @@
             }, function () {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('account.api.revoke', { key: self.data('attr') }),
+                    url: Router.route('account.api.revoke', { identifier: self.data('attr') }),
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
