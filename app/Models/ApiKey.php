@@ -15,6 +15,15 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
     use Eloquence, Validable;
 
     /**
+     * Different API keys that can exist on the system.
+     */
+    const TYPE_NONE = 0;
+    const TYPE_USER = 1;
+    const TYPE_APPLICATION = 2;
+    const TYPE_DAEMON_USER = 3;
+    const TYPE_DAEMON_APPLICATION = 4;
+
+    /**
      * The length of API key identifiers.
      */
     const IDENTIFIER_LENGTH = 16;
@@ -123,15 +132,5 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
     public function getDecryptedTokenAttribute()
     {
         return app()->make(Encrypter::class)->decrypt($this->token);
-    }
-
-    /**
-     * Gets the permissions associated with a key.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function permissions()
-    {
-        return $this->hasMany(APIPermission::class, 'key_id');
     }
 }
