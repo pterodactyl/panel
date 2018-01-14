@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\API\Admin;
 
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Services\Acl\Api\AdminAcl as Acl;
@@ -66,9 +66,9 @@ abstract class ApiAdminRequest extends FormRequest
     /**
      * Return the API key being used for the request.
      *
-     * @return \Pterodactyl\Models\APIKey
+     * @return \Pterodactyl\Models\ApiKey
      */
-    public function key(): APIKey
+    public function key(): ApiKey
     {
         return $this->attributes->get('api_key');
     }

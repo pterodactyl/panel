@@ -10,7 +10,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class APIKey extends Model implements CleansAttributes, ValidableContract
+class ApiKey extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
 

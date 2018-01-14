@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Services\Acl\Api;
 
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 
 class AdminAcl
 {
@@ -54,12 +54,12 @@ class AdminAcl
      * Determine if an API Key model has permission to access a given resource
      * at a specific action level.
      *
-     * @param \Pterodactyl\Models\APIKey $key
+     * @param \Pterodactyl\Models\ApiKey $key
      * @param string                     $resource
      * @param int                        $action
      * @return bool
      */
-    public static function check(APIKey $key, string $resource, int $action = self::READ)
+    public static function check(ApiKey $key, string $resource, int $action = self::READ)
     {
         return self::can(data_get($key, self::COLUMN_IDENTIFER . $resource, self::NONE), $action);
     }

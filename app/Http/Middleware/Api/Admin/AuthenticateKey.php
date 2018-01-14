@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Middleware\Api\Admin;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -61,8 +61,8 @@ class AuthenticateKey
         }
 
         $raw = $request->bearerToken();
-        $identifier = substr($raw, 0, APIKey::IDENTIFIER_LENGTH);
-        $token = substr($raw, APIKey::IDENTIFIER_LENGTH);
+        $identifier = substr($raw, 0, ApiKey::IDENTIFIER_LENGTH);
+        $token = substr($raw, ApiKey::IDENTIFIER_LENGTH);
 
         try {
             $model = $this->repository->findFirstWhere([['identifier', '=', $identifier]]);

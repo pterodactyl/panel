@@ -5,7 +5,7 @@ namespace Tests\Unit\Services\Api;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -40,48 +40,48 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testKeyIsCreated()
     {
-        $model = factory(APIKey::class)->make();
+        $model = factory(ApiKey::class)->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
                 return 'str_' . $length;
             });
 
-        $this->encrypter->shouldReceive('encrypt')->with('str_' . APIKey::KEY_LENGTH)->once()->andReturn($model->token);
+        $this->encrypter->shouldReceive('encrypt')->with('str_' . ApiKey::KEY_LENGTH)->once()->andReturn($model->token);
 
         $this->repository->shouldReceive('create')->with([
             'test-data' => 'test',
-            'identifier' => 'str_' . APIKey::IDENTIFIER_LENGTH,
+            'identifier' => 'str_' . ApiKey::IDENTIFIER_LENGTH,
             'token' => $model->token,
         ], true, true)->once()->andReturn($model);
 
         $response = $this->getService()->handle(['test-data' => 'test']);
 
         $this->assertNotEmpty($response);
-        $this->assertInstanceOf(APIKey::class, $response);
+        $this->assertInstanceOf(ApiKey::class, $response);
         $this->assertSame($model, $response);
     }
 
     public function testIdentifierAndTokenAreOnlySetByFunction()
     {
-        $model = factory(APIKey::class)->make();
+        $model = factory(ApiKey::class)->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
                 return 'str_' . $length;
             });
 
-        $this->encrypter->shouldReceive('encrypt')->with('str_' . APIKey::KEY_LENGTH)->once()->andReturn($model->token);
+        $this->encrypter->shouldReceive('encrypt')->with('str_' . ApiKey::KEY_LENGTH)->once()->andReturn($model->token);
 
         $this->repository->shouldReceive('create')->with([
-            'identifier' => 'str_' . APIKey::IDENTIFIER_LENGTH,
+            'identifier' => 'str_' . ApiKey::IDENTIFIER_LENGTH,
             'token' => $model->token,
         ], true, true)->once()->andReturn($model);
 
         $response = $this->getService()->handle(['identifier' => 'customIdentifier', 'token' => 'customToken']);
 
         $this->assertNotEmpty($response);
-        $this->assertInstanceOf(APIKey::class, $response);
+        $this->assertInstanceOf(ApiKey::class, $response);
         $this->assertSame($model, $response);
     }
 

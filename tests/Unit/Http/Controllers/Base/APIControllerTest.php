@@ -4,7 +4,7 @@ namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
@@ -88,7 +88,7 @@ class APIControllerTest extends ControllerTestCase
     {
         $this->setRequestMockClass(ApiKeyFormRequest::class);
         $model = $this->generateRequestUserModel(['root_admin' => $admin]);
-        $keyModel = factory(APIKey::class)->make();
+        $keyModel = factory(ApiKey::class)->make();
 
         if ($admin) {
             $this->request->shouldReceive('input')->with('admin_permissions', [])->once()->andReturn(['admin.permission']);

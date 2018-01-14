@@ -3,7 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Admin;
 
 use Cake\Chronos\Chronos;
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Container\Container;
 use League\Fractal\TransformerAbstract;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -13,17 +13,17 @@ abstract class BaseTransformer extends TransformerAbstract
     const RESPONSE_TIMEZONE = 'UTC';
 
     /**
-     * @var \Pterodactyl\Models\APIKey
+     * @var \Pterodactyl\Models\ApiKey
      */
     private $key;
 
     /**
      * Set the HTTP request class being used for this request.
      *
-     * @param \Pterodactyl\Models\APIKey $key
+     * @param \Pterodactyl\Models\ApiKey $key
      * @return $this
      */
-    public function setKey(APIKey $key)
+    public function setKey(ApiKey $key)
     {
         $this->key = $key;
 
@@ -33,9 +33,9 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * Return the request instance being used for this transformer.
      *
-     * @return \Pterodactyl\Models\APIKey
+     * @return \Pterodactyl\Models\ApiKey
      */
-    public function getKey(): APIKey
+    public function getKey(): ApiKey
     {
         return $this->key;
     }

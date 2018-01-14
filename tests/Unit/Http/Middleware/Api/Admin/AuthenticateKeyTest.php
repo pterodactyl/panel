@@ -3,7 +3,7 @@
 namespace Tests\Unit\Http\Middleware\Api;
 
 use Mockery as m;
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
@@ -74,7 +74,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testValidToken()
     {
-        $model = factory(APIKey::class)->make();
+        $model = factory(ApiKey::class)->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'decrypted');
         $this->repository->shouldReceive('findFirstWhere')->with([['identifier', '=', $model->identifier]])->once()->andReturn($model);
@@ -93,7 +93,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testInvalidTokenForIdentifier()
     {
-        $model = factory(APIKey::class)->make();
+        $model = factory(ApiKey::class)->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'asdf');
         $this->repository->shouldReceive('findFirstWhere')->with([['identifier', '=', $model->identifier]])->once()->andReturn($model);

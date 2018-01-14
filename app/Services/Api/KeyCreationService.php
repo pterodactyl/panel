@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Services\Api;
 
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
@@ -36,15 +36,15 @@ class KeyCreationService
      * stored in the database.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\APIKey
+     * @return \Pterodactyl\Models\ApiKey
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data): APIKey
+    public function handle(array $data): ApiKey
     {
         $data = array_merge($data, [
-            'identifier' => str_random(APIKey::IDENTIFIER_LENGTH),
-            'token' => $this->encrypter->encrypt(str_random(APIKey::KEY_LENGTH)),
+            'identifier' => str_random(ApiKey::IDENTIFIER_LENGTH),
+            'token' => $this->encrypter->encrypt(str_random(ApiKey::KEY_LENGTH)),
         ]);
 
         $instance = $this->repository->create($data, true, true);

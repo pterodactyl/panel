@@ -9,17 +9,17 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 
 interface ApiKeyRepositoryInterface extends RepositoryInterface
 {
     /**
      * Load permissions for a key onto the model.
      *
-     * @param \Pterodactyl\Models\APIKey $model
+     * @param \Pterodactyl\Models\ApiKey $model
      * @param bool                       $refresh
      * @deprecated
-     * @return \Pterodactyl\Models\APIKey
+     * @return \Pterodactyl\Models\ApiKey
      */
-    public function loadPermissions(APIKey $model, bool $refresh = false): APIKey;
+    public function loadPermissions(ApiKey $model, bool $refresh = false): ApiKey;
 }

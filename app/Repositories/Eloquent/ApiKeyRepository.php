@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInterface
@@ -14,18 +14,18 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
      */
     public function model()
     {
-        return APIKey::class;
+        return ApiKey::class;
     }
 
     /**
      * Load permissions for a key onto the model.
      *
-     * @param \Pterodactyl\Models\APIKey $model
+     * @param \Pterodactyl\Models\ApiKey $model
      * @param bool                       $refresh
      * @deprecated
-     * @return \Pterodactyl\Models\APIKey
+     * @return \Pterodactyl\Models\ApiKey
      */
-    public function loadPermissions(APIKey $model, bool $refresh = false): APIKey
+    public function loadPermissions(ApiKey $model, bool $refresh = false): ApiKey
     {
         if (! $model->relationLoaded('permissions') || $refresh) {
             $model->load('permissions');
