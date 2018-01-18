@@ -456,3 +456,11 @@ label.control-label > span.field-optional:before {
 .pagination > li > a, .pagination > li > span {
     padding: 3px 10px !important;
 }
+
+body.sidebar-collapse .main-header .logo {
+    overflow: hidden;
+    text-indent: 100%;
+    background-image: url('/favicons/favicon-32x32.png');
+    background-repeat: no-repeat;
+    background-position: center;
+}
