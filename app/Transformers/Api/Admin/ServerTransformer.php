@@ -2,11 +2,12 @@
 
 namespace Pterodactyl\Transformers\Api\Admin;
 
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use League\Fractal\TransformerAbstract;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Admin\PackTransformer;
+use Pterodactyl\Transformers\Admin\ServerVariableTransformer;
 
-class ServerTransformer extends TransformerAbstract
+class ServerTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
@@ -18,40 +19,20 @@ class ServerTransformer extends TransformerAbstract
         'user',
         'subusers',
         'pack',
-        'service',
-        'option',
+        'nest',
+        'egg',
         'variables',
         'location',
         'node',
     ];
 
     /**
-     * The Illuminate Request object if provided.
-     *
-     * @var \Illuminate\Http\Request|bool
-     */
-    protected $request;
-
-    /**
-     * Setup request object for transformer.
-     *
-     * @param \Illuminate\Http\Request|bool $request
-     */
-    public function __construct($request = false)
-    {
-        if (! $request instanceof Request && $request !== false) {
-            throw new DisplayException('Request passed to constructor must be of type Request or false.');
-        }
-
-        $this->request = $request;
-    }
-
-    /**
      * Return a generic transformed server array.
      *
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
-    public function transform(Server $server)
+    public function transform(Server $server): array
     {
         return collect($server->toArray())->only($server->getTableColumns())->toArray();
     }
@@ -59,126 +40,153 @@ class ServerTransformer extends TransformerAbstract
     /**
      * Return a generic array of allocations for this server.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeAllocations(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_ALLOCATIONS)) {
+            return $this->null();
         }
 
-        return $this->collection($server->allocations, new AllocationTransformer($this->request, 'server'), 'allocation');
+        $server->loadMissing('allocations');
+
+        return $this->collection($server->getRelation('allocations'), $this->makeTransformer(AllocationTransformer::class), 'allocation');
     }
 
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeSubusers(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_USERS)) {
+            return $this->null();
         }
 
-        return $this->collection($server->subusers, new SubuserTransformer($this->request), 'subuser');
+        $server->loadMissing('subusers');
+
+        return $this->collection($server->getRelation('subusers'), $this->makeTransformer(UserTransformer::class), 'user');
     }
 
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeUser(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('user-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_USERS)) {
+            return $this->null();
         }
 
-        return $this->item($server->user, new UserTransformer($this->request), 'user');
+        $server->loadMissing('user');
+
+        return $this->item($server->getRelation('user'), $this->makeTransformer(UserTransformer::class), 'user');
     }
 
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includePack(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('pack-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_PACKS)) {
+            return $this->null();
         }
 
-        return $this->item($server->pack, new PackTransformer($this->request), 'pack');
+        $server->loadMissing('pack');
+
+        return $this->item($server->getRelation('pack'), $this->makeTransformer(PackTransformer::class), 'pack');
     }
 
     /**
-     * Return a generic array with service information for this server.
+     * Return a generic array with nest information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
-    public function includeService(Server $server)
+    public function includeNest(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('service-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_NESTS)) {
+            return $this->null();
         }
 
-        return $this->item($server->service, new ServiceTransformer($this->request), 'service');
+        $server->loadMissing('nest');
+
+        return $this->item($server->getRelation('nest'), $this->makeTransformer(NestTransformer::class), 'nest');
     }
 
     /**
      * Return a generic array with service option information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeOption(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+            return $this->null();
         }
 
-        return $this->item($server->option, new OptionTransformer($this->request), 'option');
+        $server->loadMissing('egg');
+
+        return $this->item($server->getRelation('egg'), $this->makeTransformer(EggTransformer::class), 'egg');
     }
 
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @return \Leauge\Fractal\Resource\Collection
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeVariables(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+            return $this->null();
         }
 
-        return $this->collection($server->variables, new ServerVariableTransformer($this->request), 'server_variable');
+        $server->loadMissing('variables');
+
+        return $this->item($server->getRelation('variables'), $this->makeTransformer(ServerVariableTransformer::class), 'server_variable');
     }
 
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeLocation(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('location-list')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_LOCATIONS)) {
+            return $this->null();
         }
 
-        return $this->item($server->location, new LocationTransformer($this->request), 'location');
+        $server->loadMissing('location');
+
+        return $this->item($server->getRelation('location'), $this->makeTransformer(LocationTransformer::class), 'location');
     }
 
     /**
      * Return a generic array with pack information for this server.
      *
-     * @return \Leauge\Fractal\Resource\Item|void
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeNode(Server $server)
     {
-        if ($this->request && ! $this->request->apiKeyHasPermission('node-view')) {
-            return;
+        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
+            return $this->null();
         }
 
-        return $this->item($server->node, new NodeTransformer($this->request), 'node');
+        $server->loadMissing('node');
+
+        return $this->item($server->getRelation('node'), $this->makeTransformer(NodeTransformer::class), 'node');
     }
 }
