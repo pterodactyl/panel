@@ -16,6 +16,14 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     public function getAccountKeys(User $user): Collection;
 
     /**
+     * Get all of the application API keys that exist for a specific user.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @return \Illuminate\Support\Collection
+     */
+    public function getApplicationKeys(User $user): Collection;
+
+    /**
      * Delete an account API key from the panel for a specific user.
      *
      * @param \Pterodactyl\Models\User $user
@@ -23,4 +31,13 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
      * @return int
      */
     public function deleteAccountKey(User $user, string $identifier): int;
+
+    /**
+     * Delete an application API key from the panel for a specific user.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @param string                   $identifier
+     * @return int
+     */
+    public function deleteApplicationKey(User $user, string $identifier): int;
 }

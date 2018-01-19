@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Acl\Api;
 
+use ReflectionClass;
 use Pterodactyl\Models\ApiKey;
 
 class AdminAcl
@@ -22,7 +23,7 @@ class AdminAcl
 
     /**
      * Resources that are available on the API and can contain a permissions
-     * set for each key. These are stored in the database as permission_{resource}.
+     * set for each key. These are stored in the database as r_{resource}.
      */
     const RESOURCE_SERVERS = 'servers';
     const RESOURCE_NODES = 'nodes';
@@ -62,5 +63,19 @@ class AdminAcl
     public static function check(ApiKey $key, string $resource, int $action = self::READ)
     {
         return self::can(data_get($key, self::COLUMN_IDENTIFER . $resource, self::NONE), $action);
+    }
+
+    /**
+     * Return a list of all resource constants defined in this ACL.
+     *
+     * @return array
+     */
+    public static function getResourceList(): array
+    {
+        $reflect = new ReflectionClass(__CLASS__);
+
+        return collect($reflect->getConstants())->filter(function ($value, $key) {
+            return substr($key, 0, 9) === 'RESOURCE_';
+        })->values()->toArray();
     }
 }

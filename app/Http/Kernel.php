@@ -21,6 +21,7 @@ use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\Admin\AuthenticateKey;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Pterodactyl\Http\Middleware\Api\Admin\AuthenticateUser;
 use Pterodactyl\Http\Middleware\Api\Admin\SetSessionDriver;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
@@ -66,10 +67,11 @@ class Kernel extends HttpKernel
             RequireTwoFactorAuthentication::class,
         ],
         'api' => [
-            'throttle:60,1',
+            'throttle:120,1',
             SubstituteBindings::class,
             SetSessionDriver::class,
             AuthenticateKey::class,
+            AuthenticateUser::class,
             AuthenticateIPAccess::class,
         ],
         'daemon' => [
