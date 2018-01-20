@@ -75,9 +75,3 @@ particles.js — [license](https://github.com/VincentGarreau/particles.js/blob/m
 
 ### Additional License Information
 Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apache 2.0`. Please check their respective header files for more information.
-
-Some images used within Pterodactyl are Copyright (c) their respective owners.
-
-`/public/themes/default/images/403.jpg` is licensed under a [CC BY 2.0](http://creativecommons.org/licenses/by/2.0/) by [BigTallGuy](http://flickr.com/photos/bigtallguy/)
-
-`/public/themes/default/images/404.jpg` is licensed under a [CC BY-SA 2.0](http://creativecommons.org/licenses/by-sa/2.0/) by [nicsuzor](http://flickr.com/photos/nicsuzor/)
