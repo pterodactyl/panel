@@ -80,7 +80,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'owner_id' => 'exists:users,id',
-        'name' => 'regex:/^([\w .-]{1,200})$/',
+        'name' => 'string|min:1|max:255',
         'node_id' => 'exists:nodes,id',
         'description' => 'string',
         'memory' => 'numeric|min:0',

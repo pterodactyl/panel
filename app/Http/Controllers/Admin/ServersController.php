@@ -401,7 +401,7 @@ class ServersController extends Controller
      */
     public function setDetails(Request $request, Server $server)
     {
-        $this->detailsModificationService->edit($server, $request->only([
+        $this->detailsModificationService->handle($server, $request->only([
             'owner_id', 'name', 'description',
         ]));
 
