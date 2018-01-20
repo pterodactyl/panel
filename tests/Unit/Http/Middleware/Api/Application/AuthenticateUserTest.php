@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api\Admin;
+namespace Tests\Unit\Http\Middleware\Api\Application;
 
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateUser;

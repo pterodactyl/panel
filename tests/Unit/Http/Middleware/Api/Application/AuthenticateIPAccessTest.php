@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api\Admin;
+namespace Tests\Unit\Http\Middleware\Api\Application;
 
 use Pterodactyl\Models\ApiKey;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
