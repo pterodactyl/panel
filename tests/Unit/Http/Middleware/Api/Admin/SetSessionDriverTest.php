@@ -7,7 +7,7 @@ use Barryvdh\Debugbar\LaravelDebugbar;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Api\Admin\SetSessionDriver;
+use Pterodactyl\Http\Middleware\Api\Application\SetSessionDriver;
 
 class SetSessionDriverTest extends MiddlewareTestCase
 {
@@ -60,7 +60,7 @@ class SetSessionDriverTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Http\Middleware\Api\Admin\SetSessionDriver
+     * @return \Pterodactyl\Http\Middleware\Api\Application\SetSessionDriver
      */
     private function getMiddleware(): SetSessionDriver
     {

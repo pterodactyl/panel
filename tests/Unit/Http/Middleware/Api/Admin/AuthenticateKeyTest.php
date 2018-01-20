@@ -9,9 +9,9 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Http\Middleware\Api\Admin\AuthenticateKey;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use Pterodactyl\Http\Middleware\Api\Application\AuthenticateKey;
 
 class AuthenticateKeyTest extends MiddlewareTestCase
 {
@@ -117,7 +117,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Http\Middleware\Api\Admin\AuthenticateKey
+     * @return \Pterodactyl\Http\Middleware\Api\Application\AuthenticateKey
      */
     private function getMiddleware(): AuthenticateKey
     {

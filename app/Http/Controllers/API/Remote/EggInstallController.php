@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\API\Remote;
+namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
