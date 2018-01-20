@@ -84,15 +84,15 @@ Route::group(['prefix' => '/locations'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Location Controller Routes
+| Server Controller Routes
 |--------------------------------------------------------------------------
 |
 | Endpoint: /api/application/servers
 |
 */
 Route::group(['prefix' => '/servers'], function () {
-    Route::bind('location', function ($value) {
-        return Server::find($value) ?? new Location;
+    Route::bind('server', function ($value) {
+        return Server::find($value) ?? new Server;
     });
 
     Route::get('/', 'Servers\ServerController@index')->name('api.application.servers');
