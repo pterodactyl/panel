@@ -19,6 +19,7 @@ use Pterodactyl\Http\Middleware\AccessingValidServer;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
@@ -68,7 +69,7 @@ class Kernel extends HttpKernel
         ],
         'api' => [
             'throttle:120,1',
-            SubstituteBindings::class,
+            ApiSubstituteBindings::class,
             SetSessionDriver::class,
             AuthenticateKey::class,
             AuthenticateUser::class,

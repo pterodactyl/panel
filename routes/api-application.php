@@ -1,11 +1,5 @@
 <?php
 
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Allocation;
-
 /*
 |--------------------------------------------------------------------------
 | User Controller Routes
@@ -15,10 +9,6 @@ use Pterodactyl\Models\Allocation;
 |
 */
 Route::group(['prefix' => '/users'], function () {
-    Route::bind('user', function ($value) {
-        return User::find($value) ?? new User;
-    });
-
     Route::get('/', 'Users\UserController@index')->name('api.application.users');
     Route::get('/{user}', 'Users\UserController@view')->name('api.applications.users.view');
 
@@ -37,10 +27,6 @@ Route::group(['prefix' => '/users'], function () {
 |
 */
 Route::group(['prefix' => '/nodes'], function () {
-    Route::bind('node', function ($value) {
-        return Node::find($value) ?? new Node;
-    });
-
     Route::get('/', 'Nodes\NodeController@index')->name('api.application.nodes');
     Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
 
@@ -50,10 +36,6 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::delete('/{node}', 'Nodes\NodeController@delete');
 
     Route::group(['prefix' => '/{node}/allocations'], function () {
-        Route::bind('allocation', function ($value) {
-            return Allocation::find($value) ?? new Allocation;
-        });
-
         Route::get('/', 'Nodes\AllocationController@index')->name('api.application.allocations');
 
         Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.application.allocations.view');
@@ -69,10 +51,6 @@ Route::group(['prefix' => '/nodes'], function () {
 |
 */
 Route::group(['prefix' => '/locations'], function () {
-    Route::bind('location', function ($value) {
-        return Location::find($value) ?? new Location;
-    });
-
     Route::get('/', 'Locations\LocationController@index')->name('api.applications.locations');
     Route::get('/{location}', 'Locations\LocationController@view')->name('api.application.locations.view');
 
@@ -91,10 +69,6 @@ Route::group(['prefix' => '/locations'], function () {
 |
 */
 Route::group(['prefix' => '/servers'], function () {
-    Route::bind('server', function ($value) {
-        return Server::find($value) ?? new Server;
-    });
-
     Route::get('/', 'Servers\ServerController@index')->name('api.application.servers');
     Route::get('/{server}', 'Servers\ServerController@view')->name('api.application.servers.view');
 
