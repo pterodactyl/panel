@@ -3,9 +3,8 @@
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
-use Pterodactyl\Http\Requests\Api\Application\ApiAdminRequest;
 
-class GetNodeRequest extends ApiAdminRequest
+class GetNodeRequest extends GetNodesRequest
 {
     /**
      * Determine if the requested node exists on the Panel.

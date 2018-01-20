@@ -14,7 +14,7 @@ use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Api\StoreApplicationApiKeyRequest;
 
-class ApplicationApiController extends Controller
+class ApiController extends Controller
 {
     /**
      * @var \Prologue\Alerts\AlertsMessageBag

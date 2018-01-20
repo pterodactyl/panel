@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-abstract class ApiAdminRequest extends FormRequest
+abstract class ApplicationApiRequest extends FormRequest
 {
     /**
      * The resource that should be checked when performing the authorization

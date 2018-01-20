@@ -4,9 +4,9 @@ namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApiAdminRequest;
+use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
-class StoreNodeRequest extends ApiAdminRequest
+class StoreNodeRequest extends ApplicationApiRequest
 {
     /**
      * @var string

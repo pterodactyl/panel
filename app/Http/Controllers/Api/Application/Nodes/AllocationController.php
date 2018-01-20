@@ -8,11 +8,11 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Http\Controllers\Controller;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Pterodactyl\Transformers\Api\Admin\AllocationTransformer;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Transformers\Api\Application\AllocationTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest;
+use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequestApplication;
 
 class AllocationController extends Controller
 {
@@ -66,14 +66,14 @@ class AllocationController extends Controller
     /**
      * Delete a specific allocation from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest $request
-     * @param \Pterodactyl\Models\Node                                                       $node
-     * @param \Pterodactyl\Models\Allocation                                                 $allocation
+     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequestApplication $request
+     * @param \Pterodactyl\Models\Node                                                                  $node
+     * @param \Pterodactyl\Models\Allocation                                                            $allocation
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function delete(DeleteAllocationRequest $request, Node $node, Allocation $allocation): Response
+    public function delete(DeleteAllocationRequestApplication $request, Node $node, Allocation $allocation): Response
     {
         $this->deletionService->handle($allocation);
 

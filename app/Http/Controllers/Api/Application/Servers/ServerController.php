@@ -1,20 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Admin;
+namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
 
-use Spatie\Fractal\Fractal;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Transformers\Api\Admin\ServerTransformer;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
+use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
-class ServerController extends Controller
+class ServerController extends ApplicationApiController
 {
-    /**
-     * @var \Spatie\Fractal\Fractal
-     */
-    private $fractal;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
@@ -23,22 +21,43 @@ class ServerController extends Controller
     /**
      * ServerController constructor.
      *
-     * @param \Spatie\Fractal\Fractal                                     $fractal
+     * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal         $fractal
+     * @param \Illuminate\Http\Request                                    $request
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
-    public function __construct(Fractal $fractal, ServerRepositoryInterface $repository)
+    public function __construct(Fractal $fractal, Request $request, ServerRepositoryInterface $repository)
     {
-        $this->fractal = $fractal;
+        parent::__construct($fractal, $request);
+
         $this->repository = $repository;
     }
 
-    public function index(Request $request): array
+    /**
+     * Return all of the servers that currently exist on the Panel.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest $request
+     * @return array
+     */
+    public function index(GetServersRequest $request): array
     {
-        $servers = $this->repository->paginated(50);
+        $servers = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
 
         return $this->fractal->collection($servers)
-            ->transformWith((new ServerTransformer)->setKey())
-            ->withResourceName('server')
+            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->toArray();
+    }
+
+    /**
+     * Show a single server transformed for the application API.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest $request
+     * @param \Pterodactyl\Models\Server                                          $server
+     * @return array
+     */
+    public function view(GetServerRequest $request, Server $server): array
+    {
+        return $this->fractal->item($server)
+            ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }
 }

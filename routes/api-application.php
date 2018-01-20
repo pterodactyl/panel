@@ -2,6 +2,7 @@
 
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
 
@@ -18,13 +19,13 @@ Route::group(['prefix' => '/users'], function () {
         return User::find($value) ?? new User;
     });
 
-    Route::get('/', 'Users\UserController@index')->name('api.admin.user.list');
-    Route::get('/{user}', 'Users\UserController@view')->name('api.admin.user.view');
+    Route::get('/', 'Users\UserController@index')->name('api.application.users');
+    Route::get('/{user}', 'Users\UserController@view')->name('api.applications.users.view');
 
-    Route::post('/', 'Users\UserController@store')->name('api.admin.user.store');
-    Route::patch('/{user}', 'Users\UserController@update')->name('api.admin.user.update');
+    Route::post('/', 'Users\UserController@store');
+    Route::patch('/{user}', 'Users\UserController@update');
 
-    Route::delete('/{user}', 'Users\UserController@delete')->name('api.admin.user.delete');
+    Route::delete('/{user}', 'Users\UserController@delete');
 });
 
 /*
@@ -40,22 +41,22 @@ Route::group(['prefix' => '/nodes'], function () {
         return Node::find($value) ?? new Node;
     });
 
-    Route::get('/', 'Nodes\NodeController@index')->name('api.admin.node.list');
-    Route::get('/{node}', 'Nodes\NodeController@view')->name('api.admin.node.view');
+    Route::get('/', 'Nodes\NodeController@index')->name('api.application.nodes');
+    Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
 
-    Route::post('/', 'Nodes\NodeController@store')->name('api.admin.node.store');
-    Route::patch('/{node}', 'Nodes\NodeController@update')->name('api.admin.node.update');
+    Route::post('/', 'Nodes\NodeController@store');
+    Route::patch('/{node}', 'Nodes\NodeController@update');
 
-    Route::delete('/{node}', 'Nodes\NodeController@delete')->name('api.admin.node.delete');
+    Route::delete('/{node}', 'Nodes\NodeController@delete');
 
     Route::group(['prefix' => '/{node}/allocations'], function () {
         Route::bind('allocation', function ($value) {
             return Allocation::find($value) ?? new Allocation;
         });
 
-        Route::get('/', 'Nodes\AllocationController@index')->name('api.admin.node.allocations.list');
+        Route::get('/', 'Nodes\AllocationController@index')->name('api.application.allocations');
 
-        Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.admin.node.allocations.delete');
+        Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.application.allocations.view');
     });
 });
 
@@ -72,11 +73,28 @@ Route::group(['prefix' => '/locations'], function () {
         return Location::find($value) ?? new Location;
     });
 
-    Route::get('/', 'Locations\LocationController@index')->name('api.admin.location.list');
-    Route::get('/{location}', 'Locations\LocationController@view')->name('api.admin.location.view');
+    Route::get('/', 'Locations\LocationController@index')->name('api.applications.locations');
+    Route::get('/{location}', 'Locations\LocationController@view')->name('api.application.locations.view');
 
-    Route::post('/', 'Locations\LocationController@store')->name('api.admin.location.store');
-    Route::patch('/{location}', 'Locations\LocationController@update')->name('api.admin.location.update');
+    Route::post('/', 'Locations\LocationController@store');
+    Route::patch('/{location}', 'Locations\LocationController@update');
 
-    Route::delete('/{location}', 'Locations\LocationController@delete')->name('api.admin.location.delete');
+    Route::delete('/{location}', 'Locations\LocationController@delete');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/servers
+|
+*/
+Route::group(['prefix' => '/servers'], function () {
+    Route::bind('location', function ($value) {
+        return Server::find($value) ?? new Location;
+    });
+
+    Route::get('/', 'Servers\ServerController@index')->name('api.application.servers');
+    Route::get('/{server}', 'Servers\ServerController@view')->name('api.application.servers');
 });

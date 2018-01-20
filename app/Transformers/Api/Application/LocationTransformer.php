@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Admin;
+namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;

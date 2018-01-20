@@ -11,12 +11,12 @@ Route::get('/', 'BaseController@index')->name('admin.index');
 |
 */
 Route::group(['prefix' => 'api'], function () {
-    Route::get('/', 'ApplicationApiController@index')->name('admin.api.index');
-    Route::get('/new', 'ApplicationApiController@create')->name('admin.api.new');
+    Route::get('/', 'ApiController@index')->name('admin.api.index');
+    Route::get('/new', 'ApiController@create')->name('admin.api.new');
 
-    Route::post('/new', 'ApplicationApiController@store');
+    Route::post('/new', 'ApiController@store');
 
-    Route::delete('/revoke/{identifier}', 'ApplicationApiController@delete')->name('admin.api.delete');
+    Route::delete('/revoke/{identifier}', 'ApiController@delete')->name('admin.api.delete');
 });
 
 /*

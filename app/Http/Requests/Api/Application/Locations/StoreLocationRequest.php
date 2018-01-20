@@ -4,9 +4,9 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
 
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApiAdminRequest;
+use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
-class StoreLocationRequest extends ApiAdminRequest
+class StoreLocationRequest extends ApplicationApiRequest
 {
     /**
      * @var string

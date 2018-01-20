@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Admin;
+namespace Pterodactyl\Transformers\Api\Application;
 
 use Cake\Chronos\Chronos;
 use Pterodactyl\Models\ApiKey;
@@ -16,6 +16,17 @@ abstract class BaseTransformer extends TransformerAbstract
      * @var \Pterodactyl\Models\ApiKey
      */
     private $key;
+
+    /**
+     * BaseTransformer constructor.
+     */
+    public function __construct()
+    {
+        // Transformers allow for dependency injection on the handle method.
+        if (method_exists($this, 'handle')) {
+            Container::getInstance()->call([$this, 'handle']);
+        }
+    }
 
     /**
      * Set the HTTP request class being used for this request.
@@ -59,11 +70,11 @@ abstract class BaseTransformer extends TransformerAbstract
      *
      * @param string $abstract
      * @param array  $parameters
-     * @return \Pterodactyl\Transformers\Api\Admin\BaseTransformer
+     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      */
     protected function makeTransformer(string $abstract, array $parameters = []): self
     {
-        /** @var \Pterodactyl\Transformers\Api\Admin\BaseTransformer $transformer */
+        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->makeWith($abstract, $parameters);
         $transformer->setKey($this->getKey());
 

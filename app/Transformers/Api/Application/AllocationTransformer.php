@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Admin;
+namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\Acl\Api\AdminAcl;

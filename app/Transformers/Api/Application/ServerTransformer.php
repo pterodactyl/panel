@@ -1,14 +1,19 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Admin;
+namespace Pterodactyl\Transformers\Api\Application;
 
+use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Transformers\Admin\PackTransformer;
-use Pterodactyl\Transformers\Admin\ServerVariableTransformer;
+use Pterodactyl\Services\Servers\EnvironmentService;
 
 class ServerTransformer extends BaseTransformer
 {
+    /**
+     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     */
+    private $environmentService;
+
     /**
      * List of resources that can be included.
      *
@@ -27,14 +32,54 @@ class ServerTransformer extends BaseTransformer
     ];
 
     /**
+     * Perform dependency injection.
+     *
+     * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
+     */
+    public function handle(EnvironmentService $environmentService)
+    {
+        $this->environmentService = $environmentService;
+    }
+
+    /**
      * Return a generic transformed server array.
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function transform(Server $server): array
     {
-        return collect($server->toArray())->only($server->getTableColumns())->toArray();
+        return [
+            'id' => $server->getKey(),
+            'uuid' => $server->uuid,
+            'identifier' => $server->uuidShort,
+            'name' => $server->name,
+            'description' => $server->description,
+            'suspended' => (bool) $server->suspended,
+            'limits' => [
+                'memory' => $server->memory,
+                'swap' => $server->swap,
+                'disk' => $server->disk,
+                'io' => $server->io,
+                'cpu' => $server->cpu,
+            ],
+            'user' => $server->owner_id,
+            'node' => $server->node_id,
+            'allocation' => $server->allocation_id,
+            'nest' => $server->nest_id,
+            'egg' => $server->egg_id,
+            'pack' => $server->pack_id,
+            'container' => [
+                'startup_command' => $server->startup,
+                'image' => $server->image,
+                'installed' => (int) $server->installed === 1,
+                'environment' => $this->environmentService->handle($server),
+            ],
+            'created_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $server->created_at)->setTimezone('UTC')->toIso8601String(),
+            'updated_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $server->updated_at)->setTimezone('UTC')->toIso8601String(),
+        ];
     }
 
     /**
@@ -94,16 +139,16 @@ class ServerTransformer extends BaseTransformer
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
-    public function includePack(Server $server)
-    {
-        if (! $this->authorize(AdminAcl::RESOURCE_PACKS)) {
-            return $this->null();
-        }
-
-        $server->loadMissing('pack');
-
-        return $this->item($server->getRelation('pack'), $this->makeTransformer(PackTransformer::class), 'pack');
-    }
+//    public function includePack(Server $server)
+//    {
+//        if (! $this->authorize(AdminAcl::RESOURCE_PACKS)) {
+//            return $this->null();
+//        }
+//
+//        $server->loadMissing('pack');
+//
+//        return $this->item($server->getRelation('pack'), $this->makeTransformer(PackTransformer::class), 'pack');
+//    }
 
     /**
      * Return a generic array with nest information for this server.
@@ -111,16 +156,16 @@ class ServerTransformer extends BaseTransformer
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
-    public function includeNest(Server $server)
-    {
-        if (! $this->authorize(AdminAcl::RESOURCE_NESTS)) {
-            return $this->null();
-        }
-
-        $server->loadMissing('nest');
-
-        return $this->item($server->getRelation('nest'), $this->makeTransformer(NestTransformer::class), 'nest');
-    }
+//    public function includeNest(Server $server)
+//    {
+//        if (! $this->authorize(AdminAcl::RESOURCE_NESTS)) {
+//            return $this->null();
+//        }
+//
+//        $server->loadMissing('nest');
+//
+//        return $this->item($server->getRelation('nest'), $this->makeTransformer(NestTransformer::class), 'nest');
+//    }
 
     /**
      * Return a generic array with service option information for this server.
@@ -136,14 +181,14 @@ class ServerTransformer extends BaseTransformer
 
         $server->loadMissing('egg');
 
-        return $this->item($server->getRelation('egg'), $this->makeTransformer(EggTransformer::class), 'egg');
+        return $this->item($server->getRelation('egg'), $this->makeTransformer(EggVariableTransformer::class), 'egg');
     }
 
     /**
      * Return a generic array of data about subusers for this server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      */
     public function includeVariables(Server $server)
     {
@@ -153,7 +198,7 @@ class ServerTransformer extends BaseTransformer
 
         $server->loadMissing('variables');
 
-        return $this->item($server->getRelation('variables'), $this->makeTransformer(ServerVariableTransformer::class), 'server_variable');
+        return $this->collection($server->getRelation('variables'), $this->makeTransformer(ServerVariableTransformer::class), 'server_variable');
     }
 
     /**

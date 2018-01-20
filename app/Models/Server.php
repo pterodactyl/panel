@@ -23,6 +23,12 @@ class Server extends Model implements CleansAttributes, ValidableContract
     use BelongsToThrough, Eloquence, Notifiable, Validable;
 
     /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'server';
+
+    /**
      * The table associated with the model.
      *
      * @var string
