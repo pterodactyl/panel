@@ -96,5 +96,13 @@ Route::group(['prefix' => '/servers'], function () {
     });
 
     Route::get('/', 'Servers\ServerController@index')->name('api.application.servers');
-    Route::get('/{server}', 'Servers\ServerController@view')->name('api.application.servers');
+    Route::get('/{server}', 'Servers\ServerController@view')->name('api.application.servers.view');
+
+    Route::post('/{server}/suspend', 'Servers\ServerManagementController@suspend')->name('api.application.servers.suspend');
+    Route::post('/{server}/unsuspend', 'Servers\ServerManagementController@unsuspend')->name('api.application.servers.unsuspend');
+    Route::post('/{server}/reinstall', 'Servers\ServerManagementController@reinstall')->name('api.application.servers.reinstall');
+    Route::post('/{server}/rebuild', 'Servers\ServerManagementController@rebuild')->name('api.application.servers.rebuild');
+
+    Route::delete('/{server}', 'Servers\ServerController@delete');
+    Route::delete('/{server}/{force?}', 'Servers\ServerController@delete');
 });

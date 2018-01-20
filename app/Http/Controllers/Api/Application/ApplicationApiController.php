@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Application;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Container\Container;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
@@ -21,22 +22,31 @@ abstract class ApplicationApiController extends Controller
 
     /**
      * ApplicationApiController constructor.
-     *
-     * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal $fractal
-     * @param \Illuminate\Http\Request                            $request
      */
-    public function __construct(Fractal $fractal, Request $request)
+    public function __construct()
     {
-        $this->fractal = $fractal;
-        $this->request = $request;
+        Container::getInstance()->call([$this, 'loadDependencies']);
 
         // Parse all of the includes to use on this request.
-        $includes = collect(explode(',', $request->input('include', '')))->map(function ($value) {
+        $includes = collect(explode(',', $this->request->input('include', '')))->map(function ($value) {
             return trim($value);
         })->filter()->toArray();
 
         $this->fractal->parseIncludes($includes);
         $this->fractal->limitRecursion(2);
+    }
+
+    /**
+     * Perform dependency injection of certain classes needed for core functionality
+     * without littering the constructors of classes that extend this abstract.
+     *
+     * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal $fractal
+     * @param \Illuminate\Http\Request                            $request
+     */
+    public function loadDependencies(Fractal $fractal, Request $request)
+    {
+        $this->fractal = $fractal;
+        $this->request = $request;
     }
 
     /**
@@ -52,5 +62,15 @@ abstract class ApplicationApiController extends Controller
         $transformer->setKey($this->request->attributes->get('api_key'));
 
         return $transformer;
+    }
+
+    /**
+     * Return a HTTP/204 response for the API.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function returnNoContent(): Response
+    {
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }

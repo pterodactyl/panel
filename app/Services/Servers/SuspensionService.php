@@ -19,6 +19,9 @@ use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonS
 
 class SuspensionService
 {
+    const ACTION_SUSPEND = 'suspend';
+    const ACTION_UNSUSPEND = 'unsuspend';
+
     /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
@@ -70,29 +73,29 @@ class SuspensionService
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function toggle($server, $action = 'suspend')
+    public function toggle($server, $action = self::ACTION_SUSPEND)
     {
         if (! $server instanceof Server) {
             $server = $this->repository->find($server);
         }
 
-        if (! in_array($action, ['suspend', 'unsuspend'])) {
+        if (! in_array($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND])) {
             throw new \InvalidArgumentException(sprintf(
-                'Action must be either suspend or unsuspend, %s passed.',
+                'Action must be either ' . self::ACTION_SUSPEND . ' or ' . self::ACTION_UNSUSPEND . ', %s passed.',
                 $action
             ));
         }
 
         if (
-            $action === 'suspend' && $server->suspended ||
-            $action === 'unsuspend' && ! $server->suspended
+            $action === self::ACTION_SUSPEND && $server->suspended ||
+            $action === self::ACTION_UNSUSPEND && ! $server->suspended
         ) {
             return true;
         }
 
         $this->database->beginTransaction();
         $this->repository->withoutFreshModel()->update($server->id, [
-            'suspended' => $action === 'suspend',
+            'suspended' => $action === self::ACTION_SUSPEND,
         ]);
 
         try {

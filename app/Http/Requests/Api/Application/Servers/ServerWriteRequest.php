@@ -6,7 +6,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
-class GetServerRequest extends ApplicationApiRequest
+class ServerWriteRequest extends ApplicationApiRequest
 {
     /**
      * @var string
@@ -16,7 +16,7 @@ class GetServerRequest extends ApplicationApiRequest
     /**
      * @var int
      */
-    protected $permission = AdminAcl::READ;
+    protected $permission = AdminAcl::WRITE;
 
     /**
      * Determine if the requested server exists on the Panel.

@@ -2,17 +2,22 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
+use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
-use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
+use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ServerController extends ApplicationApiController
 {
+    /**
+     * @var \Pterodactyl\Services\Servers\ServerDeletionService
+     */
+    private $deletionService;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
@@ -21,14 +26,14 @@ class ServerController extends ApplicationApiController
     /**
      * ServerController constructor.
      *
-     * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal         $fractal
-     * @param \Illuminate\Http\Request                                    $request
+     * @param \Pterodactyl\Services\Servers\ServerDeletionService         $deletionService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
-    public function __construct(Fractal $fractal, Request $request, ServerRepositoryInterface $repository)
+    public function __construct(ServerDeletionService $deletionService, ServerRepositoryInterface $repository)
     {
-        parent::__construct($fractal, $request);
+        parent::__construct();
 
+        $this->deletionService = $deletionService;
         $this->repository = $repository;
     }
 
@@ -50,14 +55,30 @@ class ServerController extends ApplicationApiController
     /**
      * Show a single server transformed for the application API.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest $request
-     * @param \Pterodactyl\Models\Server                                          $server
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
+     * @param \Pterodactyl\Models\Server                                            $server
      * @return array
      */
-    public function view(GetServerRequest $request, Server $server): array
+    public function view(ServerWriteRequest $request, Server $server): array
     {
         return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
+     * @param \Pterodactyl\Models\Server                                            $server
+     * @param string                                                                $force
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response
+    {
+        $this->deletionService->withForce($force === 'force')->handle($server);
+
+        return $this->returnNoContent();
     }
 }
