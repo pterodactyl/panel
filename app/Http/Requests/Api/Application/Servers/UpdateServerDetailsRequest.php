@@ -18,7 +18,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
         return [
             'name' => $rules['name'],
             'user' => $rules['owner_id'],
-            'description' => $rules['description'],
+            'description' => array_merge(['nullable'], $rules['description']),
         ];
     }
 

@@ -71,7 +71,7 @@ class DetailsModificationService
         $response = $this->repository->setFreshModel($this->getUpdatedModel())->update($server->id, [
             'owner_id' => array_get($data, 'owner_id'),
             'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description', ''),
+            'description' => array_get($data, 'description') ?? '',
         ], true, true);
 
         if ((int) array_get($data, 'owner_id', 0) !== (int) $server->owner_id) {
