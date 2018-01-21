@@ -3,6 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+### v0.7.0-beta.5 (Derelict Dermodactylus)
+### Fixed
+* `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
+* `[beta.4]` — Fixes behavior of variable validation to not break the page when no rules are provided.
+* `[beta.4]` — Fix bug preventing the editing of files in the file manager.
+
+### Added
+* Added support for editing symlinked files on the Panel.
+
 ## v0.7.0-beta.4 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.3]` — Fixes a bug with the default environment file that was causing an inability to perform a fresh install when running package discovery.

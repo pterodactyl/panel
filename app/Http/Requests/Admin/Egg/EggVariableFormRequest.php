@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Requests\Admin\Egg;
 
@@ -15,6 +8,8 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 class EggVariableFormRequest extends AdminFormRequest
 {
     /**
+     * Define rules for validation of this request.
+     *
      * @return array
      */
     public function rules()
@@ -23,7 +18,7 @@ class EggVariableFormRequest extends AdminFormRequest
             'name' => 'required|string|min:1|max:255',
             'description' => 'sometimes|nullable|string',
             'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . EggVariable::RESERVED_ENV_NAMES,
-            'default_value' => 'string',
+            'default_value' => 'nullable|string',
             'options' => 'sometimes|required|array',
             'rules' => 'bail|required|string',
         ];
@@ -39,6 +34,13 @@ class EggVariableFormRequest extends AdminFormRequest
         $rules = $this->input('rules');
         if ($this->method() === 'PATCH') {
             $rules = $this->input('rules', $this->route()->parameter('egg')->rules);
+        }
+
+        // If rules is not a string it is already violating the rule defined above
+        // so just skip the addition of default value rules since this request
+        // will fail anyways.
+        if (! is_string($rules)) {
+            return;
         }
 
         $validator->addRules(['default_value' => $rules]);

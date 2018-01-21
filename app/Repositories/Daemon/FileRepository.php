@@ -33,11 +33,11 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      * Return the contents of a given file if it can be edited in the Panel.
      *
      * @param string $path
-     * @return \stdClass
+     * @return string
      *
      * @throws \GuzzleHttp\Exception\RequestException
      */
-    public function getContent(string $path): stdClass
+    public function getContent(string $path): string
     {
         $file = pathinfo($path);
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
