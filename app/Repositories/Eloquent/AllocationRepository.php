@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -67,5 +66,32 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
             ->groupBy('ip')
             ->orderByRaw('INET_ATON(ip) ASC')
             ->get($this->getColumns());
+    }
+
+    /**
+     * Return all of the allocations that exist for a node that are not currently
+     * allocated.
+     *
+     * @param int $node
+     * @return array
+     */
+    public function getUnassignedAllocationIds(int $node): array
+    {
+        $results = $this->getBuilder()->select('id')->whereNull('server_id')->where('node_id', $node)->get();
+
+        return $results->pluck('id')->toArray();
+    }
+
+    /**
+     * Get an array of all allocations that are currently assigned to a given server.
+     *
+     * @param int $server
+     * @return array
+     */
+    public function getAssignedAllocationIds(int $server): array
+    {
+        $results = $this->getBuilder()->select('id')->where('server_id', $server)->get();
+
+        return $results->pluck('id')->toArray();
     }
 }

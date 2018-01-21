@@ -40,4 +40,21 @@ interface AllocationRepositoryInterface extends RepositoryInterface
      * @return \Illuminate\Support\Collection
      */
     public function getUniqueAllocationIpsForNode(int $node): Collection;
+
+    /**
+     * Return all of the allocations that exist for a node that are not currently
+     * allocated.
+     *
+     * @param int $node
+     * @return array
+     */
+    public function getUnassignedAllocationIds(int $node): array;
+
+    /**
+     * Get an array of all allocations that are currently assigned to a given server.
+     *
+     * @param int $server
+     * @return array
+     */
+    public function getAssignedAllocationIds(int $server): array;
 }
