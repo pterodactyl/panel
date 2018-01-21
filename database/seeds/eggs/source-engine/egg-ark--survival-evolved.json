@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:29:34-05:00",
+    "exported_at": "2018-01-21T16:59:40-06:00",
     "name": "Ark: Survival Evolved",
     "author": "support@pterodactyl.io",
     "description": "As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! \u2014 Gamepedia: ARK",
@@ -11,8 +11,8 @@
     "startup": ".\/ShooterGame\/Binaries\/Linux\/ShooterGameServer TheIsland?listen?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}",
     "config": {
         "files": "{}",
-        "startup": "{\"done\": \"gameserver Steam ID\", \"userInteraction\": []}",
-        "logs": "{\"custom\": true, \"location\": \"logs\/latest.log\"}",
+        "startup": "{\r\n    \"done\": \"gameserver Steam ID\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
         "stop": "quit"
     },
     "scripts": {
@@ -30,7 +30,7 @@
             "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "alpha_dash|between:1,100"
+            "rules": "nullable|alpha_dash|between:1,100"
         },
         {
             "name": "Admin Password",
@@ -39,7 +39,7 @@
             "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "alpha_dash|between:1,100"
+            "rules": "nullable|alpha_dash|between:1,100"
         },
         {
             "name": "Maximum Players",

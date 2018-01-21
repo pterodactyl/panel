@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:15:08-05:00",
+    "exported_at": "2018-01-21T16:47:24-06:00",
     "name": "Spigot",
     "author": "support@pterodactyl.io",
     "description": "Spigot is the most widely-used modded Minecraft server software in the world. It powers many of the top Minecraft server networks around to ensure they can cope with their huge player base and ensure the satisfaction of their players. Spigot works by reducing and eliminating many causes of lag, as well as adding in handy features and settings that help make your job of server administration easier.",
@@ -48,7 +48,7 @@
             "default_value": "",
             "user_viewable": 0,
             "user_editable": 0,
-            "rules": "string"
+            "rules": "nullable|string"
         }
     ]
 }

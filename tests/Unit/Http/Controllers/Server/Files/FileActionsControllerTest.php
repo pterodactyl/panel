@@ -100,7 +100,7 @@ class FileActionsControllerTest extends ControllerTestCase
 
         $this->repository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
             ->shouldReceive('setToken')->with('abc123')->once()->andReturnSelf()
-            ->shouldReceive('getContent')->with($file)->once()->andReturn((object) ['test']);
+            ->shouldReceive('getContent')->with($file)->once()->andReturn('test');
 
         $response = $controller->view($this->request, '1234', $file);
         $this->assertIsViewResponse($response);
@@ -111,7 +111,7 @@ class FileActionsControllerTest extends ControllerTestCase
         $this->assertViewHasKey('directory', $response);
         $this->assertViewKeyEquals('file', $file, $response);
         $this->assertViewKeyEquals('stat', 'fileStatsObject', $response);
-        $this->assertViewKeyEquals('contents', (object) ['test'], $response);
+        $this->assertViewKeyEquals('contents', 'test', $response);
         $this->assertViewKeyEquals('directory', $expected, $response);
     }
 
