@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+### v0.7.0-beta.5 (Derelict Dermodactylus)
+### Fixed
+* `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
+
 ## v0.7.0-beta.4 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.3]` — Fixes a bug with the default environment file that was causing an inability to perform a fresh install when running package discovery.
