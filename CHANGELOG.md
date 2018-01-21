@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### v0.7.0-beta.5 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
+* `[beta.4]` — Fixes behavior of variable validation to not break the page when no rules are provided.
 
 ## v0.7.0-beta.4 (Derelict Dermodactylus)
 ### Fixed

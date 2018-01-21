@@ -99,25 +99,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Create New Option Variable</h4>
+                <h4 class="modal-title">Create New Egg Variable</h4>
             </div>
             <form action="{{ route('admin.nests.egg.variables', $egg->id) }}" method="POST">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="form-label">Name</label>
+                        <label class="control-label">Name <span class="field-required"></span></label>
                         <input type="text" name="name" class="form-control" />
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Description</label>
+                        <label class="control-label">Description</label>
                         <textarea name="description" class="form-control" rows="3"></textarea>
                     </div>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="form-label">Environment Variable</label>
+                            <label class="control-label">Environment Variable <span class="field-required"></span></label>
                             <input type="text" name="env_variable" class="form-control" />
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="form-label">Default Value</label>
+                            <label class="control-label">Default Value</label>
                             <input type="text" name="default_value" class="form-control" />
                         </div>
                         <div class="col-xs-12">
@@ -125,14 +125,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Permissions</label>
+                        <label class="control-label">Permissions</label>
                         <select name="options[]" class="pOptions form-control" multiple>
                             <option value="user_viewable">Users Can View</option>
                             <option value="user_editable">Users Can Edit</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Input Rules</label>
+                        <label class="control-label">Input Rules <span class="field-required"></span></label>
                         <input type="text" name="rules" class="form-control" value="required|string|max:20" placeholder="required|string|max:20" />
                         <p class="text-muted small">These rules are defined using standard Laravel Framework validation rules.</p>
                     </div>
