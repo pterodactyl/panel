@@ -86,7 +86,7 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
             }
         }
 
-        if (! $stats->file || ! in_array($stats->mime, $config->get('pterodactyl.files.editable'))) {
+        if ((! $stats->file && ! $stats->symlink) || ! in_array($stats->mime, $config->get('pterodactyl.files.editable'))) {
             throw new FileTypeNotEditableException(trans('server.files.exceptions.invalid_mime'));
         }
 
