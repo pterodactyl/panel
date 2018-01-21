@@ -39,6 +39,15 @@ class Fractal extends SpatieFractal
             }
         }
 
+        if (is_null($this->resourceName) && $this->data instanceof LengthAwarePaginator) {
+            $item = collect($this->data->items())->first();
+            if ($item instanceof Model) {
+                if (defined(get_class($item) . '::RESOURCE_NAME')) {
+                    $this->resourceName = constant(get_class($item) . '::RESOURCE_NAME');
+                }
+            }
+        }
+
         return parent::createData();
     }
 }
