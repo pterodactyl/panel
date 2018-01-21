@@ -65,7 +65,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
         $instance = $this->getBuilder()->with('location')->withCount('servers');
 
         if ($this->hasSearchTerm()) {
-            $instance->setSearchTerm($this->getSearchTerm());
+            $instance->search($this->getSearchTerm());
         }
 
         return $instance->paginate(25, $this->getColumns());
