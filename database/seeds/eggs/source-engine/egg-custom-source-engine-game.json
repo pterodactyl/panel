@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:30:06-05:00",
+    "exported_at": "2018-01-21T16:59:45-06:00",
     "name": "Custom Source Engine Game",
     "author": "support@pterodactyl.io",
     "description": "This option allows modifying the startup arguments and other details to run a custom SRCDS based game on the panel.",

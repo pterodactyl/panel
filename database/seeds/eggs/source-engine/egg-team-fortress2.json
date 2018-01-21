@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:29:33-05:00",
+    "exported_at": "2018-01-21T16:59:45-06:00",
     "name": "Team Fortress 2",
     "author": "support@pterodactyl.io",
     "description": "Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.",
@@ -11,8 +11,8 @@
     "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
     "config": {
         "files": "{}",
-        "startup": "{\"done\": \"gameserver Steam ID\", \"userInteraction\": []}",
-        "logs": "{\"custom\": true, \"location\": \"logs\/latest.log\"}",
+        "startup": "{\r\n    \"done\": \"gameserver Steam ID\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
         "stop": "quit"
     },
     "scripts": {

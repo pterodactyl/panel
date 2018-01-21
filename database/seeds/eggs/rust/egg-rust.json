@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-05T20:51:45-05:00",
+    "exported_at": "2018-01-21T16:58:36-06:00",
     "name": "Rust",
     "author": "support@pterodactyl.io",
     "description": "The only aim in Rust is to survive. To do this you will need to overcome struggles such as hunger, thirst and cold. Build a fire. Build a shelter. Kill animals for meat. Protect yourself from other players, and kill them for meat. Create alliances with other players and form a town. Do whatever it takes to survive.",
@@ -66,7 +66,7 @@
             "default_value": "http:\/\/pterodactyl.io",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "present|url"
+            "rules": "nullable|url"
         },
         {
             "name": "World Size",
@@ -84,7 +84,7 @@
             "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "present"
+            "rules": "nullable|string"
         },
         {
             "name": "Max Players",
@@ -102,7 +102,7 @@
             "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "present|url"
+            "rules": "nullable|url"
         },
         {
             "name": "RCON Port",
@@ -129,7 +129,7 @@
             "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "present"
+            "rules": "nullable|string"
         }
     ]
 }
