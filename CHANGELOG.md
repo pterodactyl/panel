@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
 * `[beta.4]` — Fixes behavior of variable validation to not break the page when no rules are provided.
+* `[beta.4]` — Fix bug preventing the editing of files in the file manager.
 
 ## v0.7.0-beta.4 (Derelict Dermodactylus)
 ### Fixed
