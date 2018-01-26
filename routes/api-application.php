@@ -82,4 +82,15 @@ Route::group(['prefix' => '/servers'], function () {
 
     Route::delete('/{server}', 'Servers\ServerController@delete');
     Route::delete('/{server}/{force?}', 'Servers\ServerController@delete');
+
+    // Database Management Endpoint
+    Route::group(['prefix' => '/{server}/databases'], function () {
+        Route::get('/', 'Servers\DatabaseController@index')->name('api.application.servers.databases');
+        Route::get('/{database}', 'Servers\DatabaseController@view')->name('api.application.servers.databases.view');
+
+        Route::post('/', 'Servers\DatabaseController@store');
+        Route::patch('/{database}', 'Servers\DatabaseController@update');
+
+        Route::delete('/{database}', 'Servers\DatabaseController@delete');
+    });
 });

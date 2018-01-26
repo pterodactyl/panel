@@ -18,6 +18,13 @@ abstract class BaseTransformer extends TransformerAbstract
     private $key;
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    abstract public function getResourceName(): string;
+
+    /**
      * BaseTransformer constructor.
      */
     public function __construct()

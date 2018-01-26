@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Extensions\Spatie\Fractalistic;
 
-use Illuminate\Database\Eloquent\Model;
+use League\Fractal\TransformerAbstract;
 use League\Fractal\Serializer\JsonApiSerializer;
 use Spatie\Fractalistic\Fractal as SpatieFractal;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -31,21 +31,14 @@ class Fractal extends SpatieFractal
             $this->paginator = new IlluminatePaginatorAdapter($this->data);
         }
 
-        // Automatically set the resource name if the response data is a model
-        // and the resource name is available on the model.
-        if (is_null($this->resourceName) && $this->data instanceof Model) {
-            if (defined(get_class($this->data) . '::RESOURCE_NAME')) {
-                $this->resourceName = constant(get_class($this->data) . '::RESOURCE_NAME');
-            }
-        }
-
-        if (is_null($this->resourceName) && $this->data instanceof LengthAwarePaginator) {
-            $item = collect($this->data->items())->first();
-            if ($item instanceof Model) {
-                if (defined(get_class($item) . '::RESOURCE_NAME')) {
-                    $this->resourceName = constant(get_class($item) . '::RESOURCE_NAME');
-                }
-            }
+        // If the resource name is not set attempt to pull it off the transformer
+        // itself and set it automatically.
+        if (
+            is_null($this->resourceName)
+            && $this->transformer instanceof TransformerAbstract
+            && method_exists($this->transformer, 'getResourceName')
+        ) {
+            $this->resourceName = $this->transformer->getResourceName();
         }
 
         return parent::createData();

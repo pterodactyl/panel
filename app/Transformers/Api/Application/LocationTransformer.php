@@ -15,6 +15,16 @@ class LocationTransformer extends BaseTransformer
     protected $availableIncludes = ['nodes', 'servers'];
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    public function getResourceName(): string
+    {
+        return Location::RESOURCE_NAME;
+    }
+
+    /**
      * Return a generic transformed pack array.
      *
      * @param \Pterodactyl\Models\Location $location

@@ -38,6 +38,12 @@ class User extends Model implements
     const FILTER_LEVEL_SUBUSER = 3;
 
     /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'user';
+
+    /**
      * Level of servers to display when using access() on a user.
      *
      * @var string

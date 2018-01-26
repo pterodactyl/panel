@@ -15,6 +15,16 @@ class ServerVariableTransformer extends BaseTransformer
     protected $availableIncludes = ['parent'];
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    public function getResourceName(): string
+    {
+        return ServerVariable::RESOURCE_NAME;
+    }
+
+    /**
      * Return a generic transformed server variable array.
      *
      * @param \Pterodactyl\Models\ServerVariable $variable

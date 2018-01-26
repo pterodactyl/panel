@@ -32,7 +32,8 @@ class AdminAcl
     const RESOURCE_LOCATIONS = 'locations';
     const RESOURCE_NESTS = 'nests';
     const RESOURCE_EGGS = 'eggs';
-    const RESOURCE_DATABASES = 'databases';
+    const RESOURCE_DATABASE_HOSTS = 'database_hosts';
+    const RESOURCE_SERVER_DATABASES = 'server_databases';
     const RESOURCE_PACKS = 'packs';
 
     /**

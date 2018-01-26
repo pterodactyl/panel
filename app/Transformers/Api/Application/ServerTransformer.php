@@ -42,6 +42,16 @@ class ServerTransformer extends BaseTransformer
     }
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    public function getResourceName(): string
+    {
+        return Server::RESOURCE_NAME;
+    }
+
+    /**
      * Return a generic transformed server array.
      *
      * @param \Pterodactyl\Models\Server $server

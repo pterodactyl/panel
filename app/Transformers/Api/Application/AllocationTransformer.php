@@ -15,6 +15,16 @@ class AllocationTransformer extends BaseTransformer
     protected $availableIncludes = ['node', 'server'];
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    public function getResourceName(): string
+    {
+        return Allocation::RESOURCE_NAME;
+    }
+
+    /**
      * Return a generic transformed allocation array.
      *
      * @param \Pterodactyl\Models\Allocation $allocation

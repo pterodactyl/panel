@@ -13,6 +13,12 @@ class Location extends Model implements CleansAttributes, ValidableContract
     use Eloquence, Validable;
 
     /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'location';
+
+    /**
      * The table associated with the model.
      *
      * @var string

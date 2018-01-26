@@ -23,7 +23,8 @@ class AddApiKeyPermissionColumns extends Migration
             $table->unsignedTinyInteger('r_locations')->default(0);
             $table->unsignedTinyInteger('r_nests')->default(0);
             $table->unsignedTinyInteger('r_eggs')->default(0);
-            $table->unsignedTinyInteger('r_databases')->default(0);
+            $table->unsignedTinyInteger('r_database_hosts')->default(0);
+            $table->unsignedTinyInteger('r_server_databases')->default(0);
             $table->unsignedTinyInteger('r_packs')->default(0);
         });
     }
@@ -52,7 +53,8 @@ class AddApiKeyPermissionColumns extends Migration
                 'r_locations',
                 'r_nests',
                 'r_eggs',
-                'r_databases',
+                'r_database_hosts',
+                'r_server_databases',
                 'r_packs',
             ]);
         });

@@ -16,7 +16,7 @@ abstract class ApplicationApiController extends Controller
     private $request;
 
     /**
-     * @var \Spatie\Fractalistic\Fractal
+     * @var \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
      */
     protected $fractal;
 

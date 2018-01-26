@@ -15,6 +15,16 @@ class UserTransformer extends BaseTransformer
     protected $availableIncludes = ['servers'];
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    public function getResourceName(): string
+    {
+        return User::RESOURCE_NAME;
+    }
+
+    /**
      * Return a generic transformed subuser array.
      *
      * @param \Pterodactyl\Models\User $user

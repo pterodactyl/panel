@@ -15,6 +15,16 @@ class NodeTransformer extends BaseTransformer
     protected $availableIncludes = ['allocations', 'location', 'servers'];
 
     /**
+     * Return the resource name for the JSONAPI output.
+     *
+     * @return string
+     */
+    public function getResourceName(): string
+    {
+        return Node::RESOURCE_NAME;
+    }
+
+    /**
      * Return a node transformed into a format that can be consumed by the
      * external administrative API.
      *

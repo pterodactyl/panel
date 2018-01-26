@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -19,6 +12,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Subuser extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Notifiable, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'server_subuser';
 
     /**
      * The table associated with the model.
