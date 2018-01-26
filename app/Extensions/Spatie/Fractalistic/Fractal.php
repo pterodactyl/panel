@@ -3,8 +3,8 @@
 namespace Pterodactyl\Extensions\Spatie\Fractalistic;
 
 use League\Fractal\TransformerAbstract;
+use Spatie\Fractal\Fractal as SpatieFractal;
 use League\Fractal\Serializer\JsonApiSerializer;
-use Spatie\Fractalistic\Fractal as SpatieFractal;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 

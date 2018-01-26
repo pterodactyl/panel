@@ -73,7 +73,7 @@ abstract class ApplicationApiRequest extends FormRequest
         return $this->attributes->get('api_key');
     }
 
-    /**
+    /*
      * Determine if the request passes the authorization check as well
      * as the exists check.
      *
@@ -81,18 +81,24 @@ abstract class ApplicationApiRequest extends FormRequest
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
+
+    /**
+     * @return bool
+     */
     protected function passesAuthorization()
     {
-        $passes = parent::passesAuthorization();
+        if (! parent::passesAuthorization()) {
+            return false;
+        }
 
         // Only let the user know that a resource does not exist if they are
         // authenticated to access the endpoint. This avoids exposing that
         // an item exists (or does not exist) to the user until they can prove
         // that they have permission to know about it.
-        if ($passes && ! $this->resourceExists()) {
+        if ($this->attributes->get('is_missing_model', false) || ! $this->resourceExists()) {
             throw new NotFoundHttpException('The requested resource does not exist on this server.');
         }
 
-        return $passes;
+        return true;
     }
 }

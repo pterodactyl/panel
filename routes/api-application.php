@@ -89,7 +89,7 @@ Route::group(['prefix' => '/servers'], function () {
         Route::get('/{database}', 'Servers\DatabaseController@view')->name('api.application.servers.databases.view');
 
         Route::post('/', 'Servers\DatabaseController@store');
-        Route::patch('/{database}', 'Servers\DatabaseController@update');
+        Route::post('/{database}/reset-password', 'Servers\DatabaseController@resetPassword');
 
         Route::delete('/{database}', 'Servers\DatabaseController@delete');
     });

@@ -3,11 +3,8 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
-use ReflectionMethod;
-use Illuminate\Container\Container;
-use Illuminate\Routing\ImplicitRouteBinding;
-use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ApiSubstituteBindings extends SubstituteBindings
 {
@@ -24,47 +21,18 @@ class ApiSubstituteBindings extends SubstituteBindings
         $route = $request->route();
 
         $this->router->substituteBindings($route);
-        $this->resolveForRoute($route);
+
+        // Attempt to resolve bindings for this route. If one of the models
+        // cannot be resolved do not immediately return a 404 error. Set a request
+        // attribute that can be checked in the base API request class to only
+        // trigger a 404 after validating that the API key making the request is valid
+        // and even has permission to access the requested resource.
+        try {
+            $this->router->substituteImplicitBindings($route);
+        } catch (ModelNotFoundException $exception) {
+            $request->attributes->set('is_missing_model', true);
+        }
 
         return $next($request);
-    }
-
-    /**
-     * Resolve the implicit route bindings for the given route. This function
-     * overrides Laravel's default inn \Illuminate\Routing\ImplictRouteBinding
-     * to not throw a 404 error when a model is not found.
-     *
-     * If a model is not found using the provided information, the binding is
-     * replaced with null which is then checked in the form requests on API
-     * routes. This avoids a potential imformation leak on API routes for
-     * unauthenticated users.
-     *
-     * @param \Illuminate\Routing\Route $route
-     */
-    protected function resolveForRoute($route)
-    {
-        $parameters = $route->parameters();
-
-        // Avoid having to copy and paste the entirety of that class into this middleware
-        // by using reflection to access a protected method.
-        $reflection = new ReflectionMethod(ImplicitRouteBinding::class, 'getParameterName');
-        $reflection->setAccessible(true);
-
-        foreach ($route->signatureParameters(UrlRoutable::class) as $parameter) {
-            if (! $parameterName = $reflection->invokeArgs(null, [$parameter->name, $parameters])) {
-                continue;
-            }
-
-            $parameterValue = $parameters[$parameterName];
-
-            if ($parameterValue instanceof UrlRoutable) {
-                continue;
-            }
-
-            // Try to find an existing model, if one is not found simply bind the
-            // parameter as null.
-            $instance = Container::getInstance()->make($parameter->getClass()->name);
-            $route->setParameter($parameterName, $instance->resolveRouteBinding($parameterValue));
-        }
     }
 }

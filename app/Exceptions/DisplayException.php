@@ -47,6 +47,14 @@ class DisplayException extends PterodactylException
     }
 
     /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    /**
      * Render the exception to the user by adding a flashed message to the session
      * and then redirecting them back to the page that they came from. If the
      * request originated from an API hit, return the error in JSONAPI spec format.
