@@ -27,11 +27,6 @@ class AllocationController extends ApplicationApiController
     private $deletionService;
 
     /**
-     * @var \Spatie\Fractal\Fractal
-     */
-    private $fractal;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
     private $repository;

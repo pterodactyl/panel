@@ -83,14 +83,14 @@ class Handler extends ExceptionHandler
                 $cleaned[] = snake_case($reason);
             }
 
-            return [$field => $cleaned];
+            return [str_replace('.', '_', $field) => $cleaned];
         })->toArray();
 
         $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes) {
             $response = [];
             foreach ($errors as $key => $error) {
                 $response[] = [
-                    'code' => array_get($codes, $field . '.' . $key),
+                    'code' => array_get($codes, str_replace('.', '_', $field) . '.' . $key),
                     'detail' => $error,
                     'source' => ['field' => $field],
                 ];
