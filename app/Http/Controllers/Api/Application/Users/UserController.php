@@ -2,16 +2,12 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 
-use Spatie\Fractal\Fractal;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest;
@@ -19,8 +15,9 @@ use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
-class UserController extends Controller
+class UserController extends ApplicationApiController
 {
     /**
      * @var \Pterodactyl\Services\Users\UserCreationService
@@ -31,11 +28,6 @@ class UserController extends Controller
      * @var \Pterodactyl\Services\Users\UserDeletionService
      */
     private $deletionService;
-
-    /**
-     * @var \Spatie\Fractal\Fractal
-     */
-    private $fractal;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
@@ -50,22 +42,21 @@ class UserController extends Controller
     /**
      * UserController constructor.
      *
-     * @param \Spatie\Fractal\Fractal                                   $fractal
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      * @param \Pterodactyl\Services\Users\UserCreationService           $creationService
      * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
      * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
      */
     public function __construct(
-        Fractal $fractal,
         UserRepositoryInterface $repository,
         UserCreationService $creationService,
         UserDeletionService $deletionService,
         UserUpdateService $updateService
     ) {
+        parent::__construct();
+
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
-        $this->fractal = $fractal;
         $this->repository = $repository;
         $this->updateService = $updateService;
     }
@@ -83,9 +74,7 @@ class UserController extends Controller
         $users = $this->repository->paginated(100);
 
         return $this->fractal->collection($users)
-            ->transformWith((new UserTransformer)->setKey($request->key()))
-            ->withResourceName('user')
-            ->paginateWith(new IlluminatePaginatorAdapter($users))
+            ->transformWith($this->getTransformer(UserTransformer::class))
             ->toArray();
     }
 
@@ -94,14 +83,12 @@ class UserController extends Controller
      * were defined in the request.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest $request
-     * @param \Pterodactyl\Models\User                                        $user
      * @return array
      */
-    public function view(GetUserRequest $request, User $user): array
+    public function view(GetUserRequest $request): array
     {
-        return $this->fractal->item($user)
-            ->transformWith((new UserTransformer)->setKey($request->key()))
-            ->withResourceName('user')
+        return $this->fractal->item($request->getModel(User::class))
+            ->transformWith($this->getTransformer(UserTransformer::class))
             ->toArray();
     }
 
@@ -114,16 +101,15 @@ class UserController extends Controller
      * meta. If there are no errors this is an empty array.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest $request
-     * @param \Pterodactyl\Models\User                                           $user
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateUserRequest $request, User $user): array
+    public function update(UpdateUserRequest $request): array
     {
         $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
-        $collection = $this->updateService->handle($user, $request->validated());
+        $collection = $this->updateService->handle($request->getModel(User::class), $request->validated());
 
         $errors = [];
         if (! empty($collection->get('exceptions'))) {
@@ -140,8 +126,7 @@ class UserController extends Controller
         }
 
         $response = $this->fractal->item($collection->get('model'))
-            ->transformWith((new UserTransformer)->setKey($request->key()))
-            ->withResourceName('user');
+            ->transformWith($this->getTransformer(UserTransformer::class));
 
         if (count($errors) > 0) {
             $response->addMeta([
@@ -167,10 +152,11 @@ class UserController extends Controller
         $user = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($user)
-            ->transformWith((new UserTransformer)->setKey($request->key()))
-            ->withResourceName('user')
+            ->transformWith($this->getTransformer(UserTransformer::class))
             ->addMeta([
-                'link' => route('api.admin.user.view', ['user' => $user->id]),
+                'resource' => route('api.application.users.view', [
+                    'user' => $user->id,
+                ]),
             ])
             ->respond(201);
     }
@@ -180,14 +166,13 @@ class UserController extends Controller
      * on successful deletion.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest $request
-     * @param \Pterodactyl\Models\User                                           $user
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(DeleteUserRequest $request, User $user): Response
+    public function delete(DeleteUserRequest $request): Response
     {
-        $this->deletionService->handle($user);
+        $this->deletionService->handle($request->getModel(User::class));
 
         return response('', 204);
     }

@@ -56,12 +56,11 @@ class ServerController extends ApplicationApiController
      * Show a single server transformed for the application API.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server                                            $server
      * @return array
      */
-    public function view(ServerWriteRequest $request, Server $server): array
+    public function view(ServerWriteRequest $request): array
     {
-        return $this->fractal->item($server)
+        return $this->fractal->item($request->getModel(Server::class))
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }

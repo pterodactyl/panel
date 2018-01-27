@@ -3,9 +3,11 @@
 namespace Pterodactyl\Http\Requests\Api\Application;
 
 use Pterodactyl\Models\ApiKey;
+use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
+use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ApplicationApiRequest extends FormRequest
@@ -71,6 +73,25 @@ abstract class ApplicationApiRequest extends FormRequest
     public function key(): ApiKey
     {
         return $this->attributes->get('api_key');
+    }
+
+    /**
+     * Grab a model from the route parameters. If no model exists under
+     * the specified key a default response is returned.
+     *
+     * @param string $model
+     * @param mixed  $default
+     * @return mixed
+     */
+    public function getModel(string $model, $default = null)
+    {
+        $parameterKey = array_get(array_flip(ApiSubstituteBindings::getMappings()), $model);
+
+        if (! is_null($parameterKey)) {
+            $model = $this->route()->parameter($parameterKey);
+        }
+
+        return $model ?? $default;
     }
 
     /*

@@ -2,20 +2,25 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
-use Spatie\Fractal\Fractal;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Http\Controllers\Controller;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\AllocationTransformer;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequestApplication;
+use Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest;
+use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest;
 
-class AllocationController extends Controller
+class AllocationController extends ApplicationApiController
 {
+    /**
+     * @var \Pterodactyl\Services\Allocations\AssignmentService
+     */
+    private $assignmentService;
+
     /**
      * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
      */
@@ -34,14 +39,19 @@ class AllocationController extends Controller
     /**
      * AllocationController constructor.
      *
+     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
      * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $deletionService
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
-     * @param \Spatie\Fractal\Fractal                                         $fractal
      */
-    public function __construct(AllocationDeletionService $deletionService, AllocationRepositoryInterface $repository, Fractal $fractal)
-    {
+    public function __construct(
+        AssignmentService $assignmentService,
+        AllocationDeletionService $deletionService,
+        AllocationRepositoryInterface $repository
+    ) {
+        parent::__construct();
+
+        $this->assignmentService = $assignmentService;
         $this->deletionService = $deletionService;
-        $this->fractal = $fractal;
         $this->repository = $repository;
     }
 
@@ -49,33 +59,45 @@ class AllocationController extends Controller
      * Return all of the allocations that exist for a given node.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest $request
-     * @param \Pterodactyl\Models\Node                                                     $node
      * @return array
      */
-    public function index(GetAllocationsRequest $request, Node $node): array
+    public function index(GetAllocationsRequest $request): array
     {
-        $allocations = $this->repository->getPaginatedAllocationsForNode($node->id, 100);
+        $allocations = $this->repository->getPaginatedAllocationsForNode(
+            $request->getModel(Node::class)->id, 50
+        );
 
         return $this->fractal->collection($allocations)
-            ->transformWith((new AllocationTransformer)->setKey($request->key()))
-            ->withResourceName('allocation')
-            ->paginateWith(new IlluminatePaginatorAdapter($allocations))
+            ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * Store new allocations for a given node.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest $request
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function store(StoreAllocationRequest $request): array
+    {
+        $this->assignmentService->handle($request->getModel(Node::class), $request->validated());
+
+        return response('', 204);
     }
 
     /**
      * Delete a specific allocation from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequestApplication $request
-     * @param \Pterodactyl\Models\Node                                                                  $node
-     * @param \Pterodactyl\Models\Allocation                                                            $allocation
+     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest $request
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function delete(DeleteAllocationRequestApplication $request, Node $node, Allocation $allocation): Response
+    public function delete(DeleteAllocationRequest $request): Response
     {
-        $this->deletionService->handle($allocation);
+        $this->deletionService->handle($request->getModel(Allocation::class));
 
         return response('', 204);
     }

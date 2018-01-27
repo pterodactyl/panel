@@ -75,7 +75,6 @@ class ServerDatabaseTransformer extends BaseTransformer
     {
         return $this->item($model, function (Database $model) {
             return [
-                'id' => $model->id,
                 'password' => $this->encrypter->decrypt($model->password),
             ];
         }, 'database_password');

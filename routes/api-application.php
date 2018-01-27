@@ -38,6 +38,8 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::group(['prefix' => '/{node}/allocations'], function () {
         Route::get('/', 'Nodes\AllocationController@index')->name('api.application.allocations');
 
+        Route::post('/', 'Nodes\AllocationController@store');
+
         Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.application.allocations.view');
     });
 });
@@ -92,5 +94,24 @@ Route::group(['prefix' => '/servers'], function () {
         Route::post('/{database}/reset-password', 'Servers\DatabaseController@resetPassword');
 
         Route::delete('/{database}', 'Servers\DatabaseController@delete');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Nest Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/nests
+|
+*/
+Route::group(['prefix' => '/nests'], function () {
+    Route::get('/', 'Nests\NestController@index')->name('api.application.nests');
+    Route::get('/{nest}', 'Nests\NestController@view')->name('api.application.nests.view');
+
+    // Egg Management Endpoint
+    Route::group(['prefix' => '/{nest}/eggs'], function () {
+        Route::get('/', 'Nests\EggController@index')->name('api.application.nests.eggs');
+        Route::get('/{egg}', 'Nests\EggController@view')->name('api.application.nests.eggs.view');
     });
 });

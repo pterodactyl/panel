@@ -3,11 +3,33 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Allocation;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ApiSubstituteBindings extends SubstituteBindings
 {
+    /**
+     * Mappings to automatically assign route parameters to a model.
+     *
+     * @var array
+     */
+    protected static $mappings = [
+        'allocation' => Allocation::class,
+        'database' => Database::class,
+        'egg' => Egg::class,
+        'location' => Location::class,
+        'nest' => Nest::class,
+        'node' => Node::class,
+        'server' => Server::class,
+    ];
+
     /**
      * Perform substitution of route parameters without triggering
      * a 404 error if a model is not found.
@@ -19,6 +41,10 @@ class ApiSubstituteBindings extends SubstituteBindings
     public function handle($request, Closure $next)
     {
         $route = $request->route();
+
+        foreach (self::$mappings as $key => $model) {
+            $this->router->model($key, $model);
+        }
 
         $this->router->substituteBindings($route);
 
@@ -34,5 +60,15 @@ class ApiSubstituteBindings extends SubstituteBindings
         }
 
         return $next($request);
+    }
+
+    /**
+     * Return the registered mappings.
+     *
+     * @return array
+     */
+    public static function getMappings()
+    {
+        return self::$mappings;
     }
 }

@@ -2,15 +2,12 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
-use Spatie\Fractal\Fractal;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest;
@@ -18,8 +15,9 @@ use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
-class NodeController extends Controller
+class NodeController extends ApplicationApiController
 {
     /**
      * @var \Pterodactyl\Services\Nodes\NodeCreationService
@@ -30,11 +28,6 @@ class NodeController extends Controller
      * @var \Pterodactyl\Services\Nodes\NodeDeletionService
      */
     private $deletionService;
-
-    /**
-     * @var \Spatie\Fractal\Fractal
-     */
-    private $fractal;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
@@ -49,20 +42,19 @@ class NodeController extends Controller
     /**
      * NodeController constructor.
      *
-     * @param \Spatie\Fractal\Fractal                                   $fractal
      * @param \Pterodactyl\Services\Nodes\NodeCreationService           $creationService
      * @param \Pterodactyl\Services\Nodes\NodeDeletionService           $deletionService
      * @param \Pterodactyl\Services\Nodes\NodeUpdateService             $updateService
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(
-        Fractal $fractal,
         NodeCreationService $creationService,
         NodeDeletionService $deletionService,
         NodeUpdateService $updateService,
         NodeRepositoryInterface $repository
     ) {
-        $this->fractal = $fractal;
+        parent::__construct();
+
         $this->repository = $repository;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
@@ -77,12 +69,10 @@ class NodeController extends Controller
      */
     public function index(GetNodesRequest $request): array
     {
-        $nodes = $this->repository->paginated(100);
+        $nodes = $this->repository->paginated(50);
 
         return $this->fractal->collection($nodes)
-            ->transformWith((new NodeTransformer)->setKey($request->key()))
-            ->withResourceName('node')
-            ->paginateWith(new IlluminatePaginatorAdapter($nodes))
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 
@@ -90,14 +80,12 @@ class NodeController extends Controller
      * Return data for a single instance of a node.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest $request
-     * @param \Pterodactyl\Models\Node                                        $node
      * @return array
      */
-    public function view(GetNodeRequest $request, Node $node): array
+    public function view(GetNodeRequest $request): array
     {
-        return $this->fractal->item($node)
-            ->transformWith((new NodeTransformer)->setKey($request->key()))
-            ->withResourceName('node')
+        return $this->fractal->item($request->getModel(Node::class))
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 
@@ -115,10 +103,11 @@ class NodeController extends Controller
         $node = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($node)
-            ->transformWith((new NodeTransformer)->setKey($request->key()))
-            ->withResourceName('node')
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->addMeta([
-                'link' => route('api.admin.node.view', ['node' => $node->id]),
+                'resource' => route('api.application.nodes.view', [
+                    'node' => $node->id,
+                ]),
             ])
             ->respond(201);
     }
@@ -127,20 +116,20 @@ class NodeController extends Controller
      * Update an existing node on the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest $request
-     * @param \Pterodactyl\Models\Node                                           $node
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateNodeRequest $request, Node $node): array
+    public function update(UpdateNodeRequest $request): array
     {
-        $node = $this->updateService->returnUpdatedModel()->handle($node, $request->validated());
+        $node = $this->updateService->returnUpdatedModel()->handle(
+            $request->getModel(Node::class), $request->validated()
+        );
 
         return $this->fractal->item($node)
-            ->transformWith((new NodeTransformer)->setKey($request->key()))
-            ->withResourceName('node')
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 
@@ -149,14 +138,13 @@ class NodeController extends Controller
      * currently attached to it.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest $request
-     * @param \Pterodactyl\Models\Node                                           $node
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DeleteNodeRequest $request, Node $node): Response
+    public function delete(DeleteNodeRequest $request): Response
     {
-        $this->deletionService->handle($node);
+        $this->deletionService->handle($request->getModel(Node::class));
 
         return response('', 204);
     }

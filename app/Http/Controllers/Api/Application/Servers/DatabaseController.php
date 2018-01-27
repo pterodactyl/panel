@@ -57,12 +57,11 @@ class DatabaseController extends ApplicationApiController
      * server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest $request
-     * @param \Pterodactyl\Models\Server                                                             $server
      * @return array
      */
-    public function index(GetServerDatabasesRequest $request, Server $server): array
+    public function index(GetServerDatabasesRequest $request): array
     {
-        $databases = $this->repository->getDatabasesForServer($server->id);
+        $databases = $this->repository->getDatabasesForServer($request->getModel(Server::class)->id);
 
         return $this->fractal->collection($databases)
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
@@ -73,13 +72,11 @@ class DatabaseController extends ApplicationApiController
      * Return a single server database.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server                                                            $server
-     * @param \Pterodactyl\Models\Database                                                          $database
      * @return array
      */
-    public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
+    public function view(GetServerDatabaseRequest $request): array
     {
-        return $this->fractal->item($database)
+        return $this->fractal->item($request->getModel(Database::class))
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
             ->toArray();
     }
@@ -87,16 +84,15 @@ class DatabaseController extends ApplicationApiController
     /**
      * Reset the password for a specific server database.
      *
-     * @param \Pterodactyl\Models\Server   $server
-     * @param \Pterodactyl\Models\Database $database
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function resetPassword(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
+    public function resetPassword(ServerDatabaseWriteRequest $request): Response
     {
-        $this->databasePasswordService->handle($database, str_random(24));
+        $this->databasePasswordService->handle($request->getModel(Database::class), str_random(24));
 
         return response('', 204);
     }
@@ -105,35 +101,39 @@ class DatabaseController extends ApplicationApiController
      * Create a new database on the Panel for a given server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server                                                              $server
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(StoreServerDatabaseRequest $request, Server $server): JsonResponse
+    public function store(StoreServerDatabaseRequest $request): JsonResponse
     {
+        $server = $request->getModel(Server::class);
         $database = $this->databaseManagementService->create($server->id, $request->validated());
 
         return $this->fractal->item($database)
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
+            ->addMeta([
+                'resource' => route('api.application.servers.databases.view', [
+                    'server' => $server->id,
+                    'database' => $database->id,
+                ]),
+            ])
             ->respond(201);
     }
 
     /**
-     * Delete a specific database from the Panel.
+     * Handle a request to delete a specific server database from the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
-     * @param \Pterodactyl\Models\Server                                                              $server
-     * @param \Pterodactyl\Models\Database                                                            $database
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
+    public function delete(ServerDatabaseWriteRequest $request): Response
     {
-        $this->databaseManagementService->delete($database->id);
+        $this->databaseManagementService->delete($request->getModel(Database::class)->id);
 
         return response('', 204);
     }

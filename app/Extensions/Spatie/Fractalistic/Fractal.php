@@ -4,9 +4,9 @@ namespace Pterodactyl\Extensions\Spatie\Fractalistic;
 
 use League\Fractal\TransformerAbstract;
 use Spatie\Fractal\Fractal as SpatieFractal;
-use League\Fractal\Serializer\JsonApiSerializer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Pterodactyl\Extensions\League\Fractal\Serializers\PterodactylSerializer;
 
 class Fractal extends SpatieFractal
 {
@@ -22,7 +22,7 @@ class Fractal extends SpatieFractal
     {
         // Set the serializer by default.
         if (is_null($this->serializer)) {
-            $this->serializer = new JsonApiSerializer;
+            $this->serializer = new PterodactylSerializer;
         }
 
         // Automatically set the paginator on the response object if the

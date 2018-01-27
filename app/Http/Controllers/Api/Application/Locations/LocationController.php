@@ -2,22 +2,20 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
 
-use Spatie\Fractal\Fractal;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\LocationTransformer;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 
-class LocationController extends Controller
+class LocationController extends ApplicationApiController
 {
     /**
      * @var \Pterodactyl\Services\Locations\LocationCreationService
@@ -28,11 +26,6 @@ class LocationController extends Controller
      * @var \Pterodactyl\Services\Locations\LocationDeletionService
      */
     private $deletionService;
-
-    /**
-     * @var \Spatie\Fractal\Fractal
-     */
-    private $fractal;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
@@ -47,22 +40,21 @@ class LocationController extends Controller
     /**
      * LocationController constructor.
      *
-     * @param \Spatie\Fractal\Fractal                                       $fractal
      * @param \Pterodactyl\Services\Locations\LocationCreationService       $creationService
      * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
      * @param \Pterodactyl\Services\Locations\LocationUpdateService         $updateService
      */
     public function __construct(
-        Fractal $fractal,
         LocationCreationService $creationService,
         LocationDeletionService $deletionService,
         LocationRepositoryInterface $repository,
         LocationUpdateService $updateService
     ) {
+        parent::__construct();
+
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
-        $this->fractal = $fractal;
         $this->repository = $repository;
         $this->updateService = $updateService;
     }
@@ -78,9 +70,7 @@ class LocationController extends Controller
         $locations = $this->repository->paginated(100);
 
         return $this->fractal->collection($locations)
-            ->transformWith((new LocationTransformer)->setKey($request->key()))
-            ->withResourceName('location')
-            ->paginateWith(new IlluminatePaginatorAdapter($locations))
+            ->transformWith($this->getTransformer(LocationTransformer::class))
             ->toArray();
     }
 
@@ -88,14 +78,12 @@ class LocationController extends Controller
      * Return a single location.
      *
      * @param \Pterodactyl\Http\Controllers\Api\Application\Locations\GetLocationRequest $request
-     * @param \Pterodactyl\Models\Location                                               $location
      * @return array
      */
-    public function view(GetLocationRequest $request, Location $location): array
+    public function view(GetLocationRequest $request): array
     {
-        return $this->fractal->item($location)
-            ->transformWith((new LocationTransformer)->setKey($request->key()))
-            ->withResourceName('location')
+        return $this->fractal->item($request->getModel(Location::class))
+            ->transformWith($this->getTransformer(LocationTransformer::class))
             ->toArray();
     }
 
@@ -113,8 +101,12 @@ class LocationController extends Controller
         $location = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($location)
-            ->transformWith((new LocationTransformer)->setKey($request->key()))
-            ->withResourceName('location')
+            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->addMeta([
+                'resource' => route('api.application.locations.view', [
+                    'location' => $location->id,
+                ]),
+            ])
             ->respond(201);
     }
 
@@ -122,19 +114,17 @@ class LocationController extends Controller
      * Update a location on the Panel and return the updated record to the user.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest $request
-     * @param \Pterodactyl\Models\Location                                               $location
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateLocationRequest $request, Location $location): array
+    public function update(UpdateLocationRequest $request): array
     {
-        $location = $this->updateService->handle($location, $request->validated());
+        $location = $this->updateService->handle($request->getModel(Location::class), $request->validated());
 
         return $this->fractal->item($location)
-            ->transformWith((new LocationTransformer)->setKey($request->key()))
-            ->withResourceName('location')
+            ->transformWith($this->getTransformer(LocationTransformer::class))
             ->toArray();
     }
 
@@ -142,14 +132,13 @@ class LocationController extends Controller
      * Delete a location from the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest $request
-     * @param \Pterodactyl\Models\Location                                               $location
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
-    public function delete(DeleteLocationRequest $request, Location $location): Response
+    public function delete(DeleteLocationRequest $request): Response
     {
-        $this->deletionService->handle($location);
+        $this->deletionService->handle($request->getModel(Location::class));
 
         return response('', 204);
     }
