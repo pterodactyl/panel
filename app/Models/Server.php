@@ -66,13 +66,15 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'allocation_id' => 'required',
         'pack_id' => 'sometimes',
         'skip_scripts' => 'sometimes',
+        'image' => 'required',
+        'startup' => 'required',
     ];
 
     /**
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'owner_id' => 'exists:users,id',
+        'owner_id' => 'integer|exists:users,id',
         'name' => 'string|min:1|max:255',
         'node_id' => 'exists:nodes,id',
         'description' => 'string',
@@ -85,8 +87,9 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'nest_id' => 'exists:nests,id',
         'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',
-        'startup' => 'nullable|string',
+        'startup' => 'string',
         'skip_scripts' => 'boolean',
+        'image' => 'string|max:255',
     ];
 
     /**

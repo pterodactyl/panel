@@ -15,10 +15,13 @@ trait HasUserLevels
      * Set the access level for running this function.
      *
      * @param int $level
+     * @return $this
      */
     public function setUserLevel(int $level)
     {
         $this->userLevel = $level;
+
+        return $this;
     }
 
     /**

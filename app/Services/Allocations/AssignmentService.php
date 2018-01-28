@@ -70,7 +70,7 @@ class AssignmentService
         $this->connection->beginTransaction();
         foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
             foreach ($data['allocation_ports'] as $port) {
-                if (! ctype_digit($port) && ! preg_match(self::PORT_RANGE_REGEX, $port)) {
+                if (! is_digit($port) && ! preg_match(self::PORT_RANGE_REGEX, $port)) {
                     throw new DisplayException(trans('exceptions.allocations.invalid_mapping', ['port' => $port]));
                 }
 

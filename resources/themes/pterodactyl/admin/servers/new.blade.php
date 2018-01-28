@@ -91,12 +91,6 @@
                         <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>
                     </div>
                 </div>
-                <div class="box-footer">
-                    <p class="text-muted small no-margin">
-                        <input type="checkbox" name="auto_deploy" value="yes" id="pAutoDeploy" @if(old('auto_deploy'))checked="checked"@endif/>
-                        <label for="pAutoDeploy">Check this box if you want the panel to automatically select a node and allocation for this server in the given location.</label>
-                    </p>
-                </div>
             </div>
         </div>
     </div>
@@ -202,7 +196,7 @@
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
                         <label for="pDefaultContainer">Docker Image</label>
-                        <input id="pDefaultContainer" name="docker_image" value="{{ old('docker_image') }}" class="form-control" />
+                        <input id="pDefaultContainer" name="image" value="{{ old('image') }}" class="form-control" />
                         <p class="small text-muted no-margin">This is the default Docker image that will be used to run this server.</p>
                     </div>
                 </div>

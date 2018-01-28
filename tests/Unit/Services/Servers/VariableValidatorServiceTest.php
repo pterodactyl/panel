@@ -128,10 +128,13 @@ class VariableValidatorServiceTest extends TestCase
             $messages = $exception->validator->getMessageBag()->all();
 
             $this->assertNotEmpty($messages);
-            $this->assertSame(1, count($messages));
-            $this->assertSame(trans('validation.required', [
-                'attribute' => trans('validation.internal.variable_value', ['env' => $variables[0]->name]),
-            ]), $messages[0]);
+            $this->assertSame(4, count($messages));
+
+            for ($i = 0; $i < 4; $i++) {
+                $this->assertSame(trans('validation.required', [
+                    'attribute' => trans('validation.internal.variable_value', ['env' => $variables[$i]->name]),
+                ]), $messages[$i]);
+            }
         }
     }
 

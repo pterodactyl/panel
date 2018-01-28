@@ -57,4 +57,26 @@ interface AllocationRepositoryInterface extends RepositoryInterface
      * @return array
      */
     public function getAssignedAllocationIds(int $server): array;
+
+    /**
+     * Return a concated result set of node ips that already have at least one
+     * server assigned to that IP. This allows for filtering out sets for
+     * dedicated allocation IPs.
+     *
+     * If an array of nodes is passed the results will be limited to allocations
+     * in those nodes.
+     *
+     * @param array $nodes
+     * @return array
+     */
+    public function getDiscardableDedicatedAllocations(array $nodes = []): array;
+
+    /**
+     * Return a single allocation from those meeting the requirements.
+     *
+     * @param array $nodes
+     * @param array $ports
+     * @param bool  $dedicated
+     * @return \Pterodactyl\Models\Allocation|null
+    public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false);
 }

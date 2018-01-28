@@ -251,14 +251,17 @@ class ServersController extends Controller
      * @param \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
+     * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */
     public function store(ServerFormRequest $request)
     {
-        $server = $this->service->create($request->except('_token'));
+        $server = $this->service->handle($request->except('_token'));
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
         return redirect()->route('admin.servers.view', $server->id);

@@ -1,23 +1,14 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Servers;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\RequestException;
+use Tests\Traits\MocksRequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -26,50 +17,37 @@ use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonS
 
 class ServerDeletionServiceTest extends TestCase
 {
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $connection;
+    use MocksRequestException;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
-    protected $daemonServerRepository;
+    private $connection;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
-    protected $databaseManagementService;
+    private $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService|\Mockery\Mock
      */
-    protected $databaseRepository;
+    private $databaseManagementService;
 
     /**
-     * @var \GuzzleHttp\Exception\RequestException
+     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
-    protected $exception;
+    private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
-    protected $model;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Illuminate\Log\Writer|\Mockery\Mock
      */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerDeletionService
-     */
-    protected $service;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    private $writer;
 
     /**
      * Setup tests.
@@ -82,19 +60,8 @@ class ServerDeletionServiceTest extends TestCase
         $this->daemonServerRepository = m::mock(DaemonServerRepositoryInterface::class);
         $this->databaseRepository = m::mock(DatabaseRepositoryInterface::class);
         $this->databaseManagementService = m::mock(DatabaseManagementService::class);
-        $this->exception = m::mock(RequestException::class);
-        $this->model = factory(Server::class)->make();
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->writer = m::mock(Writer::class);
-
-        $this->service = new ServerDeletionService(
-            $this->connection,
-            $this->daemonServerRepository,
-            $this->databaseRepository,
-            $this->databaseManagementService,
-            $this->repository,
-            $this->writer
-        );
     }
 
     /**
@@ -102,7 +69,7 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testForceParameterCanBeSet()
     {
-        $response = $this->service->withForce(true);
+        $response = $this->getService()->withForce(true);
 
         $this->assertInstanceOf(ServerDeletionService::class, $response);
     }
@@ -112,20 +79,22 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testServerCanBeDeletedWithoutForce()
     {
-        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(new Response);
+        $model = factory(Server::class)->make();
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
-            ->shouldReceive('findWhere')->with([
-                ['server_id', '=', $this->model->id],
-            ])->once()->andReturn(collect([(object) ['id' => 50]]));
+        $this->daemonServerRepository->shouldReceive('setServer')->once()->with($model)->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('delete')->once()->withNoArgs()->andReturn(new Response);
 
-        $this->databaseManagementService->shouldReceive('delete')->with(50)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturn(1);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->databaseRepository->shouldReceive('setColumns')->once()->with('id')->andReturnSelf();
+        $this->databaseRepository->shouldReceive('findWhere')->once()->with([
+            ['server_id', '=', $model->id],
+        ])->andReturn(collect([(object) ['id' => 50]]));
 
-        $this->service->handle($this->model);
+        $this->databaseManagementService->shouldReceive('delete')->once()->with(50)->andReturnNull();
+        $this->repository->shouldReceive('delete')->once()->with($model->id)->andReturn(1);
+        $this->connection->shouldReceive('commit')->once()->withNoArgs()->andReturnNull();
+
+        $this->getService()->handle($model);
     }
 
     /**
@@ -133,64 +102,55 @@ class ServerDeletionServiceTest extends TestCase
      */
     public function testServerShouldBeDeletedEvenWhenFailureOccursIfForceIsSet()
     {
-        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andThrow($this->exception);
+        $this->configureExceptionMock();
+        $model = factory(Server::class)->make();
 
-        $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setServer')->once()->with($model)->andReturnSelf();
+        $this->daemonServerRepository->shouldReceive('delete')->once()->withNoArgs()->andThrow($this->getExceptionMock());
+
         $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
-            ->shouldReceive('findWhere')->with([
-                ['server_id', '=', $this->model->id],
-            ])->once()->andReturn(collect([(object) ['id' => 50]]));
+        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf();
+        $this->databaseRepository->shouldReceive('findWhere')->with([
+            ['server_id', '=', $model->id],
+        ])->once()->andReturn(collect([(object) ['id' => 50]]));
 
         $this->databaseManagementService->shouldReceive('delete')->with(50)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturn(1);
+        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturn(1);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->service->withForce()->handle($this->model);
+        $this->getService()->withForce()->handle($model);
     }
 
     /**
      * Test that an exception is thrown if a server cannot be deleted from the node and force is not set.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionShouldBeThrownIfDaemonReturnsAnErrorAndForceIsNotSet()
     {
-        $this->daemonServerRepository->shouldReceive('setServer->delete')->once()->andThrow($this->exception);
-        $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnNull();
-        $this->writer->shouldReceive('warning')->with($this->exception)->once()->andReturnNull();
+        $this->configureExceptionMock();
+        $model = factory(Server::class)->make();
 
-        try {
-            $this->service->handle($this->model);
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('admin/server.exceptions.daemon_exception', [
-                'code' => 'E_CONN_REFUSED',
-            ]), $exception->getMessage());
-        }
+        $this->daemonServerRepository->shouldReceive('setServer->delete')->once()->andThrow($this->getExceptionMock());
+
+        $this->getService()->handle($model);
     }
 
     /**
-     * Test that an integer can be passed in place of the Server model.
+     * Return an instance of the class with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Servers\ServerDeletionService
      */
-    public function testIntegerCanBePassedInPlaceOfServerModel()
+    private function getService(): ServerDeletionService
     {
-        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'uuid'])->once()->andReturnSelf()
-            ->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-
-        $this->daemonServerRepository->shouldReceive('setServer')->with($this->model)->once()->andReturnSelf()
-            ->shouldReceive('delete')->withNoArgs()->once()->andReturn(new Response);
-
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->databaseRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
-            ->shouldReceive('findWhere')->with([
-                ['server_id', '=', $this->model->id],
-            ])->once()->andReturn(collect([(object) ['id' => 50]]));
-
-        $this->databaseManagementService->shouldReceive('delete')->with(50)->once()->andReturnNull();
-        $this->repository->shouldReceive('delete')->with($this->model->id)->once()->andReturn(1);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-
-        $this->service->handle($this->model->id);
+        return new ServerDeletionService(
+            $this->connection,
+            $this->daemonServerRepository,
+            $this->databaseRepository,
+            $this->databaseManagementService,
+            $this->repository,
+            $this->writer
+        );
     }
 }

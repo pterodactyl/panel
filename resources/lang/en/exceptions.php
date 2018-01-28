@@ -56,4 +56,8 @@ return [
     'users' => [
         'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
     ],
+    'deployment' => [
+        'no_viable_nodes' => 'No nodes satisfying the requirements specified for automatic deployment could be found.',
+        'no_viable_allocations' => 'No allocations satisfying the requirements for automatic deployment were found.',
+    ],
 ];
