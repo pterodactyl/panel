@@ -78,5 +78,6 @@ interface AllocationRepositoryInterface extends RepositoryInterface
      * @param array $ports
      * @param bool  $dedicated
      * @return \Pterodactyl\Models\Allocation|null
+     */
     public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false);
 }
