@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Exceptions\Http\Connection;
 
+use Illuminate\Http\Response;
 use GuzzleHttp\Exception\GuzzleException;
 use Pterodactyl\Exceptions\DisplayException;
 
@@ -10,7 +11,7 @@ class DaemonConnectionException extends DisplayException
     /**
      * @var int
      */
-    private $statusCode = 500;
+    private $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
 
     /**
      * Throw a displayable exception caused by a daemon connection error.

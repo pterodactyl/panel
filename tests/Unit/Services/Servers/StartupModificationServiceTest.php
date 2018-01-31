@@ -1,22 +1,17 @@
 <?php
-/*
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\User;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
@@ -33,6 +28,11 @@ class StartupModificationServiceTest extends TestCase
      * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     private $connection;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     */
+    private $eggRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService|\Mockery\Mock
@@ -63,6 +63,7 @@ class StartupModificationServiceTest extends TestCase
 
         $this->daemonServerRepository = m::mock(DaemonServerRepository::class);
         $this->connection = m::mock(ConnectionInterface::class);
+        $this->eggRepository = m::mock(EggRepositoryInterface::class);
         $this->environmentService = m::mock(EnvironmentService::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
@@ -96,8 +97,10 @@ class StartupModificationServiceTest extends TestCase
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->getService()->handle($model, ['egg_id' => 123, 'environment' => ['test' => 'abcd1234']]);
-        $this->assertTrue(true);
+        $response = $this->getService()->handle($model, ['egg_id' => 123, 'environment' => ['test' => 'abcd1234']]);
+
+        $this->assertInstanceOf(Server::class, $response);
+        $this->assertSame($model, $response);
     }
 
     /**
@@ -108,6 +111,11 @@ class StartupModificationServiceTest extends TestCase
         $model = factory(Server::class)->make([
             'egg_id' => 123,
             'image' => 'docker:image',
+        ]);
+
+        $eggModel = factory(Egg::class)->make([
+            'id' => 456,
+            'nest_id' => 12345,
         ]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
@@ -122,9 +130,12 @@ class StartupModificationServiceTest extends TestCase
             'variable_id' => 1,
         ], ['variable_value' => 'stored-value'])->once()->andReturnNull();
 
+        $this->eggRepository->shouldReceive('setColumns->find')->once()->with($eggModel->id)->andReturn($eggModel);
+
         $this->repository->shouldReceive('update')->with($model->id, m::subset([
             'installed' => 0,
-            'egg_id' => 456,
+            'nest_id' => $eggModel->nest_id,
+            'egg_id' => $eggModel->id,
             'pack_id' => 789,
             'image' => 'docker:image',
         ]))->once()->andReturn($model);
@@ -152,8 +163,15 @@ class StartupModificationServiceTest extends TestCase
 
         $service = $this->getService();
         $service->setUserLevel(User::USER_LEVEL_ADMIN);
-        $service->handle($model, ['docker_image' => 'docker:image', 'egg_id' => 456, 'pack_id' => 789, 'environment' => ['test' => 'abcd1234']]);
-        $this->assertTrue(true);
+        $response = $service->handle($model, [
+            'docker_image' => 'docker:image',
+            'egg_id' => $eggModel->id,
+            'pack_id' => 789,
+            'environment' => ['test' => 'abcd1234'],
+        ]);
+
+        $this->assertInstanceOf(Server::class, $response);
+        $this->assertSame($model, $response);
     }
 
     /**
@@ -166,6 +184,7 @@ class StartupModificationServiceTest extends TestCase
         return new StartupModificationService(
             $this->connection,
             $this->daemonServerRepository,
+            $this->eggRepository,
             $this->environmentService,
             $this->repository,
             $this->serverVariableRepository,

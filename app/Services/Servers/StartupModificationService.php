@@ -7,6 +7,7 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\HasUserLevels;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
@@ -25,6 +26,11 @@ class StartupModificationService
      * @var \Illuminate\Database\ConnectionInterface
      */
     private $connection;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     */
+    private $eggRepository;
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
@@ -51,6 +57,7 @@ class StartupModificationService
      *
      * @param \Illuminate\Database\ConnectionInterface                            $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface            $eggRepository
      * @param \Pterodactyl\Services\Servers\EnvironmentService                    $environmentService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
@@ -59,6 +66,7 @@ class StartupModificationService
     public function __construct(
         ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonServerRepository,
+        EggRepositoryInterface $eggRepository,
         EnvironmentService $environmentService,
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
@@ -66,6 +74,7 @@ class StartupModificationService
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
+        $this->eggRepository = $eggRepository;
         $this->environmentService = $environmentService;
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
@@ -77,13 +86,14 @@ class StartupModificationService
      *
      * @param \Pterodactyl\Models\Server $server
      * @param array                      $data
+     * @return \Pterodactyl\Models\Server
      *
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function handle(Server $server, array $data)
+    public function handle(Server $server, array $data): Server
     {
         $this->connection->beginTransaction();
         if (! is_null(array_get($data, 'environment'))) {
@@ -119,6 +129,8 @@ class StartupModificationService
         }
 
         $this->connection->commit();
+
+        return $server;
     }
 
     /**
@@ -133,13 +145,22 @@ class StartupModificationService
      */
     private function updateAdministrativeSettings(array $data, Server &$server, array &$daemonData)
     {
+        if (
+            is_digit(array_get($data, 'egg_id'))
+            && $data['egg_id'] != $server->egg_id
+            && is_null(array_get($data, 'nest_id'))
+        ) {
+            $egg = $this->eggRepository->setColumns(['id', 'nest_id'])->find($data['egg_id']);
+            $data['nest_id'] = $egg->nest_id;
+        }
+
         $server = $this->repository->update($server->id, [
             'installed' => 0,
             'startup' => array_get($data, 'startup', $server->startup),
             'nest_id' => array_get($data, 'nest_id', $server->nest_id),
             'egg_id' => array_get($data, 'egg_id', $server->egg_id),
             'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
-            'skip_scripts' => isset($data['skip_scripts']),
+            'skip_scripts' => array_get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
             'image' => array_get($data, 'docker_image', $server->image),
         ]);
 
@@ -147,7 +168,7 @@ class StartupModificationService
             'build' => ['image' => $server->image],
             'service' => array_merge(
                 $this->repository->getDaemonServiceData($server, true),
-                ['skip_scripts' => isset($data['skip_scripts'])]
+                ['skip_scripts' => $server->skip_scripts]
             ),
         ]);
     }

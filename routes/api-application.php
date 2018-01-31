@@ -76,6 +76,7 @@ Route::group(['prefix' => '/servers'], function () {
 
     Route::patch('/{server}/details', 'Servers\ServerDetailsController@details')->name('api.application.servers.details');
     Route::patch('/{server}/build', 'Servers\ServerDetailsController@build')->name('api.application.servers.build');
+    Route::patch('/{server}/startup', 'Servers\StartupController@index')->name('api.application.servers.startup');
 
     Route::post('/', 'Servers\ServerController@store');
     Route::post('/{server}/suspend', 'Servers\ServerManagementController@suspend')->name('api.application.servers.suspend');
