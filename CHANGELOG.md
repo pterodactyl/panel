@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Added support for editing symlinked files on the Panel.
+* Added new application specific API to Panel with endpoints at `/api/application`. Includes new Admin CP interface for managing keys and an easier permissions system.
 
 ## v0.7.0-beta.4 (Derelict Dermodactylus)
 ### Fixed
