@@ -52,7 +52,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('server_token');
@@ -77,7 +77,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('server_token');
@@ -104,7 +104,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      * Test that an exception is thrown if the user account exists but the wrong
      * credentials are passed.
      *
-     * @expectedException \Illuminate\Auth\AuthenticationException
+     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfUserDetailsAreIncorrect()
     {
@@ -119,7 +119,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     /**
      * Test that an exception is thrown if no user account is found.
      *
-     * @expectedException \Illuminate\Auth\AuthenticationException
+     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfNoUserAccountIsFound()
     {
@@ -143,7 +143,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
@@ -163,7 +163,45 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
 
-        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
+
+        $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
+    }
+
+    /**
+     * Test that a suspended server throws an exception.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     */
+    public function testSuspendedServer()
+    {
+        $user = factory(User::class)->make(['root_admin' => 1]);
+        $server = factory(Server::class)->make(['node_id' => 1, 'owner_id' => $user->id + 1, 'suspended' => 1]);
+
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
+
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
+        $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
+
+        $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
+    }
+
+    /**
+     * Test that a server that is not yet installed throws an exception.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     */
+    public function testNotInstalledServer()
+    {
+        $user = factory(User::class)->make(['root_admin' => 1]);
+        $server = factory(Server::class)->make(['node_id' => 1, 'owner_id' => $user->id + 1, 'installed' => 0]);
+
+        $this->userRepository->shouldReceive('setColumns')->with(['id', 'root_admin', 'password'])->once()->andReturnSelf();
+        $this->userRepository->shouldReceive('findFirstWhere')->with([['username', '=', $user->username]])->once()->andReturn($user);
+
+        $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
 
         $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);

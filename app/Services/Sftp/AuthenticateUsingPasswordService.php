@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Services\Sftp;
 
-use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthenticateUsingPasswordService
 {
@@ -53,13 +53,13 @@ class AuthenticateUsingPasswordService
      *
      * @param string      $username
      * @param string      $password
-     * @param string|null $server
      * @param int         $node
+     * @param string|null $server
      * @return array
      *
-     * @throws \Illuminate\Auth\AuthenticationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      */
     public function handle(string $username, string $password, int $node, string $server = null): array
     {
@@ -67,19 +67,18 @@ class AuthenticateUsingPasswordService
             throw new RecordNotFoundException;
         }
 
-        try {
-            $user = $this->userRepository->setColumns(['id', 'root_admin', 'password'])->findFirstWhere([['username', '=', $username]]);
-
-            if (! password_verify($password, $user->password)) {
-                throw new AuthenticationException;
-            }
-        } catch (RecordNotFoundException $exception) {
-            throw new AuthenticationException;
+        $user = $this->userRepository->setColumns(['id', 'root_admin', 'password'])->findFirstWhere([['username', '=', $username]]);
+        if (! password_verify($password, $user->password)) {
+            throw new RecordNotFoundException;
         }
 
-        $server = $this->repository->setColumns(['id', 'node_id', 'owner_id', 'uuid'])->getByUuid($server);
+        $server = $this->repository->setColumns(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->getByUuid($server);
         if ($server->node_id !== $node || (! $user->root_admin && $server->owner_id !== $user->id)) {
             throw new RecordNotFoundException;
+        }
+
+        if ($server->installed !== 1 || $server->suspended) {
+            throw new BadRequestHttpException;
         }
 
         return [

@@ -3,12 +3,13 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 
 class SftpController extends Controller
@@ -47,7 +48,7 @@ class SftpController extends Controller
         if ($this->hasTooManyLoginAttempts($request)) {
             return response()->json([
                 'error' => 'Logins throttled.',
-            ], 429);
+            ], Response::HTTP_TOO_MANY_REQUESTS);
         }
 
         try {
@@ -59,14 +60,14 @@ class SftpController extends Controller
             );
 
             $this->clearLoginAttempts($request);
-        } catch (AuthenticationException $exception) {
+        } catch (BadRequestHttpException $exception) {
             return response()->json([
-                'error' => 'Invalid credentials.',
-            ], 403);
+                'error' => 'The server you are trying to access is not installed or is suspended.',
+            ], Response::HTTP_BAD_REQUEST);
         } catch (RecordNotFoundException $exception) {
             return response()->json([
-                'error' => 'Invalid server.',
-            ], 404);
+                'error' => 'Unable to locate a resource using the username and password provided.',
+            ], Response::HTTP_NOT_FOUND);
         }
 
         return response()->json($data);

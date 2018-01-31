@@ -108,7 +108,6 @@ class ServerController extends ApplicationApiController
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response
     {
