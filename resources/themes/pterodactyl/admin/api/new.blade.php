@@ -25,7 +25,7 @@
                         <table class="table table-hover">
                             @foreach($resources as $resource)
                                 <tr>
-                                    <td class="col-sm-3 strong">{{ title_case($resource) }}</td>
+                                    <td class="col-sm-3 strong">{{ str_replace('_', ' ', title_case($resource)) }}</td>
                                     <td class="col-sm-3 radio radio-primary text-center">
                                         <input type="radio" id="r_{{ $resource }}" name="r_{{ $resource }}" value="{{ $permissions['r'] }}">
                                         <label for="r_{{ $resource }}">Read</label>
