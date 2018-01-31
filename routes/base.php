@@ -30,15 +30,16 @@ Route::group(['prefix' => 'account'], function () {
 |
 | Endpoint: /account/api
 |
+| Temporarily Disabled
 */
-Route::group(['prefix' => 'account/api'], function () {
-    Route::get('/', 'AccountKeyController@index')->name('account.api');
-    Route::get('/new', 'AccountKeyController@create')->name('account.api.new');
-
-    Route::post('/new', 'AccountKeyController@store');
-
-    Route::delete('/revoke/{identifier}', 'AccountKeyController@revoke')->name('account.api.revoke');
-});
+//Route::group(['prefix' => 'account/api'], function () {
+//    Route::get('/', 'AccountKeyController@index')->name('account.api');
+//    Route::get('/new', 'AccountKeyController@create')->name('account.api.new');
+//
+//    Route::post('/new', 'AccountKeyController@store');
+//
+//    Route::delete('/revoke/{identifier}', 'AccountKeyController@revoke')->name('account.api.revoke');
+//});
 
 /*
 |--------------------------------------------------------------------------

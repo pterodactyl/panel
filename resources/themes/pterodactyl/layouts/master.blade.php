@@ -97,11 +97,11 @@
                                 <i class="fa fa-lock"></i> <span>@lang('navigation.account.security_controls')</span>
                             </a>
                         </li>
-                        <li class="{{ (Route::currentRouteName() !== 'account.api' && Route::currentRouteName() !== 'account.api.new') ?: 'active' }}">
-                            <a href="{{ route('account.api')}}">
-                                <i class="fa fa-code"></i> <span>@lang('navigation.account.api_access')</span>
-                            </a>
-                        </li>
+                        {{--<li class="{{ (Route::currentRouteName() !== 'account.api' && Route::currentRouteName() !== 'account.api.new') ?: 'active' }}">--}}
+                            {{--<a href="{{ route('account.api')}}">--}}
+                                {{--<i class="fa fa-code"></i> <span>@lang('navigation.account.api_access')</span>--}}
+                            {{--</a>--}}
+                        {{--</li>--}}
                         <li class="{{ Route::currentRouteName() !== 'index' ?: 'active' }}">
                             <a href="{{ route('index')}}">
                                 <i class="fa fa-server"></i> <span>@lang('navigation.account.my_servers')</span>
