@@ -1,20 +1,12 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Api;
 
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Models\APIKey;
-use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Api\PermissionService;
+use Pterodactyl\Models\ApiKey;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
@@ -23,14 +15,9 @@ class KeyCreationServiceTest extends TestCase
     use PHPMock;
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
+     * @var \Illuminate\Contracts\Encryption\Encrypter|\Mockery\Mock
      */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Services\Api\PermissionService|\Mockery\Mock
-     */
-    private $permissionService;
+    private $encrypter;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
@@ -44,8 +31,7 @@ class KeyCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->connection = m::mock(ConnectionInterface::class);
-        $this->permissionService = m::mock(PermissionService::class);
+        $this->encrypter = m::mock(Encrypter::class);
         $this->repository = m::mock(ApiKeyRepositoryInterface::class);
     }
 
@@ -54,39 +40,123 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testKeyIsCreated()
     {
-        $model = factory(APIKey::class)->make();
+        $model = factory(ApiKey::class)->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
-            ->expects($this->exactly(1))->with(APIKey::KEY_LENGTH)->willReturn($model->token);
+            ->expects($this->exactly(2))->willReturnCallback(function ($length) {
+                return 'str_' . $length;
+            });
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->encrypter->shouldReceive('encrypt')->with('str_' . ApiKey::KEY_LENGTH)->once()->andReturn($model->token);
 
         $this->repository->shouldReceive('create')->with([
             'test-data' => 'test',
+            'key_type' => ApiKey::TYPE_NONE,
+            'identifier' => 'str_' . ApiKey::IDENTIFIER_LENGTH,
             'token' => $model->token,
         ], true, true)->once()->andReturn($model);
 
-        $this->permissionService->shouldReceive('getPermissions')->withNoArgs()->once()->andReturn([
-            '_user' => ['server' => ['list', 'multiple-dash-test']],
-            'server' => ['create', 'admin-dash-test'],
-        ]);
-
-        $this->permissionService->shouldReceive('create')->with($model->id, 'user.server-list')->once()->andReturnNull();
-        $this->permissionService->shouldReceive('create')->with($model->id, 'user.server-multiple-dash-test')->once()->andReturnNull();
-        $this->permissionService->shouldReceive('create')->with($model->id, 'server-create')->once()->andReturnNull();
-        $this->permissionService->shouldReceive('create')->with($model->id, 'server-admin-dash-test')->once()->andReturnNull();
-
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-
-        $response = $this->getService()->handle(
-            ['test-data' => 'test'],
-            ['invalid-node', 'server-list', 'server-multiple-dash-test'],
-            ['invalid-node', 'server-create', 'server-admin-dash-test']
-        );
+        $response = $this->getService()->handle(['test-data' => 'test']);
 
         $this->assertNotEmpty($response);
-        $this->assertInstanceOf(APIKey::class, $response);
+        $this->assertInstanceOf(ApiKey::class, $response);
         $this->assertSame($model, $response);
+    }
+
+    /**
+     * Test that an identifier is only set by the function.
+     */
+    public function testIdentifierAndTokenAreOnlySetByFunction()
+    {
+        $model = factory(ApiKey::class)->make();
+
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+            ->expects($this->exactly(2))->willReturnCallback(function ($length) {
+                return 'str_' . $length;
+            });
+
+        $this->encrypter->shouldReceive('encrypt')->with('str_' . ApiKey::KEY_LENGTH)->once()->andReturn($model->token);
+
+        $this->repository->shouldReceive('create')->with([
+            'key_type' => ApiKey::TYPE_NONE,
+            'identifier' => 'str_' . ApiKey::IDENTIFIER_LENGTH,
+            'token' => $model->token,
+        ], true, true)->once()->andReturn($model);
+
+        $response = $this->getService()->handle(['identifier' => 'customIdentifier', 'token' => 'customToken']);
+
+        $this->assertNotEmpty($response);
+        $this->assertInstanceOf(ApiKey::class, $response);
+        $this->assertSame($model, $response);
+    }
+
+    /**
+     * Test that permissions passed in are loaded onto the key data.
+     */
+    public function testPermissionsAreRetrievedForApplicationKeys()
+    {
+        $model = factory(ApiKey::class)->make();
+
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+            ->expects($this->exactly(2))->willReturnCallback(function ($length) {
+                return 'str_' . $length;
+            });
+
+        $this->encrypter->shouldReceive('encrypt')->with('str_' . ApiKey::KEY_LENGTH)->once()->andReturn($model->token);
+
+        $this->repository->shouldReceive('create')->with([
+            'key_type' => ApiKey::TYPE_APPLICATION,
+            'identifier' => 'str_' . ApiKey::IDENTIFIER_LENGTH,
+            'token' => $model->token,
+            'permission-key' => 'exists',
+        ], true, true)->once()->andReturn($model);
+
+        $response = $this->getService()->setKeyType(ApiKey::TYPE_APPLICATION)->handle([], ['permission-key' => 'exists']);
+
+        $this->assertNotEmpty($response);
+        $this->assertInstanceOf(ApiKey::class, $response);
+        $this->assertSame($model, $response);
+    }
+
+    /**
+     * Test that permissions are not retrieved for any key that is not an application key.
+     *
+     * @dataProvider keyTypeDataProvider
+     */
+    public function testPermissionsAreNotRetrievedForNonApplicationKeys($keyType)
+    {
+        $model = factory(ApiKey::class)->make();
+
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+            ->expects($this->exactly(2))->willReturnCallback(function ($length) {
+                return 'str_' . $length;
+            });
+
+        $this->encrypter->shouldReceive('encrypt')->with('str_' . ApiKey::KEY_LENGTH)->once()->andReturn($model->token);
+
+        $this->repository->shouldReceive('create')->with([
+            'key_type' => $keyType,
+            'identifier' => 'str_' . ApiKey::IDENTIFIER_LENGTH,
+            'token' => $model->token,
+        ], true, true)->once()->andReturn($model);
+
+        $response = $this->getService()->setKeyType($keyType)->handle([], ['fake-permission' => 'should-not-exist']);
+
+        $this->assertNotEmpty($response);
+        $this->assertInstanceOf(ApiKey::class, $response);
+        $this->assertSame($model, $response);
+    }
+
+    /**
+     * Provide key types that are not an application specific key.
+     *
+     * @return array
+     */
+    public function keyTypeDataProvider(): array
+    {
+        return [
+            [ApiKey::TYPE_NONE], [ApiKey::TYPE_ACCOUNT], [ApiKey::TYPE_DAEMON_USER], [ApiKey::TYPE_DAEMON_APPLICATION],
+        ];
     }
 
     /**
@@ -96,6 +166,6 @@ class KeyCreationServiceTest extends TestCase
      */
     private function getService(): KeyCreationService
     {
-        return new KeyCreationService($this->repository, $this->connection, $this->permissionService);
+        return new KeyCreationService($this->repository, $this->encrypter);
     }
 }

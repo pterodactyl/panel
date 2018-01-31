@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Repository;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -232,6 +233,22 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         }
 
         return $instance->get($this->getColumns());
+    }
+
+    /**
+     * Return a paginated result set using a search term if set on the repository.
+     *
+     * @param int $perPage
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginated(int $perPage): LengthAwarePaginator
+    {
+        $instance = $this->getBuilder();
+        if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
+            $instance = $instance->search($this->getSearchTerm());
+        }
+
+        return $instance->paginate($perPage, $this->getColumns());
     }
 
     /**

@@ -17,22 +17,10 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'Pterodactyl\Http\Controllers';
 
     /**
-     * Define your route model bindings, pattern filters, etc.
-     */
-    public function boot()
-    {
-        parent::boot();
-    }
-
-    /**
      * Define the routes for the application.
      */
     public function map()
     {
-//        Route::middleware(['api'])->prefix('/api/user')
-//              ->namespace($this->namespace . '\API\User')
-//              ->group(base_path('routes/api.php'));
-
         Route::middleware(['web', 'auth', 'csrf'])
              ->namespace($this->namespace . '\Base')
              ->group(base_path('routes/base.php'));
@@ -49,12 +37,12 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace . '\Server')
              ->group(base_path('routes/server.php'));
 
-        Route::middleware(['api', 'api..user_level:admin'])->prefix('/api/admin')
-            ->namespace($this->namespace . '\API\Admin')
-            ->group(base_path('routes/api-admin.php'));
+        Route::middleware(['api'])->prefix('/api/application')
+            ->namespace($this->namespace . '\Api\Application')
+            ->group(base_path('routes/api-application.php'));
 
         Route::middleware(['daemon'])->prefix('/api/remote')
-            ->namespace($this->namespace . '\API\Remote')
+            ->namespace($this->namespace . '\Api\Remote')
             ->group(base_path('routes/api-remote.php'));
 
         Route::middleware(['web', 'daemon-old'])->prefix('/daemon')

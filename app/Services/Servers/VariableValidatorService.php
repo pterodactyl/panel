@@ -73,29 +73,27 @@ class VariableValidatorService
     public function handle(int $egg, array $fields = []): Collection
     {
         $variables = $this->optionVariableRepository->findWhere([['egg_id', '=', $egg]]);
-        $messages = $this->validator->make([], []);
 
-        $response = $variables->map(function ($item) use ($fields, $messages) {
-            // Skip doing anything if user is not an admin and
-            // variable is not user viewable or editable.
+        $data = $rules = $customAttributes = [];
+        foreach ($variables as $variable) {
+            $data['environment'][$variable->env_variable] = array_get($fields, $variable->env_variable);
+            $rules['environment.' . $variable->env_variable] = $variable->rules;
+            $customAttributes['environment.' . $variable->env_variable] = trans('validation.internal.variable_value', ['env' => $variable->name]);
+        }
+
+        $validator = $this->validator->make($data, $rules, [], $customAttributes);
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        $response = $variables->filter(function ($item) {
+            // Skip doing anything if user is not an admin and variable is not user viewable or editable.
             if (! $this->isUserLevel(User::USER_LEVEL_ADMIN) && (! $item->user_editable || ! $item->user_viewable)) {
                 return false;
             }
 
-            $v = $this->validator->make([
-                'variable_value' => array_get($fields, $item->env_variable),
-            ], [
-                'variable_value' => $item->rules,
-            ], [], [
-                'variable_value' => trans('validation.internal.variable_value', ['env' => $item->name]),
-            ]);
-
-            if ($v->fails()) {
-                foreach ($v->getMessageBag()->all() as $message) {
-                    $messages->getMessageBag()->add($item->env_variable, $message);
-                }
-            }
-
+            return true;
+        })->map(function ($item) use ($fields) {
             return (object) [
                 'id' => $item->id,
                 'key' => $item->env_variable,
@@ -104,10 +102,6 @@ class VariableValidatorService
         })->filter(function ($item) {
             return is_object($item);
         });
-
-        if (! empty($messages->getMessageBag()->all())) {
-            throw new ValidationException($messages);
-        }
 
         return $response;
     }

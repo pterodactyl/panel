@@ -2,21 +2,21 @@
 
 namespace Pterodactyl\Services\Api;
 
-use Pterodactyl\Models\APIKey;
-use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Models\ApiKey;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Contracts\Encryption\Encrypter
      */
-    private $connection;
+    private $encrypter;
 
     /**
-     * @var \Pterodactyl\Services\Api\PermissionService
+     * @var int
      */
-    private $permissionService;
+    private $keyType = ApiKey::TYPE_NONE;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
@@ -27,68 +27,52 @@ class KeyCreationService
      * ApiKeyService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Database\ConnectionInterface                    $connection
-     * @param \Pterodactyl\Services\Api\PermissionService                 $permissionService
+     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      */
-    public function __construct(
-        ApiKeyRepositoryInterface $repository,
-        ConnectionInterface $connection,
-        PermissionService $permissionService
-    ) {
+    public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
+    {
+        $this->encrypter = $encrypter;
         $this->repository = $repository;
-        $this->connection = $connection;
-        $this->permissionService = $permissionService;
     }
 
     /**
-     * Create a new API Key on the system with the given permissions.
+     * Set the type of key that should be created. By default an orphaned key will be
+     * created. These keys cannot be used for anything, and will not render in the UI.
+     *
+     * @param int $type
+     * @return \Pterodactyl\Services\Api\KeyCreationService
+     */
+    public function setKeyType(int $type)
+    {
+        $this->keyType = $type;
+
+        return $this;
+    }
+
+    /**
+     * Create a new API key for the Panel using the permissions passed in the data request.
+     * This will automatically generate an identifer and an encrypted token that are
+     * stored in the database.
      *
      * @param array $data
      * @param array $permissions
-     * @param array $administrative
-     * @return \Pterodactyl\Models\APIKey
+     * @return \Pterodactyl\Models\ApiKey
      *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data, array $permissions, array $administrative = []): APIKey
+    public function handle(array $data, array $permissions = []): ApiKey
     {
-        $token = str_random(APIKey::KEY_LENGTH);
-        $data = array_merge($data, ['token' => $token]);
+        $data = array_merge($data, [
+            'key_type' => $this->keyType,
+            'identifier' => str_random(ApiKey::IDENTIFIER_LENGTH),
+            'token' => $this->encrypter->encrypt(str_random(ApiKey::KEY_LENGTH)),
+        ]);
 
-        $this->connection->beginTransaction();
+        if ($this->keyType === ApiKey::TYPE_APPLICATION) {
+            $data = array_merge($data, $permissions);
+        }
+
         $instance = $this->repository->create($data, true, true);
-        $nodes = $this->permissionService->getPermissions();
-
-        foreach ($permissions as $permission) {
-            @list($block, $search) = explode('-', $permission, 2);
-
-            if (
-                (empty($block) || empty($search)) ||
-                ! array_key_exists($block, $nodes['_user']) ||
-                ! in_array($search, $nodes['_user'][$block])
-            ) {
-                continue;
-            }
-
-            $this->permissionService->create($instance->id, sprintf('user.%s', $permission));
-        }
-
-        foreach ($administrative as $permission) {
-            @list($block, $search) = explode('-', $permission, 2);
-
-            if (
-                (empty($block) || empty($search)) ||
-                ! array_key_exists($block, $nodes) ||
-                ! in_array($search, $nodes[$block])
-            ) {
-                continue;
-            }
-
-            $this->permissionService->create($instance->id, $permission);
-        }
-
-        $this->connection->commit();
 
         return $instance;
     }

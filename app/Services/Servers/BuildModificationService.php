@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -10,6 +9,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class BuildModificationService
@@ -17,105 +17,58 @@ class BuildModificationService
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
-    protected $allocationRepository;
-
-    /**
-     * @var array
-     */
-    protected $build = [];
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    protected $daemonServerRepository;
+    private $allocationRepository;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    private $connection;
 
     /**
-     * @var null|int
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
-    protected $firstAllocationId = null;
+    private $daemonServerRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    private $repository;
 
     /**
      * BuildModificationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface    $allocationRepository
-     * @param \Illuminate\Database\ConnectionInterface                           $database
+     * @param \Illuminate\Database\ConnectionInterface                           $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Illuminate\Log\Writer                                             $writer
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         DaemonServerRepositoryInterface $daemonServerRepository,
-        ServerRepositoryInterface $repository,
-        Writer $writer
+        ServerRepositoryInterface $repository
     ) {
         $this->allocationRepository = $allocationRepository;
         $this->daemonServerRepository = $daemonServerRepository;
-        $this->database = $database;
+        $this->connection = $connection;
         $this->repository = $repository;
-        $this->writer = $writer;
-    }
-
-    /**
-     * Set build array parameters.
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function setBuild($key, $value)
-    {
-        $this->build[$key] = $value;
-    }
-
-    /**
-     * Return the build array or an item out of the build array.
-     *
-     * @param string|null $attribute
-     * @return array|mixed|null
-     */
-    public function getBuild($attribute = null)
-    {
-        if (is_null($attribute)) {
-            return $this->build;
-        }
-
-        return array_get($this->build, $attribute);
     }
 
     /**
      * Change the build details for a specified server.
      *
-     * @param int|\Pterodactyl\Models\Server $server
-     * @param array                          $data
+     * @param \Pterodactyl\Models\Server $server
+     * @param array                      $data
+     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($server, array $data)
+    public function handle(Server $server, array $data)
     {
-        if (! $server instanceof Server) {
-            $server = $this->repository->find($server);
-        }
-
-        $data['allocation_id'] = array_get($data, 'allocation_id', $server->allocation_id);
-        $this->database->beginTransaction();
+        $build = [];
+        $this->connection->beginTransaction();
 
         $this->processAllocations($server, $data);
         if (isset($data['allocation_id']) && $data['allocation_id'] != $server->allocation_id) {
@@ -128,108 +81,98 @@ class BuildModificationService
                 throw new DisplayException(trans('admin/server.exceptions.default_allocation_not_found'));
             }
 
-            $this->setBuild('default', ['ip' => $allocation->ip, 'port' => $allocation->port]);
+            $build['default'] = ['ip' => $allocation->ip, 'port' => $allocation->port];
         }
 
-        $server = $this->repository->update($server->id, [
-            'memory' => (int) array_get($data, 'memory', $server->memory),
-            'swap' => (int) array_get($data, 'swap', $server->swap),
-            'io' => (int) array_get($data, 'io', $server->io),
-            'cpu' => (int) array_get($data, 'cpu', $server->cpu),
-            'disk' => (int) array_get($data, 'disk', $server->disk),
-            'allocation_id' => array_get($data, 'allocation_id', $server->allocation_id),
+        $server = $this->repository->withFreshModel()->update($server->id, [
+            'memory' => array_get($data, 'memory'),
+            'swap' => array_get($data, 'swap'),
+            'io' => array_get($data, 'io'),
+            'cpu' => array_get($data, 'cpu'),
+            'disk' => array_get($data, 'disk'),
+            'allocation_id' => array_get($data, 'allocation_id'),
         ]);
 
-        $allocations = $this->allocationRepository->findWhere([
-            ['server_id', '=', $server->id],
-        ]);
+        $allocations = $this->allocationRepository->findWhere([['server_id', '=', $server->id]]);
 
-        $this->setBuild('memory', (int) $server->memory);
-        $this->setBuild('swap', (int) $server->swap);
-        $this->setBuild('io', (int) $server->io);
-        $this->setBuild('cpu', (int) $server->cpu);
-        $this->setBuild('disk', (int) $server->disk);
-        $this->setBuild('ports|overwrite', $allocations->groupBy('ip')->map(function ($item) {
+        $build['memory'] = (int) $server->memory;
+        $build['swap'] = (int) $server->swap;
+        $build['io'] = (int) $server->io;
+        $build['cpu'] = (int) $server->cpu;
+        $build['disk'] = (int) $server->disk;
+        $build['ports|overwrite'] = $allocations->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
-        })->toArray());
+        })->toArray();
 
         try {
-            $this->daemonServerRepository->setServer($server)->update([
-                'build' => $this->getBuild(),
-            ]);
-
-            $this->database->commit();
+            $this->daemonServerRepository->setServer($server)->update(['build' => $build]);
+            $this->connection->commit();
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
+
+        return $server;
     }
 
     /**
-     * Process the allocations being assigned in the data and ensure they are available for a server.
+     * Process the allocations being assigned in the data and ensure they
+     * are available for a server.
      *
      * @param \Pterodactyl\Models\Server $server
      * @param array                      $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function processAllocations(Server $server, array &$data)
+    private function processAllocations(Server $server, array &$data)
     {
+        $firstAllocationId = null;
+
         if (! array_key_exists('add_allocations', $data) && ! array_key_exists('remove_allocations', $data)) {
             return;
         }
 
-        // Loop through allocations to add.
+        // Handle the addition of allocations to this server.
         if (array_key_exists('add_allocations', $data) && ! empty($data['add_allocations'])) {
-            $unassigned = $this->allocationRepository->findWhere([
-                ['server_id', '=', null],
-                ['node_id', '=', $server->node_id],
-            ])->pluck('id')->toArray();
+            $unassigned = $this->allocationRepository->getUnassignedAllocationIds($server->node_id);
 
+            $updateIds = [];
             foreach ($data['add_allocations'] as $allocation) {
                 if (! in_array($allocation, $unassigned)) {
                     continue;
                 }
 
-                $this->firstAllocationId = $this->firstAllocationId ?? $allocation;
-                $toUpdate[] = [$allocation];
+                $firstAllocationId = $firstAllocationId ?? $allocation;
+                $updateIds[] = $allocation;
             }
 
-            if (isset($toUpdate)) {
-                $this->allocationRepository->updateWhereIn('id', $toUpdate, ['server_id' => $server->id]);
-                unset($toUpdate);
+            if (! empty($updateIds)) {
+                $this->allocationRepository->updateWhereIn('id', $updateIds, ['server_id' => $server->id]);
             }
         }
 
-        // Loop through allocations to remove.
+        // Handle removal of allocations from this server.
         if (array_key_exists('remove_allocations', $data) && ! empty($data['remove_allocations'])) {
-            $assigned = $this->allocationRepository->findWhere([
-                ['server_id', '=', $server->id],
-            ])->pluck('id')->toArray();
+            $assigned = $this->allocationRepository->getAssignedAllocationIds($server->id);
 
+            $updateIds = [];
             foreach ($data['remove_allocations'] as $allocation) {
                 if (! in_array($allocation, $assigned)) {
                     continue;
                 }
 
                 if ($allocation == $data['allocation_id']) {
-                    if (is_null($this->firstAllocationId)) {
+                    if (is_null($firstAllocationId)) {
                         throw new DisplayException(trans('admin/server.exceptions.no_new_default_allocation'));
                     }
 
-                    $data['allocation_id'] = $this->firstAllocationId;
+                    $data['allocation_id'] = $firstAllocationId;
                 }
 
-                $toUpdate[] = [$allocation];
+                $updateIds[] = $allocation;
             }
 
-            if (isset($toUpdate)) {
-                $this->allocationRepository->updateWhereIn('id', $toUpdate, ['server_id' => null]);
-                unset($toUpdate);
+            if (! empty($updateIds)) {
+                $this->allocationRepository->updateWhereIn('id', $updateIds, ['server_id' => null]);
             }
         }
     }

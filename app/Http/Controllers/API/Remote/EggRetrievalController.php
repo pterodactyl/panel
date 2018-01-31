@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\API\Remote;
+namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;

@@ -13,10 +13,10 @@ use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ServerDeletionService
@@ -101,28 +101,21 @@ class ServerDeletionService
      * @param int|\Pterodactyl\Models\Server $server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($server)
     {
-        if (! $server instanceof Server) {
-            $server = $this->repository->setColumns(['id', 'node_id', 'uuid'])->find($server);
-        }
-
         try {
             $this->daemonServerRepository->setServer($server)->delete();
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
 
             if (is_null($response) || (! is_null($response) && $response->getStatusCode() !== 404)) {
-                $this->writer->warning($exception);
-
                 // If not forcing the deletion, throw an exception, otherwise just log it and
                 // continue with server deletion process in the panel.
                 if (! $this->force) {
-                    throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                        'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-                    ]));
+                    throw new DaemonConnectionException($exception);
+                } else {
+                    $this->writer->warning($exception);
                 }
             }
         }

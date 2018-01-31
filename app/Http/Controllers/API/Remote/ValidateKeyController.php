@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API\Remote;
+namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Spatie\Fractal\Fractal;
 use Pterodactyl\Http\Controllers\Controller;

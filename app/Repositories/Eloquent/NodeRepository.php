@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Generator;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Concerns\Searchable;
@@ -156,5 +157,29 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
                 'allocations' => $item->ports,
             ];
         })->values();
+    }
+
+    /**
+     * Return the IDs of all nodes that exist in the provided locations and have the space
+     * available to support the additional disk and memory provided.
+     *
+     * @param array $locations
+     * @param int   $disk
+     * @param int   $memory
+     * @return \Generator
+     */
+    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): Generator
+    {
+        $instance = $this->getBuilder()
+            ->select(['nodes.id', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->join('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('nodes.public', 1);
+
+        if (! empty($locations)) {
+            $instance->whereIn('nodes.location_id', $locations);
+        }
+
+        return $instance->cursor();
     }
 }

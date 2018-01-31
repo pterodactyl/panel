@@ -13,7 +13,7 @@ use File;
 use Cache;
 use Carbon;
 use Request;
-use Pterodactyl\Models\APIKey;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Services\ApiKeyService;
 
@@ -51,7 +51,7 @@ class MacroServiceProvider extends ServiceProvider
                     'ApiKeyMacro',
                     'ApiKeyMacro:Key:' . $parts[0],
                 ])->remember('ApiKeyMacro.' . $parts[0], Carbon::now()->addMinutes(15), function () use ($parts) {
-                    return APIKey::where('public', $parts[0])->first();
+                    return ApiKey::where('public', $parts[0])->first();
                 });
             }
 

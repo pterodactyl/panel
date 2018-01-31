@@ -1,20 +1,21 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Exceptions\Model;
 
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
+use Pterodactyl\Exceptions\PterodactylException;
 use Illuminate\Contracts\Support\MessageProvider;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class DataValidationException extends ValidationException implements MessageProvider
+class DataValidationException extends PterodactylException implements HttpExceptionInterface, MessageProvider
 {
+    /**
+     * The validator instance.
+     *
+     * @var \Illuminate\Contracts\Validation\Validator
+     */
+    public $validator;
+
     /**
      * DataValidationException constructor.
      *
@@ -22,14 +23,38 @@ class DataValidationException extends ValidationException implements MessageProv
      */
     public function __construct(Validator $validator)
     {
-        parent::__construct($validator);
+        parent::__construct(
+            'Data integrity exception encountered while performing database write operation. ' . $validator->errors()->toJson()
+        );
+
+        $this->validator = $validator;
     }
 
     /**
+     * Return the validator message bag.
+     *
      * @return \Illuminate\Support\MessageBag
      */
     public function getMessageBag()
     {
         return $this->validator->errors();
+    }
+
+    /**
+     * Return the status code for this request.
+     *
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return 500;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return [];
     }
 }

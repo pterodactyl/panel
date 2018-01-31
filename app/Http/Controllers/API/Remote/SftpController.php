@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\API\Remote;
+namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -9,7 +9,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
-use Pterodactyl\Http\Requests\API\Remote\SftpAuthenticationFormRequest;
+use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 
 class SftpController extends Controller
 {
@@ -34,7 +34,7 @@ class SftpController extends Controller
      * Authenticate a set of credentials and return the associated server details
      * for a SFTP connection on the daemon.
      *
-     * @param \Pterodactyl\Http\Requests\API\Remote\SftpAuthenticationFormRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

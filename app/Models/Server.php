@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -21,6 +14,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Server extends Model implements CleansAttributes, ValidableContract
 {
     use BelongsToThrough, Eloquence, Notifiable, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'server';
 
     /**
      * The table associated with the model.
@@ -67,14 +66,16 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'allocation_id' => 'required',
         'pack_id' => 'sometimes',
         'skip_scripts' => 'sometimes',
+        'image' => 'required',
+        'startup' => 'required',
     ];
 
     /**
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'owner_id' => 'exists:users,id',
-        'name' => 'regex:/^([\w .-]{1,200})$/',
+        'owner_id' => 'integer|exists:users,id',
+        'name' => 'string|min:1|max:255',
         'node_id' => 'exists:nodes,id',
         'description' => 'string',
         'memory' => 'numeric|min:0',
@@ -86,8 +87,9 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'nest_id' => 'exists:nests,id',
         'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',
-        'startup' => 'nullable|string',
+        'startup' => 'string',
         'skip_scripts' => 'boolean',
+        'image' => 'string|max:255',
     ];
 
     /**

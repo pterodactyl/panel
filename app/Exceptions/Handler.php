@@ -3,13 +3,11 @@
 namespace Pterodactyl\Exceptions;
 
 use Exception;
-use Prologue\Alerts\Facades\Alert;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Exceptions\Model\DataValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -25,13 +23,23 @@ class Handler extends ExceptionHandler
         AuthenticationException::class,
         AuthorizationException::class,
         DisplayException::class,
-        DataValidationException::class,
-        DisplayValidationException::class,
         HttpException::class,
         ModelNotFoundException::class,
         RecordNotFoundException::class,
         TokenMismatchException::class,
         ValidationException::class,
+    ];
+
+    /**
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array
+     */
+    protected $dontFlash = [
+        'token',
+        'secret',
+        'password',
+        'password_confirmation',
     ];
 
     /**
@@ -53,40 +61,78 @@ class Handler extends ExceptionHandler
      *
      * @param \Illuminate\Http\Request $request
      * @param \Exception               $exception
-     * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Exception
      */
     public function render($request, Exception $exception)
     {
-        if ($request->expectsJson() || $request->isJson() || $request->is(...config('pterodactyl.json_routes'))) {
-            $exception = $this->prepareException($exception);
+        return parent::render($request, $exception);
+    }
 
-            if (config('app.debug') || $this->isHttpException($exception) || $exception instanceof DisplayException) {
-                $displayError = $exception->getMessage();
-            } else {
-                $displayError = 'An unhandled exception was encountered with this request.';
+    /**
+     * @param \Illuminate\Http\Request                   $request
+     * @param \Illuminate\Validation\ValidationException $exception
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function invalidJson($request, ValidationException $exception)
+    {
+        $codes = collect($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
+            $cleaned = [];
+            foreach ($reasons as $reason => $attrs) {
+                $cleaned[] = snake_case($reason);
             }
 
-            $response = response()->json(
-                [
-                    'error' => $displayError,
-                    'http_code' => (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : 500,
-                    'trace' => (! config('app.debug')) ? null : $exception->getTrace(),
+            return [str_replace('.', '_', $field) => $cleaned];
+        })->toArray();
+
+        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes) {
+            $response = [];
+            foreach ($errors as $key => $error) {
+                $response[] = [
+                    'code' => array_get($codes, str_replace('.', '_', $field) . '.' . $key),
+                    'detail' => $error,
+                    'source' => ['field' => $field],
+                ];
+            }
+
+            return $response;
+        })->flatMap(function ($errors) {
+            return $errors;
+        })->toArray();
+
+        return response()->json(['errors' => $errors], $exception->status);
+    }
+
+    /**
+     * Return the exception as a JSONAPI representation for use on API requests.
+     *
+     * @param \Exception $exception
+     * @param array      $override
+     * @return array
+     */
+    public static function convertToArray(Exception $exception, array $override = []): array
+    {
+        $error = [
+            'code' => class_basename($exception),
+            'status' => method_exists($exception, 'getStatusCode') ? strval($exception->getStatusCode()) : '500',
+            'detail' => 'An error was encountered while processing this request.',
+        ];
+
+        if (config('app.debug')) {
+            $error = array_merge($error, [
+                'detail' => $exception->getMessage(),
+                'source' => [
+                    'line' => $exception->getLine(),
+                    'file' => str_replace(base_path(), '', $exception->getFile()),
                 ],
-                $this->isHttpException($exception) ? $exception->getStatusCode() : 500,
-                $this->isHttpException($exception) ? $exception->getHeaders() : [],
-                JSON_UNESCAPED_SLASHES
-            );
-
-            parent::report($exception);
-        } elseif ($exception instanceof DisplayException) {
-            Alert::danger($exception->getMessage())->flash();
-
-            return redirect()->back()->withInput();
+                'meta' => [
+                    'trace' => explode("\n", $exception->getTraceAsString()),
+                ],
+            ]);
         }
 
-        return (isset($response)) ? $response : parent::render($request, $exception);
+        return ['errors' => [array_merge($error, $override)]];
     }
 
     /**
@@ -103,5 +149,17 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest(route('auth.login'));
+    }
+
+    /**
+     * Converts an exception into an array to render in the response. Overrides
+     * Laravel's built-in converter to output as a JSONAPI spec compliant object.
+     *
+     * @param \Exception $exception
+     * @return array
+     */
+    protected function convertExceptionToArray(Exception $exception)
+    {
+        return self::convertToArray($exception);
     }
 }

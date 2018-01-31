@@ -4,11 +4,13 @@ namespace Pterodactyl\Models;
 
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -23,7 +25,9 @@ class User extends Model implements
     CleansAttributes,
     ValidableContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
+    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Eloquence, Notifiable, Validable {
+        gatherRules as eloquenceGatherRules;
+    }
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
@@ -32,6 +36,12 @@ class User extends Model implements
     const FILTER_LEVEL_OWNER = 1;
     const FILTER_LEVEL_ADMIN = 2;
     const FILTER_LEVEL_SUBUSER = 3;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'user';
 
     /**
      * Level of servers to display when using access() on a user.
@@ -87,7 +97,7 @@ class User extends Model implements
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token', 'totp_secret'];
+    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
 
     /**
      * Parameters for search querying.
@@ -122,6 +132,7 @@ class User extends Model implements
     protected static $applicationRules = [
         'uuid' => 'required',
         'email' => 'required',
+        'external_id' => 'sometimes',
         'username' => 'required',
         'name_first' => 'required',
         'name_last' => 'required',
@@ -138,15 +149,28 @@ class User extends Model implements
     protected static $dataIntegrityRules = [
         'uuid' => 'string|size:36|unique:users,uuid',
         'email' => 'email|unique:users,email',
+        'external_id' => 'nullable|string|max:255|unique:users,external_id',
         'username' => 'alpha_dash|between:1,255|unique:users,username',
         'name_first' => 'string|between:1,255',
         'name_last' => 'string|between:1,255',
         'password' => 'nullable|string',
         'root_admin' => 'boolean',
-        'language' => 'string|between:2,5',
+        'language' => 'string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
     ];
+
+    /**
+     * Implement language verification by overriding Eloquence's gather
+     * rules function.
+     */
+    protected static function gatherRules()
+    {
+        $rules = self::eloquenceGatherRules();
+        $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
+
+        return $rules;
+    }
 
     /**
      * Send the password reset notification.

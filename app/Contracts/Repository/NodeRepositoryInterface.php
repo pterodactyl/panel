@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Generator;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -62,4 +63,15 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
      * @return \Illuminate\Support\Collection
      */
     public function getNodesForServerCreation(): Collection;
+
+    /**
+     * Return the IDs of all nodes that exist in the provided locations and have the space
+     * available to support the additional disk and memory provided.
+     *
+     * @param array $locations
+     * @param int   $disk
+     * @param int   $memory
+     * @return \Generator
+     */
+    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): Generator;
 }

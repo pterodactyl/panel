@@ -68,7 +68,7 @@ class RemoteRequestController extends Controller
         try {
             $listing = $this->repository->setServer($server)->setToken($request->attributes->get('server_token'))->getDirectory($requestDirectory);
         } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
+            throw new DaemonConnectionException($exception, true);
         }
 
         return view('server.files.list', [

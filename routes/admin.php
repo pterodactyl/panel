@@ -7,6 +7,23 @@ Route::get('/', 'BaseController@index')->name('admin.index');
 | Location Controller Routes
 |--------------------------------------------------------------------------
 |
+| Endpoint: /admin/api
+|
+*/
+Route::group(['prefix' => 'api'], function () {
+    Route::get('/', 'ApiController@index')->name('admin.api.index');
+    Route::get('/new', 'ApiController@create')->name('admin.api.new');
+
+    Route::post('/new', 'ApiController@store');
+
+    Route::delete('/revoke/{identifier}', 'ApiController@delete')->name('admin.api.delete');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
 | Endpoint: /admin/locations
 |
 */
