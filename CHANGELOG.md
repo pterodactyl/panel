@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.1]` — Fixes exception thrown when revoking user sessions.
+* `[rc.1]` — Fixes exception that would occur when trying to delete allocations from a node.
 
 ## v0.7.0-rc.1 (Derelict Dermodactylus)
 ### Fixed

@@ -272,12 +272,13 @@ class NodesController extends Controller
     /**
      * Removes a single allocation from a node.
      *
+     * @param int                            $node
      * @param \Pterodactyl\Models\Allocation $allocation
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function allocationRemoveSingle(Allocation $allocation): Response
+    public function allocationRemoveSingle(int $node, Allocation $allocation): Response
     {
         $this->allocationDeletionService->handle($allocation);
 
