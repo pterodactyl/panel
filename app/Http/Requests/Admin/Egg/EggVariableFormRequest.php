@@ -20,6 +20,7 @@ class EggVariableFormRequest extends AdminFormRequest
             'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . EggVariable::RESERVED_ENV_NAMES,
             'options' => 'sometimes|required|array',
             'rules' => 'bail|required|string',
+            'default_value' => 'present',
         ];
     }
 
@@ -38,10 +39,8 @@ class EggVariableFormRequest extends AdminFormRequest
         // If rules is not a string it is already violating the rule defined above
         // so just skip the addition of default value rules since this request
         // will fail anyways.
-        if (! is_string($rules)) {
-            return;
-        }
-
-        $validator->addRules(['default_value' => $rules]);
+        $validator->sometimes('default_value', $rules, function () use ($rules) {
+            return is_string($rules);
+        });
     }
 }
