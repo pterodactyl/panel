@@ -139,10 +139,10 @@ class SecurityController extends Controller
      * Revokes a user session.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param string                   $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function revoke(Request $request, $id)
+    public function revoke(Request $request, string $id)
     {
         $this->repository->deleteUserSession($request->user()->id, $id);
 

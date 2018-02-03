@@ -3,7 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-### v0.7.0-rc.1 (Derelict Dermodactylus)
+## v0.7.0-rc.2 (Derelict Dermodactylus)
+### Fixed
+* `[rc.1]` — Fixes exception thrown when revoking user sessions.
+
+## v0.7.0-rc.1 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
 * `[beta.4]` — Fixes behavior of variable validation to not break the page when no rules are provided.
