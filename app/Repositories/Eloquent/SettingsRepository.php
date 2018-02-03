@@ -30,17 +30,17 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
     /**
      * Store a new persistent setting in the database.
      *
-     * @param string $key
-     * @param string $value
+     * @param string      $key
+     * @param string|null $value
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function set(string $key, string $value)
+    public function set(string $key, string $value = null)
     {
         // Clear item from the cache.
         $this->clearCache($key);
-        $this->withoutFreshModel()->updateOrCreate(['key' => $key], ['value' => $value]);
+        $this->withoutFreshModel()->updateOrCreate(['key' => $key], ['value' => $value ?? '']);
 
         self::$cache[$key] = $value;
     }

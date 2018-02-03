@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[rc.1]` — Fixes exception thrown when revoking user sessions.
 * `[rc.1]` — Fixes exception that would occur when trying to delete allocations from a node.
+* `[rc.1]` — Fixes exception thown when attempting to adjust mail settings as well as a validation error thrown afterwards.
 
 ## v0.7.0-rc.1 (Derelict Dermodactylus)
 ### Fixed
