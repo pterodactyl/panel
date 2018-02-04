@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.1]` — Fixes exception thown when attempting to adjust mail settings as well as a validation error thrown afterwards.
 * `[rc.1]` — Fixes bug preventing modification of the default value for an Egg variable.
 * `[rc.1]` — Fixed a bug that would occur when attempting to reset the daemon secret for a node.
+* `[rc.1]` — Fix exception thrown when attempting to modify an existing database host.
 
 ## v0.7.0-rc.1 (Derelict Dermodactylus)
 ### Fixed
