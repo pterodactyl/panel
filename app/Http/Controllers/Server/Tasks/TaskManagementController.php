@@ -10,6 +10,7 @@ use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
+use Pterodactyl\Services\Schedules\ScheduleUpdateService;
 use Pterodactyl\Services\Schedules\ScheduleCreationService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 use Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest;
@@ -39,23 +40,31 @@ class TaskManagementController extends Controller
     protected $repository;
 
     /**
+     * @var \Pterodactyl\Services\Schedules\ScheduleUpdateService
+     */
+    private $updateService;
+
+    /**
      * TaskManagementController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                             $alert
      * @param \Pterodactyl\Contracts\Extensions\HashidsInterface            $hashids
      * @param \Pterodactyl\Services\Schedules\ScheduleCreationService       $creationService
+     * @param \Pterodactyl\Services\Schedules\ScheduleUpdateService         $updateService
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(
         AlertsMessageBag $alert,
         HashidsInterface $hashids,
         ScheduleCreationService $creationService,
+        ScheduleUpdateService $updateService,
         ScheduleRepositoryInterface $repository
     ) {
         $this->alert = $alert;
         $this->creationService = $creationService;
         $this->hashids = $hashids;
         $this->repository = $repository;
+        $this->updateService = $updateService;
     }
 
     /**
@@ -112,7 +121,7 @@ class TaskManagementController extends Controller
         $server = $request->attributes->get('server');
 
         $schedule = $this->creationService->handle($server, $request->normalize(), $request->getTasks());
-        $this->alert->success(trans('server.schedule.task_created'))->flash();
+        $this->alert->success(trans('server.schedule.schedule_created'))->flash();
 
         return redirect()->route('server.schedules.view', [
             'server' => $server->uuidShort,
@@ -149,15 +158,18 @@ class TaskManagementController extends Controller
      *
      * @param \Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
     public function update(ScheduleCreationFormRequest $request): RedirectResponse
     {
         $server = $request->attributes->get('server');
         $schedule = $request->attributes->get('schedule');
 
-        $this->alert->warning('Function is not implemented.')->flash();
-        // $this->updateService->handle($task, $request->normalize(), $request->getChainedTasks());
-        // $this->alert->success(trans('server.schedules.task_updated'))->flash();
+        $this->updateService->handle($schedule, $request->normalize(), $request->getTasks());
+        $this->alert->success(trans('server.schedule.schedule_updated'))->flash();
 
         return redirect()->route('server.schedules.view', [
             'server' => $server->uuidShort,

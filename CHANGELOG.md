@@ -15,6 +15,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.
 
+### Added
+* Added support for editing an existing schedule.
+
 ## v0.7.0-rc.1 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
