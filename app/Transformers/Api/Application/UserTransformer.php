@@ -25,14 +25,27 @@ class UserTransformer extends BaseTransformer
     }
 
     /**
-     * Return a generic transformed subuser array.
+     * Return a transformed User model that can be consumed by external services.
      *
      * @param \Pterodactyl\Models\User $user
      * @return array
      */
     public function transform(User $user): array
     {
-        return $user->toArray();
+        return [
+            'id' => $user->id,
+            'external_id' => $user->external_id,
+            'uuid' => $user->uuid,
+            'username' => $user->username,
+            'email' => $user->email,
+            'first_name' => $user->name_first,
+            'last_name' => $user->name_last,
+            'language' => $user->language,
+            'root_admin' => (bool) $user->root_admin,
+            '2fa' => (bool) $user->use_totp,
+            'created_at' => $this->formatTimestamp($user->created_at),
+            'updated_at' => $this->formatTimestamp($user->updated_at),
+        ];
     }
 
     /**

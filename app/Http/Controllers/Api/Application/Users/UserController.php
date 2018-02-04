@@ -10,7 +10,6 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
-use Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
@@ -82,10 +81,10 @@ class UserController extends ApplicationApiController
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
      * @return array
      */
-    public function view(GetUserRequest $request): array
+    public function view(GetUsersRequest $request): array
     {
         return $this->fractal->item($request->getModel(User::class))
             ->transformWith($this->getTransformer(UserTransformer::class))

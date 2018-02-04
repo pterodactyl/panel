@@ -6,6 +6,7 @@ use Closure;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Location;
@@ -28,6 +29,7 @@ class ApiSubstituteBindings extends SubstituteBindings
         'nest' => Nest::class,
         'node' => Node::class,
         'server' => Server::class,
+        'user' => User::class,
     ];
 
     /**

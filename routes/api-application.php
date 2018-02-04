@@ -10,7 +10,7 @@
 */
 Route::group(['prefix' => '/users'], function () {
     Route::get('/', 'Users\UserController@index')->name('api.application.users');
-    Route::get('/{user}', 'Users\UserController@view')->name('api.applications.users.view');
+    Route::get('/{user}', 'Users\UserController@view')->name('api.application.users.view');
 
     Route::post('/', 'Users\UserController@store');
     Route::patch('/{user}', 'Users\UserController@update');
