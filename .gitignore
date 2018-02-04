@@ -5,6 +5,7 @@
 .vscode/*
 storage/framework/*
 /.idea
+/nbproject
 
 composer.lock
 node_modules
