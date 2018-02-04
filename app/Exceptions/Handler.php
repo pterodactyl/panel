@@ -3,6 +3,8 @@
 namespace Pterodactyl\Exceptions;
 
 use Exception;
+use PDOException;
+use Psr\Log\LoggerInterface;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
@@ -43,17 +45,35 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception.
+     * Report or log an exception. Skips Laravel's internal reporter since we
+     * don't need or want the user information in our logs by default.
      *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     * If you want to implement logging in a different format to integrate with
+     * services such as AWS Cloudwatch or other monitoring you can replace the
+     * contents of this function with a call to the parent reporter.
      *
      * @param \Exception $exception
+     * @return mixed
      *
      * @throws \Exception
      */
     public function report(Exception $exception)
     {
-        parent::report($exception);
+        if (! config('app.exceptions.report_all', false) && $this->shouldntReport($exception)) {
+            return null;
+        }
+
+        if (method_exists($exception, 'report')) {
+            return $exception->report();
+        }
+
+        try {
+            $logger = $this->container->make(LoggerInterface::class);
+        } catch (Exception $ex) {
+            throw $exception;
+        }
+
+        return $logger->error($exception instanceof PDOException ? $exception->getMessage() : $exception);
     }
 
     /**
@@ -71,6 +91,9 @@ class Handler extends ExceptionHandler
     }
 
     /**
+     * Transform a validation exception into a consistent format to be returned for
+     * calls to the API.
+     *
      * @param \Illuminate\Http\Request                   $request
      * @param \Illuminate\Validation\ValidationException $exception
      * @return \Illuminate\Http\JsonResponse

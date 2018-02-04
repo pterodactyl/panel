@@ -12,6 +12,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.1]` — Fixed a bug that would occur when attempting to reset the daemon secret for a node.
 * `[rc.1]` — Fix exception thrown when attempting to modify an existing database host.
 
+### Changed
+* Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.
+
 ## v0.7.0-rc.1 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
