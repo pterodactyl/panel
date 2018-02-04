@@ -28,7 +28,7 @@ class ConfigurationRepository extends BaseRepository implements ConfigurationRep
                 'port' => $node->daemonSFTP,
             ],
             'remote' => [
-                'base' => $this->config->get('app.url'),
+                'base' => config('app.url'),
             ],
             'uploads' => [
                 'size_limit' => $node->upload_size,
