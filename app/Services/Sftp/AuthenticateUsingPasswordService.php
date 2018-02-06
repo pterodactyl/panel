@@ -2,12 +2,12 @@
 
 namespace Pterodactyl\Services\Sftp;
 
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 
 class AuthenticateUsingPasswordService
 {
@@ -90,7 +90,7 @@ class AuthenticateUsingPasswordService
             $subuser = $this->subuserRepository->getWithPermissionsUsingUserAndServer($user->id, $server->id);
             $permissions = $subuser->getRelation('permissions')->pluck('permission')->toArray();
 
-            if(! in_array('view-sftp', $permissions)) {
+            if (! in_array('view-sftp', $permissions)) {
                 throw new RecordNotFoundException;
             }
         }

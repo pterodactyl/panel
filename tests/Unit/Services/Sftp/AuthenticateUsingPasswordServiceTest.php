@@ -7,11 +7,11 @@ use Tests\TestCase;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 
 class AuthenticateUsingPasswordServiceTest extends TestCase
 {
