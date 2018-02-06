@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Sftp;
 
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -26,20 +27,28 @@ class AuthenticateUsingPasswordService
     private $userRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     */
+    private $subuserRepository;
+
+    /**
      * AuthenticateUsingPasswordService constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService   $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface   $userRepository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService    $keyProviderService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $repository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
      */
     public function __construct(
         DaemonKeyProviderService $keyProviderService,
         ServerRepositoryInterface $repository,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+        SubuserRepositoryInterface $subuserRepository
     ) {
         $this->keyProviderService = $keyProviderService;
         $this->repository = $repository;
         $this->userRepository = $userRepository;
+        $this->subuserRepository = $subuserRepository;
     }
 
     /**
@@ -73,8 +82,17 @@ class AuthenticateUsingPasswordService
         }
 
         $server = $this->repository->setColumns(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->getByUuid($server);
-        if ($server->node_id !== $node || (! $user->root_admin && $server->owner_id !== $user->id)) {
+        if ($server->node_id !== $node) {
             throw new RecordNotFoundException;
+        }
+
+        if ((! $user->root_admin && $server->owner_id !== $user->id)) {
+            $subuser = $this->subuserRepository->getWithPermissionsUsingUserAndServer($user->id, $server->id);
+            $permissions = $subuser->getRelation('permissions')->pluck('permission')->toArray();
+
+            if(! in_array('view-sftp', $permissions)) {
+                throw new RecordNotFoundException;
+            }
         }
 
         if ($server->installed !== 1 || $server->suspended) {

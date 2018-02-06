@@ -107,7 +107,6 @@ return [
             'subuser_header' => 'Subuser Management',
             'server_header' => 'Server Management',
             'task_header' => 'Schedule Management',
-            'sftp_header' => 'SFTP Management',
             'database_header' => 'Database Management',
             'power_start' => [
                 'title' => 'Start Server',
@@ -129,17 +128,21 @@ return [
                 'title' => 'Send Console Command',
                 'description' => 'Allows sending a command from the console. If the user does not have stop or restart permissions they cannot send the application\'s stop command.',
             ],
+            'view_sftp' => [
+                'title' => 'SFTP Allowed',
+                'description' => 'Allows user to connect to the SFTP server provided by the daemon.',
+            ],
             'list_files' => [
                 'title' => 'List Files',
                 'description' => 'Allows user to list all files and folders on the server but not view file contents.',
             ],
             'edit_files' => [
                 'title' => 'Edit Files',
-                'description' => 'Allows user to open a file for viewing only.',
+                'description' => 'Allows user to open a file for viewing only. SFTP is not effected by this permission.',
             ],
             'save_files' => [
                 'title' => 'Save Files',
-                'description' => 'Allows user to save modified file contents.',
+                'description' => 'Allows user to save modified file contents. SFTP is not effected by this permission.',
             ],
             'move_files' => [
                 'title' => 'Rename & Move Files',
@@ -237,18 +240,6 @@ return [
                 'title' => 'Delete Schedule',
                 'description' => 'Allows a user to delete a schedule from the server.',
             ],
-            'view_sftp' => [
-                'title' => 'View SFTP Details',
-                'description' => 'Allows user to view the server\'s SFTP information but not the password.',
-            ],
-            'view_sftp_password' => [
-                'title' => 'View SFTP Password',
-                'description' => 'Allows user to view the SFTP password for the server.',
-            ],
-            'reset_sftp' => [
-                'title' => 'Reset SFTP Password',
-                'description' => 'Allows user to change the SFTP password for the server.',
-            ],
             'view_databases' => [
                 'title' => 'View Database Details',
                 'description' => 'Allows user to view all databases associated with this server including the usernames and passwords for the databases.',
@@ -302,7 +293,6 @@ return [
         'sftp' => [
             'header' => 'SFTP Configuration',
             'header_sub' => 'Account details for SFTP connections.',
-            'change_pass' => 'Change SFTP Password',
             'details' => 'SFTP Details',
             'conn_addr' => 'Connection Address',
             'warning' => 'The SFTP password is your account password. Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',

@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -30,6 +31,11 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     private $userRepository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     */
+    private $subuserRepository;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -39,6 +45,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
         $this->keyProviderService = m::mock(DaemonKeyProviderService::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->userRepository = m::mock(UserRepositoryInterface::class);
+        $this->subuserRepository = m::mock(SubuserRepositoryInterface::class);
     }
 
     /**
@@ -130,8 +137,8 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     }
 
     /**
-     * Test that an exception is thrown if the user is not the owner of the server
-     * and is not an administrator.
+     * Test that an exception is thrown if the user is not the owner of the server,
+     * is not a sub user and is not an administrator.
      *
      * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -145,6 +152,8 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
 
         $this->repository->shouldReceive('setColumns')->with(['id', 'node_id', 'owner_id', 'uuid', 'installed', 'suspended'])->once()->andReturnSelf();
         $this->repository->shouldReceive('getByUuid')->with($server->uuidShort)->once()->andReturn($server);
+
+        $this->subuserRepository->shouldReceive('getWithPermissionsUsingUserAndServer')->with($user->id, $server->id)->once()->andThrow(new RecordNotFoundException);
 
         $this->getService()->handle($user->username, 'password', 1, $server->uuidShort);
     }
@@ -214,6 +223,6 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      */
     private function getService(): AuthenticateUsingPasswordService
     {
-        return new AuthenticateUsingPasswordService($this->keyProviderService, $this->repository, $this->userRepository);
+        return new AuthenticateUsingPasswordService($this->keyProviderService, $this->repository, $this->userRepository, $this->subuserRepository);
     }
 }

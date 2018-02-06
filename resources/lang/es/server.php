@@ -103,7 +103,6 @@ return [
             'subuser_header' => 'Subuser De Gestión',
             'server_header' => 'Administración Del Servidor',
             'task_header' => 'La Programación De La Administración',
-            'sftp_header' => 'SFTP Gestión',
             'database_header' => 'Administración De Base De Datos',
             'power_start' => [
                 'title' => 'Inicio Del Servidor',
@@ -125,17 +124,21 @@ return [
                 'title' => 'Enviar Comandos De La Consola',
                 'description' => 'Permite el envío de un comando desde la consola. Si el usuario no tiene permiso para detener o reiniciar, no puede enviar el comando de detención de la aplicación.',
             ],
+            'view_sftp' => [
+                'title' => 'SFTP permitido',
+                'description' => 'Permite al usuario conectarse al servidor SFTP proporcionado por el daemon.',
+            ],
             'list_files' => [
                 'title' => 'Lista De Archivos',
                 'description' => 'Permite al usuario a la lista de todos los archivos y carpetas en el servidor, pero no ver el contenido del archivo.',
             ],
             'edit_files' => [
                 'title' => 'Editar Archivos',
-                'description' => 'Permite al usuario abrir un archivo solo para visualización.',
+                'description' => 'Permite al usuario abrir un archivo solo para visualización. SFTP no se ve afectado por este permiso.',
             ],
             'save_files' => [
                 'title' => 'Guardar Archivos',
-                'description' => 'Permite que el usuario guarde el archivo modificado contenido.',
+                'description' => 'Permite que el usuario guarde el archivo modificado contenido. SFTP no se ve afectado por este permiso.',
             ],
             'move_files' => [
                 'title' => 'Renombrar Y Mover Archivos',
@@ -229,18 +232,6 @@ return [
                 'title' => 'Eliminar Horario',
                 'description' => 'Permite a un usuario para eliminar un programa desde el servidor.',
             ],
-            'view_sftp' => [
-                'title' => 'Ver SFTP Detalles',
-                'description' => 'Permite al usuario ver la información SFTP del servidor pero no la contraseña.',
-            ],
-            'view_sftp_password' => [
-                'title' => 'Ver SFTP Contraseña',
-                'description' => 'Permite al usuario ver el SFTP contraseña para el servidor.',
-            ],
-            'reset_sftp' => [
-                'title' => 'Restablecer Contraseña SFTP',
-                'description' => 'Le permite al usuario cambiar el SFTP contraseña para el servidor.',
-            ],
             'view_databases' => [
                 'title' => 'Ver Detalles De Base De Datos',
                 'description' => 'Permite al usuario ver todas las bases de datos asociadas con este servidor, incluidos los nombres de usuario y contraseñas de las bases de datos de.',
@@ -294,7 +285,6 @@ return [
         'sftp' => [
             'header' => 'SFTP Configuración',
             'header_sub' => 'Detalles de la cuenta para SFTP.',
-            'change_pass' => 'Cambiar Contraseña SFTP',
             'details' => 'SFTP Detalles',
             'conn_addr' => 'Dirección De Conexión',
             'warning' => 'Asegúrese de que su cliente está configurado para utilizar SFTP y FTP no o FTPS para las conexiones, hay una diferencia entre los protocolos.',
