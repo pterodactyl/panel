@@ -96,9 +96,9 @@ class Permission extends Model implements CleansAttributes, ValidableContract
         ],
         'file' => [
             'view-sftp' => null,
-            'list-files' => 's:files:list',
-            'edit-files' => 's:files:edit',
-            'save-files' => 's:files:save',
+            'list-files' => 's:files:get',
+            'edit-files' => 's:files:read',
+            'save-files' => 's:files:post',
             'move-files' => 's:files:move',
             'copy-files' => 's:files:copy',
             'compress-files' => 's:files:compress',
