@@ -6,8 +6,8 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthenticateUsingPasswordService
 {
