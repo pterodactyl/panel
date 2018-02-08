@@ -117,7 +117,7 @@ abstract class ApplicationApiRequest extends FormRequest
         // an item exists (or does not exist) to the user until they can prove
         // that they have permission to know about it.
         if ($this->attributes->get('is_missing_model', false) || ! $this->resourceExists()) {
-            throw new NotFoundHttpException('The requested resource does not exist on this server.');
+            throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
 
         return true;

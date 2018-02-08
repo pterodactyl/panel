@@ -70,7 +70,7 @@ class UserController extends ApplicationApiController
      */
     public function index(GetUsersRequest $request): array
     {
-        $users = $this->repository->paginated(100);
+        $users = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
 
         return $this->fractal->collection($users)
             ->transformWith($this->getTransformer(UserTransformer::class))

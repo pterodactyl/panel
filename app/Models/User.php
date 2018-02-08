@@ -105,11 +105,12 @@ class User extends Model implements
      * @var array
      */
     protected $searchableColumns = [
-        'email' => 10,
-        'username' => 9,
-        'name_first' => 6,
-        'name_last' => 6,
-        'uuid' => 1,
+        'username' => 100,
+        'email' => 100,
+        'external_id' => 80,
+        'uuid' => 80,
+        'name_first' => 40,
+        'name_last' => 40,
     ];
 
     /**

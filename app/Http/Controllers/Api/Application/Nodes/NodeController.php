@@ -69,7 +69,7 @@ class NodeController extends ApplicationApiController
      */
     public function index(GetNodesRequest $request): array
     {
-        $nodes = $this->repository->paginated(50);
+        $nodes = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
 
         return $this->fractal->collection($nodes)
             ->transformWith($this->getTransformer(NodeTransformer::class))
