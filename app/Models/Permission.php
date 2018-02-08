@@ -95,7 +95,7 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'reset-db-password' => null,
         ],
         'file' => [
-            'view-sftp' => null,
+            'access-sftp' => null,
             'list-files' => 's:files:get',
             'edit-files' => 's:files:read',
             'save-files' => 's:files:post',

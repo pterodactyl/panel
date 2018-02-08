@@ -36,19 +36,19 @@ class AuthenticateUsingPasswordService
      *
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService    $keyProviderService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $repository
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
      */
     public function __construct(
         DaemonKeyProviderService $keyProviderService,
         ServerRepositoryInterface $repository,
-        UserRepositoryInterface $userRepository,
-        SubuserRepositoryInterface $subuserRepository
+        SubuserRepositoryInterface $subuserRepository,
+        UserRepositoryInterface $userRepository
     ) {
         $this->keyProviderService = $keyProviderService;
         $this->repository = $repository;
-        $this->userRepository = $userRepository;
         $this->subuserRepository = $subuserRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -86,11 +86,11 @@ class AuthenticateUsingPasswordService
             throw new RecordNotFoundException;
         }
 
-        if ((! $user->root_admin && $server->owner_id !== $user->id)) {
+        if (! $user->root_admin && $server->owner_id !== $user->id) {
             $subuser = $this->subuserRepository->getWithPermissionsUsingUserAndServer($user->id, $server->id);
             $permissions = $subuser->getRelation('permissions')->pluck('permission')->toArray();
 
-            if (! in_array('view-sftp', $permissions)) {
+            if (! in_array('access-sftp', $permissions)) {
                 throw new RecordNotFoundException;
             }
         }

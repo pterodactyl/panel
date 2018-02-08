@@ -24,16 +24,16 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
+    
+    /**
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     */
+    private $subuserRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $userRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
-     */
-    private $subuserRepository;
 
     /**
      * Setup tests.
@@ -44,8 +44,8 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
 
         $this->keyProviderService = m::mock(DaemonKeyProviderService::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
-        $this->userRepository = m::mock(UserRepositoryInterface::class);
         $this->subuserRepository = m::mock(SubuserRepositoryInterface::class);
+        $this->userRepository = m::mock(UserRepositoryInterface::class);
     }
 
     /**
