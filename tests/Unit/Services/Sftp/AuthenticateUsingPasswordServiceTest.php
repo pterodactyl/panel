@@ -223,6 +223,6 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      */
     private function getService(): AuthenticateUsingPasswordService
     {
-        return new AuthenticateUsingPasswordService($this->keyProviderService, $this->repository, $this->userRepository, $this->subuserRepository);
+        return new AuthenticateUsingPasswordService($this->keyProviderService, $this->repository, $this->subuserRepository, $this->userRepository);
     }
 }
