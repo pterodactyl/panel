@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
+* Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
 
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
