@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
 * `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
+* `[rc.2]` — Fixes bug with server creation API endpoint that would fail to validate `allocation.default` correctly.
 
 ### Added
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
