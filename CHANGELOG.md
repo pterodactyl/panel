@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.0-rc.3 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
+* `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
 
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
