@@ -8,6 +8,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
 * `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
 
+### Added
+* Added ability to search the following API endpoints: list users, list servers, and list locations.
+
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.1]` — Fixes exception thrown when revoking user sessions.
