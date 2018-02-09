@@ -21,20 +21,41 @@ class StoreUserRequest extends ApplicationApiRequest
     /**
      * Return the validation rules for this request.
      *
+     * @param array|null $rules
      * @return array
      */
-    public function rules(): array
+    public function rules(array $rules = null): array
     {
-        return collect(User::getCreateRules())->only([
+        $rules = $rules ?? User::getCreateRules();
+
+        $response = collect($rules)->only([
             'external_id',
             'email',
             'username',
-            'name_first',
-            'name_last',
             'password',
             'language',
             'root_admin',
         ])->toArray();
+
+        $response['first_name'] = $rules['name_first'];
+        $response['last_name'] = $rules['name_last'];
+
+        return $response;
+    }
+
+    /**
+     * @return array
+     */
+    public function validated()
+    {
+        $data = parent::validated();
+
+        $data['name_first'] = $data['first_name'];
+        $data['name_last'] = $data['last_name'];
+
+        unset($data['first_name'], $data['last_name']);
+
+        return $data;
     }
 
     /**

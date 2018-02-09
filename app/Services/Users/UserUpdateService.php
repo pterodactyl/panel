@@ -58,8 +58,10 @@ class UserUpdateService
      */
     public function handle(User $user, array $data): Collection
     {
-        if (array_has($data, 'password')) {
+        if (! empty(array_get($data, 'password'))) {
             $data['password'] = $this->hasher->make($data['password']);
+        } else {
+            unset($data['password']);
         }
 
         if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {

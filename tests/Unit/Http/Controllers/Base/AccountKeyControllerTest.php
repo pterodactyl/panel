@@ -34,6 +34,7 @@ class AccountKeyControllerTest extends ControllerTestCase
     public function setUp()
     {
         parent::setUp();
+        $this->markTestSkipped('Not implemented');
 
         $this->alert = m::mock(AlertsMessageBag::class);
         $this->keyService = m::mock(KeyCreationService::class);

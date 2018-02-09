@@ -67,7 +67,7 @@ class LocationController extends ApplicationApiController
      */
     public function index(GetLocationsRequest $request): array
     {
-        $locations = $this->repository->paginated(100);
+        $locations = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
 
         return $this->fractal->collection($locations)
             ->transformWith($this->getTransformer(LocationTransformer::class))

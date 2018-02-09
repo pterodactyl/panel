@@ -101,7 +101,6 @@ class StoreServerRequest extends ApplicationApiRequest
         $validator->sometimes('allocation.default', [
             'required', 'integer', 'bail',
             Rule::exists('allocations', 'id')->where(function ($query) {
-                $query->where('node_id', $this->input('node_id'));
                 $query->whereNull('server_id');
             }),
         ], function ($input) {
@@ -111,7 +110,6 @@ class StoreServerRequest extends ApplicationApiRequest
         $validator->sometimes('allocation.additional.*', [
             'integer',
             Rule::exists('allocations', 'id')->where(function ($query) {
-                $query->where('node_id', $this->input('node_id'));
                 $query->whereNull('server_id');
             }),
         ], function ($input) {

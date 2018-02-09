@@ -3,6 +3,16 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.0-rc.3 (Derelict Dermodactylus)
+### Fixed
+* `[rc.2]` — Fixes bad API behavior on `/user` routes.
+* `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
+* `[rc.2]` — Fixes bug with server creation API endpoint that would fail to validate `allocation.default` correctly.
+
+### Added
+* Added ability to search the following API endpoints: list users, list servers, and list locations.
+* Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
+
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.1]` — Fixes exception thrown when revoking user sessions.
