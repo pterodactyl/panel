@@ -1,0 +1,26 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2018-02-08T23:20:31-05:00",
+    "name": "Squad",
+    "author": "brycea@rapidnetworks.org",
+    "description": "Squad is a 50 vs 50 multiplayer first-person shooter that aims to capture combat realism through communication and teamplay. Major features include vehicle-based combined arms gameplay, large scale environments, base building, and integrated positional VoIP for proximity talking & radio.",
+    "image": "quay.io\/pterodactyl\/core:source",
+    "startup": ".\/SquadServer.sh Port={{SERVER_PORT}} QueryPort={{QUERY_PORT}} FIXEDMAXPLAYERS={{MAX_PLAYERS}}",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"LogInit:Display: Starting Game.\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"latest.log\"\r\n}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "apt update\r\napt -y --no-install-recommends install curl unzip libstdc++6 lib32gcc1 ca-certificates\r\ncd \/tmp\r\ncurl -sSL -o steamcmd.tar.gz http:\/\/media.steampowered.com\/installer\/steamcmd_linux.tar.gz\r\n\r\nmkdir -p \/mnt\/server\/steam\r\ntar -xzvf steamcmd.tar.gz -C \/mnt\/server\/steam\r\ncd \/mnt\/server\/steam\r\nchown -R root:root \/mnt\r\n\r\nexport HOME=\/mnt\/server\r\n.\/steamcmd.sh +login anonymous +force_install_dir \/mnt\/server +app_update 403240 +quit\r\nmkdir -p \/mnt\/server\/.steam\/sdk32\r\ncp -v \/mnt\/server\/steam\/linux32\/steamclient.so \/mnt\/server\/.steam\/sdk32\/steamclient.so",
+            "container": "ubuntu:16.04",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": []
+}
