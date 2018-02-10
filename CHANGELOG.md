@@ -14,6 +14,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
 * Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
 
+### Changed
+* PHP 7.2 is now the minimum required version for this software.
+
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.1]` — Fixes exception thrown when revoking user sessions.

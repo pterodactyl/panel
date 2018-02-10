@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
@@ -81,9 +81,6 @@
     },
     "prefer-stable": true,
     "config": {
-        "platform": {
-            "php": "7.0"
-        },
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true
