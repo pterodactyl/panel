@@ -60,9 +60,10 @@ class AccountCreated extends Notification implements ShouldQueue
     {
         $message = (new MailMessage)
             ->greeting('Hello ' . $this->user->name . '!')
-            ->line('You are recieving this email because an account has been created for you on ' . config('app.name') . '.')
+            ->line('You are receiving this email because an account has been created for you on ' . config('app.name') . '.')
             ->line('Username: ' . $this->user->username)
-            ->line('Email: ' . $this->user->email);
+            ->line('Email: ' . $this->user->email)
+            ->action('Visit Panel', route('index'));
 
         if (! is_null($this->token)) {
             return $message->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . $this->user->email));
