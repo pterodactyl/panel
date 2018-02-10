@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Providers;
 
-use Illuminate\Contracts\Logging\Log;
+use Psr\Log\LoggerInterface;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -62,10 +62,10 @@ class SettingsServiceProvider extends ServiceProvider
      *
      * @param \Illuminate\Contracts\Config\Repository                       $config
      * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
-     * @param \Illuminate\Contracts\Logging\Log                             $log
+     * @param \Psr\Log\LoggerInterface                                      $log
      * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings)
+    public function boot(ConfigRepository $config, Encrypter $encrypter, LoggerInterface $log, SettingsRepositoryInterface $settings)
     {
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.

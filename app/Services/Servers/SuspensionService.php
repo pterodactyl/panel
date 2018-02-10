@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
+use Illuminate\Log\Logger;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -38,7 +38,7 @@ class SuspensionService
     protected $repository;
 
     /**
-     * @var \Illuminate\Log\Writer
+     * @var \Illuminate\Log\Logger
      */
     protected $writer;
 
@@ -48,13 +48,13 @@ class SuspensionService
      * @param \Illuminate\Database\ConnectionInterface                           $database
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Illuminate\Log\Writer                                             $writer
+     * @param \Illuminate\Log\Logger                                             $writer
      */
     public function __construct(
         ConnectionInterface $database,
         DaemonServerRepositoryInterface $daemonServerRepository,
         ServerRepositoryInterface $repository,
-        Writer $writer
+        Logger $writer
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
         $this->database = $database;
