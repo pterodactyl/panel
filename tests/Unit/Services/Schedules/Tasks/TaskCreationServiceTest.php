@@ -59,7 +59,7 @@ class TaskCreationServiceTest extends TestCase
             'action' => $task->action,
             'payload' => $task->payload,
             'time_offset' => $final,
-        ])->once()->andReturn($task);
+        ], false)->once()->andReturn($task);
 
         $response = $this->service->handle($schedule, [
             'time_interval' => $interval,
@@ -88,7 +88,7 @@ class TaskCreationServiceTest extends TestCase
                 'action' => 'test',
                 'payload' => 'testpayload',
                 'time_offset' => 300,
-            ])->once()->andReturn(true);
+            ], false)->once()->andReturn(true);
 
         $response = $this->service->handle($schedule, [
             'time_interval' => 'm',
@@ -115,7 +115,7 @@ class TaskCreationServiceTest extends TestCase
                 'action' => 'test',
                 'payload' => 'testpayload',
                 'time_offset' => 300,
-            ])->once()->andReturn(true);
+            ], false)->once()->andReturn(true);
 
         $response = $this->service->handle(1234, [
             'time_interval' => 'm',

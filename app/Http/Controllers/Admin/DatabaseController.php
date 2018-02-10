@@ -100,7 +100,7 @@ class DatabaseController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view($host): View
+    public function view(int $host): View
     {
         return view('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),

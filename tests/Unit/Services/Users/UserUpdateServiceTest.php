@@ -41,18 +41,36 @@ class UserUpdateServiceTest extends TestCase
     }
 
     /**
-     * Test that the handle function does not attempt to hash a password if no password is passed.
+     * Test that the handle function does not attempt to hash a password if no
+     * password is provided or the password is null.
+     *
+     * @dataProvider badPasswordDataProvider
      */
-    public function testUpdateUserWithoutTouchingHasherIfNoPasswordPassed()
+    public function testUpdateUserWithoutTouchingHasherIfNoPasswordPassed(array $data)
     {
         $user = factory(User::class)->make();
         $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
         $this->repository->shouldReceive('update')->with($user->id, ['test-data' => 'value'])->once()->andReturnNull();
 
-        $response = $this->getService()->handle($user, ['test-data' => 'value']);
+        $response = $this->getService()->handle($user, $data);
         $this->assertInstanceOf(Collection::class, $response);
         $this->assertTrue($response->has('model'));
         $this->assertTrue($response->has('exceptions'));
+    }
+
+    /**
+     * Provide a test data set with passwords that should not be hashed.
+     *
+     * @return array
+     */
+    public function badPasswordDataProvider(): array
+    {
+        return [
+            [['test-data' => 'value']],
+            [['test-data' => 'value', 'password' => null]],
+            [['test-data' => 'value', 'password' => '']],
+            [['test-data' => 'value', 'password' => 0]],
+        ];
     }
 
     /**

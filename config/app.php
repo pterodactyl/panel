@@ -135,6 +135,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Exception Reporter Configuration
+    |--------------------------------------------------------------------------
+    |
+    | If you're encountering weird behavior with the Panel and no exceptions
+    | are being logged try changing the environment variable below to be true.
+    | This will override the default "don't report" behavior of the Panel and log
+    | all exceptions. This will be quite noisy.
+    |
+    */
+
+    'exceptions' => [
+        'report_all' => env('APP_REPORT_ALL_EXCEPTIONS', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
     |

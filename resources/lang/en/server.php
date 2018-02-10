@@ -33,6 +33,7 @@ return [
         'toggle' => 'Toggle Status',
         'run_now' => 'Trigger Schedule',
         'schedule_created' => 'Successfully created a new schedule for this server.',
+        'schedule_updated' => 'Schedule has been updated.',
         'unnamed' => 'Unnamed Schedule',
         'setup' => 'Schedule Setup',
         'day_of_week' => 'Day of Week',

@@ -63,7 +63,7 @@ class TaskCreationService
             'action' => $data['action'],
             'payload' => $data['payload'],
             'time_offset' => $delay,
-        ]);
+        ], false);
 
         return $task;
     }

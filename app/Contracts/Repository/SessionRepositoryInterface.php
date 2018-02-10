@@ -17,9 +17,9 @@ interface SessionRepositoryInterface extends RepositoryInterface
     /**
      * Delete a session for a given user.
      *
-     * @param int $user
-     * @param int $session
+     * @param int    $user
+     * @param string $session
      * @return null|int
      */
-    public function deleteUserSession(int $user, int $session);
+    public function deleteUserSession(int $user, string $session);
 }
