@@ -12,7 +12,7 @@ namespace Tests\Unit\Services\Servers;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Log\Writer;
+use Illuminate\Log\Logger;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
@@ -55,7 +55,7 @@ class SuspensionServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Illuminate\Log\Writer
+     * @var \Illuminate\Log\Logger
      */
     protected $writer;
 
@@ -70,7 +70,7 @@ class SuspensionServiceTest extends TestCase
         $this->database = m::mock(ConnectionInterface::class);
         $this->exception = m::mock(RequestException::class)->makePartial();
         $this->repository = m::mock(ServerRepositoryInterface::class);
-        $this->writer = m::mock(Writer::class);
+        $this->writer = m::mock(Logger::class);
 
         $this->server = factory(Server::class)->make(['suspended' => 0, 'node_id' => 1]);
 

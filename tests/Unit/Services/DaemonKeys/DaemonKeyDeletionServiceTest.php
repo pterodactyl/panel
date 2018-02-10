@@ -11,7 +11,7 @@ namespace Tests\Unit\Services\DaemonKeys;
 
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Log\Writer;
+use Illuminate\Log\Logger;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\DaemonKey;
@@ -57,7 +57,7 @@ class DaemonKeyDeletionServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Illuminate\Log\Writer|\Mockery\Mock
+     * @var \Illuminate\Log\Logger|\Mockery\Mock
      */
     protected $writer;
 
@@ -73,7 +73,7 @@ class DaemonKeyDeletionServiceTest extends TestCase
         $this->exception = m::mock(RequestException::class);
         $this->repository = m::mock(DaemonKeyRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
-        $this->writer = m::mock(Writer::class);
+        $this->writer = m::mock(Logger::class);
 
         $this->service = new DaemonKeyDeletionService(
             $this->connection,
