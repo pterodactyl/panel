@@ -63,7 +63,7 @@ class ProcessScheduleService
     {
         $this->repository->loadTasks($schedule);
 
-        $formattedCron = sprintf('%s %s %s * %s *',
+        $formattedCron = sprintf('%s %s %s * %s',
             $schedule->cron_minute,
             $schedule->cron_hour,
             $schedule->cron_day_of_month,

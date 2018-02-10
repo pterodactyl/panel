@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.1.3",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
@@ -19,24 +19,24 @@
         "aws/aws-sdk-php": "^3.48",
         "cakephp/chronos": "^1.1",
         "doctrine/dbal": "^2.5",
-        "fideloper/proxy": "^3.3",
+        "fideloper/proxy": "~4.0",
         "guzzlehttp/guzzle": "^6.3",
         "hashids/hashids": "^2.0",
         "igaster/laravel-theme": "^1.16",
         "laracasts/utilities": "^3.0",
-        "laravel/framework": "5.5.*",
+        "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
-        "lord/laroute": "^2.4",
+        "lord/laroute": "dev-master as 2.4.6",
         "matriphe/iso-639": "^1.2",
-        "mtdowling/cron-expression": "^1.2",
         "nesbot/carbon": "^1.22",
         "pragmarx/google2fa": "^2.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
         "ramsey/uuid": "^3.7",
         "s1lentium/iptools": "^1.1",
-        "sofa/eloquence-base": "v5.5",
-        "sofa/eloquence-validable": "v5.5",
+        "sofa/eloquence-base": "5.6.x-dev as 5.6.0",
+        "sofa/eloquence-validable": "5.6.x-dev as 5.6.0",
+        "sofa/hookable": "5.6.x-dev as 5.6.0",
         "spatie/laravel-fractal": "^5.3",
         "webmozart/assert": "^1.2",
         "znck/belongs-to-through": "^2.3"
@@ -49,7 +49,8 @@
         "fzaninotto/faker": "^1.6",
         "mockery/mockery": "^1.0",
         "php-mock/php-mock-phpunit": "^2.0",
-        "phpunit/phpunit": "~6.4.0"
+        "phpunit/phpunit": "~6.4.0",
+        "nunomaduro/collision": "~1.1"
     },
     "autoload": {
         "classmap": [
@@ -79,11 +80,26 @@
             "@php artisan package:discover"
         ]
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/arcdigital/laroute.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/arcdigital/hookable.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/arcdigital/eloquence-base.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/arcdigital/eloquence-validable.git"
+        }
+    ],
     "prefer-stable": true,
     "config": {
-        "platform": {
-            "php": "7.0"
-        },
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true

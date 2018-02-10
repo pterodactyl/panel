@@ -53,6 +53,7 @@ return [
             'connection' => 'default',
             'queue' => env('QUEUE_STANDARD', 'standard'),
             'retry_after' => 90,
+            'block_for' => null,
         ],
     ],
 

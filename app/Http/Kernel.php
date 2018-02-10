@@ -98,6 +98,7 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'recaptcha' => VerifyReCaptcha::class,
 
         // Server specific middleware (used for authenticating access to resources)
