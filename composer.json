@@ -8,6 +8,12 @@
             "email": "dane@daneeveritt.com",
             "homepage": "https://github.com/DaneEveritt",
             "role": "Lead Developer"
+        },
+        {
+            "name": "Anand Capur",
+            "email": "git@anand.io",
+            "homepage": "https://github.com/arcdigital",
+            "role": "Developer"
         }
     ],
     "require": {
