@@ -48,7 +48,7 @@
         "znck/belongs-to-through": "^2.3"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.1",
+        "barryvdh/laravel-debugbar": "dev-master as 3.1.1",
         "barryvdh/laravel-ide-helper": "^2.4",
         "codedungeon/phpunit-result-printer": "^0.6.0",
         "filp/whoops": "^2.1",

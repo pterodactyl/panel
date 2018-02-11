@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f9d0ef6e9a91b66d6ef09faa0570ce6",
+    "content-hash": "664a9b0f5aa5c1a47d1790f81d33e972",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -4164,16 +4164,16 @@
     "packages-dev": [
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v3.1.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "f0018d359a2ad6968ad11b283283a925e017f3c9"
+                "reference": "59a7a08d84111a5b2407fb58b9d74af3ebe430e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/f0018d359a2ad6968ad11b283283a925e017f3c9",
-                "reference": "f0018d359a2ad6968ad11b283283a925e017f3c9",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/59a7a08d84111a5b2407fb58b9d74af3ebe430e7",
+                "reference": "59a7a08d84111a5b2407fb58b9d74af3ebe430e7",
                 "shasum": ""
             },
             "require": {
@@ -4228,7 +4228,7 @@
                 "profiler",
                 "webprofiler"
             ],
-            "time": "2018-02-07T08:29:09+00:00"
+            "time": "2018-02-07T19:51:45+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -6978,6 +6978,12 @@
             "alias_normalized": "5.6.0.0",
             "version": "5.6.9999999.9999999-dev",
             "package": "sofa/hookable"
+        },
+        {
+            "alias": "3.1.1",
+            "alias_normalized": "3.1.1.0",
+            "version": "9999999-dev",
+            "package": "barryvdh/laravel-debugbar"
         }
     ],
     "minimum-stability": "stable",
@@ -6985,7 +6991,8 @@
         "lord/laroute": 20,
         "sofa/eloquence-base": 20,
         "sofa/eloquence-validable": 20,
-        "sofa/hookable": 20
+        "sofa/hookable": 20,
+        "barryvdh/laravel-debugbar": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
