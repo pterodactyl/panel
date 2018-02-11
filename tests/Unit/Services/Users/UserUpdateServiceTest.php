@@ -6,7 +6,7 @@ use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Hashing\HashManager;
+use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
@@ -14,7 +14,7 @@ use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
 class UserUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Illuminate\Hashing\HashManager|\Mockery\Mock
+     * @var \Illuminate\Contracts\Hashing\Hasher|\Mockery\Mock
      */
     private $hasher;
 
@@ -35,7 +35,7 @@ class UserUpdateServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->hasher = m::mock(HashManager::class);
+        $this->hasher = m::mock(Hasher::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
         $this->revocationService = m::mock(RevokeMultipleDaemonKeysService::class);
     }

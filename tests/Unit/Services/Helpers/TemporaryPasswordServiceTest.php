@@ -12,7 +12,7 @@ namespace Tests\Unit\Services\Helpers;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Illuminate\Hashing\HashManager;
+use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
@@ -32,7 +32,7 @@ class TemporaryPasswordServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Illuminate\Hashing\HashManager|\Mockery\Mock
+     * @var \Illuminate\Contracts\Hashing\Hasher|\Mockery\Mock
      */
     protected $hasher;
 
@@ -50,7 +50,7 @@ class TemporaryPasswordServiceTest extends TestCase
 
         $this->config = m::mock(Repository::class);
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->hasher = m::mock(HashManager::class);
+        $this->hasher = m::mock(Hasher::class);
 
         $this->service = new TemporaryPasswordService($this->config, $this->connection, $this->hasher);
     }

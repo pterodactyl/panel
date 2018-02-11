@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Users;
 
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Hashing\HashManager;
+use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Traits\Services\HasUserLevels;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
@@ -14,7 +14,7 @@ class UserUpdateService
     use HasUserLevels;
 
     /**
-     * @var \Illuminate\Hashing\HashManager
+     * @var \Illuminate\Contracts\Hashing\Hasher
      */
     private $hasher;
 
@@ -31,12 +31,12 @@ class UserUpdateService
     /**
      * UpdateService constructor.
      *
-     * @param \Illuminate\Hashing\HashManager                                  $hasher
+     * @param \Illuminate\Contracts\Hashing\Hasher                             $hasher
      * @param \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService $revocationService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface        $repository
      */
     public function __construct(
-        HashManager $hasher,
+        Hasher $hasher,
         RevokeMultipleDaemonKeysService $revocationService,
         UserRepositoryInterface $repository
     ) {
