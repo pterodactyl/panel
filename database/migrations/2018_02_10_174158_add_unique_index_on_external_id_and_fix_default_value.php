@@ -17,7 +17,6 @@ class AddUniqueIndexOnExternalIdAndFixDefaultValue extends Migration
             $table->unique(['external_id']);
             $table->string('external_id')->default(null)->change();
         });
-
     }
 
     /**
@@ -29,7 +28,7 @@ class AddUniqueIndexOnExternalIdAndFixDefaultValue extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropUnique(['external_id']);
-            $table->string('external_id')->default('NULL')->change(); #
+            $table->string('external_id')->default('NULL')->change(); //
         });
     }
 }
