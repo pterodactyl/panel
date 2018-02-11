@@ -27,8 +27,8 @@ class VariableUpdateService
     /**
      * Update a specific egg variable.
      *
-     * @param int|\Pterodactyl\Models\EggVariable $variable
-     * @param array                               $data
+     * @param \Pterodactyl\Models\EggVariable $variable
+     * @param array                           $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -36,12 +36,8 @@ class VariableUpdateService
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
-    public function handle($variable, array $data)
+    public function handle(EggVariable $variable, array $data)
     {
-        if (! $variable instanceof EggVariable) {
-            $variable = $this->repository->find($variable);
-        }
-
         if (! is_null(array_get($data, 'env_variable'))) {
             if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
                 throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', [
@@ -65,6 +61,7 @@ class VariableUpdateService
         $options = array_get($data, 'options') ?? [];
 
         return $this->repository->withoutFreshModel()->update($variable->id, array_merge($data, [
+            'default_value' => array_get($data, 'default_value') ?? '',
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
         ]));

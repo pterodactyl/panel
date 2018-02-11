@@ -42,7 +42,12 @@ class SftpController extends Controller
      */
     public function index(SftpAuthenticationFormRequest $request): JsonResponse
     {
-        $connection = explode('.', $request->input('username'));
+        $parts = explode('.', strrev($request->input('username')), 2);
+        $connection = [
+            'username' => strrev(array_get($parts, 1)),
+            'server' => strrev(array_get($parts, 0)),
+        ];
+
         $this->incrementLoginAttempts($request);
 
         if ($this->hasTooManyLoginAttempts($request)) {
@@ -53,10 +58,10 @@ class SftpController extends Controller
 
         try {
             $data = $this->authenticationService->handle(
-                array_get($connection, 0),
+                $connection['username'],
                 $request->input('password'),
                 object_get($request->attributes->get('node'), 'id', 0),
-                array_get($connection, 1)
+                empty($connection['server']) ? null : $connection['server']
             );
 
             $this->clearLoginAttempts($request);

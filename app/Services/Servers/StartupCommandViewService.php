@@ -37,14 +37,15 @@ class StartupCommandViewService
         $server = $this->repository->getPrimaryAllocation($response->server);
 
         $find = ['{{SERVER_MEMORY}}', '{{SERVER_IP}}', '{{SERVER_PORT}}'];
-        $replace = [$server->memory, $server->allocation->ip, $server->allocation->port];
+        $replace = [$server->memory, $server->getRelation('allocation')->ip, $server->getRelation('allocation')->port];
 
-        $variables = $server->egg->variables->each(function ($variable) use (&$find, &$replace, $response) {
-            $find[] = '{{' . $variable->env_variable . '}}';
-            $replace[] = $variable->user_viewable ? $response->data[$variable->env_variable] : '[hidden]';
-        })->filter(function ($variable) {
-            return $variable->user_viewable === 1;
-        });
+        $variables = $server->getRelation('egg')->getRelation('variables')
+            ->each(function ($variable) use (&$find, &$replace, $response) {
+                $find[] = '{{' . $variable->env_variable . '}}';
+                $replace[] = $variable->user_viewable ? $response->data[$variable->env_variable] : '[hidden]';
+            })->filter(function ($variable) {
+                return $variable->user_viewable === 1;
+            });
 
         return collect([
             'startup' => str_replace($find, $replace, $server->startup),

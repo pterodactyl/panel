@@ -15,18 +15,21 @@ class ScheduleUpdateService
      * @var \Illuminate\Database\ConnectionInterface
      */
     private $connection;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
      */
     private $repository;
-    /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
-     */
-    private $taskRepository;
+
     /**
      * @var \Pterodactyl\Services\Schedules\Tasks\TaskCreationService
      */
     private $taskCreationService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     */
+    private $taskRepository;
 
     /**
      * ScheduleUpdateService constructor.
