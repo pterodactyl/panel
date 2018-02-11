@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "664a9b0f5aa5c1a47d1790f81d33e972",
+    "content-hash": "cfb64eddcf72a775560e519765209209",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -1359,17 +1359,11 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.3",
+            "version": "5.6.x-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/laravel/framework.git",
-                "reference": "db3e5422070d9b5166493313142b30419efab207"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/db3e5422070d9b5166493313142b30419efab207",
-                "reference": "db3e5422070d9b5166493313142b30419efab207",
-                "shasum": ""
+                "url": "https://github.com/arcdigital/framework.git",
+                "reference": "71489926770ddf2c3debdd977e8d3ba1afd329c7"
             },
             "require": {
                 "doctrine/inflector": "~1.1",
@@ -1474,7 +1468,14 @@
                     "Illuminate\\": "src/Illuminate/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "files": [
+                    "tests/Database/stubs/MigrationCreatorFakeMigration.php"
+                ],
+                "psr-4": {
+                    "Illuminate\\Tests\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -1490,7 +1491,11 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-02-09T13:33:22+00:00"
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2018-02-11T01:03:19+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -6956,6 +6961,12 @@
     ],
     "aliases": [
         {
+            "alias": "5.6.3",
+            "alias_normalized": "5.6.3.0",
+            "version": "5.6.9999999.9999999-dev",
+            "package": "laravel/framework"
+        },
+        {
             "alias": "2.4.6",
             "alias_normalized": "2.4.6.0",
             "version": "9999999-dev",
@@ -6988,6 +6999,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "laravel/framework": 20,
         "lord/laroute": 20,
         "sofa/eloquence-base": 20,
         "sofa/eloquence-validable": 20,
