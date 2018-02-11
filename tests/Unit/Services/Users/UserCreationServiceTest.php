@@ -6,8 +6,8 @@ use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
 use Tests\Traits\MocksUuids;
-use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Hashing\HashManager;
 use Illuminate\Support\Facades\Notification;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Users\UserCreationService;
@@ -24,7 +24,7 @@ class UserCreationServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher|\Mockery\Mock
+     * @var \Illuminate\Hashing\HashManager|\Mockery\Mock
      */
     private $hasher;
 
@@ -47,7 +47,7 @@ class UserCreationServiceTest extends TestCase
 
         Notification::fake();
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->hasher = m::mock(Hasher::class);
+        $this->hasher = m::mock(HashManager::class);
         $this->passwordService = m::mock(TemporaryPasswordService::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
     }

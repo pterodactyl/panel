@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Services\Helpers;
 
-use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Hashing\HashManager;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
@@ -28,7 +28,7 @@ class TemporaryPasswordService
     protected $connection;
 
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \Illuminate\Hashing\HashManager
      */
     protected $hasher;
 
@@ -37,12 +37,12 @@ class TemporaryPasswordService
      *
      * @param \Illuminate\Contracts\Config\Repository  $config
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Illuminate\Contracts\Hashing\Hasher     $hasher
+     * @param \Illuminate\Hashing\HashManager          $hasher
      */
     public function __construct(
         ConfigRepository $config,
         ConnectionInterface $connection,
-        Hasher $hasher
+        HashManager $hasher
     ) {
         $this->config = $config;
         $this->connection = $connection;

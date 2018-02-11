@@ -3,7 +3,7 @@
 namespace Pterodactyl\Services\Users;
 
 use Ramsey\Uuid\Uuid;
-use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Hashing\HashManager;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Helpers\TemporaryPasswordService;
@@ -17,7 +17,7 @@ class UserCreationService
     private $connection;
 
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * @var \Illuminate\Hashing\HashManager
      */
     private $hasher;
 
@@ -35,13 +35,13 @@ class UserCreationService
      * CreationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                  $connection
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \Illuminate\Hashing\HashManager                           $hasher
      * @param \Pterodactyl\Services\Helpers\TemporaryPasswordService    $passwordService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
-        Hasher $hasher,
+        HashManager $hasher,
         TemporaryPasswordService $passwordService,
         UserRepositoryInterface $repository
     ) {
