@@ -3,12 +3,12 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-02-08T23:20:31-05:00",
+    "exported_at": "2018-02-11T18:11:07-05:00",
     "name": "Squad",
     "author": "brycea@rapidnetworks.org",
     "description": "Squad is a 50 vs 50 multiplayer first-person shooter that aims to capture combat realism through communication and teamplay. Major features include vehicle-based combined arms gameplay, large scale environments, base building, and integrated positional VoIP for proximity talking & radio.",
     "image": "quay.io\/pterodactyl\/core:source",
-    "startup": ".\/SquadServer.sh Port={{SERVER_PORT}} QueryPort={{QUERY_PORT}} FIXEDMAXPLAYERS={{MAX_PLAYERS}}",
+    "startup": ".\/SquadServer.sh Port={{SERVER_PORT}} QueryPort={{QUERY_PORT}}",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"LogInit:Display: Starting Game.\",\r\n    \"userInteraction\": []\r\n}",
@@ -22,5 +22,15 @@
             "entrypoint": "bash"
         }
     },
-    "variables": []
+    "variables": [
+        {
+            "name": "Query Port",
+            "description": "Query port for your Squad server.",
+            "env_variable": "QUERY_PORT",
+            "default_value": "27165",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|numeric"
+        }
+    ]
 }
