@@ -8,10 +8,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
 * `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
 * `[rc.2]` — Fixes bug with server creation API endpoint that would fail to validate `allocation.default` correctly.
+* `[rc.2]` — Fix data integrity exception occuring due to invalid data being passed to server creation service on the API.
 
 ### Added
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
 * Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
+
+### Changed
+* PHP 7.2 is now the minimum required version for this software.
 
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed

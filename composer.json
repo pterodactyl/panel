@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": ">=7.2",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
@@ -44,6 +44,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-ide-helper": "^2.4",
+        "codedungeon/phpunit-result-printer": "^0.6.0",
         "filp/whoops": "^2.1",
         "friendsofphp/php-cs-fixer": "^2.8.0",
         "fzaninotto/faker": "^1.6",
@@ -81,9 +82,6 @@
     },
     "prefer-stable": true,
     "config": {
-        "platform": {
-            "php": "7.0"
-        },
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": true

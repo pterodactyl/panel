@@ -49,6 +49,10 @@ class StoreServerRequest extends ApplicationApiRequest
             'limits.io' => $rules['io'],
             'limits.cpu' => $rules['cpu'],
 
+            // Placeholders for rules added in withValidator() function.
+            'allocation.default' => '',
+            'allocation.additional.*' => '',
+
             // Automatic deployment rules
             'deploy' => 'sometimes|required|array',
             'deploy.locations' => 'array',

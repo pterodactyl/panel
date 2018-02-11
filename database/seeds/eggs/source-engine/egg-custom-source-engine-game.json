@@ -40,6 +40,15 @@
             "user_viewable": 1,
             "user_editable": 0,
             "rules": "required|alpha_dash|between:1,100"
+        },
+        {
+            "name": "Map",
+            "description": "The default map for the server.",
+            "env_variable": "SRCDS_MAP",
+            "default_value": "",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|alpha_dash"
         }
     ]
 }
