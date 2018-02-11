@@ -112,7 +112,9 @@ class ServerCreationService
 
     /**
      * Create a server on the Panel and trigger a request to the Daemon to begin the server
-     * creation process.
+     * creation process. This function will attempt to set as many additional values
+     * as possible given the input data. For example, if an allocation_id is passed with
+     * no node_id the node_is will be picked from the allocation.
      *
      * @param array                                             $data
      * @param \Pterodactyl\Models\Objects\DeploymentObject|null $deployment
@@ -136,6 +138,12 @@ class ServerCreationService
             $allocation = $this->configureDeployment($data, $deployment);
             $data['allocation_id'] = $allocation->id;
             $data['node_id'] = $allocation->node_id;
+        }
+
+        // Auto-configure the node based on the selected allocation
+        // if no node was defined.
+        if (is_null(array_get($data, 'node_id'))) {
+            $data['node_id'] = $this->getNodeFromAllocation($data['allocation_id']);
         }
 
         if (is_null(array_get($data, 'nest_id'))) {
@@ -262,5 +270,20 @@ class ServerCreationService
         if (! empty($records)) {
             $this->serverVariableRepository->insert($records);
         }
+    }
+
+    /**
+     * Get the node that an allocation belongs to.
+     *
+     * @param int $allocation
+     * @return int
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    private function getNodeFromAllocation(int $allocation): int
+    {
+        $allocation = $this->allocationRepository->setColumns(['id', 'node_id'])->find($allocation);
+
+        return $allocation->node_id;
     }
 }
