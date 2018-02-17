@@ -49,10 +49,9 @@ class VariableUpdateServiceTest extends TestCase
             ->shouldReceive('update')->with($this->model->id, m::subset([
                 'user_viewable' => false,
                 'user_editable' => false,
-                'test-data' => 'test-value',
             ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['test-data' => 'test-value']));
+        $this->assertTrue($this->service->handle($this->model, []));
     }
 
     /**
@@ -62,12 +61,11 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testNullDefaultValue()
     {
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, [
-                'user_viewable' => false,
-                'user_editable' => false,
-                'default_value' => '',
-            ])->once()->andReturn(true);
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->model->id, m::subset([
+            'user_viewable' => false,
+            'user_editable' => false,
+            'default_value' => '',
+        ]))->once()->andReturn(true);
 
         $this->assertTrue($this->service->handle($this->model, ['default_value' => null]));
     }
@@ -96,7 +94,7 @@ class VariableUpdateServiceTest extends TestCase
 
     /**
      * Test that an empty (null) value passed in the option key is handled
-     * properly as an array.
+     * properly as an array. Also tests that a null description is handled.
      *
      * @see https://github.com/Pterodactyl/Panel/issues/841
      */
@@ -106,10 +104,10 @@ class VariableUpdateServiceTest extends TestCase
             ->shouldReceive('update')->with($this->model->id, m::subset([
                 'user_viewable' => false,
                 'user_editable' => false,
-                'options' => null,
+                'description' => '',
             ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['options' => null]));
+        $this->assertTrue($this->service->handle($this->model, ['options' => null, 'description' => null]));
     }
 
     /**

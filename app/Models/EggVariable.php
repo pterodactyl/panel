@@ -65,7 +65,7 @@ class EggVariable extends Model implements CleansAttributes, ValidableContract
     protected static $dataIntegrityRules = [
         'egg_id' => 'exists:eggs,id',
         'name' => 'string|between:1,255',
-        'description' => 'nullable|string',
+        'description' => 'string',
         'env_variable' => 'regex:/^[\w]{1,255}$/|notIn:' . self::RESERVED_ENV_NAMES,
         'default_value' => 'string',
         'user_viewable' => 'boolean',

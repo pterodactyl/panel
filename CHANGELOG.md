@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.2]` — Fix data integrity exception that could occur when an email containing non-username characters was passed.
 * `[rc.2]` — Fix data integrity exception occurring when no default value is provided for an egg variable.
 * `[rc.2]` — Fixes a bug that would cause non-editable variables on the front-end to throw a validation error.
+* `[rc.2]` — Fixes a data integrity exception occurring when saving egg variables with no value.
 
 ### Added
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
