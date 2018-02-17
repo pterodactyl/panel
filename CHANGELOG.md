@@ -17,7 +17,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
 * Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
-
+* Added a unique key to the servers table to data integrity issues where an allocation would be assigned to more than one server at once.
+ 
 ### Changed
 * PHP 7.2 is now the minimum required version for this software.
 * Egg variable default values are no longer validated aganist the ruleset when configuring them. Validation of those rules will only occur when editing or creating a server.
