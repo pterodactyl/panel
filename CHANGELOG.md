@@ -11,13 +11,17 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.2]` — Fix data integrity exception occuring due to invalid data being passed to server creation service on the API.
 * `[rc.2]` — Fix data integrity exception that could occur when an email containing non-username characters was passed.
 * `[rc.2]` — Fix data integrity exception occurring when no default value is provided for an egg variable.
+* `[rc.2]` — Fixes a bug that would cause non-editable variables on the front-end to throw a validation error.
+* `[rc.2]` — Fixes a data integrity exception occurring when saving egg variables with no value.
 
 ### Added
 * Added ability to search the following API endpoints: list users, list servers, and list locations.
 * Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
-
+* Added a unique key to the servers table to data integrity issues where an allocation would be assigned to more than one server at once.
+ 
 ### Changed
 * PHP 7.2 is now the minimum required version for this software.
+* Egg variable default values are no longer validated aganist the ruleset when configuring them. Validation of those rules will only occur when editing or creating a server.
 
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
@@ -27,6 +31,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.1]` — Fixes bug preventing modification of the default value for an Egg variable.
 * `[rc.1]` — Fixed a bug that would occur when attempting to reset the daemon secret for a node.
 * `[rc.1]` — Fix exception thrown when attempting to modify an existing database host.
+* `[rc.1]` — Fix an auto deployment bug causing a node to be ignored if it had no servers already attached to it.
 
 ### Changed
 * Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.

@@ -83,7 +83,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'io' => 'numeric|between:10,1000',
         'cpu' => 'numeric|min:0',
         'disk' => 'numeric|min:0',
-        'allocation_id' => 'exists:allocations,id',
+        'allocation_id' => 'bail|unique:servers|exists:allocations,id',
         'nest_id' => 'exists:nests,id',
         'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',

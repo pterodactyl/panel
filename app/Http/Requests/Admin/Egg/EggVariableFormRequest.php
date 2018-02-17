@@ -23,24 +23,4 @@ class EggVariableFormRequest extends AdminFormRequest
             'default_value' => 'present',
         ];
     }
-
-    /**
-     * Run validation after the rules above have been applied.
-     *
-     * @param \Illuminate\Validation\Validator $validator
-     */
-    public function withValidator($validator)
-    {
-        $rules = $this->input('rules');
-        if ($this->method() === 'PATCH') {
-            $rules = $this->input('rules', $this->route()->parameter('egg')->rules);
-        }
-
-        // If rules is not a string it is already violating the rule defined above
-        // so just skip the addition of default value rules since this request
-        // will fail anyways.
-        $validator->sometimes('default_value', $rules, function () use ($rules) {
-            return is_string($rules);
-        });
-    }
 }

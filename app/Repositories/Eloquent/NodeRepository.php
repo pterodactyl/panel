@@ -173,13 +173,13 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
         $instance = $this->getBuilder()
             ->select(['nodes.id', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
             ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->join('servers', 'servers.node_id', '=', 'nodes.id')
+            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('nodes.public', 1);
 
         if (! empty($locations)) {
             $instance->whereIn('nodes.location_id', $locations);
         }
 
-        return $instance->cursor();
+        return $instance->groupBy('nodes.id')->cursor();
     }
 }
