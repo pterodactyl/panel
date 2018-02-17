@@ -154,6 +154,9 @@ class Node extends Model implements CleansAttributes, ValidableContract
                 'socket' => '/var/run/docker.sock',
                 'autoupdate_images' => true,
             ],
+            'filesystem' => [
+                'server_logs' => '/tmp/pterodactyl',
+            ],
             'sftp' => [
                 'path' => $this->daemonBase,
                 'ip' => '0.0.0.0',

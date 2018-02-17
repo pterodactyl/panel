@@ -24,7 +24,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
-    
+
     /**
      * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
