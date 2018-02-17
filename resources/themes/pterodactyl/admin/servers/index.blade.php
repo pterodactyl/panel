@@ -39,8 +39,8 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>ID</th>
                             <th>Server Name</th>
+                            <th>UUID</th>
                             <th>Owner</th>
                             <th>Node</th>
                             <th>Connection</th>
@@ -49,8 +49,8 @@
                         </tr>
                         @foreach ($servers as $server)
                             <tr data-server="{{ $server->uuidShort }}">
-                                <td><code title="{{ $server->uuid }}">{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
+                                <td><code title="{{ $server->uuid }}">{{ $server->uuid }}</code></td>
                                 <td><a href="{{ route('admin.users.view', $server->user->id) }}">{{ $server->user->username }}</a></td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
                                 <td>
