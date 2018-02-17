@@ -31,6 +31,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.1]` — Fixes bug preventing modification of the default value for an Egg variable.
 * `[rc.1]` — Fixed a bug that would occur when attempting to reset the daemon secret for a node.
 * `[rc.1]` — Fix exception thrown when attempting to modify an existing database host.
+* `[rc.1]` — Fix an auto deployment bug causing a node to be ignored if it had no servers already attached to it.
 
 ### Changed
 * Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.

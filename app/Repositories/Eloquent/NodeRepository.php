@@ -180,6 +180,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
             $instance->whereIn('nodes.location_id', $locations);
         }
 
-        return $instance->cursor();
+        return $instance->groupBy('nodes.id')->cursor();
     }
 }
