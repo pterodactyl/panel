@@ -206,9 +206,6 @@
             </aside>
             <div class="content-wrapper">
                 <section class="content-header">
-                    @include('partials/_internal/beta')
-                </section>
-                <section class="content-header">
                     @yield('content-header')
                 </section>
                 <section class="content">
@@ -243,34 +240,6 @@
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
-            <aside class="control-sidebar control-sidebar-dark">
-                <div class="tab-content">
-                    <ul class="control-sidebar-menu">
-                        {{-- @todo replace this with better logic, or just remove it entirely? --}}
-                        {{--@foreach (Auth::user()->access(null)->get() as $s)--}}
-                            {{--<li>--}}
-                                {{--<a--}}
-                                    {{--@if(isset($server) && isset($node))--}}
-                                        {{--@if($server->uuidShort === $s->uuidShort)--}}
-                                            {{--class="active"--}}
-                                        {{--@endif--}}
-                                    {{--@endif--}}
-                                {{--href="{{ route('server.index', $s->uuidShort) }}">--}}
-                                    {{--@if($s->owner_id === Auth::user()->id)--}}
-                                        {{--<i class="menu-icon fa fa-user bg-blue"></i>--}}
-                                    {{--@else--}}
-                                        {{--<i class="menu-icon fa fa-user-o bg-gray"></i>--}}
-                                    {{--@endif--}}
-                                    {{--<div class="menu-info">--}}
-                                        {{--<h4 class="control-sidebar-subheading">{{ $s->name }}</h4>--}}
-                                        {{--<p>{{ $s->username }}</p>--}}
-                                    {{--</div>--}}
-                                {{--</a>--}}
-                            {{--</li>--}}
-                        {{--@endforeach--}}
-                    </ul>
-                </div>
-            </aside>
             <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')
