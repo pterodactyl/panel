@@ -90,12 +90,12 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'view-startup' => null,
             'edit-startup' => null,
         ],
-        'sftp' => [
-            'view-sftp' => null,
-            'view-sftp-password' => null,
-            'reset-sftp' => 's:set-password',
+        'database' => [
+            'view-databases' => null,
+            'reset-db-password' => null,
         ],
         'file' => [
+            'access-sftp' => null,
             'list-files' => 's:files:get',
             'edit-files' => 's:files:read',
             'save-files' => 's:files:post',
@@ -106,7 +106,7 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'create-files' => 's:files:create',
             'upload-files' => 's:files:upload',
             'delete-files' => 's:files:delete',
-            'download-files' => null,
+            'download-files' => 's:files:download',
         ],
         'task' => [
             'list-schedules' => null,
@@ -116,10 +116,6 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'edit-schedule' => null,
             'create-schedule' => null,
             'delete-schedule' => null,
-        ],
-        'database' => [
-            'view-databases' => null,
-            'reset-db-password' => null,
         ],
     ];
 

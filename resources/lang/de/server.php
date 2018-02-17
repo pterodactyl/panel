@@ -103,7 +103,6 @@ return [
             'subuser_header' => 'Subuser Verwaltung',
             'server_header' => 'Server Verwaltung',
             'task_header' => 'Schedule Verwaltung',
-            'sftp_header' => 'SFTP Verwaltung',
             'database_header' => 'Database Verwaltung',
             'power_start' => [
                 'title' => 'Start Server',
@@ -125,17 +124,21 @@ return [
                 'title' => 'Send Console Command',
                 'description' => 'Der User darf die Konsole benutzen.',
             ],
+            'view_sftp' => [
+                'title' => 'SFTP erlaubt',
+                'description' => 'Ermöglicht dem Benutzer, eine Verbindung mit dem vom Daemon bereitgestellten SFTP-Server herzustellen.',
+            ],
             'list_files' => [
                 'title' => 'List Files',
                 'description' => 'Der User darf die Server-Dateien sehen.',
             ],
             'edit_files' => [
                 'title' => 'Edit Files',
-                'description' => 'Der User darf die Server-Dateien sehen.',
+                'description' => 'Der User darf die Server-Dateien sehen. SFTP ist von dieser Erlaubnis nicht betroffen.',
             ],
             'save_files' => [
                 'title' => 'Save Files',
-                'description' => 'Der User darf die Server-Dateien bearbeiten.',
+                'description' => 'Der User darf die Server-Dateien bearbeiten. SFTP ist von dieser Erlaubnis nicht betroffen.',
             ],
             'move_files' => [
                 'title' => 'Rename & Move Files',
@@ -233,18 +236,6 @@ return [
                 'title' => 'Delete Schedule',
                 'description' => 'Der User darf geplante Aktionen für den Server löschen.',
             ],
-            'view_sftp' => [
-                'title' => 'View SFTP Details',
-                'description' => 'Der User darf die SFTP Informationen sehen (nicht das Passwort).',
-            ],
-            'view_sftp_password' => [
-                'title' => 'View SFTP Password',
-                'description' => 'Der User darf dass SFTP Passwort sehen.',
-            ],
-            'reset_sftp' => [
-                'title' => 'Reset SFTP Password',
-                'description' => 'Der User darf dass SFTP Passwort zurücksetzen.',
-            ],
             'view_databases' => [
                 'title' => 'View Database Details',
                 'description' => 'Der User darf die Datenbankinformationen sehen.',
@@ -298,7 +289,6 @@ return [
         'sftp' => [
             'header' => 'SFTP Information',
             'header_sub' => 'Details für eine SFTP verbindung.',
-            'change_pass' => 'Passwort ändern',
             'details' => 'SFTP Details',
             'conn_addr' => 'Adresse',
             'warning' => 'Bitte benutze SFTP und nicht FTP!.',

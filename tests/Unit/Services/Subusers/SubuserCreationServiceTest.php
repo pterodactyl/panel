@@ -121,7 +121,7 @@ class SubuserCreationServiceTest extends TestCase
      */
     public function testExistingUserCanBeAddedAsASubuser()
     {
-        $permissions = ['view-sftp', 'reset-sftp'];
+        $permissions = ['access-sftp'];
         $server = factory(Server::class)->make();
         $user = factory(User::class)->make();
         $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
