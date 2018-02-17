@@ -19,6 +19,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * PHP 7.2 is now the minimum required version for this software.
+* Egg variable default values are no longer validated aganist the ruleset when configuring them. Validation of those rules will only occur when editing or creating a server.
 
 ## v0.7.0-rc.2 (Derelict Dermodactylus)
 ### Fixed
