@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.1 (Derelict Dermodactylus)
+### Fixed
+* Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
+
 ## v0.7.0 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
