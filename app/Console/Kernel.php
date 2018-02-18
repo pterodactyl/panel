@@ -8,35 +8,21 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
+     * Register the commands for the application.
      */
-    protected $commands = [
-        \Pterodactyl\Console\Commands\Inspire::class,
-        \Pterodactyl\Console\Commands\MakeUser::class,
-        \Pterodactyl\Console\Commands\ShowVersion::class,
-        \Pterodactyl\Console\Commands\UpdateEnvironment::class,
-        \Pterodactyl\Console\Commands\RunTasks::class,
-        \Pterodactyl\Console\Commands\ClearTasks::class,
-        \Pterodactyl\Console\Commands\ClearServices::class,
-        \Pterodactyl\Console\Commands\UpdateEmailSettings::class,
-        \Pterodactyl\Console\Commands\CleanServiceBackup::class,
-        \Pterodactyl\Console\Commands\AddNode::class,
-        \Pterodactyl\Console\Commands\AddLocation::class,
-        \Pterodactyl\Console\Commands\RebuildServer::class,
-    ];
+    protected function commands()
+    {
+        $this->load(__DIR__ . '/Commands');
+    }
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('pterodactyl:tasks')->everyMinute()->withoutOverlapping();
-        $schedule->command('pterodactyl:tasks:clearlog')->twiceDaily(3, 15);
-        $schedule->command('pterodactyl:cleanservices')->twiceDaily(1, 13);
+        $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
+        $schedule->command('p:maintenance:clean-service-backups')->daily();
     }
 }

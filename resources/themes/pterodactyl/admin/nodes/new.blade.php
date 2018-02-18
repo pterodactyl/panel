@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -43,14 +29,18 @@
                 <div class="box-body">
                     <div class="form-group">
                         <label for="pName" class="form-label">Name</label>
-                        <input type="text" name="name" id="pName" class="form-control" />
+                        <input type="text" name="name" id="pName" class="form-control" value="{{ old('name') }}"/>
                         <p class="text-muted small">Character limits: <code>a-zA-Z0-9_.-</code> and <code>[Space]</code> (min 1, max 100 characters).</p>
                     </div>
                     <div class="form-group">
                         <label for="pLocationId" class="form-label">Location</label>
                         <select name="location_id" id="pLocationId">
                             @foreach($locations as $location)
-                                <option value="{{ $location->id }}">{{ $location->short }}</option>
+                                @if($location->id == old('location_id'))
+                                    <option value="{{ $location->id }}" selected>{{ $location->short }}</option>
+                                @else
+                                    <option value="{{ $location->id }}">{{ $location->short }}</option>
+                                @endif
                             @endforeach
                         </select>
                     </div>
@@ -58,6 +48,7 @@
                         <label class="form-label">Node Visibility</label>
                         <div>
                             <div class="radio radio-success radio-inline">
+
                                 <input type="radio" id="pPublicTrue" value="1" name="public" checked>
                                 <label for="pPublicTrue"> Public </label>
                             </div>
@@ -70,7 +61,7 @@
                     </div>
                     <div class="form-group">
                         <label for="pFQDN" class="form-label">FQDN</label>
-                        <input type="text" name="fqdn" id="pFQDN" class="form-control" />
+                        <input type="text" name="fqdn" id="pFQDN" class="form-control" value="{{ old('fqdn') }}"/>
                         <p class="text-muted small">Please enter domain name (e.g <code>node.example.com</code>) to be used for connecting to the daemon. An IP address may be used <em>only</em> if you are not using SSL for this node.</p>
                     </div>
                     <div class="form-group">
@@ -81,11 +72,15 @@
                                 <label for="pSSLTrue"> Use SSL Connection</label>
                             </div>
                             <div class="radio radio-danger radio-inline">
-                                <input type="radio" id="pSSLFalse" value="http" name="scheme">
+                                <input type="radio" id="pSSLFalse" value="http" name="scheme" @if(request()->isSecure()) disabled @endif>
                                 <label for="pSSLFalse"> Use HTTP Connection</label>
                             </div>
                         </div>
-                        <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
+                        @if(request()->isSecure())
+                            <p class="text-danger small">Your Panel is currently configured to use a secure connection. In order for browsers to connect to your node it <strong>must</strong> use a SSL connection.</p>
+                        @else
+                            <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
+                        @endif
                     </div>
                     <div class="form-group">
                         <label class="form-label">Behind Proxy</label>
@@ -119,14 +114,14 @@
                         <div class="form-group col-md-6">
                             <label for="pMemory" class="form-label">Total Memory</label>
                             <div class="input-group">
-                                <input type="text" name="memory" data-multiplicator="true" class="form-control" id="pMemory"/>
+                                <input type="text" name="memory" data-multiplicator="true" class="form-control" id="pMemory" value="{{ old('memory') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pMemoryOverallocate" class="form-label">Memory Over-Allocation</label>
                             <div class="input-group">
-                                <input type="text" name="memory_overallocate" class="form-control" id="pMemoryOverallocate"/>
+                                <input type="text" name="memory_overallocate" class="form-control" id="pMemoryOverallocate" value="{{ old('memory_overallocate') }}"/>
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
@@ -138,14 +133,14 @@
                         <div class="form-group col-md-6">
                             <label for="pDisk" class="form-label">Total Disk Space</label>
                             <div class="input-group">
-                                <input type="text" name="disk" data-multiplicator="true" class="form-control" id="pDisk"/>
+                                <input type="text" name="disk" data-multiplicator="true" class="form-control" id="pDisk" value="{{ old('disk') }}"/>
                                 <span class="input-group-addon">MB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pDiskOverallocate" class="form-label">Disk Over-Allocation</label>
                             <div class="input-group">
-                                <input type="text" name="disk_overallocate" class="form-control" id="pDiskOverallocate"/>
+                                <input type="text" name="disk_overallocate" class="form-control" id="pDiskOverallocate" value="{{ old('disk_overallocate') }}"/>
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>

@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.master')
 
 @section('title')
@@ -45,28 +31,28 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>@lang('strings.public_key')</th>
                             <th>@lang('strings.memo')</th>
-                            <th class="text-center hidden-sm hidden-xs">@lang('strings.created')</th>
-                            <th class="text-center hidden-sm hidden-xs">@lang('strings.expires')</th>
+                            <th>@lang('strings.public_key')</th>
+                            <th class="text-right hidden-sm hidden-xs">@lang('strings.last_used')</th>
+                            <th class="text-right hidden-sm hidden-xs">@lang('strings.created')</th>
                             <th></th>
                         </tr>
                         @foreach ($keys as $key)
                             <tr>
-                                <td><code>{{ $key->public }}</code></td>
                                 <td>{{ $key->memo }}</td>
-                                <td class="text-center hidden-sm hidden-xs">
-                                    {{ (new Carbon($key->created_at))->toDayDateTimeString() }}
-                                </td>
-                                <td class="text-center hidden-sm hidden-xs">
-                                    @if(is_null($key->expires_at))
-                                        <span class="label label-default">@lang('strings.never')</span>
+                                <td><code>{{ $key->identifier . decrypt($key->token) }}</code></td>
+                                <td class="text-right hidden-sm hidden-xs">
+                                    @if(!is_null($key->last_used_at))
+                                        @datetimeHuman($key->last_used_at)
                                     @else
-                                        {{ (new Carbon($key->expires_at))->toDayDateTimeString() }}
+                                        &mdash;
                                     @endif
                                 </td>
+                                <td class="text-right hidden-sm hidden-xs">
+                                    @datetimeHuman($key->created_at)
+                                </td>
                                 <td class="text-center">
-                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->public}}"><i class="fa fa-trash"></i></a>
+                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->identifier }}"><i class="fa fa-trash"></i></a>
                                 </td>
                             </tr>
                         @endforeach
@@ -98,7 +84,7 @@
             }, function () {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('account.api.revoke', { key: self.data('attr') }),
+                    url: Router.route('account.api.revoke', { identifier: self.data('attr') }),
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }

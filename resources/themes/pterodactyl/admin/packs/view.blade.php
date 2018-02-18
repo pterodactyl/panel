@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -55,6 +41,11 @@
                         <input type="text" name="version" id="pVersion" class="form-control" value="{{ $pack->version }}" />
                         <p class="text-muted small">The version of this package, or the version of the files contained within the package.</p>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Storage Location</label>
+                        <input type="text" class="form-control" readonly value="{{ storage_path('app/packs/' . $pack->uuid) }}">
+                        <p class="text-muted small">If you would like to modify the stored pack you will need to upload a new <code>archive.tar.gz</code> to the location defined above.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,12 +56,12 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pOptionId" class="form-label">Associated Option</label>
-                        <select id="pOptionId" name="option_id" class="form-control">
-                            @foreach($services as $service)
-                                <optgroup label="{{ $service->name }}">
-                                    @foreach($service->options as $option)
-                                        <option value="{{ $option->id }}" {{ $pack->option_id !== $option->id ?: 'selected' }}>{{ $option->name }}</option>
+                        <label for="pEggId" class="form-label">Associated Option</label>
+                        <select id="pEggId" name="egg_id" class="form-control">
+                            @foreach($nests as $nest)
+                                <optgroup label="{{ $nest->name }}">
+                                    @foreach($nest->eggs as $egg)
+                                        <option value="{{ $egg->id }}" {{ $pack->egg_id !== $egg->id ?: 'selected' }}>{{ $egg->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -107,42 +98,13 @@
                 </div>
                 <div class="box-footer with-border">
                     {!! csrf_field() !!}
-                    <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
-                    <button name="action" value="edit" class="btn btn-sm btn-primary pull-right" type="submit">Save</button>
+                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
+                    <button name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right" type="submit">Save</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
-<div class="row">
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Stored Files</h3>
-            </div>
-            <div class="box-body no-padding table-responsive">
-                <table class="table table-hover">
-                    <tr>
-                        <th>Name</th>
-                        <th>SHA1 Hash</th>
-                        <th>File Size</th>
-                    </tr>
-                    @foreach($pack->files() as $file)
-                        <tr>
-                            <td>{{ $file->name }}</td>
-                            <td><code>{{ $file->hash }}</code></td>
-                            <td>{{ $file->size }}</td>
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-            <div class="box-footer">
-                <p class="text-muted small">If you would like to modified the stored pack you will need to upload a new <code>archive.tar.gz</code> to the location defined below.</p>
-                <p class="text-muted small"><strong>Storage Location:</strong> <code>{{ storage_path('app/packs/' . $pack->uuid) }}</code></p>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
@@ -187,6 +149,6 @@
 @section('footer-scripts')
     @parent
     <script>
-        $('#pOptionId').select2();
+        $('#pEggId').select2();
     </script>
 @endsection

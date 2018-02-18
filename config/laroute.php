@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
      * The destination path for the javascript file.
      */
@@ -51,8 +50,7 @@ return [
 
     /*
      * Appends a prefix to URLs. By default the prefix is an empty string.
-    *
-    */
+     *
+     */
     'prefix' => '',
-
 ];

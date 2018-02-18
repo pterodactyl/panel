@@ -1,33 +1,23 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Permission extends Model
+class Permission extends Model implements CleansAttributes, ValidableContract
 {
+    use Eloquence, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'subuser_permission';
+
     /**
      * Should timestamps be used on this model.
      *
@@ -59,6 +49,22 @@ class Permission extends Model
     ];
 
     /**
+     * @var array
+     */
+    protected static $applicationRules = [
+        'subuser_id' => 'required',
+        'permission' => 'required',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'subuser_id' => 'numeric|min:1',
+        'permission' => 'string',
+    ];
+
+    /**
      * A list of all permissions available for a user.
      *
      * @var array
@@ -79,16 +85,17 @@ class Permission extends Model
             'delete-subuser' => null,
         ],
         'server' => [
-            'set-connection' => null,
+            'view-allocations' => null,
+            'edit-allocation' => null,
             'view-startup' => null,
-            'edit-startup'  => null,
+            'edit-startup' => null,
         ],
-        'sftp' => [
-            'view-sftp' => null,
-            'view-sftp-password' => null,
-            'reset-sftp' => 's:set-password',
+        'database' => [
+            'view-databases' => null,
+            'reset-db-password' => null,
         ],
         'file' => [
+            'access-sftp' => null,
             'list-files' => 's:files:get',
             'edit-files' => 's:files:read',
             'save-files' => 's:files:post',
@@ -99,31 +106,28 @@ class Permission extends Model
             'create-files' => 's:files:create',
             'upload-files' => 's:files:upload',
             'delete-files' => 's:files:delete',
-            'download-files' => null,
+            'download-files' => 's:files:download',
         ],
         'task' => [
-            'list-tasks' => null,
-            'view-task' => null,
-            'toggle-task' => null,
-            'queue-task' => null,
-            'create-task' => null,
-            'delete-task' => null,
-        ],
-        'database' => [
-            'view-databases' => null,
-            'reset-db-password' => null,
+            'list-schedules' => null,
+            'view-schedule' => null,
+            'toggle-schedule' => null,
+            'queue-schedule' => null,
+            'edit-schedule' => null,
+            'create-schedule' => null,
+            'delete-schedule' => null,
         ],
     ];
 
     /**
      * Return a collection of permissions available.
      *
-     * @param  array  $single
-     * @return \Illuminate\Support\Collection|array
+     * @param bool $array
+     * @return array|\Illuminate\Support\Collection
      */
-    public static function listPermissions($single = false)
+    public static function getPermissions($array = false)
     {
-        if ($single) {
+        if ($array) {
             return collect(self::$permissions)->mapWithKeys(function ($item) {
                 return $item;
             })->all();
@@ -135,8 +139,8 @@ class Permission extends Model
     /**
      * Find permission by permission node.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
-     * @param  string                             $permission
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param string                             $permission
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopePermission($query, $permission)
@@ -147,8 +151,8 @@ class Permission extends Model
     /**
      * Filter permission by server.
      *
-     * @param  \Illuminate\Database\Query\Builder $query
-     * @param  \Pterodactyl\Models\Server         $server
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param \Pterodactyl\Models\Server         $server
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopeServer($query, Server $server)

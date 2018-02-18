@@ -1,25 +1,40 @@
 <?php
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+namespace Tests;
+
+use Cake\Chronos\Chronos;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
 {
-    /**
-     * The base URL to use while testing the application.
-     *
-     * @var string
-     */
-    protected $baseUrl = 'http://localhost';
+    use CreatesApplication;
 
     /**
-     * Creates the application.
-     *
-     * @return \Illuminate\Foundation\Application
+     * Setup tests.
      */
-    public function createApplication()
+    public function setUp()
     {
-        $app = require __DIR__ . '/../bootstrap/app.php';
+        parent::setUp();
 
-        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        $this->setKnownUuidFactory();
+    }
 
-        return $app;
+    /**
+     * Tear down tests.
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+
+        Chronos::setTestNow();
+    }
+
+    /**
+     * Handles the known UUID handling in certain unit tests. Use the "KnownUuid" trait
+     * in order to enable this ability.
+     */
+    public function setKnownUuidFactory()
+    {
+        // do nothing
     }
 }

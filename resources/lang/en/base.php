@@ -29,184 +29,29 @@ return [
     ],
     'api' => [
         'index' => [
-            'header' => 'API Access',
-            'header_sub' => 'Manage your API access keys.',
-            'list' => 'API Keys',
+            'list' => 'Your Keys',
+            'header' => 'Accout API',
+            'header_sub' => 'Manage access keys that allow you to perform actions aganist the panel.',
             'create_new' => 'Create New API key',
+            'keypair_created' => 'An API key has been successfully generated and is listed below.',
         ],
         'new' => [
             'header' => 'New API Key',
-            'header_sub' => 'Create a new API access key',
+            'header_sub' => 'Create a new account access key.',
             'form_title' => 'Details',
             'descriptive_memo' => [
-                'title' => 'Descriptive Memo',
-                'description' => 'Enter a brief description of what this API key will be used for.',
+                'title' => 'Description',
+                'description' => 'Enter a brief description of this key that will be useful for reference.',
             ],
             'allowed_ips' => [
                 'title' => 'Allowed IPs',
                 'description' => 'Enter a line delimitated list of IPs that are allowed to access the API using this key. CIDR notation is allowed. Leave blank to allow any IP.',
             ],
         ],
-        'permissions' => [
-            'user' => [
-                'server_header' => 'User Server Permissions',
-                'server' => [
-                    'list' => [
-                        'title' => 'List Servers',
-                        'desc' => 'Allows listing of all servers a user owns or has access to as a subuser.',
-                    ],
-                    'view' => [
-                        'title' => 'View Server',
-                        'desc' => 'Allows viewing of specific server user can access.',
-                    ],
-                    'power' => [
-                        'title' => 'Toggle Power',
-                        'desc' => 'Allow toggling of power status for a server.',
-                    ],
-                    'command' => [
-                        'title' => 'Send Command',
-                        'desc' => 'Allow sending of a command to a running server.',
-                    ],
-                ],
-            ],
-            'admin' => [
-                'server_header' => 'Server Control',
-                'server' => [
-                    'list' => [
-                        'title' => 'List Servers',
-                        'desc' => 'Allows listing of all servers currently on the system.',
-                    ],
-                    'view' => [
-                        'title' => 'View Server',
-                        'desc' => 'Allows view of single server including service and details.',
-                    ],
-                    'delete' => [
-                        'title' => 'Delete Server',
-                        'desc' => 'Allows deletion of a server from the system.',
-                    ],
-                    'create' => [
-                        'title' => 'Create Server',
-                        'desc' => 'Allows creation of a new server on the system.',
-                    ],
-                    'edit-details' => [
-                        'title' => 'Edit Server Details',
-                        'desc' => 'Allows editing of server details such as name, owner, description, and secret key.',
-                    ],
-                    'edit-container' => [
-                        'title' => 'Edit Server Container',
-                        'desc' => 'Allows for modification of the docker container the server runs in.',
-                    ],
-                    'suspend' => [
-                        'title' => 'Suspend Server',
-                        'desc' => 'Allows for the suspension and unsuspension of a given server.',
-                    ],
-                    'install' => [
-                        'title' => 'Toggle Install Status',
-                        'desc' => '',
-                    ],
-                    'rebuild' => [
-                        'title' => 'Rebuild Server',
-                        'desc' => '',
-                    ],
-                    'edit-build' => [
-                        'title' => 'Edit Server Build',
-                        'desc' => 'Allows editing of server build setting such as CPU and memory allocations.',
-                    ],
-                    'edit-startup' => [
-                        'title' => 'Edit Server Startup',
-                        'desc' => 'Allows modification of server startup commands and parameters.',
-                    ],
-                ],
-                'location_header' => 'Location Control',
-                'location' => [
-                    'list' => [
-                        'title' => 'List Locations',
-                        'desc' => 'Allows listing all locations and thier associated nodes.',
-                    ],
-                ],
-                'node_header' => 'Node Control',
-                'node' => [
-                    'list' => [
-                        'title' => 'List Nodes',
-                        'desc' => 'Allows listing of all nodes currently on the system.',
-                    ],
-                    'view' => [
-                        'title' => 'View Node',
-                        'desc' => 'Allows viewing details about a specific node including active services.',
-                    ],
-                    'view-config' => [
-                        'title' => 'View Node Configuration',
-                        'desc' => 'Danger. This allows the viewing of the node configuration file used by the daemon, and exposes secret daemon tokens.',
-                    ],
-                    'create' => [
-                        'title' => 'Create Node',
-                        'desc' => 'Allows creating a new node on the system.',
-                    ],
-                    'delete' => [
-                        'title' => 'Delete Node',
-                        'desc' => 'Allows deletion of a node from the system.',
-                    ],
-                ],
-                'user_header' => 'User Control',
-                'user' => [
-                    'list' => [
-                        'title' => 'List Users',
-                        'desc' => 'Allows listing of all users currently on the system.',
-                    ],
-                    'view' => [
-                        'title' => 'View User',
-                        'desc' => 'Allows viewing details about a specific user including active services.',
-                    ],
-                    'create' => [
-                        'title' => 'Create User',
-                        'desc' => 'Allows creating a new user on the system.',
-                    ],
-                    'edit' => [
-                        'title' => 'Update User',
-                        'desc' => 'Allows modification of user details.',
-                    ],
-                    'delete' => [
-                        'title' => 'Delete User',
-                        'desc' => 'Allows deleting a user.',
-                    ],
-                ],
-                'service_header' => 'Service Control',
-                'service' => [
-                    'list' => [
-                        'title' => 'List Services',
-                        'desc' => 'Allows listing of all services configured on the system.',
-                    ],
-                    'view' => [
-                        'title' => 'View Service',
-                        'desc' => 'Allows listing details about each service on the system including service options and variables.',
-                    ],
-                ],
-                'option_header' => 'Option Control',
-                'option' => [
-                    'list' => [
-                        'title' => 'List Options',
-                        'desc' => '',
-                    ],
-                    'view' => [
-                        'title' => 'View Option',
-                        'desc' => '',
-                    ],
-                ],
-                'pack_header' => 'Pack Control',
-                'pack' => [
-                    'list' => [
-                        'title' => 'List Packs',
-                        'desc' => '',
-                    ],
-                    'view' => [
-                        'title' => 'View Pack',
-                        'desc' => '',
-                    ],
-                ],
-            ],
-        ],
     ],
     'account' => [
+        'details_updated' => 'Your account details have been successfully updated.',
+        'invalid_password' => 'The password provided for your account was not valid.',
         'header' => 'Your Account',
         'header_sub' => 'Manage your account details.',
         'update_pass' => 'Update Password',
@@ -219,10 +64,9 @@ return [
         'last_name' => 'Last Name',
         'update_identitity' => 'Update Identity',
         'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
-        'invalid_pass' => 'The password provided was not valid for this account.',
-        'exception' => 'An error occurred while attempting to update your account.',
     ],
     'security' => [
+        'session_mgmt_disabled' => 'Your host has not enabled the ability to manage account sessions via this interface.',
         'header' => 'Account Security',
         'header_sub' => 'Control active sessions and 2-Factor Authentication.',
         'sessions' => 'Active Sessions',
@@ -234,5 +78,6 @@ return [
         'enable_2fa' => 'Enable 2-Factor Authentication',
         '2fa_qr' => 'Confgure 2FA on Your Device',
         '2fa_checkpoint_help' => 'Use the 2FA application on your phone to take a picture of the QR code to the left, or manually enter the code under it. Once you have done so, generate a token and enter it below.',
+        '2fa_disable_error' => 'The 2FA token provided was not valid. Protection has not been disabled for this account.',
     ],
 ];

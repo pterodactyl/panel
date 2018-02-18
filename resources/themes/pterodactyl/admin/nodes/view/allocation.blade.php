@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -86,9 +72,11 @@
                     @endforeach
                 </table>
             </div>
-            <div class="box-footer text-center">
-                {{ $node->allocations->render() }}
-            </div>
+            @if($node->allocations->hasPages())
+                <div class="box-footer text-center">
+                    {{ $node->allocations->render() }}
+                </div>
+            @endif
         </div>
     </div>
     <div class="col-sm-4">
@@ -102,7 +90,7 @@
                         <label for="pAllocationIP" class="control-label">IP Address</label>
                         <div>
                             <select class="form-control" name="allocation_ip" id="pAllocationIP" multiple>
-                                @foreach($node->allocations->unique('ip')->values()->all() as $allocation)
+                                @foreach($allocations as $allocation)
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
@@ -144,7 +132,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <select class="form-control" name="ip">
-                                @foreach($node->allocations->unique('ip')->values()->all() as $allocation)
+                                @foreach($allocations as $allocation)
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
@@ -168,10 +156,12 @@
     $('#pAllocationIP').select2({
         tags: true,
         maximumSelectionLength: 1,
+        selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
     $('#pAllocationPorts').select2({
         tags: true,
+        selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
     $('button[data-action="deallocate"]').click(function (event) {
@@ -191,7 +181,7 @@
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('admin.nodes.view.allocation.removeSingle', { id: Pterodactyl.node.id, allocation: allocation }),
+                url: Router.route('admin.nodes.view.allocation.removeSingle', { node: Pterodactyl.node.id, allocation: allocation }),
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).done(function (data) {
                 element.parent().parent().addClass('warning').delay(100).fadeOut();

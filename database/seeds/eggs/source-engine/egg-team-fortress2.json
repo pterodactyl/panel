@@ -1,0 +1,54 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2018-01-21T16:59:45-06:00",
+    "name": "Team Fortress 2",
+    "author": "support@pterodactyl.io",
+    "description": "Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.",
+    "image": "quay.io\/pterodactyl\/core:source",
+    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"gameserver Steam ID\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
+        "stop": "quit"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\n# SRCDS Base Installation Script\n#\n# Server Files: \/mnt\/server\napt -y update\napt -y --no-install-recommends install curl lib32gcc1 ca-certificates\n\ncd \/tmp\ncurl -sSL -o steamcmd.tar.gz http:\/\/media.steampowered.com\/installer\/steamcmd_linux.tar.gz\n\nmkdir -p \/mnt\/server\/steamcmd\ntar -xzvf steamcmd.tar.gz -C \/mnt\/server\/steamcmd\ncd \/mnt\/server\/steamcmd\n\n# SteamCMD fails otherwise for some reason, even running as root.\n# This is changed at the end of the install process anyways.\nchown -R root:root \/mnt\n\nexport HOME=\/mnt\/server\n.\/steamcmd.sh +login anonymous +force_install_dir \/mnt\/server +app_update ${SRCDS_APPID} +quit\n\nmkdir -p \/mnt\/server\/.steam\/sdk32\ncp -v linux32\/steamclient.so ..\/.steam\/sdk32\/steamclient.so",
+            "container": "ubuntu:16.04",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Game ID",
+            "description": "The ID corresponding to the game to download and run using SRCDS.",
+            "env_variable": "SRCDS_APPID",
+            "default_value": "232250",
+            "user_viewable": 1,
+            "user_editable": 0,
+            "rules": "required|regex:\/^(232250)$\/"
+        },
+        {
+            "name": "Game Name",
+            "description": "The name corresponding to the game to download and run using SRCDS.",
+            "env_variable": "SRCDS_GAME",
+            "default_value": "tf",
+            "user_viewable": 1,
+            "user_editable": 0,
+            "rules": "required|regex:\/^(tf)$\/"
+        },
+        {
+            "name": "Default Map",
+            "description": "The default map to use when starting the server.",
+            "env_variable": "SRCDS_MAP",
+            "default_value": "cp_dustbowl",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|regex:\/^(\\w{1,20})$\/"
+        }
+    ]
+}

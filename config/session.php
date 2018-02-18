@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Session Driver
@@ -29,7 +28,7 @@ return [
     |
     */
 
-    'lifetime' => 10080,
+    'lifetime' => env('SESSION_LIFETIME', 10080),
 
     'expire_on_close' => false,
 
@@ -122,7 +121,7 @@ return [
     |
     */
 
-    'cookie' => 'pterodactyl_session',
+    'cookie' => env('SESSION_COOKIE', str_slug(env('APP_NAME', 'pterodactyl'), '_') . '_session'),
 
     /*
     |--------------------------------------------------------------------------
@@ -176,4 +175,18 @@ return [
 
     'http_only' => true,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Same-Site Cookies
+    |--------------------------------------------------------------------------
+    |
+    | This option determines how your cookies behave when cross-site requests
+    | take place, and can be used to mitigate CSRF attacks. By default, we
+    | do not enable this as other CSRF protection services are in place.
+    |
+    | Supported: "lax", "strict"
+    |
+    */
+
+    'same_site' => null,
 ];

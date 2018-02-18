@@ -1,22 +1,8 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -69,7 +55,7 @@
                         </tr>
                         @foreach ($nodes as $node)
                             <tr>
-                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->daemonSecret }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/v1"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                                 <td><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</td>
                                 <td>{{ $node->location->short }}</td>
                                 <td>{{ $node->memory }} MB</td>
@@ -109,8 +95,14 @@
                     title: 'v' + data.version,
                 });
                 $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
-            }).fail(function () {
+            }).fail(function (error) {
+                var errorText = 'Error connecting to node! Check browser console for details.';
+                try {
+                    errorText = error.responseJSON.errors[0].detail || errorText;
+                } catch (ex) {}
+
                 $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heart-o').css('color', '#d9534f');
+                $(element).find('i').tooltip({ title: errorText });
             });
         }).promise().done(function () {
             setTimeout(pingNodes, 10000);

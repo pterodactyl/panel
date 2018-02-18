@@ -1,29 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Notifications;
 
+use Pterodactyl\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,7 +13,15 @@ class AccountCreated extends Notification implements ShouldQueue
     use Queueable;
 
     /**
-     * The password reset token to send.
+     * The authentication token to be used for the user to set their
+     * password for the first time.
+     *
+     * @var string|null
+     */
+    public $token;
+
+    /**
+     * The user model for the created user.
      *
      * @var object
      */
@@ -43,18 +30,19 @@ class AccountCreated extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param  aray  $user
-     * @return void
+     * @param \Pterodactyl\Models\User $user
+     * @param string|null              $token
      */
-    public function __construct(array $user)
+    public function __construct(User $user, string $token = null)
     {
-        $this->user = (object) $user;
+        $this->token = $token;
+        $this->user = $user;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -65,19 +53,19 @@ class AccountCreated extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param mixed $notifiable
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
         $message = (new MailMessage)
             ->greeting('Hello ' . $this->user->name . '!')
-            ->line('You are recieving this email because an account has been created for you on Pterodactyl Panel.')
+            ->line('You are recieving this email because an account has been created for you on ' . config('app.name') . '.')
             ->line('Username: ' . $this->user->username)
-            ->line('Email: ' . $notifiable->email);
+            ->line('Email: ' . $this->user->email);
 
-        if (! is_null($this->user->token)) {
-            return $message->action('Setup Your Account', url('/auth/password/reset/' . $this->user->token . '?email=' . $notifiable->email));
+        if (! is_null($this->token)) {
+            return $message->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . $this->user->email));
         }
 
         return $message;

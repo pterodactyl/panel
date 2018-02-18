@@ -13,5 +13,5 @@ Default panel users:
 
 MySQL is accessible using root/pterodactyl or pterodactyl/pterodactyl
 
-Services for pteroq and mailhog are running
+Service for pteroq and mailhog are running
 #####################################################

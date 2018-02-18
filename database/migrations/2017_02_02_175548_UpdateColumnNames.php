@@ -8,8 +8,6 @@ class UpdateColumnNames extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -48,8 +46,6 @@ class UpdateColumnNames extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

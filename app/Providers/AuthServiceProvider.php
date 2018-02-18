@@ -13,14 +13,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'Pterodactyl\Models\Server' => 'Pterodactyl\Policies\ServerPolicy',
-        'Pterodactyl\Models\APIKey' => 'Pterodactyl\Policies\APIKeyPolicy',
     ];
 
     /**
      * Register any application authentication / authorization services.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
-     * @return void
+     * @param \Illuminate\Contracts\Auth\Access\Gate $gate
      */
     public function boot()
     {

@@ -1,104 +1,71 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Log;
-use Alert;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\UserRepository;
-use Pterodactyl\Exceptions\DisplayValidationException;
+use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountController extends Controller
 {
     /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
+    /**
+     * @var \Pterodactyl\Services\Users\UserUpdateService
+     */
+    protected $updateService;
+
+    /**
+     * AccountController constructor.
+     *
+     * @param \Prologue\Alerts\AlertsMessageBag             $alert
+     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
+     */
+    public function __construct(AlertsMessageBag $alert, UserUpdateService $updateService)
+    {
+        $this->alert = $alert;
+        $this->updateService = $updateService;
+    }
+
+    /**
      * Display base account information page.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
         return view('base.account');
     }
 
     /**
-     * Update details for a users account.
+     * Update details for a user's account.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Pterodactyl\Http\Requests\Base\AccountDataFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function update(Request $request)
+    public function update(AccountDataFormRequest $request)
     {
         $data = [];
-
-        // Request to update account Password
         if ($request->input('do_action') === 'password') {
-            $this->validate($request, [
-                'current_password' => 'required',
-                'new_password' => 'required|confirmed|' . User::PASSWORD_RULES,
-                'new_password_confirmation' => 'required',
-            ]);
-
             $data['password'] = $request->input('new_password');
-
-        // Request to update account Email
         } elseif ($request->input('do_action') === 'email') {
             $data['email'] = $request->input('new_email');
-
-        // Request to update account Identity
         } elseif ($request->input('do_action') === 'identity') {
             $data = $request->only(['name_first', 'name_last', 'username']);
-
-        // Unknown, hit em with a 404
-        } else {
-            return abort(404);
         }
 
-        if (
-            in_array($request->input('do_action'), ['email', 'password'])
-            && ! password_verify($request->input('current_password'), $request->user()->password)
-        ) {
-            Alert::danger(trans('base.account.invalid_pass'))->flash();
-
-            return redirect()->route('account');
-        }
-
-        try {
-            $repo = new UserRepository;
-            $repo->update($request->user()->id, $data);
-            Alert::success('Your account details were successfully updated.')->flash();
-        } catch (DisplayValidationException $ex) {
-            return redirect()->route('account')->withErrors(json_decode($ex->getMessage()));
-        } catch (\Exception $ex) {
-            Log::error($ex);
-            Alert::danger(trans('base.account.exception'))->flash();
-        }
+        $this->updateService->setUserLevel(User::USER_LEVEL_USER);
+        $this->updateService->handle($request->user(), $data);
+        $this->alert->success(trans('base.account.details_updated'))->flash();
 
         return redirect()->route('account');
     }

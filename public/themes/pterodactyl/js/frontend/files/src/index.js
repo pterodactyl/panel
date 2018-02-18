@@ -45,6 +45,10 @@ class FileManager {
                 ContextMenu.run();
                 this.reloadFilesButton();
                 this.addFolderButton();
+                this.selectItem();
+                this.selectAll();
+                this.selectiveDeletion();
+                this.selectRow();
                 if (_.isFunction(next)) {
                     return next();
                 }
@@ -59,10 +63,15 @@ class FileManager {
             if (_.isFunction(next)) {
                 return next(new Error('Failed to load file listing.'));
             }
+
+            if ((path !== '' && path !== '/') && jqXHR.status === 404) {
+                return this.list('', next);
+            }
+
             swal({
                 type: 'error',
                 title: 'File Error',
-                text: jqXHR.responseText || 'An error occured while attempting to process this request. Please try again.',
+                text: jqXHR.responseJSON.errors[0].detail || 'An error occured while attempting to process this request. Please try again.',
             });
             console.error(jqXHR);
         });
@@ -83,10 +92,42 @@ class FileManager {
         });
     }
 
+    selectItem() {
+        $('[data-action="addSelection"]').on('click', event => {
+            event.preventDefault();
+        });
+    }
+
+    selectAll() {
+        $('[data-action="selectAll"]').on('click', event => {
+            event.preventDefault();
+        });
+    }
+
+    selectiveDeletion() {
+        $('[data-action="selective-deletion"]').on('mousedown', event => {
+            new ActionsClass().deleteSelected();
+        });
+    }
+
     addFolderButton() {
         $('[data-action="add-folder"]').unbind().on('click', () => {
             new ActionsClass().folder($('#file_listing').data('current-dir') || '/');
         })
+    }
+
+    selectRow() {
+      $('#file_listing tr').on('mousedown', event => {
+          if (event.which === 1) {
+              if ($(event.target).is('th') || $(event.target).is('input[data-action="selectAll"]')) {
+                  new ActionsClass().highlightAll(event);
+              } else if ($(event.target).is('td') || $(event.target).is('input[data-action="addSelection"]')) {
+                  new ActionsClass().toggleHighlight(event);
+              }
+
+              new ActionsClass().toggleMassActions();
+          }
+      });
     }
 
     decodeHash() {

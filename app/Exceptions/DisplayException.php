@@ -1,46 +1,77 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Exceptions;
 
 use Log;
+use Throwable;
+use Illuminate\Http\Response;
+use Prologue\Alerts\AlertsMessageBag;
 
-class DisplayException extends \Exception
+class DisplayException extends PterodactylException
 {
+    const LEVEL_DEBUG = 'debug';
+    const LEVEL_INFO = 'info';
+    const LEVEL_WARNING = 'warning';
+    const LEVEL_ERROR = 'error';
+
+    /**
+     * @var string
+     */
+    protected $level;
+
     /**
      * Exception constructor.
      *
-     * @param  string  $message
-     * @param  mixed   $log
-     * @return void
+     * @param string         $message
+     * @param Throwable|null $previous
+     * @param string         $level
+     * @param int            $code
      */
-    public function __construct($message, $log = null)
+    public function __construct($message, Throwable $previous = null, $level = self::LEVEL_ERROR, $code = 0)
     {
-        if (! is_null($log)) {
-            Log::error($log);
+        parent::__construct($message, $code, $previous);
+
+        if (! is_null($previous)) {
+            Log::{$level}($previous);
         }
 
-        parent::__construct($message);
+        $this->level = $level;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorLevel()
+    {
+        return $this->level;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    /**
+     * Render the exception to the user by adding a flashed message to the session
+     * and then redirecting them back to the page that they came from. If the
+     * request originated from an API hit, return the error in JSONAPI spec format.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function render($request)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(Handler::convertToArray($this, [
+                'detail' => $this->getMessage(),
+            ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : Response::HTTP_BAD_REQUEST);
+        }
+
+        app()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();
+
+        return redirect()->back()->withInput();
     }
 }

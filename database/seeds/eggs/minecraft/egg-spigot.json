@@ -1,0 +1,54 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2018-01-21T16:47:24-06:00",
+    "name": "Spigot",
+    "author": "support@pterodactyl.io",
+    "description": "Spigot is the most widely-used modded Minecraft server software in the world. It powers many of the top Minecraft server networks around to ensure they can cope with their huge player base and ensure the satisfaction of their players. Spigot works by reducing and eliminating many causes of lag, as well as adding in handy features and settings that help make your job of server administration easier.",
+    "image": "quay.io\/pterodactyl\/core:java-glibc",
+    "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"enable-query\": \"true\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \",\r\n    \"userInteraction\": [\r\n        \"Go to eula.txt for more info.\"\r\n    ]\r\n}",
+        "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\n# Spigot Installation Script\n#\n# Server Files: \/mnt\/server\n\n## Only download if a path is provided, otherwise continue.\nif [ ! -z \"${DL_PATH}\" ]; then\n    apk update\n    apk add curl\n\n    cd \/mnt\/server\n\n    MODIFIED_DOWNLOAD=`eval echo $(echo ${DL_PATH} | sed -e 's\/{{\/${\/g' -e 's\/}}\/}\/g')`\n    curl -sSL -o ${SERVER_JARFILE} ${MODIFIED_DOWNLOAD}\nfi",
+            "container": "alpine:3.4",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Server Jar File",
+            "description": "The name of the server jarfile to run the server with.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "server.jar",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/"
+        },
+        {
+            "name": "Spigot Version",
+            "description": "The version of Spigot to download (using the --rev tag). Use \"latest\" for latest.",
+            "env_variable": "DL_VERSION",
+            "default_value": "latest",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|between:3,7"
+        },
+        {
+            "name": "Download Path",
+            "description": "A URL to use to download Spigot rather than building it on the server. This is not user viewable. Use <code>{{DL_VERSION}}<\/code> in the URL to automatically insert the assigned version into the URL. If you do not enter a URL Spigot will build directly in the container (this will fail on low memory containers).",
+            "env_variable": "DL_PATH",
+            "default_value": "",
+            "user_viewable": 0,
+            "user_editable": 0,
+            "rules": "nullable|string"
+        }
+    ]
+}

@@ -1,26 +1,20 @@
+{{-- Pterodactyl - Panel --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
 
-{{-- Permission is hereby granted, free of charge, to any person obtaining a copy --}}
-{{-- of this software and associated documentation files (the "Software"), to deal --}}
-{{-- in the Software without restriction, including without limitation the rights --}}
-{{-- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell --}}
-{{-- copies of the Software, and to permit persons to whom the Software is --}}
-{{-- furnished to do so, subject to the following conditions: --}}
-
-{{-- The above copyright notice and this permission notice shall be included in all --}}
-{{-- copies or substantial portions of the Software. --}}
-
-{{-- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR --}}
-{{-- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, --}}
-{{-- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE --}}
-{{-- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER --}}
-{{-- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, --}}
-{{-- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE --}}
-{{-- SOFTWARE. --}}
+{{-- This software is licensed under the terms of the MIT license. --}}
+{{-- https://opensource.org/licenses/MIT --}}
 
 <div class="box-header with-border">
     <h3 class="box-title">/home/container{{ $directory['header'] }}</h3>
     <div class="box-tools pull-right">
+        <div class="btn-group">
+            <button type="button" id="mass_actions" class="btn btn-sm btn-info dropdown-toggle disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              @lang('server.files.mass_actions') <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-massactions">
+              <li><a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.files.delete') <i class="fa fa-fw fa-trash-o"></i></a></li>
+            </ul>
+        </div>
         <button class="btn btn-sm btn-success btn-icon" data-action="add-folder">
             <i class="fa fa-fw fa-folder-open-o"></i>
         </button>
@@ -38,13 +32,13 @@
     <table class="table table-hover" id="file_listing" data-current-dir="{{ $directory['header'] }}">
         <thead>
             <tr>
-                <th style="width:2%;" class="middle text-center">
-                    <i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
+                <th style="width:4%;" class="middle">
+                    <input type="checkbox" class="select-all-files" data-action="selectAll"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
                 </th>
                 <th style="width:55%">@lang('server.files.file_name')</th>
                 <th style="width:15%" class="hidden-xs">@lang('server.files.size')</th>
                 <th style="width:20%" class="hidden-xs">@lang('server.files.last_modified')</th>
-                <th style="width:8%"></th>
+                <th style="width:6%"></th>
             </tr>
         </thead>
         <tbody id="append_files_to">
@@ -70,7 +64,7 @@
             @endif
             @foreach ($folders as $folder)
                 <tr data-type="folder">
-                    <td data-identifier="type" class="middle"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                    <td data-identifier="type" class="middle"><input type="checkbox" class="select-folder" data-action="addSelection"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                     <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
                         <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                     </td>
@@ -85,12 +79,12 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button></td>
+                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></td>
                 </tr>
             @endforeach
             @foreach ($files as $file)
                 <tr data-type="file" data-mime="{{ $file['mime'] }}">
-                    <td data-identifier="type" class="middle">
+                    <td data-identifier="type" class="middle"><input type="checkbox" class="select-file" data-action="addSelection">
                         {{--  oh boy --}}
                         @if(in_array($file['mime'], [
                             'application/x-7z-compressed',
@@ -143,7 +137,7 @@
                     <td data-identifier="name" data-name="{{ rawurlencode($file['entry']) }}" data-path="@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}@endif/">
                         @if(in_array($file['mime'], $editableMime))
                             @can('edit-files', $server)
-                                <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ rawurlencode($file['directory']) }}/@endif{{ rawurlencode($file['entry']) }}" class="edit_file">{{ $file['entry'] }}</a>
+                                <a href="/server/{{ $server->uuidShort }}/files/edit/@if($file['directory'] !== ''){{ $file['directory'] }}/@endif{{ $file['entry'] }}" class="edit_file">{{ $file['entry'] }}</a>
                             @else
                                 {{ $file['entry'] }}
                             @endcan
@@ -162,7 +156,7 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button></td>
+                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></td>
                 </tr>
             @endforeach
         </tbody>

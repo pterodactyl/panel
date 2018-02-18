@@ -6,7 +6,46 @@ return [
         'header' => 'Server Console',
         'header_sub' => 'Control your server in real time.',
     ],
+    'schedule' => [
+        'header' => 'Schedule Manager',
+        'header_sub' => 'Manage all of this server\'s schedules in one place.',
+        'current' => 'Current Schedules',
+        'new' => [
+            'header' => 'Create New Schedule',
+            'header_sub' => 'Create a new set of scheduled tasks for this server.',
+            'submit' => 'Create Schedule',
+        ],
+        'manage' => [
+            'header' => 'Manage Schedule',
+            'submit' => 'Update Schedule',
+            'delete' => 'Delete Schedule',
+        ],
+        'task' => [
+            'time' => 'After',
+            'action' => 'Perform Action',
+            'payload' => 'With Payload',
+            'add_more' => 'Add Another Task',
+        ],
+        'actions' => [
+            'command' => 'Send Command',
+            'power' => 'Power Action',
+        ],
+        'toggle' => 'Toggle Status',
+        'run_now' => 'Trigger Schedule',
+        'schedule_created' => 'Successfully created a new schedule for this server.',
+        'schedule_updated' => 'Schedule has been updated.',
+        'unnamed' => 'Unnamed Schedule',
+        'setup' => 'Schedule Setup',
+        'day_of_week' => 'Day of Week',
+        'day_of_month' => 'Day of Month',
+        'hour' => 'Hour of Day',
+        'minute' => 'Minute of Hour',
+        'time_help' => 'The schedule system supports the use of Cronjob syntax when defining when tasks should begin running. Use the fields above to specify when these tasks should begin running or select options from the multiple select menus.',
+        'task_help' => 'Times for tasks are relative to the previously defined task. Each schedule may have no more than 5 tasks assigned to it and tasks may not be scheduled more than 15 minutes apart.',
+    ],
     'tasks' => [
+        'task_created' => 'Successfully created a new task on the Panel.',
+        'task_updated' => 'Task has successfully been updated. Any currently queued task actions will be cancelled and run again at the next defined time.',
         'header' => 'Scheduled Tasks',
         'header_sub' => 'Automate your server.',
         'current' => 'Current Scheduled Tasks',
@@ -19,6 +58,7 @@ return [
         'new' => [
             'header' => 'New Task',
             'header_sub' => 'Create a new scheduled task for this server.',
+            'task_name' => 'Task Name',
             'day_of_week' => 'Day of Week',
             'custom' => 'Custom Value',
             'day_of_month' => 'Day of Month',
@@ -33,8 +73,15 @@ return [
             'sat' => 'Saturday',
             'submit' => 'Create Task',
             'type' => 'Task Type',
+            'chain_then' => 'Then, After',
+            'chain_do' => 'Do',
+            'chain_arguments' => 'With Arguments',
             'payload' => 'Task Payload',
             'payload_help' => 'For example, if you selected <code>Send Command</code> enter the command here. If you selected <code>Send Power Option</code> put the power action here (e.g. <code>restart</code>).',
+        ],
+        'edit' => [
+            'header' => 'Manage Task',
+            'submit' => 'Update Task',
         ],
     ],
     'users' => [
@@ -44,6 +91,8 @@ return [
         'list' => 'Accounts with Access',
         'add' => 'Add New Subuser',
         'update' => 'Update Subuser',
+        'user_assigned' => 'Successfully assigned a new subuser to this server.',
+        'user_updated' => 'Successfully updated permissions.',
         'edit' => [
             'header' => 'Edit Subuser',
             'header_sub' => 'Modify user\'s access to server.',
@@ -57,8 +106,7 @@ return [
             'file_header' => 'File Management',
             'subuser_header' => 'Subuser Management',
             'server_header' => 'Server Management',
-            'task_header' => 'Task Management',
-            'sftp_header' => 'SFTP Management',
+            'task_header' => 'Schedule Management',
             'database_header' => 'Database Management',
             'power_start' => [
                 'title' => 'Start Server',
@@ -80,17 +128,21 @@ return [
                 'title' => 'Send Console Command',
                 'description' => 'Allows sending a command from the console. If the user does not have stop or restart permissions they cannot send the application\'s stop command.',
             ],
+            'view_sftp' => [
+                'title' => 'SFTP Allowed',
+                'description' => 'Allows user to connect to the SFTP server provided by the daemon.',
+            ],
             'list_files' => [
                 'title' => 'List Files',
                 'description' => 'Allows user to list all files and folders on the server but not view file contents.',
             ],
             'edit_files' => [
                 'title' => 'Edit Files',
-                'description' => 'Allows user to open a file for viewing only.',
+                'description' => 'Allows user to open a file for viewing only. SFTP is not effected by this permission.',
             ],
             'save_files' => [
                 'title' => 'Save Files',
-                'description' => 'Allows user to save modified file contents.',
+                'description' => 'Allows user to save modified file contents. SFTP is not effected by this permission.',
             ],
             'move_files' => [
                 'title' => 'Rename & Move Files',
@@ -144,9 +196,13 @@ return [
                 'title' => 'Delete Subuser',
                 'description' => 'Allows a user to delete other subusers on the server.',
             ],
-            'set_connection' => [
-                'title' => 'Set Default Connection',
-                'description' => 'Allows user to set the default connection used for a server as well as view avaliable ports.',
+            'view_allocations' => [
+                'title' => 'View Allocations',
+                'description' => 'Allows user to view all of the IPs and ports assigned to a server.',
+            ],
+            'edit_allocation' => [
+                'title' => 'Edit Default Connection',
+                'description' => 'Allows user to change the default connection allocation to use for a server.',
             ],
             'view_startup' => [
                 'title' => 'View Startup Command',
@@ -156,41 +212,33 @@ return [
                 'title' => 'Edit Startup Command',
                 'description' => 'Allows a user to modify startup variables for a server.',
             ],
-            'list_tasks' => [
-                'title' => 'List Tasks',
-                'description' => 'Allows a user to list all tasks (enabled and disabled) on a server.',
+            'list_schedules' => [
+                'title' => 'List Schedules',
+                'description' => 'Allows a user to list all schedules (enabled and disabled)  for this server.',
             ],
-            'view_task' => [
-                'title' => 'View Task',
-                'description' => 'Allows a user to view a specific task\'s details.',
+            'view_schedule' => [
+                'title' => 'View Schedule',
+                'description' => 'Allows a user to view a specific schedule\'s details including all of the assigned tasks.',
             ],
-            'toggle_task' => [
-                'title' => 'Toggle Task',
-                'description' => 'Allows a user to toggle a task on or off.',
+            'toggle_schedule' => [
+                'title' => 'Toggle Schedule',
+                'description' => 'Allows a user to toggle a schedule to be active or inactive.',
             ],
-            'queue_task' => [
-                'title' => 'Queue Task',
-                'description' => 'Allows a user to queue a task to run on next cycle.',
+            'queue_schedule' => [
+                'title' => 'Queue Schedule',
+                'description' => 'Allows a user to queue a schedule to run it\'s tasks on the next process cycle.',
             ],
-            'create_task' => [
-                'title' => 'Create Task',
-                'description' => 'Allows a user to create new tasks.',
+            'edit_schedule' => [
+                'title' => 'Edit Schedule',
+                'description' => 'Allows a user to edit a schedule including all of the schedule\'s tasks. This will allow the user to remove individual tasks, but not delete the schedule itself.',
             ],
-            'delete_task' => [
-                'title' => 'Delete Task',
-                'description' => 'Allows a user to delete a task.',
+            'create_schedule' => [
+                'title' => 'Create Schedule',
+                'description' => 'Allows a user to create a new schedule.',
             ],
-            'view_sftp' => [
-                'title' => 'View SFTP Details',
-                'description' => 'Allows user to view the server\'s SFTP information but not the password.',
-            ],
-            'view_sftp_password' => [
-                'title' => 'View SFTP Password',
-                'description' => 'Allows user to view the SFTP password for the server.',
-            ],
-            'reset_sftp' => [
-                'title' => 'Reset SFTP Password',
-                'description' => 'Allows user to change the SFTP password for the server.',
+            'delete_schedule' => [
+                'title' => 'Delete Schedule',
+                'description' => 'Allows a user to delete a schedule from the server.',
             ],
             'view_databases' => [
                 'title' => 'View Database Details',
@@ -203,6 +251,10 @@ return [
         ],
     ],
     'files' => [
+        'exceptions' => [
+            'invalid_mime' => 'This type of file cannot be edited via the Panel\'s built-in editor.',
+            'max_size' => 'This file is too large to edit via the Panel\'s built-in editor.',
+        ],
         'header' => 'File Manager',
         'header_sub' => 'Manage all of your files directly from the web.',
         'loading' => 'Loading initial file structure, this could take a few seconds.',
@@ -213,6 +265,8 @@ return [
         'last_modified' => 'Last Modified',
         'add_new' => 'Add New File',
         'add_folder' => 'Add New Folder',
+        'mass_actions' => 'Mass actions',
+        'delete' => 'Delete',
         'edit' => [
             'header' => 'Edit File',
             'header_sub' => 'Make modifications to a file from the web.',
@@ -233,21 +287,20 @@ return [
             'command' => 'Startup Command',
             'edit_params' => 'Edit Parameters',
             'update' => 'Update Startup Parameters',
-            'startup_var' => 'Startup Command Variable',
             'startup_regex' => 'Input Rules',
+            'edited' => 'Startup variables have been successfully edited. They will take effect the next time this server is started.',
         ],
         'sftp' => [
             'header' => 'SFTP Configuration',
             'header_sub' => 'Account details for SFTP connections.',
-            'change_pass' => 'Change SFTP Password',
             'details' => 'SFTP Details',
             'conn_addr' => 'Connection Address',
-            'warning' => 'Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
+            'warning' => 'The SFTP password is your account password. Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
         ],
         'database' => [
             'header' => 'Databases',
             'header_sub' => 'All databases available for this server.',
-            'your_dbs' => 'Your Databases',
+            'your_dbs' => 'Configured Databases',
             'host' => 'MySQL Host',
             'reset_password' => 'Reset Password',
             'no_dbs' => 'There are no databases listed for this server.',

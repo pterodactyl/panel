@@ -1,10 +1,15 @@
 <?php
 
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    | This value is set when creating a Pterodactyl release. You should not
+    | change this value if you are not maintaining your own internal versions.
+    */
 
-    'env' => env('APP_ENV', 'production'),
-
-    'version' => env('APP_VERSION', '0.6.4'),
+    'version' => '0.7.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -15,7 +20,21 @@ return [
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
     */
-    'name' => 'Pterodactyl',
+
+    'name' => env('APP_NAME', 'Pterodactyl'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services your application utilizes. Set this in your ".env" file.
+    |
+    */
+
+    'env' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -67,7 +86,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => env('APP_LOCALE', 'en'),
 
     /*
     |--------------------------------------------------------------------------
@@ -93,7 +112,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'SomeRandomString3232RandomString'),
+    'key' => env('APP_KEY'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -112,7 +131,23 @@ return [
 
     'log' => env('APP_LOG', 'daily'),
 
-    'log_level' => env('APP_LOG_LEVEL', 'debug'),
+    'log_level' => env('APP_LOG_LEVEL', 'info'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Exception Reporter Configuration
+    |--------------------------------------------------------------------------
+    |
+    | If you're encountering weird behavior with the Panel and no exceptions
+    | are being logged try changing the environment variable below to be true.
+    | This will override the default "don't report" behavior of the Panel and log
+    | all exceptions. This will be quite noisy.
+    |
+    */
+
+    'exceptions' => [
+        'report_all' => env('APP_REPORT_ALL_EXCEPTIONS', false),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -126,7 +161,6 @@ return [
     */
 
     'providers' => [
-
         /*
          * Laravel Framework Service Providers...
          */
@@ -142,6 +176,7 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
@@ -150,36 +185,27 @@ return [
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Illuminate\Notifications\NotificationServiceProvider::class,
-
-        /*
-         * Package Service Providers...
-         */
-        Laravel\Tinker\TinkerServiceProvider::class,
 
         /*
          * Application Service Providers...
          */
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
+        Pterodactyl\Providers\BladeServiceProvider::class,
         Pterodactyl\Providers\EventServiceProvider::class,
+        Pterodactyl\Providers\HashidsServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
         Pterodactyl\Providers\MacroServiceProvider::class,
         Pterodactyl\Providers\PhraseAppTranslationProvider::class,
+        Pterodactyl\Providers\RepositoryServiceProvider::class,
+        Pterodactyl\Providers\ViewComposerServiceProvider::class,
 
         /*
          * Additional Dependencies
          */
-        Barryvdh\Debugbar\ServiceProvider::class,
-        PragmaRX\Google2FA\Vendor\Laravel\ServiceProvider::class,
         igaster\laravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
-        Krucas\Settings\Providers\SettingsServiceProvider::class,
-        Fideloper\Proxy\TrustedProxyServiceProvider::class,
-        Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
-        Spatie\Fractal\FractalServiceProvider::class,
-
     ],
 
     /*
@@ -194,53 +220,42 @@ return [
     */
 
     'aliases' => [
-
-        'Alert'     => Prologue\Alerts\Facades\Alert::class,
-        'App'       => Illuminate\Support\Facades\App::class,
-        'Artisan'   => Illuminate\Support\Facades\Artisan::class,
-        'Auth'      => Illuminate\Support\Facades\Auth::class,
-        'Blade'     => Illuminate\Support\Facades\Blade::class,
-        'Bus'       => Illuminate\Support\Facades\Bus::class,
-        'Cache'     => Illuminate\Support\Facades\Cache::class,
-        'Carbon'    => Carbon\Carbon::class,
-        'Config'    => Illuminate\Support\Facades\Config::class,
-        'Cookie'    => Illuminate\Support\Facades\Cookie::class,
-        'Cron'      => Cron\CronExpression::class,
-        'Crypt'     => Illuminate\Support\Facades\Crypt::class,
-        'DB'        => Illuminate\Support\Facades\DB::class,
-        'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-        'Eloquent'  => Illuminate\Database\Eloquent\Model::class,
-        'Event'     => Illuminate\Support\Facades\Event::class,
-        'File'      => Illuminate\Support\Facades\File::class,
-        'Fractal'   => Spatie\Fractal\FractalFacade::class,
-        'Gate'      => Illuminate\Support\Facades\Gate::class,
-        'Google2FA' => PragmaRX\Google2FA\Vendor\Laravel\Facade::class,
-        'Hash'      => Illuminate\Support\Facades\Hash::class,
-        'Input'     => Illuminate\Support\Facades\Input::class,
-        'Inspiring' => Illuminate\Foundation\Inspiring::class,
+        'Alert' => Prologue\Alerts\Facades\Alert::class,
+        'App' => Illuminate\Support\Facades\App::class,
+        'Artisan' => Illuminate\Support\Facades\Artisan::class,
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+        'Blade' => Illuminate\Support\Facades\Blade::class,
+        'Bus' => Illuminate\Support\Facades\Bus::class,
+        'Cache' => Illuminate\Support\Facades\Cache::class,
+        'Carbon' => Carbon\Carbon::class,
+        'Config' => Illuminate\Support\Facades\Config::class,
+        'Cookie' => Illuminate\Support\Facades\Cookie::class,
+        'Crypt' => Illuminate\Support\Facades\Crypt::class,
+        'DB' => Illuminate\Support\Facades\DB::class,
+        'Eloquent' => Illuminate\Database\Eloquent\Model::class,
+        'Event' => Illuminate\Support\Facades\Event::class,
+        'File' => Illuminate\Support\Facades\File::class,
+        'Gate' => Illuminate\Support\Facades\Gate::class,
+        'Hash' => Illuminate\Support\Facades\Hash::class,
+        'Input' => Illuminate\Support\Facades\Input::class,
         'Javascript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
-        'Lang'      => Illuminate\Support\Facades\Lang::class,
-        'Log'       => Illuminate\Support\Facades\Log::class,
-        'Mail'      => Illuminate\Support\Facades\Mail::class,
+        'Lang' => Illuminate\Support\Facades\Lang::class,
+        'Log' => Illuminate\Support\Facades\Log::class,
+        'Mail' => Illuminate\Support\Facades\Mail::class,
         'Notification' => Illuminate\Support\Facades\Notification::class,
-        'Password'  => Illuminate\Support\Facades\Password::class,
-        'Queue'     => Illuminate\Support\Facades\Queue::class,
-        'Redirect'  => Illuminate\Support\Facades\Redirect::class,
-        'Redis'     => Illuminate\Support\Facades\Redis::class,
-        'Request'   => Illuminate\Support\Facades\Request::class,
-        'Response'  => Illuminate\Support\Facades\Response::class,
-        'Route'     => Illuminate\Support\Facades\Route::class,
-        'Schema'    => Illuminate\Support\Facades\Schema::class,
-        'Settings'  => Krucas\Settings\Facades\Settings::class,
-        'Session'   => Illuminate\Support\Facades\Session::class,
-        'Storage'   => Illuminate\Support\Facades\Storage::class,
-        'Theme'     => igaster\laravelTheme\Facades\Theme::class,
-        'URL'       => Illuminate\Support\Facades\URL::class,
-        'Uuid'      => Webpatser\Uuid\Uuid::class,
+        'Password' => Illuminate\Support\Facades\Password::class,
+        'Queue' => Illuminate\Support\Facades\Queue::class,
+        'Redirect' => Illuminate\Support\Facades\Redirect::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Request' => Illuminate\Support\Facades\Request::class,
+        'Response' => Illuminate\Support\Facades\Response::class,
+        'Route' => Illuminate\Support\Facades\Route::class,
+        'Schema' => Illuminate\Support\Facades\Schema::class,
+        'Session' => Illuminate\Support\Facades\Session::class,
+        'Storage' => Illuminate\Support\Facades\Storage::class,
+        'Theme' => igaster\laravelTheme\Facades\Theme::class,
+        'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
-        'Version'   => Pterodactyl\Facades\Version::class,
-        'View'      => Illuminate\Support\Facades\View::class,
-
+        'View' => Illuminate\Support\Facades\View::class,
     ],
-
 ];

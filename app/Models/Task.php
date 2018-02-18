@@ -1,33 +1,24 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Models;
 
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
+use Znck\Eloquent\Traits\BelongsToThrough;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Task extends Model
+class Task extends Model implements CleansAttributes, ValidableContract
 {
+    use BelongsToThrough, Eloquence, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'schedule_task';
+
     /**
      * The table associated with the model.
      *
@@ -36,11 +27,25 @@ class Task extends Model
     protected $table = 'tasks';
 
     /**
-     * Fields that are not mass assignable.
+     * Relationships to be updated when this model is updated.
      *
      * @var array
      */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
+    protected $touches = ['schedule'];
+
+    /**
+     * Fields that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'schedule_id',
+        'sequence_id',
+        'action',
+        'payload',
+        'time_offset',
+        'is_queued',
+    ];
 
     /**
      * Cast values to correct type.
@@ -49,36 +54,72 @@ class Task extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'user_id' => 'integer',
-        'server_id' => 'integer',
-        'queued' => 'boolean',
-        'active' => 'boolean',
+        'schedule_id' => 'integer',
+        'sequence_id' => 'integer',
+        'time_offset' => 'integer',
+        'is_queued' => 'boolean',
     ];
 
     /**
-     * The attributes that should be mutated to dates.
+     * Default attributes when creating a new model.
      *
      * @var array
      */
-    protected $dates = ['last_run', 'next_run', 'created_at', 'updated_at'];
+    protected $attributes = [
+        'is_queued' => false,
+    ];
 
     /**
-     * Gets the server associated with a task.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @var array
      */
-    public function server()
+    protected static $applicationRules = [
+        'schedule_id' => 'required',
+        'sequence_id' => 'required',
+        'action' => 'required',
+        'payload' => 'required',
+        'time_offset' => 'required',
+    ];
+
+    /**
+     * @var array
+     */
+    protected static $dataIntegrityRules = [
+        'schedule_id' => 'numeric|exists:schedules,id',
+        'sequence_id' => 'numeric|min:1',
+        'action' => 'string',
+        'payload' => 'string',
+        'time_offset' => 'numeric|between:0,900',
+        'is_queued' => 'boolean',
+    ];
+
+    /**
+     * Return a hashid encoded string to represent the ID of the task.
+     *
+     * @return string
+     */
+    public function getHashidAttribute()
     {
-        return $this->belongsTo(Server::class);
+        return app()->make('hashids')->encode($this->id);
     }
 
     /**
-     * Gets the user associated with a task.
+     * Return the schedule that a task belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function schedule()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Schedule::class);
+    }
+
+    /**
+     * Return the server a task is assigned to, acts as a belongsToThrough.
+     *
+     * @return \Znck\Eloquent\Relations\BelongsToThrough
+     * @throws \Exception
+     */
+    public function server()
+    {
+        return $this->belongsToThrough(Server::class, Schedule::class);
     }
 }

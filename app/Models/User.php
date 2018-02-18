@@ -1,60 +1,48 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Models;
 
-use Hash;
-use Google2FA;
+use Sofa\Eloquence\Eloquence;
+use Sofa\Eloquence\Validable;
+use Pterodactyl\Rules\Username;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Pterodactyl\Exceptions\DisplayException;
-use Nicolaslopezj\Searchable\SearchableTrait;
+use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class User extends Model implements
+    AuthenticatableContract,
+    AuthorizableContract,
+    CanResetPasswordContract,
+    CleansAttributes,
+    ValidableContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Notifiable, SearchableTrait;
+    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Eloquence, Notifiable, Validable {
+        gatherRules as eloquenceGatherRules;
+    }
+
+    const USER_LEVEL_USER = 0;
+    const USER_LEVEL_ADMIN = 1;
+
+    const FILTER_LEVEL_ALL = 0;
+    const FILTER_LEVEL_OWNER = 1;
+    const FILTER_LEVEL_ADMIN = 2;
+    const FILTER_LEVEL_SUBUSER = 3;
 
     /**
-     * The rules for user passwords.
-     *
-     * @var string
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
      */
-    const PASSWORD_RULES = 'regex:((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})';
-
-    /**
-     * The regex rules for usernames.
-     *
-     * @var string
-     */
-    const USERNAME_RULES = 'regex:/^([\w\d\.\-]{1,255})$/';
+    const RESOURCE_NAME = 'user';
 
     /**
      * Level of servers to display when using access() on a user.
@@ -75,7 +63,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      *
      * @var array
      */
-    protected $fillable = ['username', 'email', 'name_first', 'name_last', 'password', 'language', 'use_totp', 'totp_secret', 'gravatar', 'root_admin'];
+    protected $fillable = [
+        'username',
+        'email',
+        'name_first',
+        'name_last',
+        'password',
+        'language',
+        'use_totp',
+        'totp_secret',
+        'totp_authenticated_at',
+        'gravatar',
+        'root_admin',
+    ];
 
     /**
      * Cast values to correct type.
@@ -83,78 +83,102 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $casts = [
-        'root_admin' => 'integer',
-        'use_totp' => 'integer',
-        'gravatar' => 'integer',
+        'root_admin' => 'boolean',
+        'use_totp' => 'boolean',
+        'gravatar' => 'boolean',
     ];
+
+    /**
+     * @var array
+     */
+    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'totp_authenticated_at'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token', 'totp_secret'];
+    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
 
     /**
      * Parameters for search querying.
      *
      * @var array
      */
-    protected $searchable = [
-        'columns' => [
-            'email' => 10,
-            'username' => 9,
-            'name_first' => 6,
-            'name_last' => 6,
-            'uuid' => 1,
-        ],
+    protected $searchableColumns = [
+        'username' => 100,
+        'email' => 100,
+        'external_id' => 80,
+        'uuid' => 80,
+        'name_first' => 40,
+        'name_last' => 40,
     ];
 
-    protected $query;
+    /**
+     * Default values for specific fields in the database.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'root_admin' => false,
+        'language' => 'en',
+        'use_totp' => false,
+        'totp_secret' => null,
+    ];
 
     /**
-     * Enables or disables TOTP on an account if the token is valid.
+     * Rules verifying that the data passed in forms is valid and meets application logic rules.
      *
-     * @param  int  $token
-     * @return bool
+     * @var array
      */
-    public function toggleTotp($token)
-    {
-        if (! Google2FA::verifyKey($this->totp_secret, $token, 1)) {
-            return false;
-        }
-
-        $this->use_totp = ! $this->use_totp;
-
-        return $this->save();
-    }
+    protected static $applicationRules = [
+        'uuid' => 'required',
+        'email' => 'required',
+        'external_id' => 'sometimes',
+        'username' => 'required',
+        'name_first' => 'required',
+        'name_last' => 'required',
+        'password' => 'sometimes',
+        'language' => 'sometimes',
+        'use_totp' => 'sometimes',
+    ];
 
     /**
-     * Set a user password to a new value assuming it meets the following requirements:
-     *      - 8 or more characters in length
-     *      - at least one uppercase character
-     *      - at least one lowercase character
-     *      - at least one number.
+     * Rules verifying that the data being stored matches the expectations of the database.
      *
-     * @param  string  $password
-     * @param  string  $regex
-     * @return void
+     * @var array
      */
-    public function setPassword($password, $regex = '((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,})')
-    {
-        if (! preg_match($regex, $password)) {
-            throw new DisplayException('The password passed did not meet the minimum password requirements.');
-        }
+    protected static $dataIntegrityRules = [
+        'uuid' => 'string|size:36|unique:users,uuid',
+        'email' => 'email|unique:users,email',
+        'external_id' => 'nullable|string|max:255|unique:users,external_id',
+        'username' => 'between:1,255|unique:users,username',
+        'name_first' => 'string|between:1,255',
+        'name_last' => 'string|between:1,255',
+        'password' => 'nullable|string',
+        'root_admin' => 'boolean',
+        'language' => 'string',
+        'use_totp' => 'boolean',
+        'totp_secret' => 'nullable|string',
+    ];
 
-        $this->password = Hash::make($password);
-        $this->save();
+    /**
+     * Implement language verification by overriding Eloquence's gather
+     * rules function.
+     */
+    protected static function gatherRules()
+    {
+        $rules = self::eloquenceGatherRules();
+        $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
+        $rules['username'][] = new Username;
+
+        return $rules;
     }
 
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
-     * @return void
+     * @param string $token
      */
     public function sendPasswordResetNotification($token)
     {
@@ -162,98 +186,23 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Return true or false depending on wether the user is root admin or not.
+     * Store the username as a lowecase string.
      *
-     * @return bool
+     * @param string $value
      */
-    public function isRootAdmin()
+    public function setUsernameAttribute(string $value)
     {
-        return $this->root_admin === 1;
+        $this->attributes['username'] = mb_strtolower($value);
     }
 
     /**
-     * Returns the user's daemon secret for a given server.
+     * Return a concated result for the accounts full name.
      *
-     * @param  \Pterodactyl\Models\Server  $server
-     * @return null|string
+     * @return string
      */
-    public function daemonToken(Server $server)
+    public function getNameAttribute()
     {
-        if ($this->id === $server->owner_id || $this->isRootAdmin()) {
-            return $server->daemonSecret;
-        }
-
-        $subuser = $this->subuserOf->where('server_id', $server->id)->first();
-
-        return ($subuser) ? $subuser->daemonSecret : null;
-    }
-
-    /**
-     * Returns an array of all servers a user is able to access.
-     * Note: does not account for user admin status.
-     *
-     * @return array
-     */
-    public function serverAccessArray()
-    {
-        return Server::select('id')->where('owner_id', $this->id)->union(
-            Subuser::select('server_id')->where('user_id', $this->id)
-        )->pluck('id')->all();
-    }
-
-    /**
-     * Change the access level for a given call to `access()` on the user.
-     *
-     * @param  string  $level can be all, admin, subuser, owner
-     * @return void
-     */
-    public function setAccessLevel($level = 'all')
-    {
-        if (! in_array($level, ['all', 'admin', 'subuser', 'owner'])) {
-            $level = 'all';
-        }
-        $this->accessLevel = $level;
-
-        return $this;
-    }
-
-    /**
-     * Returns an array of all servers a user is able to access.
-     * Note: does not account for user admin status.
-     *
-     * @param  array        $load
-     * @return \Illuiminate\Database\Eloquent\Builder
-     */
-    public function access(...$load)
-    {
-        if (count($load) > 0 && is_null($load[0])) {
-            $query = Server::query();
-        } else {
-            $query = Server::with(! empty($load) ? $load : ['service', 'node', 'allocation']);
-        }
-
-        // If access level is set to owner, only display servers
-        // that the user owns.
-        if ($this->accessLevel === 'owner') {
-            $query->where('owner_id', $this->id);
-        }
-
-        // If set to all, display all servers they can access, including
-        // those they access as an admin.
-        //
-        // If set to subuser, only return the servers they can access because
-        // they are owner, or marked as a subuser of the server.
-        if (($this->accessLevel === 'all' && ! $this->isRootAdmin()) || $this->accessLevel === 'subuser') {
-            $query->whereIn('id', $this->serverAccessArray());
-        }
-
-        // If set to admin, only display the servers a user can access
-        // as an administrator (leaves out owned and subuser of).
-        if ($this->accessLevel === 'admin' && $this->isRootAdmin()) {
-            $query->whereNotIn('id', $this->serverAccessArray());
-        }
-
-        return $query;
+        return $this->name_first . ' ' . $this->name_last;
     }
 
     /**
@@ -284,5 +233,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function subuserOf()
     {
         return $this->hasMany(Subuser::class);
+    }
+
+    /**
+     * Return all of the daemon keys that a user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function keys()
+    {
+        return $this->hasMany(DaemonKey::class);
     }
 }

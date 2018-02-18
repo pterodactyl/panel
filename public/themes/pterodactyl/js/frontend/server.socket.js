@@ -53,8 +53,20 @@ var Server = (function ()  {
 
         var notifySocketError = false;
 
-        window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/ws/' + Pterodactyl.server.uuid, {
+        window.Socket = io(Pterodactyl.node.scheme + '://' + Pterodactyl.node.fqdn + ':' + Pterodactyl.node.daemonListen + '/v1/ws/' + Pterodactyl.server.uuid, {
             'query': 'token=' + Pterodactyl.server.daemonSecret,
+        });
+
+        Socket.on('error', function (err) {
+            if(typeof notifySocketError !== 'object') {
+                notifySocketError = $.notify({
+                    message: 'There was an error attempting to establish a WebSocket connection to the Daemon. This panel will not work as expected.<br /><br />' + err,
+                }, {
+                    type: 'danger',
+                    delay: 0,
+                });
+            }
+            setStatusIcon(999);
         });
 
         Socket.io.on('connect_error', function (err) {
@@ -66,6 +78,7 @@ var Server = (function ()  {
                     delay: 0,
                 });
             }
+            setStatusIcon(999);
         });
 
         // Connected to Socket Successfully
@@ -100,6 +113,7 @@ var Server = (function ()  {
                 $('#server_status_icon').html('<i class="fa fa-circle text-warning"></i> Stopping');
                 break;
             default:
+                $('#server_status_icon').html('<i class="fa fa-question-circle text-danger"></i> Connection Error');
                 break;
         }
     }
