@@ -8,6 +8,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
 * Fixes an exception when trying to perform actions aganist a User model due to a validator that could not be cast to a string correctly.
 * Allow FQDNs in database host creation UI correctly.
+* Fixes database naming scheme using `d###_` rather than `s###_` when creating server databases.
+* Fix exception thrown when attempting to update an existing database host.
 
 ## v0.7.0 (Derelict Dermodactylus)
 ### Fixed
