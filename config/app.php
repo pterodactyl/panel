@@ -203,7 +203,7 @@ return [
         /*
          * Additional Dependencies
          */
-        igaster\laravelTheme\themeServiceProvider::class,
+        Igaster\LaravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
     ],
@@ -253,7 +253,7 @@ return [
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
-        'Theme' => igaster\laravelTheme\Facades\Theme::class,
+        'Theme' => Igaster\LaravelTheme\Facades\Theme::class,
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,

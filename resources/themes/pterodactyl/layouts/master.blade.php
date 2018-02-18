@@ -24,12 +24,12 @@
         @include('layouts.scripts')
 
         @section('scripts')
-            {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
-            {!! Theme::css('vendor/adminlte/admin.min.css') !!}
-            {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css') !!}
-            {!! Theme::css('vendor/sweetalert/sweetalert.min.css') !!}
-            {!! Theme::css('vendor/animate/animate.min.css') !!}
-            {!! Theme::css('css/pterodactyl.css') !!}
+            {!! Theme::css('vendor/bootstrap/bootstrap.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/admin.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/sweetalert/sweetalert.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/animate/animate.min.css?t={cache-version}') !!}
+            {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
@@ -243,20 +243,20 @@
             <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')
-            {!! Theme::js('js/keyboard.polyfill.js') !!}
+            {!! Theme::js('js/keyboard.polyfill.js?t={cache-version}') !!}
             <script>keyboardeventKeyPolyfill.polyfill();</script>
 
-            {!! Theme::js('js/laroute.js') !!}
-            {!! Theme::js('vendor/jquery/jquery.min.js') !!}
-            {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
-            {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
-            {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
-            {!! Theme::js('vendor/adminlte/app.min.js') !!}
-            {!! Theme::js('vendor/socketio/socket.io.v203.min.js') !!}
-            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
-            {!! Theme::js('js/autocomplete.js') !!}
+            {!! Theme::js('js/laroute.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/sweetalert/sweetalert.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/adminlte/app.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/socketio/socket.io.v203.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
+            {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
             @if(config('pterodactyl.lang.in_context'))
-                {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
+                {!! Theme::js('vendor/phraseapp/phraseapp.js?t={cache-version}') !!}
             @endif
 
             @if(Auth::user()->root_admin)

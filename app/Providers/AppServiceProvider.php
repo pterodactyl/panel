@@ -8,6 +8,7 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Support\Facades\Schema;
+use Igaster\LaravelTheme\Facades\Theme;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Observers\ServerObserver;
@@ -28,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
+        Theme::setSetting('cache-version', md5($this->versionData()['version'] ?? 'undefined'));
     }
 
     /**

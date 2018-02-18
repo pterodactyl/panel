@@ -14,6 +14,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Adjusted exception handler behavior to log more stack information for PDO exceptions while not exposing credentials.
 
+### Added
+* Very basic cache busting until asset management can be changed to make use of better systems.
+
 ## v0.7.0 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
