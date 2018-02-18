@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.1 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
+* Fixes an exception when trying to perform actions aganist a User model due to a validator that could not be cast to a string correctly.
 
 ## v0.7.0 (Derelict Dermodactylus)
 ### Fixed
