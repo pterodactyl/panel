@@ -11,6 +11,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes database naming scheme using `d###_` rather than `s###_` when creating server databases.
 * Fix exception thrown when attempting to update an existing database host.
 
+### Changed
+* Adjusted exception handler behavior to log more stack information for PDO exceptions while not exposing credentials.
+
 ## v0.7.0 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
