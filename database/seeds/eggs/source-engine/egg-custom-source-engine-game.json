@@ -8,7 +8,7 @@
     "author": "support@pterodactyl.io",
     "description": "This option allows modifying the startup arguments and other details to run a custom SRCDS based game on the panel.",
     "image": "quay.io\/pterodactyl\/core:source",
-    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
+    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +hostname \"{{SRCDS_HOSTNAME}}\" +ip 0.0.0.0 -strictportbind -norestart",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"gameserver Steam ID\",\r\n    \"userInteraction\": []\r\n}",
@@ -49,6 +49,15 @@
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|string|alpha_dash"
+        },
+        {
+            "name": "Hostname",
+            "description": "The default name for the server.",
+            "env_variable": "SRCDS_HOSTNAME",
+            "default_value": "Game Server",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|alpha_num"
         }
     ]
 }
