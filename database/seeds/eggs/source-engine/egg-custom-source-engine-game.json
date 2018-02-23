@@ -54,7 +54,7 @@
             "name": "Hostname",
             "description": "The default name for the server.",
             "env_variable": "SRCDS_HOSTNAME",
-            "default_value": "Game Server",
+            "default_value": "Source Game Server",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|string|alpha_num"
