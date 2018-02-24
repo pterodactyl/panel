@@ -43,7 +43,9 @@
                             <tr @if(! $schedule->is_active)class="muted muted-hover"@endif>
                                 <td class="middle">
                                     @can('edit-schedule', $server)
-                                        <a href="{{ route('server.schedules.view', ['server' => $server->uuidShort, '$schedule' => $schedule->hashid]) }}">{{ $schedule->name }}</a>
+                                        <a href="{{ route('server.schedules.view', ['server' => $server->uuidShort, '$schedule' => $schedule->hashid]) }}">
+                                            {{ $schedule->name ?? trans('server.schedule.unnamed') }}
+                                        </a>
                                     @else
                                         {{ $schedule->name ?? trans('server.schedule.unnamed') }}
                                     @endcan
