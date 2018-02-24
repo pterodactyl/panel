@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Adds ability to include egg variables on an API request.
 * Added `external_id` column to servers that allows for easier linking with external services such as WHMCS.
+* Added back the sidebar when viewing servers that allows for quick-switching to a different server.
 
 ## v0.7.1 (Derelict Dermodactylus)
 ### Fixed
