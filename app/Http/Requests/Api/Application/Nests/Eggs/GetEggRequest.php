@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nests\Eggs;
 
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
@@ -24,6 +26,6 @@ class GetEggRequest extends ApplicationApiRequest
      */
     public function resourceExists(): bool
     {
-        return $this->getModel('nest')->id === $this->getModel('egg')->nest_id;
+        return $this->getModel(Nest::class)->id === $this->getModel(Egg::class)->nest_id;
     }
 }
