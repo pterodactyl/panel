@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Application;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class EggTransformer extends BaseTransformer
@@ -15,7 +16,7 @@ class EggTransformer extends BaseTransformer
      * @var array
      */
     protected $availableIncludes = [
-        'nest', 'servers', 'config', 'script',
+        'nest', 'servers', 'config', 'script', 'variables',
     ];
 
     /**
@@ -146,5 +147,26 @@ class EggTransformer extends BaseTransformer
                 'container' => $model->copy_script_container,
             ];
         });
+    }
+
+    /**
+     * Include the variables that are defined for this Egg.
+     *
+     * @param \Pterodactyl\Models\Egg $model
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     */
+    public function includeVariables(Egg $model)
+    {
+        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+            return $this->null();
+        }
+
+        $model->loadMissing('variables');
+
+        return $this->collection(
+            $model->getRelation('variables'),
+            $this->makeTransformer(EggVariableTransformer::class),
+            EggVariable::RESOURCE_NAME
+        );
     }
 }
