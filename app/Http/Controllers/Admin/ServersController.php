@@ -406,7 +406,7 @@ class ServersController extends Controller
     public function setDetails(Request $request, Server $server)
     {
         $this->detailsModificationService->handle($server, $request->only([
-            'owner_id', 'name', 'description',
+            'owner_id', 'external_id', 'name', 'description',
         ]));
 
         $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();

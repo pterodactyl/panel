@@ -211,6 +211,7 @@ class ServerCreationService
     private function createModel(array $data): Server
     {
         return $this->repository->create([
+            'external_id' => array_get($data, 'external_id'),
             'uuid' => Uuid::uuid4()->toString(),
             'uuidShort' => str_random(8),
             'node_id' => array_get($data, 'node_id'),

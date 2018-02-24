@@ -69,6 +69,7 @@ class DetailsModificationService
         $this->connection->beginTransaction();
 
         $response = $this->repository->setFreshModel($this->getUpdatedModel())->update($server->id, [
+            'external_id' => array_get($data, 'external_id'),
             'owner_id' => array_get($data, 'owner_id'),
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description') ?? '',
