@@ -3,6 +3,14 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.2 (Derelict Dermodactylus)
+### Fixed
+* Fixes an exception thrown when trying to access the `/nests/:id/eggs/:id` API endpoint.
+* Fixes search on server listing page.
+
+### Added
+* Adds ability to include egg variables on an API request.
+
 ## v0.7.1 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
