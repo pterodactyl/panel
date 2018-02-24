@@ -41,4 +41,4 @@ If you've found what you believe is a security issue please email us at `support
 ### Where to find Us
 You can find us in a couple places online. First and foremost, we're active right here on Github. If you encounter a bug or other problem open an issue on here for us to take a look at it. We also accept feature requests here as well.
 
-You can also find us on [Discord](https://pterodactyl.io/discord). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our forums or Discord.
+You can also find us on [Discord](https://pterodactyl.io/discord). In the event that you need to get in contact with us privately feel free to contact us at `support@pterodactyl.io`. Try not to email us with requests for support regarding the panel, we'll probably just direct you to our Discord.

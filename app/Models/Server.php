@@ -53,6 +53,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $applicationRules = [
+        'external_id' => 'sometimes',
         'owner_id' => 'required',
         'name' => 'required',
         'memory' => 'required',
@@ -74,6 +75,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $dataIntegrityRules = [
+        'external_id' => 'nullable|string|between:1,191|unique:servers',
         'owner_id' => 'integer|exists:users,id',
         'name' => 'string|min:1|max:255',
         'node_id' => 'exists:nodes,id',
@@ -122,13 +124,14 @@ class Server extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $searchableColumns = [
-        'name' => 50,
-        'uuidShort' => 10,
-        'uuid' => 10,
-        'pack.name' => 5,
-        'user.email' => 20,
-        'user.username' => 20,
+        'name' => 100,
+        'uuid' => 80,
+        'uuidShort' => 80,
+        'external_id' => 50,
+        'user.email' => 40,
+        'user.username' => 30,
         'node.name' => 10,
+        'pack.name' => 10,
     ];
 
     /**

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 abstract class ApplicationApiRequest extends FormRequest
 {
@@ -76,22 +77,23 @@ abstract class ApplicationApiRequest extends FormRequest
     }
 
     /**
-     * Grab a model from the route parameters. If no model exists under
-     * the specified key a default response is returned.
+     * Grab a model from the route parameters. If no model is found in the
+     * binding mappings an exception will be thrown.
      *
      * @param string $model
-     * @param mixed  $default
      * @return mixed
+     *
+     * @throws \Symfony\Component\Routing\Exception\InvalidParameterException
      */
-    public function getModel(string $model, $default = null)
+    public function getModel(string $model)
     {
         $parameterKey = array_get(array_flip(ApiSubstituteBindings::getMappings()), $model);
 
-        if (! is_null($parameterKey)) {
-            $model = $this->route()->parameter($parameterKey);
+        if (is_null($parameterKey)) {
+            throw new InvalidParameterException;
         }
 
-        return $model ?? $default;
+        return $this->route()->parameter($parameterKey);
     }
 
     /*
