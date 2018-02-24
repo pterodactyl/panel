@@ -22,7 +22,7 @@
         "fideloper/proxy": "^3.3",
         "guzzlehttp/guzzle": "^6.3",
         "hashids/hashids": "^2.0",
-        "igaster/laravel-theme": "^1.16",
+        "igaster/laravel-theme": "^2.0.6",
         "laracasts/utilities": "^3.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "^1.0",

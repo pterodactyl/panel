@@ -21,9 +21,9 @@
         <meta name="theme-color" content="#367fa9">
 
         @section('scripts')
-            {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
-            {!! Theme::css('vendor/adminlte/admin.min.css') !!}
-            {!! Theme::css('css/pterodactyl.css') !!}
+            {!! Theme::css('vendor/bootstrap/bootstrap.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/admin.min.css?t={cache-version}') !!}
+            {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
@@ -50,17 +50,17 @@
             <strong><i class="fa fa-fw fa-clock-o"></i></strong> {{ round(microtime(true) - LARAVEL_START, 3) }}s
         </div>
 
-        {!! Theme::js('vendor/jquery/jquery.min.js') !!}
-        {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
-        {!! Theme::js('js/autocomplete.js') !!}
-        {!! Theme::js('vendor/particlesjs/particles.min.js') !!}
+        {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
+        {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
+        {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
+        {!! Theme::js('vendor/particlesjs/particles.min.js?t={cache-version}') !!}
         <script type="text/javascript">
             /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
             $(function () {
-                particlesJS.load('particles-js', '{!! Theme::url('vendor/particlesjs/particles.json') !!}', function() {});
+                particlesJS.load('particles-js', '{!! Theme::url('vendor/particlesjs/particles.json?t={cache-version}') !!}', function() {});
             })
         </script>
 
-        @if(config('pterodactyl.lang.in_context')) {!! Theme::js('vendor/phraseapp/phraseapp.js') !!} @endif
+        @if(config('pterodactyl.lang.in_context')) {!! Theme::js('vendor/phraseapp/phraseapp.js?t={cache-version}') !!} @endif
     </body>
 </html>

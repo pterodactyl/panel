@@ -33,6 +33,16 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * A list of exceptions that should be logged with cleaned stack
+     * traces to avoid exposing credentials or other sensitive information.
+     *
+     * @var array
+     */
+    protected $cleanStacks = [
+        PDOException::class,
+    ];
+
+    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -73,7 +83,40 @@ class Handler extends ExceptionHandler
             throw $exception;
         }
 
-        return $logger->error($exception instanceof PDOException ? $exception->getMessage() : $exception);
+        foreach ($this->cleanStacks as $class) {
+            if ($exception instanceof $class) {
+                $exception = $this->generateCleanedExceptionStack($exception);
+                break;
+            }
+        }
+
+        return $logger->error($exception);
+    }
+
+    private function generateCleanedExceptionStack(Exception $exception)
+    {
+        $cleanedStack = '';
+        foreach ($exception->getTrace() as $index => $item) {
+            $cleanedStack .= sprintf(
+                "#%d %s(%d): %s%s%s\n",
+                $index,
+                array_get($item, 'file'),
+                array_get($item, 'line'),
+                array_get($item, 'class'),
+                array_get($item, 'type'),
+                array_get($item, 'function')
+            );
+        }
+
+        $message = sprintf(
+            '%s: %s in %s:%d',
+            class_basename($exception),
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+
+        return $message . "\nStack trace:\n" . trim($cleanedStack);
     }
 
     /**

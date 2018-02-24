@@ -8,6 +8,14 @@ use Pterodactyl\Rules\Username;
 class UsernameTest extends TestCase
 {
     /**
+     * Test that this rule can be cast to a string correctly.
+     */
+    public function testRuleIsStringable()
+    {
+        $this->assertSame('p_username', (string) new Username);
+    }
+
+    /**
      * Test valid usernames.
      *
      * @dataProvider validUsernameDataProvider

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "86cf8a899601833098c86cb505764e92",
+    "content-hash": "8c907d970c12c8d0722dbd21437dbfb6",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -1113,36 +1113,43 @@
         },
         {
             "name": "igaster/laravel-theme",
-            "version": "v1.16",
+            "version": "v2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/igaster/laravel-theme.git",
-                "reference": "7816c4497feb326d11447737e8477779a713fc96"
+                "reference": "d3835fd99418848ba130e3f7a73d3f78ab636471"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/igaster/laravel-theme/zipball/7816c4497feb326d11447737e8477779a713fc96",
-                "reference": "7816c4497feb326d11447737e8477779a713fc96",
+                "url": "https://api.github.com/repos/igaster/laravel-theme/zipball/d3835fd99418848ba130e3f7a73d3f78ab636471",
+                "reference": "d3835fd99418848ba130e3f7a73d3f78ab636471",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": ">=5.2.0",
-                "php": ">=5.4.0"
+                "illuminate/contracts": "5.4.*|5.5.*|5.6.*"
             },
             "require-dev": {
-                "illuminate/database": "~5.2",
-                "orchestra/testbench": "~3.0",
-                "phpunit/phpunit": "~4.0",
-                "vlucas/phpdotenv": "~2.0"
+                "orchestra/testbench": "~3.4",
+                "phpunit/phpunit": "^6.0"
             },
             "suggest": {
                 "orchestra/asset": "Use '@css' and '@js' in Blade files"
             },
             "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Igaster\\LaravelTheme\\themeServiceProvider"
+                    ],
+                    "aliases": {
+                        "Theme": "Igaster\\LaravelTheme\\Facades\\Theme"
+                    }
+                }
+            },
             "autoload": {
                 "psr-4": {
-                    "igaster\\laravelTheme\\": "src/",
-                    "igaster\\laravelTheme\\Tests\\": "tests/"
+                    "Igaster\\LaravelTheme\\": "src/",
+                    "Igaster\\LaravelTheme\\Tests\\": "tests/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1156,7 +1163,7 @@
                 }
             ],
             "description": "Laravel 5 Themes: Asset & Views folder per theme. Theme inheritance. Blade integration and more...",
-            "homepage": "https://github.com/igaster/laravel-theme",
+            "homepage": "https://github.com/Igaster/laravel-theme.git",
             "keywords": [
                 "assets",
                 "blade",
@@ -1165,7 +1172,7 @@
                 "themes",
                 "views"
             ],
-            "time": "2017-06-07T15:24:25+00:00"
+            "time": "2018-02-12T11:19:00+00:00"
         },
         {
             "name": "jakub-onderka/php-console-color",

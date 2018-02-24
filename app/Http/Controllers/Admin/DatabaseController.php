@@ -11,6 +11,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use PDOException;
 use Illuminate\View\View;
+use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
@@ -136,22 +137,25 @@ class DatabaseController extends Controller
      * Handle updating database host.
      *
      * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @param int                                                      $host
+     * @param \Pterodactyl\Models\DatabaseHost                         $host
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(DatabaseHostFormRequest $request, int $host): RedirectResponse
+    public function update(DatabaseHostFormRequest $request, DatabaseHost $host): RedirectResponse
     {
+        $redirect = redirect()->route('admin.databases.view', $host->id);
+
         try {
-            $host = $this->updateService->handle($host, $request->normalize());
+            $this->updateService->handle($host->id, $request->normalize());
             $this->alert->success('Database host was updated successfully.')->flash();
         } catch (PDOException $ex) {
             $this->alert->danger($ex->getMessage())->flash();
+            $redirect->withInput($request->normalize());
         }
 
-        return redirect()->route('admin.databases.view', $host->id);
+        return $redirect;
     }
 
     /**

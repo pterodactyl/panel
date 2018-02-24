@@ -3,6 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.1 (Derelict Dermodactylus)
+### Fixed
+* Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
+* Fixes an exception when trying to perform actions aganist a User model due to a validator that could not be cast to a string correctly.
+* Allow FQDNs in database host creation UI correctly.
+* Fixes database naming scheme using `d###_` rather than `s###_` when creating server databases.
+* Fix exception thrown when attempting to update an existing database host.
+
+### Changed
+* Adjusted exception handler behavior to log more stack information for PDO exceptions while not exposing credentials.
+
+### Added
+* Very basic cache busting until asset management can be changed to make use of better systems.
+
 ## v0.7.0 (Derelict Dermodactylus)
 ### Fixed
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.

@@ -6,6 +6,9 @@ use Illuminate\Contracts\Validation\Rule;
 
 class Username implements Rule
 {
+    /**
+     * Regex to use when validating usernames.
+     */
     public const VALIDATION_REGEX = '/^[a-z0-9]([\w\.-]+)[a-z0-9]$/';
 
     /**
@@ -32,5 +35,16 @@ class Username implements Rule
     {
         return 'The :attribute must start and end with alpha-numeric characters and
                 contain only letters, numbers, dashes, underscores, and periods.';
+    }
+
+    /**
+     * Convert the rule to a validation string. This is necessary to avoid
+     * issues with Eloquence which tries to use this rule as a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return 'p_username';
     }
 }
