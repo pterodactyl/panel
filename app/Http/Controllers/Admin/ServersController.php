@@ -201,12 +201,13 @@ class ServersController extends Controller
     /**
      * Display the index page with all servers currently on the system.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         return view('admin.servers.index', [
-            'servers' => $this->repository->getAllServers(
+            'servers' => $this->repository->setSearchTerm($request->input('query'))->getAllServers(
                 $this->config->get('pterodactyl.paginate.admin.servers')
             ),
         ]);
@@ -405,7 +406,7 @@ class ServersController extends Controller
     public function setDetails(Request $request, Server $server)
     {
         $this->detailsModificationService->handle($server, $request->only([
-            'owner_id', 'name', 'description',
+            'owner_id', 'external_id', 'name', 'description',
         ]));
 
         $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();

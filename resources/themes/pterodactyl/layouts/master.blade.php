@@ -60,9 +60,13 @@
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
-                            {{--<li>--}}
-                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.servers')"><i class="fa fa-server"></i></a>--}}
-                            {{--</li>--}}
+                            @if(isset($sidebarServerList))
+                                <li>
+                                    <a href="#" data-toggle="control-sidebar">
+                                        <i class="fa fa-server"></i>
+                                    </a>
+                                </li>
+                            @endif
                             @if(Auth::user()->root_admin)
                                 <li>
                                     <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.admin_cp')"><i class="fa fa-gears"></i></a></li>
@@ -240,6 +244,29 @@
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
+            @if(isset($sidebarServerList))
+                <aside class="control-sidebar control-sidebar-dark">
+                    <div class="tab-content">
+                        <ul class="control-sidebar-menu">
+                            @foreach($sidebarServerList as $sidebarServer)
+                                <li>
+                                    <a href="{{ route('server.index', $sidebarServer->uuidShort) }}" @if(isset($server) && $sidebarServer->id === $server->id)class="active"@endif>
+                                        @if($sidebarServer->owner_id === Auth::user()->id)
+                                            <i class="menu-icon fa fa-user bg-blue"></i>
+                                        @else
+                                            <i class="menu-icon fa fa-user-o bg-gray"></i>
+                                        @endif
+                                        <div class="menu-info">
+                                            <h4 class="control-sidebar-subheading">{{ str_limit($sidebarServer->name, 20) }}</h4>
+                                            <p>{{ str_limit($sidebarServer->description, 20) }}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </aside>
+            @endif
             <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')

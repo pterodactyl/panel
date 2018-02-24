@@ -211,11 +211,12 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      *
      * @param \Pterodactyl\Models\User $user
      * @param int                      $level
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @param bool                     $paginate
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
      */
-    public function filterUserAccessServers(User $user, int $level): LengthAwarePaginator
+    public function filterUserAccessServers(User $user, int $level, bool $paginate = true)
     {
-        $instance = $this->getBuilder()->with(['user']);
+        $instance = $this->getBuilder()->select($this->getColumns())->with(['user']);
 
         // If access level is set to owner, only display servers
         // that the user owns.
@@ -224,8 +225,9 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         }
 
         // If set to all, display all servers they can access, including
-        // those they access as an admin. If set to subuser, only return the servers they can access because
-        // they are owner, or marked as a subuser of the server.
+        // those they access as an admin. If set to subuser, only return
+        // the servers they can access because they are owner, or marked
+        // as a subuser of the server.
         elseif (($level === User::FILTER_LEVEL_ALL && ! $user->root_admin) || $level === User::FILTER_LEVEL_SUBUSER) {
             $instance->whereIn('id', $this->getUserAccessServers($user->id));
         }
@@ -236,7 +238,9 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             $instance->whereNotIn('id', $this->getUserAccessServers($user->id));
         }
 
-        return $instance->search($this->getSearchTerm())->paginate(25);
+        $instance->search($this->getSearchTerm());
+
+        return $paginate ? $instance->paginate(25) : $instance->get();
     }
 
     /**

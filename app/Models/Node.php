@@ -157,6 +157,17 @@ class Node extends Model implements CleansAttributes, ValidableContract
             'filesystem' => [
                 'server_logs' => '/tmp/pterodactyl',
             ],
+            'internals' => [
+                'disk_use_seconds' => 30,
+                'set_permissions_on_boot' => true,
+                'throttle' => [
+                    'enabled' => true,
+                    'kill_at_count' => 5,
+                    'decay' => 10,
+                    'bytes' => 30720,
+                    'check_interval_ms' => 100,
+                ],
+            ],
             'sftp' => [
                 'path' => $this->daemonBase,
                 'ip' => '0.0.0.0',

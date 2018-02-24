@@ -103,9 +103,10 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      *
      * @param \Pterodactyl\Models\User $user
      * @param int                      $level
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @param bool                     $paginate
+     * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
      */
-    public function filterUserAccessServers(User $user, int $level): LengthAwarePaginator;
+    public function filterUserAccessServers(User $user, int $level, bool $paginate = true);
 
     /**
      * Return a server by UUID.

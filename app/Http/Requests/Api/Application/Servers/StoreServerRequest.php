@@ -31,6 +31,7 @@ class StoreServerRequest extends ApplicationApiRequest
         $rules = Server::getCreateRules();
 
         return [
+            'external_id' => $rules['external_id'],
             'name' => $rules['name'],
             'description' => array_merge(['nullable'], $rules['description']),
             'user' => $rules['owner_id'],

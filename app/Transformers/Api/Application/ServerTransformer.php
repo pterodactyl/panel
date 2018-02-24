@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Servers\EnvironmentService;
@@ -63,6 +62,7 @@ class ServerTransformer extends BaseTransformer
     {
         return [
             'id' => $server->getKey(),
+            'external_id' => $server->external_id,
             'uuid' => $server->uuid,
             'identifier' => $server->uuidShort,
             'name' => $server->name,
@@ -87,8 +87,8 @@ class ServerTransformer extends BaseTransformer
                 'installed' => (int) $server->installed === 1,
                 'environment' => $this->environmentService->handle($server),
             ],
-            'created_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $server->created_at)->setTimezone('UTC')->toIso8601String(),
-            'updated_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $server->updated_at)->setTimezone('UTC')->toIso8601String(),
+            $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),
+            $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),
         ];
     }
 

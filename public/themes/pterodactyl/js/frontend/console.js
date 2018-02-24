@@ -151,14 +151,14 @@ function pushToTerminal(string) {
 
     if (TerminalQueue.length > 0) {
         var scrolledDown = isTerminalScrolledDown();
-        
+
         for (var i = 0; i < CONSOLE_PUSH_COUNT && TerminalQueue.length > 0; i++) {
             pushToTerminal(TerminalQueue[0]);
 
             window.ConsoleElements++;
             TerminalQueue.shift();
         }
-        
+
         if (scrolledDown) {
             window.scrollToBottom();
         } else if ($scrollNotify.hasClass('hidden')) {

@@ -48,6 +48,18 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
                             <tr>
+                                <td>Internal Identifier</td>
+                                <td><code>{{ $server->id }}</code></td>
+                            </tr>
+                            <tr>
+                                <td>External Identifier</td>
+                                @if(is_null($server->external_id))
+                                    <td><span class="label label-default">Not Set</span></td>
+                                @else
+                                    <td><code>{{ $server->external_id }}</code></td>
+                                @endif
+                            </tr>
+                            <tr>
                                 <td>UUID / Docker Container ID</td>
                                 <td><code>{{ $server->uuid }}</code></td>
                             </tr>
@@ -127,7 +139,7 @@
                     <div class="col-sm-12">
                         <div class="small-box bg-gray">
                             <div class="inner">
-                                <h3>{{ str_limit($server->user->username, 8) }}</h3>
+                                <h3>{{ str_limit($server->user->username, 16) }}</h3>
                                 <p>Server Owner</p>
                             </div>
                             <div class="icon"><i class="fa fa-user"></i></div>
@@ -139,7 +151,7 @@
                     <div class="col-sm-12">
                         <div class="small-box bg-gray">
                             <div class="inner">
-                                <h3>{{ str_limit($server->node->name, 8) }}</h3>
+                                <h3>{{ str_limit($server->node->name, 16) }}</h3>
                                 <p>Server Node</p>
                             </div>
                             <div class="icon"><i class="fa fa-codepen"></i></div>

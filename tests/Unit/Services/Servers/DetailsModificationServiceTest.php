@@ -58,6 +58,7 @@ class DetailsModificationServiceTest extends TestCase
         $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
         $this->repository->shouldReceive('setFreshModel')->once()->with(false)->andReturnSelf();
         $this->repository->shouldReceive('update')->once()->with($server->id, [
+                'external_id' => null,
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
                 'description' => $data['description'],
@@ -95,11 +96,12 @@ class DetailsModificationServiceTest extends TestCase
             'owner_id' => 1,
         ]);
 
-        $data = ['owner_id' => 2, 'name' => 'New Name', 'description' => 'New Description'];
+        $data = ['owner_id' => 2, 'name' => 'New Name', 'description' => 'New Description', 'external_id' => 'abcd1234'];
 
         $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
         $this->repository->shouldReceive('setFreshModel')->once()->with(false)->andReturnSelf();
         $this->repository->shouldReceive('update')->once()->with($server->id, [
+                'external_id' => 'abcd1234',
                 'owner_id' => $data['owner_id'],
                 'name' => $data['name'],
                 'description' => $data['description'],
