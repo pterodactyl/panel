@@ -128,7 +128,7 @@ return [
                 'title' => 'Send Console Command',
                 'description' => 'Allows sending a command from the console. If the user does not have stop or restart permissions they cannot send the application\'s stop command.',
             ],
-            'view_sftp' => [
+            'access_sftp' => [
                 'title' => 'SFTP Allowed',
                 'description' => 'Allows user to connect to the SFTP server provided by the daemon.',
             ],

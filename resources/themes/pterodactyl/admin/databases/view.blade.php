@@ -79,8 +79,8 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover"><i class="fa fa-trash-o"></i></button>
                     <button name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
+                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover"><i class="fa fa-trash-o"></i></button>
                 </div>
             </div>
         </div>

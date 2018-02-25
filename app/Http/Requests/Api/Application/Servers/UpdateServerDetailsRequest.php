@@ -13,9 +13,10 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getUpdateRulesForId($this->route()->parameter('server')->id);
+        $rules = Server::getUpdateRulesForId($this->getModel(Server::class)->id);
 
         return [
+            'external_id' => $rules['external_id'],
             'name' => $rules['name'],
             'user' => $rules['owner_id'],
             'description' => array_merge(['nullable'], $rules['description']),
@@ -31,6 +32,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
     public function validated(): array
     {
         return [
+            'external_id' => $this->input('external_id'),
             'name' => $this->input('name'),
             'owner_id' => $this->input('user'),
             'description' => $this->input('description'),
