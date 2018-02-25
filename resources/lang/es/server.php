@@ -124,7 +124,7 @@ return [
                 'title' => 'Enviar Comandos De La Consola',
                 'description' => 'Permite el envío de un comando desde la consola. Si el usuario no tiene permiso para detener o reiniciar, no puede enviar el comando de detención de la aplicación.',
             ],
-            'view_sftp' => [
+            'access_sftp' => [
                 'title' => 'SFTP permitido',
                 'description' => 'Permite al usuario conectarse al servidor SFTP proporcionado por el daemon.',
             ],

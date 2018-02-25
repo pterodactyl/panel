@@ -124,7 +124,7 @@ return [
                 'title' => 'Send Console Command',
                 'description' => 'Der User darf die Konsole benutzen.',
             ],
-            'view_sftp' => [
+            'access_sftp' => [
                 'title' => 'SFTP erlaubt',
                 'description' => 'Ermöglicht dem Benutzer, eine Verbindung mit dem vom Daemon bereitgestellten SFTP-Server herzustellen.',
             ],
