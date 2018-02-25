@@ -20,7 +20,7 @@ class RemoveDefaultNullValueOnTable extends Migration
         });
 
         DB::transaction(function () {
-            DB::table('users')->where('external_id', '=' , 'NULL')->update([
+            DB::table('users')->where('external_id', '=', 'NULL')->update([
                 'external_id' => null,
             ]);
         });
