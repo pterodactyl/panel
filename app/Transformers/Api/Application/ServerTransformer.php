@@ -97,6 +97,8 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeAllocations(Server $server)
     {

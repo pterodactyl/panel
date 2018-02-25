@@ -7,13 +7,15 @@ use Illuminate\Http\Response;
 use Illuminate\Container\Container;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
+use Pterodactyl\Transformers\Api\Application\BaseTransformer;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 
 abstract class ApplicationApiController extends Controller
 {
     /**
      * @var \Illuminate\Http\Request
      */
-    private $request;
+    protected $request;
 
     /**
      * @var \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
@@ -54,12 +56,18 @@ abstract class ApplicationApiController extends Controller
      *
      * @param string $abstract
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function getTransformer(string $abstract)
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
         $transformer->setKey($this->request->attributes->get('api_key'));
+
+        if (! $transformer instanceof BaseTransformer) {
+            throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
+        }
 
         return $transformer;
     }
