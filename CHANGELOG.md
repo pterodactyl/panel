@@ -7,6 +7,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes server creation API endpoint not passing the provided `external_id` to the creation service.
 
+### Added
+* Adds ability to modify the external ID for a server through the API.
+
 ## v0.7.2 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an exception thrown when trying to access the `/nests/:id/eggs/:id` API endpoint.
