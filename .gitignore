@@ -26,3 +26,6 @@ docker-compose.yml
 misc
 .phpstorm.meta.php
 .php_cs.cache
+
+# Vagrant
+*.log
