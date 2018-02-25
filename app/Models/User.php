@@ -64,6 +64,7 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
+        'external_id',
         'username',
         'email',
         'name_first',

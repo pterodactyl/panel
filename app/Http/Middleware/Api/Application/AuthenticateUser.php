@@ -19,7 +19,7 @@ class AuthenticateUser
     public function handle(Request $request, Closure $next)
     {
         if (is_null($request->user()) || ! $request->user()->root_admin) {
-            throw new AccessDeniedHttpException;
+            throw new AccessDeniedHttpException('This account does not have permission to access the API.');
         }
 
         return $next($request);

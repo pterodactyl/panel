@@ -74,6 +74,7 @@ Route::group(['prefix' => '/locations'], function () {
 Route::group(['prefix' => '/servers'], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api.application.servers');
     Route::get('/{server}', 'Servers\ServerController@view')->name('api.application.servers.view');
+    Route::get('/external/{external_id}', 'Servers\ExternalServerController@index')->name('api.application.servers.external');
 
     Route::patch('/{server}/details', 'Servers\ServerDetailsController@details')->name('api.application.servers.details');
     Route::patch('/{server}/build', 'Servers\ServerDetailsController@build')->name('api.application.servers.build');

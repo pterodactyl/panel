@@ -33,7 +33,7 @@ class ScheduleCreationFormRequest extends ServerFormRequest
     public function rules()
     {
         return [
-            'name' => 'string|max:255',
+            'name' => 'nullable|string|max:255',
             'cron_day_of_week' => 'required|string',
             'cron_day_of_month' => 'required|string',
             'cron_hour' => 'required|string',

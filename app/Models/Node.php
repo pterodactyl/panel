@@ -161,9 +161,10 @@ class Node extends Model implements CleansAttributes, ValidableContract
                 'disk_use_seconds' => 30,
                 'set_permissions_on_boot' => true,
                 'throttle' => [
+                    'enabled' => true,
                     'kill_at_count' => 5,
                     'decay' => 10,
-                    'bytes' => 4096,
+                    'bytes' => 30720,
                     'check_interval_ms' => 100,
                 ],
             ],

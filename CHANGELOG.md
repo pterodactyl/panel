@@ -7,10 +7,14 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes an exception thrown when trying to access the `/nests/:id/eggs/:id` API endpoint.
 * Fixes search on server listing page.
+* Schedules with no names are now clickable to allow editing.
+* Fixes broken permissions check that would deny access to API keys that did in fact have permission.
 
 ### Added
 * Adds ability to include egg variables on an API request.
 * Added `external_id` column to servers that allows for easier linking with external services such as WHMCS.
+* Added back the sidebar when viewing servers that allows for quick-switching to a different server.
+* Added API endpoint to get a server by external ID.
 
 ## v0.7.1 (Derelict Dermodactylus)
 ### Fixed

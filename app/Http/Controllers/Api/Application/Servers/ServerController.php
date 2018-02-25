@@ -9,6 +9,7 @@ use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\StoreServerRequest;
@@ -91,10 +92,10 @@ class ServerController extends ApplicationApiController
     /**
      * Show a single server transformed for the application API.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest $request
      * @return array
      */
-    public function view(ServerWriteRequest $request): array
+    public function view(GetServerRequest $request): array
     {
         return $this->fractal->item($request->getModel(Server::class))
             ->transformWith($this->getTransformer(ServerTransformer::class))
