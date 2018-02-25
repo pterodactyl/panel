@@ -12,7 +12,7 @@ What more are you waiting for? Make game servers a first class citizen on your p
 Support for using Pterodactyl can be found on our [Documentation Website](https://docs.pterodactyl.io), [Guides Website](https://guides.pterodactyl.io), or via our [Discord Chat](https://discord.gg/QRDZvVm).
 
 ### Supported Games
-We support a huge variety of games by utilizing Docker containers to isolate each instance, giving you the power to host your games across the world without having to bloat each physcial machine with additional dependencies.
+We support a huge variety of games by utilizing Docker containers to isolate each instance, giving you the power to host your games across the world without having to bloat each physical machine with additional dependencies.
 
 Some of our core supported games include:
 
