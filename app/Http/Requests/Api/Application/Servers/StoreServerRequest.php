@@ -76,6 +76,7 @@ class StoreServerRequest extends ApplicationApiRequest
         $data = parent::validated();
 
         return [
+            'external_id' => array_get($data, 'external_id'),
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
             'owner_id' => array_get($data, 'user'),

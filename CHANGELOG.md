@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.3 (Derelict Dermodactylus)
+### Fixed
+* Fixes server creation API endpoint not passing the provided `external_id` to the creation service.
+
 ## v0.7.2 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an exception thrown when trying to access the `/nests/:id/eggs/:id` API endpoint.
