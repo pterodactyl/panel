@@ -48,7 +48,7 @@
             "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "numeric|max:20"
+            "rules": "numeric|max:50"
         },
         {
             "name": "Gamemode",
