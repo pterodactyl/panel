@@ -67,7 +67,10 @@ class EggUpdateImporterService
             ]));
         }
 
-        if (object_get($parsed, 'meta.version') !== 'PTDL_v1') {
+        $script = object_get($parsed, 'scripts.installation.commands') ?? object_get($parsed, 'scripts.installation.script');
+        $script = is_array($script) ? implode("\n", $script) : $script;
+
+        if (object_get($parsed, 'meta.version') !== 'PTDL_v1' || !is_string($script)) {
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
         }
 
@@ -82,7 +85,7 @@ class EggUpdateImporterService
             'config_logs' => object_get($parsed, 'config.logs'),
             'config_stop' => object_get($parsed, 'config.stop'),
             'startup' => object_get($parsed, 'startup'),
-            'script_install' => object_get($parsed, 'scripts.installation.script'),
+            'script_install' => $script,
             'script_entry' => object_get($parsed, 'scripts.installation.entrypoint'),
             'script_container' => object_get($parsed, 'scripts.installation.container'),
         ], true, true);
