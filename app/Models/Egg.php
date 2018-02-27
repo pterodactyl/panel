@@ -114,6 +114,7 @@ class Egg extends Model implements CleansAttributes, ValidableContract
     public function getCopyScriptInstallAttribute()
     {
         $script = (is_null($this->copy_script_from)) ? $this->script_install : $this->scriptFrom->script_install;
+
         return collect(explode("\n", $script));
     }
 

@@ -89,7 +89,7 @@ class EggImporterService
         $script = object_get($parsed, 'scripts.installation.commands') ?? object_get($parsed, 'scripts.installation.script');
         $script = is_array($script) ? implode("\n", $script) : $script;
 
-        if (object_get($parsed, 'meta.version') !== 'PTDL_v1' || !is_string($script)) {
+        if (object_get($parsed, 'meta.version') !== 'PTDL_v1' || ! is_string($script)) {
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
         }
 
