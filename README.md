@@ -22,8 +22,8 @@ Some of our core supported games include:
 * Teamspeak
 * Mumble
 * Team Fortress 2
-* Counter Strike: GO
-* Garrys Mod
+* Counter Strike: Global Offensive
+* Garry's Mod
 * Ark: Survival Evolved
 
 In addition to our standard nest of supported games, our community is constantly pushing the limits of this software and there are plenty more games available provided by the community. Some of these games include:
