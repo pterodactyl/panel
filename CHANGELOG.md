@@ -3,9 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.4 (Derelict Dermodactylus)
+### Fixed
+* Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
+
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
 * Fixes server creation API endpoint not passing the provided `external_id` to the creation service.
+* Fixes a bug causing users to be un-editable on new installations once more than one user exists.
+* Fixes default order of buttons in certain parts of the panel that would default to 'Delete' rather than 'Save' when pressing enter.
 
 ### Added
 * Adds ability to modify the external ID for a server through the API.

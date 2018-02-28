@@ -122,13 +122,13 @@
                     <div>
                         <p class="text-muted small">@lang('server.schedule.task_help')</p>
                     </div>
-                    <div class="pull-left">
-                        <button type="submit" class="btn btn-sm btn-danger muted muted-hover" id="deleteButton" name="_method" value="DELETE"><i class="fa fa-trash-o"></i></button>
-                    </div>
                     <div class="pull-right">
                         {!! csrf_field() !!}
                         <button type="button" class="btn btn-sm btn-default" data-action="add-new-task"><i class="fa fa-plus"></i> @lang('server.schedule.task.add_more')</button>
                         <button type="submit" class="btn btn-sm btn-success" name="_method" value="PATCH">@lang('server.schedule.manage.submit')</button>
+                    </div>
+                    <div class="pull-left">
+                        <button type="submit" class="btn btn-sm btn-danger muted muted-hover" id="deleteButton" name="_method" value="DELETE"><i class="fa fa-trash-o"></i></button>
                     </div>
                 </div>
             </div>

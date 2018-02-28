@@ -66,7 +66,7 @@ class ReinstallServerService
         $this->database->beginTransaction();
         $this->repository->withoutFreshModel()->update($server->id, [
             'installed' => 0,
-        ]);
+        ], true, true);
 
         try {
             $this->daemonServerRepository->setServer($server)->reinstall();

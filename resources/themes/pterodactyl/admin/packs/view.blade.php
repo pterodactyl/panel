@@ -98,8 +98,8 @@
                 </div>
                 <div class="box-footer with-border">
                     {!! csrf_field() !!}
-                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
                     <button name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right" type="submit">Save</button>
+                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
                 </div>
             </div>
         </div>

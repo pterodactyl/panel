@@ -81,10 +81,9 @@ class ReinstallServerServiceTest extends TestCase
         $this->repository->shouldNotReceive('find');
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->server->id, [
-                'installed' => 0,
-            ])->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andReturnSelf()
             ->shouldReceive('reinstall')->withNoArgs()->once()->andReturn(new Response);
@@ -101,10 +100,9 @@ class ReinstallServerServiceTest extends TestCase
         $this->repository->shouldReceive('find')->with($this->server->id)->once()->andReturn($this->server);
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->server->id, [
-                'installed' => 0,
-            ])->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andReturnSelf()
             ->shouldReceive('reinstall')->withNoArgs()->once()->andReturn(new Response);
@@ -121,10 +119,9 @@ class ReinstallServerServiceTest extends TestCase
     public function testExceptionThrownByGuzzleShouldBeReRenderedAsDisplayable()
     {
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->server->id, [
-                'installed' => 0,
-            ])->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andThrow($this->exception);
 
@@ -139,10 +136,9 @@ class ReinstallServerServiceTest extends TestCase
     public function testExceptionNotThrownByGuzzleShouldNotBeTransformedToDisplayable()
     {
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->server->id, [
-                'installed' => 0,
-            ])->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
 
         $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andThrow(new Exception());
 
