@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.4 (Derelict Dermodactylus)
+### Fixed
+* Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
+
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
 * Fixes server creation API endpoint not passing the provided `external_id` to the creation service.
