@@ -3,12 +3,12 @@
 namespace Pterodactyl\Http\Controllers\Api\Application;
 
 use Illuminate\Http\Request;
+use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Container\Container;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 
 abstract class ApplicationApiController extends Controller
 {
@@ -56,8 +56,6 @@ abstract class ApplicationApiController extends Controller
      *
      * @param string $abstract
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function getTransformer(string $abstract)
     {
@@ -65,9 +63,7 @@ abstract class ApplicationApiController extends Controller
         $transformer = Container::getInstance()->make($abstract);
         $transformer->setKey($this->request->attributes->get('api_key'));
 
-        if (! $transformer instanceof BaseTransformer) {
-            throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
-        }
+        Assert::isInstanceOf($transformer, BaseTransformer::class);
 
         return $transformer;
     }

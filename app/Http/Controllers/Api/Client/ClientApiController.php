@@ -1,9 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application;
+namespace Pterodactyl\Http\Controllers\Api\Client;
 
+use Webmozart\Assert\Assert;
 use Illuminate\Container\Container;
-use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 abstract class ClientApiController extends ApplicationApiController
 {
@@ -12,18 +14,15 @@ abstract class ClientApiController extends ApplicationApiController
      *
      * @param string $abstract
      * @return \Pterodactyl\Transformers\Api\Client\BaseClientTransformer
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function getTransformer(string $abstract)
     {
         /** @var \Pterodactyl\Transformers\Api\Client\BaseClientTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
-        $transformer->setKey($this->request->attributes->get('api_key'));
+        Assert::isInstanceOf($transformer, BaseClientTransformer::class);
 
-        if (! $transformer instanceof self) {
-            throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
-        }
+        $transformer->setKey($this->request->attributes->get('api_key'));
+        $transformer->setUser($this->request->user());
 
         return $transformer;
     }

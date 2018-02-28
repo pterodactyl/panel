@@ -21,8 +21,8 @@ Route::get('/', 'ClientController@index')->name('api.client.index');
 |
 */
 Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateClientAccess::class]], function () {
-    Route::get('/', 'Server\ServerController@index')->name('api.client.servers.view');
+    Route::get('/', 'Servers\ServerController@index')->name('api.client.servers.view');
 
-    Route::post('/command', 'Server\CommandController@index')->name('api.client.servers.command');
-    Route::post('/power', 'Server\PowerController@index')->name('api.client.servers.power');
+    Route::post('/command', 'Servers\CommandController@index')->name('api.client.servers.command');
+    Route::post('/power', 'Servers\PowerController@index')->name('api.client.servers.power');
 });

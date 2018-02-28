@@ -2,23 +2,53 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Models\User;
+use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
 
 abstract class BaseClientTransformer extends BaseApplicationTransformer
 {
     /**
+     * @var \Pterodactyl\Models\User
+     */
+    private $user;
+
+    /**
+     * Return the user model of the user requesting this transformation.
+     *
+     * @return \Pterodactyl\Models\User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set the user model of the user requesting this transformation.
+     *
+     * @param \Pterodactyl\Models\User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
      * Determine if the API key loaded onto the transformer has permission
      * to access a different resource. This is used when including other
      * models on a transformation request.
      *
-     * @param string $resource
+     * @param string                     $ability
+     * @param \Pterodactyl\Models\Server $server
      * @return bool
      */
-    protected function authorize(string $resource): bool
+    protected function authorize(string $ability, Server $server = null): bool
     {
-        return AdminAcl::check($this->getKey(), $resource, AdminAcl::READ);
+        Assert::isInstanceOf($server, Server::class);
+
+        return $this->getUser()->can($ability, [$server]);
     }
 
     /**

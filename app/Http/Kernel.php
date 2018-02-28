@@ -34,6 +34,7 @@ use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
 use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 use Pterodactyl\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
 
@@ -78,7 +79,7 @@ class Kernel extends HttpKernel
         ],
         'client-api' => [
             'throttle:60,1',
-            ApiSubstituteBindings::class,
+            SubstituteClientApiBindings::class,
             SetSessionDriver::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
