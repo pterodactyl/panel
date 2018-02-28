@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.4 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
+* Handle 404 errors from missing models in the application API bindings correctly.
 
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
