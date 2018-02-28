@@ -45,7 +45,9 @@ class ApiSubstituteBindings extends SubstituteBindings
         $route = $request->route();
 
         foreach (self::$mappings as $key => $model) {
-            $this->router->model($key, $model);
+            $this->router->model($key, $model, function () use ($request) {
+                $request->attributes->set('is_missing_model', true);
+            });
         }
 
         $this->router->substituteBindings($route);
