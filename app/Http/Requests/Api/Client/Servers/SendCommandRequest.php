@@ -24,7 +24,7 @@ class SendCommandRequest extends GetServerRequest
     public function rules(): array
     {
         return [
-            'command' => 'string|min:1',
+            'command' => 'required|string|min:1',
         ];
     }
 }
