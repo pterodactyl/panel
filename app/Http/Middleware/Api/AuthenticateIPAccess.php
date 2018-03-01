@@ -29,12 +29,12 @@ class AuthenticateIPAccess
         }
 
         $find = new IP($request->ip());
-        foreach ($model->allowed_ips as $ip) {
+        foreach (json_decode($model->allowed_ips) as $ip) {
             if (Range::parse($ip)->contains($find)) {
                 return $next($request);
             }
         }
 
-        throw new AccessDeniedHttpException('This IP address does not have permission to access the API using these credentials.');
+        throw new AccessDeniedHttpException('This IP address (' . $request->ip() . ') does not have permission to access the API using these credentials.');
     }
 }

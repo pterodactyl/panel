@@ -25,7 +25,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
      */
     public function testWithValidIP()
     {
-        $model = factory(ApiKey::class)->make(['allowed_ips' => ['127.0.0.1']]);
+        $model = factory(ApiKey::class)->make(['allowed_ips' => '["127.0.0.1"]']);
         $this->setRequestAttribute('api_key', $model);
 
         $this->request->shouldReceive('ip')->withNoArgs()->once()->andReturn('127.0.0.1');
@@ -38,7 +38,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
      */
     public function testValidIPAganistCIDRRange()
     {
-        $model = factory(ApiKey::class)->make(['allowed_ips' => ['192.168.1.1/28']]);
+        $model = factory(ApiKey::class)->make(['allowed_ips' => '["192.168.1.1/28"]']);
         $this->setRequestAttribute('api_key', $model);
 
         $this->request->shouldReceive('ip')->withNoArgs()->once()->andReturn('192.168.1.15');
@@ -54,10 +54,10 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
      */
     public function testWithInvalidIP()
     {
-        $model = factory(ApiKey::class)->make(['allowed_ips' => ['127.0.0.1']]);
+        $model = factory(ApiKey::class)->make(['allowed_ips' => '["127.0.0.1"]']);
         $this->setRequestAttribute('api_key', $model);
 
-        $this->request->shouldReceive('ip')->withNoArgs()->once()->andReturn('127.0.0.2');
+        $this->request->shouldReceive('ip')->withNoArgs()->twice()->andReturn('127.0.0.2');
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
