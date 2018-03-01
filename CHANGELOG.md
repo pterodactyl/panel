@@ -8,6 +8,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
 * Handle 404 errors from missing models in the application API bindings correctly.
 
+### Added
+* Adds back client API for sending commands or power toggles to a server though the Panel API: `/api/client/servers/<identifier>`
+
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
 * Fixes server creation API endpoint not passing the provided `external_id` to the creation service.
