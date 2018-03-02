@@ -116,6 +116,8 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeSubusers(Server $server)
     {
@@ -133,6 +135,8 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeUser(Server $server)
     {
@@ -150,40 +154,49 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-//    public function includePack(Server $server)
-//    {
-//        if (! $this->authorize(AdminAcl::RESOURCE_PACKS)) {
-//            return $this->null();
-//        }
-//
-//        $server->loadMissing('pack');
-//
-//        return $this->item($server->getRelation('pack'), $this->makeTransformer(PackTransformer::class), 'pack');
-//    }
+    public function includePack(Server $server)
+    {
+        if (! $this->authorize(AdminAcl::RESOURCE_PACKS)) {
+            return $this->null();
+        }
+
+        $server->loadMissing('pack');
+        if (is_null($server->getRelation('pack'))) {
+            return $this->null();
+        }
+
+        return $this->item($server->getRelation('pack'), $this->makeTransformer(PackTransformer::class), 'pack');
+    }
 
     /**
      * Return a generic array with nest information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-//    public function includeNest(Server $server)
-//    {
-//        if (! $this->authorize(AdminAcl::RESOURCE_NESTS)) {
-//            return $this->null();
-//        }
-//
-//        $server->loadMissing('nest');
-//
-//        return $this->item($server->getRelation('nest'), $this->makeTransformer(NestTransformer::class), 'nest');
-//    }
+    public function includeNest(Server $server)
+    {
+        if (! $this->authorize(AdminAcl::RESOURCE_NESTS)) {
+            return $this->null();
+        }
+
+        $server->loadMissing('nest');
+
+        return $this->item($server->getRelation('nest'), $this->makeTransformer(NestTransformer::class), 'nest');
+    }
 
     /**
      * Return a generic array with service option information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeOption(Server $server)
     {
@@ -201,6 +214,8 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeVariables(Server $server)
     {
@@ -218,6 +233,8 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeLocation(Server $server)
     {
@@ -235,6 +252,8 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNode(Server $server)
     {
