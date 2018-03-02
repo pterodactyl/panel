@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Requests\Api\Application;
 
 use Pterodactyl\Models\ApiKey;
-use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
@@ -13,6 +12,14 @@ use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 abstract class ApplicationApiRequest extends FormRequest
 {
+    /**
+     * Tracks if the request has been validated internally or not to avoid
+     * making duplicate validation calls.
+     *
+     * @var bool
+     */
+    private $hasValidated = false;
+
     /**
      * The resource that should be checked when performing the authorization
      * function for this request.
@@ -96,6 +103,21 @@ abstract class ApplicationApiRequest extends FormRequest
         return $this->route()->parameter($parameterKey);
     }
 
+    /**
+     * Validate that the resource exists and can be accessed prior to booting
+     * the validator and attempting to use the data.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    protected function prepareForValidation()
+    {
+        if (! $this->passesAuthorization()) {
+            $this->failedAuthorization();
+        }
+
+        $this->hasValidated = true;
+    }
+
     /*
      * Determine if the request passes the authorization check as well
      * as the exists check.
@@ -110,6 +132,14 @@ abstract class ApplicationApiRequest extends FormRequest
      */
     protected function passesAuthorization()
     {
+        // If we have already validated we do not need to call this function
+        // again. This is needed to work around Laravel's normal auth validation
+        // that occurs after validating the request params since we are doing auth
+        // validation in the prepareForValidation() function.
+        if ($this->hasValidated) {
+            return true;
+        }
+
         if (! parent::passesAuthorization()) {
             return false;
         }

@@ -10,6 +10,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fix validation error returned when no environment variables are passed, even if there are no variables required.
 * Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing enditing any start variables.
 
+### Changed
+* Changes order that validation of resource existence occurs in API requests to not try and use a non-existent model when validating data.
+
 ### Added
 * Adds back client API for sending commands or power toggles to a server though the Panel API: `/api/client/servers/<identifier>`
 * Added proper transformer for Packs and re-enabled missing includes on server.
