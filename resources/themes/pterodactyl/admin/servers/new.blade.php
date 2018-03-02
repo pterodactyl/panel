@@ -111,7 +111,7 @@
                     <div class="form-group col-sm-4">
                         <label for="pSwap">Swap</label>
                         <div class="input-group">
-                            <input type="text" value="{{ old('swap') }}" class="form-control" name="swap" id="pSwap" />
+                            <input type="text" value="{{ old('swap', 0) }}" class="form-control" name="swap" id="pSwap" />
                             <span class="input-group-addon">MB</span>
                         </div>
                     </div>
