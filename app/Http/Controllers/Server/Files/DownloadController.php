@@ -48,7 +48,7 @@ class DownloadController extends Controller
 
         $token = str_random(40);
         $node = $server->getRelation('node');
-        $this->cache->tags(['Server:Downloads'])->put($token, ['server' => $server->uuid, 'path' => $file], 5);
+        $this->cache->put('Server:Downloads:' . $token, ['server' => $server->uuid, 'path' => $file], 5);
 
         return redirect(sprintf('%s://%s:%s/v1/server/file/download/%s', $node->scheme, $node->fqdn, $node->daemonListen, $token));
     }

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Daemon;
 
@@ -25,7 +18,7 @@ class ActionController extends Controller
      */
     public function authenticateDownload(Request $request)
     {
-        $download = Cache::tags(['Server:Downloads'])->pull($request->input('token'));
+        $download = Cache::pull('Server:Downloads:' . $request->input('token'));
 
         if (is_null($download)) {
             return response()->json([
@@ -78,7 +71,7 @@ class ActionController extends Controller
      */
     public function configuration(Request $request, $token)
     {
-        $nodeId = Cache::tags(['Node:Configuration'])->pull($token);
+        $nodeId = Cache::pull('Node:Configuration:' . $token);
         if (is_null($nodeId)) {
             return response()->json(['error' => 'token_invalid'], 403);
         }

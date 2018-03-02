@@ -366,7 +366,7 @@ class NodesController extends Controller
     public function setToken(Node $node)
     {
         $token = bin2hex(random_bytes(16));
-        $this->cache->tags(['Node:Configuration'])->put($token, $node->id, 5);
+        $this->cache->put('Node:Configuration:' . $token, $node->id, 5);
 
         return response()->json(['token' => $token]);
     }
