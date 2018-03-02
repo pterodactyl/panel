@@ -11,28 +11,6 @@ use Pterodactyl\Http\Controllers\Controller;
 class ActionController extends Controller
 {
     /**
-     * Handles download request from daemon.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function authenticateDownload(Request $request)
-    {
-        $download = Cache::pull('Server:Downloads:' . $request->input('token'));
-
-        if (is_null($download)) {
-            return response()->json([
-                'error' => 'An invalid request token was recieved with this request.',
-            ], 403);
-        }
-
-        return response()->json([
-            'path' => $download['path'],
-            'server' => $download['server'],
-        ]);
-    }
-
-    /**
      * Handles install toggle request from daemon.
      *
      * @param \Illuminate\Http\Request $request

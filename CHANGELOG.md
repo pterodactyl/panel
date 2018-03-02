@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Adds back client API for sending commands or power toggles to a server though the Panel API: `/api/client/servers/<identifier>`
 * Added proper transformer for Packs and re-enabled missing includes on server.
+* Added support for using Filesystem as a caching driver, although not recommended.
 
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
