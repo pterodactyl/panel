@@ -4,6 +4,7 @@ namespace Pterodactyl\Console\Commands\Server;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Factory as ValidatorFactory;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
@@ -60,6 +61,7 @@ class BulkPowerActionCommand extends Command
     /**
      * Handle the bulk power request.
      *
+     * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
     public function handle()
@@ -85,7 +87,7 @@ class BulkPowerActionCommand extends Command
                 $this->output->error($message);
             }
 
-            return;
+            throw new ValidationException($validator);
         }
 
         $count = $this->repository->getServersForPowerActionCount($servers, $nodes);
