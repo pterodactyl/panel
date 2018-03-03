@@ -75,6 +75,10 @@ class ServerTransformer extends BaseTransformer
                 'io' => $server->io,
                 'cpu' => $server->cpu,
             ],
+            'feature_limits' => [
+                'databases' => $server->database_limit,
+                'allocations' => $server->allocation_limit,
+            ],
             'user' => $server->owner_id,
             'node' => $server->node_id,
             'allocation' => $server->allocation_id,

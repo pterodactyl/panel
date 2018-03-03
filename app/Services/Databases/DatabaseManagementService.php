@@ -13,22 +13,27 @@ class DatabaseManagementService
     /**
      * @var \Illuminate\Database\DatabaseManager
      */
-    protected $database;
+    private $database;
 
     /**
      * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
      */
-    protected $dynamic;
+    private $dynamic;
 
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
      */
-    protected $encrypter;
+    private $encrypter;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
      */
-    protected $repository;
+    private $repository;
+
+    /**
+     * @var bool
+     */
+    protected $useRandomHost = false;
 
     /**
      * CreationService constructor.
@@ -55,7 +60,7 @@ class DatabaseManagementService
      *
      * @param int   $server
      * @param array $data
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Pterodactyl\Models\Database
      *
      * @throws \Exception
      */

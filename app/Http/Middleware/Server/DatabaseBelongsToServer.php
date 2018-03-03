@@ -38,8 +38,13 @@ class DatabaseBelongsToServer
     public function handle(Request $request, Closure $next)
     {
         $server = $request->attributes->get('server');
+        $database = $request->input('database') ?? $request->route()->parameter('database');
 
-        $database = $this->repository->find($request->input('database'));
+        if (! is_digit($database)) {
+            throw new NotFoundHttpException;
+        }
+
+        $database = $this->repository->find($database);
         if (is_null($database) || $database->server_id !== $server->id) {
             throw new NotFoundHttpException;
         }

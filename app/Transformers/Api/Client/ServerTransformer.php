@@ -36,6 +36,10 @@ class ServerTransformer extends BaseClientTransformer
                 'io' => $server->io,
                 'cpu' => $server->cpu,
             ],
+            'feature_limits' => [
+                'databases' => $server->database_limit,
+                'allocations' => $server->allocation_limit,
+            ],
         ];
     }
 }

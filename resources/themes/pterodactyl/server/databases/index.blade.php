@@ -21,15 +21,10 @@
 
 @section('content')
 <div class="row">
-    <div class="col-xs-12">
+    <div class="{{ $allowCreation && Gate::allows('create-database', $server) ? 'col-xs-12 col-sm-8' : 'col-xs-12' }}">
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.config.database.your_dbs')</h3>
-                @if(auth()->user()->root_admin)
-                    <div class="box-tools">
-                        <a href="{{ route('admin.servers.view.database', ['server' => $server->id]) }}" target="_blank" class="btn btn-sm btn-success">Create New</a>
-                    </div>
-                @endif
             </div>
             @if(count($databases) > 0)
                 <div class="box-body table-responsive no-padding">
@@ -55,11 +50,20 @@
                                         </code>
                                     </td>
                                     <td class="middle"><code>{{ $database->host->host }}:{{ $database->host->port }}</code></td>
-                                    @can('reset-db-password', $server)
+                                    @if(Gate::allows('reset-db-password', $server) || Gate::allows('delete-database', $server))
                                         <td>
-                                            <button class="btn btn-xs btn-primary pull-right" data-action="reset-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')</button>
+                                            @can('delete-database', $server)
+                                                <button class="btn btn-xs btn-danger pull-right" data-action="delete-database" data-id="{{ $database->id }}">
+                                                    <i class="fa fa-fw fa-trash-o"></i>
+                                                </button>
+                                            @endcan
+                                            @can('reset-db-password', $server)
+                                                <button class="btn btn-xs btn-primary pull-right" style="margin-right:10px;" data-action="reset-password" data-id="{{ $database->id }}">
+                                                    <i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')
+                                                </button>
+                                            @endcan
                                         </td>
-                                    @endcan
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -69,17 +73,49 @@
                 <div class="box-body">
                     <div class="alert alert-info no-margin-bottom">
                         @lang('server.config.database.no_dbs')
-                        @if(Auth::user()->root_admin === 1)
-                            <a href="{{ route('admin.servers.view', [
-                                'id' => $server->id,
-                                'tab' => 'tab_database'
-                            ]) }}" target="_blank">@lang('server.config.database.add_db')</a>
-                        @endif
                     </div>
                 </div>
             @endif
         </div>
     </div>
+    @if($allowCreation && Gate::allows('create-database', $server))
+        <div class="col-xs-12 col-sm-4">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Create New Database</h3>
+                </div>
+                @if($overLimit)
+                    <div class="box-body">
+                        <div class="alert alert-danger no-margin">
+                            You are currently using <strong>{{ count($databases) }}</strong> of your <strong>{{ $server->database_limit ?? '&infin;' }}</strong> allowed databases.
+                        </div>
+                    </div>
+                @else
+                    <form action="{{ route('server.databases.new', $server->uuidShort) }}" method="POST">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label for="pDatabaseName" class="control-label">Database</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">s{{ $server->id }}_</span>
+                                    <input id="pDatabaseName" type="text" name="database" class="form-control" placeholder="database" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="pRemote" class="control-label">Connections</label>
+                                <input id="pRemote" type="text" name="remote" class="form-control" value="%" />
+                                <p class="text-muted small">This should reflect the IP address that connections are allowed from. Uses standard MySQL notation. If unsure leave as <code>%</code>.</p>
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            {!! csrf_field() !!}
+                            <p class="text-muted small">You are currently using <strong>{{ count($databases) }}</strong> of <strong>{{ $server->database_limit ?? '&infin;' }}</strong> databases. A username and password for this database will be randomly generated after form submission.</p>
+                            <input type="submit" class="btn btn-sm btn-success pull-right" value="Create Database" />
+                        </div>
+                    </form>
+                @endif
+            </div>
+        </div>
+    @endif
 </div>
 @endsection
 
@@ -123,6 +159,38 @@
                     });
                 }).always(function () {
                     block.removeClass('disabled').find('i').removeClass('fa-spin');
+                });
+            });
+        @endcan
+        @can('delete-database', $server)
+            $('[data-action="delete-database"]').click(function (event) {
+                event.preventDefault();
+                var self = $(this);
+                swal({
+                    title: '',
+                    type: 'warning',
+                    text: 'Are you sure that you want to delete this database? There is no going back, all data will immediately be removed.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Delete',
+                    confirmButtonColor: '#d9534f',
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true,
+                }, function () {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: Router.route('server.databases.delete', { server: '{{ $server->uuidShort }}', database: self.data('id') }),
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
+                    }).done(function () {
+                        self.parent().parent().slideUp();
+                        swal.close();
+                    }).fail(function (jqXHR) {
+                        console.error(jqXHR);
+                        swal({
+                            type: 'error',
+                            title: 'Whoops!',
+                            text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occured while processing this request.'
+                        });
+                    });
                 });
             });
         @endcan
