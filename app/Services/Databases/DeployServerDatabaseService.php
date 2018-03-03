@@ -21,6 +21,7 @@ class DeployServerDatabaseService
      * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     private $managementService;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
      */
@@ -63,20 +64,22 @@ class DeployServerDatabaseService
         }
 
         $allowRandom = config('pterodactyl.client_features.databases.allow_random');
-        $host = $this->databaseHostRepository->setColumns(['id'])->findWhere([
+        $hosts = $this->databaseHostRepository->setColumns(['id'])->findWhere([
             ['node_id', '=', $server->node_id],
-        ])->random();
+        ]);
 
-        if (empty($host) && ! $allowRandom) {
+        if ($hosts->isEmpty() && ! $allowRandom) {
             throw new NoSuitableDatabaseHostException;
         }
 
-        if (empty($host)) {
-            $host = $this->databaseHostRepository->setColumns(['id'])->all()->random();
-            if (empty($host)) {
+        if ($hosts->isEmpty()) {
+            $hosts = $this->databaseHostRepository->setColumns(['id'])->all();
+            if ($hosts->isEmpty()) {
                 throw new NoSuitableDatabaseHostException;
             }
         }
+
+        $host = $hosts->random();
 
         return $this->managementService->create($server->id, [
             'database_host_id' => $host->id,
