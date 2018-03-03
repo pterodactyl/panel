@@ -50,6 +50,11 @@ class StoreServerRequest extends ApplicationApiRequest
             'limits.io' => $rules['io'],
             'limits.cpu' => $rules['cpu'],
 
+            // Application Resource Limits
+            'feature_limits' => 'required|array',
+            'feature_limits.databases' => $rules['database_limit'],
+            'feature_limits.allocations' => $rules['allocation_limit'],
+
             // Placeholders for rules added in withValidator() function.
             'allocation.default' => '',
             'allocation.additional.*' => '',
@@ -94,6 +99,8 @@ class StoreServerRequest extends ApplicationApiRequest
             'allocation_id' => array_get($data, 'allocation.default'),
             'allocation_additional' => array_get($data, 'allocation.additional'),
             'start_on_completion' => array_get($data, 'start_on_completion', false),
+            'database_limit' => array_get($data, 'feature_limits.databases'),
+            'allocation_limit' => array_get($data, 'feature_limits.allocations'),
         ];
     }
 
