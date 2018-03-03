@@ -4,6 +4,8 @@ This file is a running track of new features and fixes to each version of the pa
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.7.5 (Derelict Dermodactylus)
+### Fixed
+* Fixes application API keys being created as a client API key.
 
 ## v0.7.4-h1 (Derelict Dermodactylus)
 ### Fixed
