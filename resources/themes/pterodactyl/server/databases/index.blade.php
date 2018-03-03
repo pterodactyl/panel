@@ -21,7 +21,7 @@
 
 @section('content')
 <div class="row">
-    <div class="{{ $allowCreation ? 'col-xs-12 col-sm-8' : 'col-xs-12' }}">
+    <div class="{{ $allowCreation && Gate::allows('create-database', $server) ? 'col-xs-12 col-sm-8' : 'col-xs-12' }}">
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('server.config.database.your_dbs')</h3>
@@ -50,11 +50,20 @@
                                         </code>
                                     </td>
                                     <td class="middle"><code>{{ $database->host->host }}:{{ $database->host->port }}</code></td>
-                                    @can('reset-db-password', $server)
+                                    @if(Gate::allows('reset-db-password', $server) || Gate::allows('delete-database', $server))
                                         <td>
-                                            <button class="btn btn-xs btn-primary pull-right" data-action="reset-password" data-id="{{ $database->id }}"><i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')</button>
+                                            @can('delete-database', $server)
+                                                <button class="btn btn-xs btn-danger pull-right" data-action="delete-database" data-id="{{ $database->id }}">
+                                                    <i class="fa fa-fw fa-trash-o"></i>
+                                                </button>
+                                            @endcan
+                                            @can('reset-db-password', $server)
+                                                <button class="btn btn-xs btn-primary pull-right" style="margin-right:10px;" data-action="reset-password" data-id="{{ $database->id }}">
+                                                    <i class="fa fa-fw fa-refresh"></i> @lang('server.config.database.reset_password')
+                                                </button>
+                                            @endcan
                                         </td>
-                                    @endcan
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -69,7 +78,7 @@
             @endif
         </div>
     </div>
-    @if($allowCreation)
+    @if($allowCreation && Gate::allows('create-database', $server))
         <div class="col-xs-12 col-sm-4">
             <div class="box box-success">
                 <div class="box-header with-border">
@@ -150,6 +159,38 @@
                     });
                 }).always(function () {
                     block.removeClass('disabled').find('i').removeClass('fa-spin');
+                });
+            });
+        @endcan
+        @can('delete-database', $server)
+            $('[data-action="delete-database"]').click(function (event) {
+                event.preventDefault();
+                var self = $(this);
+                swal({
+                    title: '',
+                    type: 'warning',
+                    text: 'Are you sure that you want to delete this database? There is no going back, all data will immediately be removed.',
+                    showCancelButton: true,
+                    confirmButtonText: 'Delete',
+                    confirmButtonColor: '#d9534f',
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true,
+                }, function () {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: Router.route('server.databases.delete', { server: '{{ $server->uuidShort }}', database: self.data('id') }),
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
+                    }).done(function () {
+                        self.parent().parent().slideUp();
+                        swal.close();
+                    }).fail(function (jqXHR) {
+                        console.error(jqXHR);
+                        swal({
+                            type: 'error',
+                            title: 'Whoops!',
+                            text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occured while processing this request.'
+                        });
+                    });
                 });
             });
         @endcan

@@ -41,6 +41,8 @@ Route::group(['prefix' => 'databases'], function () {
     Route::post('/new', 'DatabaseController@store')->name('server.databases.new');
 
     Route::patch('/password', 'DatabaseController@update')->middleware('server..database')->name('server.databases.password');
+
+    Route::delete('/delete/{database}', 'DatabaseController@delete')->middleware('server..database')->name('server.databases.delete');
 });
 
 /*
