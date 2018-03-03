@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.4-h1 (Derelict Dermodactylus)
+### Fixed
+* Being able to create servers is kind of a core aspect of the software, pushing releases late at night is not a great idea.
+
 ## v0.7.4 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.

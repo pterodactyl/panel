@@ -233,6 +233,8 @@ class ServerCreationService
             'startup' => array_get($data, 'startup'),
             'daemonSecret' => str_random(Node::DAEMON_SECRET_LENGTH),
             'image' => array_get($data, 'image'),
+            'database_limit' => array_get($data, 'database_limit'),
+            'allocation_limit' => array_get($data, 'allocation_limit'),
         ]);
     }
 
