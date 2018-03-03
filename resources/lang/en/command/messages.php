@@ -37,6 +37,10 @@ return [
     ],
     'server' => [
         'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
+        'power' => [
+            'confirm' => 'You are about to perform a :action aganist :count servers. Do you wish to continue?',
+            'action_failed' => 'Power action request for ":name" (#:id) on node ":node" failed with error: :message',
+        ],
     ],
     'environment' => [
         'mail' => [

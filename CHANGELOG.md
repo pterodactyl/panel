@@ -19,6 +19,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Added proper transformer for Packs and re-enabled missing includes on server.
 * Added support for using Filesystem as a caching driver, although not recommended.
 * Added support for user management of server databases.
+* **Added bulk power management CLI interface to send start, stop, kill, restart actions to servers across configurable nodes.**
 
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
