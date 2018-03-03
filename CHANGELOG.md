@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed
 * Fixes application API keys being created as a client API key.
+* Search term is now passed through when using paginated result sets.
 
 ### Changed
 * Databases are now properly paginated when viewing a database host.
