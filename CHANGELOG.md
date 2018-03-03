@@ -7,6 +7,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes application API keys being created as a client API key.
 
+### Changed
+* Databases are now properly paginated when viewing a database host.
+
 ## v0.7.4-h1 (Derelict Dermodactylus)
 ### Fixed
 * Being able to create servers is kind of a core aspect of the software, pushing releases late at night is not a great idea.
