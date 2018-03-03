@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Handle 404 errors from missing models in the application API bindings correctly.
 * Fix validation error returned when no environment variables are passed, even if there are no variables required.
 * Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing enditing any start variables.
+* Should fix migration issues from 0.6 when there are more than API key in the database.
 
 ### Changed
 * Changes order that validation of resource existence occurs in API requests to not try and use a non-existent model when validating data.
