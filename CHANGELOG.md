@@ -3,6 +3,24 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.4 (Derelict Dermodactylus)
+### Fixed
+* Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
+* Handle 404 errors from missing models in the application API bindings correctly.
+* Fix validation error returned when no environment variables are passed, even if there are no variables required.
+* Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing enditing any start variables.
+* Should fix migration issues from 0.6 when there are more than API key in the database.
+
+### Changed
+* Changes order that validation of resource existence occurs in API requests to not try and use a non-existent model when validating data.
+
+### Added
+* Adds back client API for sending commands or power toggles to a server though the Panel API: `/api/client/servers/<identifier>`
+* Added proper transformer for Packs and re-enabled missing includes on server.
+* Added support for using Filesystem as a caching driver, although not recommended.
+* Added support for user management of server databases.
+* **Added bulk power management CLI interface to send start, stop, kill, restart actions to servers across configurable nodes.**
+
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
 * Fixes server creation API endpoint not passing the provided `external_id` to the creation service.

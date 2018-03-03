@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Application;
+namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
 use Cake\Chronos\Chronos;
@@ -50,12 +50,13 @@ class AuthenticateKey
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
+     * @param int                      $keyType
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, int $keyType)
     {
         if (is_null($request->bearerToken())) {
             throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
@@ -68,7 +69,7 @@ class AuthenticateKey
         try {
             $model = $this->repository->findFirstWhere([
                 ['identifier', '=', $identifier],
-                ['key_type', '=', ApiKey::TYPE_APPLICATION],
+                ['key_type', '=', $keyType],
             ]);
         } catch (RecordNotFoundException $exception) {
             throw new AccessDeniedHttpException;

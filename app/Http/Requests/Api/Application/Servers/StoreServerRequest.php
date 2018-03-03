@@ -39,7 +39,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'pack' => $rules['pack_id'],
             'docker_image' => $rules['image'],
             'startup' => $rules['startup'],
-            'environment' => 'required|array',
+            'environment' => 'present|array',
             'skip_scripts' => 'sometimes|boolean',
 
             // Resource limitations

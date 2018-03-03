@@ -16,7 +16,7 @@ class SetupTableForKeyEncryption extends Migration
     public function up()
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->char('identifier', 16)->unique()->after('user_id');
+            $table->char('identifier', 16)->nullable()->unique()->after('user_id');
             $table->dropUnique(['token']);
         });
 

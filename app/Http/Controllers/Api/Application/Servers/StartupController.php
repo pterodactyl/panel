@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
@@ -40,7 +41,9 @@ class StartupController extends ApplicationApiController
      */
     public function index(UpdateServerStartupRequest $request): array
     {
-        $server = $this->modificationService->handle($request->getModel(Server::class), $request->validated());
+        $server = $this->modificationService
+            ->setUserLevel(User::USER_LEVEL_ADMIN)
+            ->handle($request->getModel(Server::class), $request->validated());
 
         return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))

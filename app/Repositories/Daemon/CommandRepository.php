@@ -12,7 +12,6 @@ class CommandRepository extends BaseRepository implements CommandRepositoryInter
      *
      * @param string $command
      * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function send(string $command): ResponseInterface
     {

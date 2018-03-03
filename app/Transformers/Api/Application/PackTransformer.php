@@ -1,90 +1,40 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
-namespace Pterodactyl\Transformers\Admin;
+namespace Pterodactyl\Transformers\Api\Application;
 
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Pack;
-use League\Fractal\TransformerAbstract;
 
-class PackTransformer extends TransformerAbstract
+class PackTransformer extends BaseTransformer
 {
     /**
-     * List of resources that can be included.
+     * Return the resource name for the JSONAPI output.
      *
-     * @var array
+     * @return string
      */
-    protected $availableIncludes = [
-        'option',
-        'servers',
-    ];
-
-    /**
-     * The Illuminate Request object if provided.
-     *
-     * @var \Illuminate\Http\Request|bool
-     */
-    protected $request;
-
-    /**
-     * Setup request object for transformer.
-     *
-     * @param \Illuminate\Http\Request|bool $request
-     */
-    public function __construct($request = false)
+    public function getResourceName(): string
     {
-        if (! $request instanceof Request && $request !== false) {
-            throw new DisplayException('Request passed to constructor must be of type Request or false.');
-        }
-
-        $this->request = $request;
+        return Pack::RESOURCE_NAME;
     }
 
     /**
-     * Return a generic transformed pack array.
+     * Return a transformed User model that can be consumed by external services.
      *
+     * @param \Pterodactyl\Models\Pack $pack
      * @return array
      */
-    public function transform($pack)
+    public function transform(Pack $pack): array
     {
-        if (! $pack instanceof Pack) {
-            return ['id' => null];
-        }
-
-        return $pack->toArray();
-    }
-
-    /**
-     * Return the packs associated with this service.
-     *
-     * @return \Leauge\Fractal\Resource\Item
-     */
-    public function includeOption(Pack $pack)
-    {
-        if ($this->request && ! $this->request->apiKeyHasPermission('option-view')) {
-            return;
-        }
-
-        return $this->item($pack->option, new OptionTransformer($this->request), 'option');
-    }
-
-    /**
-     * Return the packs associated with this service.
-     *
-     * @return \Leauge\Fractal\Resource\Collection
-     */
-    public function includeServers(Pack $pack)
-    {
-        if ($this->request && ! $this->request->apiKeyHasPermission('server-list')) {
-            return;
-        }
-
-        return $this->collection($pack->servers, new ServerTransformer($this->request), 'server');
+        return [
+            'id' => $pack->id,
+            'uuid' => $pack->uuid,
+            'egg' => $pack->egg_id,
+            'name' => $pack->name,
+            'description' => $pack->description,
+            'is_selectable' => (bool) $pack->selectable,
+            'is_visible' => (bool) $pack->visible,
+            'is_locked' => (bool) $pack->locked,
+            'created_at' => $this->formatTimestamp($pack->created_at),
+            'updated_at' => $this->formatTimestamp($pack->updated_at),
+        ];
     }
 }
