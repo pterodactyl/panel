@@ -116,8 +116,14 @@ class ServerCreationServiceTest extends TestCase
         ]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('isUniqueUuidCombo')
+            ->once()
+            ->with($this->getKnownUuid(), substr($this->getKnownUuid(), 0, 8))
+            ->andReturn(true);
+
         $this->repository->shouldReceive('create')->with(m::subset([
             'uuid' => $this->getKnownUuid(),
+            'uuidShort' => substr($this->getKnownUuid(), 0, 8),
             'node_id' => $model->node_id,
             'allocation_id' => $model->allocation_id,
             'owner_id' => $model->owner_id,
@@ -164,8 +170,14 @@ class ServerCreationServiceTest extends TestCase
         $this->eggRepository->shouldReceive('setColumns->find')->once()->with($model->egg_id)->andReturn($eggModel);
 
         $this->validatorService->shouldReceive('setUserLevel->handle')->once()->andReturn(collect([]));
-        $this->repository->shouldReceive('create')->once()->with(m::subset([
+        $this->repository->shouldReceive('isUniqueUuidCombo')
+            ->once()
+            ->with($this->getKnownUuid(), substr($this->getKnownUuid(), 0, 8))
+            ->andReturn(true);
+
+        $this->repository->shouldReceive('create')->with(m::subset([
             'uuid' => $this->getKnownUuid(),
+            'uuidShort' => substr($this->getKnownUuid(), 0, 8),
             'node_id' => $model->node_id,
             'allocation_id' => $model->allocation_id,
             'nest_id' => $model->nest_id,
@@ -211,8 +223,14 @@ class ServerCreationServiceTest extends TestCase
         $this->allocationSelectionService->shouldReceive('handle')->once()->withNoArgs()->andReturn($allocationModel);
 
         $this->validatorService->shouldReceive('setUserLevel->handle')->once()->andReturn(collect([]));
-        $this->repository->shouldReceive('create')->once()->with(m::subset([
+        $this->repository->shouldReceive('isUniqueUuidCombo')
+            ->once()
+            ->with($this->getKnownUuid(), substr($this->getKnownUuid(), 0, 8))
+            ->andReturn(true);
+
+        $this->repository->shouldReceive('create')->with(m::subset([
             'uuid' => $this->getKnownUuid(),
+            'uuidShort' => substr($this->getKnownUuid(), 0, 8),
             'node_id' => $model->node_id,
             'allocation_id' => $model->allocation_id,
             'nest_id' => $model->nest_id,
@@ -244,6 +262,7 @@ class ServerCreationServiceTest extends TestCase
         ]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('isUniqueUuidCombo')->once()->andReturn(true);
         $this->repository->shouldReceive('create')->once()->andReturn($model);
         $this->allocationRepository->shouldReceive('assignAllocationsToServer')->once()->andReturn(1);
         $this->validatorService->shouldReceive('setUserLevel')->once()->andReturnSelf();

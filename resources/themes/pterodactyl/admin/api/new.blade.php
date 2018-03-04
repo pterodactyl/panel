@@ -15,7 +15,7 @@
 
 @section('content')
     <div class="row">
-        <form method="POST" action="{{ route('account.api.new') }}">
+        <form method="POST" action="{{ route('admin.api.new') }}">
             <div class="col-sm-8 col-xs-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">

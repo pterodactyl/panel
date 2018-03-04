@@ -216,7 +216,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function filterUserAccessServers(User $user, int $level, bool $paginate = true)
     {
-        $instance = $this->getBuilder()->select($this->getColumns())->with(['user']);
+        $instance = $this->getBuilder()->select($this->getColumns())->with(['user', 'node', 'allocation']);
 
         // If access level is set to owner, only display servers
         // that the user owns.
@@ -301,6 +301,18 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function getServersForPowerActionCount(array $servers = [], array $nodes = []): int
     {
         return $this->getServersForPowerAction($servers, $nodes, true);
+    }
+
+    /**
+     * Check if a given UUID and UUID-Short string are unique to a server.
+     *
+     * @param string $uuid
+     * @param string $short
+     * @return bool
+     */
+    public function isUniqueUuidCombo(string $uuid, string $short): bool
+    {
+        return ! $this->getBuilder()->where('uuid', '=', $uuid)->orWhere('uuidShort', '=', $short)->exists();
     }
 
     /**

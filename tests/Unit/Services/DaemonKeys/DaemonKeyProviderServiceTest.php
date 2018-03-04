@@ -14,11 +14,13 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderServiceTest extends TestCase
@@ -39,6 +41,11 @@ class DaemonKeyProviderServiceTest extends TestCase
     private $repository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     */
+    private $subuserRepository;
+
+    /**
      * Setup tests.
      */
     public function setUp()
@@ -49,6 +56,7 @@ class DaemonKeyProviderServiceTest extends TestCase
         $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
         $this->keyUpdateService = m::mock(DaemonKeyUpdateService::class);
         $this->repository = m::mock(DaemonKeyRepositoryInterface::class);
+        $this->subuserRepository = m::mock(SubuserRepositoryInterface::class);
     }
 
     /**
@@ -155,6 +163,33 @@ class DaemonKeyProviderServiceTest extends TestCase
     }
 
     /**
+     * Test that a missing key is created for a subuser.
+     */
+    public function testMissingKeyIsCreatedForSubuser()
+    {
+        $user = factory(User::class)->make(['root_admin' => 0]);
+        $server = factory(Server::class)->make();
+        $key = factory(DaemonKey::class)->make(['expires_at' => Carbon::now()->subHour()]);
+        $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
+
+        $this->repository->shouldReceive('findFirstWhere')->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->once()->andThrow(new RecordNotFoundException);
+
+        $this->subuserRepository->shouldReceive('findFirstWhere')->once()->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->andReturn($subuser);
+
+        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturn($key->secret);
+
+        $response = $this->getService()->handle($server, $user, false);
+        $this->assertNotEmpty($response);
+        $this->assertEquals($key->secret, $response);
+    }
+
+    /**
      * Test that an exception is thrown if the user should not get a key.
      *
      * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -169,6 +204,11 @@ class DaemonKeyProviderServiceTest extends TestCase
             ['server_id', '=', $server->id],
         ])->once()->andThrow(new RecordNotFoundException);
 
+        $this->subuserRepository->shouldReceive('findFirstWhere')->once()->with([
+            ['user_id', '=', $user->id],
+            ['server_id', '=', $server->id],
+        ])->andThrow(new RecordNotFoundException);
+
         $this->getService()->handle($server, $user, false);
     }
 
@@ -179,6 +219,11 @@ class DaemonKeyProviderServiceTest extends TestCase
      */
     private function getService(): DaemonKeyProviderService
     {
-        return new DaemonKeyProviderService($this->keyCreationService, $this->repository, $this->keyUpdateService);
+        return new DaemonKeyProviderService(
+            $this->keyCreationService,
+            $this->repository,
+            $this->keyUpdateService,
+            $this->subuserRepository
+        );
     }
 }

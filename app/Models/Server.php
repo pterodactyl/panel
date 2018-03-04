@@ -36,13 +36,6 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
-     * Always eager load these relationships on the model.
-     *
-     * @var array
-     */
-    protected $with = ['key'];
-
-    /**
      * Fields that are not mass assignable.
      *
      * @var array

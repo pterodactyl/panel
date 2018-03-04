@@ -3,6 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.5 (Derelict Dermodactylus)
+### Fixed
+* Fixes application API keys being created as a client API key.
+* Search term is now passed through when using paginated result sets.
+* Reduces the number of SQL queries executed when rendering the server listing to increase performance.
+* Fixes exceptions being thrown for non-existent subuser permissions.
+* Fixes exception caused when trying to revoke admin privileges from a user account due to a bad endpoint.
+
+### Changed
+* Databases are now properly paginated when viewing a database host.
+* No more loading daemon keys for every server model being loaded, some of us value our databases.
+* Changed behavior of the subuser middleware to add a daemon access key if one is missing from the database for some reason.
+* Server short-codes are now based on the UUID as they were in previous versions of Pterodactyl.
+
 ## v0.7.4-h1 (Derelict Dermodactylus)
 ### Fixed
 * Being able to create servers is kind of a core aspect of the software, pushing releases late at night is not a great idea.
