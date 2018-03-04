@@ -47,7 +47,7 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker $faker) {
 
     return [
         'id' => $faker->unique()->randomNumber(),
-        'external_id' => null,
+        'external_id' => $faker->unique()->isbn10,
         'uuid' => $faker->uuid,
         'username' => $faker->userName,
         'email' => $faker->safeEmail,
