@@ -65,6 +65,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Pterodactyl\\Tests\\Integration\\": "tests/Integration",
             "Tests\\": "tests/"
         }
     },

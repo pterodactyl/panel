@@ -14,9 +14,9 @@ before_script:
   - echo 'opcache.enable_cli=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - cp .env.travis .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
-  - php artisan migrate --seed
 script:
-  - vendor/bin/phpunit --coverage-clover coverage.xml
+  - vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml tests/Unit
+  - vendor/bin/phpunit tests/Integration
 notifications:
   email: false
   webhooks:
