@@ -304,6 +304,18 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
+     * Check if a given UUID and UUID-Short string are unique to a server.
+     *
+     * @param string $uuid
+     * @param string $short
+     * @return bool
+     */
+    public function isUniqueUuidCombo(string $uuid, string $short): bool
+    {
+        return ! $this->getBuilder()->where('uuid', '=', $uuid)->orWhere('uuidShort', '=', $short)->exists();
+    }
+
+    /**
      * Return an array of server IDs that a given user can access based
      * on owner and subuser permissions.
      *

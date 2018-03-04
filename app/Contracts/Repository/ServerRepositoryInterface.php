@@ -136,4 +136,13 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return int
      */
     public function getServersForPowerActionCount(array $servers = [], array $nodes = []): int;
+
+    /**
+     * Check if a given UUID and UUID-Short string are unique to a server.
+     *
+     * @param string $uuid
+     * @param string $short
+     * @return bool
+     */
+    public function isUniqueUuidCombo(string $uuid, string $short): bool;
 }

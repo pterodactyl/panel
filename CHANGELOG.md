@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Databases are now properly paginated when viewing a database host.
 * No more loading daemon keys for every server model being loaded, some of us value our databases.
 * Changed behavior of the subuser middleware to add a daemon access key if one is missing from the database for some reason.
+* Server short-codes are now based on the UUID as they were in previous versions of Pterodactyl.
 
 ## v0.7.4-h1 (Derelict Dermodactylus)
 ### Fixed
