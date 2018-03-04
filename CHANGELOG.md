@@ -8,10 +8,12 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes application API keys being created as a client API key.
 * Search term is now passed through when using paginated result sets.
 * Reduces the number of SQL queries executed when rendering the server listing to increase performance.
+* Fixes exceptions being thrown for non-existent subuser permissions.
 
 ### Changed
 * Databases are now properly paginated when viewing a database host.
 * No more loading daemon keys for every server model being loaded, some of us value our databases.
+* Changed behavior of the subuser middleware to add a daemon access key if one is missing from the database for some reason.
 
 ## v0.7.4-h1 (Derelict Dermodactylus)
 ### Fixed
