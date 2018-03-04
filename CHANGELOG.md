@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Search term is now passed through when using paginated result sets.
 * Reduces the number of SQL queries executed when rendering the server listing to increase performance.
 * Fixes exceptions being thrown for non-existent subuser permissions.
+* Fixes exception caused when trying to revoke admin privileges from a user account due to a bad endpoint.
 
 ### Changed
 * Databases are now properly paginated when viewing a database host.

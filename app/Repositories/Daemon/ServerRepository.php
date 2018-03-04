@@ -115,7 +115,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     public function revokeAccessKey($key): ResponseInterface
     {
         if (is_array($key)) {
-            return $this->getHttpClient()->request('POST', 'keys', [
+            return $this->getHttpClient()->request('POST', 'keys/batch-delete', [
                 'json' => $key,
             ]);
         }
