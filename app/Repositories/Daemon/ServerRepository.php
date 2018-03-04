@@ -116,7 +116,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     {
         if (is_array($key)) {
             return $this->getHttpClient()->request('POST', 'keys/batch-delete', [
-                'json' => $key,
+                'json' => ['keys' => $key],
             ]);
         }
 
