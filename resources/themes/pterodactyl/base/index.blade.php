@@ -51,8 +51,8 @@
                             <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
                                 <td @if(! empty($server->description)) rowspan="2" @endif><code>{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
-                                <td>{{ $server->node->name }}</td>
-                                <td><code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code></td>
+                                <td>{{ $server->getRelation('node')->name }}</td>
+                                <td><code>{{ $server->getRelation('allocation')->alias }}:{{ $server->getRelation('allocation')->port }}</code></td>
                                 <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
                                 <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
                                 <td class="text-center">

@@ -216,7 +216,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function filterUserAccessServers(User $user, int $level, bool $paginate = true)
     {
-        $instance = $this->getBuilder()->select($this->getColumns())->with(['user']);
+        $instance = $this->getBuilder()->select($this->getColumns())->with(['user', 'node', 'allocation']);
 
         // If access level is set to owner, only display servers
         // that the user owns.
