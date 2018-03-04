@@ -60,7 +60,7 @@ class EggExporterService
             ],
             'scripts' => [
                 'installation' => [
-                    'script' => $egg->copy_script_install,
+                    'commands' => $egg->copy_script_install,
                     'container' => $egg->copy_script_container,
                     'entrypoint' => $egg->copy_script_entry,
                 ],

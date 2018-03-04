@@ -72,7 +72,7 @@ class EggExporterServiceTest extends TestCase
         $this->assertObjectNestedValueEquals('author', $egg->author, $data);
         $this->assertObjectHasNestedAttribute('exported_at', $data);
         $this->assertObjectNestedValueEquals('exported_at', Carbon::now()->toIso8601String(), $data);
-        $this->assertObjectHasNestedAttribute('scripts.installation.script', $data);
+        $this->assertObjectHasNestedAttribute('scripts.installation.commands', $data);
         $this->assertObjectHasNestedAttribute('scripts.installation.container', $data);
         $this->assertObjectHasNestedAttribute('scripts.installation.entrypoint', $data);
         $this->assertObjectHasAttribute('variables', $data);

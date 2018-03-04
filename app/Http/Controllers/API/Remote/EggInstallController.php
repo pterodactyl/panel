@@ -57,7 +57,7 @@ class EggInstallController extends Controller
 
         return response()->json([
             'scripts' => [
-                'install' => ! $egg->copy_script_install ? null : str_replace(["\r\n", "\n", "\r"], "\n", $egg->copy_script_install),
+                'install' => implode("\n", $egg->copy_script_install),
                 'privileged' => $egg->script_is_privileged,
             ],
             'config' => [
