@@ -9,18 +9,13 @@
 
 namespace Pterodactyl\Services\Helpers;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class TemporaryPasswordService
 {
     const HMAC_ALGO = 'sha256';
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -35,16 +30,11 @@ class TemporaryPasswordService
     /**
      * TemporaryPasswordService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository  $config
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Illuminate\Contracts\Hashing\Hasher     $hasher
      */
-    public function __construct(
-        ConfigRepository $config,
-        ConnectionInterface $connection,
-        Hasher $hasher
-    ) {
-        $this->config = $config;
+    public function __construct(ConnectionInterface $connection, Hasher $hasher)
+    {
         $this->connection = $connection;
         $this->hasher = $hasher;
     }
@@ -57,7 +47,7 @@ class TemporaryPasswordService
      */
     public function handle($email)
     {
-        $token = hash_hmac(self::HMAC_ALGO, str_random(40), $this->config->get('app.key'));
+        $token = hash_hmac(self::HMAC_ALGO, Uuid::uuid4()->toString(), config('app.key'));
 
         $this->connection->table('password_resets')->insert([
             'email' => $email,
