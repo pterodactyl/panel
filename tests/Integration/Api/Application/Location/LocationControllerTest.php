@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Api\Application\Location;
 
 use Pterodactyl\Models\Node;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
@@ -17,8 +18,8 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     {
         $locations = factory(Location::class)->times(2)->create();
 
-        $response = $this->json('GET', '/api/application/locations');
-        $response->assertStatus(200);
+        $response = $this->getJson('/api/application/locations');
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2, 'data');
         $response->assertJsonStructure([
             'object',
@@ -71,8 +72,8 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     {
         $location = factory(Location::class)->create();
 
-        $response = $this->json('GET', '/api/application/locations/' . $location->id);
-        $response->assertStatus(200);
+        $response = $this->getJson('/api/application/locations/' . $location->id);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2);
         $response->assertJsonStructure(['object', 'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at']]);
         $response->assertJson([
@@ -95,8 +96,8 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $location = factory(Location::class)->create();
         $server = $this->createServerModel(['user_id' => $this->getApiUser()->id, 'location_id' => $location->id]);
 
-        $response = $this->json('GET', '/api/application/locations/' . $location->id . '?include=servers,nodes');
-        $response->assertStatus(200);
+        $response = $this->getJson('/api/application/locations/' . $location->id . '?include=servers,nodes');
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2)->assertJsonCount(2, 'attributes.relationships');
         $response->assertJsonStructure([
             'attributes' => [
@@ -145,8 +146,8 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $location = factory(Location::class)->create();
         factory(Node::class)->create(['location_id' => $location->id]);
 
-        $response = $this->json('GET', '/api/application/locations/' . $location->id . '?include=nodes');
-        $response->assertStatus(200);
+        $response = $this->getJson('/api/application/locations/' . $location->id . '?include=nodes');
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2)->assertJsonCount(1, 'attributes.relationships');
         $response->assertJsonStructure([
             'attributes' => [
@@ -176,7 +177,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingLocation()
     {
-        $response = $this->json('GET', '/api/application/locations/nil');
+        $response = $this->getJson('/api/application/locations/nil');
         $this->assertNotFoundJson($response);
     }
 
@@ -189,7 +190,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $location = factory(Location::class)->create();
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
 
-        $response = $this->json('GET', '/api/application/locations/' . $location->id);
+        $response = $this->getJson('/api/application/locations/' . $location->id);
         $this->assertAccessDeniedJson($response);
     }
 
@@ -201,7 +202,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
 
-        $response = $this->json('GET', '/api/application/locations/nil');
+        $response = $this->getJson('/api/application/locations/nil');
         $this->assertAccessDeniedJson($response);
     }
 }

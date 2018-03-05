@@ -1,5 +1,6 @@
 <?php
 
+use Cake\Chronos\Chronos;
 use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
 
@@ -57,6 +58,8 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker $faker) {
         'language' => 'en',
         'root_admin' => false,
         'use_totp' => false,
+        'created_at' => Chronos::now(),
+        'updated_at' => Chronos::now(),
     ];
 });
 
@@ -69,7 +72,7 @@ $factory->state(Pterodactyl\Models\User::class, 'admin', function () {
 $factory->define(Pterodactyl\Models\Location::class, function (Faker $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'short' => $faker->domainWord,
+        'short' => $faker->unique()->domainWord,
         'long' => $faker->catchPhrase,
     ];
 });

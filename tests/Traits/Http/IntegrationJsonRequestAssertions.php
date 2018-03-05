@@ -2,6 +2,7 @@
 
 namespace Tests\Traits;
 
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\TestResponse;
 
 trait IntegrationJsonRequestAssertions
@@ -13,7 +14,7 @@ trait IntegrationJsonRequestAssertions
      */
     public function assertNotFoundJson(TestResponse $response)
     {
-        $response->assertStatus(404);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
         $response->assertJsonStructure(['errors' => [['code', 'status', 'detail']]]);
         $response->assertJsonCount(1, 'errors');
         $response->assertJson([
@@ -34,7 +35,7 @@ trait IntegrationJsonRequestAssertions
      */
     public function assertAccessDeniedJson(TestResponse $response)
     {
-        $response->assertStatus(403);
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
         $response->assertJsonStructure(['errors' => [['code', 'status', 'detail']]]);
         $response->assertJsonCount(1, 'errors');
         $response->assertJson([

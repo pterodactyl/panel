@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Api\Application\Users;
 
 use Pterodactyl\Models\User;
+use Illuminate\Http\Response;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
@@ -14,8 +15,8 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
     {
         $user = factory(User::class)->create();
 
-        $response = $this->json('GET', '/api/application/users/external/' . $user->external_id);
-        $response->assertStatus(200);
+        $response = $this->getJson('/api/application/users/external/' . $user->external_id);
+        $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
@@ -47,9 +48,9 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
     /**
      * Test that an invalid external ID returns a 404 error.
      */
-    public function testGetMissingLocation()
+    public function testGetMissingUser()
     {
-        $response = $this->json('GET', '/api/application/users/external/nil');
+        $response = $this->getJson('/api/application/users/external/nil');
         $this->assertNotFoundJson($response);
     }
 
@@ -62,7 +63,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
         $user = factory(User::class)->create();
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
 
-        $response = $this->json('GET', '/api/application/users/external/' . $user->external_id);
+        $response = $this->getJson('/api/application/users/external/' . $user->external_id);
         $this->assertAccessDeniedJson($response);
     }
 
@@ -74,7 +75,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
 
-        $response = $this->json('GET', '/api/application/users/external/nil');
+        $response = $this->getJson('/api/application/users/external/nil');
         $this->assertAccessDeniedJson($response);
     }
 }
