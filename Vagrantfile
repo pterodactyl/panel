@@ -16,6 +16,6 @@ Vagrant.configure("2") do |config|
     config.vm.network :forwarded_port, guest: 3306, host: 53306
 
     # Config for the vagrant-dns plugin (https://github.com/BerlinVagrant/vagrant-dns)
-    config.dns.tld = "app"
-    config.dns.patterns = [/^pterodactyl.app$/]
+    config.dns.tld = "test"
+    config.dns.patterns = [/^pterodactyl.test$/]
 end
