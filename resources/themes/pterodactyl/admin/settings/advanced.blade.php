@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="control-label">Website Key</label>
+                                <label class="control-label">Site Key</label>
                                 <div>
                                     <input type="text" required class="form-control" name="recaptcha:website_key" value="{{ old('recaptcha:website_key', config('recaptcha.website_key')) }}">
                                 </div>
