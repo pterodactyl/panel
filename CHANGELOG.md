@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.6 (Derelict Dermodactylus)
+### Fixed
+* Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
+
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed
 * Fixes application API keys being created as a client API key.
