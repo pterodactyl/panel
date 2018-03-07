@@ -15,8 +15,8 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
     {
         return [
             'recaptcha:enabled' => 'required|in:true,false',
-            'recaptcha:secret_key' => 'required|string|max:255',
             'recaptcha:website_key' => 'required|string|max:255',
+            'recaptcha:secret_key' => 'required|string|max:255',
             'pterodactyl:guzzle:timeout' => 'required|integer|between:1,60',
             'pterodactyl:guzzle:connect_timeout' => 'required|integer|between:1,60',
             'pterodactyl:console:count' => 'required|integer|min:1',
