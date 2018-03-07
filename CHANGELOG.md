@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
 * Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
+* Fixes improper behavior when marking an egg as copying the configuration from another.
 
 ### Changed
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
