@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.6 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
+* Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
 
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed

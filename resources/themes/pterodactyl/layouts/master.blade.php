@@ -170,7 +170,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @if(Gate::allows('view-startup', $server) || Gate::allows('access-sftp', $server) ||  Gate::allows('view-allocation', $server))
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('access-sftp', $server) ||  Gate::allows('view-allocations', $server))
                                 <li class="treeview
                                     @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active
@@ -184,7 +184,7 @@
                                         </span>
                                     </a>
                                     <ul class="treeview-menu">
-                                        @can('view-allocation', $server)
+                                        @can('view-allocations', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
                                         @endcan
                                         @can('access-sftp', $server)
