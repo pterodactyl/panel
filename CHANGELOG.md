@@ -8,6 +8,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
 * Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
 
+### Changed
+* Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
+
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed
 * Fixes application API keys being created as a client API key.
