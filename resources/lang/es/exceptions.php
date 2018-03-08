@@ -17,6 +17,8 @@ return [
         'too_many_ports' => 'La adición de más de 1000 puertos en un único momento no es compatible. Por favor, use un rango menor.',
         'invalid_mapping' => 'La cartografía proporcionada por :port no era válido y no puede ser procesado.',
         'cidr_out_of_range' => 'La notación CIDR sólo permite máscaras entre los /25 e /32.',
+        'port_too_large' => 'El puerto ingresado es demasiado grande.',
+        'not_a_valid_range' => 'El rango del puerto ingresado no es válido.',
     ],
     'service' => [
         'delete_has_servers' => 'Un servicio con los servidores activos conectados a no se puede eliminar desde el Panel de.',
