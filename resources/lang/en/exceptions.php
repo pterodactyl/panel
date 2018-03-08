@@ -11,6 +11,8 @@ return [
         'too_many_ports' => 'Adding more than 1000 ports at a single time is not supported. Please use a smaller range.',
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
+        'port_too_large' => 'The entered port is too large.',
+        'not_a_valid_range' => 'The entered port range is not valid.',
     ],
     'nest' => [
         'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
