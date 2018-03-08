@@ -55,33 +55,35 @@ class ActionsClass {
             showLoaderOnConfirm: true,
             inputValue: inputValue
         }, (val) => {
-            $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-Access-Token': Pterodactyl.server.daemonSecret,
-                    'X-Access-Server': Pterodactyl.server.uuid,
-                },
-                contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/folder`,
-                timeout: 10000,
-                data: JSON.stringify({
-                    path: val,
-                }),
-            }).done(data => {
-                swal.close();
-                Files.list();
-            }).fail(jqXHR => {
-                console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: '',
-                    text: error,
+            if (val !== false) {
+                $.ajax({
+                    type: 'POST',
+                    headers: {
+                        'X-Access-Token': Pterodactyl.server.daemonSecret,
+                        'X-Access-Server': Pterodactyl.server.uuid,
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/folder`,
+                    timeout: 10000,
+                    data: JSON.stringify({
+                        path: val,
+                    }),
+                }).done(data => {
+                    swal.close();
+                    Files.list();
+                }).fail(jqXHR => {
+                    console.error(jqXHR);
+                    var error = 'An error occured while trying to process this request.';
+                    if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                        error = jqXHR.responseJSON.error;
+                    }
+                    swal({
+                        type: 'error',
+                        title: '',
+                        text: error,
+                    });
                 });
-            });
+            }
         });
     }
 
@@ -100,34 +102,36 @@ class ActionsClass {
             showLoaderOnConfirm: true,
             inputValue: `${currentPath}${currentName}`,
         }, (val) => {
-            $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-Access-Token': Pterodactyl.server.daemonSecret,
-                    'X-Access-Server': Pterodactyl.server.uuid,
-                },
-                contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/move`,
-                timeout: 10000,
-                data: JSON.stringify({
-                    from: `${currentPath}${currentName}`,
-                    to: `${val}`,
-                }),
-            }).done(data => {
-                nameBlock.parent().addClass('warning').delay(200).fadeOut();
-                swal.close();
-            }).fail(jqXHR => {
-                console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: '',
-                    text: error,
+            if (val !== false) {
+                $.ajax({
+                    type: 'POST',
+                    headers: {
+                        'X-Access-Token': Pterodactyl.server.daemonSecret,
+                        'X-Access-Server': Pterodactyl.server.uuid,
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/move`,
+                    timeout: 10000,
+                    data: JSON.stringify({
+                        from: `${currentPath}${currentName}`,
+                        to: `${val}`,
+                    }),
+                }).done(data => {
+                    nameBlock.parent().addClass('warning').delay(200).fadeOut();
+                    swal.close();
+                }).fail(jqXHR => {
+                    console.error(jqXHR);
+                    var error = 'An error occured while trying to process this request.';
+                    if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                        error = jqXHR.responseJSON.error;
+                    }
+                    swal({
+                        type: 'error',
+                        title: '',
+                        text: error,
+                    });
                 });
-            });
+            }
         });
 
     }
@@ -233,38 +237,40 @@ class ActionsClass {
             showLoaderOnConfirm: true,
             inputValue: `${currentPath}${currentName}`,
         }, (val) => {
-            $.ajax({
-                type: 'POST',
-                headers: {
-                    'X-Access-Token': Pterodactyl.server.daemonSecret,
-                    'X-Access-Server': Pterodactyl.server.uuid,
-                },
-                contentType: 'application/json; charset=utf-8',
-                url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/copy`,
-                timeout: 10000,
-                data: JSON.stringify({
-                    from: `${currentPath}${currentName}`,
-                    to: `${val}`,
-                }),
-            }).done(data => {
-                swal({
-                    type: 'success',
-                    title: '',
-                    text: 'File successfully copied.'
+            if (val !== false) {
+                $.ajax({
+                    type: 'POST',
+                    headers: {
+                        'X-Access-Token': Pterodactyl.server.daemonSecret,
+                        'X-Access-Server': Pterodactyl.server.uuid,
+                    },
+                    contentType: 'application/json; charset=utf-8',
+                    url: `${Pterodactyl.node.scheme}://${Pterodactyl.node.fqdn}:${Pterodactyl.node.daemonListen}/v1/server/file/copy`,
+                    timeout: 10000,
+                    data: JSON.stringify({
+                        from: `${currentPath}${currentName}`,
+                        to: `${val}`,
+                    }),
+                }).done(data => {
+                    swal({
+                        type: 'success',
+                        title: '',
+                        text: 'File successfully copied.'
+                    });
+                    Files.list();
+                }).fail(jqXHR => {
+                    console.error(jqXHR);
+                    var error = 'An error occured while trying to process this request.';
+                    if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
+                        error = jqXHR.responseJSON.error;
+                    }
+                    swal({
+                        type: 'error',
+                        title: '',
+                        text: error,
+                    });
                 });
-                Files.list();
-            }).fail(jqXHR => {
-                console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
-                if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
-                    error = jqXHR.responseJSON.error;
-                }
-                swal({
-                    type: 'error',
-                    title: '',
-                    text: error,
-                });
-            });
+            }
         });
     }
 
