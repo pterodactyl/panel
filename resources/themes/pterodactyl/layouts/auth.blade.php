@@ -18,7 +18,7 @@
         <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#367fa9">
+        <meta name="theme-color" content="#0e4688">
 
         @section('scripts')
             {!! Theme::css('vendor/bootstrap/bootstrap.min.css?t={cache-version}') !!}

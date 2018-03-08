@@ -36,13 +36,6 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
-     * Always eager load these relationships on the model.
-     *
-     * @var array
-     */
-    protected $with = ['key'];
-
-    /**
      * Fields that are not mass assignable.
      *
      * @var array
@@ -69,6 +62,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'skip_scripts' => 'sometimes',
         'image' => 'required',
         'startup' => 'required',
+        'database_limit' => 'present',
+        'allocation_limit' => 'present',
     ];
 
     /**
@@ -93,6 +88,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'skip_scripts' => 'boolean',
         'image' => 'string|max:255',
         'installed' => 'boolean',
+        'database_limit' => 'nullable|integer|min:0',
+        'allocation_limit' => 'nullable|integer|min:0',
     ];
 
     /**
@@ -116,6 +113,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'egg_id' => 'integer',
         'pack_id' => 'integer',
         'installed' => 'integer',
+        'database_limit' => 'integer',
+        'allocation_limit' => 'integer',
     ];
 
     /**

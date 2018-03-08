@@ -248,6 +248,14 @@ return [
                 'title' => 'Reset Database Password',
                 'description' => 'Allows a user to reset passwords for databases.',
             ],
+            'delete_database' => [
+                'title' => 'Delete Databases',
+                'description' => 'Allows a user to delete databases for this server from the Panel.',
+            ],
+            'create_database' => [
+                'title' => 'Create Database',
+                'description' => 'Allows a user to create additional databases for this server.',
+            ],
         ],
     ],
     'files' => [

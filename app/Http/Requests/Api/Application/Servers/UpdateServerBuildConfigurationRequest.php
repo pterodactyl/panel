@@ -13,7 +13,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getUpdateRulesForId($this->route()->parameter('server')->id);
+        $rules = Server::getUpdateRulesForId($this->getModel(Server::class)->id);
 
         return [
             'allocation' => $rules['allocation_id'],
@@ -26,6 +26,9 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'add_allocations.*' => 'integer',
             'remove_allocations' => 'bail|array',
             'remove_allocations.*' => 'integer',
+            'feature_limits' => 'required|array',
+            'feature_limits.databases' => $rules['database_limit'],
+            'feature_limits.allocations' => $rules['allocation_limit'],
         ];
     }
 
@@ -39,7 +42,9 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
         $data = parent::validated();
 
         $data['allocation_id'] = $data['allocation'];
-        unset($data['allocation']);
+        $data['database_limit'] = $data['feature_limits']['databases'];
+        $data['allocation_limit'] = $data['feature_limits']['allocations'];
+        unset($data['allocation'], $data['feature_limits']);
 
         return $data;
     }
@@ -56,6 +61,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'remove_allocations' => 'allocations to remove',
             'add_allocations.*' => 'allocation to add',
             'remove_allocations.*' => 'allocation to remove',
+            'feature_limits.databases' => 'Database Limit',
+            'feature_limits.allocations' => 'Allocation Limit',
         ];
     }
 }

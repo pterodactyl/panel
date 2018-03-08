@@ -6,6 +6,7 @@ use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 
@@ -76,6 +77,20 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function getDatabasesForServer(int $server): Collection
     {
         return $this->getBuilder()->where('server_id', $server)->get($this->getColumns());
+    }
+
+    /**
+     * Return all of the databases for a given host with the server relationship loaded.
+     *
+     * @param int $host
+     * @param int $count
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getDatabasesForHost(int $host, int $count = 25): LengthAwarePaginator
+    {
+        return $this->getBuilder()->with('server')
+            ->where('database_host_id', $host)
+            ->paginate($count, $this->getColumns());
     }
 
     /**

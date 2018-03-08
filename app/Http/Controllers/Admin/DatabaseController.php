@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
@@ -19,6 +12,7 @@ use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
 use Pterodactyl\Services\Databases\Hosts\HostCreationService;
 use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -33,6 +27,11 @@ class DatabaseController extends Controller
      * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService
      */
     private $creationService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     */
+    private $databaseRepository;
 
     /**
      * @var \Pterodactyl\Services\Databases\Hosts\HostDeletionService
@@ -59,6 +58,7 @@ class DatabaseController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
      * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService         $creationService
      * @param \Pterodactyl\Services\Databases\Hosts\HostDeletionService         $deletionService
      * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService           $updateService
@@ -67,6 +67,7 @@ class DatabaseController extends Controller
     public function __construct(
         AlertsMessageBag $alert,
         DatabaseHostRepositoryInterface $repository,
+        DatabaseRepositoryInterface $databaseRepository,
         HostCreationService $creationService,
         HostDeletionService $deletionService,
         HostUpdateService $updateService,
@@ -74,6 +75,7 @@ class DatabaseController extends Controller
     ) {
         $this->alert = $alert;
         $this->creationService = $creationService;
+        $this->databaseRepository = $databaseRepository;
         $this->deletionService = $deletionService;
         $this->repository = $repository;
         $this->locationRepository = $locationRepository;
@@ -105,7 +107,8 @@ class DatabaseController extends Controller
     {
         return view('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
-            'host' => $this->repository->getWithServers($host),
+            'host' => $this->repository->find($host),
+            'databases' => $this->databaseRepository->getDatabasesForHost($host),
         ]);
     }
 

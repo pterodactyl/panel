@@ -101,14 +101,14 @@
                         <th>Connections From</th>
                         <th></th>
                     </tr>
-                    @foreach($host->databases as $database)
+                    @foreach($databases as $database)
                         <tr>
-                            <td class="middle"><a href="{{ route('admin.servers.view', $database->server->id) }}">{{ $database->server->name }}</a></td>
+                            <td class="middle"><a href="{{ route('admin.servers.view', $database->getRelation('server')->id) }}">{{ $database->getRelation('server')->name }}</a></td>
                             <td class="middle">{{ $database->database }}</td>
                             <td class="middle">{{ $database->username }}</td>
                             <td class="middle">{{ $database->remote }}</td>
                             <td class="text-center">
-                                <a href="{{ route('admin.servers.view.database', $database->server->id) }}">
+                                <a href="{{ route('admin.servers.view.database', $database->getRelation('server')->id) }}">
                                     <button class="btn btn-xs btn-primary">Manage</button>
                                 </a>
                             </td>
@@ -116,6 +116,11 @@
                     @endforeach
                 </table>
             </div>
+            @if($databases->hasPages())
+                <div class="box-footer with-border">
+                    <div class="col-md-12 text-center">{!! $databases->render() !!}</div>
+                </div>
+            @endif
         </div>
     </div>
 </div>

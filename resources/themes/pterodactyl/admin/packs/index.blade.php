@@ -61,7 +61,7 @@
             </div>
             @if ($packs->hasPages())
                 <div class="box-footer with-border">
-                    <div class="col-md-12 text-center">{!! $packs->render() !!}</div>
+                    <div class="col-md-12 text-center">{!! $packs->appends(['query' => Request::input('query')])->render() !!}</div>
                 </div>
             @endif
         </div>

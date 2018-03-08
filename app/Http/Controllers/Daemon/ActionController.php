@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Daemon;
 
@@ -17,28 +10,6 @@ use Pterodactyl\Http\Controllers\Controller;
 
 class ActionController extends Controller
 {
-    /**
-     * Handles download request from daemon.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function authenticateDownload(Request $request)
-    {
-        $download = Cache::tags(['Server:Downloads'])->pull($request->input('token'));
-
-        if (is_null($download)) {
-            return response()->json([
-                'error' => 'An invalid request token was recieved with this request.',
-            ], 403);
-        }
-
-        return response()->json([
-            'path' => $download['path'],
-            'server' => $download['server'],
-        ]);
-    }
-
     /**
      * Handles install toggle request from daemon.
      *
@@ -78,7 +49,7 @@ class ActionController extends Controller
      */
     public function configuration(Request $request, $token)
     {
-        $nodeId = Cache::tags(['Node:Configuration'])->pull($token);
+        $nodeId = Cache::pull('Node:Configuration:' . $token);
         if (is_null($nodeId)) {
             return response()->json(['error' => 'token_invalid'], 403);
         }

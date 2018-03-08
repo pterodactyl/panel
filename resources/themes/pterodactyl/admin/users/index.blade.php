@@ -75,7 +75,7 @@
             </div>
             @if($users->hasPages())
                 <div class="box-footer with-border">
-                    <div class="col-md-12 text-center">{!! $users->render() !!}</div>
+                    <div class="col-md-12 text-center">{!! $users->appends(['query' => Request::input('query')])->render() !!}</div>
                 </div>
             @endif
         </div>

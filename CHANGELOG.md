@@ -3,6 +3,52 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.6 (Derelict Dermodactylus)
+### Fixed
+* Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
+* Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
+* Fixes improper behavior when marking an egg as copying the configuration from another.
+
+### Changed
+* Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
+* Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.
+
+## v0.7.5 (Derelict Dermodactylus)
+### Fixed
+* Fixes application API keys being created as a client API key.
+* Search term is now passed through when using paginated result sets.
+* Reduces the number of SQL queries executed when rendering the server listing to increase performance.
+* Fixes exceptions being thrown for non-existent subuser permissions.
+* Fixes exception caused when trying to revoke admin privileges from a user account due to a bad endpoint.
+
+### Changed
+* Databases are now properly paginated when viewing a database host.
+* No more loading daemon keys for every server model being loaded, some of us value our databases.
+* Changed behavior of the subuser middleware to add a daemon access key if one is missing from the database for some reason.
+* Server short-codes are now based on the UUID as they were in previous versions of Pterodactyl.
+
+## v0.7.4-h1 (Derelict Dermodactylus)
+### Fixed
+* Being able to create servers is kind of a core aspect of the software, pushing releases late at night is not a great idea.
+
+## v0.7.4 (Derelict Dermodactylus)
+### Fixed
+* Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
+* Handle 404 errors from missing models in the application API bindings correctly.
+* Fix validation error returned when no environment variables are passed, even if there are no variables required.
+* Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing enditing any start variables.
+* Should fix migration issues from 0.6 when there are more than API key in the database.
+
+### Changed
+* Changes order that validation of resource existence occurs in API requests to not try and use a non-existent model when validating data.
+
+### Added
+* Adds back client API for sending commands or power toggles to a server though the Panel API: `/api/client/servers/<identifier>`
+* Added proper transformer for Packs and re-enabled missing includes on server.
+* Added support for using Filesystem as a caching driver, although not recommended.
+* Added support for user management of server databases.
+* **Added bulk power management CLI interface to send start, stop, kill, restart actions to servers across configurable nodes.**
+
 ## v0.7.3 (Derelict Dermodactylus)
 ### Fixed
 * Fixes server creation API endpoint not passing the provided `external_id` to the creation service.

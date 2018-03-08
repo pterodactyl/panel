@@ -91,6 +91,8 @@ class BuildModificationService
             'cpu' => array_get($data, 'cpu'),
             'disk' => array_get($data, 'disk'),
             'allocation_id' => array_get($data, 'allocation_id'),
+            'database_limit' => array_get($data, 'database_limit'),
+            'allocation_limit' => array_get($data, 'allocation_limit'),
         ]);
 
         $allocations = $this->allocationRepository->findWhere([['server_id', '=', $server->id]]);

@@ -33,6 +33,11 @@ class ApiSubstituteBindings extends SubstituteBindings
     ];
 
     /**
+     * @var \Illuminate\Routing\Router
+     */
+    protected $router;
+
+    /**
      * Perform substitution of route parameters without triggering
      * a 404 error if a model is not found.
      *
@@ -45,7 +50,13 @@ class ApiSubstituteBindings extends SubstituteBindings
         $route = $request->route();
 
         foreach (self::$mappings as $key => $model) {
-            $this->router->model($key, $model);
+            if (! is_null($this->router->getBindingCallback($key))) {
+                continue;
+            }
+
+            $this->router->model($key, $model, function () use ($request) {
+                $request->attributes->set('is_missing_model', true);
+            });
         }
 
         $this->router->substituteBindings($route);

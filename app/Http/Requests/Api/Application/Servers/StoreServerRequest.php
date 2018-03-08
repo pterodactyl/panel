@@ -39,7 +39,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'pack' => $rules['pack_id'],
             'docker_image' => $rules['image'],
             'startup' => $rules['startup'],
-            'environment' => 'required|array',
+            'environment' => 'present|array',
             'skip_scripts' => 'sometimes|boolean',
 
             // Resource limitations
@@ -49,6 +49,11 @@ class StoreServerRequest extends ApplicationApiRequest
             'limits.disk' => $rules['disk'],
             'limits.io' => $rules['io'],
             'limits.cpu' => $rules['cpu'],
+
+            // Application Resource Limits
+            'feature_limits' => 'required|array',
+            'feature_limits.databases' => $rules['database_limit'],
+            'feature_limits.allocations' => $rules['allocation_limit'],
 
             // Placeholders for rules added in withValidator() function.
             'allocation.default' => '',
@@ -94,6 +99,8 @@ class StoreServerRequest extends ApplicationApiRequest
             'allocation_id' => array_get($data, 'allocation.default'),
             'allocation_additional' => array_get($data, 'allocation.additional'),
             'start_on_completion' => array_get($data, 'start_on_completion', false),
+            'database_limit' => array_get($data, 'feature_limits.databases'),
+            'allocation_limit' => array_get($data, 'feature_limits.allocations'),
         ];
     }
 
