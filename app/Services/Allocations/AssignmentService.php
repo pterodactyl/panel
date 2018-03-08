@@ -21,6 +21,7 @@ class AssignmentService
     const CIDR_MIN_BITS = 32;
     const PORT_RANGE_LIMIT = 1000;
     const PORT_RANGE_REGEX = '/^(\d{1,5})-(\d{1,5})$/';
+    const MAX_PORT = 65535;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -82,6 +83,10 @@ class AssignmentService
                         throw new DisplayException(trans('exceptions.allocations.too_many_ports'));
                     }
 
+                    if ((int) $matches[2] > self::MAX_PORT) {
+                        throw new DisplayException(trans('exceptions.allocations.port_too_large'));
+                    }
+
                     foreach ($block as $unit) {
                         $insertData[] = [
                             'node_id' => $node,
@@ -92,6 +97,10 @@ class AssignmentService
                         ];
                     }
                 } else {
+                    if ((int) $port > self::MAX_PORT) {
+                        throw new DisplayException(trans('exceptions.allocations.port_too_large'));
+                    }
+
                     $insertData[] = [
                         'node_id' => $node,
                         'ip' => $ip->__toString(),
