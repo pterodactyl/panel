@@ -93,6 +93,8 @@ class Permission extends Model implements CleansAttributes, ValidableContract
         'database' => [
             'view-databases' => null,
             'reset-db-password' => null,
+            'delete-database' => null,
+            'create-database' => null,
         ],
         'file' => [
             'access-sftp' => null,

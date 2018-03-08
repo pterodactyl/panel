@@ -216,7 +216,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function filterUserAccessServers(User $user, int $level, bool $paginate = true)
     {
-        $instance = $this->getBuilder()->select($this->getColumns())->with(['user']);
+        $instance = $this->getBuilder()->select($this->getColumns())->with(['user', 'node', 'allocation']);
 
         // If access level is set to owner, only display servers
         // that the user owns.
@@ -262,6 +262,57 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
+    }
+
+    /**
+     * Return all of the servers that should have a power action performed aganist them.
+     *
+     * @param int[] $servers
+     * @param int[] $nodes
+     * @param bool  $returnCount
+     * @return int|\Generator
+     */
+    public function getServersForPowerAction(array $servers = [], array $nodes = [], bool $returnCount = false)
+    {
+        $instance = $this->getBuilder();
+
+        if (! empty($nodes) && ! empty($servers)) {
+            $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
+        } elseif (empty($nodes) && ! empty($servers)) {
+            $instance->whereIn('id', $servers);
+        } elseif (! empty($nodes) && empty($servers)) {
+            $instance->whereIn('node_id', $nodes);
+        }
+
+        if ($returnCount) {
+            return $instance->count();
+        }
+
+        return $instance->with('node')->cursor();
+    }
+
+    /**
+     * Return the total number of servers that will be affected by the query.
+     *
+     * @param int[] $servers
+     * @param int[] $nodes
+     * @return int
+     */
+    public function getServersForPowerActionCount(array $servers = [], array $nodes = []): int
+    {
+        return $this->getServersForPowerAction($servers, $nodes, true);
+    }
+
+    /**
+     * Check if a given UUID and UUID-Short string are unique to a server.
+     *
+     * @param string $uuid
+     * @param string $short
+     * @return bool
+     */
+    public function isUniqueUuidCombo(string $uuid, string $short): bool
+    {
+        return ! $this->getBuilder()->where('uuid', '=', $uuid)->orWhere('uuidShort', '=', $short)->exists();
     }
 
     /**

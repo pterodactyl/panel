@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class AuthenticateUser
+class AuthenticateApplicationUser
 {
     /**
      * Authenticate that the currently authenticated user is an administrator

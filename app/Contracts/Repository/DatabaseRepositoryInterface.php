@@ -1,16 +1,10 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Contracts\Repository;
 
 use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface DatabaseRepositoryInterface extends RepositoryInterface
 {
@@ -38,6 +32,15 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @return \Illuminate\Support\Collection
      */
     public function getDatabasesForServer(int $server): Collection;
+
+    /**
+     * Return all of the databases for a given host with the server relationship loaded.
+     *
+     * @param int $host
+     * @param int $count
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getDatabasesForHost(int $host, int $count = 25): LengthAwarePaginator;
 
     /**
      * Create a new database if it does not already exist on the host with

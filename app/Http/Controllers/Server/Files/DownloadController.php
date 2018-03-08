@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Files;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository;
 use Illuminate\Http\RedirectResponse;
@@ -46,9 +47,10 @@ class DownloadController extends Controller
         $server = $request->attributes->get('server');
         $this->authorize('download-files', $server);
 
-        $token = str_random(40);
+        $token = Uuid::uuid4()->toString();
         $node = $server->getRelation('node');
-        $this->cache->tags(['Server:Downloads'])->put($token, ['server' => $server->uuid, 'path' => $file], 5);
+
+        $this->cache->put('Server:Downloads:' . $token, ['server' => $server->uuid, 'path' => $file], 5);
 
         return redirect(sprintf('%s://%s:%s/v1/server/file/download/%s', $node->scheme, $node->fqdn, $node->daemonListen, $token));
     }

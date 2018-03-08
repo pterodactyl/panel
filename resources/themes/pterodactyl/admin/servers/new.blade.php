@@ -97,6 +97,32 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
+                <div class="overlay" id="allocationLoader" style="display:none;"><i class="fa fa-refresh fa-spin"></i></div>
+                <div class="box-header with-border">
+                    <h3 class="box-title">Application Feature Limits</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-xs-6">
+                        <label for="cpu" class="control-label">Database Limit</label>
+                        <div>
+                            <input type="text" name="database_limit" class="form-control" value="{{ old('database_limit', 0) }}"/>
+                        </div>
+                        <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimmited.</p>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="cpu" class="control-label">Allocation Limit</label>
+                        <div>
+                            <input type="text" name="allocation_limit" class="form-control" value="{{ old('allocation_limit', 0) }}"/>
+                        </div>
+                        <p class="text-muted small">The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Resource Management</h3>
                 </div>
@@ -111,7 +137,7 @@
                     <div class="form-group col-sm-4">
                         <label for="pSwap">Swap</label>
                         <div class="input-group">
-                            <input type="text" value="{{ old('swap') }}" class="form-control" name="swap" id="pSwap" />
+                            <input type="text" value="{{ old('swap', 0) }}" class="form-control" name="swap" id="pSwap" />
                             <span class="input-group-addon">MB</span>
                         </div>
                     </div>

@@ -498,15 +498,17 @@ class ServersController extends Controller
      * @param \Illuminate\Http\Request   $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @internal param int $id
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateBuild(Request $request, Server $server)
     {
         $this->buildModificationService->handle($server, $request->only([
             'allocation_id', 'add_allocations', 'remove_allocations',
             'memory', 'swap', 'io', 'cpu', 'disk',
+            'database_limit', 'allocation_limit',
         ]));
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 

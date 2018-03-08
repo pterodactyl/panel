@@ -1,17 +1,10 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
-use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Node;
+use Tests\Traits\MocksUuids;
 use Pterodactyl\Models\Server;
 use Illuminate\Cache\Repository;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
@@ -19,7 +12,7 @@ use Pterodactyl\Http\Controllers\Server\Files\DownloadController;
 
 class DownloadControllerTest extends ControllerTestCase
 {
-    use PHPMock;
+    use MocksUuids;
 
     /**
      * @var \Illuminate\Cache\Repository|\Mockery\Mock
@@ -48,16 +41,20 @@ class DownloadControllerTest extends ControllerTestCase
         $this->setRequestAttribute('server', $server);
 
         $controller->shouldReceive('authorize')->with('download-files', $server)->once()->andReturnNull();
-        $this->getFunctionMock('\\Pterodactyl\\Http\\Controllers\\Server\\Files', 'str_random')
-            ->expects($this->once())->willReturn('randomString');
 
-        $this->cache->shouldReceive('tags')->with(['Server:Downloads'])->once()->andReturnSelf();
-        $this->cache->shouldReceive('put')->with('randomString', ['server' => $server->uuid, 'path' => '/my/file.txt'], 5)->once()->andReturnNull();
+        $this->cache->shouldReceive('put')
+            ->once()
+            ->with('Server:Downloads:' . $this->getKnownUuid(), ['server' => $server->uuid, 'path' => '/my/file.txt'], 5)
+            ->andReturnNull();
 
         $response = $controller->index($this->request, $server->uuidShort, '/my/file.txt');
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectUrlEquals(sprintf(
-            '%s://%s:%s/v1/server/file/download/%s', $server->node->scheme, $server->node->fqdn, $server->node->daemonListen, 'randomString'
+            '%s://%s:%s/v1/server/file/download/%s',
+            $server->node->scheme,
+            $server->node->fqdn,
+            $server->node->daemonListen,
+            $this->getKnownUuid()
         ), $response);
     }
 
