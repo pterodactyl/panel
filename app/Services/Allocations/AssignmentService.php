@@ -83,7 +83,7 @@ class AssignmentService
                         throw new DisplayException(trans('exceptions.allocations.too_many_ports'));
                     }
 
-                    if((int)$matches[2] > self::MAX_PORT){
+                    if ((int)$matches[2] > self::MAX_PORT) {
                         throw new DisplayException(trans('exceptions.allocations.port_too_large'));
                     }
 
@@ -98,7 +98,7 @@ class AssignmentService
                     }
                 } else {
 
-                    if((int)$port > self::MAX_PORT){
+                    if ((int)$port > self::MAX_PORT) {
                         throw new DisplayException(trans('exceptions.allocations.port_too_large'));
                     }
 
