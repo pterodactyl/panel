@@ -97,7 +97,6 @@ class AssignmentService
                         ];
                     }
                 } else {
-
                     if ((int) $port > self::MAX_PORT) {
                         throw new DisplayException(trans('exceptions.allocations.port_too_large'));
                     }
