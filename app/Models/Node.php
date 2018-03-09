@@ -164,7 +164,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
                     'enabled' => true,
                     'kill_at_count' => 5,
                     'decay' => 10,
-                    'bytes' => 30720,
+                    'lines' => 1000,
                     'check_interval_ms' => 100,
                 ],
             ],
