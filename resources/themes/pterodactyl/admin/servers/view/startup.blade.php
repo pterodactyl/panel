@@ -133,6 +133,9 @@
     @parent
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
+    $(window).on('load', function () {
+        $('#pNestId').change();
+    });
     $(document).ready(function () {
         $('#pPackId').select2({placeholder: 'Select a Service Pack'});
         $('#pNestId').select2({placeholder: 'Select a Nest'}).on('change', function () {
@@ -150,7 +153,7 @@
             }
 
             $('#pEggId').change();
-        }).change();
+        });
 
         $('#pEggId').select2({placeholder: 'Select a Nest Egg'}).on('change', function () {
             var selectedEgg = _.isNull($(this).val()) ? $(this).find('option').first().val() : $(this).val();
