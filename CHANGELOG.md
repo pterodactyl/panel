@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
 * Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.
 * File manager UI improved to be clearer with buttons and cleaner on mobile.
+* reCAPTCHA's secret key position swapped with website key in advanced panel settings to be consistent with Google's reCAPTCHA dashboard.
 
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed

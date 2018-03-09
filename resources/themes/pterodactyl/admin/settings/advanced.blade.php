@@ -35,16 +35,16 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
+                                <label class="control-label">Site Key</label>
+                                <div>
+                                    <input type="text" required class="form-control" name="recaptcha:website_key" value="{{ old('recaptcha:website_key', config('recaptcha.website_key')) }}">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
                                 <label class="control-label">Secret Key</label>
                                 <div>
                                     <input type="text" required class="form-control" name="recaptcha:secret_key" value="{{ old('recaptcha:secret_key', config('recaptcha.secret_key')) }}">
                                     <p class="text-muted small">Used for communication between your site and Google. Be sure to keep it a secret.</p>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label class="control-label">Website Key</label>
-                                <div>
-                                    <input type="text" required class="form-control" name="recaptcha:website_key" value="{{ old('recaptcha:website_key', config('recaptcha.website_key')) }}">
                                 </div>
                             </div>
                         </div>
