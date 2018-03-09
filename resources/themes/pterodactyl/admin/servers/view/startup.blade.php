@@ -133,28 +133,8 @@
     @parent
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
-    $(window).on('load', function () {
-        $('#pNestId').change();
-    });
     $(document).ready(function () {
         $('#pPackId').select2({placeholder: 'Select a Service Pack'});
-        $('#pNestId').select2({placeholder: 'Select a Nest'}).on('change', function () {
-            $('#pEggId').html('').select2({
-                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
-                    return {
-                        id: item.id,
-                        text: item.name,
-                    };
-                }),
-            });
-
-            if (_.isObject(_.get(Pterodactyl.nests, $(this).val() + '.eggs.' + Pterodactyl.server.egg_id))) {
-                $('#pEggId').val(Pterodactyl.server.egg_id);
-            }
-
-            $('#pEggId').change();
-        });
-
         $('#pEggId').select2({placeholder: 'Select a Nest Egg'}).on('change', function () {
             var selectedEgg = _.isNull($(this).val()) ? $(this).find('option').first().val() : $(this).val();
             var parentChain = _.get(Pterodactyl.nests, $("#pNestId").val());
@@ -210,6 +190,23 @@
                 $('#appendVariablesTo').append(dataAppend).find('#egg_variable_' + item.env_variable).val(setValue);
             });
         });
+
+        $('#pNestId').select2({placeholder: 'Select a Nest'}).on('change', function () {
+            $('#pEggId').html('').select2({
+                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
+                    return {
+                        id: item.id,
+                        text: item.name,
+                    };
+                }),
+            });
+
+            if (_.isObject(_.get(Pterodactyl.nests, $(this).val() + '.eggs.' + Pterodactyl.server.egg_id))) {
+                $('#pEggId').val(Pterodactyl.server.egg_id);
+            }
+
+            $('#pEggId').change();
+        }).change();
     });
     </script>
 @endsection
