@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
 * Fixes improper behavior when marking an egg as copying the configuration from another.
 * Debug bar is only checked when the app is set to debug mode in the API session handler, rather than when it is in local mode to match the plugin settings.
+* Added validation to port allocations to prevent allocation of restricted or invalid ports.
 
 ### Changed
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
