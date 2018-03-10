@@ -17,6 +17,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * File manager UI improved to be clearer with buttons and cleaner on mobile.
 * reCAPTCHA's secret key position swapped with website key in advanced panel settings to be consistent with Google's reCAPTCHA dashboard.
 * Changed DisplayException to handle its own logging correctly and check if the previous exception is marked as one that should not be logged.
+* Changed 'New Folder' modal in file manager to include a trailing slash.
 
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed

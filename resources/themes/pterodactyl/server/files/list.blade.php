@@ -29,7 +29,7 @@
     </div>
 </div>
 <div class="box-body table-responsive no-padding">
-    <table class="table table-hover" id="file_listing" data-current-dir="{{ $directory['header'] }}">
+    <table class="table table-hover" id="file_listing" data-current-dir="{{ rtrim($directory['header'], '/') . '/' }}">
         <thead>
             <tr>
                 <th class="middle min-size">
