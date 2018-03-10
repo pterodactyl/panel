@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:15:10-05:00",
+    "exported_at": "2018-02-27T00:57:04-06:00",
     "name": "Forge Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.",
@@ -17,7 +17,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# Forge Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add curl\n\nGET_VERSIONS=$(curl -sl http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/ | grep -A1 Latest | grep  -o -e '[1]\\.[0-9][0-9] - [0-9][0-9]\\.[0-9][0-9]\\.[0-9]\\.[0-9][0-9][0-9][0-9]')\nLATEST_VERSION=$(echo $GET_VERSIONS | sed 's\/ \/\/g')\n\ncd \/mnt\/server\n\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$LATEST_VERSION\/forge-$LATEST_VERSION-installer.jar -o installer.jar\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$LATEST_VERSION\/forge-$LATEST_VERSION-universal.jar -o server.jar\n\njava -jar installer.jar --installServer\nrm -rf installer.jar",
+            "script": "#!\/bin\/ash\r\n# Forge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl\r\n\r\nGET_VERSIONS=$(curl -sl http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/ | grep -A1 Latest | grep  -o -e '[1]\\.[0-9][0-9]]\\?\\.\\?[0-9]\\?[0-9] - [0-9][0-9]\\.[0-9][0-9]\\.[0-9]\\?[0-9]\\.[0-9][0-9][0-9][0-9]')\r\nLATEST_VERSION=$(echo $GET_VERSIONS | sed 's\/ \/\/g')\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$LATEST_VERSION\/forge-$LATEST_VERSION-installer.jar -o installer.jar\r\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$LATEST_VERSION\/forge-$LATEST_VERSION-universal.jar -o server.jar\r\n\r\njava -jar installer.jar --installServer\r\nrm -rf installer.jar",
             "container": "frolvlad\/alpine-oraclejdk8:cleaned",
             "entrypoint": "ash"
         }

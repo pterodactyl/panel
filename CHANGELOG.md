@@ -3,6 +3,28 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.6 (Derelict Dermodactylus)
+### Fixed
+* Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
+* Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
+* Fixes improper behavior when marking an egg as copying the configuration from another.
+* Debug bar is only checked when the app is set to debug mode in the API session handler, rather than when it is in local mode to match the plugin settings.
+* Added validation to port allocations to prevent allocation of restricted or invalid ports.
+* Fix data integrity exception thrown when attempting to store updated server egg variables.
+* Added missing permissions check on 'SFTP Configuration' page to ensure user has permission to access a server's SFTP server before showing a user credentials.
+
+### Added
+* Added ability for end users to change the name of their server through the UI. This option is only open to the server owner or an admin.
+* Added giant warning message if you attempt to change an encryption key once one has been set.
+
+### Changed
+* Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
+* Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.
+* File manager UI improved to be clearer with buttons and cleaner on mobile.
+* reCAPTCHA's secret key position swapped with website key in advanced panel settings to be consistent with Google's reCAPTCHA dashboard.
+* Changed DisplayException to handle its own logging correctly and check if the previous exception is marked as one that should not be logged.
+* Changed 'New Folder' modal in file manager to include a trailing slash.
+
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed
 * Fixes application API keys being created as a client API key.

@@ -105,7 +105,7 @@ class StartupModificationService
                     'server_id' => $server->id,
                     'variable_id' => $result->id,
                 ], [
-                    'variable_value' => $result->value,
+                    'variable_value' => $result->value ?? '',
                 ]);
             });
         }

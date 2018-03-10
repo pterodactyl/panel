@@ -17,7 +17,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# TS3 Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add tar curl\n\ncd \/tmp\n\ncurl -sSLO http:\/\/dl.4players.de\/ts\/releases\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2\n\ntar -xjvf teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2\ncp -r teamspeak3-server_linux_amd64\/* \/mnt\/server\n\necho \"machine_id=\ndefault_voice_port=${SERVER_PORT}\nvoice_ip=0.0.0.0\nlicensepath=\nfiletransfer_port=30033\nfiletransfer_ip=\nquery_port=${SERVER_PORT}\nquery_ip=0.0.0.0\nquery_ip_whitelist=query_ip_whitelist.txt\nquery_ip_blacklist=query_ip_blacklist.txt\ndbplugin=ts3db_sqlite3\ndbpluginparameter=\ndbsqlpath=sql\/\ndbsqlcreatepath=create_sqlite\/\ndbconnections=10\nlogpath=logs\nlogquerycommands=0\ndbclientkeepdays=30\nlogappend=0\nquery_skipbruteforcecheck=0\" > \/mnt\/server\/ts3server.ini",
+            "script": "#!\/bin\/ash\n# TS3 Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add tar curl\n\ncd \/tmp\n\ncurl -sSLO http:\/\/dl.4players.de\/ts\/releases\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2\n\ntar -xjvf teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2\ncp -r teamspeak3-server_linux_amd64\/* \/mnt\/server\n\necho \"machine_id=\ndefault_voice_port=${SERVER_PORT}\nvoice_ip=0.0.0.0\nlicensepath=\nfiletransfer_port=30033\nfiletransfer_ip=\nquery_port=${SERVER_PORT}\nquery_ip=0.0.0.0\nquery_ip_whitelist=query_ip_whitelist.txt\nquery_ip_blacklist=query_ip_blacklist.txt\ndbplugin=ts3db_sqlite3\ndbpluginparameter=\ndbsqlpath=sql\/\ndbsqlcreatepath=create_sqlite\/\ndbconnections=10\nlogpath=logs\nlogquerycommands=0\ndbclientkeepdays=30\nlogappend=0\nquery_skipbruteforcecheck=0\" > \/mnt\/server\/ts3server.ini\n\ntouch \/mnt\/server\/.ts3server_license_accepted",
             "container": "alpine:3.4",
             "entrypoint": "ash"
         }
@@ -27,7 +27,7 @@
             "name": "Server Version",
             "description": "The version of Teamspeak 3 to use when running the server.",
             "env_variable": "TS_VERSION",
-            "default_value": "3.0.13.8",
+            "default_value": "3.1.1",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"

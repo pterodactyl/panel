@@ -273,8 +273,8 @@ return [
         'last_modified' => 'Last Modified',
         'add_new' => 'Add New File',
         'add_folder' => 'Add New Folder',
-        'mass_actions' => 'Mass actions',
-        'delete' => 'Delete',
+        'mass_actions' => 'Mass Actions',
+        'delete' => 'Delete Files',
         'edit' => [
             'header' => 'Edit File',
             'header_sub' => 'Make modifications to a file from the web.',
@@ -289,6 +289,11 @@ return [
         ],
     ],
     'config' => [
+        'name' => [
+            'header' => 'Server Name',
+            'header_sub' => 'Change this server\'s name.',
+            'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.',
+        ],
         'startup' => [
             'header' => 'Start Configuration',
             'header_sub' => 'Control server startup arguments.',

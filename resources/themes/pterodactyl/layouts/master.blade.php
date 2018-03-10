@@ -19,7 +19,7 @@
         <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#367fa9">
+        <meta name="theme-color" content="#0e4688">
 
         @include('layouts.scripts')
 
@@ -170,7 +170,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @if(Gate::allows('view-startup', $server) || Gate::allows('access-sftp', $server) ||  Gate::allows('view-allocation', $server))
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('access-sftp', $server) ||  Gate::allows('view-allocations', $server))
                                 <li class="treeview
                                     @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active
@@ -184,7 +184,10 @@
                                         </span>
                                     </a>
                                     <ul class="treeview-menu">
-                                        @can('view-allocation', $server)
+                                        @can('view-name', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.name' ?: 'active' }}"><a href="{{ route('server.settings.name', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.server_name')</a></li>
+                                        @endcan
+                                        @can('view-allocations', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
                                         @endcan
                                         @can('access-sftp', $server)

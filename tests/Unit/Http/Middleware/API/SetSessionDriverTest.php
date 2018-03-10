@@ -37,8 +37,8 @@ class SetSessionDriverTest extends MiddlewareTestCase
      */
     public function testProductionEnvironment()
     {
-        $this->appMock->shouldReceive('environment')->withNoArgs()->once()->andReturn('production');
-        $this->config->shouldReceive('set')->with('session.driver', 'array')->once()->andReturnNull();
+        $this->config->shouldReceive('get')->once()->with('app.debug')->andReturn(false);
+        $this->config->shouldReceive('set')->once()->with('session.driver', 'array')->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
@@ -48,11 +48,10 @@ class SetSessionDriverTest extends MiddlewareTestCase
      */
     public function testLocalEnvironment()
     {
-        $this->appMock->shouldReceive('environment')->withNoArgs()->once()->andReturn('local');
-        $this->appMock->shouldReceive('make')->with(LaravelDebugbar::class)->once()->andReturnSelf();
-        $this->appMock->shouldReceive('disable')->withNoArgs()->once()->andReturnNull();
-
-        $this->config->shouldReceive('set')->with('session.driver', 'array')->once()->andReturnNull();
+        $this->config->shouldReceive('get')->once()->with('app.debug')->andReturn(true);
+        $this->appMock->shouldReceive('make')->once()->with(LaravelDebugbar::class)->andReturnSelf();
+        $this->appMock->shouldReceive('disable')->once()->withNoArgs()->andReturnNull();
+        $this->config->shouldReceive('set')->once()->with('session.driver', 'array')->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }

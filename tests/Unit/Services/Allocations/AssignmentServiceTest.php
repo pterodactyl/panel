@@ -1,30 +1,19 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Allocations;
 
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Node;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class AssignmentServiceTest extends TestCase
 {
-    use PHPMock;
-
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     protected $connection;
 
@@ -34,14 +23,9 @@ class AssignmentServiceTest extends TestCase
     protected $node;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
-     */
-    protected $service;
 
     /**
      * Setup tests.
@@ -50,19 +34,9 @@ class AssignmentServiceTest extends TestCase
     {
         parent::setUp();
 
-        // Due to a bug in PHP, this is necessary since we only have a single test
-        // that relies on this mock. If this does not exist the test will fail to register
-        // correctly.
-        //
-        // This can also be avoided if tests were run in isolated processes, or if that test
-        // came first, but neither of those are good solutions, so this is the next best option.
-        PHPMock::defineFunctionMock('\\Pterodactyl\\Services\\Allocations', 'gethostbyname');
-
         $this->node = factory(Node::class)->make();
         $this->connection = m::mock(ConnectionInterface::class);
         $this->repository = m::mock(AllocationRepositoryInterface::class);
-
-        $this->service = new AssignmentService($this->repository, $this->connection);
     }
 
     /**
@@ -72,22 +46,22 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024'],
+            'allocation_ports' => ['2222'],
         ];
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
         $this->repository->shouldReceive('insertIgnore')->with([
             [
                 'node_id' => $this->node->id,
                 'ip' => '192.168.1.1',
-                'port' => 1024,
+                'port' => 2222,
                 'ip_alias' => null,
                 'server_id' => null,
             ],
         ])->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('commit')->once()->withNoArgs()->andReturnNull();
 
-        $this->service->handle($this->node->id, $data);
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
@@ -97,18 +71,11 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024-1026'],
+            'allocation_ports' => ['1025-1027'],
         ];
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('insertIgnore')->with([
-            [
-                'node_id' => $this->node->id,
-                'ip' => '192.168.1.1',
-                'port' => 1024,
-                'ip_alias' => null,
-                'server_id' => null,
-            ],
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->repository->shouldReceive('insertIgnore')->once()->with([
             [
                 'node_id' => $this->node->id,
                 'ip' => '192.168.1.1',
@@ -123,10 +90,17 @@ class AssignmentServiceTest extends TestCase
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+            [
+                'node_id' => $this->node->id,
+                'ip' => '192.168.1.1',
+                'port' => 1027,
+                'ip_alias' => null,
+                'server_id' => null,
+            ],
+        ])->andReturn(true);
+        $this->connection->shouldReceive('commit')->once()->withNoArgs()->andReturnNull();
 
-        $this->service->handle($this->node->id, $data);
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
@@ -136,23 +110,23 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024'],
+            'allocation_ports' => ['2222'],
             'allocation_alias' => 'my.alias.net',
         ];
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('insertIgnore')->with([
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->repository->shouldReceive('insertIgnore')->once()->with([
             [
                 'node_id' => $this->node->id,
                 'ip' => '192.168.1.1',
-                'port' => 1024,
+                'port' => 2222,
                 'ip_alias' => 'my.alias.net',
                 'server_id' => null,
             ],
-        ])->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        ])->andReturn(true);
+        $this->connection->shouldReceive('commit')->once()->withNoArgs()->andReturnNull();
 
-        $this->service->handle($this->node->id, $data);
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
@@ -161,26 +135,23 @@ class AssignmentServiceTest extends TestCase
     public function testDomainNamePassedInPlaceOfIPAddress()
     {
         $data = [
-            'allocation_ip' => 'test-domain.com',
-            'allocation_ports' => ['1024'],
+            'allocation_ip' => 'unit-test-static.pterodactyl.io',
+            'allocation_ports' => ['2222'],
         ];
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Allocations', 'gethostbyname')
-            ->expects($this->once())->willReturn('192.168.1.1');
-
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('insertIgnore')->with([
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->repository->shouldReceive('insertIgnore')->once()->with([
             [
                 'node_id' => $this->node->id,
-                'ip' => '192.168.1.1',
-                'port' => 1024,
+                'ip' => '127.0.0.1',
+                'port' => 2222,
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        ])->andReturn(true);
+        $this->connection->shouldReceive('commit')->once()->withNoArgs()->andReturnNull();
 
-        $this->service->handle($this->node->id, $data);
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
@@ -190,54 +161,55 @@ class AssignmentServiceTest extends TestCase
     {
         $data = [
             'allocation_ip' => '192.168.1.100/31',
-            'allocation_ports' => ['1024'],
+            'allocation_ports' => ['2222'],
         ];
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('insertIgnore')->with([
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->repository->shouldReceive('insertIgnore')->once()->with([
             [
                 'node_id' => $this->node->id,
                 'ip' => '192.168.1.100',
-                'port' => 1024,
+                'port' => 2222,
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturn(true);
+        ])->andReturn(true);
 
-        $this->repository->shouldReceive('insertIgnore')->with([
+        $this->repository->shouldReceive('insertIgnore')->once()->with([
             [
                 'node_id' => $this->node->id,
                 'ip' => '192.168.1.101',
-                'port' => 1024,
+                'port' => 2222,
                 'ip_alias' => null,
                 'server_id' => null,
             ],
-        ])->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        ])->andReturn(true);
+        $this->connection->shouldReceive('commit')->once()->withNoArgs()->andReturnNull();
 
-        $this->service->handle($this->node->id, $data);
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
      * Test that a CIDR IP address with a range works properly.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @expectedExceptionMessage CIDR notation only allows masks between /25 and /32.
      */
     public function testCIDRNotatedIPAddressOutsideRangeLimit()
     {
         $data = [
             'allocation_ip' => '192.168.1.100/20',
-            'allocation_ports' => ['1024'],
+            'allocation_ports' => ['2222'],
         ];
 
-        try {
-            $this->service->handle($this->node->id, $data);
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('exceptions.allocations.cidr_out_of_range'), $exception->getMessage());
-        }
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
      * Test that an exception is thrown if there are too many ports.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @expectedExceptionMessage Adding more than 1000 ports in a single range at once is not supported.
      */
     public function testAllocationWithPortsExceedingLimit()
     {
@@ -246,22 +218,16 @@ class AssignmentServiceTest extends TestCase
             'allocation_ports' => ['5000-7000'],
         ];
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
 
-        try {
-            $this->service->handle($this->node->id, $data);
-        } catch (Exception $exception) {
-            if (! $exception instanceof DisplayException) {
-                throw $exception;
-            }
-
-            $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('exceptions.allocations.too_many_ports'), $exception->getMessage());
-        }
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
      * Test that an exception is thrown if an invalid port is provided.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @expectedExceptionMessage The mapping provided for test123 was invalid and could not be processed.
      */
     public function testInvalidPortProvided()
     {
@@ -270,42 +236,52 @@ class AssignmentServiceTest extends TestCase
             'allocation_ports' => ['test123'],
         ];
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-
-        try {
-            $this->service->handle($this->node->id, $data);
-        } catch (Exception $exception) {
-            if (! $exception instanceof DisplayException) {
-                throw $exception;
-            }
-
-            $this->assertInstanceOf(DisplayException::class, $exception);
-            $this->assertEquals(trans('exceptions.allocations.invalid_mapping', ['port' => 'test123']), $exception->getMessage());
-        }
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->getService()->handle($this->node, $data);
     }
 
     /**
-     * Test that a model can be passed in place of an ID.
+     * Test that ports outside of defined limits throw an error.
+     *
+     * @param array $ports
+     *
+     * @dataProvider invalidPortsDataProvider
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @expectedExceptionMessage Ports in an allocation must be greater than 1024 and less than or equal to 65535.
      */
-    public function testModelCanBePassedInPlaceOfNodeModel()
+    public function testPortRangeOutsideOfRangeLimits(array $ports)
     {
-        $data = [
-            'allocation_ip' => '192.168.1.1',
-            'allocation_ports' => ['1024'],
+        $data = ['allocation_ip' => '192.168.1.1', 'allocation_ports' => $ports];
+
+        $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();
+        $this->getService()->handle($this->node, $data);
+    }
+
+    /**
+     * Provide ports and ranges of ports that exceed the viable port limits for the software.
+     *
+     * @return array
+     */
+    public function invalidPortsDataProvider(): array
+    {
+        return [
+            [['65536']],
+            [['1024']],
+            [['1000']],
+            [['0']],
+            [['65530-65540']],
+            [['65540-65560']],
+            [[PHP_INT_MAX]],
         ];
+    }
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('insertIgnore')->with([
-            [
-                'node_id' => $this->node->id,
-                'ip' => '192.168.1.1',
-                'port' => 1024,
-                'ip_alias' => null,
-                'server_id' => null,
-            ],
-        ])->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
-
-        $this->service->handle($this->node, $data);
+    /**
+     * Returns an instance of the service with mocked dependencies for testing.
+     *
+     * @return \Pterodactyl\Services\Allocations\AssignmentService
+     */
+    private function getService(): AssignmentService
+    {
+        return new AssignmentService($this->repository, $this->connection);
     }
 }
