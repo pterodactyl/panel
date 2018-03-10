@@ -289,6 +289,11 @@ return [
         ],
     ],
     'config' => [
+        'name' => [
+            'header' => 'Server Name',
+            'header_sub' => 'Change this server\'s name.',
+            'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.',
+        ],
         'startup' => [
             'header' => 'Start Configuration',
             'header_sub' => 'Control server startup arguments.',

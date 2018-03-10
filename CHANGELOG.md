@@ -13,6 +13,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fix data integrity exception thrown when attempting to store updated server egg variables.
 * Added missing permissions check on 'SFTP Configuration' page to ensure user has permission to access a server's SFTP server before showing a user credentials.
 
+### Added
+* Added ability for end users to change the name of their server through the UI. This option is only open to the server owner or an admin.
+
 ### Changed
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
 * Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.

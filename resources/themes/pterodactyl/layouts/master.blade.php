@@ -184,6 +184,9 @@
                                         </span>
                                     </a>
                                     <ul class="treeview-menu">
+                                        @can('view-name', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.name' ?: 'active' }}"><a href="{{ route('server.settings.name', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.server_name')</a></li>
+                                        @endcan
                                         @can('view-allocations', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
                                         @endcan
