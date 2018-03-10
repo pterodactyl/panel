@@ -121,14 +121,18 @@ class StartupModificationServiceTest extends TestCase
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->validatorService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_ADMIN)->once()->andReturnNull();
         $this->validatorService->shouldReceive('handle')->with(456, ['test' => 'abcd1234'])->once()->andReturn(
-            collect([(object) ['id' => 1, 'value' => 'stored-value']])
+            collect([(object) ['id' => 1, 'value' => 'stored-value'], (object) ['id' => 2, 'value' => null]])
         );
 
-        $this->serverVariableRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
-        $this->serverVariableRepository->shouldReceive('updateOrCreate')->with([
+        $this->serverVariableRepository->shouldReceive('withoutFreshModel->updateOrCreate')->once()->with([
             'server_id' => $model->id,
             'variable_id' => 1,
-        ], ['variable_value' => 'stored-value'])->once()->andReturnNull();
+        ], ['variable_value' => 'stored-value'])->andReturnNull();
+
+        $this->serverVariableRepository->shouldReceive('withoutFreshModel->updateOrCreate')->once()->with([
+            'server_id' => $model->id,
+            'variable_id' => 2,
+        ], ['variable_value' => ''])->andReturnNull();
 
         $this->eggRepository->shouldReceive('setColumns->find')->once()->with($eggModel->id)->andReturn($eggModel);
 
