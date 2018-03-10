@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Added ability for end users to change the name of their server through the UI. This option is only open to the server owner or an admin.
+* Added giant warning message if you attempt to change an encryption key once one has been set.
 
 ### Changed
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
