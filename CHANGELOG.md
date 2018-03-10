@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.
 * File manager UI improved to be clearer with buttons and cleaner on mobile.
 * reCAPTCHA's secret key position swapped with website key in advanced panel settings to be consistent with Google's reCAPTCHA dashboard.
+* Changed DisplayException to handle its own logging correctly and check if the previous exception is marked as one that should not be logged.
 
 ## v0.7.5 (Derelict Dermodactylus)
 ### Fixed

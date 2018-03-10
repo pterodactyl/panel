@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Exceptions;
 
-use Log;
+use Exception;
 use Throwable;
+use Psr\Log\LoggerInterface;
 use Illuminate\Http\Response;
+use Illuminate\Container\Container;
 use Prologue\Alerts\AlertsMessageBag;
 
 class DisplayException extends PterodactylException
@@ -30,10 +32,6 @@ class DisplayException extends PterodactylException
     public function __construct($message, Throwable $previous = null, $level = self::LEVEL_ERROR, $code = 0)
     {
         parent::__construct($message, $code, $previous);
-
-        if (! is_null($previous)) {
-            Log::{$level}($previous);
-        }
 
         $this->level = $level;
     }
@@ -70,8 +68,31 @@ class DisplayException extends PterodactylException
             ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : Response::HTTP_BAD_REQUEST);
         }
 
-        app()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();
+        Container::getInstance()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();
 
         return redirect()->back()->withInput();
+    }
+
+    /**
+     * Log the exception to the logs using the defined error level only if the previous
+     * exception is set.
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function report()
+    {
+        if (! $this->getPrevious() instanceof Exception || ! Handler::isReportable($this->getPrevious())) {
+            return null;
+        }
+
+        try {
+            $logger = Container::getInstance()->make(LoggerInterface::class);
+        } catch (Exception $ex) {
+            throw $this->getPrevious();
+        }
+
+        return $logger->{$this->getErrorLevel()}($this->getPrevious());
     }
 }
