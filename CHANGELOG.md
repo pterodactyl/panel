@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Debug bar is only checked when the app is set to debug mode in the API session handler, rather than when it is in local mode to match the plugin settings.
 * Added validation to port allocations to prevent allocation of restricted or invalid ports.
 * Fix data integrity exception thrown when attempting to store updated server egg variables.
+* Added missing permissions check on 'SFTP Configuration' page to ensure user has permission to access a server's SFTP server before showing a user credentials.
 
 ### Changed
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
