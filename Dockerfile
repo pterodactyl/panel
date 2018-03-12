@@ -4,7 +4,7 @@
 
 FROM alpine:3.6
 
-MAINTAINER Pterodactyl Software, <support@pterodactyl.io>
+LABEL maintainer="Pterodactyl Software, <support@pterodactyl.io>"
 
 WORKDIR /app
 
