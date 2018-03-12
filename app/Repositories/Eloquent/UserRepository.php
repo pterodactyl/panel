@@ -1,44 +1,21 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\User;
-use Illuminate\Foundation\Application;
+use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Concerns\Searchable;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class UserRepository extends EloquentRepository implements UserRepositoryInterface
 {
     use Searchable;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
-
-    /**
-     * UserRepository constructor.
+     * Return the model backing this repository.
      *
-     * @param \Illuminate\Foundation\Application      $application
-     * @param \Illuminate\Contracts\Config\Repository $config
-     */
-    public function __construct(Application $application, ConfigRepository $config)
-    {
-        parent::__construct($application);
-
-        $this->config = $config;
-    }
-
-    /**
-     * {@inheritdoc}
+     * @return string
      */
     public function model()
     {
@@ -46,28 +23,26 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
     }
 
     /**
-     * {@inheritdoc}
+     * Return all users with counts of servers and subusers of servers.
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function getAllUsersWithCounts()
+    public function getAllUsersWithCounts(): LengthAwarePaginator
     {
-        $users = $this->getBuilder()->withCount('servers', 'subuserOf');
-
-        if ($this->searchTerm) {
-            $users->search($this->searchTerm);
-        }
-
-        return $users->paginate(
-            $this->config->get('pterodactyl.paginate.admin.users'),
-            $this->getColumns()
-        );
+        return $this->getBuilder()->withCount('servers', 'subuserOf')
+            ->search($this->getSearchTerm())
+            ->paginate(50, $this->getColumns());
     }
 
     /**
-     * {@inheritdoc}
+     * Return all matching models for a user in a format that can be used for dropdowns.
+     *
+     * @param string $query
+     * @return \Illuminate\Support\Collection
      */
-    public function filterUsersByQuery($query)
+    public function filterUsersByQuery(string $query): Collection
     {
-        $this->withColumns([
+        $this->setColumns([
             'id', 'email', 'username', 'name_first', 'name_last',
         ]);
 

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -18,6 +11,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Egg extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'egg';
 
     /**
      * The table associated with the model.
@@ -114,7 +113,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getCopyScriptInstallAttribute()
     {
-        return (is_null($this->copy_script_from)) ? $this->script_install : $this->scriptFrom->script_install;
+        if (! is_null($this->script_install) || is_null($this->copy_script_from)) {
+            return $this->script_install;
+        }
+
+        return $this->scriptFrom->script_install;
     }
 
     /**
@@ -125,7 +128,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getCopyScriptEntryAttribute()
     {
-        return (is_null($this->copy_script_from)) ? $this->script_entry : $this->scriptFrom->script_entry;
+        if (! is_null($this->script_entry) || is_null($this->copy_script_from)) {
+            return $this->script_entry;
+        }
+
+        return $this->scriptFrom->script_entry;
     }
 
     /**
@@ -136,7 +143,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getCopyScriptContainerAttribute()
     {
-        return (is_null($this->copy_script_from)) ? $this->script_container : $this->scriptFrom->script_container;
+        if (! is_null($this->script_container) || is_null($this->copy_script_from)) {
+            return $this->script_container;
+        }
+
+        return $this->scriptFrom->script_container;
     }
 
     /**
@@ -146,7 +157,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getInheritConfigFilesAttribute()
     {
-        return is_null($this->config_from) ? $this->config_files : $this->configFrom->config_files;
+        if (! is_null($this->config_files) || is_null($this->config_from)) {
+            return $this->config_files;
+        }
+
+        return $this->configFrom->config_files;
     }
 
     /**
@@ -156,7 +171,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getInheritConfigStartupAttribute()
     {
-        return is_null($this->config_from) ? $this->config_startup : $this->configFrom->config_startup;
+        if (! is_null($this->config_startup) || is_null($this->config_from)) {
+            return $this->config_startup;
+        }
+
+        return $this->configFrom->config_startup;
     }
 
     /**
@@ -166,7 +185,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getInheritConfigLogsAttribute()
     {
-        return is_null($this->config_from) ? $this->config_logs : $this->configFrom->config_logs;
+        if (! is_null($this->config_logs) || is_null($this->config_from)) {
+            return $this->config_logs;
+        }
+
+        return $this->configFrom->config_logs;
     }
 
     /**
@@ -176,7 +199,11 @@ class Egg extends Model implements CleansAttributes, ValidableContract
      */
     public function getInheritConfigStopAttribute()
     {
-        return is_null($this->config_from) ? $this->config_stop : $this->configFrom->config_stop;
+        if (! is_null($this->config_stop) || is_null($this->config_from)) {
+            return $this->config_stop;
+        }
+
+        return $this->configFrom->config_stop;
     }
 
     /**

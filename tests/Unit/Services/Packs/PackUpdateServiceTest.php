@@ -53,7 +53,7 @@ class PackUpdateServiceTest extends TestCase
     public function testPackIsUpdated()
     {
         $model = factory(Pack::class)->make();
-        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,
@@ -85,9 +85,9 @@ class PackUpdateServiceTest extends TestCase
     {
         $model = factory(Pack::class)->make();
 
-        $this->repository->shouldReceive('withColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($model->id)->once()->andReturn($model);
-        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
                 'locked' => false,
                 'visible' => false,
                 'selectable' => false,

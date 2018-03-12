@@ -34,6 +34,7 @@ class DaemonAuthenticate
      * Create a new filter instance.
      *
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @deprecated
      */
     public function __construct(NodeRepositoryInterface $repository)
     {
@@ -46,6 +47,9 @@ class DaemonAuthenticate
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
      * @return mixed
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function handle(Request $request, Closure $next)
     {
@@ -57,7 +61,7 @@ class DaemonAuthenticate
             throw new AccessDeniedHttpException;
         }
 
-        $node = $this->repository->findWhere(['daemonSecret' => $request->header('X-Access-Node')]);
+        $node = $this->repository->findFirstWhere(['daemonSecret' => $request->header('X-Access-Node')]);
         $request->attributes->set('node', $node);
 
         return $next($request);

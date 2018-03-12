@@ -62,14 +62,11 @@ class NodeDeletionServiceTest extends TestCase
      */
     public function testNodeIsDeletedIfNoServersAreAttached()
     {
-        $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', 1]])->once()->andReturn(0);
-        $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(true);
+        $this->repository->shouldReceive('delete')->with(1)->once()->andReturn(1);
 
-        $this->assertTrue(
-            $this->service->handle(1),
-            'Assert that deletion returns a positive boolean value.'
-        );
+        $this->assertEquals(1, $this->service->handle(1));
     }
 
     /**
@@ -79,7 +76,7 @@ class NodeDeletionServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfServersAreAttachedToNode()
     {
-        $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', 1]])->once()->andReturn(1);
         $this->translator->shouldReceive('trans')->with('exceptions.node.servers_attached')->once()->andReturnNull();
         $this->repository->shouldNotReceive('delete');
@@ -94,13 +91,10 @@ class NodeDeletionServiceTest extends TestCase
     {
         $node = factory(Node::class)->make();
 
-        $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', $node->id]])->once()->andReturn(0);
-        $this->repository->shouldReceive('delete')->with($node->id)->once()->andReturn(true);
+        $this->repository->shouldReceive('delete')->with($node->id)->once()->andReturn(1);
 
-        $this->assertTrue(
-            $this->service->handle($node),
-            'Assert that deletion returns a positive boolean value.'
-        );
+        $this->assertEquals(1, $this->service->handle($node));
     }
 }

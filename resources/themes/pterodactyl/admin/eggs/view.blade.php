@@ -31,7 +31,7 @@
         </div>
     </div>
     <div class="col-xs-12">
-        <div class="callout callout-info">
+        <div class="alert alert-info">
             <strong>Notice:</strong> Editing an Egg or any of the Process Management fields <em>requires</em> that each Daemon be rebooted in order to apply the changes.
         </div>
     </div>
@@ -125,7 +125,7 @@
                             <div class="form-group">
                                 <label for="pConfigFrom" class="form-label">Copy Settings From</label>
                                 <select name="config_from" id="pConfigFrom" class="form-control">
-                                    <option value="0">None</option>
+                                    <option value="">None</option>
                                     @foreach($egg->nest->eggs as $o)
                                         <option value="{{ $o->id }}" {{ ($egg->config_from !== $o->id) ?: 'selected' }}>{{ $o->name }} &lt;{{ $o->author }}&gt;</option>
                                     @endforeach
@@ -159,12 +159,17 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
+                    <a href="{{ route('admin.nests.egg.export', ['option' => $egg->id]) }}" class="btn btn-sm btn-info pull-right" style="margin-right:10px;">Export</a>
                     <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-danger btn-sm muted muted-hover">
                         <i class="fa fa-trash-o"></i>
                     </button>
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
-                    <a href="{{ route('admin.nests.egg.export', ['option' => $egg->id]) }}" class="btn btn-sm btn-info pull-right" style="margin-right:10px;">Export</a>
                 </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="alert alert-info">
+                <strong>Notice:</strong> Editing an Egg or any of the Process Management fields <em>requires</em> that each Daemon be rebooted in order to apply the changes.
             </div>
         </div>
     </div>

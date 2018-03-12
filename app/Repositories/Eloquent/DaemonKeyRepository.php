@@ -1,38 +1,21 @@
 <?php
-/*
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\DaemonKey;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyRepository extends EloquentRepository implements DaemonKeyRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -60,27 +43,45 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
     }
 
     /**
-     * {@inheritdoc}
+     * Return a daemon key with the associated server relation attached.
+     *
+     * @param string $key
+     * @return \Pterodactyl\Models\DaemonKey
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getServerKeys($server)
+    public function getKeyWithServer(string $key): DaemonKey
     {
-        Assert::integerish($server, 'First argument passed to getServerKeys must be integer, received %s.');
+        Assert::notEmpty($key, 'Expected non-empty string as first argument passed to ' . __METHOD__);
 
-        return $this->getBuilder()->where('server_id', $server)->get($this->getColumns());
+        try {
+            return $this->getBuilder()->with('server')->where('secret', '=', $key)->firstOrFail($this->getColumns());
+        } catch (ModelNotFoundException $exception) {
+            throw new RecordNotFoundException;
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * Get all of the keys for a specific user including the information needed
+     * from their server relation for revocation on the daemon.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @return \Illuminate\Support\Collection
      */
-    public function getKeyWithServer($key)
+    public function getKeysForRevocation(User $user): Collection
     {
-        Assert::stringNotEmpty($key, 'First argument passed to getServerByKey must be string, received %s.');
+        return $this->getBuilder()->with('node')->where('user_id', $user->id)->get($this->getColumns());
+    }
 
-        $instance = $this->getBuilder()->with('server')->where('secret', '=', $key)->first();
-        if (is_null($instance)) {
-            throw new RecordNotFoundException;
-        }
-
-        return $instance;
+    /**
+     * Delete an array of daemon keys from the database. Used primarily in
+     * conjunction with getKeysForRevocation.
+     *
+     * @param array $ids
+     * @return bool|int
+     */
+    public function deleteKeys(array $ids)
+    {
+        return $this->getBuilder()->whereIn('id', $ids)->delete();
     }
 }

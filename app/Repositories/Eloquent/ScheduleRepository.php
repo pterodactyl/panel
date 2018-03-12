@@ -1,23 +1,19 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleRepository extends EloquentRepository implements ScheduleRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -36,6 +32,23 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     }
 
     /**
+     * Load the tasks relationship onto the Schedule module if they are not
+     * already present.
+     *
+     * @param \Pterodactyl\Models\Schedule $schedule
+     * @param bool                         $refresh
+     * @return \Pterodactyl\Models\Schedule
+     */
+    public function loadTasks(Schedule $schedule, bool $refresh = false): Schedule
+    {
+        if (! $schedule->relationLoaded('tasks') || $refresh) {
+            $schedule->load('tasks');
+        }
+
+        return $schedule;
+    }
+
+    /**
      * Return a schedule model with all of the associated tasks as a relationship.
      *
      * @param int $schedule
@@ -45,19 +58,20 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
      */
     public function getScheduleWithTasks(int $schedule): Schedule
     {
-        /** @var \Pterodactyl\Models\Schedule $instance */
-        $instance = $this->getBuilder()->with('tasks')->find($schedule, $this->getColumns());
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->with('tasks')->findOrFail($schedule, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
-     * {@inheritdoc}
+     * Return all of the schedules that should be processed.
+     *
+     * @param string $timestamp
+     * @return \Illuminate\Support\Collection
      */
-    public function getSchedulesToProcess($timestamp)
+    public function getSchedulesToProcess(string $timestamp): Collection
     {
         return $this->getBuilder()->with('tasks')
             ->where('is_active', true)

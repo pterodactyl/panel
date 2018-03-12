@@ -1,43 +1,24 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
-use Tests\TestCase;
+use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Tests\Assertions\ControllerAssertionsTrait;
 use Pterodactyl\Services\Users\UserUpdateService;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Base\AccountController;
 use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 
-class AccountControllerTest extends TestCase
+class AccountControllerTest extends ControllerTestCase
 {
-    use ControllerAssertionsTrait;
-
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
+     * @var \Prologue\Alerts\AlertsMessageBag|\Mockery\Mock
      */
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Base\AccountController
-     */
-    protected $controller;
-
-    /**
-     * @var \Pterodactyl\Http\Requests\Base\AccountDataFormRequest
-     */
-    protected $request;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
+     * @var \Pterodactyl\Services\Users\UserUpdateService|\Mockery\Mock
      */
     protected $updateService;
 
@@ -49,10 +30,7 @@ class AccountControllerTest extends TestCase
         parent::setUp();
 
         $this->alert = m::mock(AlertsMessageBag::class);
-        $this->request = m::mock(AccountDataFormRequest::class);
         $this->updateService = m::mock(UserUpdateService::class);
-
-        $this->controller = new AccountController($this->alert, $this->updateService);
     }
 
     /**
@@ -60,7 +38,7 @@ class AccountControllerTest extends TestCase
      */
     public function testIndexController()
     {
-        $response = $this->controller->index();
+        $response = $this->getController()->index();
 
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.account', $response);
@@ -71,14 +49,17 @@ class AccountControllerTest extends TestCase
      */
     public function testUpdateControllerForPassword()
     {
+        $this->setRequestMockClass(AccountDataFormRequest::class);
+        $user = $this->generateRequestUserModel();
+
         $this->request->shouldReceive('input')->with('do_action')->andReturn('password');
         $this->request->shouldReceive('input')->with('new_password')->once()->andReturn('test-password');
 
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn((object) ['id' => 1]);
-        $this->updateService->shouldReceive('handle')->with(1, ['password' => 'test-password'])->once()->andReturnNull();
+        $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
+        $this->updateService->shouldReceive('handle')->with($user, ['password' => 'test-password'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
-        $response = $this->controller->update($this->request);
+        $response = $this->getController()->update($this->request);
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectRouteEquals('account', $response);
     }
@@ -88,14 +69,17 @@ class AccountControllerTest extends TestCase
      */
     public function testUpdateControllerForEmail()
     {
+        $this->setRequestMockClass(AccountDataFormRequest::class);
+        $user = $this->generateRequestUserModel();
+
         $this->request->shouldReceive('input')->with('do_action')->andReturn('email');
         $this->request->shouldReceive('input')->with('new_email')->once()->andReturn('test@example.com');
 
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn((object) ['id' => 1]);
-        $this->updateService->shouldReceive('handle')->with(1, ['email' => 'test@example.com'])->once()->andReturnNull();
+        $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
+        $this->updateService->shouldReceive('handle')->with($user, ['email' => 'test@example.com'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
-        $response = $this->controller->update($this->request);
+        $response = $this->getController()->update($this->request);
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectRouteEquals('account', $response);
     }
@@ -105,17 +89,30 @@ class AccountControllerTest extends TestCase
      */
     public function testUpdateControllerForIdentity()
     {
+        $this->setRequestMockClass(AccountDataFormRequest::class);
+        $user = $this->generateRequestUserModel();
+
         $this->request->shouldReceive('input')->with('do_action')->andReturn('identity');
         $this->request->shouldReceive('only')->with(['name_first', 'name_last', 'username'])->once()->andReturn([
             'test_data' => 'value',
         ]);
 
-        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn((object) ['id' => 1]);
-        $this->updateService->shouldReceive('handle')->with(1, ['test_data' => 'value'])->once()->andReturnNull();
+        $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
+        $this->updateService->shouldReceive('handle')->with($user, ['test_data' => 'value'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
-        $response = $this->controller->update($this->request);
+        $response = $this->getController()->update($this->request);
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectRouteEquals('account', $response);
+    }
+
+    /**
+     * Return an instance of the controller for testing.
+     *
+     * @return \Pterodactyl\Http\Controllers\Base\AccountController
+     */
+    private function getController(): AccountController
+    {
+        return new AccountController($this->alert, $this->updateService);
     }
 }

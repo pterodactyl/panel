@@ -66,12 +66,9 @@ class RemoteRequestController extends Controller
         }
 
         try {
-            $listing = $this->repository->setNode($server->node_id)
-                ->setAccessServer($server->uuid)
-                ->setAccessToken($request->attributes->get('server_token'))
-                ->getDirectory($requestDirectory);
+            $listing = $this->repository->setServer($server)->setToken($request->attributes->get('server_token'))->getDirectory($requestDirectory);
         } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
+            throw new DaemonConnectionException($exception, true);
         }
 
         return view('server.files.list', [
@@ -90,7 +87,6 @@ class RemoteRequestController extends Controller
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function store(Request $request): Response
     {
@@ -98,10 +94,8 @@ class RemoteRequestController extends Controller
         $this->authorize('save-files', $server);
 
         try {
-            $this->repository->setNode($server->node_id)
-                ->setAccessServer($server->uuid)
-                ->setAccessToken($request->attributes->get('server_token'))
-                ->putContent($request->input('file'), $request->input('contents'));
+            $this->repository->setServer($server)->setToken($request->attributes->get('server_token'))
+                ->putContent($request->input('file'), $request->input('contents') ?? '');
 
             return response('', 204);
         } catch (RequestException $exception) {

@@ -63,7 +63,7 @@ class ToggleTwoFactorServiceTest extends TestCase
         $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET, 'use_totp' => false]);
 
         $this->google2FA->shouldReceive('verifyKey')->with(self::DECRYPTED_USER_SECRET, 'test-token', self::TEST_WINDOW_INT)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
             'totp_authenticated_at' => Carbon::now(),
             'use_totp' => true,
         ])->once()->andReturnNull();
@@ -79,7 +79,7 @@ class ToggleTwoFactorServiceTest extends TestCase
         $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET, 'use_totp' => true]);
 
         $this->google2FA->shouldReceive('verifyKey')->with(self::DECRYPTED_USER_SECRET, 'test-token', self::TEST_WINDOW_INT)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
             'totp_authenticated_at' => Carbon::now(),
             'use_totp' => false,
         ])->once()->andReturnNull();
@@ -95,7 +95,7 @@ class ToggleTwoFactorServiceTest extends TestCase
         $model = factory(User::class)->make(['totp_secret' => self::USER_TOTP_SECRET, 'use_totp' => false]);
 
         $this->google2FA->shouldReceive('verifyKey')->with(self::DECRYPTED_USER_SECRET, 'test-token', self::TEST_WINDOW_INT)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh->update')->with($model->id, [
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
             'totp_authenticated_at' => Carbon::now(),
             'use_totp' => false,
         ])->once()->andReturnNull();

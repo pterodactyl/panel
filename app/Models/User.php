@@ -1,21 +1,17 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
+use Pterodactyl\Rules\Username;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -30,10 +26,23 @@ class User extends Model implements
     CleansAttributes,
     ValidableContract
 {
-    use Authenticatable, Authorizable, CanResetPassword, Eloquence, Notifiable, Validable;
+    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Eloquence, Notifiable, Validable {
+        gatherRules as eloquenceGatherRules;
+    }
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
+
+    const FILTER_LEVEL_ALL = 0;
+    const FILTER_LEVEL_OWNER = 1;
+    const FILTER_LEVEL_ADMIN = 2;
+    const FILTER_LEVEL_SUBUSER = 3;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'user';
 
     /**
      * Level of servers to display when using access() on a user.
@@ -55,6 +64,7 @@ class User extends Model implements
      * @var array
      */
     protected $fillable = [
+        'external_id',
         'username',
         'email',
         'name_first',
@@ -89,7 +99,7 @@ class User extends Model implements
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token', 'totp_secret'];
+    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
 
     /**
      * Parameters for search querying.
@@ -97,11 +107,12 @@ class User extends Model implements
      * @var array
      */
     protected $searchableColumns = [
-        'email' => 10,
-        'username' => 9,
-        'name_first' => 6,
-        'name_last' => 6,
-        'uuid' => 1,
+        'username' => 100,
+        'email' => 100,
+        'external_id' => 80,
+        'uuid' => 80,
+        'name_first' => 40,
+        'name_last' => 40,
     ];
 
     /**
@@ -110,6 +121,7 @@ class User extends Model implements
      * @var array
      */
     protected $attributes = [
+        'external_id' => null,
         'root_admin' => false,
         'language' => 'en',
         'use_totp' => false,
@@ -122,11 +134,15 @@ class User extends Model implements
      * @var array
      */
     protected static $applicationRules = [
+        'uuid' => 'required',
         'email' => 'required',
+        'external_id' => 'sometimes',
         'username' => 'required',
         'name_first' => 'required',
         'name_last' => 'required',
         'password' => 'sometimes',
+        'language' => 'sometimes',
+        'use_totp' => 'sometimes',
     ];
 
     /**
@@ -135,16 +151,31 @@ class User extends Model implements
      * @var array
      */
     protected static $dataIntegrityRules = [
+        'uuid' => 'string|size:36|unique:users,uuid',
         'email' => 'email|unique:users,email',
-        'username' => 'alpha_dash|between:1,255|unique:users,username',
+        'external_id' => 'nullable|string|max:255|unique:users,external_id',
+        'username' => 'between:1,255|unique:users,username',
         'name_first' => 'string|between:1,255',
         'name_last' => 'string|between:1,255',
         'password' => 'nullable|string',
         'root_admin' => 'boolean',
-        'language' => 'string|between:2,5',
+        'language' => 'string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
     ];
+
+    /**
+     * Implement language verification by overriding Eloquence's gather
+     * rules function.
+     */
+    protected static function gatherRules()
+    {
+        $rules = self::eloquenceGatherRules();
+        $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
+        $rules['username'][] = new Username;
+
+        return $rules;
+    }
 
     /**
      * Send the password reset notification.
@@ -161,9 +192,9 @@ class User extends Model implements
      *
      * @param string $value
      */
-    public function setUsernameAttribute($value)
+    public function setUsernameAttribute(string $value)
     {
-        $this->attributes['username'] = strtolower($value);
+        $this->attributes['username'] = mb_strtolower($value);
     }
 
     /**

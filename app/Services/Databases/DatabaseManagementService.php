@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Databases;
 
@@ -20,22 +13,27 @@ class DatabaseManagementService
     /**
      * @var \Illuminate\Database\DatabaseManager
      */
-    protected $database;
+    private $database;
 
     /**
      * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
      */
-    protected $dynamic;
+    private $dynamic;
 
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
      */
-    protected $encrypter;
+    private $encrypter;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
      */
-    protected $repository;
+    private $repository;
+
+    /**
+     * @var bool
+     */
+    protected $useRandomHost = false;
 
     /**
      * CreationService constructor.
@@ -62,16 +60,14 @@ class DatabaseManagementService
      *
      * @param int   $server
      * @param array $data
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Pterodactyl\Models\Database
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function create($server, array $data)
     {
         $data['server_id'] = $server;
-        $data['database'] = sprintf('d%d_%s', $server, $data['database']);
+        $data['database'] = sprintf('s%d_%s', $server, $data['database']);
         $data['username'] = sprintf('u%d_%s', $server, str_random(10));
         $data['password'] = $this->encrypter->encrypt(str_random(16));
 

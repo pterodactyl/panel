@@ -13,6 +13,7 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Log\Writer;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -101,12 +102,11 @@ class SuspensionServiceTest extends TestCase
         $this->server->suspended = 0;
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, ['suspended' => true])->once()->andReturnNull();
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('suspend')->withNoArgs()->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andReturnSelf()
+            ->shouldReceive('suspend')->withNoArgs()->once()->andReturn(new Response);
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->assertTrue($this->service->toggle($this->server));
@@ -120,12 +120,11 @@ class SuspensionServiceTest extends TestCase
         $this->server->suspended = 1;
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, ['suspended' => false])->once()->andReturnNull();
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($this->server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('unsuspend')->withNoArgs()->once()->andReturnNull();
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andReturnSelf()
+            ->shouldReceive('unsuspend')->withNoArgs()->once()->andReturn(new Response);
         $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $this->assertTrue($this->service->toggle($this->server, 'unsuspend'));
@@ -159,10 +158,10 @@ class SuspensionServiceTest extends TestCase
         $this->server->suspended = 0;
 
         $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->server->id, ['suspended' => true])->once()->andReturnNull();
 
-        $this->daemonServerRepository->shouldReceive('setNode')->with($this->server->node_id)
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)
             ->once()->andThrow($this->exception);
 
         $this->exception->shouldReceive('getResponse')->withNoArgs()->once()->andReturnSelf()

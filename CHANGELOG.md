@@ -3,6 +3,220 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.6 (Derelict Dermodactylus)
+### Fixed
+* Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
+* Correct permissions check in UI to allow subusers with permission to `view-allocations` the ability to actually see the sidebar link.
+* Fixes improper behavior when marking an egg as copying the configuration from another.
+* Debug bar is only checked when the app is set to debug mode in the API session handler, rather than when it is in local mode to match the plugin settings.
+* Added validation to port allocations to prevent allocation of restricted or invalid ports.
+* Fix data integrity exception thrown when attempting to store updated server egg variables.
+* Added missing permissions check on 'SFTP Configuration' page to ensure user has permission to access a server's SFTP server before showing a user credentials.
+
+### Added
+* Added ability for end users to change the name of their server through the UI. This option is only open to the server owner or an admin.
+* Added giant warning message if you attempt to change an encryption key once one has been set.
+
+### Changed
+* Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
+* Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.
+* File manager UI improved to be clearer with buttons and cleaner on mobile.
+* reCAPTCHA's secret key position swapped with website key in advanced panel settings to be consistent with Google's reCAPTCHA dashboard.
+* Changed DisplayException to handle its own logging correctly and check if the previous exception is marked as one that should not be logged.
+* Changed 'New Folder' modal in file manager to include a trailing slash.
+
+## v0.7.5 (Derelict Dermodactylus)
+### Fixed
+* Fixes application API keys being created as a client API key.
+* Search term is now passed through when using paginated result sets.
+* Reduces the number of SQL queries executed when rendering the server listing to increase performance.
+* Fixes exceptions being thrown for non-existent subuser permissions.
+* Fixes exception caused when trying to revoke admin privileges from a user account due to a bad endpoint.
+
+### Changed
+* Databases are now properly paginated when viewing a database host.
+* No more loading daemon keys for every server model being loaded, some of us value our databases.
+* Changed behavior of the subuser middleware to add a daemon access key if one is missing from the database for some reason.
+* Server short-codes are now based on the UUID as they were in previous versions of Pterodactyl.
+
+## v0.7.4-h1 (Derelict Dermodactylus)
+### Fixed
+* Being able to create servers is kind of a core aspect of the software, pushing releases late at night is not a great idea.
+
+## v0.7.4 (Derelict Dermodactylus)
+### Fixed
+* Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
+* Handle 404 errors from missing models in the application API bindings correctly.
+* Fix validation error returned when no environment variables are passed, even if there are no variables required.
+* Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing enditing any start variables.
+* Should fix migration issues from 0.6 when there are more than API key in the database.
+
+### Changed
+* Changes order that validation of resource existence occurs in API requests to not try and use a non-existent model when validating data.
+
+### Added
+* Adds back client API for sending commands or power toggles to a server though the Panel API: `/api/client/servers/<identifier>`
+* Added proper transformer for Packs and re-enabled missing includes on server.
+* Added support for using Filesystem as a caching driver, although not recommended.
+* Added support for user management of server databases.
+* **Added bulk power management CLI interface to send start, stop, kill, restart actions to servers across configurable nodes.**
+
+## v0.7.3 (Derelict Dermodactylus)
+### Fixed
+* Fixes server creation API endpoint not passing the provided `external_id` to the creation service.
+* Fixes a bug causing users to be un-editable on new installations once more than one user exists.
+* Fixes default order of buttons in certain parts of the panel that would default to 'Delete' rather than 'Save' when pressing enter.
+
+### Added
+* Adds ability to modify the external ID for a server through the API.
+
+## v0.7.2 (Derelict Dermodactylus)
+### Fixed
+* Fixes an exception thrown when trying to access the `/nests/:id/eggs/:id` API endpoint.
+* Fixes search on server listing page.
+* Schedules with no names are now clickable to allow editing.
+* Fixes broken permissions check that would deny access to API keys that did in fact have permission.
+
+### Added
+* Adds ability to include egg variables on an API request.
+* Added `external_id` column to servers that allows for easier linking with external services such as WHMCS.
+* Added back the sidebar when viewing servers that allows for quick-switching to a different server.
+* Added API endpoint to get a server by external ID.
+
+## v0.7.1 (Derelict Dermodactylus)
+### Fixed
+* Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
+* Fixes an exception when trying to perform actions aganist a User model due to a validator that could not be cast to a string correctly.
+* Allow FQDNs in database host creation UI correctly.
+* Fixes database naming scheme using `d###_` rather than `s###_` when creating server databases.
+* Fix exception thrown when attempting to update an existing database host.
+
+### Changed
+* Adjusted exception handler behavior to log more stack information for PDO exceptions while not exposing credentials.
+
+### Added
+* Very basic cache busting until asset management can be changed to make use of better systems.
+
+## v0.7.0 (Derelict Dermodactylus)
+### Fixed
+* `[rc.2]` — Fixes bad API behavior on `/user` routes.
+* `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
+* `[rc.2]` — Fixes bug with server creation API endpoint that would fail to validate `allocation.default` correctly.
+* `[rc.2]` — Fix data integrity exception occuring due to invalid data being passed to server creation service on the API.
+* `[rc.2]` — Fix data integrity exception that could occur when an email containing non-username characters was passed.
+* `[rc.2]` — Fix data integrity exception occurring when no default value is provided for an egg variable.
+* `[rc.2]` — Fixes a bug that would cause non-editable variables on the front-end to throw a validation error.
+* `[rc.2]` — Fixes a data integrity exception occurring when saving egg variables with no value.
+* Fixes a design bug in the database that prevented the storage of negative numbers, thus preventing a server from being assigned unlimited swap.
+* Fixes a bug where the 'Assign New Allocations' box would only show IPs that were present in the current pagination block.
+* Unable to change the daemon secret for a server via the Admin CP.
+* Using default value in rules when creating a new variable if the rules is empty.
+* Fixes a design-flaw in the allocation management part of nodes that would run a MySQL query for each port being allocated. This behavior is now changed to only execute one query to add multiple ports at once.
+* Attempting to create a server when no nodes are configured now redirects to the node creation page.
+* Fixes missing library issue for teamspeak when used with mariadb.
+* Fixes inability to change the default port on front-end when viewing a server.
+* Fixes bug preventing deletion of nests that have other nests referencing them as children.
+* Fixes console sometimes not loading properly on slow connections
+
+### Added
+* Added ability to search the following API endpoints: list users, list servers, and list locations.
+* Add support for finding a user by external ID using `/api/application/users/external/<id>` or by passing it as the search term when listing all users.
+* Added a unique key to the servers table to data integrity issues where an allocation would be assigned to more than one server at once.
+* Added support for editing an existing schedule.
+* Added support for editing symlinked files on the Panel.
+* Added new application specific API to Panel with endpoints at `/api/application`. Includes new Admin CP interface for managing keys and an easier permissions system.
+* Nest and Egg listings now show the associated ID in order to make API requests easier.
+* Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
+* Creating a new node will now requires a SSL connection if the Panel is configured to use SSL as well.
+* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* File manager now supports mass deletion option for files and folders.
+* Support for CS:GO as a default service option selection.
+* Support for GMOD as a default service option selection.
+* Added test suite for core aspects of the project (Services, Repositories, Commands, etc.) to lessen the chances for bugs to escape into releases.
+* New CLI command to disabled 2-Factor Authentication on an account if necessary.
+* Ability to delete users and locations via the CLI.
+* You can now require 2FA for all users, admins only, or at will using a simple configuration in the Admin CP.
+* **Added ability to export and import service options and their associated settings and environment variables via the Admin CP.**
+* Default allocation for a server can be changed on the front-end by users. This includes two new subuser permissions as well.
+* Significant improvements to environment variable control for servers. Now ships with built-in abilities to define extra variables in the Panel's configuration file, or in-code for those heavily modifying the Panel.
+* Quick link to server edit view in ACP on frontend when viewing servers.
+* Databases created in the Panel now include `EXECUTE` privilege.
+
+### Changed
+* PHP 7.2 is now the minimum required version for this software.
+* Egg variable default values are no longer validated aganist the ruleset when configuring them. Validation of those rules will only occur when editing or creating a server.
+* Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.
+* Changed behavior of allocation IP Address/Ports box to automatically store the value entered if a user unfocuses the field without hitting space.
+* Changed order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
+* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
+* Updated core framework to Laravel 5.5. This includes many dependency updates.
+* Certain AWS specific environment keys were changed, this should have minimal impact on users unless you specifically enabled AWS specific features. The renames are: `AWS_KEY -> AWS_ACCESS_KEY_ID`, `AWS_SECRET -> AWS_SECRET_ACCESS_KEY`, `AWS_REGION -> AWS_DEFAULT_REGION`
+* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
+* Moved Docker image setting to be on the startup management page for a server rather than the details page. This value changes based on the Nest and Egg that are selected.
+* Two-Factor authentication tokens are now 32 bytes in length, and are stored encrypted at rest in the database.
+* Login page UI has been improved to be more sleek and welcoming to users.
+* Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
+* **Services renamed to Nests. Service Options renamed to Eggs.** 🥚
+* Theme colors and login pages updated to give a more unique feel to the project.
+* Massive overhaul to the backend code that allows for much easier updating of core functionality as well as support for better testing. This overhaul also reduces complex code logic, and allows for faster response times in the application.
+* CLI commands updated to be easier to type, now stored in the `p:` namespace.
+* Logout icon is now more universal and not just a power icon.
+* Administrative logout notice now uses SWAL rather than a generic javascript popup.
+* Server creation page now only asks for a node to deploy to, rather than requiring a location and then a node.
+* Database passwords are now hidden by default and will only show if clicked on. In addition, database view in ACP now indicates that passwords must be viewed on the front-end.
+* Localhost cannot be used as a connection address in the environment configuration script. `127.0.0.1` is allowed.
+* Application locale can now be quickly set using an environment variable `APP_LOCALE` rather than having to edit core files.
+
+### Removed
+* OOM exceptions can no longer be disabled on servers due to a startling number of users that were using it to avoid allocating proper amounts of resources to servers.
+* SFTP settings page now only displays connection address and username. Password setting was removed as it is no longer necessary with Daemon changes.
+
+## v0.7.0-rc.2 (Derelict Dermodactylus)
+### Fixed
+* `[rc.1]` — Fixes exception thrown when revoking user sessions.
+* `[rc.1]` — Fixes exception that would occur when trying to delete allocations from a node.
+* `[rc.1]` — Fixes exception thown when attempting to adjust mail settings as well as a validation error thrown afterwards.
+* `[rc.1]` — Fixes bug preventing modification of the default value for an Egg variable.
+* `[rc.1]` — Fixed a bug that would occur when attempting to reset the daemon secret for a node.
+* `[rc.1]` — Fix exception thrown when attempting to modify an existing database host.
+* `[rc.1]` — Fix an auto deployment bug causing a node to be ignored if it had no servers already attached to it.
+
+### Changed
+* Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.
+
+### Added
+* Added support for editing an existing schedule.
+
+## v0.7.0-rc.1 (Derelict Dermodactylus)
+### Fixed
+* `[beta.4]` — Fixes some bad search and replace action that happened previously and was throwing errors when validating user permissions.
+* `[beta.4]` — Fixes behavior of variable validation to not break the page when no rules are provided.
+* `[beta.4]` — Fix bug preventing the editing of files in the file manager.
+
+### Added
+* Added support for editing symlinked files on the Panel.
+* Added new application specific API to Panel with endpoints at `/api/application`. Includes new Admin CP interface for managing keys and an easier permissions system.
+
+## v0.7.0-beta.4 (Derelict Dermodactylus)
+### Fixed
+* `[beta.3]` — Fixes a bug with the default environment file that was causing an inability to perform a fresh install when running package discovery.
+* `[beta.3]` — Fixes an edge case caused by the Laravel 5.5 upgrade that would try to perform an in_array check aganist a null value.
+* `[beta.3]` — Fixes a bug that would cause an error when attempting to create a new user on the Panel.
+* `[beta.3]` — Fixes error handling of the settings service provider when no migrations have been run.
+* `[beta.3]` — Fixes validation error when trying to use 'None' as the 'Copy Script From' option for an egg script.
+* Fixes a design bug in the database that prevented the storage of negative numbers, thus preventing a server from being assigned unlimited swap.
+* Fixes a bug where the 'Assign New Allocations' box would only show IPs that were present in the current pagination block.
+
+### Added
+* Nest and Egg listings now show the associated ID in order to make API requests easier.
+
+### Changed
+* Changed behavior of allocation IP Address/Ports box to automatically store the value entered if a user unfocuses the field without hitting space.
+* Changed order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
+
+### Removed
+* OOM exceptions can no longer be disabled on servers due to a startling number of users that were using it to avoid allocating proper amounts of resources to servers.
+
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
@@ -10,6 +224,19 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.2]` — Fixes a bug that would throw a red page of death when submitting an invalid egg variable value for a server in the Admin CP.
 * `[beta.2]` — Someone found a `@todo` that I never `@todid` and thus database hosts could not be created without being linked to a node. This is fixed...
 * `[beta.2]` — Fixes bug that caused incorrect rendering of CPU usage on server graphs due to missing variable.
+* `[beta.2]` — Fixes bug causing schedules to be un-deletable.
+* `[beta.2]` — Fixes bug that prevented the deletion of nodes due to an allocation deletion cascade issue with the SQL schema.
+* `[beta.2]` — Fixes a bug causing eggs not extending other eggs to fail validation.
+
+### Changed
+* Revoking the administrative status for an admin will revoke all authentication tokens currently assigned to their account.
+* Updated core framework to Laravel 5.5. This includes many dependency updates.
+* Certain AWS specific environment keys were changed, this should have minimal impact on users unless you specifically enabled AWS specific features. The renames are: `AWS_KEY -> AWS_ACCESS_KEY_ID`, `AWS_SECRET -> AWS_SECRET_ACCESS_KEY`, `AWS_REGION -> AWS_DEFAULT_REGION`
+* API keys have been changed to only use a single public key passed in a bearer token. All existing keys can continue being used, however only the first 32 characters should be sent.
+
+### Added
+* Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
+* Creating a new node will now requires a SSL connection if the Panel is configured to use SSL as well.
 
 ## v0.7.0-beta.2 (Derelict Dermodactylus)
 ### Fixed

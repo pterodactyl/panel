@@ -83,7 +83,7 @@
                             <div class="form-group">
                                 <label for="pConfigFrom" class="form-label">Copy Settings From</label>
                                 <select name="config_from" id="pConfigFrom" class="form-control">
-                                    <option value="0">None</option>
+                                    <option value="">None</option>
                                 </select>
                                 <p class="text-muted small">If you would like to default to settings from another Egg select it from the dropdown above.</p>
                             </div>

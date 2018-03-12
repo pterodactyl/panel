@@ -68,6 +68,7 @@
                     </div>
                     <div class="col-xs-offset-1 col-xs-7">
                         {!! csrf_field() !!}
+                        <input type="hidden" name="token" value="{{ $token }}" />
                         <button type="submit" class="btn btn-block g-recaptcha pterodactyl-login-button--main" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.reset_password')</button>
                     </div>
                 </div>

@@ -11,7 +11,6 @@ namespace Pterodactyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Krucas\Settings\Settings;
 use Prologue\Alerts\AlertsMessageBag;
 
 class RequireTwoFactorAuthentication
@@ -24,11 +23,6 @@ class RequireTwoFactorAuthentication
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     private $alert;
-
-    /**
-     * @var \Krucas\Settings\Settings
-     */
-    private $settings;
 
     /**
      * The names of routes that should be accessable without 2FA enabled.
@@ -56,12 +50,10 @@ class RequireTwoFactorAuthentication
      * RequireTwoFactorAuthentication constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Krucas\Settings\Settings         $settings
      */
-    public function __construct(AlertsMessageBag $alert, Settings $settings)
+    public function __construct(AlertsMessageBag $alert)
     {
         $this->alert = $alert;
-        $this->settings = $settings;
     }
 
     /**
@@ -81,10 +73,7 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
-        switch ((int) $this->settings->get('2fa', 0)) {
-            case self::LEVEL_NONE:
-                return $next($request);
-                break;
+        switch ((int) config('pterodactyl.auth.2fa_required')) {
             case self::LEVEL_ADMIN:
                 if (! $request->user()->root_admin || $request->user()->use_totp) {
                     return $next($request);
@@ -95,6 +84,9 @@ class RequireTwoFactorAuthentication
                     return $next($request);
                 }
                 break;
+            case self::LEVEL_NONE:
+            default:
+                return $next($request);
         }
 
         $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();

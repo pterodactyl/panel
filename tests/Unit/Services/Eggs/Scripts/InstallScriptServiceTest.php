@@ -66,7 +66,7 @@ class InstallScriptServiceTest extends TestCase
         $this->data['copy_script_from'] = 1;
 
         $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->nest_id)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
 
         $this->service->handle($this->model, $this->data);
@@ -93,7 +93,7 @@ class InstallScriptServiceTest extends TestCase
      */
     public function testUpdateWithoutNewCopyScriptFromAttribute()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
 
         $this->service->handle($this->model, $this->data);
@@ -105,7 +105,7 @@ class InstallScriptServiceTest extends TestCase
     public function testFunctionAcceptsIntegerInPlaceOfModel()
     {
         $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
 
         $this->service->handle($this->model->id, $this->data);

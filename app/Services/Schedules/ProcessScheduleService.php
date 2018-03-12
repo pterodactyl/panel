@@ -1,16 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Schedules;
 
+use Carbon\Carbon;
 use Cron\CronExpression;
-use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Services\Schedules\Tasks\RunTaskService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
@@ -20,12 +13,17 @@ class ProcessScheduleService
     /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var \Pterodactyl\Services\Schedules\Tasks\RunTaskService
      */
-    protected $runnerService;
+    private $runnerService;
+
+    /**
+     * @var \Carbon\Carbon|null
+     */
+    private $runTimeOverride;
 
     /**
      * ProcessScheduleService constructor.
@@ -40,22 +38,30 @@ class ProcessScheduleService
     }
 
     /**
+     * Set the time that this schedule should be run at. This will override the time
+     * defined on the schedule itself. Useful for triggering one-off task runs.
+     *
+     * @param \Carbon\Carbon $time
+     * @return $this
+     */
+    public function setRunTimeOverride(Carbon $time)
+    {
+        $this->runTimeOverride = $time;
+
+        return $this;
+    }
+
+    /**
      * Process a schedule and push the first task onto the queue worker.
      *
-     * @param int|\Pterodactyl\Models\Schedule $schedule
+     * @param \Pterodactyl\Models\Schedule $schedule
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($schedule)
+    public function handle(Schedule $schedule)
     {
-        Assert::true(($schedule instanceof Schedule || is_digit($schedule)),
-            'First argument passed to handle must be instance of \Pterodactyl\Models\Schedule or an integer, received %s.'
-        );
-
-        if (($schedule instanceof Schedule && ! $schedule->relationLoaded('tasks')) || ! $schedule instanceof Schedule) {
-            $schedule = $this->repository->getScheduleWithTasks(is_digit($schedule) ? $schedule : $schedule->id);
-        }
+        $this->repository->loadTasks($schedule);
 
         $formattedCron = sprintf('%s %s %s * %s *',
             $schedule->cron_minute,
@@ -66,10 +72,25 @@ class ProcessScheduleService
 
         $this->repository->update($schedule->id, [
             'is_processing' => true,
-            'next_run_at' => CronExpression::factory($formattedCron)->getNextRunDate(),
+            'next_run_at' => $this->getRunAtTime($formattedCron),
         ]);
 
-        $task = $schedule->tasks->where('sequence_id', 1)->first();
+        $task = $schedule->getRelation('tasks')->where('sequence_id', 1)->first();
         $this->runnerService->handle($task);
+    }
+
+    /**
+     * Get the timestamp to store in the database as the next_run time for a schedule.
+     *
+     * @param string $formatted
+     * @return \DateTime|string
+     */
+    private function getRunAtTime(string $formatted)
+    {
+        if ($this->runTimeOverride instanceof Carbon) {
+            return $this->runTimeOverride->toDateTimeString();
+        }
+
+        return CronExpression::factory($formatted)->getNextRunDate();
     }
 }

@@ -40,7 +40,7 @@ return [
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
+            'prefix' => env('DB_PREFIX', ''),
             'strict' => env('DB_STRICT_MODE', false),
         ],
     ],
@@ -71,11 +71,19 @@ return [
 
     'redis' => [
         'client' => 'predis',
+
         'default' => [
             'host' => env('REDIS_HOST', 'localhost'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => 0,
+            'database' => env('REDIS_DATBASE', 0),
+        ],
+
+        'sessions' => [
+            'host' => env('REDIS_HOST', 'localhost'),
+            'password' => env('REDIS_PASSWORD', null),
+            'port' => env('REDIS_PORT', 6379),
+            'database' => env('REDIS_DATBASE_SESSIONS', 1),
         ],
     ],
 ];

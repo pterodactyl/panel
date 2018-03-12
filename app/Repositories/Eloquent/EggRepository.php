@@ -1,24 +1,20 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Egg;
 use Webmozart\Assert\Assert;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class EggRepository extends EloquentRepository implements EggRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {
@@ -35,13 +31,11 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
      */
     public function getWithVariables(int $id): Egg
     {
-        /** @var \Pterodactyl\Models\Egg $instance */
-        $instance = $this->getBuilder()->with('variables')->find($id, $this->getColumns());
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->with('variables')->findOrFail($id, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
@@ -67,13 +61,11 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     {
         Assert::true((is_digit($value) || is_string($value)), 'First argument passed to getWithCopyAttributes must be an integer or string, received %s.');
 
-        /** @var \Pterodactyl\Models\Egg $instance */
-        $instance = $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->first($this->getColumns());
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->firstOrFail($this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**
@@ -86,13 +78,11 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
      */
     public function getWithExportAttributes(int $id): Egg
     {
-        /** @var \Pterodactyl\Models\Egg $instance */
-        $instance = $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->find($id, $this->getColumns());
-        if (! $instance) {
+        try {
+            return $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->findOrFail($id, $this->getColumns());
+        } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
-
-        return $instance;
     }
 
     /**

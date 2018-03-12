@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -23,6 +16,12 @@ class Server extends Model implements CleansAttributes, ValidableContract
     use BelongsToThrough, Eloquence, Notifiable, Validable;
 
     /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'server';
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -37,13 +36,6 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
-     * Always eager load these relationships on the model.
-     *
-     * @var array
-     */
-    protected $with = ['key'];
-
-    /**
      * Fields that are not mass assignable.
      *
      * @var array
@@ -54,6 +46,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected static $applicationRules = [
+        'external_id' => 'sometimes',
         'owner_id' => 'required',
         'name' => 'required',
         'memory' => 'required',
@@ -67,27 +60,36 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'allocation_id' => 'required',
         'pack_id' => 'sometimes',
         'skip_scripts' => 'sometimes',
+        'image' => 'required',
+        'startup' => 'required',
+        'database_limit' => 'present',
+        'allocation_limit' => 'present',
     ];
 
     /**
      * @var array
      */
     protected static $dataIntegrityRules = [
-        'owner_id' => 'exists:users,id',
-        'name' => 'regex:/^([\w .-]{1,200})$/',
+        'external_id' => 'nullable|string|between:1,191|unique:servers',
+        'owner_id' => 'integer|exists:users,id',
+        'name' => 'string|min:1|max:255',
         'node_id' => 'exists:nodes,id',
-        'description' => 'nullable|string',
+        'description' => 'string',
         'memory' => 'numeric|min:0',
         'swap' => 'numeric|min:-1',
         'io' => 'numeric|between:10,1000',
         'cpu' => 'numeric|min:0',
         'disk' => 'numeric|min:0',
-        'allocation_id' => 'exists:allocations,id',
+        'allocation_id' => 'bail|unique:servers|exists:allocations,id',
         'nest_id' => 'exists:nests,id',
         'egg_id' => 'exists:eggs,id',
         'pack_id' => 'nullable|numeric|min:0',
-        'startup' => 'nullable|string',
+        'startup' => 'string',
         'skip_scripts' => 'boolean',
+        'image' => 'string|max:255',
+        'installed' => 'boolean',
+        'database_limit' => 'nullable|integer|min:0',
+        'allocation_limit' => 'nullable|integer|min:0',
     ];
 
     /**
@@ -111,6 +113,8 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'egg_id' => 'integer',
         'pack_id' => 'integer',
         'installed' => 'integer',
+        'database_limit' => 'integer',
+        'allocation_limit' => 'integer',
     ];
 
     /**
@@ -119,13 +123,14 @@ class Server extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $searchableColumns = [
-        'name' => 10,
-        'uuidShort' => 9,
-        'uuid' => 8,
-        'pack.name' => 7,
-        'user.email' => 6,
-        'user.username' => 6,
-        'node.name' => 2,
+        'name' => 100,
+        'uuid' => 80,
+        'uuidShort' => 80,
+        'external_id' => 50,
+        'user.email' => 40,
+        'user.username' => 30,
+        'node.name' => 10,
+        'pack.name' => 10,
     ];
 
     /**

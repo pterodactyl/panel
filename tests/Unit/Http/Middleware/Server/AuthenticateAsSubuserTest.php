@@ -4,7 +4,6 @@ namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\Session\Session;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
@@ -18,11 +17,6 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
     private $keyProviderService;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session|\Mockery\Mock
-     */
-    private $session;
-
-    /**
      * Setup tests.
      */
     public function setUp()
@@ -30,7 +24,6 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
         parent::setUp();
 
         $this->keyProviderService = m::mock(DaemonKeyProviderService::class);
-        $this->session = m::mock(Session::class);
     }
 
     /**
@@ -43,7 +36,6 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
         $this->setRequestAttribute('server', $model);
 
         $this->keyProviderService->shouldReceive('handle')->with($model, $user)->once()->andReturn('abc123');
-        $this->session->shouldReceive('now')->with('server_data.token', 'abc123')->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertRequestHasAttribute('server_token');
@@ -74,6 +66,6 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
      */
     public function getMiddleware(): AuthenticateAsSubuser
     {
-        return new AuthenticateAsSubuser($this->keyProviderService, $this->session);
+        return new AuthenticateAsSubuser($this->keyProviderService);
     }
 }

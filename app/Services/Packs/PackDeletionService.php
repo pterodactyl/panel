@@ -69,7 +69,7 @@ class PackDeletionService
     public function handle($pack)
     {
         if (! $pack instanceof Pack) {
-            $pack = $this->repository->withColumns(['id', 'uuid'])->find($pack);
+            $pack = $this->repository->setColumns(['id', 'uuid'])->find($pack);
         }
 
         $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack->id]]);

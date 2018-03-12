@@ -33,16 +33,27 @@ trait RequestMockHelpers
     }
 
     /**
-     * Set the active request object to be an instance of a mocked request.
+     * Configure the user model that the request mock should return with.
+     *
+     * @param \Pterodactyl\Models\User|null $user
      */
-    protected function buildRequestMock()
+    public function setRequestUserModel(User $user = null)
     {
-        $this->request = m::mock($this->requestMockClass);
-        if (! $this->request instanceof Request) {
-            throw new InvalidArgumentException('First argument passed to buildRequestMock must be an instance of \Illuminate\Http\Request when mocked.');
-        }
+        $this->request->shouldReceive('user')->andReturn($user);
+    }
 
-        $this->request->attributes = new ParameterBag();
+    /**
+     * Generates a new request user model and also returns the generated model.
+     *
+     * @param array $args
+     * @return \Pterodactyl\Models\User
+     */
+    public function generateRequestUserModel(array $args = []): User
+    {
+        $user = factory(User::class)->make($args);
+        $this->setRequestUserModel($user);
+
+        return $user;
     }
 
     /**
@@ -51,9 +62,32 @@ trait RequestMockHelpers
      * @param string $attribute
      * @param mixed  $value
      */
-    protected function setRequestAttribute(string $attribute, $value)
+    public function setRequestAttribute(string $attribute, $value)
     {
         $this->request->attributes->set($attribute, $value);
+    }
+
+    /**
+     * Set the request route name.
+     *
+     * @param string $name
+     */
+    public function setRequestRouteName(string $name)
+    {
+        $this->request->shouldReceive('route->getName')->andReturn($name);
+    }
+
+    /**
+     * Set the active request object to be an instance of a mocked request.
+     */
+    protected function buildRequestMock()
+    {
+        $this->request = m::mock($this->requestMockClass);
+        if (! $this->request instanceof Request) {
+            throw new InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');
+        }
+
+        $this->request->attributes = new ParameterBag();
     }
 
     /**
@@ -62,6 +96,7 @@ trait RequestMockHelpers
      *
      * @param \Pterodactyl\Models\User|null $user
      * @return \Pterodactyl\Models\User
+     * @deprecated
      */
     protected function setRequestUser(User $user = null): User
     {

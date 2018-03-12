@@ -1,6 +1,18 @@
 <?php
 
+
 return [
+    /*
+    |--------------------------------------------------------------------------
+    | Restricted Environment
+    |--------------------------------------------------------------------------
+    |
+    | Set this environment variable to true to enable a restricted configuration
+    | setup on the panel. When set to true, configurations stored in the
+    | database will not be applied.
+    */
+    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
+
     /*
     |--------------------------------------------------------------------------
     | Service Author
@@ -22,7 +34,7 @@ return [
     | Should login success and failure events trigger an email to the user?
     */
     'auth' => [
-        'notifications' => env('LOGIN_NOTIFICATIONS', false),
+        '2fa_required' => env('APP_2FA_REQUIRED', 0),
         '2fa' => [
             'bytes' => 32,
             'window' => env('APP_2FA_WINDOW', 4),
@@ -149,6 +161,21 @@ return [
     */
     'lang' => [
         'in_context' => env('PHRASE_IN_CONTEXT', false),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Language Editor
+    |--------------------------------------------------------------------------
+    |
+    | Set `PHRASE_IN_CONTEXT` to true to enable the PhaseApp in-context editor
+    | on this site which allows you to translate the panel, from the panel.
+    */
+    'client_features' => [
+        'databases' => [
+            'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
+            'allow_random' => env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
+        ],
     ],
 
     /*

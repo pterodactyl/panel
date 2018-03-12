@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs\Variables;
 
@@ -34,8 +27,8 @@ class VariableUpdateService
     /**
      * Update a specific egg variable.
      *
-     * @param int|\Pterodactyl\Models\EggVariable $variable
-     * @param array                               $data
+     * @param \Pterodactyl\Models\EggVariable $variable
+     * @param array                           $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -43,12 +36,8 @@ class VariableUpdateService
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
-    public function handle($variable, array $data)
+    public function handle(EggVariable $variable, array $data)
     {
-        if (! $variable instanceof EggVariable) {
-            $variable = $this->repository->find($variable);
-        }
-
         if (! is_null(array_get($data, 'env_variable'))) {
             if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
                 throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', [
@@ -56,8 +45,8 @@ class VariableUpdateService
                 ]));
             }
 
-            $search = $this->repository->withColumns('id')->findCountWhere([
-                ['env_variable', '=', array_get($data, 'env_variable')],
+            $search = $this->repository->setColumns('id')->findCountWhere([
+                ['env_variable', '=', $data['env_variable']],
                 ['egg_id', '=', $variable->egg_id],
                 ['id', '!=', $variable->id],
             ]);
@@ -69,11 +58,16 @@ class VariableUpdateService
             }
         }
 
-        $options = array_get($data, 'options', []);
+        $options = array_get($data, 'options') ?? [];
 
-        return $this->repository->withoutFresh()->update($variable->id, array_merge($data, [
+        return $this->repository->withoutFreshModel()->update($variable->id, [
+            'name' => $data['name'] ?? '',
+            'description' => $data['description'] ?? '',
+            'env_variable' => $data['env_variable'] ?? '',
+            'default_value' => $data['default_value'] ?? '',
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
-        ]));
+            'rules' => $data['rules'] ?? '',
+        ]);
     }
 }

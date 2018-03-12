@@ -50,6 +50,13 @@
         <div class="box">
             <div class="box-body">
                 <div class="form-group">
+                    <label class="control-label">Nest ID</label>
+                    <div>
+                        <input type="text" readonly class="form-control" value="{{ $nest->id }}" />
+                        <p class="text-muted small">A unique ID used for identification of this nest internally and through the API.</p>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="control-label">Author</label>
                     <div>
                         <input type="text" readonly class="form-control" value="{{ $nest->author }}" />
@@ -60,7 +67,7 @@
                     <label class="control-label">UUID</label>
                     <div>
                         <input type="text" readonly class="form-control" value="{{ $nest->uuid }}" />
-                        <p class="text-muted small">A unique identifier that all servers using this option are assigned for identification purposes.</p>
+                        <p class="text-muted small">A UUID that all servers using this option are assigned for identification purposes.</p>
                     </div>
                 </div>
             </div>
@@ -76,6 +83,7 @@
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tr>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th class="text-center">Servers</th>
@@ -83,6 +91,7 @@
                     </tr>
                     @foreach($nest->eggs as $egg)
                         <tr>
+                            <td class="align-middle"><code>{{ $egg->id }}</code></td>
                             <td class="align-middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $egg->author }}">{{ $egg->name }}</a></td>
                             <td class="col-xs-8 align-middle">{!! $egg->description !!}</td>
                             <td class="text-center align-middle"><code>{{ $egg->servers->count() }}</code></td>

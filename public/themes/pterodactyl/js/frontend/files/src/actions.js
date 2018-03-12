@@ -284,7 +284,7 @@ class ActionsClass {
         swal({
             type: 'warning',
             title: '',
-            text: 'Are you sure you want to delete <code>' + delName + '</code>? There is <strong>no</strong> reversing this action.',
+            text: 'Are you sure you want to delete <code>' + delName + '</code>?',
             html: true,
             showCancelButton: true,
             showConfirmButton: true,
@@ -380,16 +380,22 @@ class ActionsClass {
         if (selectedItems.length != 0)
         {
             let formattedItems = "";
+            let i = 0;
             $.each(selectedItems, function(key, value) {
-              formattedItems += ("<code>" + value + "</code>, ");
-            })
+                formattedItems += ("<code>" + value + "</code>, ");
+                i++;
+                return i < 5;
+            });
 
             formattedItems = formattedItems.slice(0, -2);
+            if (selectedItems.length > 5) {
+                formattedItems += ', and ' + (selectedItems.length - 5) + ' other(s)';
+            }
 
             swal({
                 type: 'warning',
                 title: '',
-                text: 'Are you sure you want to delete:' + formattedItems + '? There is <strong>no</strong> reversing this action.',
+                text: 'Are you sure you want to delete the following files: ' + formattedItems + '?',
                 html: true,
                 showCancelButton: true,
                 showConfirmButton: true,

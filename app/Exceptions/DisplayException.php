@@ -1,19 +1,18 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Exceptions;
 
-use Log;
+use Exception;
 use Throwable;
+use Psr\Log\LoggerInterface;
+use Illuminate\Http\Response;
+use Illuminate\Container\Container;
+use Prologue\Alerts\AlertsMessageBag;
 
 class DisplayException extends PterodactylException
 {
+    const LEVEL_DEBUG = 'debug';
+    const LEVEL_INFO = 'info';
     const LEVEL_WARNING = 'warning';
     const LEVEL_ERROR = 'error';
 
@@ -32,13 +31,9 @@ class DisplayException extends PterodactylException
      */
     public function __construct($message, Throwable $previous = null, $level = self::LEVEL_ERROR, $code = 0)
     {
-        $this->level = $level;
-
-        if (! is_null($previous)) {
-            Log::{$level}($previous);
-        }
-
         parent::__construct($message, $code, $previous);
+
+        $this->level = $level;
     }
 
     /**
@@ -47,5 +42,57 @@ class DisplayException extends PterodactylException
     public function getErrorLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return Response::HTTP_BAD_REQUEST;
+    }
+
+    /**
+     * Render the exception to the user by adding a flashed message to the session
+     * and then redirecting them back to the page that they came from. If the
+     * request originated from an API hit, return the error in JSONAPI spec format.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function render($request)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(Handler::convertToArray($this, [
+                'detail' => $this->getMessage(),
+            ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : Response::HTTP_BAD_REQUEST);
+        }
+
+        Container::getInstance()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();
+
+        return redirect()->back()->withInput();
+    }
+
+    /**
+     * Log the exception to the logs using the defined error level only if the previous
+     * exception is set.
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function report()
+    {
+        if (! $this->getPrevious() instanceof Exception || ! Handler::isReportable($this->getPrevious())) {
+            return null;
+        }
+
+        try {
+            $logger = Container::getInstance()->make(LoggerInterface::class);
+        } catch (Exception $ex) {
+            throw $this->getPrevious();
+        }
+
+        return $logger->{$this->getErrorLevel()}($this->getPrevious());
     }
 }

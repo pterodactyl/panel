@@ -1,17 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
-use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -30,8 +22,6 @@ use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
 class SubuserCreationServiceTest extends TestCase
 {
-    use PHPMock;
-
     /**
      * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
@@ -79,8 +69,6 @@ class SubuserCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Subusers', 'str_random')->expects($this->any())->willReturn('random_string');
-
         $this->connection = m::mock(ConnectionInterface::class);
         $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
         $this->permissionService = m::mock(PermissionCreationService::class);
@@ -88,16 +76,6 @@ class SubuserCreationServiceTest extends TestCase
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
         $this->userCreationService = m::mock(UserCreationService::class);
         $this->userRepository = m::mock(UserRepositoryInterface::class);
-
-        $this->service = new SubuserCreationService(
-            $this->connection,
-            $this->keyCreationService,
-            $this->permissionService,
-            $this->serverRepository,
-            $this->subuserRepository,
-            $this->userCreationService,
-            $this->userRepository
-        );
     }
 
     /**
@@ -107,18 +85,25 @@ class SubuserCreationServiceTest extends TestCase
     {
         $permissions = ['test-1' => 'test:1', 'test-2' => null];
         $server = factory(Server::class)->make();
-        $user = factory(User::class)->make();
+        $user = factory(User::class)->make([
+            'email' => 'known.1+test@example.com',
+        ]);
         $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andThrow(new RecordNotFoundException);
-        $this->userCreationService->shouldReceive('handle')->with([
-            'email' => $user->email,
-            'username' => substr(strtok($user->email, '@'), 0, 8) . '_' . 'random_string',
-            'name_first' => 'Server',
-            'name_last' => 'Subuser',
-            'root_admin' => false,
-        ])->once()->andReturn($user);
+        $this->userCreationService->shouldReceive('handle')->with(m::on(function ($data) use ($user) {
+            $subset = m::subset([
+                'email' => $user->email,
+                'name_first' => 'Server',
+                'name_last' => 'Subuser',
+                'root_admin' => false,
+            ])->match($data);
+
+            $username = substr(array_get($data, 'username', ''), 0, -3) === 'known.1test';
+
+            return $subset && $username;
+        }))->once()->andReturn($user);
 
         $this->subuserRepository->shouldReceive('create')->with(['user_id' => $user->id, 'server_id' => $server->id])
             ->once()->andReturn($subuser);
@@ -126,7 +111,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->permissionService->shouldReceive('handle')->with($subuser->id, array_keys($permissions))->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($server, $user->email, array_keys($permissions));
+        $response = $this->getService()->handle($server, $user->email, array_keys($permissions));
         $this->assertInstanceOf(Subuser::class, $response);
         $this->assertSame($subuser, $response);
     }
@@ -136,7 +121,7 @@ class SubuserCreationServiceTest extends TestCase
      */
     public function testExistingUserCanBeAddedAsASubuser()
     {
-        $permissions = ['view-sftp', 'reset-sftp'];
+        $permissions = ['access-sftp'];
         $server = factory(Server::class)->make();
         $user = factory(User::class)->make();
         $subuser = factory(Subuser::class)->make(['user_id' => $user->id, 'server_id' => $server->id]);
@@ -155,7 +140,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->permissionService->shouldReceive('handle')->with($subuser->id, $permissions)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->service->handle($server->id, $user->email, $permissions);
+        $response = $this->getService()->handle($server->id, $user->email, $permissions);
         $this->assertInstanceOf(Subuser::class, $response);
         $this->assertSame($subuser, $response);
     }
@@ -172,7 +157,7 @@ class SubuserCreationServiceTest extends TestCase
         $this->userRepository->shouldReceive('findFirstWhere')->with([['email', '=', $user->email]])->once()->andReturn($user);
 
         try {
-            $this->service->handle($server, $user->email, []);
+            $this->getService()->handle($server, $user->email, []);
         } catch (DisplayException $exception) {
             $this->assertInstanceOf(UserIsServerOwnerException::class, $exception);
             $this->assertEquals(trans('exceptions.subusers.user_is_owner'), $exception->getMessage());
@@ -195,10 +180,28 @@ class SubuserCreationServiceTest extends TestCase
         ])->once()->andReturn(1);
 
         try {
-            $this->service->handle($server, $user->email, []);
+            $this->getService()->handle($server, $user->email, []);
         } catch (DisplayException $exception) {
             $this->assertInstanceOf(ServerSubuserExistsException::class, $exception);
             $this->assertEquals(trans('exceptions.subusers.subuser_exists'), $exception->getMessage());
         }
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies.
+     *
+     * @return \Pterodactyl\Services\Subusers\SubuserCreationService
+     */
+    private function getService(): SubuserCreationService
+    {
+        return new SubuserCreationService(
+            $this->connection,
+            $this->keyCreationService,
+            $this->permissionService,
+            $this->serverRepository,
+            $this->subuserRepository,
+            $this->userCreationService,
+            $this->userRepository
+        );
     }
 }

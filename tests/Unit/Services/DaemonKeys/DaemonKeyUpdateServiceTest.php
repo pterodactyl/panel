@@ -70,7 +70,7 @@ class DaemonKeyUpdateServiceTest extends TestCase
             ->shouldReceive('addMinutes')->with(100)->once()->andReturnSelf()
             ->shouldReceive('toDateTimeString')->withNoArgs()->once()->andReturn('00:00:00');
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->repository->shouldReceive('update')->with(123, [
             'secret' => $secret,
             'expires_at' => '00:00:00',

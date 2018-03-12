@@ -126,7 +126,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         $data = [
             'MAIL_DRIVER' => 'mailgun',
             'MAILGUN_DOMAIN' => 'domain.com',
-            'MAILGUN_KEY' => '123456',
+            'MAILGUN_SECRET' => '123456',
             'MAIL_FROM' => 'mail@from.com',
             'MAIL_FROM_NAME' => 'MailName',
             'MAIL_ENCRYPTION' => 'tls',
@@ -147,7 +147,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         $data = [
             'MAIL_DRIVER' => 'mailgun',
             'MAILGUN_DOMAIN' => 'domain.com',
-            'MAILGUN_KEY' => '123456',
+            'MAILGUN_SECRET' => '123456',
             'MAIL_FROM' => 'mail@from.com',
             'MAIL_FROM_NAME' => 'MailName',
             'MAIL_ENCRYPTION' => 'tls',
@@ -160,7 +160,7 @@ class EmailSettingsCommandTest extends CommandTestCase
             '--from' => $data['MAIL_FROM_NAME'],
             '--encryption' => $data['MAIL_ENCRYPTION'],
             '--host' => $data['MAILGUN_DOMAIN'],
-            '--password' => $data['MAILGUN_KEY'],
+            '--password' => $data['MAILGUN_SECRET'],
         ]);
 
         $this->assertNotEmpty($display);

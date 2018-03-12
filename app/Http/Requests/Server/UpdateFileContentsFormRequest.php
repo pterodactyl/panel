@@ -12,6 +12,7 @@ namespace Pterodactyl\Http\Requests\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -68,7 +69,6 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
      * @throws \Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     private function checkFileCanBeEdited($server, $token)
     {
@@ -76,14 +76,17 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
         $repository = app()->make(FileRepositoryInterface::class);
 
         try {
-            $stats = $repository->setNode($server->node_id)->setAccessServer($server->uuid)
-                ->setAccessToken($token)
-                ->getFileStat($this->route()->parameter('file'));
+            $stats = $repository->setServer($server)->setToken($token)->getFileStat($this->route()->parameter('file'));
         } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
+            switch ($exception->getCode()) {
+                case 404:
+                    throw new NotFoundHttpException;
+                default:
+                    throw new DaemonConnectionException($exception);
+            }
         }
 
-        if (! $stats->file || ! in_array($stats->mime, $config->get('pterodactyl.files.editable'))) {
+        if ((! $stats->file && ! $stats->symlink) || ! in_array($stats->mime, $config->get('pterodactyl.files.editable'))) {
             throw new FileTypeNotEditableException(trans('server.files.exceptions.invalid_mime'));
         }
 

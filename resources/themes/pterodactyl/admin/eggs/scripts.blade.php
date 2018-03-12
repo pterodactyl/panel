@@ -53,7 +53,7 @@
                         <div class="form-group col-sm-4">
                             <label class="control-label">Copy Script From</label>
                             <select id="pCopyScriptFrom" name="copy_script_from">
-                                <option value="0">None</option>
+                                <option value="">None</option>
                                 @foreach($copyFromOptions as $opt)
                                     <option value="{{ $opt->id }}" {{ $egg->copy_script_from !== $opt->id ?: 'selected' }}>{{ $opt->name }}</option>
                                 @endforeach

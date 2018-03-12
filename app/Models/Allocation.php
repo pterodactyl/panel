@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -18,6 +11,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Allocation extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'allocation';
 
     /**
      * The table associated with the model.
@@ -104,5 +103,15 @@ class Allocation extends Model implements CleansAttributes, ValidableContract
     public function server()
     {
         return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Return the Node model associated with this allocation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function node()
+    {
+        return $this->belongsTo(Node::class);
     }
 }

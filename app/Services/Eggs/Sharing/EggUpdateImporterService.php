@@ -89,14 +89,14 @@ class EggUpdateImporterService
 
         // Update Existing Variables
         collect($parsed->variables)->each(function ($variable) use ($egg) {
-            $this->variableRepository->withoutFresh()->updateOrCreate([
+            $this->variableRepository->withoutFreshModel()->updateOrCreate([
                 'egg_id' => $egg,
                 'env_variable' => $variable->env_variable,
             ], collect($variable)->except(['egg_id', 'env_variable'])->toArray());
         });
 
         $imported = collect($parsed->variables)->pluck('env_variable')->toArray();
-        $existing = $this->variableRepository->withColumns(['id', 'env_variable'])->findWhere([['egg_id', '=', $egg]]);
+        $existing = $this->variableRepository->setColumns(['id', 'env_variable'])->findWhere([['egg_id', '=', $egg]]);
 
         // Delete variables not present in the import.
         collect($existing)->each(function ($variable) use ($egg, $imported) {

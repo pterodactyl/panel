@@ -16,7 +16,9 @@ use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 class NestRepository extends EloquentRepository implements NestRepositoryInterface
 {
     /**
-     * {@inheritdoc}
+     * Return the model backing this repository.
+     *
+     * @return string
      */
     public function model()
     {

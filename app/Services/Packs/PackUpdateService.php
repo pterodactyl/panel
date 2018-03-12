@@ -54,7 +54,7 @@ class PackUpdateService
     public function handle($pack, array $data)
     {
         if (! $pack instanceof Pack) {
-            $pack = $this->repository->withColumns(['id', 'egg_id'])->find($pack);
+            $pack = $this->repository->setColumns(['id', 'egg_id'])->find($pack);
         }
 
         if ((int) array_get($data, 'egg_id', $pack->egg_id) !== $pack->egg_id) {
@@ -70,6 +70,6 @@ class PackUpdateService
         $data['visible'] = isset($data['visible']);
         $data['locked'] = isset($data['locked']);
 
-        return $this->repository->withoutFresh()->update($pack->id, $data);
+        return $this->repository->withoutFreshModel()->update($pack->id, $data);
     }
 }

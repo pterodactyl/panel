@@ -32,7 +32,7 @@ return [
     'memo' => 'Memo',
     'created' => 'Created',
     'expires' => 'Expires',
-    'public_key' => 'Public key',
+    'public_key' => 'Token',
     'api_access' => 'Api Access',
     'never' => 'never',
     'sign_out' => 'Sign out',
@@ -83,4 +83,5 @@ return [
         'fri' => 'Friday',
         'sat' => 'Saturday',
     ],
+    'last_used' => 'Last Used',
 ];

@@ -59,7 +59,7 @@ class TaskCreationServiceTest extends TestCase
             'action' => $task->action,
             'payload' => $task->payload,
             'time_offset' => $final,
-        ])->once()->andReturn($task);
+        ], false)->once()->andReturn($task);
 
         $response = $this->service->handle($schedule, [
             'time_interval' => $interval,
@@ -81,14 +81,14 @@ class TaskCreationServiceTest extends TestCase
     {
         $schedule = factory(Schedule::class)->make();
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('create')->with([
                 'schedule_id' => $schedule->id,
                 'sequence_id' => 1,
                 'action' => 'test',
                 'payload' => 'testpayload',
                 'time_offset' => 300,
-            ])->once()->andReturn(true);
+            ], false)->once()->andReturn(true);
 
         $response = $this->service->handle($schedule, [
             'time_interval' => 'm',
@@ -108,14 +108,14 @@ class TaskCreationServiceTest extends TestCase
      */
     public function testIdCanBePassedInPlaceOfScheduleModel()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('create')->with([
                 'schedule_id' => 1234,
                 'sequence_id' => 1,
                 'action' => 'test',
                 'payload' => 'testpayload',
                 'time_offset' => 300,
-            ])->once()->andReturn(true);
+            ], false)->once()->andReturn(true);
 
         $response = $this->service->handle(1234, [
             'time_interval' => 'm',

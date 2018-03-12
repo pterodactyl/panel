@@ -75,7 +75,7 @@ class DaemonKeyCreationService
     {
         $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40);
 
-        $this->repository->withoutFresh()->create([
+        $this->repository->withoutFreshModel()->create([
             'user_id' => $user,
             'server_id' => $server,
             'secret' => $secret,

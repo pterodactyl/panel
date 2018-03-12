@@ -12,6 +12,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Javascript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
+use Illuminate\Http\Response;
+use Pterodactyl\Models\Allocation;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
@@ -23,6 +25,7 @@ use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
+use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
@@ -78,11 +81,16 @@ class NodesController extends Controller
      * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
      */
     protected $versionService;
+    /**
+     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
+     */
+    private $allocationDeletionService;
 
     /**
      * NodesController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                               $alert
+     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $allocationDeletionService
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
      * @param \Illuminate\Cache\Repository                                    $cache
@@ -95,6 +103,7 @@ class NodesController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
+        AllocationDeletionService $allocationDeletionService,
         AllocationRepositoryInterface $allocationRepository,
         AssignmentService $assignmentService,
         CacheRepository $cache,
@@ -106,6 +115,7 @@ class NodesController extends Controller
         SoftwareVersionService $versionService
     ) {
         $this->alert = $alert;
+        $this->allocationDeletionService = $allocationDeletionService;
         $this->allocationRepository = $allocationRepository;
         $this->assignmentService = $assignmentService;
         $this->cache = $cache;
@@ -126,7 +136,7 @@ class NodesController extends Controller
     public function index(Request $request)
     {
         return view('admin.nodes.index', [
-            'nodes' => $this->repository->search($request->input('query'))->getNodeListingData(),
+            'nodes' => $this->repository->setSearchTerm($request->input('query'))->getNodeListingData(),
         ]);
     }
 
@@ -166,15 +176,15 @@ class NodesController extends Controller
     /**
      * Shows the index overview page for a specific node.
      *
-     * @param int $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewIndex($node)
+    public function viewIndex(Node $node)
     {
         return view('admin.nodes.view.index', [
-            'node' => $this->repository->getSingleNode($node),
+            'node' => $this->repository->loadLocationAndServerCount($node),
             'stats' => $this->repository->getUsageStats($node),
             'version' => $this->versionService,
         ]);
@@ -208,17 +218,18 @@ class NodesController extends Controller
     /**
      * Shows the allocation page for a specific node.
      *
-     * @param int $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewAllocation($node)
+    public function viewAllocation(Node $node)
     {
-        $node = $this->repository->getNodeAllocations($node);
+        $this->repository->loadNodeAllocations($node);
         Javascript::put(['node' => collect($node)->only(['id'])]);
 
-        return view('admin.nodes.view.allocation', ['node' => $node]);
+        return view('admin.nodes.view.allocation', [
+            'allocations' => $this->allocationRepository->setColumns(['ip'])->getUniqueAllocationIpsForNode($node->id),
+            'node' => $node,
+        ]);
     }
 
     /**
@@ -261,17 +272,15 @@ class NodesController extends Controller
     /**
      * Removes a single allocation from a node.
      *
-     * @param int $node
-     * @param int $allocation
-     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     * @param int                            $node
+     * @param \Pterodactyl\Models\Allocation $allocation
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function allocationRemoveSingle($node, $allocation)
+    public function allocationRemoveSingle(int $node, Allocation $allocation): Response
     {
-        $this->allocationRepository->deleteWhere([
-            ['id', '=', $allocation],
-            ['node_id', '=', $node],
-            ['server_id', '=', null],
-        ]);
+        $this->allocationDeletionService->handle($allocation);
 
         return response('', 204);
     }
@@ -322,7 +331,10 @@ class NodesController extends Controller
      * @param int|\Pterodactyl\Models\Node                                $node
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function createAllocation(AllocationFormRequest $request, Node $node)
     {
@@ -357,7 +369,7 @@ class NodesController extends Controller
     public function setToken(Node $node)
     {
         $token = bin2hex(random_bytes(16));
-        $this->cache->tags(['Node:Configuration'])->put($token, $node->id, 5);
+        $this->cache->put('Node:Configuration:' . $token, $node->id, 5);
 
         return response()->json(['token' => $token]);
     }

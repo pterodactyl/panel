@@ -91,11 +91,31 @@
                         <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>
                     </div>
                 </div>
-                <div class="box-footer">
-                    <p class="text-muted small no-margin">
-                        <input type="checkbox" name="auto_deploy" value="yes" id="pAutoDeploy" @if(old('auto_deploy'))checked="checked"@endif/>
-                        <label for="pAutoDeploy">Check this box if you want the panel to automatically select a node and allocation for this server in the given location.</label>
-                    </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="overlay" id="allocationLoader" style="display:none;"><i class="fa fa-refresh fa-spin"></i></div>
+                <div class="box-header with-border">
+                    <h3 class="box-title">Application Feature Limits</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-xs-6">
+                        <label for="cpu" class="control-label">Database Limit</label>
+                        <div>
+                            <input type="text" name="database_limit" class="form-control" value="{{ old('database_limit', 0) }}"/>
+                        </div>
+                        <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimmited.</p>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="cpu" class="control-label">Allocation Limit</label>
+                        <div>
+                            <input type="text" name="allocation_limit" class="form-control" value="{{ old('allocation_limit', 0) }}"/>
+                        </div>
+                        <p class="text-muted small">The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -117,22 +137,13 @@
                     <div class="form-group col-sm-4">
                         <label for="pSwap">Swap</label>
                         <div class="input-group">
-                            <input type="text" value="{{ old('swap') }}" class="form-control" name="swap" id="pSwap" />
+                            <input type="text" value="{{ old('swap', 0) }}" class="form-control" name="swap" id="pSwap" />
                             <span class="input-group-addon">MB</span>
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label for="pOOMDisabled">Out-of-Memory Killer</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="checkbox" id="pOOMDisabled" name="oom_disabled"/>
-                            </span>
-                            <input type="text" class="form-control" readonly style="background:transparent !important;" value="Disable OOM Killer" />
                         </div>
                     </div>
                 </div>
                 <div class="box-footer no-border no-pad-top no-pad-bottom">
-                    <p class="text-muted small">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field. We suggest leaving OOM Killer enabled unless you know what you are doing, disabling it could cause your server to hang unexpectedly.<p>
+                    <p class="text-muted small">If you do not want to assign swap space to a server simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server simply enter <code>0</code> into the memory field.<p>
                 </div>
                 <div class="box-body row">
                     <div class="form-group col-sm-4">
@@ -211,7 +222,7 @@
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
                         <label for="pDefaultContainer">Docker Image</label>
-                        <input id="pDefaultContainer" name="docker_image" value="{{ old('docker_image') }}" class="form-control" />
+                        <input id="pDefaultContainer" name="image" value="{{ old('image') }}" class="form-control" />
                         <p class="small text-muted no-margin">This is the default Docker image that will be used to run this server.</p>
                     </div>
                 </div>

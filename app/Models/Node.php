@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -19,6 +12,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Node extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Notifiable, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'node';
 
     const DAEMON_SECRET_LENGTH = 36;
 
@@ -154,6 +153,20 @@ class Node extends Model implements CleansAttributes, ValidableContract
                 ],
                 'socket' => '/var/run/docker.sock',
                 'autoupdate_images' => true,
+            ],
+            'filesystem' => [
+                'server_logs' => '/tmp/pterodactyl',
+            ],
+            'internals' => [
+                'disk_use_seconds' => 30,
+                'set_permissions_on_boot' => true,
+                'throttle' => [
+                    'enabled' => true,
+                    'kill_at_count' => 5,
+                    'decay' => 10,
+                    'lines' => 1000,
+                    'check_interval_ms' => 100,
+                ],
             ],
             'sftp' => [
                 'path' => $this->daemonBase,

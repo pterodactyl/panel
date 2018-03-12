@@ -201,12 +201,13 @@ class ServersController extends Controller
     /**
      * Display the index page with all servers currently on the system.
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
         return view('admin.servers.index', [
-            'servers' => $this->repository->getAllServers(
+            'servers' => $this->repository->setSearchTerm($request->input('query'))->getAllServers(
                 $this->config->get('pterodactyl.paginate.admin.servers')
             ),
         ]);
@@ -251,13 +252,17 @@ class ServersController extends Controller
      * @param \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
+     * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */
     public function store(ServerFormRequest $request)
     {
-        $server = $this->service->create($request->except('_token'));
+        $server = $this->service->handle($request->except('_token'));
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
         return redirect()->route('admin.servers.view', $server->id);
@@ -352,14 +357,12 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param int $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewDatabase($server)
+    public function viewDatabase(Server $server)
     {
-        $server = $this->repository->getWithDatabases($server);
+        $this->repository->loadDatabaseRelations($server);
 
         return view('admin.servers.view.database', [
             'hosts' => $this->databaseHostRepository->all(),
@@ -402,8 +405,8 @@ class ServersController extends Controller
      */
     public function setDetails(Request $request, Server $server)
     {
-        $this->detailsModificationService->edit($server, $request->only([
-            'owner_id', 'name', 'description',
+        $this->detailsModificationService->handle($server, $request->only([
+            'owner_id', 'external_id', 'name', 'description',
         ]));
 
         $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();
@@ -429,7 +432,7 @@ class ServersController extends Controller
 
         $this->repository->update($server->id, [
             'installed' => ! $server->installed,
-        ]);
+        ], true, true);
 
         $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();
 
@@ -459,12 +462,10 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function rebuildContainer(Server $server)
     {
-        $this->containerRebuildService->rebuild($server);
+        $this->containerRebuildService->handle($server);
         $this->alert->success(trans('admin/server.alerts.rebuild_on_boot'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);
@@ -497,15 +498,17 @@ class ServersController extends Controller
      * @param \Illuminate\Http\Request   $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @internal param int $id
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateBuild(Request $request, Server $server)
     {
         $this->buildModificationService->handle($server, $request->only([
             'allocation_id', 'add_allocations', 'remove_allocations',
             'memory', 'swap', 'io', 'cpu', 'disk',
+            'database_limit', 'allocation_limit',
         ]));
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
@@ -524,7 +527,7 @@ class ServersController extends Controller
      */
     public function delete(Request $request, Server $server)
     {
-        $this->deletionService->withForce($request->has('force_delete'))->handle($server);
+        $this->deletionService->withForce($request->filled('force_delete'))->handle($server);
         $this->alert->success(trans('admin/server.alerts.server_deleted'))->flash();
 
         return redirect()->route('admin.servers');

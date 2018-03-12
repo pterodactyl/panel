@@ -1,13 +1,11 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 return [
+    'key' => [
+        'warning' => 'It appears you have already configured an application encryption key. Continuing with this process with overwrite that key and cause data corruption for any existing encrypted data. DO NOT CONTINUE UNLESS YOU KNOW WHAT YOU ARE DOING.',
+        'confirm' => 'I understand the consequences of performing this command and accept all responsibility for the loss of encrypted data.',
+        'final_confirm' => 'Are you sure you wish to continue? Changing the application encryption key WILL CAUSE DATA LOSS.',
+    ],
     'location' => [
         'no_location_found' => 'Could not locate a record matching the provided short code.',
         'ask_short' => 'Location Short Code',
@@ -44,6 +42,10 @@ return [
     ],
     'server' => [
         'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
+        'power' => [
+            'confirm' => 'You are about to perform a :action aganist :count servers. Do you wish to continue?',
+            'action_failed' => 'Power action request for ":name" (#:id) on node ":node" failed with error: :message',
+        ],
     ],
     'environment' => [
         'mail' => [
@@ -74,6 +76,7 @@ return [
             'try_again' => 'Go back and try again?',
         ],
         'app' => [
+            'settings' => 'Enable UI based settings editor?',
             'author' => 'Egg Author Email',
             'author_help' => 'Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.',
             'app_url_help' => 'The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.',

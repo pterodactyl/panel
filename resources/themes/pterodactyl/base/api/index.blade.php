@@ -18,62 +18,70 @@
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-xs-12">
-        <div class="alert alert-danger">
-            API functionality is disabled in this beta release.
-        </div>
-
-        <div class="box">
-            <div class="overlay"></div>
-            <div class="box-header">
-                <h3 class="box-title">@lang('base.api.index.list')</h3>
-                <div class="box-tools">
-                    <a href="{{ route('account.api.new') }}"><button class="btn btn-primary btn-sm">Create New</button></a>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Credentials List</h3>
+                    <div class="box-tools">
+                        <a href="{{ route('account.api.new') }}" class="btn btn-sm btn-primary">Create New</a>
+                    </div>
                 </div>
-            </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <tbody>
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
                         <tr>
-                            <th>@lang('strings.public_key')</th>
-                            <th>@lang('strings.memo')</th>
-                            <th class="text-center hidden-sm hidden-xs">@lang('strings.created')</th>
-                            <th class="text-center hidden-sm hidden-xs">@lang('strings.expires')</th>
+                            <th>Key</th>
+                            <th>Memo</th>
+                            <th>Last Used</th>
+                            <th>Created</th>
                             <th></th>
                         </tr>
-                        @foreach ($keys as $key)
+                        @foreach($keys as $key)
                             <tr>
-                                <td><code>{{ $key->public }}</code></td>
-                                <td>{{ $key->memo }}</td>
-                                <td class="text-center hidden-sm hidden-xs">
-                                    {{ (new Carbon($key->created_at))->toDayDateTimeString() }}
+                                <td>
+                                    <code class="toggle-display" style="cursor:pointer" data-toggle="tooltip" data-placement="right" title="Click to Reveal">
+                                        <i class="fa fa-key"></i> &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;
+                                    </code>
+                                    <code class="hidden" data-attr="api-key">
+                                        {{ $key->identifier }}{{ decrypt($key->token) }}
+                                    </code>
                                 </td>
-                                <td class="text-center hidden-sm hidden-xs">
-                                    @if(is_null($key->expires_at))
-                                        <span class="label label-default">@lang('strings.never')</span>
-                                    @else
-                                        {{ (new Carbon($key->expires_at))->toDayDateTimeString() }}
+                                <td>{{ $key->memo }}</td>
+                                <td>
+                                    @if(!is_null($key->last_used_at))
+                                        @datetimeHuman($key->last_used_at)
+                                        @else
+                                        &mdash;
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    <a href="#delete" class="text-danger" data-action="delete" data-attr="{{ $key->public}}"><i class="fa fa-trash"></i></a>
+                                <td>@datetimeHuman($key->created_at)</td>
+                                <td>
+                                    <a href="#" data-action="revoke-key" data-attr="{{ $key->identifier }}">
+                                        <i class="fa fa-trash-o text-danger"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @section('footer-scripts')
     @parent
     <script>
     $(document).ready(function() {
-        $('[data-action="delete"]').click(function (event) {
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+        $('.toggle-display').on('click', function () {
+            $(this).parent().find('code[data-attr="api-key"]').removeClass('hidden');
+            $(this).hide();
+        });
+
+        $('[data-action="revoke-key"]').click(function (event) {
             var self = $(this);
             event.preventDefault();
             swal({
@@ -89,7 +97,7 @@
             }, function () {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('account.api.revoke', { key: self.data('attr') }),
+                    url: Router.route('account.api.revoke', { identifier: self.data('attr') }),
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }

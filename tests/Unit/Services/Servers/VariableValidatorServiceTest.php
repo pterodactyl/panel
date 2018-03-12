@@ -128,10 +128,16 @@ class VariableValidatorServiceTest extends TestCase
             $messages = $exception->validator->getMessageBag()->all();
 
             $this->assertNotEmpty($messages);
-            $this->assertSame(1, count($messages));
-            $this->assertSame(trans('validation.required', [
-                'attribute' => trans('validation.internal.variable_value', ['env' => $variables[0]->name]),
-            ]), $messages[0]);
+            $this->assertSame(2, count($messages));
+
+            // We only expect to get the first two variables form the getVariableCollection
+            // function here since those are the only two that are editable, and the others
+            // should be discarded and not validated.
+            for ($i = 0; $i < 2; $i++) {
+                $this->assertSame(trans('validation.required', [
+                    'attribute' => trans('validation.internal.variable_value', ['env' => $variables[$i]->name]),
+                ]), $messages[$i]);
+            }
         }
     }
 
@@ -145,8 +151,8 @@ class VariableValidatorServiceTest extends TestCase
         return collect(
             [
                 factory(EggVariable::class)->states('editable', 'viewable')->make(),
-                factory(EggVariable::class)->states('viewable')->make(),
                 factory(EggVariable::class)->states('editable')->make(),
+                factory(EggVariable::class)->states('viewable')->make(),
                 factory(EggVariable::class)->make(),
             ]
         );

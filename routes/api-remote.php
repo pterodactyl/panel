@@ -1,12 +1,7 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
+
 Route::get('/authenticate/{token}', 'ValidateKeyController@index')->name('api.remote.authenticate');
+Route::post('/download-file', 'FileDownloadController@index')->name('api.remote.download_file');
 
 Route::group(['prefix' => '/eggs'], function () {
     Route::get('/', 'EggRetrievalController@index')->name('api.remote.eggs');

@@ -8,7 +8,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{{ Settings::get('company', 'Pterodactyl') }} - @yield('title')</title>
+        <title>{{ config('app.name', 'Pterodactyl') }} - @yield('title')</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="_token" content="{{ csrf_token() }}">
 
@@ -19,17 +19,17 @@
         <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#367fa9">
+        <meta name="theme-color" content="#0e4688">
 
         @include('layouts.scripts')
 
         @section('scripts')
-            {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
-            {!! Theme::css('vendor/adminlte/admin.min.css') !!}
-            {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css') !!}
-            {!! Theme::css('vendor/sweetalert/sweetalert.min.css') !!}
-            {!! Theme::css('vendor/animate/animate.min.css') !!}
-            {!! Theme::css('css/pterodactyl.css') !!}
+            {!! Theme::css('vendor/bootstrap/bootstrap.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/admin.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/sweetalert/sweetalert.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/animate/animate.min.css?t={cache-version}') !!}
+            {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
@@ -43,7 +43,7 @@
         <div class="wrapper">
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
-                    <span>{{ Settings::get('company', 'Pterodactyl') }}</span>
+                    <span>{{ config('app.name', 'Pterodactyl') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -54,15 +54,19 @@
                     </a>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <li class="dropdown user-menu">
-                                <a href="{{ route('account') }}" class="dropdown-toggle" data-toggle="dropdown">
+                            <li class="user-menu">
+                                <a href="{{ route('account') }}">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
-                            {{--<li>--}}
-                                {{--<a href="#" data-action="control-sidebar" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.servers')"><i class="fa fa-server"></i></a>--}}
-                            {{--</li>--}}
+                            @if(isset($sidebarServerList))
+                                <li>
+                                    <a href="#" data-toggle="control-sidebar">
+                                        <i class="fa fa-server"></i>
+                                    </a>
+                                </li>
+                            @endif
                             @if(Auth::user()->root_admin)
                                 <li>
                                     <li><a href="{{ route('admin.index') }}" data-toggle="tooltip" data-placement="bottom" title="@lang('strings.admin_cp')"><i class="fa fa-gears"></i></a></li>
@@ -166,7 +170,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @if(Gate::allows('view-startup', $server) || Gate::allows('view-sftp', $server) ||  Gate::allows('view-allocation', $server))
+                            @if(Gate::allows('view-startup', $server) || Gate::allows('access-sftp', $server) ||  Gate::allows('view-allocations', $server))
                                 <li class="treeview
                                     @if(starts_with(Route::currentRouteName(), 'server.settings'))
                                         active
@@ -180,10 +184,13 @@
                                         </span>
                                     </a>
                                     <ul class="treeview-menu">
-                                        @can('view-allocation', $server)
+                                        @can('view-name', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.name' ?: 'active' }}"><a href="{{ route('server.settings.name', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.server_name')</a></li>
+                                        @endcan
+                                        @can('view-allocations', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.allocation' ?: 'active' }}"><a href="{{ route('server.settings.allocation', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.port_allocations')</a></li>
                                         @endcan
-                                        @can('view-sftp', $server)
+                                        @can('access-sftp', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.sftp' ?: 'active' }}"><a href="{{ route('server.settings.sftp', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.sftp_settings')</a></li>
                                         @endcan
                                         @can('view-startup', $server)
@@ -205,9 +212,6 @@
                 </section>
             </aside>
             <div class="content-wrapper">
-                <section class="content-header">
-                    @include('partials/_internal/beta')
-                </section>
                 <section class="content-header">
                     @yield('content-header')
                 </section>
@@ -243,51 +247,46 @@
                 </div>
                 Copyright &copy; 2015 - {{ date('Y') }} <a href="https://pterodactyl.io/">Pterodactyl Software</a>.
             </footer>
-            <aside class="control-sidebar control-sidebar-dark">
-                <div class="tab-content">
-                    <ul class="control-sidebar-menu">
-                        {{-- @todo replace this with better logic, or just remove it entirely? --}}
-                        {{--@foreach (Auth::user()->access(null)->get() as $s)--}}
-                            {{--<li>--}}
-                                {{--<a--}}
-                                    {{--@if(isset($server) && isset($node))--}}
-                                        {{--@if($server->uuidShort === $s->uuidShort)--}}
-                                            {{--class="active"--}}
-                                        {{--@endif--}}
-                                    {{--@endif--}}
-                                {{--href="{{ route('server.index', $s->uuidShort) }}">--}}
-                                    {{--@if($s->owner_id === Auth::user()->id)--}}
-                                        {{--<i class="menu-icon fa fa-user bg-blue"></i>--}}
-                                    {{--@else--}}
-                                        {{--<i class="menu-icon fa fa-user-o bg-gray"></i>--}}
-                                    {{--@endif--}}
-                                    {{--<div class="menu-info">--}}
-                                        {{--<h4 class="control-sidebar-subheading">{{ $s->name }}</h4>--}}
-                                        {{--<p>{{ $s->username }}</p>--}}
-                                    {{--</div>--}}
-                                {{--</a>--}}
-                            {{--</li>--}}
-                        {{--@endforeach--}}
-                    </ul>
-                </div>
-            </aside>
+            @if(isset($sidebarServerList))
+                <aside class="control-sidebar control-sidebar-dark">
+                    <div class="tab-content">
+                        <ul class="control-sidebar-menu">
+                            @foreach($sidebarServerList as $sidebarServer)
+                                <li>
+                                    <a href="{{ route('server.index', $sidebarServer->uuidShort) }}" @if(isset($server) && $sidebarServer->id === $server->id)class="active"@endif>
+                                        @if($sidebarServer->owner_id === Auth::user()->id)
+                                            <i class="menu-icon fa fa-user bg-blue"></i>
+                                        @else
+                                            <i class="menu-icon fa fa-user-o bg-gray"></i>
+                                        @endif
+                                        <div class="menu-info">
+                                            <h4 class="control-sidebar-subheading">{{ str_limit($sidebarServer->name, 20) }}</h4>
+                                            <p>{{ str_limit($sidebarServer->description, 20) }}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </aside>
+            @endif
             <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')
-            {!! Theme::js('js/keyboard.polyfill.js') !!}
+            {!! Theme::js('js/keyboard.polyfill.js?t={cache-version}') !!}
             <script>keyboardeventKeyPolyfill.polyfill();</script>
 
-            {!! Theme::js('js/laroute.js') !!}
-            {!! Theme::js('vendor/jquery/jquery.min.js') !!}
-            {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
-            {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
-            {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
-            {!! Theme::js('vendor/adminlte/app.min.js') !!}
-            {!! Theme::js('vendor/socketio/socket.io.v203.min.js') !!}
-            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
-            {!! Theme::js('js/autocomplete.js') !!}
+            {!! Theme::js('js/laroute.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/sweetalert/sweetalert.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/adminlte/app.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/socketio/socket.io.v203.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
+            {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
             @if(config('pterodactyl.lang.in_context'))
-                {!! Theme::js('vendor/phraseapp/phraseapp.js') !!}
+                {!! Theme::js('vendor/phraseapp/phraseapp.js?t={cache-version}') !!}
             @endif
 
             @if(Auth::user()->root_admin)

@@ -22,9 +22,10 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\API\Remote;
+namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Spatie\Fractal\Fractal;
+use Illuminate\Http\Response;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\HttpException;
@@ -75,17 +76,20 @@ class ValidateKeyController extends Controller
      * @return array
      *
      * @throws \Illuminate\Foundation\Testing\HttpException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index($token)
     {
         if (! starts_with($token, DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER)) {
-            throw new HttpException(501);
+            throw new HttpException(Response::HTTP_NOT_IMPLEMENTED);
         }
 
         try {
             $key = $this->daemonKeyRepository->getKeyWithServer($token);
         } catch (RecordNotFoundException $exception) {
+            throw new NotFoundHttpException;
+        }
+
+        if ($key->getRelation('server')->suspended || $key->getRelation('server')->installed !== 1) {
             throw new NotFoundHttpException;
         }
 

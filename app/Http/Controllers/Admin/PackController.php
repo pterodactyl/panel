@@ -114,9 +114,7 @@ class PackController extends Controller
     public function index(Request $request)
     {
         return view('admin.packs.index', [
-            'packs' => $this->repository->search($request->input('query'))->paginateWithEggAndServerCount(
-                $this->config->get('pterodactyl.paginate.admin.packs')
-            ),
+            'packs' => $this->repository->setSearchTerm($request->input('query'))->paginateWithEggAndServerCount(),
         ]);
     }
 
@@ -163,7 +161,7 @@ class PackController extends Controller
      */
     public function store(PackFormRequest $request)
     {
-        if ($request->has('from_template')) {
+        if ($request->filled('from_template')) {
             $pack = $this->templateUploadService->handle($request->input('egg_id'), $request->file('file_upload'));
         } else {
             $pack = $this->creationService->handle($request->normalize(), $request->file('file_upload'));
@@ -177,14 +175,14 @@ class PackController extends Controller
     /**
      * Display pack view template to user.
      *
-     * @param int $pack
+     * @param \Pterodactyl\Models\Pack $pack
      * @return \Illuminate\View\View
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function view($pack)
+    public function view(Pack $pack)
     {
         return view('admin.packs.view', [
-            'pack' => $this->repository->getWithServers($pack),
+            'pack' => $this->repository->loadServerData($pack),
             'nests' => $this->serviceRepository->getWithEggs(),
         ]);
     }

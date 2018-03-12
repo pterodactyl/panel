@@ -51,4 +51,17 @@ class ServerPolicy
 
         return $this->checkPermission($user, $server, $ability);
     }
+
+    /**
+     * This is a horrendous hack to avoid Laravel's "smart" behavior that does
+     * not call the before() function if there isn't a function matching the
+     * policy permission.
+     *
+     * @param string $name
+     * @param mixed  $arguments
+     */
+    public function __call($name, $arguments)
+    {
+        // do nothing
+    }
 }

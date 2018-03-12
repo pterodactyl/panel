@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs\Variables;
 
@@ -49,12 +42,17 @@ class VariableCreationService
             ));
         }
 
-        $options = array_get($data, 'options', []);
+        $options = array_get($data, 'options') ?? [];
 
-        return $this->repository->create(array_merge($data, [
+        return $this->repository->create([
             'egg_id' => $egg,
+            'name' => $data['name'] ?? '',
+            'description' => $data['description'] ?? '',
+            'env_variable' => $data['env_variable'] ?? '',
+            'default_value' => $data['default_value'] ?? '',
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
-        ]));
+            'rules' => $data['rules'] ?? '',
+        ]);
     }
 }

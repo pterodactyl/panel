@@ -41,6 +41,11 @@
                         <input type="text" name="version" id="pVersion" class="form-control" value="{{ $pack->version }}" />
                         <p class="text-muted small">The version of this package, or the version of the files contained within the package.</p>
                     </div>
+                    <div class="form-group">
+                        <label class="form-label">Storage Location</label>
+                        <input type="text" class="form-control" readonly value="{{ storage_path('app/packs/' . $pack->uuid) }}">
+                        <p class="text-muted small">If you would like to modify the stored pack you will need to upload a new <code>archive.tar.gz</code> to the location defined above.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -93,42 +98,13 @@
                 </div>
                 <div class="box-footer with-border">
                     {!! csrf_field() !!}
-                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
                     <button name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right" type="submit">Save</button>
+                    <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
                 </div>
             </div>
         </div>
     </div>
 </form>
-<div class="row">
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Stored Files</h3>
-            </div>
-            <div class="box-body no-padding table-responsive">
-                <table class="table table-hover">
-                    <tr>
-                        <th>Name</th>
-                        <th>SHA1 Hash</th>
-                        <th>File Size</th>
-                    </tr>
-                    @foreach($pack->files() as $file)
-                        <tr>
-                            <td>{{ $file->name }}</td>
-                            <td><code>{{ $file->hash }}</code></td>
-                            <td>{{ $file->size }}</td>
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-            <div class="box-footer">
-                <p class="text-muted small">If you would like to modified the stored pack you will need to upload a new <code>archive.tar.gz</code> to the location defined below.</p>
-                <p class="text-muted small"><strong>Storage Location:</strong> <code>{{ storage_path('app/packs/' . $pack->uuid) }}</code></p>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="row">
     <div class="col-xs-12">
         <div class="box">

@@ -39,17 +39,18 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>ID</th>
                             <th>Server Name</th>
+                            <th>UUID</th>
                             <th>Owner</th>
                             <th>Node</th>
                             <th>Connection</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         @foreach ($servers as $server)
                             <tr data-server="{{ $server->uuidShort }}">
-                                <td><code title="{{ $server->uuid }}">{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
+                                <td><code title="{{ $server->uuid }}">{{ $server->uuid }}</code></td>
                                 <td><a href="{{ route('admin.users.view', $server->user->id) }}">{{ $server->user->username }}</a></td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
                                 <td>
@@ -64,6 +65,10 @@
                                         <span class="label label-success">Active</span>
                                     @endif
                                 </td>
+                                <td class="text-center">
+                                    <a class="btn btn-xs btn-default" href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-wrench"></i></a>
+                                    <a class="btn btn-xs btn-default console-popout" href="{{ route('server.console', $server->uuidShort) }}"><i class="fa fa-terminal"></i></a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -71,10 +76,20 @@
             </div>
             @if($servers->hasPages())
                 <div class="box-footer with-border">
-                    <div class="col-md-12 text-center">{!! $servers->render() !!}</div>
+                    <div class="col-md-12 text-center">{!! $servers->appends(['query' => Request::input('query')])->render() !!}</div>
                 </div>
             @endif
         </div>
     </div>
 </div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+    <script>
+        $('.console-popout').on('click', function (event) {
+            event.preventDefault();
+            window.open($(this).attr('href'), 'Pterodactyl Console', 'width=800,height=400');
+        });
+    </script>
 @endsection

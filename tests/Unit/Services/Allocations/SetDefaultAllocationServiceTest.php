@@ -4,6 +4,7 @@ namespace Tests\Unit\Services\Allocations;
 
 use Mockery as m;
 use Tests\TestCase;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use Tests\Traits\MocksRequestException;
@@ -68,13 +69,12 @@ class SetDefaultAllocationServiceTest extends TestCase
 
         $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $model->id]])->once()->andReturn($allocations);
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->serverRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverRepository->shouldReceive('update')->with($model->id, [
             'allocation_id' => $allocations->first()->id,
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(new Response);
 
-        $this->daemonRepository->shouldReceive('setAccessServer')->with($model->uuid)->once()->andReturnSelf();
-        $this->daemonRepository->shouldReceive('setNode')->with($model->node_id)->once()->andReturnSelf();
+        $this->daemonRepository->shouldReceive('setServer')->with($model)->once()->andReturnSelf();
         $this->daemonRepository->shouldReceive('update')->with([
             'build' => [
                 'default' => [
@@ -85,7 +85,7 @@ class SetDefaultAllocationServiceTest extends TestCase
                     return $item->pluck('port');
                 })->toArray(),
             ],
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(new Response);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->getService()->handle($useModel ? $model : 1234, $allocations->first()->id);
@@ -118,12 +118,12 @@ class SetDefaultAllocationServiceTest extends TestCase
 
         $this->repository->shouldReceive('findWhere')->with([['server_id', '=', $model->id]])->once()->andReturn(collect([$allocation]));
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->serverRepository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf();
+        $this->serverRepository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->serverRepository->shouldReceive('update')->with($model->id, [
             'allocation_id' => $allocation->id,
-        ])->once()->andReturnNull();
+        ])->once()->andReturn(new Response);
 
-        $this->daemonRepository->shouldReceive('setAccessServer->setNode->update')->once()->andThrow($this->getExceptionMock());
+        $this->daemonRepository->shouldReceive('setServer->update')->once()->andThrow($this->getExceptionMock());
         $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 
         try {

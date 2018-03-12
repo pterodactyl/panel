@@ -1,120 +1,79 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Api;
 
-use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
-    const PUB_CRYPTO_LENGTH = 16;
-    const PRIV_CRYPTO_LENGTH = 64;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $connection;
-
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
      */
-    protected $encrypter;
+    private $encrypter;
 
     /**
-     * @var \Pterodactyl\Services\Api\PermissionService
+     * @var int
      */
-    protected $permissionService;
+    private $keyType = ApiKey::TYPE_NONE;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * ApiKeyService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Database\ConnectionInterface                    $connection
      * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
-     * @param \Pterodactyl\Services\Api\PermissionService                 $permissionService
      */
-    public function __construct(
-        ApiKeyRepositoryInterface $repository,
-        ConnectionInterface $connection,
-        Encrypter $encrypter,
-        PermissionService $permissionService
-    ) {
-        $this->repository = $repository;
-        $this->connection = $connection;
+    public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
+    {
         $this->encrypter = $encrypter;
-        $this->permissionService = $permissionService;
+        $this->repository = $repository;
     }
 
     /**
-     * Create a new API Key on the system with the given permissions.
+     * Set the type of key that should be created. By default an orphaned key will be
+     * created. These keys cannot be used for anything, and will not render in the UI.
+     *
+     * @param int $type
+     * @return \Pterodactyl\Services\Api\KeyCreationService
+     */
+    public function setKeyType(int $type)
+    {
+        $this->keyType = $type;
+
+        return $this;
+    }
+
+    /**
+     * Create a new API key for the Panel using the permissions passed in the data request.
+     * This will automatically generate an identifer and an encrypted token that are
+     * stored in the database.
      *
      * @param array $data
      * @param array $permissions
-     * @param array $administrative
-     * @return string
+     * @return \Pterodactyl\Models\ApiKey
      *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data, array $permissions, array $administrative = [])
+    public function handle(array $data, array $permissions = []): ApiKey
     {
-        $publicKey = str_random(self::PUB_CRYPTO_LENGTH);
-        $secretKey = str_random(self::PRIV_CRYPTO_LENGTH);
-
-        // Start a Transaction
-        $this->connection->beginTransaction();
-
         $data = array_merge($data, [
-            'public' => $publicKey,
-            'secret' => $this->encrypter->encrypt($secretKey),
+            'key_type' => $this->keyType,
+            'identifier' => str_random(ApiKey::IDENTIFIER_LENGTH),
+            'token' => $this->encrypter->encrypt(str_random(ApiKey::KEY_LENGTH)),
         ]);
 
+        if ($this->keyType === ApiKey::TYPE_APPLICATION) {
+            $data = array_merge($data, $permissions);
+        }
+
         $instance = $this->repository->create($data, true, true);
-        $nodes = $this->permissionService->getPermissions();
 
-        foreach ($permissions as $permission) {
-            @list($block, $search) = explode('-', $permission, 2);
-
-            if (
-                (empty($block) || empty($search)) ||
-                ! array_key_exists($block, $nodes['_user']) ||
-                ! in_array($search, $nodes['_user'][$block])
-            ) {
-                continue;
-            }
-
-            $this->permissionService->create($instance->id, sprintf('user.%s', $permission));
-        }
-
-        foreach ($administrative as $permission) {
-            @list($block, $search) = explode('-', $permission, 2);
-
-            if (
-                (empty($block) || empty($search)) ||
-                ! array_key_exists($block, $nodes) ||
-                ! in_array($search, $nodes[$block])
-            ) {
-                continue;
-            }
-
-            $this->permissionService->create($instance->id, $permission);
-        }
-
-        $this->connection->commit();
-
-        return $secretKey;
+        return $instance;
     }
 }

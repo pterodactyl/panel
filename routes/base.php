@@ -32,12 +32,12 @@ Route::group(['prefix' => 'account'], function () {
 |
 */
 Route::group(['prefix' => 'account/api'], function () {
-    Route::get('/', 'APIController@index')->name('account.api');
-    Route::get('/new', 'APIController@create')->name('account.api.new');
+    Route::get('/', 'ClientApiController@index')->name('account.api');
+    Route::get('/new', 'ClientApiController@create')->name('account.api.new');
 
-    Route::post('/new', 'APIController@store');
+    Route::post('/new', 'ClientApiController@store');
 
-    Route::delete('/revoke/{key}', 'APIController@revoke')->name('account.api.revoke');
+    Route::delete('/revoke/{identifier}', 'ClientApiController@delete')->name('account.api.revoke');
 });
 
 /*

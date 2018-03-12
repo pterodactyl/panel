@@ -68,14 +68,11 @@ class UserDeletionServiceTest extends TestCase
      */
     public function testUserIsDeletedIfNoServersAreAttachedToAccount()
     {
-        $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['owner_id', '=', $this->user->id]])->once()->andReturn(0);
-        $this->repository->shouldReceive('delete')->with($this->user->id)->once()->andReturn(true);
+        $this->repository->shouldReceive('delete')->with($this->user->id)->once()->andReturn(1);
 
-        $this->assertTrue(
-            $this->service->handle($this->user->id),
-            'Assert that service responds true.'
-        );
+        $this->assertEquals(1, $this->service->handle($this->user->id));
     }
 
     /**
@@ -85,7 +82,7 @@ class UserDeletionServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfServersAreAttachedToAccount()
     {
-        $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['owner_id', '=', $this->user->id]])->once()->andReturn(1);
         $this->translator->shouldReceive('trans')->with('admin/user.exceptions.user_has_servers')->once()->andReturnNull();
 
@@ -97,13 +94,10 @@ class UserDeletionServiceTest extends TestCase
      */
     public function testModelCanBePassedInPlaceOfUserId()
     {
-        $this->serverRepository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['owner_id', '=', $this->user->id]])->once()->andReturn(0);
-        $this->repository->shouldReceive('delete')->with($this->user->id)->once()->andReturn(true);
+        $this->repository->shouldReceive('delete')->with($this->user->id)->once()->andReturn(1);
 
-        $this->assertTrue(
-            $this->service->handle($this->user),
-            'Assert that service responds true.'
-        );
+        $this->assertEquals(1, $this->service->handle($this->user));
     }
 }

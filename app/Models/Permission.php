@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
@@ -18,6 +11,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Permission extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'subuser_permission';
 
     /**
      * Should timestamps be used on this model.
@@ -91,12 +90,14 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'view-startup' => null,
             'edit-startup' => null,
         ],
-        'sftp' => [
-            'view-sftp' => null,
-            'view-sftp-password' => null,
-            'reset-sftp' => 's:set-password',
+        'database' => [
+            'view-databases' => null,
+            'reset-db-password' => null,
+            'delete-database' => null,
+            'create-database' => null,
         ],
         'file' => [
+            'access-sftp' => null,
             'list-files' => 's:files:get',
             'edit-files' => 's:files:read',
             'save-files' => 's:files:post',
@@ -107,7 +108,7 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'create-files' => 's:files:create',
             'upload-files' => 's:files:upload',
             'delete-files' => 's:files:delete',
-            'download-files' => null,
+            'download-files' => 's:files:download',
         ],
         'task' => [
             'list-schedules' => null,
@@ -117,10 +118,6 @@ class Permission extends Model implements CleansAttributes, ValidableContract
             'edit-schedule' => null,
             'create-schedule' => null,
             'delete-schedule' => null,
-        ],
-        'database' => [
-            'view-databases' => null,
-            'reset-db-password' => null,
         ],
     ];
 

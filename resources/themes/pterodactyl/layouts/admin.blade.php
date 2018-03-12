@@ -8,7 +8,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>{{ Settings::get('company', 'Pterodactyl') }} - @yield('title')</title>
+        <title>{{ config('app.name', 'Pterodactyl') }} - @yield('title')</title>
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="_token" content="{{ csrf_token() }}">
 
@@ -19,18 +19,18 @@
         <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
-        <meta name="theme-color" content="#367fa9">
+        <meta name="theme-color" content="#0e4688">
 
         @include('layouts.scripts')
 
         @section('scripts')
-            {!! Theme::css('vendor/select2/select2.min.css') !!}
-            {!! Theme::css('vendor/bootstrap/bootstrap.min.css') !!}
-            {!! Theme::css('vendor/adminlte/admin.min.css') !!}
-            {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css') !!}
-            {!! Theme::css('vendor/sweetalert/sweetalert.min.css') !!}
-            {!! Theme::css('vendor/animate/animate.min.css') !!}
-            {!! Theme::css('css/pterodactyl.css') !!}
+            {!! Theme::css('vendor/select2/select2.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/bootstrap/bootstrap.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/admin.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/adminlte/colors/skin-blue.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/sweetalert/sweetalert.min.css?t={cache-version}') !!}
+            {!! Theme::css('vendor/animate/animate.min.css?t={cache-version}') !!}
+            {!! Theme::css('css/pterodactyl.css?t={cache-version}') !!}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
@@ -44,7 +44,7 @@
         <div class="wrapper">
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
-                    <span>{{ Settings::get('company', 'Pterodactyl') }}</span>
+                    <span>{{ config('app.name', 'Pterodactyl') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -55,8 +55,8 @@
                     </a>
                     <div class="navbar-custom-menu">
                         <ul class="nav navbar-nav">
-                            <li class="dropdown user-menu">
-                                <a href="{{ route('account') }}" class="dropdown-toggle" data-toggle="dropdown">
+                            <li class="user-menu">
+                                <a href="{{ route('account') }}">
                                     <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
@@ -83,6 +83,11 @@
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
                             <a href="{{ route('admin.settings')}}">
                                 <i class="fa fa-wrench"></i> <span>Settings</span>
+                            </a>
+                        </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.api') ?: 'active' }}">
+                            <a href="{{ route('admin.api.index')}}">
+                                <i class="fa fa-gamepad"></i> <span>Application API</span>
                             </a>
                         </li>
                         <li class="header">MANAGEMENT</li>
@@ -166,17 +171,17 @@
             {!! Theme::js('js/keyboard.polyfill.js') !!}
             <script>keyboardeventKeyPolyfill.polyfill();</script>
 
-            {!! Theme::js('js/laroute.js') !!}
-            {!! Theme::js('vendor/jquery/jquery.min.js') !!}
-            {!! Theme::js('vendor/sweetalert/sweetalert.min.js') !!}
-            {!! Theme::js('vendor/bootstrap/bootstrap.min.js') !!}
-            {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js') !!}
-            {!! Theme::js('vendor/adminlte/app.min.js') !!}
-            {!! Theme::js('vendor/socketio/socket.io.v203.min.js') !!}
-            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js') !!}
-            {!! Theme::js('vendor/select2/select2.full.min.js') !!}
-            {!! Theme::js('js/admin/functions.js') !!}
-            {!! Theme::js('js/autocomplete.js') !!}
+            {!! Theme::js('js/laroute.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/sweetalert/sweetalert.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/adminlte/app.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/socketio/socket.io.v203.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
+            {!! Theme::js('vendor/select2/select2.full.min.js?t={cache-version}') !!}
+            {!! Theme::js('js/admin/functions.js?t={cache-version}') !!}
+            {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
 
             @if(Auth::user()->root_admin)
                 <script>

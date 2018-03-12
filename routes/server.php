@@ -19,11 +19,12 @@ Route::get('/console', 'ConsoleController@console')->name('server.console');
 */
 Route::group(['prefix' => 'settings'], function () {
     Route::get('/allocation', 'Settings\AllocationController@index')->name('server.settings.allocation');
-    Route::patch('/allocation', 'Settings\AllocationController@update');
-
+    Route::get('/name', 'Settings\NameController@index')->name('server.settings.name');
     Route::get('/sftp', 'Settings\SftpController@index')->name('server.settings.sftp');
-
     Route::get('/startup', 'Settings\StartupController@index')->name('server.settings.startup');
+
+    Route::patch('/allocation', 'Settings\AllocationController@update');
+    Route::patch('/name', 'Settings\NameController@update');
     Route::patch('/startup', 'Settings\StartupController@update');
 });
 
@@ -38,7 +39,11 @@ Route::group(['prefix' => 'settings'], function () {
 Route::group(['prefix' => 'databases'], function () {
     Route::get('/', 'DatabaseController@index')->name('server.databases.index');
 
+    Route::post('/new', 'DatabaseController@store')->name('server.databases.new');
+
     Route::patch('/password', 'DatabaseController@update')->middleware('server..database')->name('server.databases.password');
+
+    Route::delete('/delete/{database}', 'DatabaseController@delete')->middleware('server..database')->name('server.databases.delete');
 });
 
 /*
@@ -52,7 +57,7 @@ Route::group(['prefix' => 'databases'], function () {
 Route::group(['prefix' => 'files'], function () {
     Route::get('/', 'Files\FileActionsController@index')->name('server.files.index');
     Route::get('/add', 'Files\FileActionsController@create')->name('server.files.add');
-    Route::get('/edit/{file}', 'Files\FileActionsController@update')->name('server.files.edit')->where('file', '.*');
+    Route::get('/edit/{file}', 'Files\FileActionsController@view')->name('server.files.edit')->where('file', '.*');
     Route::get('/download/{file}', 'Files\DownloadController@index')->name('server.files.edit')->where('file', '.*');
 
     Route::post('/directory-list', 'Files\RemoteRequestController@directory')->name('server.files.directory-list');
@@ -96,7 +101,8 @@ Route::group(['prefix' => 'schedules'], function () {
         Route::get('/view/{schedule}', 'Tasks\TaskManagementController@view')->name('server.schedules.view');
 
         Route::patch('/view/{schedule}', 'Tasks\TaskManagementController@update');
-        Route::patch('/view/{schedule}/toggle', 'Tasks\TaskToggleController@index')->name('server.schedules.toggle');
+        Route::post('/view/{schedule}/toggle', 'Tasks\ActionController@toggle')->name('server.schedules.toggle');
+        Route::post('/view/{schedule}/trigger', 'Tasks\ActionController@trigger')->name('server.schedules.trigger');
 
         Route::delete('/view/{schedule}', 'Tasks\TaskManagementController@delete');
     });

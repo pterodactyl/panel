@@ -6,7 +6,7 @@ return [
         'header' => 'ACCOUNT MANAGEMENT',
         'my_account' => 'My Account',
         'security_controls' => 'Security Controls',
-        'api_access' => 'API Access',
+        'api_access' => 'Account API',
         'my_servers' => 'My Servers',
     ],
     'server' => [
@@ -27,5 +27,6 @@ return [
         'edit_file' => 'Edit File',
         'admin_header' => 'ADMINISTRATIVE',
         'admin' => 'Server Configuration',
+        'server_name' => 'Server Name',
     ],
 ];

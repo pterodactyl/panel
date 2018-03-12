@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderService
@@ -48,20 +49,28 @@ class DaemonKeyProviderService
     private $repository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     */
+    private $subuserRepository;
+
+    /**
      * GetDaemonKeyService constructor.
      *
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService      $keyCreationService
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface   $subuserRepository
      */
     public function __construct(
         DaemonKeyCreationService $keyCreationService,
         DaemonKeyRepositoryInterface $repository,
-        DaemonKeyUpdateService $keyUpdateService
+        DaemonKeyUpdateService $keyUpdateService,
+        SubuserRepositoryInterface $subuserRepository
     ) {
         $this->keyCreationService = $keyCreationService;
         $this->keyUpdateService = $keyUpdateService;
         $this->repository = $repository;
+        $this->subuserRepository = $subuserRepository;
     }
 
     /**
@@ -89,10 +98,18 @@ class DaemonKeyProviderService
                 return $this->keyCreationService->handle($server->id, $user->id);
             }
 
-            // If they aren't the admin or owner of the server, they shouldn't get access.
-            // Subusers should always have an entry created when they are, so if there is
-            // no record, it should fail.
-            throw $exception;
+            // Check if user is a subuser for this server. Ideally they should always have
+            // a record associated with them in the database, but we should still handle
+            // that potentiality here.
+            //
+            // If no subuser is found, a RecordNotFoundException will be thrown, thus handling
+            // the parent error as well.
+            $subuser = $this->subuserRepository->findFirstWhere([
+                ['user_id', '=', $user->id],
+                ['server_id', '=', $server->id],
+            ]);
+
+            return $this->keyCreationService->handle($subuser->server_id, $subuser->user_id);
         }
 
         if (! $updateIfExpired || Carbon::now()->diffInSeconds($key->expires_at, false) > 0) {

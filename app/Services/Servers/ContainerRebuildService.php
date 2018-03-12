@@ -1,77 +1,42 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class ContainerRebuildService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    protected $daemonServerRepository;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
-
-    /**
-     * @var \Illuminate\Log\Writer
-     */
-    protected $writer;
+    private $repository;
 
     /**
      * ContainerRebuildService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Illuminate\Log\Writer                                             $writer
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
      */
-    public function __construct(
-        DaemonServerRepositoryInterface $daemonServerRepository,
-        ServerRepositoryInterface $repository,
-        Writer $writer
-    ) {
-        $this->daemonServerRepository = $daemonServerRepository;
+    public function __construct(ServerRepositoryInterface $repository)
+    {
         $this->repository = $repository;
-        $this->writer = $writer;
     }
 
     /**
      * Mark a server for rebuild on next boot cycle.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function rebuild($server)
+    public function handle(Server $server)
     {
-        if (! $server instanceof Server) {
-            $server = $this->repository->find($server);
-        }
-
         try {
-            $this->daemonServerRepository->setNode($server->node_id)->setAccessServer($server->uuid)->rebuild();
+            $this->repository->setServer($server)->rebuild();
         } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
+            throw new DaemonConnectionException($exception);
         }
     }
 }

@@ -11,10 +11,12 @@ namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Base\IndexController;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
@@ -62,19 +64,19 @@ class IndexControllerTest extends ControllerTestCase
      */
     public function testIndexController()
     {
-        $model = $this->setRequestUser();
+        $paginator = m::mock(LengthAwarePaginator::class);
+        $model = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('query')->once()->andReturn('searchTerm');
-        $this->repository->shouldReceive('search')->with('searchTerm')->once()->andReturnSelf()
-            ->shouldReceive('filterUserAccessServers')->with(
-                $model->id, $model->root_admin, 'all', ['user']
-            )->once()->andReturn(['test']);
+        $this->repository->shouldReceive('setSearchTerm')->with('searchTerm')->once()->andReturnSelf()
+            ->shouldReceive('filterUserAccessServers')->with($model, User::FILTER_LEVEL_ALL)
+            ->once()->andReturn($paginator);
 
         $response = $this->controller->getIndex($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.index', $response);
         $this->assertViewHasKey('servers', $response);
-        $this->assertViewKeyEquals('servers', ['test'], $response);
+        $this->assertViewKeyEquals('servers', $paginator, $response);
     }
 
     /**
@@ -82,22 +84,20 @@ class IndexControllerTest extends ControllerTestCase
      */
     public function testStatusController()
     {
-        $user = $this->setRequestUser();
+        $user = $this->generateRequestUserModel();
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 1]);
+        $psrResponse = new Response;
 
         $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
         $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
 
-        $this->daemonRepository->shouldReceive('setNode')->with($server->node_id)->once()->andReturnSelf()
-            ->shouldReceive('setAccessServer')->with($server->uuid)->once()->andReturnSelf()
-            ->shouldReceive('setAccessToken')->with('test123')->once()->andReturnSelf()
-            ->shouldReceive('details')->withNoArgs()->once()->andReturnSelf();
-
-        $this->daemonRepository->shouldReceive('getBody')->withNoArgs()->once()->andReturn('["test"]');
+        $this->daemonRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('test123')->once()->andReturnSelf()
+            ->shouldReceive('details')->withNoArgs()->once()->andReturn($psrResponse);
 
         $response = $this->controller->status($this->request, $server->uuidShort);
         $this->assertIsJsonResponse($response);
-        $this->assertResponseJsonEquals(['test'], $response);
+        $this->assertResponseJsonEquals(json_encode($psrResponse->getBody()), $response);
     }
 
     /**
@@ -105,7 +105,7 @@ class IndexControllerTest extends ControllerTestCase
      */
     public function testStatusControllerWhenServerNotInstalled()
     {
-        $user = $this->setRequestUser();
+        $user = $this->generateRequestUserModel();
         $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 0]);
 
         $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);

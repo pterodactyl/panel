@@ -1,14 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories;
 
+use InvalidArgumentException;
 use Illuminate\Foundation\Application;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 
@@ -43,35 +37,13 @@ abstract class Repository implements RepositoryInterface
     {
         $this->app = $application;
 
-        $this->setModel($this->model());
+        $this->initalizeModel($this->model());
     }
 
     /**
-     * Take the provided model and make it accessible to the rest of the repository.
+     * Return the model backing this repository.
      *
-     * @param string|array $model
-     * @return mixed
-     */
-    protected function setModel($model)
-    {
-        if (is_array($model)) {
-            if (count($model) !== 2) {
-                throw new \InvalidArgumentException(
-                    printf('setModel expected exactly 2 parameters, %d received.', count($model))
-                );
-            }
-
-            return $this->model = call_user_func(
-                $model[1],
-                $this->app->make($model[0])
-            );
-        }
-
-        return $this->model = $this->app->make($model);
-    }
-
-    /**
-     * @return mixed
+     * @return string|\Closure|object
      */
     abstract public function model();
 
@@ -88,10 +60,10 @@ abstract class Repository implements RepositoryInterface
     /**
      * Setup column selection functionality.
      *
-     * @param array $columns
+     * @param array|string $columns
      * @return $this
      */
-    public function withColumns($columns = ['*'])
+    public function setColumns($columns = ['*'])
     {
         $clone = clone $this;
         $clone->columns = is_array($columns) ? $columns : func_get_args();
@@ -110,15 +82,56 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * Set repository to not return a fresh record from the DB when completed.
+     * Stop repository update functions from returning a fresh
+     * model when changes are committed.
      *
      * @return $this
      */
-    public function withoutFresh()
+    public function withoutFreshModel()
+    {
+        return $this->setFreshModel(false);
+    }
+
+    /**
+     * Return a fresh model with a repository updates a model.
+     *
+     * @return $this
+     */
+    public function withFreshModel()
+    {
+        return $this->setFreshModel(true);
+    }
+
+    /**
+     * Set wether or not the repository should return a fresh model
+     * when changes are committed.
+     *
+     * @param bool $fresh
+     * @return $this
+     */
+    public function setFreshModel(bool $fresh = true)
     {
         $clone = clone $this;
-        $clone->withFresh = false;
+        $clone->withFresh = $fresh;
 
         return $clone;
+    }
+
+    /**
+     * Take the provided model and make it accessible to the rest of the repository.
+     *
+     * @param array $model
+     * @return mixed
+     */
+    protected function initalizeModel(...$model)
+    {
+        switch (count($model)) {
+            case 1:
+                return $this->model = $this->app->make($model[0]);
+            case 2:
+                return $this->model = call_user_func([$this->app->make($model[0]), $model[1]]);
+            default:
+                throw new InvalidArgumentException('Model must be a FQCN or an array with a count of two.');
+        }
     }
 }

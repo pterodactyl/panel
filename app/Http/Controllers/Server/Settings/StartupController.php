@@ -81,6 +81,7 @@ class StartupController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

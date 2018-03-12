@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Eggs\Variables;
 
@@ -52,30 +45,29 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testVariableIsUpdatedWhenNoEnvironmentVariableIsPassed()
     {
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, [
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, m::subset([
                 'user_viewable' => false,
                 'user_editable' => false,
-                'test-data' => 'test-value',
-            ])->once()->andReturn(true);
+            ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['test-data' => 'test-value']));
+        $this->assertTrue($this->service->handle($this->model, []));
     }
 
     /**
-     * Test that a service variable ID can be passed in place of the model.
+     * Test that a null value passed in for the default is converted to a string.
+     *
+     * @see https://github.com/Pterodactyl/Panel/issues/934
      */
-    public function testVariableIdCanBePassedInPlaceOfModel()
+    public function testNullDefaultValue()
     {
-        $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, [
-                'user_viewable' => false,
-                'user_editable' => false,
-                'test-data' => 'test-value',
-            ])->once()->andReturn(true);
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->model->id, m::subset([
+            'user_viewable' => false,
+            'user_editable' => false,
+            'default_value' => '',
+        ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model->id, ['test-data' => 'test-value']));
+        $this->assertTrue($this->service->handle($this->model, ['default_value' => null]));
     }
 
     /**
@@ -83,21 +75,39 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testVariableIsUpdatedWhenValidEnvironmentVariableIsPassed()
     {
-        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['egg_id', '=', $this->model->option_id],
                 ['id', '!=', $this->model->id],
             ])->once()->andReturn(0);
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, [
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, m::subset([
                 'user_viewable' => false,
                 'user_editable' => false,
                 'env_variable' => 'TEST_VAR_123',
-            ])->once()->andReturn(true);
+            ]))->once()->andReturn(true);
 
         $this->assertTrue($this->service->handle($this->model, ['env_variable' => 'TEST_VAR_123']));
+    }
+
+    /**
+     * Test that an empty (null) value passed in the option key is handled
+     * properly as an array. Also tests that a null description is handled.
+     *
+     * @see https://github.com/Pterodactyl/Panel/issues/841
+     */
+    public function testNullOptionValueIsPassedAsArray()
+    {
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, m::subset([
+                'user_viewable' => false,
+                'user_editable' => false,
+                'description' => '',
+            ]))->once()->andReturn(true);
+
+        $this->assertTrue($this->service->handle($this->model, ['options' => null, 'description' => null]));
     }
 
     /**
@@ -105,19 +115,19 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testDataPassedIntoHandlerTakesLowerPriorityThanDataSet()
     {
-        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['egg_id', '=', $this->model->option_id],
                 ['id', '!=', $this->model->id],
             ])->once()->andReturn(0);
 
-        $this->repository->shouldReceive('withoutFresh')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, [
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
+            ->shouldReceive('update')->with($this->model->id, m::subset([
                 'user_viewable' => false,
                 'user_editable' => false,
                 'env_variable' => 'TEST_VAR_123',
-            ])->once()->andReturn(true);
+            ]))->once()->andReturn(true);
 
         $this->assertTrue($this->service->handle($this->model, ['user_viewable' => 123456, 'env_variable' => 'TEST_VAR_123']));
     }
@@ -127,7 +137,7 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsNotUnique()
     {
-        $this->repository->shouldReceive('withColumns')->with('id')->once()->andReturnSelf()
+        $this->repository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([
                 ['env_variable', '=', 'TEST_VAR_123'],
                 ['egg_id', '=', $this->model->option_id],

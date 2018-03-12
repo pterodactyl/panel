@@ -1,16 +1,7 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Models;
 
-use File;
-use Storage;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +11,12 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 class Pack extends Model implements CleansAttributes, ValidableContract
 {
     use Eloquence, Validable;
+
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    const RESOURCE_NAME = 'pack';
 
     /**
      * The table associated with the model.
@@ -87,30 +84,6 @@ class Pack extends Model implements CleansAttributes, ValidableContract
         'egg.docker_image' => 5,
         'version' => 2,
     ];
-
-    /**
-     * Returns all of the archived files for a given pack.
-     *
-     * @param bool $collection
-     * @return \Illuminate\Support\Collection|object
-     * @deprecated
-     */
-    public function files($collection = false)
-    {
-        $files = collect(Storage::files('packs/' . $this->uuid));
-
-        $files = $files->map(function ($item) {
-            $path = storage_path('app/' . $item);
-
-            return (object) [
-                'name' => basename($item),
-                'hash' => sha1_file($path),
-                'size' => File::humanReadableSize($path),
-            ];
-        });
-
-        return ($collection) ? $files : (object) $files->all();
-    }
 
     /**
      * Gets egg associated with a service pack.

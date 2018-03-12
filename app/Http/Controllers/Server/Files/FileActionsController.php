@@ -95,19 +95,15 @@ class FileActionsController extends Controller
      * @param string                                                          $file
      * @return \Illuminate\View\View
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function update(UpdateFileContentsFormRequest $request, string $uuid, string $file): View
+    public function view(UpdateFileContentsFormRequest $request, string $uuid, string $file): View
     {
         $server = $request->attributes->get('server');
 
         $dirname = pathinfo($file, PATHINFO_DIRNAME);
         try {
-            $content = $this->repository->setNode($server->node_id)->setAccessServer($server->uuid)
-                ->setAccessToken($request->attributes->get('server_token'))
-                ->getContent($file);
+            $content = $this->repository->setServer($server)->setToken($request->attributes->get('server_token'))->getContent($file);
         } catch (RequestException $exception) {
             throw new DaemonConnectionException($exception);
         }

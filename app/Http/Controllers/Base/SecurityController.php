@@ -1,27 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>
- * Some Modifications (c) 2015 Dylan Seidt <dylan.seidt@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 
 namespace Pterodactyl\Http\Controllers\Base;
 
@@ -130,7 +107,7 @@ class SecurityController extends Controller
     public function setTotp(Request $request)
     {
         try {
-            $this->toggleTwoFactorService->handle($request->user(), $request->input('token'));
+            $this->toggleTwoFactorService->handle($request->user(), $request->input('token') ?? '');
 
             return response('true');
         } catch (TwoFactorAuthenticationTokenInvalid $exception) {
@@ -150,7 +127,7 @@ class SecurityController extends Controller
     public function disableTotp(Request $request)
     {
         try {
-            $this->toggleTwoFactorService->handle($request->user(), $request->input('token'), false);
+            $this->toggleTwoFactorService->handle($request->user(), $request->input('token') ?? '', false);
         } catch (TwoFactorAuthenticationTokenInvalid $exception) {
             $this->alert->danger(trans('base.security.2fa_disable_error'))->flash();
         }
@@ -162,10 +139,10 @@ class SecurityController extends Controller
      * Revokes a user session.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $id
+     * @param string                   $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function revoke(Request $request, $id)
+    public function revoke(Request $request, string $id)
     {
         $this->repository->deleteUserSession($request->user()->id, $id);
 
