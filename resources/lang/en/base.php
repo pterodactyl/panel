@@ -30,7 +30,7 @@ return [
     'api' => [
         'index' => [
             'list' => 'Your Keys',
-            'header' => 'Accout API',
+            'header' => 'Account API',
             'header_sub' => 'Manage access keys that allow you to perform actions aganist the panel.',
             'create_new' => 'Create New API key',
             'keypair_created' => 'An API key has been successfully generated and is listed below.',
