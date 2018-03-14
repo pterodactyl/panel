@@ -63,7 +63,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeListingData(): LengthAwarePaginator
     {
-        $instance = $this->getBuilder()->with('location')->withCount('servers');
+        $instance = $this->getBuilder()->with('location')->withCount('servers')->orderBy('name');
 
         if ($this->hasSearchTerm()) {
             $instance->search($this->getSearchTerm());
