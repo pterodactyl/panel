@@ -58,6 +58,18 @@
                     </div>
                 </div>
             </div>
+            @if ($node->description)
+            <div class="col-xs-12">
+                <div class="box box-default">
+                    <div class="box-header with-border">
+                        Description
+                    </div>
+                    <div class="box-body table-responsive">
+                        <pre>{{ $node->description }}</pre>
+                    </div>
+                </div>
+            </div>
+            @endif
             <div class="col-xs-12">
                 <div class="box box-danger">
                     <div class="box-header with-border">

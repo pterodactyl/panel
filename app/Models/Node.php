@@ -62,6 +62,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'disk_overallocate', 'upload_size',
         'daemonSecret', 'daemonBase',
         'daemonSFTP', 'daemonListen',
+        'description',
     ];
 
     /**
@@ -81,6 +82,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
      */
     protected static $applicationRules = [
         'name' => 'required',
+        'description' => 'sometimes|max:2000',
         'location_id' => 'required',
         'fqdn' => 'required',
         'scheme' => 'required',

@@ -14,7 +14,7 @@ class AddDescriptionToNodes extends Migration
     public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->text('description')->after('name');
+            $table->text('description')->nullable()->after('name');
         });
     }
 
