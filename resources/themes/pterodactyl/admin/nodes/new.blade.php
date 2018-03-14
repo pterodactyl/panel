@@ -33,14 +33,15 @@
                         <p class="text-muted small">Character limits: <code>a-zA-Z0-9_.-</code> and <code>[Space]</code> (min 1, max 100 characters).</p>
                     </div>
                     <div class="form-group">
+                        <label for="pDescription" class="form-label">Description</label>
+                        <textarea name="description" id="pDescription" rows="4" class="form-control" style="resize: vertical;">{{ old('description') }}</textarea>
+                        <p class="text-muted small">(max 2000 characters)</p>
+                    </div>
+                    <div class="form-group">
                         <label for="pLocationId" class="form-label">Location</label>
                         <select name="location_id" id="pLocationId">
                             @foreach($locations as $location)
-                                @if($location->id == old('location_id'))
-                                    <option value="{{ $location->id }}" selected>{{ $location->short }}</option>
-                                @else
-                                    <option value="{{ $location->id }}">{{ $location->short }}</option>
-                                @endif
+                                    <option value="{{ $location->id }}" {{ $location->id != old('location_id') ?: 'selected' }}>{{ $location->short }}</option>
                             @endforeach
                         </select>
                     </div>
