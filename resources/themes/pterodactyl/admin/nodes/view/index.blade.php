@@ -139,23 +139,23 @@
 @section('footer-scripts')
     @parent
     <script>
-        (function getInformation() {
-            $.ajax({
-                method: 'GET',
-                url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/v1',
-                timeout: 5000,
-                headers: {
-                    'X-Access-Token': '{{ $node->daemonSecret }}'
-                },
-            }).done(function (data) {
-                $('[data-attr="info-version"]').html(data.version);
-                $('[data-attr="info-system"]').html(data.system.type + '(' + data.system.arch + ') <code>' + data.system.release + '</code>');
-                $('[data-attr="info-cpus"]').html(data.system.cpus);
-            }).fail(function (jqXHR) {
+    (function getInformation() {
+        $.ajax({
+            method: 'GET',
+            url: '{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/v1',
+            timeout: 5000,
+            headers: {
+                'X-Access-Token': '{{ $node->daemonSecret }}'
+            },
+        }).done(function (data) {
+            $('[data-attr="info-version"]').html(data.version);
+            $('[data-attr="info-system"]').html(data.system.type + '(' + data.system.arch + ') <code>' + data.system.release + '</code>');
+            $('[data-attr="info-cpus"]').html(data.system.cpus);
+        }).fail(function (jqXHR) {
 
-            }).always(function() {
-                setTimeout(getInformation, 10000);
-            });
-        })();
+        }).always(function() {
+            setTimeout(getInformation, 10000);
+        });
+    })();
     </script>
 @endsection
