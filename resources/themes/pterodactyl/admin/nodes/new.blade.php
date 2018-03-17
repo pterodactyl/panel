@@ -34,8 +34,7 @@
                     </div>
                     <div class="form-group">
                         <label for="pDescription" class="form-label">Description</label>
-                        <textarea name="description" id="pDescription" rows="4" class="form-control" style="resize: vertical;">{{ old('description') }}</textarea>
-                        <p class="text-muted small">(max 2000 characters)</p>
+                        <textarea name="description" id="pDescription" rows="4" class="form-control">{{ old('description') }}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="pLocationId" class="form-label">Location</label>

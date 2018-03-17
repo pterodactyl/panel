@@ -82,7 +82,6 @@ class Node extends Model implements CleansAttributes, ValidableContract
      */
     protected static $applicationRules = [
         'name' => 'required',
-        'description' => 'sometimes|max:2000',
         'location_id' => 'required',
         'fqdn' => 'required',
         'scheme' => 'required',
@@ -100,6 +99,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'name' => 'regex:/^([\w .-]{1,100})$/',
+        'description' => 'string',
         'location_id' => 'exists:locations,id',
         'public' => 'boolean',
         'fqdn' => 'string',
