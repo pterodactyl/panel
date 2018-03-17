@@ -7,6 +7,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes an issue with the sidebar logo not working correctly in some browsers due to the CSS being assigned.
 
+### Added
+* Added a new client API endpoint for gathering the utilization stats for servers including disk, cpu, and memory. `GET /api/client/servers/<id>/utilization`
+
 ## v0.7.6 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a UI error when attempting to change the default Nest and Egg for an existing server.
