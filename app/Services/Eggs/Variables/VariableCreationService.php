@@ -3,24 +3,46 @@
 namespace Pterodactyl\Services\Eggs\Variables;
 
 use Pterodactyl\Models\EggVariable;
+use Illuminate\Contracts\Validation\Factory;
+use Pterodactyl\Traits\Services\ValidatesValidationRules;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService
 {
+    use ValidatesValidationRules;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
      */
-    protected $repository;
+    private $repository;
+
+    /**
+     * @var \Illuminate\Contracts\Validation\Factory
+     */
+    private $validator;
 
     /**
      * VariableCreationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
+     * @param \Illuminate\Contracts\Validation\Factory                         $validator
      */
-    public function __construct(EggVariableRepositoryInterface $repository)
+    public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
     {
         $this->repository = $repository;
+        $this->validator = $validator;
+    }
+
+    /**
+     * Return the validation factory instance to be used by rule validation
+     * checking in the trait.
+     *
+     * @return \Illuminate\Contracts\Validation\Factory
+     */
+    protected function getValidator(): Factory
+    {
+        return $this->validator;
     }
 
     /**
@@ -31,6 +53,7 @@ class VariableCreationService
      * @return \Pterodactyl\Models\EggVariable
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function handle(int $egg, array $data): EggVariable
@@ -40,6 +63,10 @@ class VariableCreationService
                 'Cannot use the protected name %s for this environment variable.',
                 array_get($data, 'env_variable')
             ));
+        }
+
+        if (! empty($data['rules'] ?? '')) {
+            $this->validateRules($data['rules']);
         }
 
         $options = array_get($data, 'options') ?? [];
