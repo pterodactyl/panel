@@ -1,6 +1,8 @@
 <!---
 Please take a little time to submit a good issue. It makes our life easier and the issue will be resolved quicker.
 
+!!! GitHub is NOT the place for difficulties with your installation. Please use it for bugs and feature requests only. If you have issues setting up the panel or the daemon visit our Discord server: https://pterodactyl.io/discord
+
 If you are submitting a feature request please remove everything in here. Then give a detailed explanation what you want to have implemented and why that would be a good addition.
 
 Please also try to give the issue a good title: It should summarize your issue in a few words and help us see what the issue is about in a glance. Things like "Panel is not working" do not help.
