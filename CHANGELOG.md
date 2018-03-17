@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Added a new client API endpoint for gathering the utilization stats for servers including disk, cpu, and memory. `GET /api/client/servers/<id>/utilization`
+* Added validation to variable validation rules to validate that the validation rules are valid because we heard you like validating your validation.
 
 ## v0.7.6 (Derelict Dermodactylus)
 ### Fixed
