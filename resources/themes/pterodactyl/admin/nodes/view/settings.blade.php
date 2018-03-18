@@ -51,7 +51,7 @@
                     <div class="form-group col-xs-12">
                         <label for="description" class="control-label">Description</label>
                         <div>
-                            <textarea name="description" id="description" rows="4" class="form-control" style="resize: vertical;">{{ $node->description }}</textarea>
+                            <textarea name="description" id="description" rows="4" class="form-control">{{ $node->description }}</textarea>
                         </div>
                     </div>
                     <div class="form-group col-xs-12">
