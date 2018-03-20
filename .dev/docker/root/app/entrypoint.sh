@@ -92,7 +92,4 @@ if [ "$1" = "/sbin/tini" ]; then
     echo "] Configuration is done."
 fi
 
-echo "] Starting php7.2 in background."
-php-fpm -D -y /etc/php7/php-fpm.conf
-
 exec "$@"
