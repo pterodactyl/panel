@@ -38,35 +38,38 @@ if [ "$1" = "/sbin/tini" ]; then
         ln -s $ENV /app/.env
 
         echo "]   Generating application key"
-        php artisan key:generate --force
+        php artisan key:generate -n --force
 
-        echo "]   Setting up database connection"
-        php artisan pterodactyl:env \
-            --dbhost="$DB_HOST" --dbport="$DB_PORT" --dbname="$DB_DATABASE" --dbuser="$DB_USERNAME" --dbpass="$DB_PASSWORD" \
-            --driver="$CACHE_DRIVER" --session-driver=database --queue-driver=database \
-            --url="$APP_URL" --timezone="$APP_TIMEZONE"
+        echo "]   Setting up mysql database connection"
+        php artisan p:environment:database -n -q \
+            --host="$DB_HOST" --port="$DB_PORT" --database="$DB_DATABASE" --username="$DB_USERNAME" --password="$DB_PASSWORD" \
+
+        echo "]   Setting up redis cache"
+        php artisan p:environment:setup -n \
+            --cache="$CACHE_DRIVER" --redis-host="$REDIS_HOST" --redis-port="$REDIS_PORT" --redis-pass="$REDIS_PASS" \
+            --session=database --queue=database --url="$APP_URL" --timezone="$APP_TIMEZONE"
 
         echo "]   Setting up email configuration"
         case "$MAIL_DRIVER" in
             mail)
                 echo "]     PHP Mail was chosen"
-                php artisan pterodactyl:mail --driver=mail --email="$MAIL_FROM" --from-name="$MAIL_FROM_NAME"
+                php artisan p:environment:mail -n --driver=mail --email="$MAIL_FROM" --from="$MAIL_FROM_NAME"
             ;;
             mandrill)
                 echo "]     Mandrill was chosen"
-                php artisan pterodactyl:mail --driver=mandrill --email="$MAIL_FROM" --from-name="$MAIL_FROM_NAME" --username="$MAIL_USERNAME"
+                php artisan p:environment:mail -n --driver=mandrill --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME"
             ;;
             postmark)
                 echo "]     Postmark was chosen"
-                php artisan pterodactyl:mail --driver=postmark --email="$MAIL_FROM" --from-name="$MAIL_FROM_NAME" --username="$MAIL_USERNAME"
+                php artisan p:environment:mail -n --driver=postmark --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME"
             ;;
             mailgun)
                 echo "]     Mailgun was chosen"
-                php artisan pterodactyl:mail --driver=mailgun --email="$MAIL_FROM" --from-name="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --host="$MAIL_HOST"
+                php artisan p:environment:mail -n --driver=mailgun --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --host="$MAIL_HOST"
             ;;
             smtp)
                 echo "]     SMTP was chosen"
-                php artisan pterodactyl:mail --driver=smtp --email="$MAIL_FROM" --from-name="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --password="$MAIL_PASSWORD" --host="$MAIL_HOST" --port="$MAIL_PORT"
+                php artisan p:environment:mail -n --driver=smtp --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --password="$MAIL_PASSWORD" --host="$MAIL_HOST" --port="$MAIL_PORT"
             ;;
             *)
                 echo "]     '$MAIL_DRIVER' is not a valid MAIL_DRIVER option."
@@ -74,16 +77,22 @@ if [ "$1" = "/sbin/tini" ]; then
         esac
 
         echo "]   Migrating Database"
-        php artisan migrate --force
+        php artisan migrate -n --force
 
         echo "]   Seeding Database"
-        php artisan db:seed --force
+        php artisan db:seed -n --force
 
     else # Found an env file and testing for panel version
         echo "] Found .env file."
     fi
 
+    # create caddy log dir (error was thrown)
+    mkdir -p /var/log/caddy/
+
     echo "] Configuration is done."
 fi
+
+echo "] Starting php7.2 in background."
+php-fpm -D -y /etc/php7/php-fpm.conf
 
 exec "$@"

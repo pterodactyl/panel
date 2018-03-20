@@ -16,7 +16,9 @@ RUN apk add --no-cache wget ca-certificates && \
 
 COPY . ./
 
-RUN composer install --ansi --no-dev --no-interaction && \
+RUN cp .env.example .env && \
+    composer install --ansi --no-dev --no-interaction && \
+    rm .env && \
     cp -r .dev/docker/root/* / && \
     rm -rf .dev bootstrap/cache/* storage/framework/{cache,sessions,views}/* && \
     chown -R caddy:caddy . && \
