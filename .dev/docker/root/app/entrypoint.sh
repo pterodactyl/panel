@@ -19,13 +19,11 @@ if [ "$1" = "/sbin/tini" ]; then
         if [ ! - f /etc/letsencrypt/live/$HOSTNAME/cert.pem ] || [ ! - f /etc/letsencrypt/live/$HOSTNAME/privkey.pem ]; then
             echo "] Obtaining certificates for eligible sites from Let's Encrypt"
             sed -i "s,<email>,$LETSENCRYPT_EMAIL,g" /etc/caddy/caddy.conf
-            exit 1
         else
             echo "] Using provided certificate and key for tls"
             sed -i "s,<email>,/etc/letsencrypt/live/$HOSTNAME/cert.pem /etc/letsencrypt/live/$HOSTNAME/privkey.pem,g" /etc/caddy/caddy.conf
         fi
     else
-
         echo "] Your APP_URL is missing a protocol."
         exit 1
     fi
