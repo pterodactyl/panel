@@ -26,5 +26,6 @@ RUN cp .env.example .env && \
 
 ENTRYPOINT ["/bin/ash", "/app/entrypoint.sh"]
 EXPOSE 80
+EXPOSE 443
 
 CMD ["/sbin/tini", "--", "/usr/sbin/caddy", "-conf", "/etc/caddy/caddy.conf"]
