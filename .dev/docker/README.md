@@ -10,18 +10,34 @@ A caching software is required as well. You can choose any of the [supported opt
 
 You can provide additional settings using a custom `.env` file or by setting the appropriate environment variables.
 
+## Build
+execute the following command in project root
+```docker build -t <repo>/<image>:<tag> .```
+
 ## Setup
 
 Start the docker container and the required dependencies (either provide existing ones or start containers as well, see the [docker-compose.yml](docker-compose.yml) file as an example).
 
+Example without docker-compose (assuming you have a populated .env in the same folder)
+```
+docker run --rm \
+--name=ptero-panel \
+--hostname pteropanel \
+-p 80:80 \
+-p 443:443 \
+--env-file=`pwd`/pterodactyl.env \
+-v /etc/letsencrypt/:/etc/letsencrypt/ \
+-ti <repo>/<image>:<tag>
+```
+
 After the startup is complete you'll need to create a user.
 If you are running the docker container without docker-compose, use:
 ```
-docker exec -it <container id> php artisan pterodactyl:user
+docker exec -it <container id> php artisan p:user:make
 ```
 If you are using docker compose use
 ```
-docker-compose exec panel php artisan pterodactyl:user
+docker-compose exec panel php artisan p:user:make
 ```
 
 ## Environment Variables
