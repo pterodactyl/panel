@@ -1,0 +1,21 @@
+<?php
+return [
+    'not_authorized' => 'Você não está autorizado a executar esta ação.',
+    'auth_error' => 'Houve um erro ao tentar efetuar login.',
+    'authentication_required' => 'É necessária a autenticação para continuar.',
+    'remember_me' => 'Lembrar-se',
+    'sign_in' => 'Entrar',
+    'forgot_password' => 'Esqueci minhha senha!',
+    'request_reset_text' => 'Esqueceu sua senha? Não é o fim do mundo, apenas forneça seu email abaixo.',
+    'reset_password_text' => 'Redefinir sua senha da conta.',
+    'reset_password' => 'Redefinir senha',
+    'email_sent' => 'Um email foi enviado a você com mais instruções para redefinir sua senha.',
+    'failed' => 'As credenciais fornecidas não coincidem com as que temos no registro ou o token 2FA fornecido é inválido.',
+    'throttle' => 'Muitas tentativas de login. Tente novamente em :segundos segundos',
+    'password_requirements' => 'As senhas devem conter pelo menos um caractere maiúsculo, minúsculo e numérico e devem ter no mínimo 8 caracteres de comprimento.',
+    'request_reset' => 'Localizar Conta',
+    '2fa_required' => 'Autenticação em 2 Fatores',
+    '2fa_failed' => 'O Token 2FA informado é inválido.',
+    'totp_failed' => 'Houve um erro ao tentar validar o TOTP.',
+    '2fa_must_be_enabled' => 'O administrador exigiu que a autenticação de dois fatores seja ativada em sua conta, para usar o Painel.',
+];
