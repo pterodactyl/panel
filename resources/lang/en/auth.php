@@ -11,7 +11,7 @@ return [
     'reset_password_text' => 'Reset your account password.',
     'reset_password' => 'Reset Account Password',
     'email_sent' => 'An email has been sent to you with further instructions for resetting your password.',
-    'failed' => 'The credentials provided to not match those we have on record, or the 2FA token provided was invalid.',
+    'failed' => 'The credentials provided do not match those we have on record, or the 2FA token provided was invalid.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'password_requirements' => 'Passwords must contain at least one uppercase, lowercase, and numeric character and must be at least 8 characters in length.',
     'request_reset' => 'Locate Account',
