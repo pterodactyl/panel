@@ -16,7 +16,7 @@ if [ "$1" = "/sbin/tini" ]; then
         sed -i "s,<domain>,$APP_URL,g" /etc/caddy/caddy.conf
         HOSTNAME=$(echo "$APP_URL" | awk -F/ '{print $3}')
         echo "Setup with hostname : $HOSTNAME"
-        if [ ! - f /etc/letsencrypt/live/$HOSTNAME/cert.pem ] || [ ! - f /etc/letsencrypt/live/$HOSTNAME/privkey.pem ]; then
+        if [ ! -f /etc/letsencrypt/live/$HOSTNAME/cert.pem ] || [ ! -f /etc/letsencrypt/live/$HOSTNAME/privkey.pem ]; then
             echo "] Obtaining certificates for eligible sites from Let's Encrypt"
             sed -i "s,<email>,$LETSENCRYPT_EMAIL,g" /etc/caddy/caddy.conf
         else
@@ -53,9 +53,9 @@ if [ "$1" = "/sbin/tini" ]; then
             --host="$DB_HOST" --port="$DB_PORT" --database="$DB_DATABASE" --username="$DB_USERNAME" --password="$DB_PASSWORD" \
 
         echo "]   Setting up redis cache"
-        php artisan p:environment:setup -n \
+            php artisan p:environment:setup -n \
             --cache="$CACHE_DRIVER" --redis-host="$REDIS_HOST" --redis-port="$REDIS_PORT" --redis-pass="$REDIS_PASS" \
-            --session=database --queue=database --url="$APP_URL" --timezone="$APP_TIMEZONE"
+                --session=database --queue=database --url="$APP_URL" --timezone="$APP_TIMEZONE"
 
         echo "]   Setting up email configuration"
         case "$MAIL_DRIVER" in
