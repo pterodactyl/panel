@@ -6,45 +6,45 @@
 
 <div class="box-header with-border">
     <h3 class="box-title">/home/container{{ $directory['header'] }}</h3>
-    <div class="box-tools pull-right">
-        <div class="btn-group">
-            <button type="button" id="mass_actions" class="btn btn-sm btn-info dropdown-toggle disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              @lang('server.files.mass_actions') <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-massactions">
-              <li><a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.files.delete') <i class="fa fa-fw fa-trash-o"></i></a></li>
-            </ul>
-        </div>
-        <button class="btn btn-sm btn-success btn-icon" data-action="add-folder">
-            <i class="fa fa-fw fa-folder-open-o"></i>
-        </button>
+    <div class="box-tools">
         <a href="/server/{{ $server->uuidShort }}/files/add/@if($directory['header'] !== '')?dir={{ $directory['header'] }}@endif">
             <button class="btn btn-success btn-sm btn-icon">
-                <i class="fa fa-fw fa-file-text-o"></i>
+                New File <i class="fa fa-fw fa-file-text-o"></i>
             </button>
         </a>
+        <button class="btn btn-sm btn-success btn-icon" data-action="add-folder">
+            New Folder <i class="fa fa-fw fa-folder-open-o"></i>
+        </button>
         <label class="btn btn-primary btn-sm btn-icon">
-            <i class="fa fa-fw fa-upload"></i><input type="file" id="files_touch_target" class="hidden">
+            Upload <i class="fa fa-fw fa-upload"></i><input type="file" id="files_touch_target" class="hidden">
         </label>
+        <div class="btn-group hidden-xs">
+            <button type="button" id="mass_actions" class="btn btn-sm btn-default dropdown-toggle disabled" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @lang('server.files.mass_actions') <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-massactions">
+                <li><a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.files.delete') <i class="fa fa-fw fa-trash-o"></i></a></li>
+            </ul>
+        </div>
     </div>
 </div>
 <div class="box-body table-responsive no-padding">
-    <table class="table table-hover" id="file_listing" data-current-dir="{{ $directory['header'] }}">
+    <table class="table table-hover" id="file_listing" data-current-dir="{{ rtrim($directory['header'], '/') . '/' }}">
         <thead>
             <tr>
-                <th style="width:4%;" class="middle">
-                    <input type="checkbox" class="select-all-files" data-action="selectAll"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
+                <th class="middle min-size">
+                    <input type="checkbox" class="select-all-files hidden-xs" data-action="selectAll"><i class="fa fa-refresh muted muted-hover use-pointer" data-action="reload-files" style="font-size:14px;"></i>
                 </th>
-                <th style="width:55%">@lang('server.files.file_name')</th>
-                <th style="width:15%" class="hidden-xs">@lang('server.files.size')</th>
-                <th style="width:20%" class="hidden-xs">@lang('server.files.last_modified')</th>
-                <th style="width:6%"></th>
+                <th>@lang('server.files.file_name')</th>
+                <th class="hidden-xs">@lang('server.files.size')</th>
+                <th class="hidden-xs">@lang('server.files.last_modified')</th>
+                <th></th>
             </tr>
         </thead>
         <tbody id="append_files_to">
             @if (isset($directory['first']) && $directory['first'] === true)
                 <tr data-type="disabled">
-                    <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                    <td class="middle min-size"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                     <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
                     <td class="hidden-xs"></td>
                     <td class="hidden-xs"></td>
@@ -53,7 +53,7 @@
             @endif
             @if (isset($directory['show']) && $directory['show'] === true)
                 <tr data-type="disabled">
-                    <td><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                    <td class="middle min-size"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
                     <td data-name="{{ rawurlencode($directory['link']) }}">
                         <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr; {{ $directory['link_show'] }}</a>
                     </td>
@@ -64,7 +64,9 @@
             @endif
             @foreach ($folders as $folder)
                 <tr data-type="folder">
-                    <td data-identifier="type" class="middle"><input type="checkbox" class="select-folder" data-action="addSelection"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
+                    <td class="middle min-size" data-identifier="type">
+                        <input type="checkbox" class="select-folder hidden-xs" data-action="addSelection"><i class="fa fa-folder" style="margin-left: 0.859px;"></i>
+                    </td>
                     <td data-identifier="name" data-name="{{ rawurlencode($folder['entry']) }}" data-path="@if($folder['directory'] !== ''){{ rawurlencode($folder['directory']) }}@endif/">
                         <a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">{{ $folder['entry'] }}</a>
                     </td>
@@ -79,12 +81,14 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></td>
+                    <td class="min-size">
+                        <button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button>
+                    </td>
                 </tr>
             @endforeach
             @foreach ($files as $file)
                 <tr data-type="file" data-mime="{{ $file['mime'] }}">
-                    <td data-identifier="type" class="middle"><input type="checkbox" class="select-file" data-action="addSelection">
+                    <td class="middle min-size" data-identifier="type"><input type="checkbox" class="select-file hidden-xs" data-action="addSelection">
                         {{--  oh boy --}}
                         @if(in_array($file['mime'], [
                             'application/x-7z-compressed',
@@ -156,7 +160,9 @@
                             {{ $carbon->diffForHumans() }}
                         @endif
                     </td>
-                    <td><button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></td>
+                    <td class="min-size">
+                        <button class="btn btn-xxs btn-default disable-menu-hide" data-action="toggleMenu" style="padding:2px 6px 0px;"><i class="fa fa-ellipsis-h disable-menu-hide"></i></button>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

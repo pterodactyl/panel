@@ -41,7 +41,7 @@ class SetSessionDriver
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->app->environment() !== 'production') {
+        if ($this->config->get('app.debug')) {
             $this->app->make(LaravelDebugbar::class)->disable();
         }
 

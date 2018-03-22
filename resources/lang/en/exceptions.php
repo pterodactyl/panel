@@ -8,9 +8,10 @@ return [
     ],
     'allocations' => [
         'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
-        'too_many_ports' => 'Adding more than 1000 ports at a single time is not supported. Please use a smaller range.',
+        'too_many_ports' => 'Adding more than 1000 ports in a single range at once is not supported.',
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
+        'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
     ],
     'nest' => [
         'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
@@ -23,6 +24,7 @@ return [
         'variables' => [
             'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
+            'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
         ],
         'importer' => [
             'json_error' => 'There was an error while attempting to parse the JSON file: :error.',

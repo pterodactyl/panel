@@ -5,6 +5,7 @@ namespace Pterodactyl\Exceptions;
 use Exception;
 use PDOException;
 use Psr\Log\LoggerInterface;
+use Illuminate\Container\Container;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
@@ -31,7 +32,6 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         AuthenticationException::class,
         AuthorizationException::class,
-        DisplayException::class,
         HttpException::class,
         ModelNotFoundException::class,
         RecordNotFoundException::class,
@@ -208,6 +208,17 @@ class Handler extends ExceptionHandler
         }
 
         return ['errors' => [array_merge($error, $override)]];
+    }
+
+    /**
+     * Return an array of exceptions that should not be reported.
+     *
+     * @param \Exception $exception
+     * @return bool
+     */
+    public static function isReportable(Exception $exception): bool
+    {
+        return (new static(Container::getInstance()))->shouldReport($exception);
     }
 
     /**

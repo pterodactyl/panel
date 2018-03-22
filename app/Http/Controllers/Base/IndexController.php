@@ -4,6 +4,8 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Illuminate\Http\Response;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Http\Controllers\Controller;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -81,6 +83,8 @@ class IndexController extends Controller
 
         try {
             $response = $this->daemonRepository->setServer($server)->setToken($token)->details();
+        } catch (ConnectException $exception) {
+            throw new HttpException(Response::HTTP_GATEWAY_TIMEOUT, $exception->getMessage());
         } catch (RequestException $exception) {
             throw new HttpException(500, $exception->getMessage());
         }

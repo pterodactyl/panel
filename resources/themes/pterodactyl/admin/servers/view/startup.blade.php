@@ -134,26 +134,11 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function () {
-        $('#pNestId').select2({placeholder: 'Select a Nest'}).change();
-        $('#pEggId').select2({placeholder: 'Select a Nest Egg'});
         $('#pPackId').select2({placeholder: 'Select a Service Pack'});
-    });
-    </script>
-    <script>
-        $('#pNestId').on('change', function (event) {
-            $('#pEggId').html('').select2({
-                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
-                    return {
-                        id: item.id,
-                        text: item.name,
-                    };
-                }),
-            }).val(Pterodactyl.server.egg_id).change();
-        });
-
-        $('#pEggId').on('change', function (event) {
-            var parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
-            var objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
+        $('#pEggId').select2({placeholder: 'Select a Nest Egg'}).on('change', function () {
+            var selectedEgg = _.isNull($(this).val()) ? $(this).find('option').first().val() : $(this).val();
+            var parentChain = _.get(Pterodactyl.nests, $("#pNestId").val());
+            var objectChain = _.get(parentChain, 'eggs.' + selectedEgg);
 
             $('#setDefaultImage').html(_.get(objectChain, 'docker_image', 'undefined'));
             $('#pDockerImage').val(_.get(objectChain, 'docker_image', 'undefined'));
@@ -168,7 +153,7 @@
             }
 
             $('#pPackId').html('').select2({
-                data: [{ id: '0', text: 'No Service Pack' }].concat(
+                data: [{id: '0', text: 'No Service Pack'}].concat(
                     $.map(_.get(objectChain, 'packs', []), function (item, i) {
                         return {
                             id: item.id,
@@ -202,9 +187,26 @@
                             </div> \
                         </div> \
                     </div>';
-                $('#appendVariablesTo').append(dataAppend);
-                $('#appendVariablesTo').find('#egg_variable_' + item.env_variable).val(setValue);
+                $('#appendVariablesTo').append(dataAppend).find('#egg_variable_' + item.env_variable).val(setValue);
             });
         });
+
+        $('#pNestId').select2({placeholder: 'Select a Nest'}).on('change', function () {
+            $('#pEggId').html('').select2({
+                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
+                    return {
+                        id: item.id,
+                        text: item.name,
+                    };
+                }),
+            });
+
+            if (_.isObject(_.get(Pterodactyl.nests, $(this).val() + '.eggs.' + Pterodactyl.server.egg_id))) {
+                $('#pEggId').val(Pterodactyl.server.egg_id);
+            }
+
+            $('#pEggId').change();
+        }).change();
+    });
     </script>
 @endsection
