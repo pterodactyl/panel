@@ -5,7 +5,9 @@ namespace Tests\Unit\Services\Eggs\Variables;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
+use BadMethodCallException;
 use Pterodactyl\Models\EggVariable;
+use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
@@ -15,17 +17,17 @@ class VariableUpdateServiceTest extends TestCase
     /**
      * @var \Pterodactyl\Models\EggVariable|\Mockery\Mock
      */
-    protected $model;
+    private $model;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Variables\VariableUpdateService
+     * @var \Illuminate\Contracts\Validation\Factory|\Mockery\Mock
      */
-    protected $service;
+    private $validator;
 
     /**
      * Setup tests.
@@ -36,8 +38,7 @@ class VariableUpdateServiceTest extends TestCase
 
         $this->model = factory(EggVariable::class)->make();
         $this->repository = m::mock(EggVariableRepositoryInterface::class);
-
-        $this->service = new VariableUpdateService($this->repository);
+        $this->validator = m::mock(Factory::class);
     }
 
     /**
@@ -51,7 +52,7 @@ class VariableUpdateServiceTest extends TestCase
                 'user_editable' => false,
             ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, []));
+        $this->assertTrue($this->getService()->handle($this->model, []));
     }
 
     /**
@@ -67,7 +68,7 @@ class VariableUpdateServiceTest extends TestCase
             'default_value' => '',
         ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['default_value' => null]));
+        $this->assertTrue($this->getService()->handle($this->model, ['default_value' => null]));
     }
 
     /**
@@ -89,7 +90,7 @@ class VariableUpdateServiceTest extends TestCase
                 'env_variable' => 'TEST_VAR_123',
             ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['env_variable' => 'TEST_VAR_123']));
+        $this->assertTrue($this->getService()->handle($this->model, ['env_variable' => 'TEST_VAR_123']));
     }
 
     /**
@@ -107,7 +108,7 @@ class VariableUpdateServiceTest extends TestCase
                 'description' => '',
             ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['options' => null, 'description' => null]));
+        $this->assertTrue($this->getService()->handle($this->model, ['options' => null, 'description' => null]));
     }
 
     /**
@@ -129,7 +130,7 @@ class VariableUpdateServiceTest extends TestCase
                 'env_variable' => 'TEST_VAR_123',
             ]))->once()->andReturn(true);
 
-        $this->assertTrue($this->service->handle($this->model, ['user_viewable' => 123456, 'env_variable' => 'TEST_VAR_123']));
+        $this->assertTrue($this->getService()->handle($this->model, ['user_viewable' => 123456, 'env_variable' => 'TEST_VAR_123']));
     }
 
     /**
@@ -145,7 +146,7 @@ class VariableUpdateServiceTest extends TestCase
             ])->once()->andReturn(1);
 
         try {
-            $this->service->handle($this->model, ['env_variable' => 'TEST_VAR_123']);
+            $this->getService()->handle($this->model, ['env_variable' => 'TEST_VAR_123']);
         } catch (Exception $exception) {
             $this->assertInstanceOf(DisplayException::class, $exception);
             $this->assertEquals(trans('exceptions.service.variables.env_not_unique', [
@@ -162,7 +163,51 @@ class VariableUpdateServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
-        $this->service->handle($this->model, ['env_variable' => $variable]);
+        $this->getService()->handle($this->model, ['env_variable' => $variable]);
+    }
+
+    /**
+     * Test that validation errors due to invalid rules are caught and handled properly.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @expectedExceptionMessage The validation rule "hodor_door" is not a valid rule for this application.
+     */
+    public function testInvalidValidationRulesResultInException()
+    {
+        $data = ['env_variable' => 'TEST_VAR_123', 'rules' => 'string|hodorDoor'];
+
+        $this->repository->shouldReceive('setColumns->findCountWhere')->once()->andReturn(0);
+
+        $this->validator->shouldReceive('make')->once()
+            ->with(['__TEST' => 'test'], ['__TEST' => 'string|hodorDoor'])
+            ->andReturnSelf();
+
+        $this->validator->shouldReceive('fails')->once()
+            ->withNoArgs()
+            ->andThrow(new BadMethodCallException('Method [validateHodorDoor] does not exist.'));
+
+        $this->getService()->handle($this->model, $data);
+    }
+
+    /**
+     * Test that an exception not stemming from a bad rule is not caught.
+     *
+     * @expectedException \BadMethodCallException
+     * @expectedExceptionMessage Received something, but no expectations were specified.
+     */
+    public function testExceptionNotCausedByBadRuleIsNotCaught()
+    {
+        $data = ['rules' => 'string'];
+
+        $this->validator->shouldReceive('make')->once()
+            ->with(['__TEST' => 'test'], ['__TEST' => 'string'])
+            ->andReturnSelf();
+
+        $this->validator->shouldReceive('fails')->once()
+            ->withNoArgs()
+            ->andThrow(new BadMethodCallException('Received something, but no expectations were specified.'));
+
+        $this->getService()->handle($this->model, $data);
     }
 
     /**
@@ -179,5 +224,15 @@ class VariableUpdateServiceTest extends TestCase
         }
 
         return $data;
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies for testing.
+     *
+     * @return \Pterodactyl\Services\Eggs\Variables\VariableUpdateService
+     */
+    private function getService(): VariableUpdateService
+    {
+        return new VariableUpdateService($this->repository, $this->validator);
     }
 }
