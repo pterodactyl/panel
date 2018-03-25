@@ -23,6 +23,9 @@ abstract class IntegrationTestCase extends TestCase
         Model::unsetEventDispatcher();
     }
 
+    /**
+     * @return array
+     */
     protected function connectionsToTransact()
     {
         return ['testing'];
