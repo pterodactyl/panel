@@ -48,6 +48,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonListen' => 'integer',
         'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
+        'public' => 'boolean',
     ];
 
     /**
