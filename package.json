@@ -1,11 +1,36 @@
 {
   "name": "pterodactyl-panel",
   "devDependencies": {
+    "autoprefixer": "^8.2.0",
     "babel-cli": "6.18.0",
+    "babel-core": "^6.26.0",
     "babel-plugin-transform-strict-mode": "^6.18.0",
-    "babel-preset-es2015": "6.18.0"
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-cli": "^2.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-if": "^2.0.2",
+    "gulp-postcss": "^7.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-rev": "^8.1.1",
+    "gulp-uglify": "^3.0.0",
+    "jquery": "^3.3.1",
+    "postcss": "^6.0.21",
+    "postcss-import": "^11.1.0",
+    "tailwindcss": "^0.5.1",
+    "vue": "^2.5.16",
+    "yargs": "^11.0.0"
   },
   "scripts": {
-    "build": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js"
-  }
+    "build:filemanager": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
+    "watch": "./node_modules/gulp-cli/bin/gulp.js watch",
+    "build": "./node_modules/gulp-cli/bin/gulp.js default",
+    "build:styles": "./node_modules/gulp-cli/bin/gulp.js styles",
+    "build:scripts": "./node_modules/gulp-cli/bin/gulp.js scripts"
+  },
+  "dependencies": {}
 }

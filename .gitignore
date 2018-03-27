@@ -7,25 +7,15 @@ storage/framework/*
 /.idea
 /nbproject
 
-package-lock.json
-composer.lock
 node_modules
-
-_ide_helper_models.php
+*.log
 _ide_helper.php
-
-sami.phar
-/.sami
+.phpstorm.meta.php
+.php_cs.cache
+public/assets/*
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
 .dockerignore
 Dockerfile
 docker-compose.yml
-# for image related files
-misc
-.phpstorm.meta.php
-.php_cs.cache
-
-# Vagrant
-*.log
