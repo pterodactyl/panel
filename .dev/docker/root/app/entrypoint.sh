@@ -7,6 +7,12 @@ ENV="/app/var/.env"
 if [ "$1" = "/sbin/tini" ]; then
     echo "] Configuring Pterodactyl Panel container"
 
+    if [ -e $ENV ]; then
+        echo "] .env file found in /app/var, linking on /app/.env"
+        ln -s $ENV /app/.env
+        source $ENV
+    fi
+
     if [ -z $(echo "$APP_URL" | sed "/http:\/\//d") ]; then
         echo "] HTTPS is disabled (It's easy to enable!)"
         sed -i "s,<domain>,$APP_URL,g" /etc/caddy/caddy.conf
@@ -28,7 +34,7 @@ if [ "$1" = "/sbin/tini" ]; then
         exit 1
     fi
 
-    echo "] Waiting for mysql to be ready"
+    echo "] Waiting for mysql to be ready ($DB_HOST:$DB_PORT)"
     until nc -z -w30 $DB_HOST $DB_PORT; do
         sleep 1
     done
@@ -40,6 +46,7 @@ if [ "$1" = "/sbin/tini" ]; then
         if [ ! -e $ENV ]; then
             mkdir -p var
             cp /app/.env.example $ENV
+            chmod 775 $ENV
         else
             echo "] Failed to create $ENV. This should never happen."
         fi
@@ -50,14 +57,53 @@ if [ "$1" = "/sbin/tini" ]; then
 
         echo "]   Setting up mysql database connection"
         php artisan p:environment:database -n -q \
-            --host="$DB_HOST" --port="$DB_PORT" --database="$DB_DATABASE" --username="$DB_USERNAME" --password="$DB_PASSWORD" \
+            --host="$DB_HOST" --port="$DB_PORT" --database="$DB_DATABASE" --username="$DB_USERNAME" --password="$DB_PASSWORD"
 
-        echo "]   Setting up redis cache"
-        php artisan p:environment:setup -n \
-            --cache="$CACHE_DRIVER" --redis-host="$REDIS_HOST" --redis-port="$REDIS_PORT" --redis-pass="$REDIS_PASS" \
-            --session=database --queue=database --url="$APP_URL" --timezone="$APP_TIMEZONE"
+        if [ -z "$CACHE_DRIVER" ]; then #If cache driver not set, set default to file !
+            CACHE_DRIVER="file"
+        fi
 
-        echo "]   Setting up email configuration"
+        if [ -z "$SESSION_DRIVER" ]; then #If session driver not set, set default to file !
+            SESSION_DRIVER="file"
+        fi
+
+        if [ -z "$QUEUE_DRIVER" ]; then #If queue driver not set, set default to database !
+            QUEUE_DRIVER="database"
+        fi
+
+        if [ "$CACHE_DRIVER" = redis ]; then
+            echo "] Setting up redis driver for cache, session and queue"
+            if [ -z $REDIS_PORT ]; then #If redis port not set, SET IT !!!!
+                REDIS_PORT=6379
+            fi
+
+            echo "]     Waiting for redis to be ready ($REDIS_HOST:$REDIS_PORT)"
+            until nc -z -w30 $REDIS_HOST $REDIS_PORT; do
+                sleep 1
+            done
+            echo "]     Redis seems to be ready"
+
+            if [ ! -z "$REDIS_PASSWORD" ] && [ ! "$REDIS_PASSWORD" = "" ] && [ ! "$REDIS_PASSWORD" = "null" ]; then #Special case for redis password present
+                echo "]     Using Redis caching with password !"
+                php artisan p:environment:setup -n -q \
+                    --cache="$CACHE_DRIVER" --session="$SESSION_DRIVER" --queue="$QUEUE_DRIVER" \
+                    --redis-host="$REDIS_HOST" --redis-port="$REDIS_PORT" --redis-pass="$REDIS_PASS" \
+                    --url="$APP_URL" --timezone="$APP_TIMEZONE" --disable-settings-ui
+            else
+                echo "]     Using Redis caching without password, hope it's secured !"
+                php artisan p:environment:setup -n -q \
+                    --cache="$CACHE_DRIVER" --session="$SESSION_DRIVER" --queue="$QUEUE_DRIVER" \
+                    --redis-host="$REDIS_HOST" --redis-port="$REDIS_PORT" \
+                    --url="$APP_URL" --timezone="$APP_TIMEZONE" --disable-settings-ui
+            fi
+        else
+            echo "] Using $CACHE_DRIVER as cache driver, $SESSION_DRIVER as session driver and $QUEUE_DRIVER as queue driver."
+            php artisan p:environment:setup -n -q \
+                --cache="$CACHE_DRIVER" --session="$SESSION_DRIVER" --queue="$QUEUE_DRIVER" \
+                --url="$APP_URL" --timezone="$APP_TIMEZONE" --disable-settings-ui
+        fi
+
+        echo "] Setting up email configuration"
         case "$MAIL_DRIVER" in
             mail)
                 echo "]     PHP Mail was chosen"
@@ -90,8 +136,6 @@ if [ "$1" = "/sbin/tini" ]; then
         echo "]   Seeding Database"
         php artisan db:seed -n --force
 
-    else # Found an env file and testing for panel version
-        echo "] Found .env file."
     fi
 
     # create caddy log dir (error was thrown)
