@@ -23,7 +23,7 @@ services:
       - cache
     volumes:
       - "/srv/pterodactyl/var/:/var/www/html/var/"
-      - "/srv/pterodactyl/certs/:/root/.caddy/"
+#      - "/srv/pterodactyl/certs/:/etc/letsencrypt/live/$HOSTNAME/" need a replacement for that
     environment:
       - "DB_HOST=database"
       - "DB_PORT=3306"

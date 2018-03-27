@@ -13,22 +13,31 @@ if [ "$1" = "/sbin/tini" ]; then
         source $ENV
     fi
 
-    if [ -z $(echo "$APP_URL" | sed "/http:\/\//d") ]; then
+    # extract and print the hostname (if the value is empty, we are missing something)
+    HOSTNAME=$(echo "$APP_URL" | awk -F/ '{print $3}')
+    echo "Setup with hostname : $HOSTNAME"
+
+    # clear default sites
+    rm -rf /etc/nginx/conf.d/*
+    # create the pid folder
+    mkdir -p /run/nginx/
+
+    if [ -z $(echo "$APP_URL" | sed "/http:\/\//d") ]; then # NO certs
         echo "] HTTPS is disabled (It's easy to enable!)"
-        sed -i "s,<domain>,$APP_URL,g" /etc/caddy/caddy.conf
-        sed -i "s,<email>,off,g" /etc/caddy/caddy.conf
-    elif [ -z $(echo "$APP_URL" | sed "/https:\/\//d") ]; then
+        sed -i "s,<domain>,$HOSTNAME,g" /etc/nginx/sites-available/default.conf
+        ln -s /etc/nginx/sites-available/default.conf /etc/nginx/conf.d/pterodactyl.conf
+    elif [ -z $(echo "$APP_URL" | sed "/https:\/\//d") ]; then # use certs
         echo "] HTTPS is enabled"
-        sed -i "s,<domain>,$APP_URL,g" /etc/caddy/caddy.conf
-        HOSTNAME=$(echo "$APP_URL" | awk -F/ '{print $3}')
-        echo "Setup with hostname : $HOSTNAME"
-        if [ ! -f /etc/letsencrypt/live/$HOSTNAME/fullchain.pem ] || [ ! -f /etc/letsencrypt/live/$HOSTNAME/privkey.pem ]; then
+        sed -i "s,<domain>,$HOSTNAME,g" /etc/nginx/sites-available/default-ssl.conf
+        if [ ! -f /etc/letsencrypt/live/$HOSTNAME/fullchain.pem ] || [ ! -f /etc/letsencrypt/live/$HOSTNAME/privkey.pem ]; then # generate certs
             echo "] Obtaining certificates for eligible sites from Let's Encrypt"
-            sed -i "s,<email>,$LETSENCRYPT_EMAIL,g" /etc/caddy/caddy.conf
-        else
+            # do the magic here (TODO)
+            # https://wiki.alpinelinux.org/wiki/Nginx_as_reverse_proxy_with_acme_(letsencrypt)
+        else # use certs
             echo "] Using provided certificate and key for tls"
-            sed -i "s,<email>,/etc/letsencrypt/live/$HOSTNAME/fullchain.pem /etc/letsencrypt/live/$HOSTNAME/privkey.pem,g" /etc/caddy/caddy.conf
+            # nothing to do, certs are already good
         fi
+        ln -s /etc/nginx/sites-available/default-ssl.conf /etc/nginx/conf.d/pterodactyl.conf
     else
         echo "] Your APP_URL is missing a protocol."
         exit 1
@@ -138,8 +147,14 @@ if [ "$1" = "/sbin/tini" ]; then
 
     fi
 
-    # create caddy log dir (error was thrown)
-    mkdir -p /var/log/caddy/
+    #start php daemon
+    /usr/sbin/php-fpm7.2 -D -y /etc/php7/php-fpm.conf
+
+    # start crontab
+    crond -b &
+
+    # start queue
+    /usr/bin/php /app/artisan queue:work database --queue=high,standard,low --sleep=3 --tries=3 &
 
     echo "] Configuration is done."
 fi
