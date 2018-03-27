@@ -26,7 +26,10 @@ class EnsureUniqueAllocationIdOnServersTable extends Migration
     public function down()
     {
         Schema::table('servers', function (Blueprint $table) {
+            $table->dropForeign(['allocation_id']);
             $table->dropUnique(['allocation_id']);
+
+            $table->foreign('allocation_id')->references('id')->on('allocations');
         });
     }
 }

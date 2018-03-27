@@ -41,7 +41,7 @@ class AddApiKeyPermissionColumns extends Migration
             $table->unsignedInteger('key_id');
             $table->string('permission');
 
-            $table->foreign('key_id')->references('id')->on('keys')->onDelete('cascade');
+            $table->foreign('key_id')->references('id')->on('api_keys')->onDelete('cascade');
         });
 
         Schema::table('api_keys', function (Blueprint $table) {

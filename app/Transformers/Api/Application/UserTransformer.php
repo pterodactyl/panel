@@ -53,6 +53,8 @@ class UserTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\User $user
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(User $user)
     {

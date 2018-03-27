@@ -1,6 +1,8 @@
 <?php
 
+use Cake\Chronos\Chronos;
 use Faker\Generator as Faker;
+use Pterodactyl\Models\ApiKey;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,8 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
         'egg_id' => $faker->randomNumber(),
         'pack_id' => null,
         'installed' => 1,
+        'database_limit' => null,
+        'allocation_limit' => null,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];
@@ -44,7 +48,7 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker $faker) {
 
     return [
         'id' => $faker->unique()->randomNumber(),
-        'external_id' => null,
+        'external_id' => $faker->unique()->isbn10,
         'uuid' => $faker->uuid,
         'username' => $faker->userName,
         'email' => $faker->safeEmail,
@@ -54,6 +58,8 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker $faker) {
         'language' => 'en',
         'root_admin' => false,
         'use_totp' => false,
+        'created_at' => Chronos::now(),
+        'updated_at' => Chronos::now(),
     ];
 });
 
@@ -66,7 +72,7 @@ $factory->state(Pterodactyl\Models\User::class, 'admin', function () {
 $factory->define(Pterodactyl\Models\Location::class, function (Faker $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'short' => $faker->domainWord,
+        'short' => $faker->unique()->domainWord,
         'long' => $faker->catchPhrase,
     ];
 });
@@ -74,7 +80,6 @@ $factory->define(Pterodactyl\Models\Location::class, function (Faker $faker) {
 $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
-        'uuid' => $faker->unique()->uuid,
         'public' => true,
         'name' => $faker->firstName,
         'fqdn' => $faker->ipv4,
@@ -224,21 +229,17 @@ $factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker $faker) {
 });
 
 $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
+    static $token;
+
     return [
         'id' => $faker->unique()->randomNumber(),
         'user_id' => $faker->randomNumber(),
+        'key_type' => ApiKey::TYPE_APPLICATION,
         'identifier' => str_random(Pterodactyl\Models\ApiKey::IDENTIFIER_LENGTH),
-        'token' => 'encrypted_string',
+        'token' => $token ?: $token = encrypt(str_random(Pterodactyl\Models\ApiKey::KEY_LENGTH)),
+        'allowed_ips' => null,
         'memo' => 'Test Function Key',
         'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
         'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
-    ];
-});
-
-$factory->define(Pterodactyl\Models\APIPermission::class, function (Faker $faker) {
-    return [
-        'id' => $faker->unique()->randomNumber(),
-        'key_id' => $faker->randomNumber(),
-        'permission' => mb_strtolower($faker->word),
     ];
 });

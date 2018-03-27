@@ -18,6 +18,13 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 class Handler extends ExceptionHandler
 {
     /**
+     * Laravel's validation parser formats custom rules using the class name
+     * resulting in some weird rule names. This string will be parsed out and
+     * replaced with 'p_' in the response code.
+     */
+    private const PTERODACTYL_RULE_STRING = 'pterodactyl\_rules\_';
+
+    /**
      * A list of the exception types that should not be reported.
      *
      * @var array
@@ -156,7 +163,9 @@ class Handler extends ExceptionHandler
             $response = [];
             foreach ($errors as $key => $error) {
                 $response[] = [
-                    'code' => array_get($codes, str_replace('.', '_', $field) . '.' . $key),
+                    'code' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
+                        $codes, str_replace('.', '_', $field) . '.' . $key
+                    )),
                     'detail' => $error,
                     'source' => ['field' => $field],
                 ];
