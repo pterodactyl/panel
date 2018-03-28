@@ -48,6 +48,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonListen' => 'integer',
         'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
+        'public' => 'boolean',
     ];
 
     /**
@@ -62,6 +63,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'disk_overallocate', 'upload_size',
         'daemonSecret', 'daemonBase',
         'daemonSFTP', 'daemonListen',
+        'description',
     ];
 
     /**
@@ -98,6 +100,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'name' => 'regex:/^([\w .-]{1,100})$/',
+        'description' => 'string',
         'location_id' => 'exists:locations,id',
         'public' => 'boolean',
         'fqdn' => 'string',
@@ -225,4 +228,5 @@ class Node extends Model implements CleansAttributes, ValidableContract
     {
         return $this->hasMany(Allocation::class);
     }
+
 }

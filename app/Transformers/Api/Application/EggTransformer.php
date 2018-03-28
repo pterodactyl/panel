@@ -46,10 +46,10 @@ class EggTransformer extends BaseTransformer
             'description' => $model->description,
             'docker_image' => $model->docker_image,
             'config' => [
-                'files' => json_decode($model->config_files),
-                'startup' => json_decode($model->config_startup),
+                'files' => json_decode($model->config_files, true),
+                'startup' => json_decode($model->config_startup, true),
                 'stop' => $model->config_stop,
-                'logs' => json_decode($model->config_logs),
+                'logs' => json_decode($model->config_logs, true),
                 'extends' => $model->config_from,
             ],
             'startup' => $model->startup,

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Http\Middleware;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
 

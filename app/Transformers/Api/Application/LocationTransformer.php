@@ -32,7 +32,13 @@ class LocationTransformer extends BaseTransformer
      */
     public function transform(Location $location): array
     {
-        return $location->toArray();
+        return [
+            'id' => $location->id,
+            'short' => $location->short,
+            'long' => $location->long,
+            $location->getUpdatedAtColumn() => $this->formatTimestamp($location->updated_at),
+            $location->getCreatedAtColumn() => $this->formatTimestamp($location->created_at),
+        ];
     }
 
     /**
@@ -40,6 +46,8 @@ class LocationTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Location $location
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Location $location)
     {
@@ -57,6 +65,8 @@ class LocationTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Location $location
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNodes(Location $location)
     {
