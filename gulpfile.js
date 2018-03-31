@@ -8,6 +8,8 @@ const postcss = require('gulp-postcss');
 const rev = require('gulp-rev');
 const tailwindcss = require('tailwindcss');
 const uglify = require('gulp-uglify');
+const webpackStream = require('webpack-stream');
+const webpackConfig = require('./webpack.config.js');
 
 const argv = require('yargs')
     .default('production', false)
@@ -17,14 +19,11 @@ const paths = {
     manifest: './public/assets',
     assets: './public/assets/{css,scripts}/*.{css,js}',
     styles: {
-        src: './resources/assets/pterodactyl/css/**/*.css',
+        src: './resources/assets/pterodactyl/styles/**/*.css',
         dest: './public/assets/css',
     },
     scripts: {
-        src: [
-            './resources/assets/pterodactyl/scripts/**/*.js',
-            './node_modules/jquery/dist/jquery.js',
-        ],
+        src: './resources/assets/pterodactyl/scripts/**/*.js',
         dest: './public/assets/scripts',
     },
 };
@@ -36,14 +35,15 @@ function styles() {
     return gulp.src(paths.styles.src)
         .pipe(postcss([
             require('postcss-import'),
+            require('postcss-preset-env')({stage: 0}),
             tailwindcss('./tailwind.js'),
-            require('autoprefixer')]
-        ))
+            require('autoprefixer'),
+        ]))
         .pipe(gulpif(argv.production, cssmin()))
         .pipe(concat('bundle.css'))
         .pipe(rev())
         .pipe(gulp.dest(paths.styles.dest))
-        .pipe(rev.manifest(paths.manifest + '/manifest.json', { merge: true, base: paths.manifest }))
+        .pipe(rev.manifest(paths.manifest + '/manifest.json', {merge: true, base: paths.manifest}))
         .pipe(gulp.dest(paths.manifest));
 }
 
@@ -51,22 +51,27 @@ function styles() {
  * Build all of the waiting scripts.
  */
 function scripts() {
-    return gulp.src(paths.scripts.src)
+    return webpackStream(webpackConfig)
         .pipe(babel())
         .pipe(gulpif(argv.production, uglify()))
         .pipe(concat('bundle.js'))
         .pipe(rev())
         .pipe(gulp.dest(paths.scripts.dest))
-        .pipe(rev.manifest(paths.manifest + '/manifest.json', { merge: true, base: paths.manifest }))
+        .pipe(rev.manifest(paths.manifest + '/manifest.json', {merge: true, base: paths.manifest}))
         .pipe(gulp.dest(paths.manifest));
 }
 
 /**
- * Proves watchers.
+ * Provides watchers.
  */
 function watch() {
-    gulp.watch(paths.styles.src, styles);
-    gulp.watch(paths.scripts.src, scripts);
+    gulp.watch(paths.styles.src, gulp.series(function cleanStyles() {
+        return del(['./public/assets/css/**/*.css']);
+    }, styles));
+
+    gulp.watch([paths.scripts.src, paths.vue.src], gulp.series(function cleanScripts() {
+        return del(['./public/assets/scripts/**/*.js']);
+    }, scripts));
 }
 
 /**
@@ -81,4 +86,5 @@ exports.styles = styles;
 exports.scripts = scripts;
 exports.watch = watch;
 
+gulp.task('scripts', gulp.series(clean, scripts));
 gulp.task('default', gulp.series(clean, styles, scripts));
