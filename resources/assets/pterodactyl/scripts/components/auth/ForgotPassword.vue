@@ -12,6 +12,7 @@
                 </div>
             </div>
             <div>
+                <csrf/>
                 <button class="btn btn-blue btn-jumbo" type="submit">
                     {{ $t('auth.recover_account') }}
                 </button>
@@ -26,10 +27,18 @@
 </template>
 
 <script>
+    import Csrf from "../shared/CSRF";
+
     export default {
+        components: {Csrf},
         name: 'forgot-password',
         props: {
             email: {type: String, required: true},
+        },
+        data: function () {
+            return {
+                X_CSRF_TOKEN: window.X_CSRF_TOKEN,
+            };
         },
         methods: {
             updateEmail: function (event) {
