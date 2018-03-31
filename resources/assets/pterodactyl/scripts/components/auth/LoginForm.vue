@@ -7,23 +7,23 @@
                            v-bind:value="email"
                            v-on:input="updateEmail($event)"
                     />
-                    <label for="grid-username">Username or Email</label>
+                    <label for="grid-username">{{ $t('strings.user_identifier') }}</label>
                 </div>
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
                     <input class="input" id="grid-password" type="password" name="password" aria-labelledby="grid-password" required>
-                    <label for="grid-password">Password</label>
+                    <label for="grid-password">{{ $t('strings.password') }}</label>
                 </div>
             </div>
             <div>
-                <button class="bg-blue hover:bg-blue-dark hover:border-blue-darker border-blue-dark border text-white p-4 rounded w-full uppercase tracking-wide text-sm" type="submit">
-                    Sign In
+                <button class="btn btn-blue btn-jumbo" type="submit">
+                    {{ $t('auth.sign_in') }}
                 </button>
             </div>
             <div class="pt-6 text-center">
                 <router-link to="/forgot-password" class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark">
-                    Forgot Password?
+                    {{ $t('auth.forgot_password') }}
                 </router-link>
             </div>
         </form>

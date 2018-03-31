@@ -1,26 +1,21 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
+import vuexI18n from 'vuex-i18n';
 import VueRouter from 'vue-router';
+
+// Helpers
 import { Ziggy } from './helpers/ziggy';
+import Locales from './../../../../resources/i18n/locales';
 
 // Base Vuejs Templates
 import Login from './components/auth/Login';
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
-require('./bootstrap');
-
+// Used for the route() helper.
 window.Ziggy = Ziggy;
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+Vue.use(Vuex);
 
+const store = new Vuex.Store();
 const route = require('./../../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;
@@ -31,6 +26,10 @@ Vue.mixin({
 });
 
 Vue.use(VueRouter);
+Vue.use(vuexI18n.plugin, store);
+
+Vue.i18n.add('en', Locales.en);
+Vue.i18n.set('en');
 
 const router = new VueRouter({
     routes: [
@@ -41,6 +40,9 @@ const router = new VueRouter({
     ]
 });
 
+require('./bootstrap');
+
 const app = new Vue({
+    store,
     router,
 }).$mount('#pterodactyl');

@@ -64,7 +64,7 @@ function scripts() {
  * Provides watchers.
  */
 function watch() {
-    gulp.watch(paths.styles.src, gulp.series(function cleanStyles() {
+    gulp.watch(['./resources/assets/pterodactyl/styles/**/*.css'], gulp.series(function cleanStyles() {
         return del(['./public/assets/css/**/*.css']);
     }, styles));
 

@@ -1,0 +1,21 @@
+.btn {
+  @apply .rounded;
+
+  /**
+   * Button Colors
+   */
+  &.btn-blue {
+    @apply .bg-blue .border-blue-dark .border .text-white;
+
+    &:hover {
+      @apply .bg-blue-dark .border-blue-darker;
+    }
+  }
+
+  /**
+   * Button Sizes
+   */
+  &.btn-jumbo {
+    @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
+  }
+}

@@ -9,6 +9,7 @@
  */
 @import "components/animations.css";
 @import "components/authentication.css";
+@import "components/buttons.css";
 
 /**
  * Tailwind Utilities

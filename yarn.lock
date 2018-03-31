@@ -6004,6 +6004,14 @@ vueify-insert-css@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vueify-insert-css/-/vueify-insert-css-1.0.0.tgz#57e5d791907e8c9d87ae6de099a2174bd0a7f990"
 
+vuex-i18n@^1.10.5:
+  version "1.10.5"
+  resolved "https://registry.yarnpkg.com/vuex-i18n/-/vuex-i18n-1.10.5.tgz#635ea2204e0aa3f8fd512f0fab7f6b994d3f666c"
+
+vuex@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.0.1.tgz#e761352ebe0af537d4bb755a9b9dc4be3df7efd2"
+
 watchpack@^1.4.0, watchpack@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.5.0.tgz#231e783af830a22f8966f65c4c4bacc814072eed"
