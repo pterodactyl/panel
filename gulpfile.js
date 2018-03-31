@@ -7,7 +7,7 @@ const gulpif = require('gulp-if');
 const postcss = require('gulp-postcss');
 const rev = require('gulp-rev');
 const tailwindcss = require('tailwindcss');
-const uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify-es').default;
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
 
