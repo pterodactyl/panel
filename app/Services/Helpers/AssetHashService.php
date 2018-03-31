@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Helpers;
 
-use Illuminate\Container\Container;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -56,20 +55,47 @@ class AssetHashService
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function getUrl(string $resource): string
+    public function url(string $resource): string
     {
         $file = last(explode('/', $resource));
 
-        return '/' . ltrim(str_replace($file, array_get($this->getManifest(), $file, $file), $resource), '/');
+        return '/' . ltrim(str_replace($file, array_get($this->manifest(), $file, $file), $resource), '/');
+    }
+
+    /**
+     * Return a built CSS import using the provided URL.
+     *
+     * @param string $resource
+     * @return string
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function css(string $resource): string
+    {
+        return '<link href="' . $this->url($resource) . '" rel="stylesheet preload" crossorigin="anonymous" referrerpolicy="no-referrer">';
+    }
+
+    /**
+     * Return a built JS import using the provided URL.
+     *
+     * @param string $resource
+     * @return string
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function js(string $resource): string
+    {
+        return '<script src="' . $this->url($resource) . '" crossorigin="anonymous"></script>';
     }
 
     /**
      * Get the asset manifest and store it in the cache for quicker lookups.
      *
      * @return array
+     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function getManifest(): array
+    protected function manifest(): array
     {
         if (! is_null(self::$manifest)) {
             return self::$manifest;
@@ -87,42 +113,5 @@ class AssetHashService
         $this->cache->put('Core:AssetManifest', $contents, 1440);
 
         return self::$manifest = $contents;
-    }
-
-    /**
-     * Get the URL for a resource in a static context.
-     *
-     * @param string $resource
-     * @return string
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public static function url(string $resource): string
-    {
-        return Container::getInstance()->make(self::class)->getUrl($resource);
-    }
-
-    /**
-     * @param string $resource
-     * @return string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public static function css(string $resource): string
-    {
-        $path = self::url($resource);
-
-        return '<link href="' . $path . '" rel="stylesheet preload" crossorigin="anonymous" referrerpolicy="no-referrer">';
-    }
-
-    /**
-     * @param string $resource
-     * @return string
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public static function js(string $resource): string
-    {
-        $path = self::url($resource);
-
-        return '<script src="' . $path . '" crossorigin="anonymous">';
     }
 }

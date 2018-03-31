@@ -1,0 +1,37 @@
+.input-open {
+  @apply .w-full .px-3 .relative;
+}
+
+.input-open > .input {
+  @apply .appearance-none .block .w-full .text-grey-darker .border-b-2 .border-grey-light .py-3 .mb-3;
+
+  &:focus {
+    @apply .border-blue;
+    outline: 0;
+    transition: border 500ms ease-out;
+  }
+
+  &:focus + label, &:valid + label {
+    @apply .text-grey-darker .px-0 .cursor-pointer;
+    transform:translateY(-24px)
+  }
+
+  &:invalid + label {
+    @apply .text-grey .px-1;
+    transform:translateY(0)
+  }
+
+  &:required {
+    box-shadow: none;
+  }
+}
+
+.input-open > label {
+  @apply .block .uppercase .tracking-wide .text-grey .text-xs .mb-2 .absolute .px-1;
+  top: 14px;
+  transition: transform 200ms ease-out;
+}
+
+.login-box {
+  @apply .bg-white .shadow-lg .rounded-lg .pt-10 .px-8 .pb-6 .mb-4;
+}

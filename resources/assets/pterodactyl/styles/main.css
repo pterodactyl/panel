@@ -1,0 +1,23 @@
+/**
+ * Tailwind Preflight Classes
+ */
+@import "tailwindcss/preflight";
+@import "tailwindcss/components";
+
+/**
+ * Pterodactyl Specific CSS
+ */
+@import "components/animations.css";
+@import "components/authentication.css";
+
+/**
+ * Tailwind Utilities
+ */
+@import "tailwindcss/utilities";
+
+/**
+ * Assorted Other CSS
+ */
+body {
+  @apply .font-sans;
+}
