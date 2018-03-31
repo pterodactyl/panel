@@ -19,7 +19,7 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                exclude: /(node_modules)/,
+                exclude: /(node_modules|vendor)/,
                 use: [{
                     loader: "babel-loader",
                     options: { presets: ['es2015'] }
@@ -29,7 +29,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            'vue': 'vue/dist/vue.js'
+            // 'vue': 'vue/dist/vue.js'
+            'vue$': 'vue/dist/vue.esm.js'
         },
         extensions: ['*', '.js', '.vue', '.json']
     },

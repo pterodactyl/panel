@@ -6,7 +6,6 @@ const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const postcss = require('gulp-postcss');
 const rev = require('gulp-rev');
-const tailwindcss = require('tailwindcss');
 const uglify = require('gulp-uglify-es').default;
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
@@ -19,11 +18,11 @@ const paths = {
     manifest: './public/assets',
     assets: './public/assets/{css,scripts}/*.{css,js}',
     styles: {
-        src: './resources/assets/pterodactyl/styles/**/*.css',
+        src: './resources/assets/pterodactyl/styles/main.css',
         dest: './public/assets/css',
     },
     scripts: {
-        src: './resources/assets/pterodactyl/scripts/**/*.js',
+        src: './resources/assets/pterodactyl/scripts/**/*.{js,vue}',
         dest: './public/assets/scripts',
     },
 };
@@ -35,8 +34,8 @@ function styles() {
     return gulp.src(paths.styles.src)
         .pipe(postcss([
             require('postcss-import'),
+            require('tailwindcss')('./tailwind.js'),
             require('postcss-preset-env')({stage: 0}),
-            tailwindcss('./tailwind.js'),
             require('autoprefixer'),
         ]))
         .pipe(gulpif(argv.production, cssmin()))
@@ -69,7 +68,7 @@ function watch() {
         return del(['./public/assets/css/**/*.css']);
     }, styles));
 
-    gulp.watch([paths.scripts.src, paths.vue.src], gulp.series(function cleanScripts() {
+    gulp.watch(paths.scripts.src, gulp.series(function cleanScripts() {
         return del(['./public/assets/scripts/**/*.js']);
     }, scripts));
 }
