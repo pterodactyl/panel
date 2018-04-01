@@ -4,9 +4,10 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Http\RedirectResponse;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -106,11 +107,12 @@ class LoginController extends Controller
      * Handle a login request to the application.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         $username = $request->input(self::USER_INPUT_FIELD);
         $useColumn = $this->getField($username);
@@ -128,35 +130,26 @@ class LoginController extends Controller
 
         $validCredentials = password_verify($request->input('password'), $user->password);
         if ($user->use_totp) {
-            $token = str_random(64);
-            $this->cache->put($token, ['user_id' => $user->id, 'valid_credentials' => $validCredentials], 5);
+            $token = str_random(128);
+            $this->cache->put($token, [
+                'user_id' => $user->id,
+                'valid_credentials' => $validCredentials,
+                'request_ip' => $request->ip(),
+            ], 5);
 
-            return redirect()->route('auth.totp')->with('authentication_token', $token);
+            return response()->json([
+                'complete' => false,
+                'token' => $token,
+            ]);
         }
 
         if ($validCredentials) {
             $this->auth->guard()->login($user, true);
 
-            return $this->sendLoginResponse($request);
+            return response()->json(['complete' => true]);
         }
 
         return $this->sendFailedLoginResponse($request, $user);
-    }
-
-    /**
-     * Handle a TOTP implementation page.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function totp(Request $request)
-    {
-        $token = $request->session()->get('authentication_token');
-        if (is_null($token) || $this->auth->guard()->user()) {
-            return redirect()->route('auth.login');
-        }
-
-        return view('auth.totp', ['verify_key' => $token]);
     }
 
     /**
@@ -167,27 +160,29 @@ class LoginController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function loginUsingTotp(Request $request)
+    public function loginCheckpoint(Request $request)
     {
-        if (is_null($request->input('verify_token'))) {
+        if (is_null($request->input('confirmation_token')) || is_null($request->input('authentication_code'))) {
             return $this->sendFailedLoginResponse($request);
         }
 
         try {
-            $cache = $this->cache->pull($request->input('verify_token'), []);
+            $cache = $this->cache->pull($request->input('confirmation_token'), []);
             $user = $this->repository->find(array_get($cache, 'user_id', 0));
         } catch (RecordNotFoundException $exception) {
             return $this->sendFailedLoginResponse($request);
         }
 
-        if (is_null($request->input('2fa_token')) || ! array_get($cache, 'valid_credentials')) {
+        if (! array_get($cache, 'valid_credentials') || array_get($cache, 'request_ip') !== $request->ip()) {
             return $this->sendFailedLoginResponse($request, $user);
         }
 
         if (! $this->google2FA->verifyKey(
             $this->encrypter->decrypt($user->totp_secret),
-            $request->input('2fa_token'),
+            $request->input('authentication_code'),
             $this->config->get('pterodactyl.auth.2fa.window')
         )) {
             return $this->sendFailedLoginResponse($request, $user);
@@ -203,24 +198,35 @@ class LoginController extends Controller
      *
      * @param \Illuminate\Http\Request                        $request
      * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
-     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    protected function sendFailedLoginResponse(Request $request, Authenticatable $user = null): RedirectResponse
+    protected function sendFailedLoginResponse(Request $request, Authenticatable $user = null)
     {
         $this->incrementLoginAttempts($request);
         $this->fireFailedLoginEvent($user, [
             $this->getField($request->input(self::USER_INPUT_FIELD)) => $request->input(self::USER_INPUT_FIELD),
         ]);
 
-        $errors = [self::USER_INPUT_FIELD => trans('auth.failed')];
+        throw new DisplayException(trans('auth.failed'));
+    }
 
-        if ($request->expectsJson()) {
-            return response()->json($errors, 422);
-        }
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
 
-        return redirect()->route('auth.login')
-            ->withInput($request->only(self::USER_INPUT_FIELD))
-            ->withErrors($errors);
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user())
+            ?: response()->json([
+                'intended' => $this->redirectPath(),
+            ]);
     }
 
     /**

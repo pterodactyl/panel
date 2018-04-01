@@ -6004,6 +6004,10 @@ vueify-insert-css@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vueify-insert-css/-/vueify-insert-css-1.0.0.tgz#57e5d791907e8c9d87ae6de099a2174bd0a7f990"
 
+vuex-flash@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/vuex-flash/-/vuex-flash-1.0.0.tgz#4bbeb2093d4857ddef45a6c50f10243539acee6e"
+
 vuex-i18n@^1.10.5:
   version "1.10.5"
   resolved "https://registry.yarnpkg.com/vuex-i18n/-/vuex-i18n-1.10.5.tgz#635ea2204e0aa3f8fd512f0fab7f6b994d3f666c"

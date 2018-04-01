@@ -3,7 +3,7 @@
         <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post">
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" required
+                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" ref="email" required
                            v-bind:value="email"
                            v-on:input="updateEmail($event)"
                     />
@@ -27,13 +27,16 @@
 </template>
 
 <script>
-    import Csrf from "../shared/CSRF";
+    import Csrf from "../forms/CSRF";
 
     export default {
         components: {Csrf},
         name: 'forgot-password',
         props: {
             email: {type: String, required: true},
+        },
+        mounted: function () {
+            this.$refs.email.focus();
         },
         data: function () {
             return {

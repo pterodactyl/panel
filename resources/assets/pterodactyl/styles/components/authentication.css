@@ -13,7 +13,7 @@
 
   &:focus + label, &:valid + label {
     @apply .text-grey-darker .px-0 .cursor-pointer;
-    transform:translateY(-24px)
+    transform:translateY(-26px)
   }
 
   &:invalid + label {
