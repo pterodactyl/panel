@@ -7,7 +7,7 @@ import VueRouter from 'vue-router';
 
 // Helpers
 import { Ziggy } from './helpers/ziggy';
-import Locales from './../../../../resources/i18n/locales';
+import Locales from './../../../../resources/lang/locales';
 
 // Base Vuejs Templates
 import Login from './components/auth/Login';

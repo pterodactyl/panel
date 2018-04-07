@@ -19,3 +19,5 @@ public/assets/*
 .dockerignore
 Dockerfile
 docker-compose.yml
+resources/lang/locales.js
+resources/assets/pterodactyl/scripts/helpers/ziggy.js

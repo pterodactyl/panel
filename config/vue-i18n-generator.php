@@ -34,8 +34,8 @@ return [
     | Note: the path will be prepended to point to the App directory.
     |
     */
-    'jsPath' => '/resources/i18n/lang',
-    'jsFile' => '/resources/i18n/locales.js',
+    'jsPath' => '/resources/lang/i18n',
+    'jsFile' => '/resources/lang/locales.js',
 
     /*
     |--------------------------------------------------------------------------
