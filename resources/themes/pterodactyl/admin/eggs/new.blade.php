@@ -95,7 +95,7 @@
                             <div class="form-group">
                                 <label for="pConfigLogs" class="form-label">Log Configuration</label>
                                 <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ old('config_logs') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and wether or not the daemon should be creating custom logs.</p>
+                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
