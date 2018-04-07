@@ -33,20 +33,24 @@ class LoginController extends AbstractLoginController
             return $this->sendFailedLoginResponse($request);
         }
 
-        $validCredentials = password_verify($request->input('password'), $user->password);
+        // Ensure that the account is using a valid username and password before trying to
+        // continue. Previously this was handled in the 2FA checkpoint, however that has
+        // a flaw in which you can discover if an account exists simply by seeing if you
+        // can proceede to the next step in the login process.
+        if (! password_verify($request->input('password'), $user->password)) {
+            return $this->sendFailedLoginResponse($request, $user);
+        }
+
+        // If the user is using 2FA we do not actually log them in at this step, we return
+        // a one-time token to link the 2FA credentials to this account via the UI.
         if ($user->use_totp) {
             $token = str_random(128);
             $this->cache->put($token, [
                 'user_id' => $user->id,
-                'valid_credentials' => $validCredentials,
                 'request_ip' => $request->ip(),
             ], 5);
 
             return response()->json(['complete' => false, 'token' => $token]);
-        }
-
-        if (! $validCredentials) {
-            return $this->sendFailedLoginResponse($request, $user);
         }
 
         $this->auth->guard()->login($user, true);

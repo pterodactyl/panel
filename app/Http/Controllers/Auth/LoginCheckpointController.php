@@ -10,9 +10,8 @@ class LoginCheckpointController extends AbstractLoginController
 {
     /**
      * Handle a login where the user is required to provide a TOTP authentication
-     * token. In order to add additional layers of security, users are not
-     * informed of an incorrect password until this stage, forcing them to
-     * provide a token on each login attempt.
+     * token. Once a user has reached this stage it is assumed that they have already
+     * provided a valid username and password.
      *
      * @param \Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest $request
      * @return \Illuminate\Http\JsonResponse
@@ -28,7 +27,7 @@ class LoginCheckpointController extends AbstractLoginController
             return $this->sendFailedLoginResponse($request);
         }
 
-        if (! array_get($cache, 'valid_credentials') || array_get($cache, 'request_ip') !== $request->ip()) {
+        if (array_get($cache, 'request_ip') !== $request->ip()) {
             return $this->sendFailedLoginResponse($request, $user);
         }
 
@@ -40,7 +39,7 @@ class LoginCheckpointController extends AbstractLoginController
             return $this->sendFailedLoginResponse($request, $user);
         }
 
-        $this->authManager->guard()->login($user, true);
+        $this->auth->guard()->login($user, true);
 
         return $this->sendLoginResponse($request);
     }

@@ -1,0 +1,52 @@
+.spinner {
+  color: transparent;
+  pointer-events: none;
+  position: relative;
+
+  &:after {
+    animation: spinners--spin 500ms infinite linear;
+    border-radius: 9999px;
+    @apply .border-2 .border-grey-light;
+    border-top-color: transparent !important;
+    border-right-color: transparent !important;
+    content: '';
+    display: block;
+    width: 1em;
+    height: 1em;
+    left: calc(50% - (1em / 2));
+    top: calc(50% - (1em / 2));
+    position: absolute !important;
+  }
+
+  /**
+   * Speeds
+   */
+  &.spin-slow:after {
+    animation: spinners--spin 1200ms infinite linear;
+  }
+
+  /**
+   * Spinner Colors
+   */
+  &.blue:after {
+    @apply .border-blue;
+  }
+
+  &.white:after {
+    @apply .border-white;
+  }
+
+  &.spinner-thick:after {
+    @apply .border-4;
+  }
+}
+
+@keyframes spinners--spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -9,14 +9,20 @@
 |
 */
 Route::group(['middleware' => 'guest'], function () {
+    // Login specific routes
     Route::get('/login', 'LoginController@showLoginForm')->name('auth.login');
-    Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('auth.reset');
-
     Route::post('/login', 'LoginController@login')->middleware('recaptcha');
     Route::post('/login/checkpoint', 'LoginCheckpointController@index')->name('auth.checkpoint');
-    Route::post('/password', 'ForgotPasswordController@sendResetLinkEmail')->middleware('recaptcha');
+
+    // Forgot password route. A post to this endpoint will trigger an
+    // email to be sent containing a reset token.
+    Route::post('/password', 'ForgotPasswordController@sendResetLinkEmail')->name('auth.forgot-password.send-link')->middleware('recaptcha');
+
+    // Password reset routes. This endpoint is hit after going through
+    // the forgot password routes to acquire a token (or after an account
+    // is created).
+    Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('auth.reset-password');
     Route::post('/password/reset', 'ResetPasswordController@reset')->name('auth.reset.post')->middleware('recaptcha');
-    Route::post('/password/reset/{token}', 'ForgotPasswordController@sendResetLinkEmail')->middleware('recaptcha');
 });
 
 /*

@@ -7,7 +7,7 @@
   &.btn-blue {
     @apply .bg-blue .border-blue-dark .border .text-white;
 
-    &:hover {
+    &:hover:enabled {
       @apply .bg-blue-dark .border-blue-darker;
     }
   }
@@ -17,5 +17,10 @@
    */
   &.btn-jumbo {
     @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
   }
 }

@@ -2,9 +2,7 @@
     <div>
         <flash-message variant="danger" />
         <flash-message variant="success" />
-        <flash-message variant="warning" />
-        <flash-message variant="info" />
-        <div class="py-4" v-if="errors && errors.length === 1">
+        <div class="pb-4" v-if="errors && errors.length === 1">
             <div class="p-2 bg-red-dark border-red-darker border items-center text-red-lightest leading-normal rounded flex lg:inline-flex w-full text-sm"
                  role="alert">
                 <span class="flex rounded-full bg-red uppercase px-2 py-1 text-xs font-bold mr-3 leading-none">Error</span>
@@ -12,13 +10,12 @@
             </div>
         </div>
         <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
-              v-on:submit.prevent="handleLogin"
+              v-on:submit.prevent="submitForm"
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-username" type="text" name="user" aria-labelledby="grid-username"
+                    <input class="input" id="grid-username" type="text" name="user" aria-labelledby="grid-username" required
                            ref="email"
-                           required
                            v-bind:value="user.email"
                            v-on:input="updateEmail($event)"
                     />
@@ -28,6 +25,7 @@
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
                     <input class="input" id="grid-password" type="password" name="password"
+                           ref="password"
                            aria-labelledby="grid-password" required
                            v-model="user.password"
                     />
@@ -35,8 +33,11 @@
                 </div>
             </div>
             <div>
-                <button class="btn btn-blue btn-jumbo" type="submit">
-                    {{ $t('auth.sign_in') }}
+                <button class="btn btn-blue btn-jumbo" type="submit" v-bind:disabled="showSpinner">
+                    <span class="spinner white" v-bind:class="{ hidden: ! showSpinner }">&nbsp;</span>
+                    <span v-bind:class="{ hidden: showSpinner }">
+                        {{ $t('auth.sign_in') }}
+                    </span>
                 </button>
             </div>
             <div class="pt-6 text-center">
@@ -67,6 +68,7 @@
         data: function () {
             return {
                 errors: [],
+                showSpinner: false,
             }
         },
         mounted: function () {
@@ -75,8 +77,9 @@
         methods: {
             // Handle a login request eminating from the form. If 2FA is required the
             // user will be presented with the 2FA modal window.
-            handleLogin: function () {
+            submitForm: function () {
                 const self = this;
+                this.$data.showSpinner = true;
 
                 axios.post(this.route('auth.login'), {
                     user: this.$props.user.email,
@@ -88,17 +91,20 @@
                         }
 
                         self.$props.user.password = '';
+                        self.$data.showSpinner = false;
                         self.$router.push({name: 'checkpoint', query: {token: response.data.token}});
                     })
                     .catch(function (err) {
                         self.$props.user.password = '';
+                        self.$data.showSpinner = false;
                         if (!err.response) {
                             return console.error(err);
                         }
 
                         const response = err.response;
                         if (response.data && _.isObject(response.data.errors)) {
-                            self.$data.errors.push(response.data.errors[0].detail);
+                            self.$data.errors = [response.data.errors[0].detail];
+                            self.$refs.password.focus();
                         }
                     });
             },
