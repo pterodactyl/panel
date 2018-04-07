@@ -13,7 +13,7 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('auth.reset');
 
     Route::post('/login', 'LoginController@login')->middleware('recaptcha');
-    Route::post('/login/checkpoint', 'LoginController@loginCheckpoint')->name('auth.checkpoint');
+    Route::post('/login/checkpoint', 'LoginCheckpointController@index')->name('auth.checkpoint');
     Route::post('/password', 'ForgotPasswordController@sendResetLinkEmail')->middleware('recaptcha');
     Route::post('/password/reset', 'ResetPasswordController@reset')->name('auth.reset.post')->middleware('recaptcha');
     Route::post('/password/reset/{token}', 'ForgotPasswordController@sendResetLinkEmail')->middleware('recaptcha');
