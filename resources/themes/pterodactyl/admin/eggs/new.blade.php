@@ -108,6 +108,7 @@
                                 <label for="pConfigStartup" class="form-label">Start Configuration</label>
                                 <textarea data-action="handle-tabs" id="pConfigStartup" name="config_startup" class="form-control" rows="6">{{ old('config_startup') }}</textarea>
                                 <p class="text-muted small">This should be a JSON representation of what values the daemon should be looking for when booting a server to determine completion.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
