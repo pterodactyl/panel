@@ -4,10 +4,23 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
+    /**
+     * Handle all incoming requests for the authentication routes and render the
+     * base authentication view component. Vuejs will take over at this point and
+     * turn the login area into a SPA.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function index(): View
+    {
+        return view('templates/auth.core');
+    }
+
     /**
      * Handle a login request to the application.
      *

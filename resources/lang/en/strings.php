@@ -84,4 +84,7 @@ return [
         'sat' => 'Saturday',
     ],
     'last_used' => 'Last Used',
+
+    // Copyright Line
+    'copyright' => '&copy; 2015 - :year Pterodactyl Software',
 ];

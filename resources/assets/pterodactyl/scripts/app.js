@@ -43,15 +43,16 @@ Vue.i18n.add('en', Locales.en);
 Vue.i18n.set('en');
 
 const router = new VueRouter({
+    mode: 'history',
     routes: [
         {
             name: 'login',
-            path: '/',
+            path: '/auth/login',
             component: Login,
         },
         {
             name: 'forgot-password',
-            path: '/forgot-password',
+            path: '/auth/password',
             component: Login,
         },
         {
@@ -61,7 +62,7 @@ const router = new VueRouter({
         },
         {
             name: 'reset-password',
-            path: '/reset-password/:token',
+            path: '/auth/password/reset/:token',
             component: ResetPassword,
             props: function (route) {
                 return {

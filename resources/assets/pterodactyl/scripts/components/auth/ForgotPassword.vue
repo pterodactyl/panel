@@ -31,7 +31,9 @@
                 </button>
             </div>
             <div class="pt-6 text-center">
-                <router-link to="/" class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark">
+                <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
+                             :to="{ name: 'login' }"
+                >
                     {{ $t('auth.go_to_login') }}
                 </router-link>
             </div>

@@ -18,7 +18,8 @@
         </div>
         <div class="pt-6 text-center">
             <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
-                         :to="{ name: 'login' }">
+                         :to="{ name: 'login' }"
+            >
                 Back to Login
             </router-link>
         </div>

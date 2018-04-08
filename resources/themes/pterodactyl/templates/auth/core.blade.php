@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>{{ config('app.name', 'Pterodactyl') }} - @yield('title')</title>
+        <title>{{ config('app.name', 'Pterodactyl') }}</title>
 
         @section('meta')
             <meta charset="utf-8">
@@ -23,7 +23,7 @@
                 </div>
                 <router-view></router-view>
                 <p class="text-center text-grey text-xs">
-                    &copy; 2015 - {{ date('Y') }} Pterodactyl Software
+                    {{ trans('strings.copyright', ['year' => date('Y')]) }}
                 </p>
             </div>
         </div>

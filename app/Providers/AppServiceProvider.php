@@ -7,6 +7,7 @@ use Cache;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Schema;
 use Igaster\LaravelTheme\Facades\Theme;
 use Illuminate\Support\ServiceProvider;
@@ -21,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Blade::doubleEncode();
         Schema::defaultStringLength(191);
 
         User::observe(UserObserver::class);
