@@ -22,6 +22,8 @@ class LoginController extends AbstractLoginController
         $username = $request->input('user');
         $useColumn = $this->getField($username);
 
+        sleep(1);
+
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);

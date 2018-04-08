@@ -2,11 +2,11 @@
     <div>
         <flash-message variant="danger" />
         <flash-message variant="success" />
-        <div class="pb-4" v-if="errors && errors.length === 1">
+        <div class="pb-4" v-for="error in errors">
             <div class="p-2 bg-red-dark border-red-darker border items-center text-red-lightest leading-normal rounded flex lg:inline-flex w-full text-sm"
                  role="alert">
                 <span class="flex rounded-full bg-red uppercase px-2 py-1 text-xs font-bold mr-3 leading-none">Error</span>
-                <span class="mr-2 text-left flex-auto">{{ errors[0] }}</span>
+                <span class="mr-2 text-left flex-auto">{{ error }}</span>
             </div>
         </div>
         <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
@@ -16,6 +16,7 @@
                 <div class="input-open">
                     <input class="input" id="grid-username" type="text" name="user" aria-labelledby="grid-username" required
                            ref="email"
+                           v-bind:readonly="showSpinner"
                            v-bind:value="user.email"
                            v-on:input="updateEmail($event)"
                     />
@@ -26,6 +27,7 @@
                 <div class="input-open">
                     <input class="input" id="grid-password" type="password" name="password"
                            ref="password"
+                           v-bind:readonly="showSpinner"
                            aria-labelledby="grid-password" required
                            v-model="user.password"
                     />
@@ -43,7 +45,7 @@
             <div class="pt-6 text-center">
                 <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
                              :to="{ name: 'forgot-password' }">
-                    {{ $t('auth.forgot_password') }}
+                    {{ $t('auth.forgot_password.label') }}
                 </router-link>
             </div>
         </form>

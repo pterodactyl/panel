@@ -12,21 +12,40 @@
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" ref="email" required
+                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" required
+                           ref="email"
                            v-bind:class="{ 'has-content': email.length > 0 }"
                            v-bind:readonly="showSpinner"
-                           v-bind:value="email"
-                           v-on:input="updateEmail($event)"
+                           v-on:input="updateEmailField"
                     />
                     <label for="grid-email">{{ $t('strings.email') }}</label>
-                    <p class="text-grey-darker text-xs">{{ $t('auth.forgot_password.label_help') }}</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="input-open">
+                    <input class="input" id="grid-password" type="password" aria-labelledby="grid-password" required
+                           ref="password"
+                           v-bind:readonly="showSpinner"
+                           v-model="password"
+                    />
+                    <label for="grid-password">{{ $t('strings.password') }}</label>
+                    <p class="text-grey-darker text-xs">{{ $t('auth.password_requirements') }}</p>
+                </div>
+            </div>
+            <div class="flex flex-wrap -mx-3 mb-6">
+                <div class="input-open">
+                    <input class="input" id="grid-password-confirmation" type="password" aria-labelledby="grid-password-confirmation" required
+                           v-bind:readonly="showSpinner"
+                           v-model="passwordConfirmation"
+                    />
+                    <label for="grid-password-confirmation">{{ $t('strings.confirm_password') }}</label>
                 </div>
             </div>
             <div>
-                <button class="btn btn-blue btn-jumbo" type="submit" v-bind:disabled="submitDisabled">
+                <button class="btn btn-blue btn-jumbo" type="submit" v-bind:class="{ disabled: showSpinner }">
                     <span class="spinner white" v-bind:class="{ hidden: ! showSpinner }">&nbsp;</span>
                     <span v-bind:class="{ hidden: showSpinner }">
-                        {{ $t('auth.forgot_password.button') }}
+                        {{ $t('auth.reset_password.button') }}
                     </span>
                 </button>
             </div>
@@ -41,41 +60,42 @@
 
 <script>
     export default {
-        name: 'forgot-password',
+        name: "ResetPassword",
         props: {
-            email: {type: String, required: true},
+            token: {type: String, required: true},
+            email: {type: String, required: false},
         },
         mounted: function () {
-            this.$refs.email.focus();
+            if (this.$props.email.length > 0) {
+                this.$refs.email.value = this.$props.email;
+                return this.$refs.password.focus();
+            }
         },
         data: function () {
             return {
-                X_CSRF_TOKEN: window.X_CSRF_TOKEN,
                 errors: [],
-                submitDisabled: false,
                 showSpinner: false,
+                password: '',
+                passwordConfirmation: '',
             };
         },
         methods: {
-            updateEmail: function (event) {
-                this.$data.submitDisabled = false;
-                this.$emit('update-email', event.target.value);
+            updateEmailField: function (event) {
+                this.$data.submitDisabled = event.target.value.length === 0;
             },
 
             submitForm: function () {
                 const self = this;
-                this.$data.submitDisabled = true;
                 this.$data.showSpinner = true;
-                this.$data.errors = [];
 
-                window.axios.post(this.route('auth.forgot-password'), {
+                window.axios.post(this.route('auth.reset-password'), {
                     email: this.$props.email,
+                    password: this.$data.password,
+                    password_confirmation: this.$data.passwordConfirmation,
+                    token: this.$props.token,
                 })
                     .then(function (response) {
-                        self.$data.submitDisabled = false;
-                        self.$data.showSpinner = false;
-                        self.flash({message: response.data.status, variant: 'success'});
-                        self.$router.push({name: 'login'});
+                        return window.location = response.data.redirect_to;
                     })
                     .catch(function (err) {
                         self.$data.showSpinner = false;
@@ -85,7 +105,8 @@
 
                         const response = err.response;
                         if (response.data && _.isObject(response.data.errors)) {
-                            self.$data.errors.push(response.data.errors[0].detail);
+                            self.$data.errors = [response.data.errors[0].detail];
+                            self.$refs.password.focus();
                         }
                     });
             }

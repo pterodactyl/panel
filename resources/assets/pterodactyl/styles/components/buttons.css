@@ -19,7 +19,7 @@
     @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
   }
 
-  &:disabled {
+  &:disabled, &.disabled {
     opacity: 0.55;
     cursor: default;
   }

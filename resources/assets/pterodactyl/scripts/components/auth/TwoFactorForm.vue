@@ -40,7 +40,7 @@
             submitToken: function () {
                 const self = this;
 
-                axios.post(this.route('auth.checkpoint'), {
+                axios.post(this.route('auth.login-checkpoint'), {
                     confirmation_token: this.$route.query.token,
                     authentication_code: this.$data.code,
                 })

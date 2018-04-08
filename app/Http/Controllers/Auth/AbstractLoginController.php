@@ -107,7 +107,7 @@ abstract class AbstractLoginController extends Controller
         ]);
 
         if ($request->route()->named('auth.checkpoint')) {
-            throw new DisplayException(trans('auth.checkpoint_failed'));
+            throw new DisplayException(trans('auth.two_factor.checkpoint_failed'));
         }
 
         throw new DisplayException(trans('auth.failed'));

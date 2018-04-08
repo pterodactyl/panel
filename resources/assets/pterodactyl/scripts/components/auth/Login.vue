@@ -10,9 +10,7 @@
                 v-bind:email="user.email"
                 v-on:update-email="onUpdateEmail"
         />
-        <two-factor-form
-            v-if="this.$route.name === 'checkpoint'"
-        />
+        <two-factor-form v-if="this.$route.name === 'checkpoint'" />
     </div>
 </template>
 

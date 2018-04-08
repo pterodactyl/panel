@@ -23,6 +23,7 @@ const paths = {
     },
     scripts: {
         src: './resources/assets/pterodactyl/scripts/**/*.{js,vue}',
+        watch: ['./resources/assets/pterodactyl/scripts/**/*.{js,vue}', './resources/lang/locales.js'],
         dest: './public/assets/scripts',
     },
 };
@@ -68,7 +69,7 @@ function watch() {
         return del(['./public/assets/css/**/*.css']);
     }, styles));
 
-    gulp.watch(paths.scripts.src, gulp.series(function cleanScripts() {
+    gulp.watch(paths.scripts.watch, gulp.series(function cleanScripts() {
         return del(['./public/assets/scripts/**/*.js']);
     }, scripts));
 }

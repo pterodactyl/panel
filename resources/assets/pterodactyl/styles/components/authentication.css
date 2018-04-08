@@ -11,14 +11,9 @@
     transition: border 500ms ease-out;
   }
 
-  &:focus + label, &:valid + label {
+  &:focus + label, &:valid + label, &.has-content + label {
     @apply .text-grey-darker .px-0 .cursor-pointer;
     transform:translateY(-26px)
-  }
-
-  &:invalid + label {
-    @apply .text-grey .px-1;
-    transform:translateY(0)
   }
 
   &:required {
@@ -27,7 +22,7 @@
 }
 
 .input-open > label {
-  @apply .block .uppercase .tracking-wide .text-grey .text-xs .mb-2 .absolute .px-1;
+  @apply .block .uppercase .tracking-wide .text-grey .text-xs .mb-2 .absolute;
   top: 14px;
   transition: transform 200ms ease-out;
 }

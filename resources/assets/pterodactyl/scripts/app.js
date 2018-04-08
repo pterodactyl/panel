@@ -11,6 +11,7 @@ import Locales from './../../../../resources/lang/locales';
 
 // Base Vuejs Templates
 import Login from './components/auth/Login';
+import ResetPassword from './components/auth/ResetPassword';
 
 // Used for the route() helper.
 window.Ziggy = Ziggy;
@@ -58,6 +59,17 @@ const router = new VueRouter({
             path: '/checkpoint',
             component: Login,
         },
+        {
+            name: 'reset-password',
+            path: '/reset-password/:token',
+            component: ResetPassword,
+            props: function (route) {
+                return {
+                    token: route.params.token,
+                    email: route.query.email || '',
+                }
+            },
+        }
     ]
 });
 

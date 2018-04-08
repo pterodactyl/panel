@@ -18,7 +18,7 @@ class LoginCheckpointController extends AbstractLoginController
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function index(LoginCheckpointRequest $request): JsonResponse
+    public function __invoke(LoginCheckpointRequest $request): JsonResponse
     {
         try {
             $cache = $this->cache->pull($request->input('confirmation_token'), []);
