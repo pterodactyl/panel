@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services\Allocations;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Node;
