@@ -41,7 +41,6 @@ class Node extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'public' => 'integer',
         'location_id' => 'integer',
         'memory' => 'integer',
         'disk' => 'integer',
