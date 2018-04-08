@@ -18,26 +18,15 @@ window.Ziggy = Ziggy;
 
 Vue.use(Vuex);
 
-const store = new Vuex.Store({
-    plugins: [
-        createFlashStore(),
-    ],
-});
+const store = new Vuex.Store({ plugins: [createFlashStore()] });
 const route = require('./../../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;
-Vue.mixin({
-    methods: {
-        route: route,
-    },
-});
+Vue.mixin({ methods: { route } });
 
 Vue.use(VueRouter);
-Vue.use(VuexFlash, {
-    mixin: true,
-    template: require('./components/errors/Flash.template')
-});
 Vue.use(vuexI18n.plugin, store);
+Vue.use(VuexFlash, { mixin: true, template: require('./components/errors/Flash.template') });
 
 Vue.i18n.add('en', Locales.en);
 Vue.i18n.set('en');
@@ -45,38 +34,21 @@ Vue.i18n.set('en');
 const router = new VueRouter({
     mode: 'history',
     routes: [
-        {
-            name: 'login',
-            path: '/auth/login',
-            component: Login,
-        },
-        {
-            name: 'forgot-password',
-            path: '/auth/password',
-            component: Login,
-        },
-        {
-            name: 'checkpoint',
-            path: '/checkpoint',
-            component: Login,
-        },
+        { name: 'login', path: '/auth/login', component: Login },
+        { name: 'forgot-password', path: '/auth/password', component: Login },
+        { name: 'checkpoint', path: '/checkpoint', component: Login },
         {
             name: 'reset-password',
             path: '/auth/password/reset/:token',
             component: ResetPassword,
             props: function (route) {
-                return {
-                    token: route.params.token,
-                    email: route.query.email || '',
-                }
-            },
-        }
+                return { token: route.params.token, email: route.query.email || '' };
+            }
+        },
+        { path: '*', redirect: '/auth/login' }
     ]
 });
 
 require('./bootstrap');
 
-const app = new Vue({
-    store,
-    router,
-}).$mount('#pterodactyl');
+const app = new Vue({ store, router }).$mount('#pterodactyl');

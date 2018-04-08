@@ -27,6 +27,9 @@ Route::group(['middleware' => 'guest'], function () {
     // the forgot password routes to acquire a token (or after an account
     // is created).
     Route::post('/password/reset', 'ResetPasswordController')->name('auth.reset-password')->middleware('recaptcha');
+
+    // Catch any other combinations of routes and pass them off to the Vuejs component.
+    Route::fallback('LoginController@index');
 });
 
 /*
