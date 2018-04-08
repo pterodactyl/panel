@@ -228,5 +228,4 @@ class Node extends Model implements CleansAttributes, ValidableContract
     {
         return $this->hasMany(Allocation::class);
     }
-
 }

@@ -29,5 +29,4 @@ class AddDescriptionToNodes extends Migration
             $table->dropColumn('description');
         });
     }
-    
 }
