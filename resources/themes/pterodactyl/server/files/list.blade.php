@@ -45,7 +45,7 @@
             @if (isset($directory['first']) && $directory['first'] === true)
                 <tr data-type="disabled">
                     <td class="middle min-size"><i class="fa fa-folder" style="margin-left: 0.859px;"></i></td>
-                    <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></a></td>
+                    <td><a href="/server/{{ $server->uuidShort }}/files" data-action="directory-view">&larr;</a></td>
                     <td class="hidden-xs"></td>
                     <td class="hidden-xs"></td>
                     <td></td>

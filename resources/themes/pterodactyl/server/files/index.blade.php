@@ -33,7 +33,7 @@
                 <p class="text-muted small" style="margin: 0 0 2px;">@lang('server.files.path', ['path' => '<code>/home/container</code>', 'size' => '<code>' . $node->upload_size . ' MB</code>'])</p>
             </div>
         </div>
-    <div>
+    </div>
 </div>
 @endsection
 
