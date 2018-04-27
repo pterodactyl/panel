@@ -31,8 +31,8 @@ if [ "$1" = "/sbin/tini" ]; then
         sed -i "s,<domain>,$HOSTNAME,g" /etc/nginx/sites-available/default-ssl.conf
         if [ ! -f /etc/letsencrypt/live/$HOSTNAME/fullchain.pem ] || [ ! -f /etc/letsencrypt/live/$HOSTNAME/privkey.pem ]; then # generate certs
             echo "] Obtaining certificates for eligible sites from Let's Encrypt"
-            # do the magic here (TODO)
-            # https://wiki.alpinelinux.org/wiki/Nginx_as_reverse_proxy_with_acme_(letsencrypt)
+            # Install Lets Encrypt Certs
+            certbot certonly --standalone --renew-by-default --rsa-key-size 4096 --email $LETSENCRYPT_EMAIL --agree-tos -d $HOSTNAME --non-interactive
         else # use certs
             echo "] Using provided certificate and key for tls"
             # nothing to do, certs are already good
@@ -116,23 +116,24 @@ if [ "$1" = "/sbin/tini" ]; then
         case "$MAIL_DRIVER" in
             mail)
                 echo "]     PHP Mail was chosen"
-                php artisan p:environment:mail -n --driver=mail --email="$MAIL_FROM" --from="$MAIL_FROM_NAME"
+                php artisan p:environment:mail -n --driver=mail --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --encryption="$MAIL_ENCRYPTION"
             ;;
             mandrill)
                 echo "]     Mandrill was chosen"
-                php artisan p:environment:mail -n --driver=mandrill --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME"
+                php artisan p:environment:mail -n --driver=mandrill --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --encryption="$MAIL_ENCRYPTION"
             ;;
             postmark)
                 echo "]     Postmark was chosen"
-                php artisan p:environment:mail -n --driver=postmark --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME"
+                php artisan p:environment:mail -n --driver=postmark --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --encryption="$MAIL_ENCRYPTION"
             ;;
             mailgun)
                 echo "]     Mailgun was chosen"
-                php artisan p:environment:mail -n --driver=mailgun --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --host="$MAIL_HOST"
+                php artisan p:environment:mail -n --driver=mailgun --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --host="$MAIL_HOST" --encryption="$MAIL_ENCRYPTION"
             ;;
             smtp)
                 echo "]     SMTP was chosen"
-                php artisan p:environment:mail -n --driver=smtp --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --password="$MAIL_PASSWORD" --host="$MAIL_HOST" --port="$MAIL_PORT"
+                echo "] $MAIL_FROM $MAIL_FROM_NAME $MAIL_USERNAME $MAIL_PASSWORD $MAIL_HOST $MAIL_PORT"
+                php artisan p:environment:mail -n --driver=smtp --email="$MAIL_FROM" --from="$MAIL_FROM_NAME" --username="$MAIL_USERNAME" --password="$MAIL_PASSWORD" --host="$MAIL_HOST" --port="$MAIL_PORT" --encryption="$MAIL_ENCRYPTION"
             ;;
             *)
                 echo "]     '$MAIL_DRIVER' is not a valid MAIL_DRIVER option."

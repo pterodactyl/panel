@@ -22,7 +22,7 @@ services:
       - database
       - cache
     volumes:
-      - "/srv/pterodactyl/var/:/var/www/html/var/"
+      - "/srv/pterodactyl/var:/app/var"
 #      - "/srv/pterodactyl/certs/:/etc/letsencrypt/live/$HOSTNAME/" need a replacement for that
     environment:
       - "DB_HOST=database"

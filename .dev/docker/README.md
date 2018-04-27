@@ -90,6 +90,7 @@ Note: If your `APP_URL` starts with `https://` you need to provide an `LETSENCRY
 | `QUEUE_DRIVER`      | The queue driver (see [Queue drivers](#queue-drivers) for detais)              | no       |
 | `MAIL_DRIVER`       | The email driver (see [Mail drivers](#mail-drivers) for details)               | yes      |
 | `APP_TIMEZONE`      | The timezone to use for the panel                                              | yes      |
+| `MAIL_ENCRYPTION`   | The type of Mail Encryption you want to use(TLS, SSL, None)                    | no      |
 
 
 ### Cache drivers
