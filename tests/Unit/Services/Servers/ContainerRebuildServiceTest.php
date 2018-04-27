@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Services\Servers;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;

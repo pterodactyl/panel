@@ -74,7 +74,7 @@
                 <p>@lang('server.config.allocation.help_text')</p>
             </div>
         </div>
-    <div>
+    </div>
 </div>
 @endsection
 

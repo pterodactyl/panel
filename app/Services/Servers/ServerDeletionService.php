@@ -10,7 +10,6 @@
 namespace Pterodactyl\Services\Servers;
 
 use Illuminate\Log\Writer;
-use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
