@@ -79,10 +79,6 @@
                                 <td><code>{{ $server->memory }}MB</code> / <code data-toggle="tooltip" data-placement="top" title="Swap Space">{{ $server->swap }}MB</code></td>
                             </tr>
                             <tr>
-                                <td><abbr title="Out of Memory">OOM</abbr> Killer</td>
-                                <td>{!! ($server->oom_disabled === 0) ? '<span class="label label-success">Enabled</span>' : '<span class="label label-default">Disabled</span>' !!}</td>
-                            </tr>
-                            <tr>
                                 <td>Disk Space</td>
                                 <td><code>{{ $server->disk }}MB</code></td>
                             </tr>
