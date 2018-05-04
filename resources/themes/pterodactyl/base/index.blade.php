@@ -64,9 +64,15 @@
                                         <span class="label bg-blue">@lang('strings.subuser')</span>
                                     @endif
                                 </td>
-                                <td class="text-center" data-action="status">
-                                    <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
-                                </td>
+                                @if($server->node->maintenance)
+                                    <td class="text-center">
+                                        <span class="label label-warning">Maintenance</span>
+                                    </td>
+                                @else
+                                    <td class="text-center" data-action="status">
+                                        <span class="label label-default"><i class="fa fa-refresh fa-fw fa-spin"></i></span>
+                                    </td>
+                                @endif
                             </tr>
                             @if (! empty($server->description))
                                 <tr class="server-description">
