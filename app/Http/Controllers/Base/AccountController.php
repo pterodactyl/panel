@@ -6,8 +6,8 @@ use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
-use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountController extends Controller
 {

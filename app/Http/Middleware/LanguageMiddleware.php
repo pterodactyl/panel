@@ -11,9 +11,9 @@ namespace Pterodactyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Support\Facades\Auth;
 
 class LanguageMiddleware
 {
@@ -48,7 +48,7 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check() || $this->config->get('pterodactyl.lang.global')) {
+        if (! Auth::check() || $this->config->get('pterodactyl.lang.global')) {
             $this->app->setLocale($this->config->get('app.locale', 'en'));
         } else {
             $this->app->setLocale(Auth::user()->language);
