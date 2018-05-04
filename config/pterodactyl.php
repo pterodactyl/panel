@@ -161,6 +161,7 @@ return [
     */
     'lang' => [
         'in_context' => env('PHRASE_IN_CONTEXT', false),
+        'global' => env('LANG_MUST_BE_GLOBAL', false),
     ],
 
     /*
