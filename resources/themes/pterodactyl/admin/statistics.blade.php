@@ -60,14 +60,14 @@
             <div class="box-header with-border">
                 Nodes
             </div>
-            <dib class="box-body">
+            <div class="box-body">
                 <div class="col-xs-12 col-md-6">
                     <canvas id="ram_chart" width="100%" height="50"></canvas>
                 </div>
                 <div class="col-xs-12 col-md-6">
                     <canvas id="disk_chart" width="100%" height="50"></canvas>
                 </div>
-            </dib>
+            </div>
         </div>
     </div>
     <div class="col-xs-12 col-md-4">
