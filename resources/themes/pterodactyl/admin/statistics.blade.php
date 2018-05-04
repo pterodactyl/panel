@@ -94,6 +94,44 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-xs-12 col-md-3">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="fa fa-gamepad"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total Eggs</span>
+                <span class="info-box-number">{{ $eggsCount }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-3">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="fa fa-users"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total Users</span>
+                <span class="info-box-number">{{ $totalUsersCount }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-3">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="fa fa-server"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total Nodes</span>
+                <span class="info-box-number">{{ $nodesCount }}</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-3">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="fa fa-database"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total Databases</span>
+                <span class="info-box-number">{{ $totalDBCount }}</span>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('footer-scripts')

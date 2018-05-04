@@ -58,13 +58,25 @@ let statusChart = new Chart($('#status_chart'), {
 });
 
 var servers = Pterodactyl.servers;
-servers.forEach(function (server) {
+var nodes = Pterodactyl.nodes;
+
+for (let i = 0; i < servers.length; i++) {
+    setTimeout(getStatus, 200 * i);
+}
+
+var index = 0;
+function getStatus() {
+    var server = servers[index];
+    var uuid = server.uuid;
+    var node = getNodeByID(server.node_id);
+
     $.ajax({
         type: 'GET',
-        url: Router.route('index.status', { server: server.uuidShort}),
+        url: node.scheme + '://' + node.fqdn + ':'+node.daemonListen+'/v1/server',
         timeout: 5000,
         headers: {
-            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content'),
+            'X-Access-Server': uuid,
+            'X-Access-Token': Pterodactyl.tokens[node.id],
         }
     }).done(function (data) {
 
@@ -84,7 +96,6 @@ servers.forEach(function (server) {
             case 1:
             case 2:
                 // Online
-                console.log('online');
                 statusChart.data.datasets[0].data[0]++;
                 break;
             case 20:
@@ -98,4 +109,13 @@ servers.forEach(function (server) {
         statusChart.data.datasets[0].data[3]++;
         statusChart.update();
     });
-});
+
+    index++;
+}
+
+function getNodeByID(id) {
+    for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].id === id)
+            return nodes[i];
+    }
+}
