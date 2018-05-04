@@ -21,6 +21,11 @@ return [
             'header' => 'Server Suspended',
             'desc' => 'This server has been suspended and cannot be accessed.',
         ],
+        'maintenance' => [
+            'header' => 'Node Under Maintenance',
+            'title' => 'Maintenance',
+            'desc' => 'This node is under maintenance, therefore your server can temporarily not be accessed.'
+        ],
     ],
     'index' => [
         'header' => 'Your Servers',

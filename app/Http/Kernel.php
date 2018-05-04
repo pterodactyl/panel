@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http;
 
+use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
@@ -108,6 +109,7 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
+        'maintenance' => MaintenanceMiddleware::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //
