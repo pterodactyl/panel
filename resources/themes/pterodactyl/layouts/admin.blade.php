@@ -80,6 +80,11 @@
                                 <i class="fa fa-home"></i> <span>Overview</span>
                             </a>
                         </li>
+                        <li class="{{ Route::currentRouteName() !== 'admin.statistics' ?: 'active' }}">
+                            <a href="{{ route('admin.statistics') }}">
+                                <i class="fa fa-tachometer"></i> <span>Statistics</span>
+                            </a>
+                        </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
                             <a href="{{ route('admin.settings')}}">
                                 <i class="fa fa-wrench"></i> <span>Settings</span>
