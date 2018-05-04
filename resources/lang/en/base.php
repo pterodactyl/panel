@@ -64,6 +64,7 @@ return [
         'last_name' => 'Last Name',
         'update_identitity' => 'Update Identity',
         'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
+        'language' => 'Language',
     ],
     'security' => [
         'session_mgmt_disabled' => 'Your host has not enabled the ability to manage account sessions via this interface.',

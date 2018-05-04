@@ -90,6 +90,18 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="form-group col-xs-12">
+                                    <label for="language" class="control-label">@lang('base.account.language')</label>
+                                    <div>
+                                        <select name="language" id="language" class="form-control">
+                                            @foreach($languages as $key => $value)
+                                                <option value="{{ $key }}" {{ Auth::user()->language !== $key ?: 'selected' }}>{{ $value }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="box-footer with-border">
                             {!! csrf_field() !!}
