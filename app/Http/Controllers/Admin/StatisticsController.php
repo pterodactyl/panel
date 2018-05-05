@@ -38,8 +38,6 @@ class StatisticsController extends Controller
         $totalServerDisk = DB::table('servers')->sum('disk');
         $totalNodeDisk = DB::table('nodes')->sum('disk');
         $totalAllocations = Allocation::count();
-        $totalUsersCount = User::count();
-        $totalDBCount = Database::count();
 
         $suspendedServersCount = Server::where('suspended', true)->count();
 
@@ -71,8 +69,6 @@ class StatisticsController extends Controller
             'totalNodeDisk' => $totalNodeDisk,
             'totalServerDisk' => $totalServerDisk,
             'totalAllocations' => $totalAllocations,
-            'totalUsersCount' => $totalUsersCount,
-            'totalDBCount' => $totalDBCount,
         ]);
     }
 

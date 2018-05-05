@@ -109,7 +109,7 @@
             <span class="info-box-icon"><i class="fa fa-users"></i></span>
             <div class="info-box-content number-info-box-content">
                 <span class="info-box-text">Total Users</span>
-                <span class="info-box-number">{{ $totalUsersCount }}</span>
+                <span class="info-box-number">{{ $usersCount }}</span>
             </div>
         </div>
     </div>
@@ -127,7 +127,7 @@
             <span class="info-box-icon"><i class="fa fa-database"></i></span>
             <div class="info-box-content number-info-box-content">
                 <span class="info-box-text">Total Databases</span>
-                <span class="info-box-number">{{ $totalDBCount }}</span>
+                <span class="info-box-number">{{ $databasesCount }}</span>
             </div>
         </div>
     </div>
