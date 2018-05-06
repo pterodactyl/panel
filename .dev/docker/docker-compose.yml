@@ -1,0 +1,46 @@
+version: '2'
+services:
+  database:
+    image: mariadb
+    volumes:
+      - "/srv/pterodactyl/database:/var/lib/mysql"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=apassword"
+      - "MYSQL_DATABASE=pterodb"
+      - "MYSQL_USER=ptero"
+      - "MYSQL_PASSWORD=pterodbpass"
+
+  cache:
+    image: redis:alpine
+
+  panel:
+    image: quay.io/pterodactyl/panel:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - database
+      - cache
+    volumes:
+      - "/srv/pterodactyl/var/:/var/www/html/var/"
+#      - "/srv/pterodactyl/certs/:/etc/letsencrypt/live/$HOSTNAME/" need a replacement for that
+    environment:
+      - "DB_HOST=database"
+      - "DB_PORT=3306"
+      - "DB_DATABASE=pterodb"
+      - "DB_USERNAME=ptero"
+      - "DB_PASSWORD=pterodbpass"
+      - "APP_URL=http://localhost"
+      - "APP_TIMEZONE=UTC"
+      - "CACHE_DRIVER=redis"
+      - "REDIS_HOST=cache_1"
+      - "MAIL_DRIVER=smtp"
+      - "MAIL_FROM=noreply@example.com"
+      - "MAIL_FROM_NAME='Pterodactyl Panel'"
+      - "MAIL_USERNAME=''"
+      - "MAIL_PASSWORD=''"
+      - "MAIL_PORT=1025"
+      - "MAIL_HOST=mail"
+      - "MAIL_ENCRYPTION=true"
+      - "LETSENCRYPT_EMAIL=admin@example.com"
+      - "SSL=false"
