@@ -61,12 +61,10 @@ var servers = Pterodactyl.servers;
 var nodes = Pterodactyl.nodes;
 
 for (let i = 0; i < servers.length; i++) {
-    setTimeout(getStatus, 200 * i);
+    setTimeout(getStatus, 200 * i, servers[i]);
 }
 
-var index = 0;
-function getStatus() {
-    var server = servers[index];
+function getStatus(server) {
     var uuid = server.uuid;
     var node = getNodeByID(server.node_id);
 
@@ -109,13 +107,12 @@ function getStatus() {
         statusChart.data.datasets[0].data[3]++;
         statusChart.update();
     });
-
-    index++;
 }
 
 function getNodeByID(id) {
     for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].id === id)
+        if (nodes[i].id === id) {
             return nodes[i];
+        }
     }
 }

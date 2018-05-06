@@ -3,6 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use JavaScript;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Database;
@@ -10,8 +12,6 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
-use JavaScript;
-use Illuminate\Support\Facades\DB;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 
 class StatisticsController extends Controller
@@ -29,7 +29,7 @@ class StatisticsController extends Controller
         $servers = Server::all();
         $nodes = Node::all();
         $serversCount = count($servers);
-        $nodesCount = Node::count();
+        $nodesCount = count($nodes);
         $usersCount = User::count();
         $eggsCount = Egg::count();
         $databasesCount = Database::count();
@@ -43,7 +43,11 @@ class StatisticsController extends Controller
 
         $tokens = [];
         foreach ($nodes as $node) {
-            $tokens[$node->id] = $this->keyProviderService->handle($node->servers->get(0), $request->user());
+            $server = Server::where('node_id', $node->id)->first();
+            if ($server == null)
+                continue;
+
+            $tokens[$node->id] = $this->keyProviderService->handle($server, $request->user());
         }
 
         Javascript::put([
