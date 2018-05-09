@@ -49,7 +49,7 @@
         "friendsofphp/php-cs-fixer": "^2.8.0",
         "fzaninotto/faker": "^1.6",
         "mockery/mockery": "^1.0",
-        "php-mock/php-mock-phpunit": "^2.0",
+        "php-mock/php-mock-phpunit": "^2.1",
         "phpunit/phpunit": "~6.4.0"
     },
     "autoload": {

@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d89e77272f0045b5b6b6fecbd297e6bc",
+    "content-hash": "4bc97ee0ff79647903402e6f163435b5",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -5361,25 +5361,28 @@
         },
         {
             "name": "php-mock/php-mock-phpunit",
-            "version": "2.0.1",
+            "version": "2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-mock/php-mock-phpunit.git",
-                "reference": "b42fc41ecb7538564067527f6c30b8854f149d32"
+                "reference": "ff1cc1d4e7478ce74221e05742588619bee84f69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-mock/php-mock-phpunit/zipball/b42fc41ecb7538564067527f6c30b8854f149d32",
-                "reference": "b42fc41ecb7538564067527f6c30b8854f149d32",
+                "url": "https://api.github.com/repos/php-mock/php-mock-phpunit/zipball/ff1cc1d4e7478ce74221e05742588619bee84f69",
+                "reference": "ff1cc1d4e7478ce74221e05742588619bee84f69",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7",
                 "php-mock/php-mock-integration": "^2",
-                "phpunit/phpunit": "^6 <6.5"
+                "phpunit/phpunit": "^6 || ^7"
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "autoload.php"
+                ],
                 "psr-4": {
                     "phpmock\\phpunit\\": "classes/"
                 }
@@ -5408,7 +5411,7 @@
                 "test",
                 "test double"
             ],
-            "time": "2017-12-02T09:49:02+00:00"
+            "time": "2018-04-06T13:54:43+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
