@@ -102,7 +102,7 @@
                                     <div>
                                         <input type="text" name="database_limit" class="form-control" value="{{ old('database_limit', $server->database_limit) }}"/>
                                     </div>
-                                    <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimmited.</p>
+                                    <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimited.</p>
                                 </div>
                                 <div class="form-group col-xs-6">
                                     <label for="cpu" class="control-label">Allocation Limit</label>
