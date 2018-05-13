@@ -70,11 +70,11 @@
                 <div class="box-body row">
                     <div class="col-xs-12">
                         <p class="small text-danger">
-                            Changing any of the below values will result in the server processing a re-install command. The server will be stopped and will then proceede.
-                            If you are changing the pack, exisiting data <em>may</em> be overwritten. If you would like the service scripts to not run, ensure the box is checked at the bottom.
+                            Changing any of the below values will result in the server processing a re-install command. The server will be stopped and will then proceed.
+                            If you are changing the pack, existing data <em>may</em> be overwritten. If you would like the service scripts to not run, ensure the box is checked at the bottom.
                         </p>
                         <p class="small text-danger">
-                            <strong>This is a destructive operation in many cases. This server will be stopped immediately in order for this action to proceede.</strong>
+                            <strong>This is a destructive operation in many cases. This server will be stopped immediately in order for this action to proceed.</strong>
                         </p>
                     </div>
                     <div class="form-group col-xs-12">

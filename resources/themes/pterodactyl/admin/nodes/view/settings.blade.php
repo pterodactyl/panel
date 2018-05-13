@@ -189,7 +189,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <p class="text-muted"><small>The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physcial server's SSH process.</strong></small></p>
+                                <p class="text-muted"><small>The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physical server's SSH process.</strong></small></p>
                             </div>
                         </div>
                     </div>

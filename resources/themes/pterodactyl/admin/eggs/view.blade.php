@@ -101,7 +101,7 @@
                             <div class="form-group">
                                 <label for="pStartup" class="control-label">Startup Command <span class="field-required"></span></label>
                                 <textarea id="pStartup" name="startup" class="form-control" rows="6">{{ $egg->startup }}</textarea>
-                                <p class="text-muted small">The default statup command that should be used for new servers using this Egg.</p>
+                                <p class="text-muted small">The default startup command that should be used for new servers using this Egg.</p>
                             </div>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                         <div class="col-xs-12">
                             <div class="alert alert-warning">
                                 <p>The following configuration options should not be edited unless you understand how this system works. If wrongly modified it is possible for the daemon to break.</p>
-                                <p>All fields are required unless you select a seperate option from the 'Copy Settings From' dropdown, in which case fields may be left blank to use the values from that Egg.</p>
+                                <p>All fields are required unless you select a separate option from the 'Copy Settings From' dropdown, in which case fields may be left blank to use the values from that Egg.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
