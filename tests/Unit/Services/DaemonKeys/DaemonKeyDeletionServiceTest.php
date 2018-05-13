@@ -11,10 +11,10 @@ namespace Tests\Unit\Services\DaemonKeys;
 
 use Mockery as m;
 use Tests\TestCase;
-use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\DaemonKey;
+use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;

@@ -9,8 +9,8 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Psr\Log\LoggerInterface as Writer;
 use Pterodactyl\Models\Server;
+use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
