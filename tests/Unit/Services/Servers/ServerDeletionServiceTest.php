@@ -4,7 +4,7 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Log\Writer;
+use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Tests\Traits\MocksRequestException;
@@ -45,7 +45,7 @@ class ServerDeletionServiceTest extends TestCase
     private $repository;
 
     /**
-     * @var \Illuminate\Log\Writer|\Mockery\Mock
+     * @var \Psr\Log\LoggerInterface|\Mockery\Mock
      */
     private $writer;
 
