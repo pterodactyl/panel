@@ -141,7 +141,7 @@ class IndexControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the status controller when we can't connect to a server.
+     * Test the status controller with a ServerConnectionException.
      */
     public function testStatusControllerWithServerConnectionException()
     {
@@ -161,7 +161,7 @@ class IndexControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test the status controller when we can't connect to a server.
+     * Test the status controller with a RequestException.
      */
     public function testStatusControllerWithRequestException()
     {
