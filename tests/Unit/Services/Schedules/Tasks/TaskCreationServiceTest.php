@@ -149,7 +149,7 @@ class TaskCreationServiceTest extends TestCase
     }
 
     /**
-     * Test that exceptions are thrown if the Scheudle module or ID is invalid.
+     * Test that exceptions are thrown if the Schedule module or ID is invalid.
      *
      * @dataProvider invalidScheduleArgumentProvider
      * @expectedException \InvalidArgumentException
