@@ -86,7 +86,7 @@ class ScheduleCreationService
      */
     private function getCronTimestamp(array $data)
     {
-        $formattedCron = sprintf('%s %s %s * %s *',
+        $formattedCron = sprintf('%s %s %s * %s',
             array_get($data, 'cron_minute', '*'),
             array_get($data, 'cron_hour', '*'),
             array_get($data, 'cron_day_of_month', '*'),
