@@ -64,7 +64,7 @@
                 <div class="box box-primary">
                     <form action="{{ route('account') }}" method="POST">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@lang('base.account.update_identitity')</h3>
+                            <h3 class="box-title">@lang('base.account.update_identity')</h3>
                         </div>
                         <div class="box-body">
                             <div class="row">
@@ -94,7 +94,7 @@
                         <div class="box-footer with-border">
                             {!! csrf_field() !!}
                             <input type="hidden" name="do_action" value="identity" />
-                            <button type="submit" class="btn btn-sm btn-primary">@lang('base.account.update_identitity')</button>
+                            <button type="submit" class="btn btn-sm btn-primary">@lang('base.account.update_identity')</button>
                         </div>
                     </form>
                 </div>
