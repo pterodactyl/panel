@@ -58,7 +58,7 @@ class AppSettingsCommand extends Command
      * @var string
      */
     protected $signature = 'p:environment:setup
-                            {--new-salt : Wether or not to generate a new salt for Hashids.}
+                            {--new-salt : Whether or not to generate a new salt for Hashids.}
                             {--author= : The email that services created on this instance should be linked to.}
                             {--url= : The URL that this Panel is running on.}
                             {--timezone= : The timezone to use for Panel times.}

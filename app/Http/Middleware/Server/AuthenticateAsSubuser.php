@@ -33,7 +33,7 @@ class AuthenticateAsSubuser
     }
 
     /**
-     * Determine if a subuser has permissions to access a server, if so set thier access token.
+     * Determine if a subuser has permissions to access a server, if so set their access token.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next

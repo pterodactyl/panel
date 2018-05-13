@@ -154,7 +154,7 @@ class PackCreationServiceTest extends TestCase
     }
 
     /**
-     * Return an array of valid mimetypes to test aganist.
+     * Return an array of valid mimetypes to test against.
      *
      * @return array
      */
@@ -167,7 +167,7 @@ class PackCreationServiceTest extends TestCase
     }
 
     /**
-     * Provide invalid mimetypes to test exceptions aganist.
+     * Provide invalid mimetypes to test exceptions against.
      *
      * @return array
      */

@@ -59,7 +59,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * Return the connection to execute statements aganist.
+     * Return the connection to execute statements against.
      *
      * @return string
      */

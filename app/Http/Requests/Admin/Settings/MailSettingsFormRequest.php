@@ -8,7 +8,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 class MailSettingsFormRequest extends AdminFormRequest
 {
     /**
-     * Return rules to validate mail settings POST data aganist.
+     * Return rules to validate mail settings POST data against.
      *
      * @return array
      */

@@ -190,7 +190,7 @@ class TaskCreationServiceTest extends TestCase
     }
 
     /**
-     * Return an array of invalid schedule data to test aganist.
+     * Return an array of invalid schedule data to test against.
      *
      * @return array
      */
