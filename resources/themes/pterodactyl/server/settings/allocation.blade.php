@@ -103,7 +103,7 @@
                         self.removeClass('btn-default').addClass('btn-success disabled').html('{{ trans('strings.primary') }}');
                     }).fail(function(jqXHR) {
                         console.error(jqXHR);
-                        var error = 'An error occured while trying to process this request.';
+                        var error = 'An error occurred while trying to process this request.';
                         if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                             error = jqXHR.responseJSON.error;
                         }
