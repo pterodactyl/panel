@@ -64,7 +64,7 @@ class ScheduleCreationServiceTest extends TestCase
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->with([
             'server_id' => $server->id,
-            'next_run_at' => CronExpression::factory('* * * * * *')->getNextRunDate(),
+            'next_run_at' => CronExpression::factory('* * * * *')->getNextRunDate(),
             'test_key' => 'value',
         ])->once()->andReturn($schedule);
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
@@ -85,7 +85,7 @@ class ScheduleCreationServiceTest extends TestCase
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('create')->with([
             'server_id' => $server->id,
-            'next_run_at' => CronExpression::factory('* * * * * *')->getNextRunDate(),
+            'next_run_at' => CronExpression::factory('* * * * *')->getNextRunDate(),
             'test_key' => 'value',
         ])->once()->andReturn($schedule);
 
