@@ -90,10 +90,11 @@ class EggVariableController extends Controller
      * Handle a request to create a new Egg variable.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Egg\EggVariableFormRequest $request
-     * @param \Pterodactyl\Models\Egg                                     $egg
+     * @param \Pterodactyl\Models\Egg $egg
      *
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function store(EggVariableFormRequest $request, Egg $egg): RedirectResponse

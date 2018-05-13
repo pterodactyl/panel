@@ -462,6 +462,7 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function rebuildContainer(Server $server)
     {
@@ -536,11 +537,12 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param \Illuminate\Http\Request   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
