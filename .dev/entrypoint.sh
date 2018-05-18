@@ -1,4 +1,6 @@
 #!/bin/ash
+cd /app
+
 tini -- php-fpm
 
 until nc -z -v -w30 $DB_HOST 3306
