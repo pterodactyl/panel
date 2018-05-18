@@ -15,7 +15,6 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 RUN cp .env.example .env
 RUN composer install --no-dev
 
-
 EXPOSE 80
 EXPOSE 443
 
