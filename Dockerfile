@@ -10,7 +10,7 @@ RUN apk add --no-cache wget ca-certificates && \
 
 COPY . ./
 
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY .dev/default.conf /etc/nginx/conf.d/default.conf
 
 RUN cp .env.example .env
 RUN composer install --no-dev
@@ -21,5 +21,5 @@ EXPOSE 443
 RUN chown -R www-data:www-data .
 RUN chmod -R 777 storage/* bootstrap/cache /var/run/php
 
-ENTRYPOINT ["ash", "entrypoint.sh"]
+ENTRYPOINT ["ash", ".dev/entrypoint.sh"]
 
