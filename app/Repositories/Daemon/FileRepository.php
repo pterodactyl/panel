@@ -18,7 +18,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      */
     public function getFileStat(string $path): stdClass
     {
-        $file = pathinfo($path);
+        $file = str_replace('\\', '/', pathinfo($path));
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         $response = $this->getHttpClient()->request('GET', sprintf(
@@ -39,7 +39,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      */
     public function getContent(string $path): string
     {
-        $file = pathinfo($path);
+        $file = str_replace('\\', '/', pathinfo($path));
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         $response = $this->getHttpClient()->request('GET', sprintf(
@@ -61,7 +61,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      */
     public function putContent(string $path, string $content): ResponseInterface
     {
-        $file = pathinfo($path);
+        $file = str_replace('\\', '/', pathinfo($path));
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         return $this->getHttpClient()->request('POST', 'server/file/save', [
@@ -100,7 +100,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
                 array_push($files, [
                     'entry' => $value->name,
                     'directory' => trim($path, '/'),
-                    'extension' => pathinfo($value->name, PATHINFO_EXTENSION),
+                    'extension' => str_replace('\\', '/', pathinfo($value->name, PATHINFO_EXTENSION)),
                     'size' => human_readable($value->size),
                     'date' => strtotime($value->modified),
                     'mime' => $value->mime,
