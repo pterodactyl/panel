@@ -59,7 +59,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that an invalid API identifer throws an exception.
+     * Test that an invalid API identifier throws an exception.
      *
      * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */

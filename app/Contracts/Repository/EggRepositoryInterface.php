@@ -57,5 +57,5 @@ interface EggRepositoryInterface extends RepositoryInterface
      * @param int $service
      * @return bool
      */
-    public function isCopiableScript(int $copyFromId, int $service): bool;
+    public function isCopyableScript(int $copyFromId, int $service): bool;
 }

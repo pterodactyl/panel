@@ -47,7 +47,7 @@ class UserUpdateService
 
     /**
      * Update the user model instance. If the user has been removed as an administrator
-     * revoke all of the authentication tokens that have beenn assigned to their account.
+     * revoke all of the authentication tokens that have been assigned to their account.
      *
      * @param \Pterodactyl\Models\User $user
      * @param array                    $data

@@ -265,7 +265,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Return all of the servers that should have a power action performed aganist them.
+     * Return all of the servers that should have a power action performed against them.
      *
      * @param int[] $servers
      * @param int[] $nodes

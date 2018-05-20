@@ -103,7 +103,6 @@ class LocationController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
-     * @throws \Watson\Validating\ValidationException
      */
     public function create(LocationFormRequest $request)
     {
@@ -121,7 +120,6 @@ class LocationController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
-     * @throws \Watson\Validating\ValidationException
      */
     public function update(LocationFormRequest $request, Location $location)
     {

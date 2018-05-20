@@ -19,7 +19,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     public function setConnection(string $connection);
 
     /**
-     * Return the connection to execute statements aganist.
+     * Return the connection to execute statements against.
      *
      * @return string
      */

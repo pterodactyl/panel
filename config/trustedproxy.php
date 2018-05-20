@@ -34,7 +34,7 @@ return [
 
     /*
      * Or, to trust ALL proxies, including those that
-     * are in a chain of fowarding, uncomment this:
+     * are in a chain of forwarding, uncomment this:
      */
     // 'proxies' => '**',
 

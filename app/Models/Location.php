@@ -53,7 +53,7 @@ class Location extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Gets the nodes in a specificed location.
+     * Gets the nodes in a specified location.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

@@ -36,7 +36,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
     /**
      * Test that a CIDR range can be used.
      */
-    public function testValidIPAganistCIDRRange()
+    public function testValidIPAgainstCIDRRange()
     {
         $model = factory(ApiKey::class)->make(['allowed_ips' => '["192.168.1.1/28"]']);
         $this->setRequestAttribute('api_key', $model);

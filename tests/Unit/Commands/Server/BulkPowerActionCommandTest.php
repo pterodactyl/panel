@@ -124,7 +124,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
     }
 
     /**
-     * Test that validation occurrs correctly.
+     * Test that validation occurs correctly.
      *
      * @param array $data
      *

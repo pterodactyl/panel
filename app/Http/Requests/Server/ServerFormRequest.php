@@ -8,7 +8,7 @@ use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 abstract class ServerFormRequest extends FrontendUserFormRequest
 {
     /**
-     * Return the user permission to validate this request aganist.
+     * Return the user permission to validate this request against.
      *
      * @return string
      */

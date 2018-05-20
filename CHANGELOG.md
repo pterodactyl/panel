@@ -27,7 +27,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Panel now throws proper 504: Gateway Timeout errors on server listing when daemon is offline.
-* Sessions handled through redis now use a seperate database (default `1`) to store session database to avoid logging users out when flushing the cache.
+* Sessions handled through redis now use a separate database (default `1`) to store session database to avoid logging users out when flushing the cache.
 * File manager UI improved to be clearer with buttons and cleaner on mobile.
 * reCAPTCHA's secret key position swapped with website key in advanced panel settings to be consistent with Google's reCAPTCHA dashboard.
 * Changed DisplayException to handle its own logging correctly and check if the previous exception is marked as one that should not be logged.
@@ -56,7 +56,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a bug when reinstalling a server that would not mark the server as installing, resulting in some UI issues.
 * Handle 404 errors from missing models in the application API bindings correctly.
 * Fix validation error returned when no environment variables are passed, even if there are no variables required.
-* Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing enditing any start variables.
+* Fix improper permissions on `PATCH /api/servers/<id>/startup` endpoint which was preventing editing any start variables.
 * Should fix migration issues from 0.6 when there are more than API key in the database.
 
 ### Changed
@@ -94,7 +94,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.1 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an exception when no token is entered on the 2-Factor enable/disable page and the form is submitted.
-* Fixes an exception when trying to perform actions aganist a User model due to a validator that could not be cast to a string correctly.
+* Fixes an exception when trying to perform actions against a User model due to a validator that could not be cast to a string correctly.
 * Allow FQDNs in database host creation UI correctly.
 * Fixes database naming scheme using `d###_` rather than `s###_` when creating server databases.
 * Fix exception thrown when attempting to update an existing database host.
@@ -110,7 +110,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[rc.2]` — Fixes bad API behavior on `/user` routes.
 * `[rc.2]` — Fixes Admin CP user editing resetting a password on users unintentionally.
 * `[rc.2]` — Fixes bug with server creation API endpoint that would fail to validate `allocation.default` correctly.
-* `[rc.2]` — Fix data integrity exception occuring due to invalid data being passed to server creation service on the API.
+* `[rc.2]` — Fix data integrity exception occurring due to invalid data being passed to server creation service on the API.
 * `[rc.2]` — Fix data integrity exception that could occur when an email containing non-username characters was passed.
 * `[rc.2]` — Fix data integrity exception occurring when no default value is provided for an egg variable.
 * `[rc.2]` — Fixes a bug that would cause non-editable variables on the front-end to throw a validation error.
@@ -152,7 +152,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * PHP 7.2 is now the minimum required version for this software.
-* Egg variable default values are no longer validated aganist the ruleset when configuring them. Validation of those rules will only occur when editing or creating a server.
+* Egg variable default values are no longer validated against the ruleset when configuring them. Validation of those rules will only occur when editing or creating a server.
 * Changed logger to skip reporting stack-traces on PDO exceptions due to sensitive information being contained within.
 * Changed behavior of allocation IP Address/Ports box to automatically store the value entered if a user unfocuses the field without hitting space.
 * Changed order in which allocations are displayed to prioritize those with servers attached (in ascending IP & port order) followed by ascending IP & port order where no server is attached.
@@ -183,7 +183,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * `[rc.1]` — Fixes exception thrown when revoking user sessions.
 * `[rc.1]` — Fixes exception that would occur when trying to delete allocations from a node.
-* `[rc.1]` — Fixes exception thown when attempting to adjust mail settings as well as a validation error thrown afterwards.
+* `[rc.1]` — Fixes exception thrown when attempting to adjust mail settings as well as a validation error thrown afterwards.
 * `[rc.1]` — Fixes bug preventing modification of the default value for an Egg variable.
 * `[rc.1]` — Fixed a bug that would occur when attempting to reset the daemon secret for a node.
 * `[rc.1]` — Fix exception thrown when attempting to modify an existing database host.
@@ -208,7 +208,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.0-beta.4 (Derelict Dermodactylus)
 ### Fixed
 * `[beta.3]` — Fixes a bug with the default environment file that was causing an inability to perform a fresh install when running package discovery.
-* `[beta.3]` — Fixes an edge case caused by the Laravel 5.5 upgrade that would try to perform an in_array check aganist a null value.
+* `[beta.3]` — Fixes an edge case caused by the Laravel 5.5 upgrade that would try to perform an in_array check against a null value.
 * `[beta.3]` — Fixes a bug that would cause an error when attempting to create a new user on the Panel.
 * `[beta.3]` — Fixes error handling of the settings service provider when no migrations have been run.
 * `[beta.3]` — Fixes validation error when trying to use 'None' as the 'Copy Script From' option for an egg script.
@@ -227,7 +227,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.7.0-beta.3 (Derelict Dermodactylus)
 ### Fixed
-* `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attemping to setup environment settings in certain instances.
+* `[beta.2]` — Fixes a bug that would cause an endless exception message stream in the console when attempting to setup environment settings in certain instances.
 * `[beta.2]` — Fixes a bug causing the dropdown menu for a server's egg to display the wrong selected value.
 * `[beta.2]` — Fixes a bug that would throw a red page of death when submitting an invalid egg variable value for a server in the Admin CP.
 * `[beta.2]` — Someone found a `@todo` that I never `@todid` and thus database hosts could not be created without being linked to a node. This is fixed...
@@ -256,7 +256,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * `[beta.1]` — Fixes bug causing inability to create new servers on the Panel.
 * `[beta.1]` — Fixes bug causing inability to delete an allocation due to misconfigured JS.
 * `[beta.1]` — Fixes bug causing inability to set the IP alias for an allocation to an empty value.
-* `[beta.1]` — Fixes bug that caused startup changes to not propigate to the server correctly on the first save.
+* `[beta.1]` — Fixes bug that caused startup changes to not propagate to the server correctly on the first save.
 * `[beta.1]` — Fixes bug that prevented subusers from accessing anything over socketio due to a missing permission.
 
 ### Changed
@@ -358,7 +358,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * API now returns a useful error displaying what went wrong rather than an obscure 'An Error was Encountered' message when API issues arise.
 * Fixes bug preventing the creation of new files in the file manager due to a missing JS dependency on page load.
 * Prevent using a service option tag that contains special characters that are not valid. Now only allows alpha-numeric, no spaces or underscores.
-* Fix unhandled excpetion due to missing `Log` class when using the API and causing an error.
+* Fix unhandled exception due to missing `Log` class when using the API and causing an error.
 
 ### Changed
 * Renamed session cookies from `laravel_session` to `pterodactyl_session`.
@@ -374,7 +374,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * Fixes potential bug with invalid CIDR notation (ex: `192.168.1.1/z`) when adding allocations that could cause over 4 million records to be created at once.
 * Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
 * Fixes bug causing MySQL user accounts to be corrupted when resetting a password via the panel.
-* Fixes remote timing attack vulnerability due to hmac comparsion in API middleware.
+* Fixes remote timing attack vulnerability due to hmac comparison in API middleware.
 * `[rc.1]` — Server deletion is fixed, caused by removed download table.
 * `[rc.1]` — Server status indication on front-end no longer shows `Error` when server is marked as installing or suspended.
 * `[rc.1]` — Fixes issues with SteamCMD not registering and installing games properly.
@@ -403,10 +403,10 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * API has been completely overhauled to use new permissions system. **Any old API keys will immediately become invalid and fail to operate properly anymore. You will need to generate new keys.**
 * Cleaned up dynamic database connection setting to use a single function call from the host model.
 * Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
-* Changed behavior when modifying server allocation information. You can now remove the default allocation assuming you assing a new allocation at the same time. Reduces the number of steps to change the default allocation for a server.
+* Changed behavior when modifying server allocation information. You can now remove the default allocation assuming you are passing a new allocation at the same time. Reduces the number of steps to change the default allocation for a server.
 * Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
 * Version in footer of panel now displays correctly if panel is installed using Git rather than a download from source.
-* Mobile views are now more... viewable. Fixes `col-xs-6` usage thoughout the Admin CP where it was intended to be `col-md-6`.
+* Mobile views are now more... viewable. Fixes `col-xs-6` usage throughout the Admin CP where it was intended to be `col-md-6`.
 * Node Configuration tokens and Download tokens are stored using the cache helpers rather than a database to speed up functions and make use of auto-expiration/deletion functions.
 * Old daemon routes using `/remote` have been changed to use `/daemon`, panel changes now reflect this.
 * Only display servers that a user is owner of or subuser of in the Admin CP rather than all servers if the user is marked as an admin.
@@ -424,9 +424,9 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * Ability to assign multiple allocations at once when creating a new server.
 * New `humanReadable` macro on `File` facade that accepts a file path and returns a human readable size. (`File::humanReadable(path, precision)`)
 * Added ability to edit database host details after creation on the system.
-* Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
+* Login attempts and password reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
 * Server listing for individual users is now searchable on the front-end.
-* Servers that a user is assocaited with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
+* Servers that a user is associated with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
 * Ability to launch the console in a new window as an individual unit. https://s3.kelp.in/IrTyE.png
 * Server listing and view in Admin CP now shows the SFTP username/Docker container name.
 * Administrative server view includes link in navigation to go to server console/frontend management.
@@ -448,7 +448,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * `[beta.2.1]` — Fixed a bug preventing the deletion of a server.
 * It is now possible to modify a server's disk limits after the server is created.
 * `[beta.2.1]` — Fixes a bug causing login issues and password reset failures when reCAPTCHA is enabled.
-* Fixes remote timing attack vulnerability due to hmac comparsion in API middleware.
+* Fixes remote timing attack vulnerability due to hmac comparison in API middleware.
 * `[beta.2.1]` — Fixes bug requiring docker image field to be filled out when adding a service option.
 * `[beta.2.1]` — Fixes inability to mark a user as a non-admin once they were assigned the role.
 
@@ -461,7 +461,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 ### Changed
 * Environment setting commands now attempt to auto-quote strings with spaces in them, as well as comment lines that are edited to avoid manual changes being overwritten.
 * Version in footer of panel now displays correctly if panel is installed using Git rather than a download from source.
-* Mobile views are now more... viewable. Fixes `col-xs-6` usage thoughout the Admin CP where it was intended to be `col-md-6`.
+* Mobile views are now more... viewable. Fixes `col-xs-6` usage throughout the Admin CP where it was intended to be `col-md-6`.
 * Node Configuration tokens and Download tokens are stored using the cache helpers rather than a database to speed up functions and make use of auto-expiration/deletion functions.
 * Old daemon routes using `/remote` have been changed to use `/daemon`, panel changes now reflect this.
 * Only display servers that a user is owner of or subuser of in the Admin CP rather than all servers if the user is marked as an admin.
@@ -482,7 +482,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 
 ### Changed
 * Deleting a server safely now continues even if the daemon reports a `HTTP/404` missing server error (requires `Daemon@0.4.0-beta.2.1`)
-* Changed behavior when modifying server allocation information. You can now remove the default allocation assuming you assing a new allocation at the same time. Reduces the number of steps to change the default allocation for a server.
+* Changed behavior when modifying server allocation information. You can now remove the default allocation assuming you are passing a new allocation at the same time. Reduces the number of steps to change the default allocation for a server.
 
 ### Added
 * Server listing and view in Admin CP now shows the SFTP username/Docker container name.
@@ -490,7 +490,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 
 ## v0.6.0-beta.2
 ### Fixed
-* `[beta.1]` — Fixes task management ststem not running correctly.
+* `[beta.1]` — Fixes task management system not running correctly.
 * `[beta.1]` — Fixes API endpoint for command sending missing the required class definition.
 * `[beta.1]` — Fixes panel looking for an old compiled classfile that is no longer used. This was causing errors relating to `missing class DingoAPI` when trying to upgrade the panel.
 * `[beta.1]` — Should fix render issues when trying to edit some files via the panel file editor.
@@ -507,9 +507,9 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * `[pre.7]` — Terminal is now fixed to actually output all lines, rather than leaving one hanging in neverland until the browser is resized.
 
 ### Added
-* Login attempts and pasword reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
+* Login attempts and password reset requests are now protected by invisible ReCaptcha. This feature can be disabled with a `.env` variable.
 * Server listing for individual users is now searchable on the front-end.
-* Servers that a user is assocaited with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
+* Servers that a user is associated with as a subuser are now displayed in addition to owned servers when listing users in the Admin CP.
 
 ### Changed
 * Subuser permissions are now stored in `Permission::listPermissions()` to make views way cleaner and make adding to views significantly cleaner.
@@ -532,7 +532,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 ## v0.6.0-pre.6
 ### Fixed
 * `[pre.5]` — Console based server rebuild tool now actually rebuilds the servers with the correct information.
-* `[pre.5]` — Fixes typo and wrong docker contaienr for certain applications.
+* `[pre.5]` — Fixes typo and wrong docker container for certain applications.
 
 ### Changed
 * Removed all old theme JS and CSS folders to cleanup and avoid confusion in the future.
@@ -545,7 +545,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * New theme applied to Admin CP. Many graphical changes were made, some data was moved around and some display data changed. Too much was changed to feasibly log it all in here. Major breaking changes or notable new features will be logged.
 * New server creation page now makes significantly less AJAX calls and is much quicker to respond.
 * Server and Node view pages wee modified to split tabs into individual pages to make re-themeing and modifications significantly easier, and reduce MySQL query loads on page.
-* `[pre.4]` — Service and Pack magement overhauled to be faster, cleaner, and more extensible in the future.
+* `[pre.4]` — Service and Pack management overhauled to be faster, cleaner, and more extensible in the future.
 * Most of the backend `UnhandledException` display errors now include a clearer error that directs admins to the program's logs.
 * Table seeders for services now can be run during upgrades and will attempt to locate and update, or create new if not found in the database.
 * Many structural changes to the database and `Pterodactyl\Models` classes that would flood this changelog if they were all included. All required migrations included to handle database changes.
@@ -562,7 +562,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * Fixes bug where daemon was unable to register that certain games had fully booted and were ready to play on.
 * Fixes bug causing MySQL user accounts to be corrupted when resetting a password via the panel.
 * `[pre.4]` — Multiple clients refreshing the console no longer clears the console for all parties involved... sorry about that.
-* `[pre.4]` — Fixes bug in environment setting script that would not remeber defaults and try to re-assign values.
+* `[pre.4]` — Fixes bug in environment setting script that would not remember defaults and try to re-assign values.
 
 ### Added
 * Ability to assign multiple allocations at once when creating a new server.
@@ -648,7 +648,7 @@ spatie/laravel-fractal (4.0.0 => 4.0.1)
 * Fixes bug that would allow creating multiple subusers with the same email address.
 * Fixes bug where Sponge servers were improperly tagged as a spigot server in the daemon causing issues when booting or modifying configuration files.
 * Use transpiled ES6 -> ES5 filemanager code in browsers.
-* Fixes service option name displaying the name of a nwly added variable after the variable is added and until the page is refreshed. (see #208)
+* Fixes service option name displaying the name of a newly added variable after the variable is added and until the page is refreshed. (see #208)
 
 ### Changed
 * Filemanager and EULA checking javascript is now written in pure ES6 code rather than as a blade-syntax template. This allows the use of babel to transpile into ES5 as a minified version.
@@ -732,14 +732,14 @@ After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 * Small check for current node status that shows up to the left of the name when viewing a listing of all nodes.
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
 * Support for setting IP Aliases through the panel on the node overview page. Also cleaned up allocation removal.
-* Support for renaming files through the panel's file mananger.
+* Support for renaming files through the panel's file manager.
 
 ### Changed
 * Servers are now queued for deletion to allow for cancellation of deletion, as well as run in the background to speed up page loading.
 * Switched to new graphing library to make graphs less... broken.
 * Rebuild triggers are only sent to the node if there is actually something changed that requires a rebuild.
 * Dependencies are now hard-coded into the `composer.json` file to prevent users installing slightly different versions with different features or bugs.
-* Server related tasks now use the lowest priorty queue to prevent clogging the pipes when there are more important tasks to be run by the panel.
+* Server related tasks now use the lowest priority queue to prevent clogging the pipes when there are more important tasks to be run by the panel.
 * Dates displayed in the file manager are now more user friendly.
 * Creating a user, server, or node now returns `HTTP/1.1 200` and a JSON element with the user/server/node's ID.
 * Environment setting script is much more user friendly and does not require an excessive amount of clicking and typing.
@@ -808,7 +808,7 @@ After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 * Switched to new graphing library to make graphs less... broken.
 * Rebuild triggers are only sent to the node if there is actually something changed that requires a rebuild.
 * Dependencies are now hard-coded into the `composer.json` file to prevent users installing slightly different versions with different features or bugs.
-* Server related tasks now use the lowest priorty queue to prevent clogging the pipes when there are more important tasks to be run by the panel.
+* Server related tasks now use the lowest priority queue to prevent clogging the pipes when there are more important tasks to be run by the panel.
 * Decompressing files now shows a pop-over box that does not dismiss until it is complete.
 * Dates displayed in the file manager are now more user friendly.
 
@@ -868,7 +868,7 @@ After nearly a month in the works, version `v0.5.0` is finally here! 🎉
 ### Added
 * Support for creating server without having to assign a node and allocation manually. Simply select the checkbox or pass `auto_deploy=true` to the API to auto-select a node and allocation given a location.
 * Support for setting IP Aliases through the panel on the node overview page. Also cleaned up allocation removal.
-* Support for renaming files through the panel's file mananger.
+* Support for renaming files through the panel's file manager.
 
 ### Changed
 * Prevent clicking server start button until server is completely off, not just stopping.

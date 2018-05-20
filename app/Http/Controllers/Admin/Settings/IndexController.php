@@ -74,6 +74,8 @@ class IndexController extends Controller
      *
      * @param \Pterodactyl\Http\Requests\Admin\Settings\BaseSettingsFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(BaseSettingsFormRequest $request): RedirectResponse
     {
