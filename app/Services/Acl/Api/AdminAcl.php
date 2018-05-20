@@ -70,6 +70,7 @@ class AdminAcl
      * Return a list of all resource constants defined in this ACL.
      *
      * @return array
+     * @throws \ReflectionException
      */
     public static function getResourceList(): array
     {
