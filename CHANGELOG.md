@@ -6,10 +6,15 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.7 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the sidebar logo not working correctly in some browsers due to the CSS being assigned.
+* Fixes a bunch of typos through the code base.
 
 ### Added
 * Added a new client API endpoint for gathering the utilization stats for servers including disk, cpu, and memory. `GET /api/client/servers/<id>/utilization`
 * Added validation to variable validation rules to validate that the validation rules are valid because we heard you like validating your validation.
+
+### Changed
+* Updated core framework from Laravel 5.5 to Laravel 5.6.
+* Improved support for Windows based environments.
 
 ## v0.7.6 (Derelict Dermodactylus)
 ### Fixed
