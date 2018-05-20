@@ -12,7 +12,7 @@ namespace Pterodactyl\Http\Requests\Server;
 class ScheduleCreationFormRequest extends ServerFormRequest
 {
     /**
-     * Permission to validate this request aganist.
+     * Permission to validate this request against.
      *
      * @return string
      */

@@ -59,7 +59,7 @@ interface AllocationRepositoryInterface extends RepositoryInterface
     public function getAssignedAllocationIds(int $server): array;
 
     /**
-     * Return a concated result set of node ips that already have at least one
+     * Return a concatenated result set of node ips that already have at least one
      * server assigned to that IP. This allows for filtering out sets for
      * dedicated allocation IPs.
      *

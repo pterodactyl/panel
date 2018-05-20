@@ -239,7 +239,7 @@
                     <div class="form-group col-xs-12">
                         <label for="pStartup">Startup Command</label>
                         <input type="text" id="pStartup" value="{{ old('startup') }}" class="form-control" name="startup" />
-                        <p class="small text-muted no-margin">The following data replacers are avaliable for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server IP, and server port respectively.</p>
+                        <p class="small text-muted no-margin">The following data substitutes are available for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server IP, and server port respectively.</p>
                     </div>
                 </div>
                 <div class="box-header with-border" style="margin-top:-10px;">

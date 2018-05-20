@@ -18,7 +18,7 @@ class SendPowerRequest extends ClientApiRequest
     }
 
     /**
-     * Rules to validate this request aganist.
+     * Rules to validate this request against.
      *
      * @return array
      */

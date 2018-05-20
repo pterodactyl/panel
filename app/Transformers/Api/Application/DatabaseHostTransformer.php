@@ -55,6 +55,7 @@ class DatabaseHostTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\DatabaseHost $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeDatabases(DatabaseHost $model)
     {

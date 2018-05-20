@@ -19,7 +19,7 @@ class StoreServerDatabaseRequest extends ServerFormRequest
     }
 
     /**
-     * Return the user permission to validate this request aganist.
+     * Return the user permission to validate this request against.
      *
      * @return string
      */
@@ -29,7 +29,7 @@ class StoreServerDatabaseRequest extends ServerFormRequest
     }
 
     /**
-     * Rules to validate this request aganist.
+     * Rules to validate this request against.
      *
      * @return array
      */

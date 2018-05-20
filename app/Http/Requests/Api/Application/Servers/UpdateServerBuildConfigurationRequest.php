@@ -7,7 +7,7 @@ use Pterodactyl\Models\Server;
 class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 {
     /**
-     * Return the rules to validate this request aganist.
+     * Return the rules to validate this request against.
      *
      * @return array
      */
