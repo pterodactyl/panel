@@ -12,9 +12,9 @@ namespace Tests\Unit\Services\Servers;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Log\Writer;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
+use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
@@ -55,7 +55,7 @@ class SuspensionServiceTest extends TestCase
     protected $service;
 
     /**
-     * @var \Illuminate\Log\Writer
+     * @var \Psr\Log\LoggerInterface
      */
     protected $writer;
 
