@@ -41,7 +41,7 @@ class EggRetrievalController extends Controller
     }
 
     /**
-     * Return a JSON array of Eggs and the SHA1 hash of thier configuration file.
+     * Return a JSON array of Eggs and the SHA1 hash of their configuration file.
      *
      * @return \Illuminate\Http\JsonResponse
      */

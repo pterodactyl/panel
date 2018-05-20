@@ -20,7 +20,7 @@ class UpdateLocationRequest extends StoreLocationRequest
     }
 
     /**
-     * Rules to validate this request aganist.
+     * Rules to validate this request against.
      *
      * @return array
      */

@@ -29,7 +29,7 @@ interface RepositoryInterface
     public function getBuilder();
 
     /**
-     * Returns the colummns to be selected or returned by the query.
+     * Returns the columns to be selected or returned by the query.
      *
      * @return mixed
      */
@@ -59,7 +59,7 @@ interface RepositoryInterface
     public function withFreshModel();
 
     /**
-     * Set wether or not the repository should return a fresh model
+     * Set whether or not the repository should return a fresh model
      * when changes are committed.
      *
      * @param bool $fresh

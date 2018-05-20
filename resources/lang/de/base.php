@@ -220,7 +220,7 @@ return [
         'new_email' => 'Neue Email Adresse',
         'first_name' => 'Vornahme',
         'last_name' => 'Nachname',
-        'update_identitity' => 'Account bearbeiten',
+        'update_identity' => 'Account bearbeiten',
         'username_help' => 'Dein Username darf nicht bereits vergeben sein oder folgende Zeichen enthakten: :requirements.',
     ],
     'security' => [

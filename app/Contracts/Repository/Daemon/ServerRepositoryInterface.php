@@ -62,7 +62,7 @@ interface ServerRepositoryInterface extends BaseRepositoryInterface
     public function delete(): ResponseInterface;
 
     /**
-     * Return detials on a specific server.
+     * Return details on a specific server.
      *
      * @return \Psr\Http\Message\ResponseInterface
      */

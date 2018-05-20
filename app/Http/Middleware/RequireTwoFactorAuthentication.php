@@ -25,7 +25,7 @@ class RequireTwoFactorAuthentication
     private $alert;
 
     /**
-     * The names of routes that should be accessable without 2FA enabled.
+     * The names of routes that should be accessible without 2FA enabled.
      *
      * @var array
      */

@@ -16,7 +16,7 @@ class StoreApplicationApiKeyRequest extends AdminFormRequest
         $modelRules = ApiKey::getCreateRules();
 
         return collect(AdminAcl::getResourceList())->mapWithKeys(function ($resource) use ($modelRules) {
-            return [AdminAcl::COLUMN_IDENTIFER . $resource => $modelRules['r_' . $resource]];
+            return [AdminAcl::COLUMN_IDENTIFIER . $resource => $modelRules['r_' . $resource]];
         })->merge(['memo' => $modelRules['memo']])->toArray();
     }
 
@@ -33,7 +33,7 @@ class StoreApplicationApiKeyRequest extends AdminFormRequest
     public function getKeyPermissions(): array
     {
         return collect($this->validated())->filter(function ($value, $key) {
-            return substr($key, 0, strlen(AdminAcl::COLUMN_IDENTIFER)) === AdminAcl::COLUMN_IDENTIFER;
+            return substr($key, 0, strlen(AdminAcl::COLUMN_IDENTIFIER)) === AdminAcl::COLUMN_IDENTIFIER;
         })->toArray();
     }
 }
