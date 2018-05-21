@@ -35,6 +35,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller
 {
@@ -537,7 +538,7 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request   $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -558,15 +559,13 @@ class ServersController extends Controller
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $server
+     * @param \Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest $request
+     * @param int                                                                           $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function newDatabase(Request $request, $server)
+    public function newDatabase(StoreServerDatabaseRequest $request, $server)
     {
         $this->databaseManagementService->create($server, [
             'database' => $request->input('database'),
