@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes an issue with the sidebar logo not working correctly in some browsers due to the CSS being assigned.
 * Fixes a bunch of typos through the code base.
+* Fixes a bug when attempting to load the dropdown menu for server owner in some cases.
 
 ### Added
 * Added a new client API endpoint for gathering the utilization stats for servers including disk, cpu, and memory. `GET /api/client/servers/<id>/utilization`
