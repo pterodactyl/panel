@@ -15,28 +15,28 @@ return [
         'confirm_delete' => 'Bist du dir wirklich sicher?',
         'no_users_found' => 'Es wurden keine User gefunden.',
         'multiple_found' => 'Es wurden mehrere Accounts gefunden.',
-        'ask_admin' => 'Is this user an administrator?',
+        'ask_admin' => 'Ist dieser User ein Administrator?',
         'ask_email' => 'Email Adresse',
         'ask_username' => 'Username',
         'ask_name_first' => 'Vornamee',
         'ask_name_last' => 'Nachname',
-        'ask_password' => 'Password',
-        'ask_password_tip' => 'Wenn du dass wirklich tun willst drücke Strg+c und benutze das `--no-password` flag.',
+        'ask_password' => 'Passwort',
+        'ask_password_tip' => 'Wenn du das wirklich tun willst drücke Strg+c und benutze das `--no-password` flag.',
         'ask_password_help' => 'Das Passwort muss Zahlen, Groß- und Kleinbuchstaben enthalten und mindestens 8 Zeichen lang sein.',
         '2fa_help_text' => [
-            'This command will disable 2-factor authentication for a user\'s account if it is enabled. This should only be used as an account recovery command if the user is locked out of their account.',
-            'If this is not what you wanted to do, press CTRL+C to exit this process.',
+            'Dieser Befehl deaktiviert 2-Faktor-Authentifizierung für ein Benutzerkonto, falls es aktiviert ist. Dieser Befehl sollte nur zur Accountrettung verwendet werden, wenn sich ein Nutzer aus seinem Account ausgeschlossen hat.',
+            'Falls das nicht ist, was du erreichen wolltest, drücke Strg+C, um diesen Prozess zu beenden.',
         ],
-        '2fa_disabled' => '2-Factor authentication wurde für :email deaktivier.',
+        '2fa_disabled' => '2-Faktor-Authentifizierung wurde für :email deaktiviert.',
     ],
     'schedule' => [
-        'output_line' => 'Dispatching job for first task in `:schedule` (:hash).',
+        'output_line' => 'Erledigt den Job für die erste Aufgabe in `:schedule` (:hash).',
     ],
     'maintenance' => [
-        'deleting_service_backup' => 'Deleting service backup file :file.',
+        'deleting_service_backup' => 'Lösche Service Backup-Datei :file.',
     ],
     'server' => [
-        'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
+        'rebuild_failed' => 'Rebuild-Nachfrage für ":name" (#:id) auf der Node ":node" scheiterte mit dem Fehler: :message',
     ],
     'environment' => [
         'mail' => [

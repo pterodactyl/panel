@@ -9,10 +9,12 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes a bunch of typos through the code base.
 * Fixes a bug when attempting to load the dropdown menu for server owner in some cases.
 * Fixes an exception thrown when the database connection address was not filled out correctly while adding a database to a server.
+* Fixes some mistakes in the German translation of the panel.
 
 ### Added
 * Added a new client API endpoint for gathering the utilization stats for servers including disk, cpu, and memory. `GET /api/client/servers/<id>/utilization`
 * Added validation to variable validation rules to validate that the validation rules are valid because we heard you like validating your validation.
+* Added German translations for many previously untranslated parts of the panel.
 
 ### Changed
 * Updated core framework from Laravel 5.5 to Laravel 5.6.
