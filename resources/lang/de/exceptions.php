@@ -44,7 +44,7 @@ return [
         'subuser_exists' => 'Diese Email ist bereits registriert.',
     ],
     'databases' => [
-        'delete_has_databases' => 'Es kann keine Datenbank gelöscht werden, die von einem sktiven Server verwendet wird.',
+        'delete_has_databases' => 'Es kann keine Datenbank gelöscht werden, die von einem aktiven Server verwendet wird.',
     ],
     'tasks' => [
         'chain_interval_too_long' => 'Die maximale Intervalldauer für eine verkettete Aufgabe ist 15 Minuten.',
