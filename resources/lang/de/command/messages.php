@@ -21,7 +21,7 @@ return [
         'ask_name_first' => 'Vorname',
         'ask_name_last' => 'Nachname',
         'ask_password' => 'Passwort',
-        'ask_password_tip' => 'Wenn du dass wirklich tun willst drücke Strg+C und benutze das `--no-password` Flag.',
+        'ask_password_tip' => 'Wenn du das wirklich tun willst, drücke Strg+C und benutze das `--no-password` Flag.',
         'ask_password_help' => 'Das Passwort muss Zahlen, Groß- und Kleinbuchstaben enthalten und mindestens 8 Zeichen lang sein.',
         '2fa_help_text' => [
             'Dieser Befehl deaktiviert die 2-Faktor-Authentifizierung für das Konto eines Benutzers, wenn sie aktiviert ist. Dies sollte nur dann als Befehl zur Wiederherstellung eines Kontos verwendet werden, wenn der Benutzer von seinem Konto ausgeschlossen ist.',
