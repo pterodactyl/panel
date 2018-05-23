@@ -2,7 +2,7 @@
 
 return [
     'not_authorized' => 'Du bist nicht autorisiert diese Aktion auszuführen.',
-    'auth_error' => 'Es gab ein Problem während der Anmeldung wolltest.',
+    'auth_error' => 'Es gab ein Problem während der Anmeldung.',
     'authentication_required' => 'Du musst angemeldet sein um diese Aktion auszuführen.',
     'remember_me' => 'Login merken',
     'sign_in' => 'Anmelden',
