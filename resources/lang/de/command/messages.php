@@ -10,7 +10,7 @@ return [
     ],
     'user' => [
         'search_users' => 'Gebe einen Nutzernamen, eine UUID oder eine Email an',
-        'select_search_user' => 'ID des Users (Gebe \'0\' ein zum Neu suchen)',
+        'select_search_user' => 'ID des Users (Gib \'0\' ein zum Neu suchen)',
         'deleted' => 'Benutzer erfolgreich gelöscht.',
         'confirm_delete' => 'Bist du dir wirklich sicher?',
         'no_users_found' => 'Es wurden keine User gefunden.',
@@ -25,18 +25,18 @@ return [
         'ask_password_help' => 'Das Passwort muss Zahlen, Groß- und Kleinbuchstaben enthalten und mindestens 8 Zeichen lang sein.',
         '2fa_help_text' => [
             'Dieser Befehl deaktiviert die 2-Faktor-Authentifizierung für das Konto eines Benutzers, wenn sie aktiviert ist. Dies sollte nur dann als Befehl zur Wiederherstellung eines Kontos verwendet werden, wenn der Benutzer von seinem Konto ausgeschlossen ist.',
-            'Wenn das nicht das ist was du tun wolltest, drücke Strg+C um den Prozess zu beenden.',
+            'Wenn das nicht das ist, was du tun wolltest, drücke Strg+C um den Prozess zu beenden.',
         ],
-        '2fa_disabled' => '2-Factor Authentifizierung wurde für :email deaktiviert.',
+        '2fa_disabled' => '2-Faktor-Authentifizierung wurde für :email deaktiviert.',
     ],
     'schedule' => [
-        'output_line' => 'Einplanungsjob für die erste Aufgabe in `:schedule` (:hash).',
+        'output_line' => 'Geplanter Job für die erste Aufgabe in `:schedule` (:hash).',
     ],
     'maintenance' => [
         'deleting_service_backup' => 'Lösche Service Backup Datei :file.',
     ],
     'server' => [
-        'rebuild_failed' => 'Neuaufbauanforderung für ":name" (#:id) auf Node ":node" ist gescheitert mit Fehler: :message',
+        'rebuild_failed' => 'Neubauanforderung für ":name" (#:id) auf Node ":node" ist gescheitert mit Fehler: :message',
     ],
     'environment' => [
         'mail' => [
@@ -51,10 +51,10 @@ return [
             'ask_driver' => 'Welcher Treiber soll für das Senden von E-Mails verwendet werden?',
             'ask_mail_from' => 'E-Mail Adressen E-Mails ausgehen von',
             'ask_mail_name' => 'Name von welchem E-Mails erscheinen sollen',
-            'ask_encryption' => 'Zu benutzende Verschlüsselungsmethode',
+            'ask_encryption' => 'Zu verwendende Verschlüsselungsmethode',
         ],
         'database' => [
-            'host_warning' => 'Es wird dringend empfohlen, "localhost" nicht als Datenbank-Host zu verwenden, da wir häufige Socket-Verbindungsprobleme gesehen haben. Wenn du eine lokale Verbindung verwenden willst, solltest du "127.0.0.0.1" verwenden.',
+            'host_warning' => 'Es wird dringend empfohlen, "localhost" nicht als Datenbank-Host zu verwenden, da wir häufige Socket-Verbindungsprobleme gesehen haben. Wenn du eine lokale Verbindung verwenden willst, solltest du "127.0.0.1" verwenden.',
             'host' => 'Datenbank Host',
             'port' => 'Datenbank Port',
             'database' => 'Datenbank Name',
@@ -69,7 +69,7 @@ return [
         'app' => [
             'app_url_help' => 'Die Anwendungs URL MUSS mit https:// oder http:// beginnen, je nach dem ob du SSL verwendest oder nicht. Solltest du das Schema nicht beinhalten, werden deine E-Mails und anderer Inhalt an die falsche Stelle verlinken.',
             'app_url' => 'Anwendungs URL',
-            'timezone_help' => 'Die Zeitzone sollte einer von PHP\'s unterstützten Zeitzonen entsprechen. Solltest du dir unsicher sein, bitte verweise auf http://php.net/manual/de/timezones.php .',
+            'timezone_help' => 'Die Zeitzone sollte einer von PHP\'s unterstützten Zeitzonen entsprechen. Solltest du dir unsicher sein, informiere dich bei http://php.net/manual/de/timezones.php .',
             'timezone' => 'Anwendungs Zeitzone',
             'cache_driver' => 'Cache Treiber',
             'session_driver' => 'Sitzungstreiber',
