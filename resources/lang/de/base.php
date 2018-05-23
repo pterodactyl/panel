@@ -54,19 +54,19 @@ return [
                 'server' => [
                     'list' => [
                         'title' => 'Server auflisten',
-                        'desc' => 'Der User darf seine Serverliste ansehen.',
+                        'desc' => 'Der Benutzer darf seine Serverliste ansehen.',
                     ],
                     'view' => [
                         'title' => 'Server ansehen',
-                        'desc' => 'Der User darf detaillierte Informationen über seine Server sehen.',
+                        'desc' => 'Der Benutzer darf detaillierte Informationen über seine Server sehen.',
                     ],
                     'power' => [
                         'title' => 'Statusoptionen',
-                        'desc' => 'Der User darf den Server starten/stoppen/restartet.',
+                        'desc' => 'Der Benutzer darf den Server starten/stoppen/restartet.',
                     ],
                     'command' => [
                         'title' => 'Befehle senden',
-                        'desc' => 'Der User hat Zugriff auf die Server Console.',
+                        'desc' => 'Der Benutzer hat Zugriff auf die Server Console.',
                     ],
                 ],
             ],
@@ -75,111 +75,111 @@ return [
                 'server' => [
                     'list' => [
                         'title' => 'Server auflisten',
-                        'desc' => 'Der User darf alle Server dieser Instanz sehen.',
+                        'desc' => 'Der Benutzer darf alle Server dieser Instanz sehen.',
                     ],
                     'view' => [
                         'title' => 'Server ansehen',
-                        'desc' => 'Der User darf detaillierte Informationen zu allen Servern dieser Instanz sehen.',
+                        'desc' => 'Der Benutzer darf detaillierte Informationen zu allen Servern dieser Instanz sehen.',
                     ],
                     'delete' => [
                         'title' => 'Server löschen',
-                        'desc' => 'Der User darf Server löschen.',
+                        'desc' => 'Der Benutzer darf Server löschen.',
                     ],
                     'create' => [
                         'title' => 'Server erstellen',
-                        'desc' => 'Der User darf Server erstellen.',
+                        'desc' => 'Der Benutzer darf Server erstellen.',
                     ],
                     'edit-details' => [
                         'title' => 'Server Details bearbeiten',
-                        'desc' => 'Der User darf die Server Einstellungen bearbeiten.',
+                        'desc' => 'Der Benutzer darf die Server Einstellungen bearbeiten.',
                     ],
                     'edit-container' => [
                         'title' => 'Server Container bearbeiten',
-                        'desc' => 'Der User darf die Container Einstellungen des Servers verändern.',
+                        'desc' => 'Der Benutzer darf die Container Einstellungen des Servers verändern.',
                     ],
                     'suspend' => [
                         'title' => 'Server sperren',
-                        'desc' => 'Der User darf Server sperren.',
+                        'desc' => 'Der Benutzer darf Server sperren.',
                     ],
                     'install' => [
                         'title' => 'Installationsstatus bearbeiten',
-                        'desc' => 'Der User darf den Installationsstatus bearbeiten',
+                        'desc' => 'Der Benutzer darf den Installationsstatus bearbeiten',
                     ],
                     'rebuild' => [
                         'title' => 'Server neuerstellen',
-                        'desc' => 'Der User darf den Server neuerstellen',
+                        'desc' => 'Der Benutzer darf den Server neuerstellen',
                     ],
                     'edit-build' => [
                         'title' => 'Servereinstellungen bearbeiten',
-                        'desc' => 'Der User darf Server-Einstellungen bearbeiten.',
+                        'desc' => 'Der Benutzer darf Server-Einstellungen bearbeiten.',
                     ],
                     'edit-startup' => [
                         'title' => 'Serverstart bearbeiten',
-                        'desc' => 'Der User darf die Startparameter ändern.',
+                        'desc' => 'Der Benutzer darf die Startparameter ändern.',
                     ],
                 ],
                 'location_header' => 'Location-Verwaltung',
                 'location' => [
                     'list' => [
                         'title' => 'Locations auflisten',
-                        'desc' => 'Der User darf alle Locations sehen.',
+                        'desc' => 'Der Benutzer darf alle Locations sehen.',
                     ],
                 ],
                 'node_header' => 'Node-Verwaltung',
                 'node' => [
                     'list' => [
                         'title' => 'Nodes auflisten',
-                        'desc' => 'Der User darf alle nodes sehen',
+                        'desc' => 'Der Benutzer darf alle nodes sehen',
                     ],
                     'view' => [
                         'title' => 'Node ansehen',
-                        'desc' => 'Der User darf detaillierte Details einer Node sehen',
+                        'desc' => 'Der Benutzer darf detaillierte Details einer Node sehen',
                     ],
                     'view-config' => [
                         'title' => 'Node-Einstellungen ansehen',
-                        'desc' => 'Achtung! Der User kann die Konfiguration einer Node sehen.',
+                        'desc' => 'Achtung! Der Benutzer kann die Konfiguration einer Node sehen.',
                     ],
                     'create' => [
                         'title' => 'Node erstellen',
-                        'desc' => 'Der User kann Nodes erstellen.',
+                        'desc' => 'Der Benutzer kann Nodes erstellen.',
                     ],
                     'delete' => [
                         'title' => 'Node löschen',
-                        'desc' => 'Der User kann Nodes löschen.',
+                        'desc' => 'Der Benutzer kann Nodes löschen.',
                     ],
                 ],
-                'user_header' => 'User-Verwaltung',
+                'user_header' => 'Benutzer-Verwaltung',
                 'user' => [
                     'list' => [
-                        'title' => 'User auflisten',
-                        'desc' => 'Der User kann alle User sehen.',
+                        'title' => 'Benutzer auflisten',
+                        'desc' => 'Der Benutzer kann alle Benutzer sehen.',
                     ],
                     'view' => [
-                        'title' => 'User ansehen',
-                        'desc' => 'Der User kann detaillierte Informationen der User sehen.',
+                        'title' => 'Benutzer ansehen',
+                        'desc' => 'Der Benutzer kann detaillierte Informationen der Benutzer sehen.',
                     ],
                     'create' => [
-                        'title' => 'User erstellen',
-                        'desc' => 'Der User kann User erstellen.',
+                        'title' => 'Benutzer erstellen',
+                        'desc' => 'Der Benutzer kann Benutzer erstellen.',
                     ],
                     'edit' => [
-                        'title' => 'User bearbeiten',
-                        'desc' => 'Der User kann User bearbeiten.',
+                        'title' => 'Benutzer bearbeiten',
+                        'desc' => 'Der Benutzer kann Benutzer bearbeiten.',
                     ],
                     'delete' => [
-                        'title' => 'User löschen',
-                        'desc' => 'Der User kann User löschen.',
+                        'title' => 'Benutzer löschen',
+                        'desc' => 'Der Benutzer kann Benutzer löschen.',
                     ],
                 ],
                 'service_header' => 'Service-Verwaltung',
                 'service' => [
                     'list' => [
                         'title' => 'Services auflisten',
-                        'desc' => 'Der User kann alle Services sehen.',
+                        'desc' => 'Der Benutzer kann alle Services sehen.',
                     ],
                     'view' => [
                         'title' => 'Services ansehen',
-                        'desc' => 'Der User kann detaillierte Informationen über Services sehen.',
+                        'desc' => 'Der Benutzer kann detaillierte Informationen über Services sehen.',
                     ],
                 ],
                 'option_header' => 'Optionsverwaltung',
@@ -221,7 +221,7 @@ return [
         'first_name' => 'Vorname',
         'last_name' => 'Nachname',
         'update_identity' => 'Account bearbeiten',
-        'username_help' => 'Dein Username muss noch frei sein und aus folgenden Zeichen bestehen: :requirements.',
+        'username_help' => 'Dein Benutzername muss noch frei sein und aus folgenden Zeichen bestehen: :requirements.',
     ],
     'security' => [
         'session_mgmt_disabled' => 'Der Administrator hat diese Funktion deaktiviert.',

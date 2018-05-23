@@ -81,21 +81,21 @@ return [
         ],
     ],
     'users' => [
-        'header' => 'User verwalten',
+        'header' => 'Benutzer verwalten',
         'header_sub' => 'Bestimme wer den Server verwalten kann.',
         'configure' => 'Rechte einstellen',
         'list' => 'Account-Liste',
-        'add' => 'Neuen User erstellen',
-        'update' => 'User bearbeiten',
-        'user_assigned' => 'User dem Server zugewiesen.',
-        'user_updated' => 'User-Rechte erfolgreich aktualisiert.',
+        'add' => 'Neuen Benutzer erstellen',
+        'update' => 'Benutzer bearbeiten',
+        'user_assigned' => 'Benutzer dem Server zugewiesen.',
+        'user_updated' => 'Benutzer-Rechte erfolgreich aktualisiert.',
         'edit' => [
-            'header' => 'User bearbeiten',
-            'header_sub' => 'Bearbeite den Zugriff eines Users auf deine Server.',
+            'header' => 'Benutzer bearbeiten',
+            'header_sub' => 'Bearbeite den Zugriff eines Benutzers auf deine Server.',
         ],
         'new' => [
-            'header' => 'Neuen User erstellen',
-            'header_sub' => 'Erstelle einen neuen User und gebe ihm Zugirff auf einen Server.',
+            'header' => 'Neuen Benutzer erstellen',
+            'header_sub' => 'Erstelle einen neuen Benutzer und gebe ihm Zugirff auf einen Server.',
             'email' => 'Email Addresse',
             'email_help' => 'Email Adresse für Einladungs-Mail.',
             'power_header' => 'Status-Verwaltung',
@@ -106,23 +106,23 @@ return [
             'database_header' => 'Datenbank-Verwaltung',
             'power_start' => [
                 'title' => 'Server starten',
-                'description' => 'Der User darf den Server starten.',
+                'description' => 'Der Benutzer darf den Server starten.',
             ],
             'power_stop' => [
                 'title' => 'Server stoppen',
-                'description' => 'Der User darf den Server stoppen.',
+                'description' => 'Der Benutzer darf den Server stoppen.',
             ],
             'power_restart' => [
                 'title' => 'Server neustarten',
-                'description' => 'Der User darf den Server neustarten.',
+                'description' => 'Der Benutzer darf den Server neustarten.',
             ],
             'power_kill' => [
                 'title' => 'Server abbrechen',
-                'description' => 'Der User darf den Prozess des Servers beenden.',
+                'description' => 'Der Benutzer darf den Prozess des Servers beenden.',
             ],
             'send_command' => [
                 'title' => 'Konsolenbefehl senden',
-                'description' => 'Der User darf die Konsole benutzen.',
+                'description' => 'Der Benutzer darf die Konsole benutzen.',
             ],
             'access_sftp' => [
                 'title' => 'SFTP erlaubt',
@@ -130,119 +130,119 @@ return [
             ],
             'list_files' => [
                 'title' => 'Dateien auflisten',
-                'description' => 'Der User darf die Server-Dateien einsehen.',
+                'description' => 'Der Benutzer darf die Server-Dateien einsehen.',
             ],
             'edit_files' => [
                 'title' => 'Dateien bearbeiten',
-                'description' => 'Der User darf die Server-Dateien bearbeiten. SFTP ist von dieser Erlaubnis nicht betroffen.',
+                'description' => 'Der Benutzer darf die Server-Dateien bearbeiten. SFTP ist von dieser Erlaubnis nicht betroffen.',
             ],
             'save_files' => [
                 'title' => 'Dateien speichern',
-                'description' => 'Der User darf die Server-Dateien speichern. SFTP ist von dieser Erlaubnis nicht betroffen.',
+                'description' => 'Der Benutzer darf die Server-Dateien speichern. SFTP ist von dieser Erlaubnis nicht betroffen.',
             ],
             'move_files' => [
                 'title' => 'Dateien umbenennen & verschieben',
-                'description' => 'Der User darf die Server-Dateien ubenennen und verschieben.',
+                'description' => 'Der Benutzer darf die Server-Dateien ubenennen und verschieben.',
             ],
             'copy_files' => [
                 'title' => 'Dateien kopieren',
-                'description' => 'Der User darf die Server-Dateien kopieren.',
+                'description' => 'Der Benutzer darf die Server-Dateien kopieren.',
             ],
             'compress_files' => [
                 'title' => 'Dateien komprimieren',
-                'description' => 'Der User darf die Server-Dateien komprimieren(zip).',
+                'description' => 'Der Benutzer darf die Server-Dateien komprimieren(zip).',
             ],
             'decompress_files' => [
                 'title' => 'Archive entpacken',
-                'description' => 'Der User darf Zip-Archive entpacken.',
+                'description' => 'Der Benutzer darf Zip-Archive entpacken.',
             ],
             'create_files' => [
                 'title' => 'Dateien erstellen',
-                'description' => 'Der User darf Dateien auf dem Server erstellen.',
+                'description' => 'Der Benutzer darf Dateien auf dem Server erstellen.',
             ],
             'upload_files' => [
                 'title' => 'Dateien hochladen',
-                'description' => 'Der User darf Dateien auf den Server hochladen.',
+                'description' => 'Der Benutzer darf Dateien auf den Server hochladen.',
             ],
             'delete_files' => [
                 'title' => 'Dateien löschen',
-                'description' => 'Der User darf Dateien vom Server löschen.',
+                'description' => 'Der Benutzer darf Dateien vom Server löschen.',
             ],
             'download_files' => [
                 'title' => 'Dateien herunterladen',
-                'description' => 'Der User darf Dateien vom Server herunterladen.',
+                'description' => 'Der Benutzer darf Dateien vom Server herunterladen.',
             ],
             'list_subusers' => [
                 'title' => 'Subuser auflisten',
-                'description' => 'Der User darf sich Subuser auflisten lassen.',
+                'description' => 'Der Benutzer darf sich Subuser auflisten lassen.',
             ],
             'view_subuser' => [
                 'title' => 'Subuser einsehen',
-                'description' => 'Der User darf Subuser genau einsehen.',
+                'description' => 'Der Benutzer darf Subuser genau einsehen.',
             ],
             'edit_subuser' => [
                 'title' => 'Subuser bearbeiten',
-                'description' => 'Der User darf Subuser bearbeiten.',
+                'description' => 'Der Benutzer darf Subuser bearbeiten.',
             ],
             'create_subuser' => [
                 'title' => 'Subuser erstellen',
-                'description' => 'Der User darf Subuser erstellen.',
+                'description' => 'Der Benutzer darf Subuser erstellen.',
             ],
             'delete_subuser' => [
                 'title' => 'Subuser löschen',
-                'description' => 'Der User darf Subuser löschen.',
+                'description' => 'Der Benutzer darf Subuser löschen.',
             ],
             'view_allocations' => [
                 'title' => 'Zuweisungen einsehen',
-                'description' => 'Der User darf alle zugewiesenen Ports und IPs einsehen.',
+                'description' => 'Der Benutzer darf alle zugewiesenen Ports und IPs einsehen.',
             ],
             'edit_allocation' => [
                 'title' => 'Standardverbindung bearbeiten',
-                'description' => 'Der User darf die Standardverbindung des Servers bearbeiten.',
+                'description' => 'Der Benutzer darf die Standardverbindung des Servers bearbeiten.',
             ],
             'view_startup' => [
                 'title' => 'Startbefehl einsehen',
-                'description' => 'Der User darf den Startbefehl und alle einhergehende Variablen einsehen.',
+                'description' => 'Der Benutzer darf den Startbefehl und alle einhergehende Variablen einsehen.',
             ],
             'edit_startup' => [
                 'title' => 'Startbefehl bearbeiten',
-                'description' => 'Der User darf die Startvariablen des Servers bearbeiten.',
+                'description' => 'Der Benutzer darf die Startvariablen des Servers bearbeiten.',
             ],
             'list_schedules' => [
                 'title' => 'Zeitpläne auflisten',
-                'description' => 'Der User darf geplante Aktionen für den Server einsehen.',
+                'description' => 'Der Benutzer darf geplante Aktionen für den Server einsehen.',
             ],
             'view_schedule' => [
                 'title' => 'Geplante Aktionen einsehen',
-                'description' => 'Der User darf geplante Aktion im Detail einsehen.',
+                'description' => 'Der Benutzer darf geplante Aktion im Detail einsehen.',
             ],
             'toggle_schedule' => [
                 'title' => 'Geplante Aktionen de-/aktivieren',
-                'description' => 'Der User darf geplante Aktionen für den Server ein- bzw. ausschalten.',
+                'description' => 'Der Benutzer darf geplante Aktionen für den Server ein- bzw. ausschalten.',
             ],
             'queue_schedule' => [
                 'title' => 'Zeitpläne anstellen',
-                'description' => 'Der User darf einen Zeitplan seine Aktionen im nächsten Prozess-Zyklus ausführen lassen.',
+                'description' => 'Der Benutzer darf einen Zeitplan seine Aktionen im nächsten Prozess-Zyklus ausführen lassen.',
             ],
             'edit_schedule' => [
                 'title' => 'Zeitpläne bearbeiten',
-                'description' => 'Der User darf geplante Aktionen für den Server bearbeiten.',
+                'description' => 'Der Benutzer darf geplante Aktionen für den Server bearbeiten.',
             ],
             'create_schedule' => [
                 'title' => 'Zeitpläne erstellen',
-                'description' => 'Der User darf geplante Aktionen für den Server erstellen.',
+                'description' => 'Der Benutzer darf geplante Aktionen für den Server erstellen.',
             ],
             'delete_schedule' => [
                 'title' => 'Zeitpläne löschen',
-                'description' => 'Der User darf geplante Aktionen für den Server löschen.',
+                'description' => 'Der Benutzer darf geplante Aktionen für den Server löschen.',
             ],
             'view_databases' => [
                 'title' => 'Datenbankinformationen einsehen',
-                'description' => 'Der User darf genaue Datenbankinformationen einsehen.',
+                'description' => 'Der Benutzer darf genaue Datenbankinformationen einsehen.',
             ],
             'reset_db_password' => [
                 'title' => 'Datenbankpasswort zurücksetzen',
-                'description' => 'Der User darf das Datenbankpasswort zurücksetzen.',
+                'description' => 'Der Benutzer darf das Datenbankpasswort zurücksetzen.',
             ],
         ],
     ],

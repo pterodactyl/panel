@@ -2,7 +2,7 @@
 
 return [
     'email' => 'Email',
-    'user_identifier' => 'Username oder Email',
+    'user_identifier' => 'Benutzername oder Email',
     'password' => 'Passwort',
     'confirm_password' => 'Passwort bestätigen',
     'login' => 'Login',
@@ -39,7 +39,7 @@ return [
     'admin_control' => 'Admin Control',
     'required' => 'Benötigt',
     'port' => 'Port',
-    'username' => 'Username',
+    'username' => 'Benutzername',
     'database' => 'Datenbank',
     'new' => 'Neu',
     'danger' => 'Achtung',

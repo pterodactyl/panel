@@ -10,7 +10,7 @@ return [
     ],
     'user' => [
         'search_users' => 'Gib einen Benutzernamen, eine UUID oder eine Email an',
-        'select_search_user' => 'ID des Users (Gib \'0\' ein, um erneut zu suchen)',
+        'select_search_user' => 'ID des Benutzers (Gib \'0\' ein, um erneut zu suchen)',
         'deleted' => 'Benutzer erfolgreich gelöscht.',
         'confirm_delete' => 'Bist du dir wirklich sicher?',
         'no_users_found' => 'Es wurden keine Benutzer gefunden.',
@@ -42,7 +42,7 @@ return [
         'mail' => [
             'ask_smtp_host' => 'SMTP Host (e.g. smtp.google.com)',
             'ask_smtp_port' => 'SMTP Port',
-            'ask_smtp_username' => 'SMTP Username',
+            'ask_smtp_username' => 'SMTP Benutzername',
             'ask_smtp_password' => 'SMTP Password',
             'ask_mailgun_domain' => 'Mailgun Domain',
             'ask_mailgun_secret' => 'Mailgun Secret',
@@ -59,7 +59,7 @@ return [
             'port' => 'Database Port',
             'database' => 'Database Name',
             'username_warning' => 'Using the "root" account for MySQL connections is not only highly frowned upon, it is also not allowed by this application. You\'ll need to have created a MySQL user for this software.',
-            'username' => 'Database Username',
+            'username' => 'Database Benutzername',
             'password_defined' => 'It appears you already have a MySQL connection password defined, would you like to change it?',
             'password' => 'Database Password',
             'connection_error' => 'Unable to connect to the MySQL server using the provided credentials. The error returned was ":error".',
