@@ -30,7 +30,7 @@ return [
             'command' => 'Befehl ausführen',
             'power' => 'Status-Aktion',
         ],
-		'toggle' => 'Toggle Status',
+        'toggle' => 'Toggle Status',
         'run_now' => 'Trigger Schedule',
         'schedule_created' => 'Successfully created a new schedule for this server.',
         'schedule_updated' => 'Schedule has been updated.',
@@ -248,7 +248,7 @@ return [
                 'title' => 'Datenbankpasswort zurücksetzen',
                 'description' => 'Der Benutzer darf das Datenbankpasswort zurücksetzen.',
             ],
-			'delete_database' => [
+            'delete_database' => [
                 'title' => 'Delete Databases',
                 'description' => 'Allows a user to delete databases for this server from the Panel.',
             ],
@@ -289,7 +289,7 @@ return [
         ],
     ],
     'config' => [
-	    'name' => [
+        'name' => [
             'header' => 'Server Name',
             'header_sub' => 'Ändere den Server Name.',
             'details' => 'Der Server Name wird nur im Panel angezeigt und hat keinen einfluss auf den Server.',

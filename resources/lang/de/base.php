@@ -29,7 +29,7 @@ return [
     ],
     'api' => [
         'index' => [
-			'list' => 'API-Schlüssel',
+            'list' => 'API-Schlüssel',
             'header' => 'API Zugriff',
             'header_sub' => 'API-Zugriffsschlüssel bearbeiten.',
             'create_new' => 'Neuen API-Schlüssel erstellen',
@@ -48,7 +48,7 @@ return [
                 'description' => 'Gib eine durch Zeilen getrennte der IPs an, denen es erlaubt sein soll, mit diesem Schlüssel API-Zugriff zu haben. CIDR Notation ist erlaubt. Frei lassen, um jede IP zuzulassen.',
             ],
         ],
-	],
+    ],
     'account' => [
         'details_updated' => 'Dein Account wurde erfolgreich bearbeitet.',
         'invalid_password' => 'Das Passwort war leider ungültig.',

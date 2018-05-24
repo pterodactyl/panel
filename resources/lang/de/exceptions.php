@@ -7,11 +7,11 @@ return [
         'daemon_off_config_updated' => 'Die Daemon Konfiguration <strong>wurde aktualisiert</strong>, jedoch ist ein Fehler beim automatischen aktualisieren der Konfigurationsdateien beim Daemon aufgetreten. Du musst die Konfigurationsdatei (config.json) für den Daemon manuell aktualisieren, um die änderungen anzuwenden.',
     ],
     'allocations' => [
-	    'server_using' => 'Ein Server ist bereits dieser Zuordnung zugeordnet. Eine Zuweisung kann nur gelöscht werden, wenn ihr kein Server zugewiesen ist.',
+        'server_using' => 'Ein Server ist bereits dieser Zuordnung zugeordnet. Eine Zuweisung kann nur gelöscht werden, wenn ihr kein Server zugewiesen ist.',
         'too_many_ports' => 'Du kannst leider nicht mehr als 1000 Ports in einem Portbereich hinzufügen.',
         'invalid_mapping' => 'Die Zuweisung für den Port :port war ungültig und konnte nicht verarbeitet werden.',
         'cidr_out_of_range' => 'CIDR Notation erlaubt Masken nur zwischen /25 und /32.',
-		'port_out_of_range' => 'Ports müssen größer als 1024 und kleiner oder gleich wie 65535 sein.',
+        'port_out_of_range' => 'Ports müssen größer als 1024 und kleiner oder gleich wie 65535 sein.',
     ],
     'nest' => [
         'delete_has_servers' => 'Ein Nest mit zugewiesenen aktiven Servern kann nicht gelöscht werden.',
@@ -25,7 +25,7 @@ return [
             'env_not_unique' => 'Die Umgebungsvariable :name muss einzigartig für dieses Ei sein.',
             'reserved_name' => 'Die Umgebungsvariable :name ist geschützt und kann nicht zugewiesen werden.',
             'bad_validation_rule' => 'Die Validierungsregel ":rule" ist keine valide Regel für diese Applikation.',
-		],
+        ],
         'importer' => [
             'json_error' => 'Beim analysieren der JSON-Datei kam es zu einem Fehler: :error.',
             'file_error' => 'Die angegebene JSON-Datei war ungültig.',
@@ -55,7 +55,7 @@ return [
     'locations' => [
         'has_nodes' => 'Es kann keine Location gelöscht werden, die von einer Node verwendet wird',
     ],
-	    'users' => [
+        'users' => [
         'node_revocation_failed' => 'Schlüssel konnte nicht widerrufen werden von <a href=":link">Node #:node</a>. :error',
     ],
     'deployment' => [

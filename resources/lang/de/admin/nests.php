@@ -6,7 +6,7 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
- 
+
 return [
     'notices' => [
         'created' => 'Das Nest :name wurde erstellt',

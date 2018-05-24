@@ -6,7 +6,7 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
- 
+
 return [
     'exceptions' => [
         'user_has_servers' => 'Es kann kein Benutzer mit einem aktiven Server gelöscht werden. Bitte lösch die Server, bevor du fortfährst',

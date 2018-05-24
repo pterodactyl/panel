@@ -83,5 +83,5 @@ return [
         'fri' => 'Freitag',
         'sat' => 'Samstag',
     ],
-	'last_used' => 'Zuletzt Genutz',
+    'last_used' => 'Zuletzt Genutz',
 ];
