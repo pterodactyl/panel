@@ -35,7 +35,7 @@
         {
             "name": "Spigot Version",
             "description": "The version of Spigot to download (using the --rev tag). Use \"latest\" for latest.",
-            "env_variable": "SPIGOT_VERSION",
+            "env_variable": "DL_VERSION",
             "default_value": "latest",
             "user_viewable": 1,
             "user_editable": 1,
