@@ -2,18 +2,18 @@
 
 return [
     'notices' => [
-        'created' => 'Das neue Nest :name wurde erstellt',
+        'created' => 'Das Nest :name wurde erstellt',
         'deleted' => 'Nest erfolgreich gelöscht.',
         'updated' => 'Nest erfolgreich bearbeitet.',
     ],
     'eggs' => [
         'notices' => [
-            'imported' => 'Eg erfolgreich importiert.',
-            'updated_via_import' => 'Dieses Egg wurde aktualisiert',
-            'deleted' => 'Dieses Egg wurde gelöscht',
-            'updated' => 'Egg wurde erfolgreich bearbeitet.',
-            'script_updated' => 'Egg install script wurde aktualisiert.',
-            'egg_created' => 'A new egg was laid successfully. You will need to restart any running daemons to apply this new egg.',
+            'imported' => 'Ei erfolgreich importiert.',
+            'updated_via_import' => 'Dieses Ei wurde aktualisiert',
+            'deleted' => 'Dieses Ei wurde gelöscht',
+            'updated' => 'Ei wurde erfolgreich bearbeitet.',
+            'script_updated' => 'Ei Installations-Skript wurde aktualisiert.',
+            'egg_created' => 'Ein neues Ei wurde gelegt. Du musst alle laufenden Daemons neustarten, um dieses Ei anzuwenden.',
         ],
     ],
     'variables' => [
