@@ -227,7 +227,7 @@ return [
         'session_mgmt_disabled' => 'Der Administrator hat diese Funktion deaktiviert.',
         'header' => 'Account Sicherheit',
         'header_sub' => '2-Faktor-Authentifizierung aktivieren.',
-        'sessions' => 'Aktieve Sitzungen',
+        'sessions' => 'Aktive Sitzungen',
         '2fa_header' => '2-Faktor-Authentifizierung',
         '2fa_token_help' => 'Bitte gebe den 2FA Code von deiner 2FA APP ein (Google Authenticatior, Authy, etc.).',
         'disable_2fa' => '2-Faktor-Authentifizierung deaktivieren',
