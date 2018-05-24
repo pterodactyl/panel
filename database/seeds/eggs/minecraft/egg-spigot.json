@@ -43,7 +43,7 @@
         },
         {
             "name": "Download Path",
-            "description": "A URL to use to download Spigot rather than building it on the server. This is not user viewable. Use <code>{{DL_VERSION}}<\/code> in the URL to automatically insert the assigned version into the URL. If you do not enter a URL Spigot will build directly in the container (this will fail on low memory containers).",
+            "description": "A URL to use to download Spigot. This is not user viewable. Use <code>{{DL_VERSION}}<\/code> in the URL to automatically insert the assigned version into the URL.",
             "env_variable": "DL_PATH",
             "default_value": "",
             "user_viewable": 0,
