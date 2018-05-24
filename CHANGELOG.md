@@ -19,6 +19,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Updated core framework from Laravel 5.5 to Laravel 5.6.
 * Improved support for Windows based environments.
+* Spigot Egg now builds spigot for you rather than requiring a download location be specified.
 
 ## v0.7.6 (Derelict Dermodactylus)
 ### Fixed
