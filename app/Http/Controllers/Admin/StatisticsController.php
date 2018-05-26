@@ -5,52 +5,75 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use JavaScript;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\User;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
+use Pterodactyl\Traits\Controllers\JavascriptInjection;
 
 class StatisticsController extends Controller
 {
+    use JavascriptInjection;
+
+    private $allocationRepository;
+
+    private $databaseRepository;
 
     private $keyProviderService;
 
-    function __construct(DaemonKeyProviderService $keyProviderService)
+    private $eggRepository;
+
+    private $nodeRepository;
+
+    private $serverRepository;
+
+    private $userRepository;
+
+    function __construct(
+        AllocationRepositoryInterface $allocationRepository,
+        DatabaseRepositoryInterface $databaseRepository,
+        DaemonKeyProviderService $keyProviderService,
+        EggRepositoryInterface $eggRepository,
+        NodeRepositoryInterface $nodeRepository,
+        ServerRepositoryInterface $serverRepository,
+        UserRepositoryInterface $userRepository
+    )
     {
+        $this->allocationRepository = $allocationRepository;
+        $this->databaseRepository = $databaseRepository;
         $this->keyProviderService = $keyProviderService;
+        $this->eggRepository = $eggRepository;
+        $this->nodeRepository = $nodeRepository;
+        $this->serverRepository = $serverRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function index(Request $request)
     {
-        $servers = Server::all();
-        $nodes = Node::all();
+        $servers = $this->serverRepository->all();
         $serversCount = count($servers);
+        $nodes = $this->nodeRepository->all();
         $nodesCount = count($nodes);
-        $usersCount = User::count();
-        $eggsCount = Egg::count();
-        $databasesCount = Database::count();
+        $usersCount = $this->userRepository->count();
+        $eggsCount = $this->eggRepository->count();
+        $databasesCount = $this->databaseRepository->count();
         $totalServerRam = DB::table('servers')->sum('memory');
         $totalNodeRam = DB::table('nodes')->sum('memory');
         $totalServerDisk = DB::table('servers')->sum('disk');
         $totalNodeDisk = DB::table('nodes')->sum('disk');
-        $totalAllocations = Allocation::count();
-
-        $suspendedServersCount = Server::where('suspended', true)->count();
+        $totalAllocations = $this->allocationRepository->count();
+        $suspendedServersCount = $this->serverRepository->getBuilder()->where('suspended', true)->count();
 
         $tokens = [];
         foreach ($nodes as $node) {
-            $server = Server::where('node_id', $node->id)->first();
-            if ($server == null)
-                continue;
-
-            $tokens[$node->id] = $this->keyProviderService->handle($server, $request->user());
+            $tokens[$node->id] = $node->daemonSecret;
         }
 
-        Javascript::put([
+        $this->injectJavascript([
             'servers' => $servers,
             'serverCount' => $serversCount,
             'suspendedServers' => $suspendedServersCount,
