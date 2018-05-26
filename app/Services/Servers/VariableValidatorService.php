@@ -63,7 +63,7 @@ class VariableValidatorService
     }
 
     /**
-     * Validate all of the passed data aganist the given service option variables.
+     * Validate all of the passed data against the given service option variables.
      *
      * @param int   $egg
      * @param array $fields

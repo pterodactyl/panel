@@ -103,7 +103,7 @@ class AssignmentServiceTest extends TestCase
     }
 
     /**
-     * Test a non-CIRD IP address with a single port and an alias.
+     * Test a non-CIDR IP address with a single port and an alias.
      */
     public function testIndividualIPAddressWithAlias()
     {

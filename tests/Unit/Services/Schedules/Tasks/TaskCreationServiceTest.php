@@ -149,7 +149,7 @@ class TaskCreationServiceTest extends TestCase
     }
 
     /**
-     * Test that exceptions are thrown if the Scheudle module or ID is invalid.
+     * Test that exceptions are thrown if the Schedule module or ID is invalid.
      *
      * @dataProvider invalidScheduleArgumentProvider
      * @expectedException \InvalidArgumentException
@@ -190,7 +190,7 @@ class TaskCreationServiceTest extends TestCase
     }
 
     /**
-     * Return an array of invalid schedule data to test aganist.
+     * Return an array of invalid schedule data to test against.
      *
      * @return array
      */

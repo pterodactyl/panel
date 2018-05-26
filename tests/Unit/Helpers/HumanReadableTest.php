@@ -24,7 +24,7 @@ class HumanReadableTest extends TestCase
     }
 
     /**
-     * Provide data to test aganist the helper function.
+     * Provide data to test against the helper function.
      *
      * @return array
      */

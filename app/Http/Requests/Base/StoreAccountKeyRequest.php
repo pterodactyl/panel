@@ -7,7 +7,7 @@ use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 class StoreAccountKeyRequest extends FrontendUserFormRequest
 {
     /**
-     * Rules to validate the request input aganist before storing
+     * Rules to validate the request input against before storing
      * an account API key.
      *
      * @return array

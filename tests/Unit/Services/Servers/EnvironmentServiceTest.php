@@ -36,7 +36,7 @@ class EnvironmentServiceTest extends TestCase
     }
 
     /**
-     * Test that set environment key stores the key into a retreviable array.
+     * Test that set environment key stores the key into a retrievable array.
      */
     public function testSettingEnvironmentKeyPersistsItInArray()
     {
@@ -92,7 +92,7 @@ class EnvironmentServiceTest extends TestCase
     /**
      * Test that duplicate variables provided in config override the defaults.
      */
-    public function testProcessShouldAllowOverwritingVaraiblesWithConfigurationFile()
+    public function testProcessShouldAllowOverwritingVariablesWithConfigurationFile()
     {
         $model = $this->getServerModel();
         $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);

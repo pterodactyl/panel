@@ -16,7 +16,7 @@ return [
         'default_allocation_not_found' => 'The requested default allocation was not found in this server\'s allocations.',
     ],
     'alerts' => [
-        'startup_changed' => 'The startup configuration for this server has been updated. If this server\'s nest or egg was changed a reinstall will be occuring now.',
+        'startup_changed' => 'The startup configuration for this server has been updated. If this server\'s nest or egg was changed a reinstall will be occurring now.',
         'server_deleted' => 'Server has successfully been deleted from the system.',
         'server_created' => 'Server was successfully created on the panel. Please allow the daemon a few minutes to completely install this server.',
         'build_updated' => 'The build details for this server have been updated. Some changes may require a restart to take effect.',

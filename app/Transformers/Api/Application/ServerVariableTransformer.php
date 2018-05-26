@@ -40,6 +40,7 @@ class ServerVariableTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\ServerVariable $variable
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeParent(ServerVariable $variable)
     {

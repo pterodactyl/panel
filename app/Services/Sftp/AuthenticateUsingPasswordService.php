@@ -52,7 +52,7 @@ class AuthenticateUsingPasswordService
     }
 
     /**
-     * Attempt to authenticate a provded username and password and determine if they
+     * Attempt to authenticate a provided username and password and determine if they
      * have permission to access a given server. This function does not account for
      * subusers currently. Only administrators and server owners can login to access
      * their files at this time.

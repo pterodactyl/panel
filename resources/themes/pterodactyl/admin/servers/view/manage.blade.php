@@ -30,8 +30,8 @@
                     <li><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
                     <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
                     <li><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
+                    <li class="active"><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 @endif
-                <li class="active"><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
                 <li class="tab-success"><a href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-external-link"></i></a></li>
             </ul>

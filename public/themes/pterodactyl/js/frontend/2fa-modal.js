@@ -44,7 +44,7 @@ var TwoFactorModal = (function () {
                     });
                     $('#open2fa').modal('show');
                 }).fail(function (jqXHR) {
-                    alert('An error occured while attempting to load the 2FA setup modal. Please try again.');
+                    alert('An error occurred while attempting to load the 2FA setup modal. Please try again.');
                     console.error(jqXHR);
                 });
 

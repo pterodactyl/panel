@@ -188,7 +188,7 @@ class User extends Model implements
     }
 
     /**
-     * Store the username as a lowecase string.
+     * Store the username as a lowercase string.
      *
      * @param string $value
      */
@@ -198,7 +198,7 @@ class User extends Model implements
     }
 
     /**
-     * Return a concated result for the accounts full name.
+     * Return a concatenated result for the accounts full name.
      *
      * @return string
      */

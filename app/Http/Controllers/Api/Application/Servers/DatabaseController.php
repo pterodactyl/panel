@@ -104,8 +104,6 @@ class DatabaseController extends ApplicationApiController
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreServerDatabaseRequest $request): JsonResponse
     {
