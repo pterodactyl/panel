@@ -17,7 +17,7 @@
         <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
             <div class="box box-danger">
                 <div class="box-body text-center">
-                    <h1 class="text-red" style="font-size: 160px !important;font-weight: 100 !important;">@lang('base.errors.maintenance.title')</h1>
+                    <h1 class="text-red" style="font-size: 3em !important;font-weight: 100 !important;">@lang('base.errors.maintenance.title')</h1>
                     <p class="text-muted">@lang('base.errors.maintenance.desc')</p>
                 </div>
                 <div class="box-footer with-border">
