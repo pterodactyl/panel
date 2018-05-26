@@ -19,7 +19,7 @@ class StoreLocationRequest extends ApplicationApiRequest
     protected $permission = AdminAcl::WRITE;
 
     /**
-     * Rules to validate the request aganist.
+     * Rules to validate the request against.
      *
      * @return array
      */

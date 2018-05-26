@@ -24,9 +24,9 @@
 
 namespace Pterodactyl\Services\DaemonKeys;
 
-use Illuminate\Log\Writer;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
+use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
@@ -57,7 +57,7 @@ class DaemonKeyDeletionService
     protected $serverRepository;
 
     /**
-     * @var \Illuminate\Log\Writer
+     * @var \Psr\Log\LoggerInterface
      */
     protected $writer;
 
@@ -68,7 +68,7 @@ class DaemonKeyDeletionService
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
-     * @param \Illuminate\Log\Writer                                             $writer
+     * @param \Psr\Log\LoggerInterface                                           $writer
      */
     public function __construct(
         ConnectionInterface $connection,

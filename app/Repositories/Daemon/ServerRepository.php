@@ -15,7 +15,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      * @param array $overrides
      * @return \Psr\Http\Message\ResponseInterface
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function create(array $structure, array $overrides = []): ResponseInterface
     {
@@ -33,6 +33,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      *
      * @param array $data
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function update(array $data): ResponseInterface
     {
@@ -46,6 +47,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      *
      * @param array|null $data
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function reinstall(array $data = null): ResponseInterface
     {
@@ -58,6 +60,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      * Mark a server as needing a container rebuild the next time the server is booted.
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function rebuild(): ResponseInterface
     {
@@ -68,6 +71,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      * Suspend a server on the daemon.
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function suspend(): ResponseInterface
     {
@@ -78,6 +82,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      * Un-suspend a server on the daemon.
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function unsuspend(): ResponseInterface
     {
@@ -88,6 +93,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      * Delete a server on the daemon.
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function delete(): ResponseInterface
     {
@@ -95,9 +101,10 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
     }
 
     /**
-     * Return detials on a specific server.
+     * Return details on a specific server.
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function details(): ResponseInterface
     {
@@ -110,7 +117,7 @@ class ServerRepository extends BaseRepository implements ServerRepositoryInterfa
      * @param string|array $key
      * @return \Psr\Http\Message\ResponseInterface
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function revokeAccessKey($key): ResponseInterface
     {

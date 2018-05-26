@@ -28,7 +28,7 @@
                         <label class="control-label">Name <span class="field-required"></span></label>
                         <div>
                             <input type="text" name="name" class="form-control" value="{{ $nest->name }}" />
-                            <p class="text-muted"><small>This should be a descriptive category name that emcompasses all of the options within the service.</small></p>
+                            <p class="text-muted"><small>This should be a descriptive category name that encompasses all of the options within the service.</small></p>
                         </div>
                     </div>
                     <div class="form-group">

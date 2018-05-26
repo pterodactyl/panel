@@ -51,7 +51,7 @@ class KeyCreationService
 
     /**
      * Create a new API key for the Panel using the permissions passed in the data request.
-     * This will automatically generate an identifer and an encrypted token that are
+     * This will automatically generate an identifier and an encrypted token that are
      * stored in the database.
      *
      * @param array $data

@@ -41,7 +41,7 @@
                 @if(! is_null($egg->copyFrom))
                     <div class="box-body">
                         <div class="callout callout-warning no-margin">
-                            This service option is copying installation scripts and containe options from <a href="{{ route('admin.nests.egg.view', $egg->copyFrom->id) }}">{{ $egg->copyFrom->name }}</a>. Any changes you make to this script will not apply unless you select "None" from the dropdown box below.
+                            This service option is copying installation scripts and container options from <a href="{{ route('admin.nests.egg.view', $egg->copyFrom->id) }}">{{ $egg->copyFrom->name }}</a>. Any changes you make to this script will not apply unless you select "None" from the dropdown box below.
                         </div>
                     </div>
                 @endif

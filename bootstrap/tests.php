@@ -10,14 +10,14 @@ $app = require __DIR__ . '/app.php';
 /** @var \Pterodactyl\Console\Kernel $kernel */
 $kernel = $app->make(Kernel::class);
 
-/**
+/*
  * Bootstrap the kernel and prepare application for testing.
  */
 $kernel->bootstrap();
 
 $output = new ConsoleOutput;
 
-/**
+/*
  * Perform database migrations and reseeding before continuing with
  * running the tests.
  */

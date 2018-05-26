@@ -24,7 +24,7 @@ class StartupCommandViewService
 
     /**
      * Generate a startup command for a server and return all of the user-viewable variables
-     * as well as thier assigned values.
+     * as well as their assigned values.
      *
      * @param int $server
      * @return \Illuminate\Support\Collection

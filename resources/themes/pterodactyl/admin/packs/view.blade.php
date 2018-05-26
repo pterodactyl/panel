@@ -66,7 +66,7 @@
                                 </optgroup>
                             @endforeach
                         </select>
-                        <p class="text-muted small">The option that this pack is assocaited with. Only servers that are assigned this option will be able to access this pack. This assigned option <em>cannot</em> be changed if servers are attached to this pack.</p>
+                        <p class="text-muted small">The option that this pack is associated with. Only servers that are assigned this option will be able to access this pack. This assigned option <em>cannot</em> be changed if servers are attached to this pack.</p>
                     </div>
                     <div class="form-group">
                         <div class="checkbox checkbox-primary no-margin-bottom">

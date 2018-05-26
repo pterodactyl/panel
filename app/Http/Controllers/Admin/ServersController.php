@@ -35,6 +35,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller
 {
@@ -375,9 +376,15 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function viewManage(Server $server)
     {
+        if ($server->installed > 1) {
+            throw new DisplayException('This server is in a failed installation state and must be deleted and recreated.');
+        }
+
         return view('admin.servers.view.manage', ['server' => $server]);
     }
 
@@ -462,6 +469,7 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function rebuildContainer(Server $server)
     {
@@ -540,7 +548,8 @@ class ServersController extends Controller
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -556,15 +565,13 @@ class ServersController extends Controller
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $server
+     * @param \Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest $request
+     * @param int                                                                           $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function newDatabase(Request $request, $server)
+    public function newDatabase(StoreServerDatabaseRequest $request, $server)
     {
         $this->databaseManagementService->create($server, [
             'database' => $request->input('database'),

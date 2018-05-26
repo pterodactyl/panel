@@ -20,7 +20,7 @@
                                         </optgroup>
                                     @endforeach
                                 </select>
-                                <p class="text-muted small">The Egg that this pack is assocaited with. Only servers that are assigned this Egg will be able to access this pack.</p>
+                                <p class="text-muted small">The Egg that this pack is associated with. Only servers that are assigned this Egg will be able to access this pack.</p>
                             </div>
                         </div>
                         <div class="row" style="margin-top:15px;">

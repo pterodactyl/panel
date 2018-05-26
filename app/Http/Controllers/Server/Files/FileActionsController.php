@@ -101,7 +101,7 @@ class FileActionsController extends Controller
     {
         $server = $request->attributes->get('server');
 
-        $dirname = pathinfo($file, PATHINFO_DIRNAME);
+        $dirname = str_replace('\\', '/', pathinfo($file, PATHINFO_DIRNAME));
         try {
             $content = $this->repository->setServer($server)->setToken($request->attributes->get('server_token'))->getContent($file);
         } catch (RequestException $exception) {

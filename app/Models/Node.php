@@ -41,7 +41,6 @@ class Node extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'public' => 'integer',
         'location_id' => 'integer',
         'memory' => 'integer',
         'disk' => 'integer',
@@ -228,5 +227,4 @@ class Node extends Model implements CleansAttributes, ValidableContract
     {
         return $this->hasMany(Allocation::class);
     }
-
 }
