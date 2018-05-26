@@ -23,7 +23,7 @@
                 </div>
                 <router-view></router-view>
                 <p class="text-center text-grey text-xs">
-                    {{ trans('strings.copyright', ['year' => date('Y')]) }}
+                    {!! trans('strings.copyright', ['year' => date('Y')]) !!}
                 </p>
             </div>
         </div>

@@ -16,8 +16,9 @@
                 <div class="input-open">
                     <input class="input" id="grid-username" type="text" name="user" aria-labelledby="grid-username" required
                            ref="email"
-                           v-bind:readonly="showSpinner"
-                           v-bind:value="user.email"
+                           :class="{ 'has-content' : user.email.length > 0 }"
+                           :readonly="showSpinner"
+                           :value="user.email"
                            v-on:input="updateEmail($event)"
                     />
                     <label for="grid-username">{{ $t('strings.user_identifier') }}</label>
@@ -25,10 +26,10 @@
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-password" type="password" name="password"
+                    <input class="input" id="grid-password" type="password" name="password" aria-labelledby="grid-password" required
                            ref="password"
-                           v-bind:readonly="showSpinner"
-                           aria-labelledby="grid-password" required
+                           :class="{ 'has-content' : user.password && user.password.length > 0 }"
+                           :readonly="showSpinner"
                            v-model="user.password"
                     />
                     <label for="grid-password">{{ $t('strings.password') }}</label>
