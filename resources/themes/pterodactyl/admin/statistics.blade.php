@@ -41,14 +41,14 @@
         <div class="info-box bg-blue">
             <span class="info-box-icon"><i class="ion ion-ios-barcode-outline"></i></span>
             <div class="info-box-content number-info-box-content">
-                <span class="info-box-text">Total used RAM</span>
+                <span class="info-box-text">Total used Memory (in MB)</span>
                 <span class="info-box-number">{{ $totalServerRam }}MB</span>
             </div>
         </div>
         <div class="info-box bg-blue">
             <span class="info-box-icon"><i class="ion ion-stats-bars"></i></span>
             <div class="info-box-content number-info-box-content">
-                <span class="info-box-text">Total used disk space</span>
+                <span class="info-box-text">Total used Disk (in MB)</span>
                 <span class="info-box-number">{{ $totalServerDisk }}MB</span>
             </div>
         </div>

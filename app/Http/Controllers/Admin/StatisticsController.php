@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use JavaScript;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
@@ -13,11 +12,11 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
+use Pterodactyl\Traits\Controllers\JavascriptStatisticsInjection;
 
 class StatisticsController extends Controller
 {
-    use JavascriptInjection;
+    use JavascriptStatisticsInjection;
 
     private $allocationRepository;
 
