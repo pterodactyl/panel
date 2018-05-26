@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import vuexI18n from 'vuex-i18n';
-import { createFlashStore } from 'vuex-flash';
 import VueRouter from 'vue-router';
 
 // Helpers
@@ -18,7 +17,7 @@ window.Ziggy = Ziggy;
 
 Vue.use(Vuex);
 
-const store = new Vuex.Store({ plugins: [createFlashStore()] });
+const store = new Vuex.Store();
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;

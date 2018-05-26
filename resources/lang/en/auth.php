@@ -7,7 +7,7 @@ return [
 
     'forgot_password' => [
         'label' => 'Forgot Password?',
-        'label_help' => 'Enter your account email address to recive instructions on resetting your password.',
+        'label_help' => 'Enter your account email address to receive instructions on resetting your password.',
         'button' => 'Recover Account',
     ],
 
