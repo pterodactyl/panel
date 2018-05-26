@@ -10,7 +10,7 @@
     @apply .appearance-none .block .w-full .text-grey-darker .border-b-2 .border-grey-light .py-3 .mb-3;
 
     &:focus {
-        @apply .border-blue;
+        @apply .border-blue-light;
         outline: 0;
         transition: border 500ms ease-out;
     }
