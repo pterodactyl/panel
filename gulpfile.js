@@ -18,12 +18,12 @@ const paths = {
     manifest: './public/assets',
     assets: './public/assets/{css,scripts}/*.{css,js}',
     styles: {
-        src: './resources/assets/pterodactyl/styles/main.css',
+        src: './resources/assets/styles/main.css',
         dest: './public/assets/css',
     },
     scripts: {
-        src: './resources/assets/pterodactyl/scripts/**/*.{js,vue}',
-        watch: ['./resources/assets/pterodactyl/scripts/**/*.{js,vue}', './resources/lang/locales.js'],
+        src: './resources/assets/scripts/**/*.{js,vue}',
+        watch: ['./resources/assets/scripts/**/*.{js,vue}', './resources/lang/locales.js'],
         dest: './public/assets/scripts',
     },
 };
@@ -65,7 +65,7 @@ function scripts() {
  * Provides watchers.
  */
 function watch() {
-    gulp.watch(['./resources/assets/pterodactyl/styles/**/*.css'], gulp.series(function cleanStyles() {
+    gulp.watch(['./resources/assets/styles/**/*.css'], gulp.series(function cleanStyles() {
         return del(['./public/assets/css/**/*.css']);
     }, styles));
 

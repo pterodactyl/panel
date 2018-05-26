@@ -1,5 +1,5 @@
 module.exports = {
-    entry: './resources/assets/pterodactyl/scripts/app.js',
+    entry: './resources/assets/scripts/app.js',
     output: {
         filename: 'webpack.build.js',
     },

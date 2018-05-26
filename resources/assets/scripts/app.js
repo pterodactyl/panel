@@ -7,7 +7,7 @@ import VueRouter from 'vue-router';
 
 // Helpers
 import { Ziggy } from './helpers/ziggy';
-import Locales from './../../../../resources/lang/locales';
+import Locales from './../../../resources/lang/locales';
 
 // Base Vuejs Templates
 import Login from './components/auth/Login';
@@ -19,7 +19,7 @@ window.Ziggy = Ziggy;
 Vue.use(Vuex);
 
 const store = new Vuex.Store({ plugins: [createFlashStore()] });
-const route = require('./../../../../vendor/tightenco/ziggy/src/js/route').default;
+const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;
 Vue.mixin({ methods: { route } });
