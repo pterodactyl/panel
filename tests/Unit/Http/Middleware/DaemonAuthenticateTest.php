@@ -29,12 +29,12 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      */
     public function testValidDaemonConnection()
     {
+        $this->setRequestRouteName('random.name');
         $node = factory(Node::class)->make();
 
-        $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.name');
-        $this->request->shouldReceive('header')->with('X-Access-Node')->twice()->andReturn($node->uuid);
+        $this->request->shouldReceive('header')->with('X-Access-Node')->twice()->andReturn($node->daemonSecret);
 
-        $this->repository->shouldReceive('findFirstWhere')->with(['daemonSecret' => $node->uuid])->once()->andReturn($node);
+        $this->repository->shouldReceive('findFirstWhere')->with(['daemonSecret' => $node->daemonSecret])->once()->andReturn($node);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertRequestHasAttribute('node');
@@ -46,7 +46,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      */
     public function testIgnoredRouteShouldContinue()
     {
-        $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('daemon.configuration');
+        $this->setRequestRouteName('daemon.configuration');
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertRequestMissingAttribute('node');
@@ -59,7 +59,8 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      */
     public function testExceptionThrownIfMissingHeader()
     {
-        $this->request->shouldReceive('route->getName')->withNoArgs()->once()->andReturn('random.name');
+        $this->setRequestRouteName('random.name');
+
         $this->request->shouldReceive('header')->with('X-Access-Node')->once()->andReturn(false);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());

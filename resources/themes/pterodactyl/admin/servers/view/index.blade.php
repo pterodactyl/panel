@@ -29,8 +29,8 @@
                     <li><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
                     <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
                     <li><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
+                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 @endif
-                <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
                 <li class="tab-success"><a href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-external-link"></i></a></li>
             </ul>
@@ -77,10 +77,6 @@
                             <tr>
                                 <td>Memory</td>
                                 <td><code>{{ $server->memory }}MB</code> / <code data-toggle="tooltip" data-placement="top" title="Swap Space">{{ $server->swap }}MB</code></td>
-                            </tr>
-                            <tr>
-                                <td><abbr title="Out of Memory">OOM</abbr> Killer</td>
-                                <td>{!! ($server->oom_disabled === 0) ? '<span class="label label-success">Enabled</span>' : '<span class="label label-default">Disabled</span>' !!}</td>
                             </tr>
                             <tr>
                                 <td>Disk Space</td>

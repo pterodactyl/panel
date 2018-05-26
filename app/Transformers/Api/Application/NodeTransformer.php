@@ -52,6 +52,7 @@ class NodeTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Node $node
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeAllocations(Node $node)
     {
@@ -71,6 +72,7 @@ class NodeTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Node $node
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeLocation(Node $node)
     {
@@ -90,6 +92,7 @@ class NodeTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Node $node
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Node $node)
     {

@@ -101,7 +101,7 @@
                             <div class="form-group">
                                 <label for="pStartup" class="control-label">Startup Command <span class="field-required"></span></label>
                                 <textarea id="pStartup" name="startup" class="form-control" rows="6">{{ $egg->startup }}</textarea>
-                                <p class="text-muted small">The default statup command that should be used for new servers using this Egg.</p>
+                                <p class="text-muted small">The default startup command that should be used for new servers using this Egg.</p>
                             </div>
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                         <div class="col-xs-12">
                             <div class="alert alert-warning">
                                 <p>The following configuration options should not be edited unless you understand how this system works. If wrongly modified it is possible for the daemon to break.</p>
-                                <p>All fields are required unless you select a seperate option from the 'Copy Settings From' dropdown, in which case fields may be left blank to use the values from that Egg.</p>
+                                <p>All fields are required unless you select a separate option from the 'Copy Settings From' dropdown, in which case fields may be left blank to use the values from that Egg.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -140,7 +140,7 @@
                             <div class="form-group">
                                 <label for="pConfigLogs" class="form-label">Log Configuration</label>
                                 <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ ! is_null($egg->config_logs) ? json_encode(json_decode($egg->config_logs), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '' }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and wether or not the daemon should be creating custom logs.</p>
+                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">

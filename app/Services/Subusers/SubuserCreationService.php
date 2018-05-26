@@ -10,7 +10,6 @@
 namespace Pterodactyl\Services\Subusers;
 
 use Pterodactyl\Models\Server;
-use Pterodactyl\Rules\Username;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;

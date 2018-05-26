@@ -92,7 +92,7 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
      * @param int $service
      * @return bool
      */
-    public function isCopiableScript(int $copyFromId, int $service): bool
+    public function isCopyableScript(int $copyFromId, int $service): bool
     {
         return $this->getBuilder()->whereNull('copy_script_from')
             ->where('id', '=', $copyFromId)

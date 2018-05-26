@@ -9,7 +9,6 @@
 
 namespace Tests\Unit\Services\Services;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Exceptions\PterodactylException;

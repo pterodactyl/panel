@@ -99,6 +99,36 @@ class SecurityControllerTest extends ControllerTestCase
     }
 
     /**
+     * Test TOTP setting controller when no exception is thrown by the service.
+     */
+    public function testSetTotpControllerSuccess()
+    {
+        $model = $this->generateRequestUserModel();
+
+        $this->request->shouldReceive('input')->with('token')->once()->andReturn('testToken');
+        $this->toggleTwoFactorService->shouldReceive('handle')->with($model, 'testToken')->once();
+
+        $response = $this->getController()->setTotp($this->request);
+        $this->assertIsResponse($response);
+        $this->assertSame('true', $response->getContent());
+    }
+
+    /**
+     * Test TOTP setting controller when an exception is thrown by the service.
+     */
+    public function testSetTotpControllerWhenExceptionIsThrown()
+    {
+        $model = $this->generateRequestUserModel();
+
+        $this->request->shouldReceive('input')->with('token')->once()->andReturn('testToken');
+        $this->toggleTwoFactorService->shouldReceive('handle')->with($model, 'testToken')->once()->andThrow(new TwoFactorAuthenticationTokenInvalid());
+
+        $response = $this->getController()->setTotp($this->request);
+        $this->assertIsResponse($response);
+        $this->assertSame('false', $response->getContent());
+    }
+
+    /**
      * Test the disable totp controller when no exception is thrown by the service.
      */
     public function testDisableTotpControllerSuccess()

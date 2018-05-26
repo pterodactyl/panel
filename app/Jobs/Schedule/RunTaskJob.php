@@ -92,7 +92,7 @@ class RunTaskJob extends Job implements ShouldQueue
             return;
         }
 
-        // Perform the provided task aganist the daemon.
+        // Perform the provided task against the daemon.
         switch ($task->action) {
             case 'power':
                 $this->powerRepository->setServer($server)

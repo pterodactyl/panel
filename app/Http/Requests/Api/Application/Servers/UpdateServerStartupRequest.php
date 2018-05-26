@@ -19,7 +19,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
     protected $permission = AdminAcl::WRITE;
 
     /**
-     * Validation rules to run the input aganist.
+     * Validation rules to run the input against.
      *
      * @return array
      */

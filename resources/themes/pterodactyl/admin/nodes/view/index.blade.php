@@ -58,13 +58,25 @@
                     </div>
                 </div>
             </div>
+            @if ($node->description)
+                <div class="col-xs-12">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            Description
+                        </div>
+                        <div class="box-body table-responsive">
+                            <pre>{{ $node->description }}</pre>
+                        </div>
+                    </div>
+                </div>
+            @endif
             <div class="col-xs-12">
                 <div class="box box-danger">
                     <div class="box-header with-border">
                         <h3 class="box-title">Delete Node</h3>
                     </div>
                     <div class="box-body">
-                        <p class="no-margin">Deleting a node is a irreversable action and will immediately remove this node from the panel. There must be no servers associated with this node in order to continue.</p>
+                        <p class="no-margin">Deleting a node is a irreversible action and will immediately remove this node from the panel. There must be no servers associated with this node in order to continue.</p>
                     </div>
                     <div class="box-footer">
                         <form action="{{ route('admin.nodes.view.delete', $node->id) }}" method="POST">

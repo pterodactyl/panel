@@ -46,10 +46,10 @@ class EggTransformer extends BaseTransformer
             'description' => $model->description,
             'docker_image' => $model->docker_image,
             'config' => [
-                'files' => json_decode($model->config_files),
-                'startup' => json_decode($model->config_startup),
+                'files' => json_decode($model->config_files, true),
+                'startup' => json_decode($model->config_startup, true),
                 'stop' => $model->config_stop,
-                'logs' => json_decode($model->config_logs),
+                'logs' => json_decode($model->config_logs, true),
                 'extends' => $model->config_from,
             ],
             'startup' => $model->startup,
@@ -70,6 +70,7 @@ class EggTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Egg $model
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNest(Egg $model)
     {
@@ -87,6 +88,7 @@ class EggTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Egg $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Egg $model)
     {
@@ -154,6 +156,7 @@ class EggTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Egg $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeVariables(Egg $model)
     {

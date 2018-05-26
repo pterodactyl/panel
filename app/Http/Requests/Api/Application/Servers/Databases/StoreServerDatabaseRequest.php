@@ -26,7 +26,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
     {
         return [
             'database' => 'required|string|min:1|max:24',
-            'remote' => 'required|string|min:1',
+            'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
             'host' => 'required|integer|exists:database_hosts,id',
         ];
     }
