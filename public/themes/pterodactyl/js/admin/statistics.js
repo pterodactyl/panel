@@ -28,7 +28,7 @@ let ramChart = new Chart($('#ram_chart'), {
     }
 });
 
-var activeServers = Pterodactyl.serverCount - Pterodactyl.suspendedServers;
+var activeServers = Pterodactyl.servers.length - Pterodactyl.suspendedServers;
 let serversChart = new Chart($('#servers_chart'), {
     type: 'pie',
     data: {

@@ -145,4 +145,11 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return bool
      */
     public function isUniqueUuidCombo(string $uuid, string $short): bool;
+
+    /**
+     * Get the amount of servers that are suspended
+     *
+     * @return int
+     */
+    public function getSuspendedServersCount(): int;
 }

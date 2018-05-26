@@ -10,7 +10,7 @@ namespace Pterodactyl\Traits\Controllers;
 
 use JavaScript;
 
-trait JavascriptStatisticsInjection
+trait PlainJavascriptInjection
 {
 
     /**

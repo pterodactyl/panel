@@ -35,7 +35,7 @@
             <span class="info-box-icon"><i class="fa fa-server"></i></span>
             <div class="info-box-content number-info-box-content">
                 <span class="info-box-text">Servers</span>
-                <span class="info-box-number">{{ $serversCount }}</span>
+                <span class="info-box-number">{{ count($servers) }}</span>
             </div>
         </div>
         <div class="info-box bg-blue">
@@ -118,7 +118,7 @@
             <span class="info-box-icon"><i class="fa fa-server"></i></span>
             <div class="info-box-content number-info-box-content">
                 <span class="info-box-text">Total Nodes</span>
-                <span class="info-box-number">{{ $nodesCount }}</span>
+                <span class="info-box-number">{{ count($nodes) }}</span>
             </div>
         </div>
     </div>

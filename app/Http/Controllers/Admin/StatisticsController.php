@@ -11,18 +11,15 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Traits\Controllers\JavascriptStatisticsInjection;
+use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
 
 class StatisticsController extends Controller
 {
-    use JavascriptStatisticsInjection;
+    use PlainJavascriptInjection;
 
     private $allocationRepository;
 
     private $databaseRepository;
-
-    private $keyProviderService;
 
     private $eggRepository;
 
@@ -35,7 +32,6 @@ class StatisticsController extends Controller
     function __construct(
         AllocationRepositoryInterface $allocationRepository,
         DatabaseRepositoryInterface $databaseRepository,
-        DaemonKeyProviderService $keyProviderService,
         EggRepositoryInterface $eggRepository,
         NodeRepositoryInterface $nodeRepository,
         ServerRepositoryInterface $serverRepository,
@@ -44,28 +40,33 @@ class StatisticsController extends Controller
     {
         $this->allocationRepository = $allocationRepository;
         $this->databaseRepository = $databaseRepository;
-        $this->keyProviderService = $keyProviderService;
         $this->eggRepository = $eggRepository;
         $this->nodeRepository = $nodeRepository;
         $this->serverRepository = $serverRepository;
         $this->userRepository = $userRepository;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         $servers = $this->serverRepository->all();
-        $serversCount = count($servers);
         $nodes = $this->nodeRepository->all();
-        $nodesCount = count($nodes);
         $usersCount = $this->userRepository->count();
         $eggsCount = $this->eggRepository->count();
         $databasesCount = $this->databaseRepository->count();
-        $totalServerRam = DB::table('servers')->sum('memory');
-        $totalNodeRam = DB::table('nodes')->sum('memory');
-        $totalServerDisk = DB::table('servers')->sum('disk');
-        $totalNodeDisk = DB::table('nodes')->sum('disk');
         $totalAllocations = $this->allocationRepository->count();
-        $suspendedServersCount = $this->serverRepository->getBuilder()->where('suspended', true)->count();
+        $suspendedServersCount = $this->serverRepository->getSuspendedServersCount();
+
+        $totalServerRam = 0;
+        $totalNodeRam = 0;
+        $totalServerDisk = 0;
+        $totalNodeDisk = 0;
+        foreach ($nodes as $node) {
+            $stats = $this->nodeRepository->getUsageStatsRaw($node);
+            $totalServerRam += $stats['memory']['value'];
+            $totalNodeRam += $stats['memory']['max'];
+            $totalServerDisk += $stats['disk']['value'];
+            $totalNodeDisk += $stats['disk']['max'];
+        }
 
         $tokens = [];
         foreach ($nodes as $node) {
@@ -74,7 +75,6 @@ class StatisticsController extends Controller
 
         $this->injectJavascript([
             'servers' => $servers,
-            'serverCount' => $serversCount,
             'suspendedServers' => $suspendedServersCount,
             'totalServerRam' => $totalServerRam,
             'totalNodeRam' => $totalNodeRam,
@@ -83,10 +83,10 @@ class StatisticsController extends Controller
             'nodes' => $nodes,
             'tokens' => $tokens,
         ]);
-
+        
         return view('admin.statistics', [
-            'serversCount' => $serversCount,
-            'nodesCount' => $nodesCount,
+            'servers' => $servers,
+            'nodes' => $nodes,
             'usersCount' => $usersCount,
             'eggsCount' => $eggsCount,
             'totalServerRam' => $totalServerRam,
