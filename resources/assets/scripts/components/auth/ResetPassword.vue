@@ -7,8 +7,8 @@
                 <div class="input-open">
                     <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" required
                            ref="email"
-                           v-bind:class="{ 'has-content': email.length > 0 }"
-                           v-bind:readonly="showSpinner"
+                           :class="{ 'has-content': email.length > 0 }"
+                           :readonly="showSpinner"
                            v-on:input="updateEmailField"
                     />
                     <label for="grid-email">{{ $t('strings.email') }}</label>
@@ -18,7 +18,8 @@
                 <div class="input-open">
                     <input class="input" id="grid-password" type="password" aria-labelledby="grid-password" required
                            ref="password"
-                           v-bind:readonly="showSpinner"
+                           :class="{ 'has-content' : password.length > 0 }"
+                           :readonly="showSpinner"
                            v-model="password"
                     />
                     <label for="grid-password">{{ $t('strings.password') }}</label>
@@ -28,7 +29,8 @@
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
                     <input class="input" id="grid-password-confirmation" type="password" aria-labelledby="grid-password-confirmation" required
-                           v-bind:readonly="showSpinner"
+                           :class="{ 'has-content' : passwordConfirmation.length > 0 }"
+                           :readonly="showSpinner"
                            v-model="passwordConfirmation"
                     />
                     <label for="grid-password-confirmation">{{ $t('strings.confirm_password') }}</label>
