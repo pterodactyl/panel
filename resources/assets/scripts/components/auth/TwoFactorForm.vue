@@ -43,6 +43,7 @@
             submitToken: function () {
                 const self = this;
 
+                self.clearFlashes();
                 axios.post(this.route('auth.login-checkpoint'), {
                     confirmation_token: this.$route.query.token,
                     authentication_code: this.$data.code,
@@ -57,7 +58,9 @@
 
                         const response = err.response;
                         if (response.data && _.isObject(response.data.errors)) {
-                            self.flash({message: response.data.errors[0].detail, variant: 'danger'});
+                            response.data.errors.forEach(function (error) {
+                                self.error(error.detail);
+                            });
                             self.$router.push({ name: 'login' });
                         }
                     });

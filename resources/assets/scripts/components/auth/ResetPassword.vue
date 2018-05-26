@@ -1,12 +1,5 @@
 <template>
     <div>
-        <div class="pb-4" v-for="error in errors">
-            <div class="p-2 bg-red-dark border-red-darker border items-center text-red-lightest leading-normal rounded flex lg:inline-flex w-full text-sm"
-                 role="alert">
-                <span class="flex rounded-full bg-red uppercase px-2 py-1 text-xs font-bold mr-3 leading-none">Error</span>
-                <span class="mr-2 text-left flex-auto">{{ error }}</span>
-            </div>
-        </div>
         <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
               v-on:submit.prevent="submitForm"
         >
@@ -90,6 +83,7 @@
                 const self = this;
                 this.$data.showSpinner = true;
 
+                this.clearFlashes();
                 window.axios.post(this.route('auth.reset-password'), {
                     email: this.$props.email,
                     password: this.$data.password,
@@ -107,7 +101,9 @@
 
                         const response = err.response;
                         if (response.data && _.isObject(response.data.errors)) {
-                            self.$data.errors = [response.data.errors[0].detail];
+                            response.data.errors.forEach(function (error) {
+                                self.error(error.detail);
+                            });
                             self.$refs.password.focus();
                         }
                     });

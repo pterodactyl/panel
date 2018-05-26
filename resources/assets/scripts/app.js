@@ -1,19 +1,19 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import vuexI18n from 'vuex-i18n';
-import VuexFlash from 'vuex-flash';
 import { createFlashStore } from 'vuex-flash';
 import VueRouter from 'vue-router';
 
 // Helpers
 import { Ziggy } from './helpers/ziggy';
 import Locales from './../../../resources/lang/locales';
+import { flash } from './mixins/flash';
 
 // Base Vuejs Templates
 import Login from './components/auth/Login';
 import ResetPassword from './components/auth/ResetPassword';
 
-// Used for the route() helper.
+window.events = new Vue;
 window.Ziggy = Ziggy;
 
 Vue.use(Vuex);
@@ -23,10 +23,10 @@ const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;
 Vue.mixin({ methods: { route } });
+Vue.mixin(flash);
 
 Vue.use(VueRouter);
 Vue.use(vuexI18n.plugin, store);
-Vue.use(VuexFlash, { mixin: true, template: require('./components/errors/Flash.template') });
 
 Vue.i18n.add('en', Locales.en);
 Vue.i18n.set('en');

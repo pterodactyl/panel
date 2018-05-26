@@ -4,6 +4,14 @@
   }
 }
 
+.fade-enter-active {
+  animation: fadein 500ms;
+}
+
+.fade-leave-active {
+  animation: fadein 500ms reverse;
+}
+
 @keyframes fadein {
   from { opacity: 0; }
   to   { opacity: 1; }

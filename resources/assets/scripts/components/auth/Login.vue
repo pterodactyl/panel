@@ -1,5 +1,6 @@
 <template>
     <div>
+        <flash/>
         <login-form
                 v-if="this.$route.name === 'login'"
                 v-bind:user="user"
@@ -15,8 +16,9 @@
 </template>
 
 <script>
-    import LoginForm from "./LoginForm";
+    import Flash from '../Flash';
     import ForgotPassword from "./ForgotPassword";
+    import LoginForm from "./LoginForm";
     import TwoFactorForm from "./TwoFactorForm";
 
     export default {
@@ -34,6 +36,7 @@
             },
         },
         components: {
+            Flash,
             TwoFactorForm,
             ForgotPassword,
             LoginForm,
