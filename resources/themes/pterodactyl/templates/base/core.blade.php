@@ -1,16 +1,30 @@
 @extends('templates/wrapper')
 
 @section('above-container')
-    <div class="nav">
+    <header class="bg-blue text-white text-xl rounded-b fixed pin-t w-full z-40 shadow-md">
+        <div class="container h-16 mx-auto flex">
+            <img class="h-12 mt-2 mr-3" src="/assets/img/pterodactyl-flat.svg">
+            <div class="py-6">PTERODACTYL</div>
+            <div class="flex-grow"></div>
+            <nav class="nav text-lg">
+                <router-link to="/"><font-awesome-icon class="mr-2" fixed-with icon="server"></font-awesome-icon>Servers</router-link>
+                <a href="#"><font-awesome-icon class="mr-2" fixed-with icon="cogs"></font-awesome-icon>Admin</a>
+                <a href="#"><font-awesome-icon class="mr-2" fixed-with icon="user"></font-awesome-icon>schrej</a>
+                <a href="#"><font-awesome-icon fixed-with icon="sign-out-alt"></font-awesome-icon></a>
+            </nav>
+        </div>
+    </header>
+    <div class="h-16 mb-6"></div>
+    {{--<div class="nav">
         <div class="logo">
             Pterodactyl
         </div>
         <div class="menu">
             <ul>
                 <li>
-                    <a href="#">
+                    <router-link to="/">
                         <span>Your Servers</span>
-                    </a>
+                    </router-link>
                 </li>
                 <li>
                     <a href="#">
@@ -29,12 +43,16 @@
                 </li>
             </ul>
         </div>
-    </div>
+    </div>--}}
 @endsection
 
 @section('container')
     <router-view></router-view>
-    <div class="w-full m-auto mt-0">
+@endsection
+
+@section('below-container')
+    <div class="flex-grow"></div>
+    <div class="container py-4">
         <p class="text-right text-grey-dark text-xs">
             {!! trans('strings.copyright', ['year' => date('Y')]) !!}
         </p>

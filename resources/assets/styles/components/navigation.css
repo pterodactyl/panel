@@ -1,4 +1,24 @@
 .nav {
+    @apply .flex;
+
+    a {
+        @apply .py-6 .px-6 .text-white .no-underline;
+
+    &:hover {
+         @apply .bg-blue-dark;
+     }
+
+     &.router-link-active {
+        @apply .bg-blue-dark;
+      }
+
+    &:last-child {
+         @apply mr-0;
+     }
+    }
+}
+
+/*.nav {
     @apply .bg-blue;
     height: 48px;
 
@@ -24,5 +44,21 @@
                 }
             }
         }
+    }
+}*/
+
+.sidenav {
+    @apply .mb-2;
+
+    a {
+        @apply .block .py-3 .px-8 .text-grey-darkest .no-underline;
+
+        &:hover {
+             @apply .border-r-4 .border-blue-lightest;
+         }
+
+        &.router-link-exact-active {
+             @apply .text-blue .border-r-4 .border-blue;
+         }
     }
 }

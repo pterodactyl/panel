@@ -46,7 +46,7 @@ code {
  * Flex boxes for server listing on user dashboard.
  */
 .server-box {
-    @apply .pb-4;
+    @apply .block .pb-4 .no-underline;
 
     @screen smx {
         @apply .w-1/2 .pr-4;

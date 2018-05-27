@@ -1,5 +1,5 @@
 .btn {
-  @apply .rounded;
+  @apply .rounded .p-2;
 
   /**
    * Button Colors
@@ -12,9 +12,14 @@
     }
   }
 
-  /**
-   * Button Sizes
-   */
+  &.btn-red {
+    @apply .bg-red .border-red-dark .border .text-white;
+
+    &:hover:enabled {
+        @apply .bg-red-dark .border-red-darker;
+     }
+   }
+  /* Button Sizes */
   &.btn-jumbo {
     @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
   }

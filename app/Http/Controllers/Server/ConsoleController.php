@@ -51,7 +51,8 @@ class ConsoleController extends Controller
             ],
         ]);
 
-        return view('server.index');
+        //return view('server.index');
+        return view('templates/base.core');
     }
 
     /**

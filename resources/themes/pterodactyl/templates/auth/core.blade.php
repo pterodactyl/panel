@@ -5,7 +5,7 @@
 @section('container')
     <div class="w-full max-w-xs sm:max-w-sm m-auto mt-8">
         <div class="text-center">
-            <img src="/favicons/android-chrome-512x512.png" class="max-w-xxs">
+            <img src="/assets/img/pterodactyl-flat.svg" class="max-w-xxs">
         </div>
         <router-view></router-view>
         <p class="text-center text-grey text-xs">
