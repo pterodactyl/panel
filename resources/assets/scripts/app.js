@@ -10,7 +10,8 @@ import { flash } from './mixins/flash';
 
 // Base Vuejs Templates
 import Login from './components/auth/Login';
-import Base from './components/base/Base';
+import Dashboard from './components/dashboard/Dashboard';
+import Account from './components/dashboard/Account';
 import ResetPassword from './components/auth/ResetPassword';
 
 window.events = new Vue;
@@ -45,10 +46,10 @@ const router = new VueRouter({
                 return { token: route.params.token, email: route.query.email || '' };
             }
         },
-        { name : 'index', path: '/', component: Base },
-        { name : 'account', path: '/account', component: Base },
-        { name : 'account-api', path: '/account/api', component: Base },
-        { name : 'account-security', path: '/account/security', component: Base },
+        { name : 'index', path: '/', component: Dashboard },
+        { name : 'account', path: '/account', component: Account },
+        { name : 'account-api', path: '/account/api', component: Account },
+        { name : 'account-security', path: '/account/security', component: Account },
     ]
 });
 
