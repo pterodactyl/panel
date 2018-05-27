@@ -171,6 +171,10 @@ module.exports = {
         'md': '768px',
         'lg': '992px',
         'xl': '1200px',
+
+        'smx': {'max': '767px'},
+        'mdx': {'max': '991px'},
+        'lgx': {'max': '1999px'},
     },
 
 

@@ -33,27 +33,33 @@
 @endsection
 
 @section('container')
-    <div class="w-full m-auto mt-8 animate fadein sm:block md:flex">
+    <div class="w-full m-auto mt-8 animate fadein sm:flex flex-wrap content-start">
         @foreach($servers as $server)
-            <div class="w-full mr-4 flex flex-col">
-                <div class="border border-grey-light bg-white rounded p-4 justify-between leading-normal">
+            <div class="server-box">
+                <div class="content">
                     <div class="float-right">
                         <div class="indicator {{ ['online', 'offline'][rand(0, 1)] }}"></div>
                     </div>
                     <div class="mb-4">
-                        {{--@if ($server->owner_id !== Auth::user()->id)--}}
-                        {{--<p class="text-sm text-grey-dark flex items-center">--}}
-                            {{--<svg class="fill-current text-grey w-3 h-3 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">--}}
-                                {{--<path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" ></path>--}}
-                            {{--</svg>--}}
-                            {{--Restricted Access--}}
-                        {{--</p>--}}
-                        {{--@endif--}}
                         <div class="text-black font-bold text-xl">{{ $server->name }}</div>
-                        {{--<div class="flex text-center">--}}
-                            {{--<div class="flex-1">68%</div>--}}
-                            {{--<div class="flex-1">124 / 1024 Mb</div>--}}
-                        {{--</div>--}}
+                    </div>
+                    <div class="mb-0 flex">
+                        <div class="usage">
+                            <div class="indicator-title">CPU</div>
+                        </div>
+                        <div class="usage">
+                            <div class="indicator-title">Memory</div>
+                        </div>
+                    </div>
+                    <div class="mb-4 flex text-center">
+                        <div class="inline-block border border-grey-lighter border-l-0 p-4 flex-1">
+                            <span class="font-bold text-xl">{{ rand(1, 200) }}</span>
+                            <span class="font-light text-sm">%</span>
+                        </div>
+                        <div class="inline-block border border-grey-lighter border-l-0 border-r-0 p-4 flex-1">
+                            <span class="font-bold text-xl">{{ rand(128, 2048) }}</span>
+                            <span class="font-light text-sm">Mb</span>
+                        </div>
                     </div>
                     <div class="flex items-center">
                         <div class="text-sm">
@@ -65,7 +71,7 @@
             </div>
         @endforeach
     </div>
-    <div class="w-full m-auto mt-4">
+    <div class="w-full m-auto mt-0">
         <p class="text-right text-grey-dark text-xs">
             {!! trans('strings.copyright', ['year' => date('Y')]) !!}
         </p>
