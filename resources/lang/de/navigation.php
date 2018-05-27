@@ -27,5 +27,6 @@ return [
         'edit_file' => 'Datei bearbeiten',
         'admin_header' => 'ADMINISTRATIV',
         'admin' => 'Server Konfiguration',
+        'server_name' => 'Server Name',
     ],
 ];

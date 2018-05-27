@@ -8,7 +8,7 @@ return [
     ],
     'schedule' => [
         'header' => 'Zeitplan-Manager',
-        'header_sub' => 'Erstelle geplante Aktionen.',
+        'header_sub' => 'Verwalte alle geplanten Aktionen.',
         'current' => 'Derzeitig geplante Aktionen',
         'new' => [
             'header' => 'Neue Aktion erstellen',
@@ -30,6 +30,10 @@ return [
             'command' => 'Befehl ausführen',
             'power' => 'Status-Aktion',
         ],
+        'toggle' => 'Toggle Status',
+        'run_now' => 'Trigger Schedule',
+        'schedule_created' => 'Successfully created a new schedule for this server.',
+        'schedule_updated' => 'Schedule has been updated.',
         'unnamed' => 'Unbenannter Zeitplan',
         'setup' => 'Plaungseinrichtung',
         'day_of_week' => 'Wochentag',
@@ -244,6 +248,14 @@ return [
                 'title' => 'Datenbankpasswort zurücksetzen',
                 'description' => 'Der Benutzer darf das Datenbankpasswort zurücksetzen.',
             ],
+            'delete_database' => [
+                'title' => 'Delete Databases',
+                'description' => 'Allows a user to delete databases for this server from the Panel.',
+            ],
+            'create_database' => [
+                'title' => 'Create Database',
+                'description' => 'Allows a user to create additional databases for this server.',
+            ],
         ],
     ],
     'files' => [
@@ -277,6 +289,11 @@ return [
         ],
     ],
     'config' => [
+        'name' => [
+            'header' => 'Server Name',
+            'header_sub' => 'Ändere den Server Name.',
+            'details' => 'Der Server Name wird nur im Panel angezeigt und hat keinen einfluss auf den Server.',
+        ],
         'startup' => [
             'header' => 'Start Konfiguration',
             'header_sub' => 'Bearbeite die Startparameter des Serves.',
