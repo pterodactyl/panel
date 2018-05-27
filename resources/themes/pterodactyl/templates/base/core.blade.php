@@ -24,7 +24,7 @@
                 </li>
                 <li>
                     <a href="{{ route('auth.logout') }}">
-                        <span>L</span>
+                        <span>Logout</span>
                     </a>
                 </li>
             </ul>
@@ -33,7 +33,10 @@
 @endsection
 
 @section('container')
-    <div class="w-full m-auto mt-8 animate fadein sm:flex flex-wrap content-start">
+    <div class="server-search animate fadein">
+        <input type="text" placeholder="search for servers..."/>
+    </div>
+    <div class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start">
         @foreach($servers as $server)
             <div class="server-box">
                 <div class="content">

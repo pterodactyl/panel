@@ -68,3 +68,15 @@ code {
         @apply .border .border-grey-light .bg-white .rounded .p-4 .justify-between .leading-normal;
     }
 }
+
+.server-search {
+    @apply .w-full .my-4;
+
+    & > input[type="text"] {
+        @apply .w-full .p-3 .rounded .border .text-grey-darker;
+
+        &:focus {
+            @apply .border-blue-light;
+        }
+    }
+}
