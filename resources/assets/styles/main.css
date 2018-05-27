@@ -11,6 +11,8 @@
 @import "components/authentication.css";
 @import "components/buttons.css";
 @import "components/forms.css";
+@import "components/miscellaneous.css";
+@import "components/navigation.css";
 @import "components/notifications.css";
 @import "components/spinners.css";
 

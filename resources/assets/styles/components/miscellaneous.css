@@ -1,0 +1,28 @@
+code {
+    @apply .font-mono .px-2 .py-1;
+    background-color: #eef1f6;
+    color: #596981;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, .1);
+    display: inline-block;
+}
+
+/**
+ * Indicators for server online status.
+ */
+.indicator {
+    @apply .bg-grey-darker .border .border-grey;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+
+    &.online {
+        @apply .bg-green-dark .border-green;
+        animation: onlineblink 2s infinite alternate;
+    }
+
+    &.offline {
+        @apply .bg-green-dark .border-red;
+        animation: offlineblink 2s infinite alternate;
+    }
+}

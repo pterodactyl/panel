@@ -1,0 +1,28 @@
+.nav {
+    @apply .bg-blue;
+    height: 48px;
+
+    & > .logo {
+        @apply .mx-8 .font-sans .font-thin .text-2xl .text-white .inline-block .pt-2;
+    }
+
+    & > .menu {
+        @apply .float-right .mx-8 .inline-block;
+
+        & > ul {
+            @apply .list-reset;
+            & > li {
+                @apply .inline-block;
+                & > a {
+                    @apply .block .h-full .no-underline .text-grey-lighter .font-light .text-sm;
+                    padding: 15px;
+
+                    &:hover {
+                        @apply .bg-blue-dark;
+
+                    }
+                }
+            }
+        }
+    }
+}

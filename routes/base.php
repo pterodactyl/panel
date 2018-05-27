@@ -6,7 +6,7 @@
  * This software is licensed under the terms of the MIT license.
  * https://opensource.org/licenses/MIT
  */
-Route::get('/', 'IndexController@getIndex')->name('index');
+Route::get('/', 'IndexController@index')->name('index');
 Route::get('/status/{server}', 'IndexController@status')->name('index.status');
 
 /*
@@ -58,3 +58,6 @@ Route::group(['prefix' => 'account/security'], function () {
 
     Route::delete('/totp', 'SecurityController@disableTotp')->name('account.security.totp.disable');
 });
+
+// Catch any other combinations of routes and pass them off to the Vuejs component.
+Route::fallback('IndexController@index');
