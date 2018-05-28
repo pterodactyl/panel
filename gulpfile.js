@@ -9,6 +9,7 @@ const rev = require('gulp-rev');
 const uglify = require('gulp-uglify-es').default;
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
+const sourcemaps = require('gulp-sourcemaps');
 
 const argv = require('yargs')
     .default('production', false)
@@ -16,7 +17,7 @@ const argv = require('yargs')
 
 const paths = {
     manifest: './public/assets',
-    assets: './public/assets/{css,scripts}/*.{css,js}',
+    assets: './public/assets/{css,scripts}/*.{css,css.map,js,js.map}',
     styles: {
         src: './resources/assets/styles/main.css',
         dest: './public/assets/css',
@@ -33,6 +34,7 @@ const paths = {
  */
 function styles() {
     return gulp.src(paths.styles.src)
+        .pipe(sourcemaps.init())
         .pipe(postcss([
             require('postcss-import'),
             require('tailwindcss')('./tailwind.js'),
@@ -43,6 +45,7 @@ function styles() {
         .pipe(gulpif(argv.production, cssmin()))
         .pipe(concat('bundle.css'))
         .pipe(rev())
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.styles.dest))
         .pipe(rev.manifest(paths.manifest + '/manifest.json', {merge: true, base: paths.manifest}))
         .pipe(gulp.dest(paths.manifest));
@@ -53,10 +56,12 @@ function styles() {
  */
 function scripts() {
     return webpackStream(webpackConfig)
+        .pipe(sourcemaps.init())
         .pipe(babel())
         .pipe(gulpif(argv.production, uglify()))
         .pipe(concat('bundle.js'))
         .pipe(rev())
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.scripts.dest))
         .pipe(rev.manifest(paths.manifest + '/manifest.json', {merge: true, base: paths.manifest}))
         .pipe(gulp.dest(paths.manifest));

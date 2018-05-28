@@ -25,6 +25,10 @@ module.exports = {
                     options: { presets: ['es2015'] }
                 }]
             },
+            {
+                test: /\.pug$/,
+                loader: 'pug-plain-loader'
+            },
         ]
     },
     resolve: {
