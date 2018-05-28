@@ -8,7 +8,7 @@
             />
         </div>
         <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start">
-            <div class="server-box" :key="index" v-for="(server, index) in servers">
+            <div class="server-box" :key="index" v-for="(server, index) in servers.models">
                 <router-link :to="{ name: 'server', params: { id: server.identifier }}" class="content">
                     <div class="float-right">
                         <div class="indicator"></div>
@@ -38,7 +38,7 @@
                     </div>
                     <div class="flex items-center">
                         <div class="text-sm">
-                            <p class="text-grey">{{ server.node_name }}</p>
+                            <p class="text-grey">{{ server.node }}</p>
                             <p class="text-grey-dark">{{ server.allocation.ip }}:{{ server.allocation.port }}</p>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-    import Server from '../../models/server';
+    import { ServerCollection } from '../../models/server';
     import _ from 'lodash';
 
     export default {
@@ -57,7 +57,7 @@
         data: function () {
             return {
                 search: '',
-                servers: [],
+                servers: new ServerCollection,
             }
         },
 
@@ -72,18 +72,16 @@
              * @param {string} query
              */
             loadServers: function (query = '') {
-                const self = this;
-
                 window.axios.get(this.route('api.client.index'), {
                     params: { query },
                 })
-                    .then(function (response) {
-                        self.servers = [];
-                        response.data.data.forEach(function (obj) {
-                           self.servers.push(new Server().fill(obj.attributes))
+                    .then(response => {
+                        this.servers = new ServerCollection;
+                        response.data.data.forEach(obj => {
+                            this.servers.add(obj.attributes);
                         });
                     })
-                    .catch(function (error) {
+                    .catch(error => {
                         console.error(error);
                     });
             },
