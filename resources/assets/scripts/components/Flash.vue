@@ -1,7 +1,12 @@
 <template>
-    <div v-if="notifications.length > 0">
-        <transition-group tag="div" class="mb-2" name="fade">
-            <div :class="item.class" class="lg:inline-flex mb-2" role="alert" :key="index" v-for="(item, index) in notifications">
+    <div v-if="notifications.length > 0" :class="this.container">
+        <transition-group tag="div" name="fade">
+            <div class="lg:inline-flex" role="alert" v-for="(item, index) in notifications"
+                :key="index"
+                :class="[item.class, {
+                    'mb-2': index < notifications.length - 1
+                }]"
+            >
                 <span class="title" v-html="item.title" v-if="item.title.length > 0"></span>
                 <span class="message" v-html="item.message"></span>
             </div>
@@ -13,6 +18,10 @@
     export default {
         name: 'flash',
         props: {
+            container: {
+                type: String,
+                default: '',
+            },
             timeout: {
                 type: Number,
                 default: 0,
