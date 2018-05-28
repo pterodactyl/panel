@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
 use Illuminate\Http\Request;
-use Barryvdh\Debugbar\LaravelDebugbar;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
@@ -41,10 +40,6 @@ class SetSessionDriver
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->config->get('app.debug')) {
-            $this->app->make(LaravelDebugbar::class)->disable();
-        }
-
         $this->config->set('session.driver', 'array');
 
         return $next($request);

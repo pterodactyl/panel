@@ -9,7 +9,7 @@
         </div>
         <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start">
             <div class="server-box" :key="index" v-for="(server, index) in servers">
-                <router-link :to="{ name: 'server', params: { id: server.uuidShort }}" class="content">
+                <router-link :to="{ name: 'server', params: { id: server.identifier }}" class="content">
                     <div class="float-right">
                         <div class="indicator"></div>
                     </div>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+    import Server from '../../models/server';
     import _ from 'lodash';
 
     export default {
@@ -73,11 +74,14 @@
             loadServers: function (query = '') {
                 const self = this;
 
-                window.axios.get(this.route('dashboard.servers'), {
+                window.axios.get(this.route('api.client.index'), {
                     params: { query },
                 })
                     .then(function (response) {
-                        self.servers = response.data;
+                        self.servers = [];
+                        response.data.data.forEach(function (obj) {
+                           self.servers.push(new Server().fill(obj.attributes))
+                        });
                     })
                     .catch(function (error) {
                         console.error(error);

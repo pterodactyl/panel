@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
+use Lcobucci\JWT\Parser;
 use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\ApiKey;
@@ -63,6 +64,22 @@ class AuthenticateKey
         }
 
         $raw = $request->bearerToken();
+
+        // This is an internal JWT, treat it differently to get the correct user
+        // before passing it along.
+        if (strlen($raw) > ApiKey::IDENTIFIER_LENGTH + ApiKey::KEY_LENGTH) {
+            $token = (new Parser)->parse($raw);
+
+            $model = (new ApiKey)->fill([
+                'user_id' => $token->getClaim('uid'),
+                'key_type' => ApiKey::TYPE_ACCOUNT,
+            ]);
+
+            $this->auth->guard()->loginUsingId($token->getClaim('uid'));
+            $request->attributes->set('api_key', $model);
+
+            return $next($request);
+        }
 
         $identifier = substr($raw, 0, ApiKey::IDENTIFIER_LENGTH);
         $token = substr($raw, ApiKey::IDENTIFIER_LENGTH);
