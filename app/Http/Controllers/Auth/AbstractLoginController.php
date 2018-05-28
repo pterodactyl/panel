@@ -2,7 +2,10 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Cake\Chronos\Chronos;
+use Lcobucci\JWT\Builder;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
@@ -12,17 +15,23 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Pterodactyl\Traits\Helpers\ProvidesJWTServices;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 abstract class AbstractLoginController extends Controller
 {
-    use AuthenticatesUsers;
+    use AuthenticatesUsers, ProvidesJWTServices;
 
     /**
      * @var \Illuminate\Auth\AuthManager
      */
     protected $auth;
+
+    /**
+     * @var \Lcobucci\JWT\Builder
+     */
+    protected $builder;
 
     /**
      * @var \Illuminate\Contracts\Cache\Repository
@@ -69,6 +78,7 @@ abstract class AbstractLoginController extends Controller
      * LoginController constructor.
      *
      * @param \Illuminate\Auth\AuthManager                              $auth
+     * @param \Lcobucci\JWT\Builder                                     $builder
      * @param \Illuminate\Contracts\Cache\Repository                    $cache
      * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
      * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
@@ -76,12 +86,14 @@ abstract class AbstractLoginController extends Controller
      */
     public function __construct(
         AuthManager $auth,
+        Builder $builder,
         CacheRepository $cache,
         Encrypter $encrypter,
         Google2FA $google2FA,
         UserRepositoryInterface $repository
     ) {
         $this->auth = $auth;
+        $this->builder = $builder;
         $this->cache = $cache;
         $this->encrypter = $encrypter;
         $this->google2FA = $google2FA;
@@ -116,19 +128,34 @@ abstract class AbstractLoginController extends Controller
     /**
      * Send the response after the user was authenticated.
      *
+     * @param \Pterodactyl\Models\User $user
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function sendLoginResponse(Request $request): JsonResponse
+    protected function sendLoginResponse(User $user, Request $request): JsonResponse
     {
         $request->session()->regenerate();
-
         $this->clearLoginAttempts($request);
 
-        return $this->authenticated($request, $this->guard()->user())
-            ?: response()->json([
-                'intended' => $this->redirectPath(),
-            ]);
+        $token = $this->builder->setIssuer(config('app.url'))
+            ->setAudience(config('app.url'))
+            ->setId(str_random(12), true)
+            ->setIssuedAt(Chronos::now()->getTimestamp())
+            ->setNotBefore(Chronos::now()->getTimestamp())
+            ->setExpiration(Chronos::now()->addSeconds(config('session.lifetime'))->getTimestamp())
+            ->set('user', $user->only([
+                'id', 'uuid', 'username', 'email', 'name_first', 'name_last', 'language', 'root_admin',
+            ]))
+            ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
+            ->getToken();
+
+        $this->auth->guard()->login($user, true);
+
+        return response()->json([
+            'complete' => true,
+            'intended' => $this->redirectPath(),
+            'token' => $token->__toString(),
+        ]);
     }
 
     /**

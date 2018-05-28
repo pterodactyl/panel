@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Traits\Helpers\ProvidesJWTServices;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateKey
 {
+    use ProvidesJWTServices;
+
     /**
      * @var \Illuminate\Auth\AuthManager
      */
@@ -65,24 +68,55 @@ class AuthenticateKey
 
         $raw = $request->bearerToken();
 
-        // This is an internal JWT, treat it differently to get the correct user
-        // before passing it along.
+        // This is an internal JWT, treat it differently to get the correct user before passing it along.
         if (strlen($raw) > ApiKey::IDENTIFIER_LENGTH + ApiKey::KEY_LENGTH) {
-            $token = (new Parser)->parse($raw);
-
-            $model = (new ApiKey)->fill([
-                'user_id' => $token->getClaim('uid'),
-                'key_type' => ApiKey::TYPE_ACCOUNT,
-            ]);
-
-            $this->auth->guard()->loginUsingId($token->getClaim('uid'));
-            $request->attributes->set('api_key', $model);
-
-            return $next($request);
+            $model = $this->authenticateJWT($raw);
+        } else {
+            $model = $this->authenticateApiKey($raw, $keyType);
         }
 
-        $identifier = substr($raw, 0, ApiKey::IDENTIFIER_LENGTH);
-        $token = substr($raw, ApiKey::IDENTIFIER_LENGTH);
+        $this->auth->guard()->loginUsingId($model->user_id);
+        $request->attributes->set('api_key', $model);
+
+        return $next($request);
+    }
+
+    /**
+     * Authenticate an API request using a JWT rather than an API key.
+     *
+     * @param string $token
+     * @return \Pterodactyl\Models\ApiKey
+     */
+    protected function authenticateJWT(string $token): ApiKey
+    {
+        $token = (new Parser)->parse($token);
+
+        // If the key cannot be verified throw an exception to indicate that a bad
+        // authorization header was provided.
+        if (! $token->verify($this->getJWTSigner(), $this->getJWTSigningKey())) {
+            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
+        }
+
+        return (new ApiKey)->forceFill([
+            'user_id' => object_get($token->getClaim('user'), 'id', 0),
+            'key_type' => ApiKey::TYPE_ACCOUNT,
+        ]);
+    }
+
+    /**
+     * Authenticate an API key.
+     *
+     * @param string $key
+     * @param int    $keyType
+     * @return \Pterodactyl\Models\ApiKey
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    protected function authenticateApiKey(string $key, int $keyType): ApiKey
+    {
+        $identifier = substr($key, 0, ApiKey::IDENTIFIER_LENGTH);
+        $token = substr($key, ApiKey::IDENTIFIER_LENGTH);
 
         try {
             $model = $this->repository->findFirstWhere([
@@ -97,10 +131,8 @@ class AuthenticateKey
             throw new AccessDeniedHttpException;
         }
 
-        $this->auth->guard()->loginUsingId($model->user_id);
-        $request->attributes->set('api_key', $model);
         $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => Chronos::now()]);
 
-        return $next($request);
+        return $model;
     }
 }
