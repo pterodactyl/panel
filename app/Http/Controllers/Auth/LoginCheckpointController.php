@@ -39,8 +39,6 @@ class LoginCheckpointController extends AbstractLoginController
             return $this->sendFailedLoginResponse($request, $user);
         }
 
-        $this->auth->guard()->login($user, true);
-
-        return $this->sendLoginResponse($request);
+        return $this->sendLoginResponse($user, $request);
     }
 }
