@@ -8,13 +8,13 @@ import { Ziggy } from './helpers/ziggy';
 import Locales from './../../../resources/lang/locales';
 import { flash } from './mixins/flash';
 import { routes } from './routes';
+import { storeData } from './store';
 
 window.events = new Vue;
 window.Ziggy = Ziggy;
 
 Vue.use(Vuex);
-
-const store = new Vuex.Store();
+const store = new Vuex.Store(storeData);
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;

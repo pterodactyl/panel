@@ -49,9 +49,12 @@
                     authentication_code: this.$data.code,
                 })
                     .then(function (response) {
+                        localStorage.setItem('token', response.data.token);
+                        self.$store.dispatch('login');
                         window.location = response.data.intended;
                     })
                     .catch(function (err) {
+                        self.$store.dispatch('logout');
                         if (!err.response) {
                             return console.error(err);
                         }

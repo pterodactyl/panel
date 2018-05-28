@@ -82,16 +82,20 @@
                 })
                     .then(function (response) {
                         if (response.data.complete) {
-                            return window.location = '/';
+                            localStorage.setItem('token', response.data.token);
+                            self.$store.dispatch('login');
+                            return window.location = response.data.intended;
                         }
 
                         self.$props.user.password = '';
                         self.$data.showSpinner = false;
-                        self.$router.push({name: 'checkpoint', query: {token: response.data.token}});
+                        self.$router.push({name: 'checkpoint', query: {token: response.data.login_token}});
                     })
                     .catch(function (err) {
                         self.$props.user.password = '';
                         self.$data.showSpinner = false;
+                        self.$store.dispatch('logout');
+
                         if (!err.response) {
                             return console.error(err);
                         }

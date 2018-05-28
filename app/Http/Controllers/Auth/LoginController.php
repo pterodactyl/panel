@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Lcobucci\JWT\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class LoginController extends AbstractLoginController
@@ -63,11 +65,26 @@ class LoginController extends AbstractLoginController
                 'request_ip' => $request->ip(),
             ], 5);
 
-            return response()->json(['complete' => false, 'token' => $token]);
+            return response()->json(['complete' => false, 'login_token' => $token]);
         }
+
+        $signer = new Sha256();
+        $token = (new Builder)->setIssuer('http://pterodactyl.local')
+            ->setAudience('http://pterodactyl.local')
+            ->setId(str_random(12), true)
+            ->setIssuedAt(time())
+            ->setNotBefore(time())
+            ->setExpiration(time() + 3600)
+            ->set('uid', $user->id)
+            ->sign($signer, env('APP_JWT_KEY'))
+            ->getToken();
 
         $this->auth->guard()->login($user, true);
 
-        return response()->json(['complete' => true]);
+        return response()->json([
+            'complete' => true,
+            'intended' => $this->redirectPath(),
+            'token' => $token->__toString(),
+        ]);
     }
 }

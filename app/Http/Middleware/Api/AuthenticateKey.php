@@ -63,6 +63,7 @@ class AuthenticateKey
         }
 
         $raw = $request->bearerToken();
+
         $identifier = substr($raw, 0, ApiKey::IDENTIFIER_LENGTH);
         $token = substr($raw, ApiKey::IDENTIFIER_LENGTH);
 
