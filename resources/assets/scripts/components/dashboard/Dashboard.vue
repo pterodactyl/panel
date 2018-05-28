@@ -7,11 +7,19 @@
                    ref="search"
             />
         </div>
-        <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start">
-            <router-link class="server-box" :to="{name: 'server', params: { id: server.uuidShort }}" :key="index" v-for="(server, index) in servers">
-                    <div class="content">
-                        <div class="float-right">
-                            <div class="indicator online"></div>
+        <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start"><div class="server-box" :key="index" v-for="(server, index) in servers.models">
+                <router-link :to="{ name: 'server', params: { id: server.identifier }}" class="content">
+                    <div class="float-right">
+                        <div class="indicator"></div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="text-black font-bold text-xl">
+                            {{ server.name }}
+                        </div>
+                    </div>
+                    <div class="mb-0 flex">
+                        <div class="usage">
+                            <div class="indicator-title">CPU</div>
                         </div>
                         <div class="mb-4">
                             <div class="text-black font-bold text-xl">{{ server.name }}</div>
@@ -34,19 +42,21 @@
                                 <span class="font-light text-sm">Mb</span>
                             </div>
                         </div>
-                        <div class="flex items-center">
-                            <div class="text-sm">
-                                <p class="text-grey">{{ server.node_name }}</p>
-                                <p class="text-grey-dark">{{ server.allocation.ip }}:{{ server.allocation.port }}</p>
-                            </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="text-sm">
+                            <p class="text-grey">{{ server.node }}</p>
+                            <p class="text-grey-dark">{{ server.allocation.ip }}:{{ server.allocation.port }}</p>
                         </div>
                     </div>
-            </router-link>
+                </router-link>
+            </div>
         </transition-group>
     </div>
 </template>
 
 <script>
+    import { ServerCollection } from '../../models/server';
     import _ from 'lodash';
 
     export default {
@@ -54,7 +64,7 @@
         data: function () {
             return {
                 search: '',
-                servers: [],
+                servers: new ServerCollection,
             }
         },
 
@@ -69,15 +79,16 @@
              * @param {string} query
              */
             loadServers: function (query = '') {
-                const self = this;
-
-                window.axios.get(this.route('dashboard.servers'), {
+                window.axios.get(this.route('api.client.index'), {
                     params: { query },
                 })
-                    .then(function (response) {
-                        self.servers = response.data;
+                    .then(response => {
+                        this.servers = new ServerCollection;
+                        response.data.data.forEach(obj => {
+                            this.servers.add(obj.attributes);
+                        });
                     })
-                    .catch(function (error) {
+                    .catch(error => {
                         console.error(error);
                     });
             },
