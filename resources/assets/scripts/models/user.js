@@ -1,33 +1,48 @@
+import { Collection, Model } from 'vue-mc';
 import JwtDecode from 'jwt-decode';
 
-const User = function () {
-    this.id = 0;
-    this.admin = false;
-    this.email = '';
-};
+export class User extends Model {
+    static defaults() {
+        return {
+            id: null,
+            uuid: '',
+            username: '',
+            email: '',
+            name_first: '',
+            name_last: '',
+            language: 'en',
+            root_admin: false,
+        }
+    }
 
-/**
- * Return a new instance of the user model using a JWT.
- *
- * @param {string} token
- * @returns {User}
- */
-User.prototype.fromJwt = function (token) {
-    return this.newModel(JwtDecode(token));
-};
+    static mutations() {
+        return {
+            id: Number,
+            uuid: String,
+            username: String,
+            email: String,
+            name_first: String,
+            name_last: String,
+            language: String,
+            root_admin: Boolean,
+        }
+    }
 
-/**
- * Return an instance of this user model with the properties set on it.
- *
- * @param {object} obj
- * @returns {User}
- */
-User.prototype.newModel = function (obj) {
-    this.id = obj.id;
-    this.admin = obj.admin;
-    this.email = obj.email;
+    static fromJWT(token) {
+        return new User(JwtDecode(token).user || {});
+    }
+}
 
-    return this;
-};
+export class UserCollection extends Collection {
+    static model() {
+        return User;
+    }
 
-export default User;
+    get todo() {
+        return this.sum('done');
+    }
+
+    get done() {
+        return this.todo === 0;
+    }
+}
