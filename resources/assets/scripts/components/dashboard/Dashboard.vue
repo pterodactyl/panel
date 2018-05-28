@@ -9,12 +9,14 @@
         </div>
         <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start">
             <div class="server-box" :key="index" v-for="(server, index) in servers">
-                <div class="content">
+                <router-link :to="{ name: 'server', params: { id: server.uuidShort }}" class="content">
                     <div class="float-right">
-                        <div class="indicator online"></div>
+                        <div class="indicator"></div>
                     </div>
                     <div class="mb-4">
-                        <div class="text-black font-bold text-xl">{{ server.name }}</div>
+                        <div class="text-black font-bold text-xl">
+                            {{ server.name }}
+                        </div>
                     </div>
                     <div class="mb-0 flex">
                         <div class="usage">
@@ -40,7 +42,7 @@
                             <p class="text-grey-dark">{{ server.allocation.ip }}:{{ server.allocation.port }}</p>
                         </div>
                     </div>
-                </div>
+                </router-link>
             </div>
         </transition-group>
     </div>

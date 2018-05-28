@@ -65,7 +65,11 @@ code {
     }
 
     & > .content {
-        @apply .border .border-grey-light .bg-white .rounded .p-4 .justify-between .leading-normal;
+        @apply .border .border-grey-light .bg-white .rounded .p-4 .justify-between .leading-normal .no-underline .block .text-black;
+
+        &:visited {
+            @apply .text-black;
+        }
     }
 }
 
