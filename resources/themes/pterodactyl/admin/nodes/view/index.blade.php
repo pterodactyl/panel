@@ -96,7 +96,7 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    @if($node->maintenance)
+                    @if($node->maintenance_mode)
                     <div class="col-sm-12">
                         <div class="info-box bg-orange">
                             <span class="info-box-icon"><i class="ion ion-wrench"></i></span>

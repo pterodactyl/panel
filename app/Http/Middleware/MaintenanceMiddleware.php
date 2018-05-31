@@ -35,7 +35,7 @@ class MaintenanceMiddleware
         $server = $request->attributes->get('server');
         $node = $server->getRelation('node');
 
-        if ($node->maintenance) {
+        if ($node->maintenance_mode) {
             return $this->response->view('errors.maintenance');
         }
 

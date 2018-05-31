@@ -64,9 +64,9 @@
                                         <span class="label bg-blue">@lang('strings.subuser')</span>
                                     @endif
                                 </td>
-                                @if($server->node->maintenance)
+                                @if($server->node->maintenance_mode)
                                     <td class="text-center">
-                                        <span class="label label-warning">Maintenance</span>
+                                        <span class="label label-warning">@lang('strings.under_maintenance')</span>
                                     </td>
                                 @else
                                     <td class="text-center" data-action="status">

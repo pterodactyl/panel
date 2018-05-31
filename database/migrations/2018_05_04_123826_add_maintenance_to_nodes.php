@@ -14,7 +14,7 @@ class AddMaintenanceToNodes extends Migration
     public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
-           $table->boolean('maintenance')->after('behind_proxy')->default(false);
+           $table->boolean('maintenance_mode')->after('behind_proxy')->default(false);
         });
     }
 
@@ -26,7 +26,7 @@ class AddMaintenanceToNodes extends Migration
     public function down()
     {
         Schema::table('nodes', function (Blueprint $table) {
-           $table->dropColumn('maintenance');
+           $table->dropColumn('maintenance_mode');
         });
     }
 }

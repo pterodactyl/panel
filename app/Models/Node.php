@@ -48,7 +48,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
         'public' => 'boolean',
-        'maintenance' => 'boolean',
+        'maintenance_mode' => 'boolean',
     ];
 
     /**
@@ -63,7 +63,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'disk_overallocate', 'upload_size',
         'daemonSecret', 'daemonBase',
         'daemonSFTP', 'daemonListen',
-        'description', 'maintenance',
+        'description', 'maintenance_mode',
     ];
 
     /**
@@ -112,7 +112,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
         'daemonSFTP' => 'numeric|between:1024,65535',
         'daemonListen' => 'numeric|between:1024,65535',
-        'maintenance' => 'boolean',
+        'maintenance_mode' => 'boolean',
     ];
 
     /**
@@ -128,7 +128,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonBase' => '/srv/daemon-data',
         'daemonSFTP' => 2022,
         'daemonListen' => 8080,
-        'maintenance' => false,
+        'maintenance_mode' => false,
     ];
 
     /**
