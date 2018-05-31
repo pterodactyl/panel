@@ -10,6 +10,7 @@ const uglify = require('gulp-uglify-es').default;
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
 const sourcemaps = require('gulp-sourcemaps');
+const through = require('through2');
 
 const argv = require('yargs')
     .default('production', false)
@@ -28,6 +29,11 @@ const paths = {
         dest: './public/assets/scripts',
     },
 };
+
+const clearSourcemaps = through.obj(function (file, enc, cb) {
+    if (!/\.map$/.test(file.path)) this.push(file);
+    cb();
+});
 
 /**
  * Build un-compiled CSS into a minified version.
@@ -56,7 +62,8 @@ function styles() {
  */
 function scripts() {
     return webpackStream(webpackConfig)
-        .pipe(sourcemaps.init())
+        .pipe(sourcemaps.init({loadMaps: true}))
+        .pipe(clearSourcemaps)
         .pipe(babel())
         .pipe(gulpif(argv.production, uglify()))
         .pipe(concat('bundle.js'))

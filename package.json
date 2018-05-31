@@ -1,6 +1,9 @@
 {
     "name": "pterodactyl-panel",
     "devDependencies": {
+        "@fortawesome/fontawesome": "^1.1.8",
+        "@fortawesome/fontawesome-free-solid": "^5.0.13",
+        "@fortawesome/vue-fontawesome": "0.0.22",
         "autoprefixer": "^8.2.0",
         "axios": "^0.18.0",
         "babel-cli": "6.18.0",
@@ -22,6 +25,7 @@
         "gulp-postcss": "^7.0.1",
         "gulp-rename": "^1.2.2",
         "gulp-rev": "^8.1.1",
+        "gulp-sourcemaps": "^2.6.4",
         "gulp-uglify-es": "^1.0.1",
         "jquery": "^3.3.1",
         "jwt-decode": "^2.2.0",
@@ -30,7 +34,10 @@
         "postcss-import": "^11.1.0",
         "postcss-preset-env": "^3.4.0",
         "postcss-scss": "^1.0.4",
+        "precss": "^3.1.2",
+        "pug-plain-loader": "^1.0.0",
         "tailwindcss": "^0.5.1",
+        "through2": "^2.0.3",
         "vee-validate": "^2.0.9",
         "vue": "^2.5.7",
         "vue-axios": "^2.1.1",
@@ -44,6 +51,7 @@
         "vuex-i18n": "^1.10.5",
         "webpack": "^4.4.1",
         "webpack-stream": "^4.0.3",
+        "xterm": "^3.4.1",
         "yargs": "^11.0.0"
     },
     "scripts": {
@@ -52,13 +60,5 @@
         "build": "./node_modules/gulp-cli/bin/gulp.js default",
         "build:styles": "./node_modules/gulp-cli/bin/gulp.js styles",
         "build:scripts": "./node_modules/gulp-cli/bin/gulp.js scripts"
-    },
-    "dependencies": {
-        "@fortawesome/fontawesome": "^1.1.8",
-        "@fortawesome/fontawesome-free-solid": "^5.0.13",
-        "@fortawesome/vue-fontawesome": "0.0.22",
-        "gulp-sourcemaps": "^2.6.4",
-        "precss": "^3.1.2",
-        "pug-plain-loader": "^1.0.0"
     }
 }
