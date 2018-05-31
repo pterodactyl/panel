@@ -39,5 +39,5 @@ module.exports = {
         extensions: ['*', '.js', '.vue', '.json']
     },
     plugins: [],
-    devtool: '#source-map',
+    devtool: 'source-map',
 };

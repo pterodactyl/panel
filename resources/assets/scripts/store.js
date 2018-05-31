@@ -1,4 +1,4 @@
-import User from './models/user';
+import { User } from './models/user';
 
 export const storeData = {
     state: {
@@ -13,15 +13,25 @@ export const storeData = {
         },
     },
     getters: {
-        user: function (state) {
+        getCurrentUser: function (state) {
+            if (!(state.user instanceof User)) {
+                state.user = User.fromJWT(localStorage.getItem('token'));
+            }
+
             return state.user;
         },
     },
     mutations: {
+        /**
+         * Log in a user and store them in vuex using the local storage token.
+         *
+         * @param state
+         */
         login: function (state) {
-            state.user = new User().fromJwt(localStorage.getItem('token'));
+            state.user = User.fromJWT(localStorage.getItem('token'));
         },
         logout: function (state) {
+            console.log('logout');
             state.user = null;
         }
     }

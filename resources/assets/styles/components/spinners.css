@@ -4,18 +4,21 @@
   position: relative;
 
   &:after {
+    @apply .border-2 .border-grey-light .absolute .block;
     animation: spinners--spin 500ms infinite linear;
     border-radius: 9999px;
-    @apply .border-2 .border-grey-light;
     border-top-color: transparent !important;
     border-right-color: transparent !important;
     content: '';
-    display: block;
     width: 1em;
     height: 1em;
     left: calc(50% - (1em / 2));
     top: calc(50% - (1em / 2));
-    position: absolute !important;
+  }
+
+  &.spinner-xl:after {
+    @apply .h-16 .w-16;
+    left: calc(50% - (4rem / 2));
   }
 
   /**
