@@ -18,7 +18,7 @@ const argv = require('yargs')
 
 const paths = {
     manifest: './public/assets',
-    assets: './public/assets/{css,scripts}/*.{css,css.map,js,js.map}',
+    assets: './public/assets/{css,scripts}/*.{css,js,map}',
     styles: {
         src: './resources/assets/styles/main.css',
         dest: './public/assets/css',
@@ -29,11 +29,6 @@ const paths = {
         dest: './public/assets/scripts',
     },
 };
-
-const clearSourcemaps = through.obj(function (file, enc, cb) {
-    if (!/\.map$/.test(file.path)) this.push(file);
-    cb();
-});
 
 /**
  * Build un-compiled CSS into a minified version.
@@ -63,7 +58,10 @@ function styles() {
 function scripts() {
     return webpackStream(webpackConfig)
         .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(clearSourcemaps)
+        .pipe(through.obj(function (file, enc, cb) { // Remove Souremaps
+            if (!/\.map$/.test(file.path)) this.push(file);
+            cb();
+        }))
         .pipe(babel())
         .pipe(gulpif(argv.production, uglify()))
         .pipe(concat('bundle.js'))
