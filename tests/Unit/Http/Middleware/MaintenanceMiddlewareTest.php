@@ -46,7 +46,7 @@ class MaintenanceMiddlewareTest extends MiddlewareTestCase
     public function testHandleInMaintenanceMode()
     {
         $server = factory(Server::class)->make();
-        $node = factory(Node::class)->make(['maintenance' => 1]);
+        $node = factory(Node::class)->make(['maintenance_mode' => 1]);
 
         $server->setRelation('node', $node);
         $this->setRequestAttribute('server', $server);

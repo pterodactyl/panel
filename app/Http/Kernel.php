@@ -109,7 +109,7 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
-        'maintenance' => MaintenanceMiddleware::class,
+        'node.maintenance' => MaintenanceMiddleware::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //
